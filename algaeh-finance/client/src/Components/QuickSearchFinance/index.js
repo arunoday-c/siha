@@ -19,8 +19,8 @@ export default memo(function(props) {
           <div className="col-12 inner-top-search-hdg">
             <h3>Quick Search</h3>
           </div>
-          <FilterComponent />
         </div>
+        <FilterComponent />
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">

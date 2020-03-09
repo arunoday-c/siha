@@ -43,7 +43,7 @@ function CustomerList(props) {
                   <button
                     className="btn btn-primary"
                     onClick={() => {
-                      history.push("CustomerSetup");
+                      history.push("CustomerSetup", { data: "placeholder" });
                     }}
                   >
                     <i className="fas fa-plus"></i>

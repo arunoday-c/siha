@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Modal } from "antd";
+import { Modal, Spin } from "antd";
 // import CostCenter from "../costCenterComponent";
 import moment from "moment";
 import "./JournalVoucher.scss";
@@ -391,387 +391,395 @@ export default function JournalVoucher() {
       });
   };
 
-  return (
-    <div className="JournalVoucherScreen">
-      <AccountsDrawer
-        show={drawer}
-        onClose={() => setDrawer(false)}
-        title="Accounts"
-        content={<AllAccounts title="Account Heads" inDrawer={true} />}
-      />
-      <div
-        className="row inner-top-search margin-bottom-15"
-        style={{ paddingBottom: "10px" }}
-      >
-        <AlgaehDateHandler
-          div={{
-            className: "col-2 algaeh-date-fld"
-          }}
-          label={{
-            forceLabel: "Voucher Date",
-            isImp: true
-          }}
-          textBox={{
-            name: "enter_date",
-            className: "form-control",
-            value: voucherDate
-          }}
-          maxDate={moment().add(1, "days")}
-          events={{
-            onChange: momentDate => {
-              if (momentDate) {
-                setVoucherDate(momentDate._d);
-              } else {
-                setVoucherDate(undefined);
-              }
-            }
-          }}
-        />
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{
-            forceLabel: "Voucher Type",
-            isImp: true
-          }}
-          selector={{
-            value: voucherType,
-            dataSource: {
-              data: dataPayment,
-              valueField: "value",
-              textField: "label"
-            },
-            onChange: selected => {
-              setPayment(basePayment);
-              setVoucherType(selected.value);
-              // setPrefix(selected.shortHand + "-");
-            },
-            onClear: () => {
-              setVoucherType("");
-              setAccounts([]);
-              setPayment(basePayment);
-            }
-          }}
-        />
+  const clearState = () => {
+    setJournerList([]);
+    setNarration("");
+    setVoucherType("");
+    setAccounts([]);
+    setPayment(basePayment);
+    setHospitalID(null);
+    setCostCenter(null);
+    setClearLoading(false);
+    setLoading(false);
+  };
 
-        {voucherType === "purchase" || voucherType === "sales" ? (
-          <AlgaehFormGroup
+  const closeDrawer = () => setDrawer(false);
+
+  const gridTree = (row, record) => {
+    return (
+      <AlgaehTreeSearch
+        div={{}}
+        label={{}}
+        tree={{
+          treeDefaultExpandAll: true,
+          onChange: (value, label) => {
+            if (value !== undefined) {
+              record["sourceName"] = value;
+              const source = value.split("-");
+              record["child_id"] = source[1];
+              record["head_id"] = source[0];
+            } else {
+              record["sourceName"] = "";
+              record["child_id"] = "";
+              record["head_id"] = "";
+            }
+          },
+          data: accounts,
+          textField: "label",
+          valueField: node => {
+            if (node["leafnode"] === "Y") {
+              return `${node["head_id"]}-${node["finance_account_child_id"]}`;
+            } else {
+              return node["finance_account_head_id"];
+            }
+          },
+          value: row
+        }}
+      />
+    );
+  };
+
+  const PaymentInput = (row, record) => {
+    return (
+      <AlgaehAutoComplete
+        div={{}}
+        label={{}}
+        selector={{
+          value: row,
+          dataSource: {
+            //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
+            data: [
+              { value: "DR", label: "Debit" },
+              { value: "CR", label: "Credit" }
+            ],
+            valueField: "value",
+            textField: "label"
+          },
+          onChange: selected => {
+            record["payment_type"] = selected.value;
+          }
+        }}
+      />
+    );
+  };
+
+  const AmountInput = (row, records) => {
+    return (
+      <AlgaehFormGroupGrid
+        type="number"
+        value={row === undefined ? "" : row}
+        onChange={e => {
+          records["amount"] = e.target.value === "" ? "" : e.target.value;
+          if (records["payment_type"] === "DR")
+            records["debit_amount"] = records["amount"];
+          else records["credit_amount"] = records["amount"];
+        }}
+      />
+    );
+  };
+
+  return (
+    <Spin spinning={loading}>
+      <div className="JournalVoucherScreen">
+        <AccountsDrawer
+          show={drawer}
+          onClose={closeDrawer}
+          title="Accounts"
+          content={<AllAccounts title="Account Heads" inDrawer={true} />}
+        />
+        <div
+          className="row inner-top-search margin-bottom-15"
+          style={{ paddingBottom: "10px" }}
+        >
+          <AlgaehDateHandler
             div={{
-              className: "col form-group"
+              className: "col-2 algaeh-date-fld"
             }}
             label={{
-              forceLabel: "Invoice No.",
+              forceLabel: "Voucher Date",
               isImp: true
             }}
             textBox={{
-              type: "text",
+              name: "enter_date",
               className: "form-control",
-              placeholder: "Enter Invoice No.",
-
-              value: invoiceNo,
-              onChange: e => {
-                setInvoiceNo(e.target.value === "" ? null : e.target.value);
+              value: voucherDate
+            }}
+            maxDate={moment().add(1, "days")}
+            events={{
+              onChange: momentDate => {
+                if (momentDate) {
+                  setVoucherDate(momentDate._d);
+                } else {
+                  setVoucherDate(undefined);
+                }
               }
             }}
           />
-        ) : voucherType === "payment" ||
-          voucherType === "receipt" ||
-          voucherType === "credit_note" ||
-          voucherType === "debit_note" ? (
           <AlgaehAutoComplete
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select Invoice No.",
+              forceLabel: "Voucher Type",
               isImp: true
             }}
             selector={{
-              value: selInvoice,
+              value: voucherType,
               dataSource: {
-                data: invoiceData,
-                valueField: "invoice_no",
-                textField: "invoice_no"
+                data: dataPayment,
+                valueField: "value",
+                textField: "label"
               },
               onChange: selected => {
-                setSelInvoice(selected.invoice_no);
+                setPayment(basePayment);
+                setVoucherType(selected.value);
+                // setPrefix(selected.shortHand + "-");
               },
               onClear: () => {
-                setSelInvoice("");
-              }
-            }}
-          />
-        ) : null}
-
-        <PaymentComponent
-          show={show}
-          {...payment}
-          handleDrop={handlePaymentDrop}
-          handleChange={setPayment}
-        />
-
-        <AlgaehAutoComplete
-          div={{ className: "col-2" }}
-          label={{ forceLabel: "Select a Branch", isImp: true }}
-          selector={{
-            dataSource: {
-              data: branchData,
-              valueField: "hims_d_hospital_id",
-              textField: "hospital_name"
-            },
-            value: hospital_id,
-            onChange: HandleHospital,
-            // others: {
-            //   loading: loadBranch
-            // },
-            onClear: () => {
-              setHospitalID(null);
-            }
-          }}
-        />
-
-        {finOptions.cost_center_required === "Y" ? (
-          <AlgaehAutoComplete
-            div={{ className: "col-2" }}
-            label={{ forceLabel: "Select a Cost Center" }}
-            selector={{
-              dataSource: {
-                data: costCenterdata,
-                valueField: "cost_center_id",
-                textField: "cost_center"
-              },
-              value: cost_center_id,
-              onChange: HandleCostCenter,
-              // others: {
-              //   loading: loading
-              // },
-              onClear: () => {
-                setCostCenter(null);
-              }
-            }}
-          />
-        ) : null}
-
-        {/* <CostCenter result={records_av} noborder={false} /> */}
-      </div>
-      <div className="row">
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Journal Voucher List </h3>
-              </div>
-              <div className="actions">
-                {/* <AlgaehButton type="primary" icon="play-circle" /> */}
-                <button
-                  className="btn btn-default"
-                  onClick={() => {
-                    setDrawer(true);
-                  }}
-                >
-                  Add New Account
-                </button>
-              </div>
-            </div>
-            <div className="portlet-body" id="JLVoucherListGrid">
-              <AlgaehDataGrid
-                columns={[
-                  {
-                    key: "slno",
-                    title: "Sl No.",
-                    sortable: true,
-                    others: {
-                      width: 80
-                    }
-                  },
-                  {
-                    key: "sourceName",
-                    title: "Account",
-                    // align: "left",
-                    displayTemplate: (row, record) => {
-                      return (
-                        <AlgaehTreeSearch
-                          div={{}}
-                          label={{}}
-                          tree={{
-                            treeDefaultExpandAll: true,
-                            onChange: (value, label) => {
-                              if (value !== undefined) {
-                                record["sourceName"] = value;
-                                const source = value.split("-");
-                                record["child_id"] = source[1];
-                                record["head_id"] = source[0];
-                              } else {
-                                record["sourceName"] = "";
-                                record["child_id"] = "";
-                                record["head_id"] = "";
-                              }
-                            },
-                            data: accounts,
-                            textField: "label",
-                            valueField: node => {
-                              if (node["leafnode"] === "Y") {
-                                return `${node["head_id"]}-${node["finance_account_child_id"]}`;
-                              } else {
-                                return node["finance_account_head_id"];
-                              }
-                            },
-                            value: row
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    key: "payment_type",
-                    title: "Payment Type ",
-                    // filtered: true,
-                    displayTemplate: (row, record) => {
-                      return (
-                        <AlgaehAutoComplete
-                          div={{}}
-                          label={{}}
-                          selector={{
-                            value: row,
-                            dataSource: {
-                              //TODO: need to change as per the backend requirement discussion happned on 09-12-2019
-                              data: [
-                                { value: "DR", label: "Debit" },
-                                { value: "CR", label: "Credit" }
-                              ],
-                              valueField: "value",
-                              textField: "label"
-                            },
-                            onChange: selected => {
-                              record["payment_type"] = selected.value;
-                            }
-                          }}
-                        />
-                      );
-                    },
-                    others: {
-                      width: 150
-                    }
-                  },
-                  {
-                    key: "amount",
-                    title: "Amount",
-                    displayTemplate: (row, records) => {
-                      return (
-                        <AlgaehFormGroupGrid
-                          type="number"
-                          value={row === undefined ? "" : row}
-                          onChange={e => {
-                            records["amount"] =
-                              e.target.value === "" ? "" : e.target.value;
-                            if (records["payment_type"] === "DR")
-                              records["debit_amount"] = records["amount"];
-                            else records["credit_amount"] = records["amount"];
-                          }}
-                        />
-                      );
-                    },
-                    others: {
-                      width: 100
-                    }
-                  }
-                ]}
-                loading={false}
-                isEditable="onlyDelete"
-                height="40vh"
-                dataSource={{
-                  data: journerList
-                }}
-                rowUnique="slno"
-                // xaxis={1500}
-                events={{
-                  onDelete: result => {
-                    setJournerList(data => {
-                      const otherDetals = data
-                        .filter(f => f.slno !== result["slno"])
-                        .map((m, i) => {
-                          return { ...m, slno: i + 1 };
-                        });
-                      return [...otherDetals];
-                    });
-                  }
-                }}
-                others={{
-                  id: "voucher_table"
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="col-8">
-          <button
-            className="btn btn-default btn-small"
-            onClick={() => {
-              setJournerList(result => {
-                const serialNo = result.length + 1;
-                result.push({
-                  child_id: undefined,
-                  head_id: undefined,
-                  slno: serialNo
-                });
-                return [...result];
-              });
-            }}
-          >
-            Add New Entry
-          </button>
-        </div>
-        <AlgaehFormGroup
-          div={{
-            className: "col form-group algaeh-text-fld"
-          }}
-          label={{
-            forceLabel: "Narration",
-            isImp: false
-          }}
-          multiline={true}
-          no_of_lines={3}
-          textBox={{
-            type: "text",
-            className: "form-control",
-            placeholder: "Enter Narration ex:- Electricity Bill",
-
-            value: narration,
-            onChange: e => {
-              setNarration(e.target.value);
-            }
-          }}
-        />
-      </div>
-      <div className="hptl-phase1-footer">
-        <div className="row">
-          <div className="col-12">
-            <AlgaehButton
-              className="btn btn-primary"
-              loading={loading}
-              onClick={saveJournal}
-            >
-              Save
-            </AlgaehButton>
-            <AlgaehButton
-              loading={clearLoading}
-              className="btn btn-default"
-              onClick={() => {
-                setLoading(true);
-                setClearLoading(true);
-                setJournerList([]);
-                setNarration("");
                 setVoucherType("");
                 setAccounts([]);
                 setPayment(basePayment);
+              }
+            }}
+          />
+
+          {voucherType === "purchase" || voucherType === "sales" ? (
+            <AlgaehFormGroup
+              div={{
+                className: "col form-group"
+              }}
+              label={{
+                forceLabel: "Invoice No.",
+                isImp: true
+              }}
+              textBox={{
+                type: "text",
+                className: "form-control",
+                placeholder: "Enter Invoice No.",
+
+                value: invoiceNo,
+                onChange: e => {
+                  setInvoiceNo(e.target.value === "" ? null : e.target.value);
+                }
+              }}
+            />
+          ) : voucherType === "payment" ||
+            voucherType === "receipt" ||
+            voucherType === "credit_note" ||
+            voucherType === "debit_note" ? (
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Select Invoice No.",
+                isImp: true
+              }}
+              selector={{
+                value: selInvoice,
+                dataSource: {
+                  data: invoiceData,
+                  valueField: "invoice_no",
+                  textField: "invoice_no"
+                },
+                onChange: selected => {
+                  setSelInvoice(selected.invoice_no);
+                },
+                onClear: () => {
+                  setSelInvoice("");
+                }
+              }}
+            />
+          ) : null}
+
+          <PaymentComponent
+            show={show}
+            {...payment}
+            handleDrop={handlePaymentDrop}
+            handleChange={setPayment}
+          />
+
+          <AlgaehAutoComplete
+            div={{ className: "col-2" }}
+            label={{ forceLabel: "Select a Branch", isImp: true }}
+            selector={{
+              dataSource: {
+                data: branchData,
+                valueField: "hims_d_hospital_id",
+                textField: "hospital_name"
+              },
+              value: hospital_id,
+              onChange: HandleHospital,
+              // others: {
+              //   loading: loadBranch
+              // },
+              onClear: () => {
                 setHospitalID(null);
-                setCostCenter(null);
-                setClearLoading(false);
-                setLoading(false);
+              }
+            }}
+          />
+
+          {finOptions.cost_center_required === "Y" ? (
+            <AlgaehAutoComplete
+              div={{ className: "col-2" }}
+              label={{ forceLabel: "Select a Cost Center" }}
+              selector={{
+                dataSource: {
+                  data: costCenterdata,
+                  valueField: "cost_center_id",
+                  textField: "cost_center"
+                },
+                value: cost_center_id,
+                onChange: HandleCostCenter,
+                // others: {
+                //   loading: loading
+                // },
+                onClear: () => {
+                  setCostCenter(null);
+                }
+              }}
+            />
+          ) : null}
+
+          {/* <CostCenter result={records_av} noborder={false} /> */}
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Journal Voucher List </h3>
+                </div>
+                <div className="actions">
+                  <button
+                    className="btn btn-default"
+                    onClick={() => {
+                      setDrawer(true);
+                    }}
+                  >
+                    Add New Account
+                  </button>
+                </div>
+              </div>
+              <div className="portlet-body" id="JLVoucherListGrid">
+                <AlgaehDataGrid
+                  columns={[
+                    {
+                      key: "slno",
+                      title: "Sl No.",
+                      sortable: true,
+                      others: {
+                        width: 80
+                      }
+                    },
+                    {
+                      key: "sourceName",
+                      title: "Account",
+                      // align: "left",
+                      displayTemplate: gridTree
+                    },
+                    {
+                      key: "payment_type",
+                      title: "Payment Type ",
+                      // filtered: true,
+                      displayTemplate: PaymentInput,
+                      others: {
+                        width: 150
+                      }
+                    },
+                    {
+                      key: "amount",
+                      title: "Amount",
+                      displayTemplate: AmountInput,
+                      others: {
+                        width: 100
+                      }
+                    }
+                  ]}
+                  loading={false}
+                  isEditable="onlyDelete"
+                  height="40vh"
+                  dataSource={{
+                    data: journerList
+                  }}
+                  rowUnique="slno"
+                  // xaxis={1500}
+                  events={{
+                    onDelete: result => {
+                      setJournerList(data => {
+                        const otherDetals = data
+                          .filter(f => f.slno !== result["slno"])
+                          .map((m, i) => {
+                            return { ...m, slno: i + 1 };
+                          });
+                        return [...otherDetals];
+                      });
+                    }
+                  }}
+                  others={{
+                    id: "voucher_table"
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-8">
+            <button
+              className="btn btn-default btn-small"
+              onClick={() => {
+                setJournerList(result => {
+                  const serialNo = result.length + 1;
+                  result.push({
+                    child_id: undefined,
+                    head_id: undefined,
+                    slno: serialNo
+                  });
+                  return [...result];
+                });
               }}
             >
-              Clear
-            </AlgaehButton>
+              Add New Entry
+            </button>
+          </div>
+          <AlgaehFormGroup
+            div={{
+              className: "col form-group algaeh-text-fld"
+            }}
+            label={{
+              forceLabel: "Narration",
+              isImp: false
+            }}
+            multiline={true}
+            no_of_lines={3}
+            textBox={{
+              type: "text",
+              className: "form-control",
+              placeholder: "Enter Narration ex:- Electricity Bill",
+
+              value: narration,
+              onChange: e => {
+                setNarration(e.target.value);
+              }
+            }}
+          />
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-12">
+              <AlgaehButton
+                className="btn btn-primary"
+                loading={loading}
+                onClick={saveJournal}
+              >
+                Save
+              </AlgaehButton>
+              <AlgaehButton
+                loading={clearLoading}
+                className="btn btn-default"
+                onClick={clearState}
+              >
+                Clear
+              </AlgaehButton>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Spin>
   );
 }

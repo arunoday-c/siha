@@ -184,7 +184,7 @@ export default {
                       query:
                         "INSERT INTO `finance_voucher_header` (payment_mode,ref_no,cheque_date,amount, payment_date, month, year,\
                        narration, voucher_no, voucher_type,from_screen,invoice_no,invoice_ref_no,posted_from,\
-                       created_by, updated_by, created_date, update_date)\
+                       created_by, updated_by, created_date, updated_date)\
                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
                         payment_mode,
@@ -1327,7 +1327,10 @@ export default {
                                   } else {
                                     updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                                       result[0]["amount"]
-                                    )} where finance_voucher_header_id=${
+                                    )} updated_date='${new Date()}',
+                                    updated_by= ${
+                                      req.userIdentity.algaeh_d_app_user_id
+                                    }, where finance_voucher_header_id=${
                                       BalanceInvoice[0][
                                         "finance_voucher_header_id"
                                       ]
