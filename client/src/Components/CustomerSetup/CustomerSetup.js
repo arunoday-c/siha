@@ -791,7 +791,7 @@ class CustomerSetup extends Component {
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
-              <h3 className="caption-subject">Customers List</h3>
+              <h3 className="caption-subject">Customer Master</h3>
             </div>
             <div className="actions">
               <a
