@@ -88,7 +88,7 @@ export default memo(function(props) {
                             sortable: true
                           }
                         ]}
-                        // height="40vh"
+                        height="59vh"
                         rowUnique="finance_voucher_header_id"
                         dataSource={{ data: data }}
                       ></AlgaehDataGrid>

@@ -8430,7 +8430,7 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-        S.year=? and S.month=? where  E.date_of_joining<= date(?) ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
+        S.year=? and S.month=? where  E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
           /employee_id/gi,
           "TS.employee_id"
         )} group by TS.employee_id having count(*)< ?; ;`,
@@ -9040,7 +9040,7 @@ function processBulkAtt_with_cutoff(data) {
    select E.employee_code,E.full_name
   from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id 
   and E.suspend_salary <>'Y'  ${deptStr}  left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-  S.year=? and S.month=? where E.date_of_joining<= date(?) ( S.salary_processed is null or  S.salary_processed='N')   and 
+  S.year=? and S.month=? where E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')   and 
   TS.hospital_id=? and attendance_date between
   date(?) and date(?)   ${strQry.replace(
     /employee_id/gi,
@@ -9069,6 +9069,12 @@ function processBulkAtt_with_cutoff(data) {
             _mysql.releaseConnection();
             reject({ invalid_input: true, message: message });
           } else {
+            let cur_mon_after_cutoff_roster = "";
+            if (options.attendance_type == "DMP") {
+              cur_mon_after_cutoff_roster = `select hims_f_project_roster_id,employee_id,attendance_date,project_id
+              from   hims_d_employee E inner join hims_f_project_roster PR on PR.employee_id=E.hims_d_employee_id  ${deptStr} 
+              where PR.hospital_id=${input.hospital_id} and attendance_date between date('${cutoff_next_day}') and date('${month_end}')   ${strQry};  `;
+            }
             _mysql
               .executeQuery({
                 query: ` select hims_f_daily_time_sheet_id,employee_id,TS.sub_department_id, 
@@ -9113,7 +9119,10 @@ function processBulkAtt_with_cutoff(data) {
 
           select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
           holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
-          date(holiday_date) between date(?) and date(?);    `,
+          date(holiday_date) between date(?) and date(?);  
+          
+          ${cur_mon_after_cutoff_roster}
+          `,
                 values: [
                   prev_year,
                   prev_month,
@@ -9143,7 +9152,7 @@ function processBulkAtt_with_cutoff(data) {
                   cutoff_next_day,
                   month_end
                 ],
-                printQuery: true
+                printQuery: false
               })
               .then(result => {
                 const prev_month_timesheet = result[0];
@@ -9151,6 +9160,14 @@ function processBulkAtt_with_cutoff(data) {
                 const pending_leaves = result[2];
                 const current_leaves = result[3];
                 const allHolidays = result[4];
+
+                let cm_after_cutoff_roster = null;
+
+                if (options.attendance_type == "DMP") {
+                  cm_after_cutoff_roster = _.chain(result[5])
+                    .groupBy(g => g.employee_id)
+                    .value();
+                }
 
                 const prev_left_days = getDaysArray(
                   new Date(prev_cutoff_next_day),
@@ -9381,144 +9398,109 @@ function processBulkAtt_with_cutoff(data) {
                       const holidayLen = empHolidayweekoff.length;
 
                       //ST-CURRENT MONTH AFTER CUTTOFF
-                      current_left_days.forEach(attendance_date => {
-                        let leave,
-                          holiday_or_weekOff = null;
 
-                        if (leaveLen > 0) {
-                          const leaveFound = empLeave.find(f => {
-                            return (
-                              f.from_date <= attendance_date &&
-                              attendance_date <= f.to_date
-                            );
-                          });
+                      if (options.attendance_type == "DMP") {
+                        const rosterData =
+                          cm_after_cutoff_roster[AttenResult[0]["employee_id"]];
 
-                          if (leaveFound) {
-                            let leave_days = 1;
-                            if (
-                              leaveFound.from_date == leaveFound.to_date &&
-                              leaveFound.to_date == attendance_date &&
-                              parseFloat(leaveFound.total_applied_days) ==
-                                parseFloat(0.5)
-                            ) {
-                              leaveFound.leave_type =
-                                leaveFound.leave_type == "PL" ? "HPL" : "HUL";
-                              leave_days = "0.5";
-                            } else if (
-                              leaveFound.from_date != leaveFound.to_date
-                            ) {
+                        current_left_days.forEach(attendance_date => {
+                          let leave,
+                            holiday_or_weekOff = null;
+
+                          if (leaveLen > 0) {
+                            const leaveFound = empLeave.find(f => {
+                              return (
+                                f.from_date <= attendance_date &&
+                                attendance_date <= f.to_date
+                              );
+                            });
+
+                            if (leaveFound) {
+                              let leave_days = 1;
                               if (
-                                leaveFound.from_date == attendance_date &&
-                                leaveFound.from_leave_session == "SH"
+                                leaveFound.from_date == leaveFound.to_date &&
+                                leaveFound.to_date == attendance_date &&
+                                parseFloat(leaveFound.total_applied_days) ==
+                                  parseFloat(0.5)
                               ) {
                                 leaveFound.leave_type =
                                   leaveFound.leave_type == "PL" ? "HPL" : "HUL";
                                 leave_days = "0.5";
                               } else if (
-                                leaveFound.to_date == attendance_date &&
-                                leaveFound.to_leave_session == "FH"
+                                leaveFound.from_date != leaveFound.to_date
                               ) {
-                                leaveFound.leave_type =
-                                  leaveFound.leave_type == "PL" ? "HPL" : "HUL";
-                                leave_days = "0.5";
+                                if (
+                                  leaveFound.from_date == attendance_date &&
+                                  leaveFound.from_leave_session == "SH"
+                                ) {
+                                  leaveFound.leave_type =
+                                    leaveFound.leave_type == "PL"
+                                      ? "HPL"
+                                      : "HUL";
+                                  leave_days = "0.5";
+                                } else if (
+                                  leaveFound.to_date == attendance_date &&
+                                  leaveFound.to_leave_session == "FH"
+                                ) {
+                                  leaveFound.leave_type =
+                                    leaveFound.leave_type == "PL"
+                                      ? "HPL"
+                                      : "HUL";
+                                  leave_days = "0.5";
+                                }
                               }
+
+                              leave = {
+                                holiday_included: leaveFound.holiday_included,
+                                weekoff_included: leaveFound.weekoff_included,
+                                attendance_date: attendance_date,
+                                status: leaveFound.leave_type,
+                                leave_category: leaveFound.leave_category,
+                                leave_days: leave_days
+                              };
+                            }
+                          }
+
+                          if (holidayLen > 0) {
+                            const HolidayFound = empHolidayweekoff.find(f => {
+                              return f.holiday_date == attendance_date;
+                            });
+
+                            if (HolidayFound) {
+                              holiday_or_weekOff = HolidayFound;
+                            }
+                          }
+
+                          const rosterDay = rosterData.find(f => {
+                            return f.attendance_date == attendance_date;
+                          });
+
+                          //-------------------------------------------
+                          if (
+                            (holiday_or_weekOff == null && leave != null) ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.holiday == "Y" &&
+                              leave.holiday_included == "Y") ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.weekoff == "Y" &&
+                              leave.weekoff_included == "Y")
+                          ) {
+                            let present_days,
+                              display_present_days = 0;
+
+                            if (
+                              leave.status == "HPL" ||
+                              leave.status == "HUL"
+                            ) {
+                              present_days = "0.5";
+                              display_present_days = "0.5";
                             }
 
-                            leave = {
-                              holiday_included: leaveFound.holiday_included,
-                              weekoff_included: leaveFound.weekoff_included,
-                              attendance_date: attendance_date,
-                              status: leaveFound.leave_type,
-                              leave_category: leaveFound.leave_category,
-                              leave_days: leave_days
-                            };
-                          }
-                        }
-
-                        if (holidayLen > 0) {
-                          const HolidayFound = empHolidayweekoff.find(f => {
-                            return f.holiday_date == attendance_date;
-                          });
-
-                          if (HolidayFound) {
-                            holiday_or_weekOff = HolidayFound;
-                          }
-                        }
-
-                        //-------------------------------------------
-                        if (
-                          (holiday_or_weekOff == null && leave != null) ||
-                          (leave != null &&
-                            holiday_or_weekOff != null &&
-                            holiday_or_weekOff.holiday == "Y" &&
-                            leave.holiday_included == "Y") ||
-                          (leave != null &&
-                            holiday_or_weekOff != null &&
-                            holiday_or_weekOff.weekoff == "Y" &&
-                            leave.weekoff_included == "Y")
-                        ) {
-                          let present_days,
-                            display_present_days = 0;
-
-                          if (leave.status == "HPL" || leave.status == "HUL") {
-                            present_days = "0.5";
-                            display_present_days = "0.5";
-                          }
-
-                          dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
-                            attendance_date: attendance_date,
-                            year: year,
-                            month: month,
-                            total_days: 1,
-                            present_days: present_days,
-                            display_present_days: display_present_days,
-                            absent_days: 0,
-                            total_work_days: 1,
-                            weekoff_days: 0,
-                            holidays: 0,
-                            paid_leave:
-                              leave.status == "PL" || leave.status == "HPL"
-                                ? leave.leave_days
-                                : 0,
-                            unpaid_leave:
-                              leave.status == "UL" || leave.status == "HUL"
-                                ? leave.leave_days
-                                : 0,
-                            anual_leave:
-                              leave.leave_category == "A"
-                                ? leave.leave_days
-                                : 0,
-                            total_hours:
-                              present_days == "0.5"
-                                ? HALF_HR + "." + HALF_MIN
-                                : 0,
-                            hours: present_days == "0.5" ? HALF_HR : 0,
-                            minutes: present_days == "0.5" ? HALF_MIN : 0,
-                            working_hours:
-                              present_days == "0.5"
-                                ? HALF_HR + "." + HALF_MIN
-                                : 0,
-
-                            shortage_hours: 0,
-                            shortage_minutes: 0,
-                            ot_work_hours: 0,
-                            ot_minutes: 0,
-
-                            ot_weekoff_hours: 0,
-                            ot_weekoff_minutes: 0,
-                            ot_holiday_hours: 0,
-                            ot_holiday_minutes: 0
-                          });
-                        } else if (holiday_or_weekOff != null) {
-                          if (holiday_or_weekOff.weekoff == "Y") {
                             dailyAttendance.push({
                               employee_id: AttenResult[0]["employee_id"],
-                              project_id: AttenResult[0]["project_id"],
+                              project_id: rosterDay["project_id"],
                               hospital_id: AttenResult[0]["hospital_id"],
                               sub_department_id:
                                 AttenResult[0]["sub_department_id"],
@@ -9526,56 +9508,144 @@ function processBulkAtt_with_cutoff(data) {
                               year: year,
                               month: month,
                               total_days: 1,
-                              present_days: 0,
-                              display_present_days: 0,
+                              present_days: present_days,
+                              display_present_days: display_present_days,
+                              absent_days: 0,
+                              total_work_days: 1,
+                              weekoff_days: 0,
+                              holidays: 0,
+                              paid_leave:
+                                leave.status == "PL" || leave.status == "HPL"
+                                  ? leave.leave_days
+                                  : 0,
+                              unpaid_leave:
+                                leave.status == "UL" || leave.status == "HUL"
+                                  ? leave.leave_days
+                                  : 0,
+                              anual_leave:
+                                leave.leave_category == "A"
+                                  ? leave.leave_days
+                                  : 0,
+                              total_hours:
+                                present_days == "0.5"
+                                  ? HALF_HR + "." + HALF_MIN
+                                  : 0,
+                              hours: present_days == "0.5" ? HALF_HR : 0,
+                              minutes: present_days == "0.5" ? HALF_MIN : 0,
+                              working_hours:
+                                present_days == "0.5"
+                                  ? HALF_HR + "." + HALF_MIN
+                                  : 0,
+
+                              shortage_hours: 0,
+                              shortage_minutes: 0,
+                              ot_work_hours: 0,
+                              ot_minutes: 0,
+
+                              ot_weekoff_hours: 0,
+                              ot_weekoff_minutes: 0,
+                              ot_holiday_hours: 0,
+                              ot_holiday_minutes: 0
+                            });
+                          } else if (holiday_or_weekOff != null) {
+                            if (holiday_or_weekOff.weekoff == "Y") {
+                              dailyAttendance.push({
+                                employee_id: AttenResult[0]["employee_id"],
+                                project_id: rosterDay["project_id"],
+                                hospital_id: AttenResult[0]["hospital_id"],
+                                sub_department_id:
+                                  AttenResult[0]["sub_department_id"],
+                                attendance_date: attendance_date,
+                                year: year,
+                                month: month,
+                                total_days: 1,
+                                present_days: 0,
+                                display_present_days: 0,
+                                absent_days: 0,
+                                total_work_days: 0,
+                                weekoff_days: 1,
+                                holidays: 0,
+                                paid_leave: 0,
+
+                                unpaid_leave: 0,
+                                anual_leave: 0,
+                                total_hours: 0,
+                                hours: 0,
+                                minutes: 0,
+                                working_hours: 0,
+
+                                shortage_hours: 0,
+                                shortage_minutes: 0,
+                                ot_work_hours: 0,
+                                ot_minutes: 0,
+
+                                ot_weekoff_hours: 0,
+                                ot_weekoff_minutes: 0,
+                                ot_holiday_hours: 0,
+                                ot_holiday_minutes: 0
+                              });
+                            } else if (holiday_or_weekOff.holiday == "Y") {
+                              dailyAttendance.push({
+                                employee_id: AttenResult[0]["employee_id"],
+                                project_id: rosterDay["project_id"],
+                                hospital_id: AttenResult[0]["hospital_id"],
+                                sub_department_id:
+                                  AttenResult[0]["sub_department_id"],
+                                attendance_date: attendance_date,
+                                year: year,
+                                month: month,
+                                total_days: 1,
+                                present_days: 0,
+                                display_present_days: 0,
+                                absent_days: 0,
+                                total_work_days: 0,
+                                weekoff_days: 0,
+                                holidays: 1,
+                                paid_leave: 0,
+
+                                unpaid_leave: 0,
+                                anual_leave: 0,
+                                total_hours: 0,
+                                hours: 0,
+                                minutes: 0,
+                                working_hours: 0,
+
+                                shortage_hours: 0,
+                                shortage_minutes: 0,
+                                ot_work_hours: 0,
+                                ot_minutes: 0,
+
+                                ot_weekoff_hours: 0,
+                                ot_weekoff_minutes: 0,
+                                ot_holiday_hours: 0,
+                                ot_holiday_minutes: 0
+                              });
+                            }
+                          } else {
+                            dailyAttendance.push({
+                              employee_id: AttenResult[0]["employee_id"],
+                              project_id: rosterDay["project_id"],
+                              hospital_id: AttenResult[0]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[0]["sub_department_id"],
+                              attendance_date: attendance_date,
+                              year: year,
+                              month: month,
+                              total_days: 1,
+                              present_days: 1,
+                              display_present_days: 1,
                               absent_days: 0,
                               total_work_days: 0,
-                              weekoff_days: 1,
+                              weekoff_days: 0,
                               holidays: 0,
                               paid_leave: 0,
 
                               unpaid_leave: 0,
                               anual_leave: 0,
-                              total_hours: 0,
-                              hours: 0,
-                              minutes: 0,
-                              working_hours: 0,
-
-                              shortage_hours: 0,
-                              shortage_minutes: 0,
-                              ot_work_hours: 0,
-                              ot_minutes: 0,
-
-                              ot_weekoff_hours: 0,
-                              ot_weekoff_minutes: 0,
-                              ot_holiday_hours: 0,
-                              ot_holiday_minutes: 0
-                            });
-                          } else if (holiday_or_weekOff.holiday == "Y") {
-                            dailyAttendance.push({
-                              employee_id: AttenResult[0]["employee_id"],
-                              project_id: AttenResult[0]["project_id"],
-                              hospital_id: AttenResult[0]["hospital_id"],
-                              sub_department_id:
-                                AttenResult[0]["sub_department_id"],
-                              attendance_date: attendance_date,
-                              year: year,
-                              month: month,
-                              total_days: 1,
-                              present_days: 0,
-                              display_present_days: 0,
-                              absent_days: 0,
-                              total_work_days: 0,
-                              weekoff_days: 0,
-                              holidays: 1,
-                              paid_leave: 0,
-
-                              unpaid_leave: 0,
-                              anual_leave: 0,
-                              total_hours: 0,
-                              hours: 0,
-                              minutes: 0,
-                              working_hours: 0,
+                              total_hours: STDWH + "." + STDWM,
+                              hours: STDWH,
+                              minutes: STDWM,
+                              working_hours: STDWH + "." + STDWM,
 
                               shortage_hours: 0,
                               shortage_minutes: 0,
@@ -9588,48 +9658,265 @@ function processBulkAtt_with_cutoff(data) {
                               ot_holiday_minutes: 0
                             });
                           }
-                        } else {
-                          dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
-                            attendance_date: attendance_date,
-                            year: year,
-                            month: month,
-                            total_days: 1,
-                            present_days: 1,
-                            display_present_days: 1,
-                            absent_days: 0,
-                            total_work_days: 0,
-                            weekoff_days: 0,
-                            holidays: 0,
-                            paid_leave: 0,
+                        });
+                      } else {
+                        current_left_days.forEach(attendance_date => {
+                          let leave,
+                            holiday_or_weekOff = null;
 
-                            unpaid_leave: 0,
-                            anual_leave: 0,
-                            total_hours: STDWH + "." + STDWM,
-                            hours: STDWH,
-                            minutes: STDWM,
-                            working_hours: STDWH + "." + STDWM,
+                          if (leaveLen > 0) {
+                            const leaveFound = empLeave.find(f => {
+                              return (
+                                f.from_date <= attendance_date &&
+                                attendance_date <= f.to_date
+                              );
+                            });
 
-                            shortage_hours: 0,
-                            shortage_minutes: 0,
-                            ot_work_hours: 0,
-                            ot_minutes: 0,
+                            if (leaveFound) {
+                              let leave_days = 1;
+                              if (
+                                leaveFound.from_date == leaveFound.to_date &&
+                                leaveFound.to_date == attendance_date &&
+                                parseFloat(leaveFound.total_applied_days) ==
+                                  parseFloat(0.5)
+                              ) {
+                                leaveFound.leave_type =
+                                  leaveFound.leave_type == "PL" ? "HPL" : "HUL";
+                                leave_days = "0.5";
+                              } else if (
+                                leaveFound.from_date != leaveFound.to_date
+                              ) {
+                                if (
+                                  leaveFound.from_date == attendance_date &&
+                                  leaveFound.from_leave_session == "SH"
+                                ) {
+                                  leaveFound.leave_type =
+                                    leaveFound.leave_type == "PL"
+                                      ? "HPL"
+                                      : "HUL";
+                                  leave_days = "0.5";
+                                } else if (
+                                  leaveFound.to_date == attendance_date &&
+                                  leaveFound.to_leave_session == "FH"
+                                ) {
+                                  leaveFound.leave_type =
+                                    leaveFound.leave_type == "PL"
+                                      ? "HPL"
+                                      : "HUL";
+                                  leave_days = "0.5";
+                                }
+                              }
 
-                            ot_weekoff_hours: 0,
-                            ot_weekoff_minutes: 0,
-                            ot_holiday_hours: 0,
-                            ot_holiday_minutes: 0
-                          });
-                        }
-                      });
+                              leave = {
+                                holiday_included: leaveFound.holiday_included,
+                                weekoff_included: leaveFound.weekoff_included,
+                                attendance_date: attendance_date,
+                                status: leaveFound.leave_type,
+                                leave_category: leaveFound.leave_category,
+                                leave_days: leave_days
+                              };
+                            }
+                          }
+
+                          if (holidayLen > 0) {
+                            const HolidayFound = empHolidayweekoff.find(f => {
+                              return f.holiday_date == attendance_date;
+                            });
+
+                            if (HolidayFound) {
+                              holiday_or_weekOff = HolidayFound;
+                            }
+                          }
+
+                          //-------------------------------------------
+                          if (
+                            (holiday_or_weekOff == null && leave != null) ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.holiday == "Y" &&
+                              leave.holiday_included == "Y") ||
+                            (leave != null &&
+                              holiday_or_weekOff != null &&
+                              holiday_or_weekOff.weekoff == "Y" &&
+                              leave.weekoff_included == "Y")
+                          ) {
+                            let present_days,
+                              display_present_days = 0;
+
+                            if (
+                              leave.status == "HPL" ||
+                              leave.status == "HUL"
+                            ) {
+                              present_days = "0.5";
+                              display_present_days = "0.5";
+                            }
+
+                            dailyAttendance.push({
+                              employee_id: AttenResult[0]["employee_id"],
+                              project_id: AttenResult[0]["project_id"],
+                              hospital_id: AttenResult[0]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[0]["sub_department_id"],
+                              attendance_date: attendance_date,
+                              year: year,
+                              month: month,
+                              total_days: 1,
+                              present_days: present_days,
+                              display_present_days: display_present_days,
+                              absent_days: 0,
+                              total_work_days: 1,
+                              weekoff_days: 0,
+                              holidays: 0,
+                              paid_leave:
+                                leave.status == "PL" || leave.status == "HPL"
+                                  ? leave.leave_days
+                                  : 0,
+                              unpaid_leave:
+                                leave.status == "UL" || leave.status == "HUL"
+                                  ? leave.leave_days
+                                  : 0,
+                              anual_leave:
+                                leave.leave_category == "A"
+                                  ? leave.leave_days
+                                  : 0,
+                              total_hours:
+                                present_days == "0.5"
+                                  ? HALF_HR + "." + HALF_MIN
+                                  : 0,
+                              hours: present_days == "0.5" ? HALF_HR : 0,
+                              minutes: present_days == "0.5" ? HALF_MIN : 0,
+                              working_hours:
+                                present_days == "0.5"
+                                  ? HALF_HR + "." + HALF_MIN
+                                  : 0,
+
+                              shortage_hours: 0,
+                              shortage_minutes: 0,
+                              ot_work_hours: 0,
+                              ot_minutes: 0,
+
+                              ot_weekoff_hours: 0,
+                              ot_weekoff_minutes: 0,
+                              ot_holiday_hours: 0,
+                              ot_holiday_minutes: 0
+                            });
+                          } else if (holiday_or_weekOff != null) {
+                            if (holiday_or_weekOff.weekoff == "Y") {
+                              dailyAttendance.push({
+                                employee_id: AttenResult[0]["employee_id"],
+                                project_id: AttenResult[0]["project_id"],
+                                hospital_id: AttenResult[0]["hospital_id"],
+                                sub_department_id:
+                                  AttenResult[0]["sub_department_id"],
+                                attendance_date: attendance_date,
+                                year: year,
+                                month: month,
+                                total_days: 1,
+                                present_days: 0,
+                                display_present_days: 0,
+                                absent_days: 0,
+                                total_work_days: 0,
+                                weekoff_days: 1,
+                                holidays: 0,
+                                paid_leave: 0,
+
+                                unpaid_leave: 0,
+                                anual_leave: 0,
+                                total_hours: 0,
+                                hours: 0,
+                                minutes: 0,
+                                working_hours: 0,
+
+                                shortage_hours: 0,
+                                shortage_minutes: 0,
+                                ot_work_hours: 0,
+                                ot_minutes: 0,
+
+                                ot_weekoff_hours: 0,
+                                ot_weekoff_minutes: 0,
+                                ot_holiday_hours: 0,
+                                ot_holiday_minutes: 0
+                              });
+                            } else if (holiday_or_weekOff.holiday == "Y") {
+                              dailyAttendance.push({
+                                employee_id: AttenResult[0]["employee_id"],
+                                project_id: AttenResult[0]["project_id"],
+                                hospital_id: AttenResult[0]["hospital_id"],
+                                sub_department_id:
+                                  AttenResult[0]["sub_department_id"],
+                                attendance_date: attendance_date,
+                                year: year,
+                                month: month,
+                                total_days: 1,
+                                present_days: 0,
+                                display_present_days: 0,
+                                absent_days: 0,
+                                total_work_days: 0,
+                                weekoff_days: 0,
+                                holidays: 1,
+                                paid_leave: 0,
+
+                                unpaid_leave: 0,
+                                anual_leave: 0,
+                                total_hours: 0,
+                                hours: 0,
+                                minutes: 0,
+                                working_hours: 0,
+
+                                shortage_hours: 0,
+                                shortage_minutes: 0,
+                                ot_work_hours: 0,
+                                ot_minutes: 0,
+
+                                ot_weekoff_hours: 0,
+                                ot_weekoff_minutes: 0,
+                                ot_holiday_hours: 0,
+                                ot_holiday_minutes: 0
+                              });
+                            }
+                          } else {
+                            dailyAttendance.push({
+                              employee_id: AttenResult[0]["employee_id"],
+                              project_id: AttenResult[0]["project_id"],
+                              hospital_id: AttenResult[0]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[0]["sub_department_id"],
+                              attendance_date: attendance_date,
+                              year: year,
+                              month: month,
+                              total_days: 1,
+                              present_days: 1,
+                              display_present_days: 1,
+                              absent_days: 0,
+                              total_work_days: 0,
+                              weekoff_days: 0,
+                              holidays: 0,
+                              paid_leave: 0,
+
+                              unpaid_leave: 0,
+                              anual_leave: 0,
+                              total_hours: STDWH + "." + STDWM,
+                              hours: STDWH,
+                              minutes: STDWM,
+                              working_hours: STDWH + "." + STDWM,
+
+                              shortage_hours: 0,
+                              shortage_minutes: 0,
+                              ot_work_hours: 0,
+                              ot_minutes: 0,
+
+                              ot_weekoff_hours: 0,
+                              ot_weekoff_minutes: 0,
+                              ot_holiday_hours: 0,
+                              ot_holiday_minutes: 0
+                            });
+                          }
+                        });
+                      }
 
                       //END-CURRENT MONTH AFTER CUTTOFF
-                      //ST-PREVIOUS MONTH AFTER CUTTOFF
 
+                      //ST-PREVIOUS MONTH AFTER CUTTOFF
                       prev_left_days.forEach(attendance_date => {
                         let leave = null;
 
@@ -9708,11 +9995,10 @@ function processBulkAtt_with_cutoff(data) {
                           }
 
                           dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
+                            employee_id: Day["employee_id"],
+                            project_id: Day["project_id"],
+                            hospital_id: Day["hospital_id"],
+                            sub_department_id: Day["sub_department_id"],
                             attendance_date: attendance_date,
                             year: prev_year,
                             month: prev_month,
@@ -9772,11 +10058,10 @@ function processBulkAtt_with_cutoff(data) {
                           }
 
                           dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
+                            employee_id: Day["employee_id"],
+                            project_id: Day["project_id"],
+                            hospital_id: Day["hospital_id"],
+                            sub_department_id: Day["sub_department_id"],
                             attendance_date: attendance_date,
                             year: prev_year,
                             month: prev_month,
@@ -9824,11 +10109,10 @@ function processBulkAtt_with_cutoff(data) {
                           }
 
                           dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
+                            employee_id: Day["employee_id"],
+                            project_id: Day["project_id"],
+                            hospital_id: Day["hospital_id"],
+                            sub_department_id: Day["sub_department_id"],
                             attendance_date: attendance_date,
                             year: prev_year,
                             month: prev_month,
@@ -9888,11 +10172,10 @@ function processBulkAtt_with_cutoff(data) {
                             ot_min = parseInt(Math.abs(diff)) % parseInt(60);
                           }
                           dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
+                            employee_id: Day["employee_id"],
+                            project_id: Day["project_id"],
+                            hospital_id: Day["hospital_id"],
+                            sub_department_id: Day["sub_department_id"],
                             attendance_date: attendance_date,
                             year: prev_year,
                             month: prev_month,
@@ -9924,11 +10207,10 @@ function processBulkAtt_with_cutoff(data) {
                           });
                         } else if (Day.status == "AB") {
                           dailyAttendance.push({
-                            employee_id: AttenResult[0]["employee_id"],
-                            project_id: AttenResult[0]["project_id"],
-                            hospital_id: AttenResult[0]["hospital_id"],
-                            sub_department_id:
-                              AttenResult[0]["sub_department_id"],
+                            employee_id: Day["employee_id"],
+                            project_id: Day["project_id"],
+                            hospital_id: Day["hospital_id"],
+                            sub_department_id: Day["sub_department_id"],
                             attendance_date: attendance_date,
                             year: prev_year,
                             month: prev_month,
