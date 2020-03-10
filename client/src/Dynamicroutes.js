@@ -20,7 +20,7 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
-import CommonDashboard from "./Components/Dashboard/Dashboard";
+import HISDashboard from "./Components/Dashboard/HISDashboard";
 import HrDashboard from "./Components/Dashboard/hr-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
@@ -50,27 +50,7 @@ const JournalAuthorization = () => (
   <FinanceFragment path="JournalAuthorization" />
 );
 const PageToPlot = {
-  Dashboard: CommonDashboard,
-  1: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
-  6: React.lazy(() => retry(() => import("./Components/Dashboard/Dashboard"))),
-  7: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
-  ),
-  8: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/doctor-dashboard"))
-  ),
-  11: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/lab-dashboard"))
-  ),
-  12: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/hr-dashboard"))
-  ),
-  13: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
-  ),
-  14: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/inventory-dashboard"))
-  ),
+  Dashboard: HISDashboard,
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),

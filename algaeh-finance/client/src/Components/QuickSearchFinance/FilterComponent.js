@@ -53,7 +53,7 @@ export default function FilterComponent({ setData, loading, setLoading }) {
       <div className="row inner-top-search" style={{ paddingBottom: 10 }}>
         <AlgaehAutoComplete
           div={{
-            className: "col-4"
+            className: "col-2"
           }}
           label={{
             forceLabel: "Voucher Type"
@@ -83,8 +83,7 @@ export default function FilterComponent({ setData, loading, setLoading }) {
             }
           }}
         />
-      </div>
-      <div className="row inner-top-search">
+
         <AlgaehAutoComplete
           div={{
             className: "col-2"
@@ -144,7 +143,7 @@ export default function FilterComponent({ setData, loading, setLoading }) {
 
         <AlgaehFormGroup
           div={{
-            className: "col form-group"
+            className: "col"
           }}
           label={{
             forceLabel: "Search Term",
