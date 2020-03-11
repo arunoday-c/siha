@@ -370,7 +370,7 @@ class OpeningBalance extends Component {
           loan_master={this.state.loan_master}
         />
         {/* </div> */}
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
               <button type="button" className="btn btn-other">
@@ -380,7 +380,7 @@ class OpeningBalance extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

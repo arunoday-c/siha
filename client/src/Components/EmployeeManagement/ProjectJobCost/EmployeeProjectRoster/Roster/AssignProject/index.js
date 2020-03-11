@@ -257,7 +257,7 @@ export default function(props) {
             </div>
 
             <div className="col-8">
-              <h6>Assign Employee</h6>
+              <h6>{`Selected Employees - (${selectedEmployees.length})`}</h6>
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -274,7 +274,7 @@ export default function(props) {
                       type: "text"
                     },
                     others: {
-                      placeholder: "Search Employee By Name"
+                      placeholder: "Search employee by code only"
 
                       //disabled: this.state.allChecked
                     }
@@ -301,12 +301,12 @@ export default function(props) {
                       }}
                     />
                   </span>
-                  <p>Employee Names</p>
+                  <p>Employee Codes & Names</p>
                 </li>
                 {isEditing === undefined ? (
                   employeeShow.map(data => {
                     if (
-                      data.employee_name
+                      data.employee_code
                         .toLowerCase()
                         .indexOf(searchEmployee.toLowerCase()) === -1
                     ) {
@@ -340,8 +340,8 @@ export default function(props) {
                         </span>
                         <p>
                           <label htmlFor={data.employee_code}>
-                            <b>{data.employee_name}</b>
                             <small>{data.employee_code}</small>
+                            <b>{data.employee_name}</b>
                           </label>
                         </p>
                       </li>

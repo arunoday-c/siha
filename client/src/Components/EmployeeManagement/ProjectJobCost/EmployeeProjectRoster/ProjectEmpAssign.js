@@ -364,7 +364,7 @@ class ProjectEmpAssign extends Component {
                         />
                       </span>
                       <p htmlFor={data.employee_code}>
-                        <b>{data.employee_name}</b>
+                        <b>{data.employee_name}</b>123
                         <small>{data.employee_code}</small>
                       </p>
                     </li>
