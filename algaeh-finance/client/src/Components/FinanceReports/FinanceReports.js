@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useReducer } from "react";
 import "./financeReportStyle.scss";
-import { AlgaehMessagePop } from "algaeh-react-components";
+import {
+  AlgaehMessagePop,
+  AlgaehAutoComplete,
+  AlgaehDateHandler
+} from "algaeh-react-components";
 import { Spin, Button, Tooltip } from "antd";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
@@ -10,6 +14,7 @@ import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
 import PandLCostCenter from "./FinanceStandardReports/pandLCostCenter";
+import PandLYear from "./FinanceStandardReports/pandLYear";
 let resultdata = {};
 
 function layoutReducer(state, action) {
@@ -36,6 +41,10 @@ export default function FinanceReports() {
   const [data, setData] = useState({});
   const [project_id, setProjectID] = useState(null);
   const [branch_id, setBranchID] = useState(null);
+  const [cost_center_id, setCostCenterId] = useState(null);
+  const [organization, setOrganization] = useState([]);
+  const [costCenters, setCostCenters] = useState([]);
+  const [year, setYear] = useState(null);
 
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
@@ -44,23 +53,49 @@ export default function FinanceReports() {
   const [trailBanlance, setTrailBalance] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    newAlgaehApi({
-      uri: "/finance_masters/getFinanceOption",
-      module: "finance"
-    })
-      .then(res => {
-        setFinOptions(res.data.result[0]);
-        setLoading(false);
-      })
-      .catch(e => {
+    async function initData() {
+      try {
+        const results = await Promise.all([
+          newAlgaehApi({
+            uri: "/finance_masters/getCostCentersForVoucher",
+            module: "finance"
+          }),
+          newAlgaehApi({
+            uri: "/finance_masters/getFinanceOption",
+            module: "finance"
+          })
+        ]);
+        setOrganization(results[0].data.result);
+        const finOpts = results[1].data.result[0];
+        setFinOptions(finOpts);
+        setBranchID(finOpts.default_branch_id);
+        setCostCenterId(finOpts.default_cost_center_id);
+      } catch (e) {
         AlgaehMessagePop({
-          type: "error",
-          display: e.response.data.message
+          info: "error",
+          display: e.message || e.response.data.message
         });
-        setLoading(false);
-      });
+      }
+    }
+    initData();
   }, []);
+
+  useEffect(() => {
+    if (branch_id) {
+      const [required] = organization.filter(
+        el => el.hims_d_hospital_id === branch_id
+      );
+      setCostCenters(required.cost_centers);
+    }
+  }, [branch_id]);
+
+  function handleDropDown(_, value, name) {
+    if (name === "branch_id") {
+      setBranchID(value);
+    } else {
+      setCostCenterId(value);
+    }
+  }
 
   function selectedClass(report) {
     return report === selected ? "active" : "";
@@ -213,6 +248,16 @@ export default function FinanceReports() {
                   }}
                 >
                   P&L by Cost center
+                </li>{" "}
+                <li
+                  className={selectedClass("PandLYear")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      setSelected("PandLYear");
+                    }
+                  }}
+                >
+                  P&L by Year
                 </li>
               </ul>
             </div>
@@ -229,15 +274,17 @@ export default function FinanceReports() {
                     result={["asset", "liabilities"]}
                   />
                 ) : selected === "PL" ? (
-                  <div className="col">
-                    <div className="row">
-                      <CostCenter
-                        result={resultdata}
-                        costCenterAssin={costCenterAssin}
-                        loadData={loadData}
-                        // propCenterID={String(finOptions.default_cost_center_id)}
-                        // propBranchID={String(finOptions.default_branch_id)}
-                      />
+                  <>
+                    <div className="col">
+                      <div className="row">
+                        <CostCenter
+                          result={resultdata}
+                          costCenterAssin={costCenterAssin}
+                          loadData={loadData}
+                          // propCenterID={String(finOptions.default_cost_center_id)}
+                          // propBranchID={String(finOptions.default_branch_id)}
+                        />
+                      </div>
                     </div>
 
                     <Balance
@@ -246,7 +293,7 @@ export default function FinanceReports() {
                       result={["income", "expense"]}
                       footer={result => <div>Profit : {result.profit}</div>}
                     />
-                  </div>
+                  </>
                 ) : selected === "TB" ? (
                   <TrailBalance layout={layout} data={trailBanlance} />
                 ) : selected === "AR" ? (
@@ -255,6 +302,76 @@ export default function FinanceReports() {
                   <ApAging layout={layout} />
                 ) : selected === "PandL" ? (
                   <PandLCostCenter />
+                ) : selected === "PandLYear" ? (
+                  <>
+                    <div
+                      className="row inner-top-search"
+                      style={{ paddingBottom: 20 }}
+                    >
+                      <AlgaehAutoComplete
+                        div={{ className: "col-2" }}
+                        label={{
+                          forceLabel: "Branch",
+                          isImp: true
+                        }}
+                        selector={{
+                          value: String(branch_id),
+                          name: "branch_id",
+                          dataSource: {
+                            data: organization,
+                            valueField: "hims_d_hospital_id",
+                            textField: "hospital_name"
+                          },
+                          onChange: handleDropDown
+                        }}
+                      />
+                      <AlgaehAutoComplete
+                        div={{ className: "col-2" }}
+                        label={{
+                          forceLabel: "Cost Center",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "cost_center_id",
+                          value: String(cost_center_id),
+                          dataSource: {
+                            data: costCenters,
+                            valueField: "cost_center_id",
+                            textField: "cost_center"
+                          },
+                          onChange: handleDropDown
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{
+                          className: "col-2 algaeh-date-fld"
+                        }}
+                        label={{
+                          forceLabel: "Year",
+                          isImp: true
+                        }}
+                        type="date"
+                        textBox={{
+                          name: "year",
+                          className: "form-control"
+                          // value: year,
+                        }}
+                        others={{ picker: "year" }}
+                        events={{
+                          onChange: momentDate => {
+                            if (momentDate) {
+                              setYear(momentDate._d);
+                            } else {
+                              setYear(undefined);
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+
+                    <PandLYear />
+                  </>
                 ) : null}
               </Spin>
             </div>

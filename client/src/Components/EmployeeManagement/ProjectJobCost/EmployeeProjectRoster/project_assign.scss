@@ -19,22 +19,32 @@
     font-weight: 500;
     span {
       width: 35px;
-      height: 35px;
+      height: 28px;
       display: inline-block;
       padding: 0 8px;
       text-align: center;
       vertical-align: top;
       input {
-        margin-top: 10px;
+        margin-top: 6px;
+        font-size: 2rem;
       }
     }
     p {
       display: inline-block;
       border-left: 1px solid #d3d3d3;
-      padding: 5px;
       width: calc(100% - 35px);
       b {
-        display: block;
+        display: inline-block;
+        font-size: 1rem;
+      }
+      small {
+        font-size: 0.9rem;
+        border-right: 1px solid #d3d3d3;
+        padding: 6px;
+        margin-right: 10px;
+        width: 10vw;
+        display: inline-block;
+        text-align: center;
       }
     }
     &:hover {
