@@ -1,14 +1,45 @@
 .infoBar {
-  .col {
-    margin-bottom: 20px;
+  .infoValCntr {
+    margin: 10px 0;
     background-color: #fff;
-    border: 1px solid #000;
+    border: 1px solid #d6d6d6;
     padding: 10px 15px 5px;
-    .text {
+    border-radius: 5px;
+    .label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    h5 {
+      font-weight: bold;
       font-size: 1.5rem;
-      p {
-        font-size: 1rem;
-      }
+    }
+  }
+  .yellow {
+    border: 1px solid #d07400;
+    color: #d07400;
+    h5 {
+      color: #d07400;
+    }
+  }
+  .red {
+    color: red;
+    border: 1px solid red;
+    h5 {
+      color: red;
+    }
+  }
+  .green {
+    color: #129a02;
+    border: 1px solid #129a02;
+    h5 {
+      color: #129a02;
+    }
+  }
+  .blue {
+    border: 1px solid #1747d2;
+    color: #1747d2;
+    h5 {
+      color: #1747d2;
     }
   }
 }
