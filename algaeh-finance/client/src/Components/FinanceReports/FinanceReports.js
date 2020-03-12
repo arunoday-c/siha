@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useReducer } from "react";
 import "./financeReportStyle.scss";
-import { AlgaehMessagePop } from "algaeh-react-components";
-import { Spin, Button, Tooltip } from "antd";
+import {
+  AlgaehMessagePop,
+  AlgaehAutoComplete,
+  AlgaehDateHandler
+} from "algaeh-react-components";
+import { Spin, Button, Tooltip, DatePicker } from "antd";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
-import ArAging from "./FinanceStandardReports/arAgingReport";
-import ApAging from "./FinanceStandardReports/apAgingReport";
+// import ArAging from "./FinanceStandardReports/arAgingReport";
+import AgingReport from "./FinanceStandardReports/AgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet, downloadExcel } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
 import PandLCostCenter from "./FinanceStandardReports/pandLCostCenter";
 import moment from "moment";
+import PandLYear from "./FinanceStandardReports/pandLYear";
 let resultdata = {};
 
 function layoutReducer(state, action) {
@@ -37,6 +42,10 @@ export default function FinanceReports() {
   const [data, setData] = useState({});
   const [project_id, setProjectID] = useState(null);
   const [branch_id, setBranchID] = useState(null);
+  const [cost_center_id, setCostCenterId] = useState(null);
+  const [organization, setOrganization] = useState([]);
+  const [costCenters, setCostCenters] = useState([]);
+  const [year, setYear] = useState(new Date().getFullYear());
 
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
@@ -45,23 +54,51 @@ export default function FinanceReports() {
   const [trailBanlance, setTrailBalance] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    newAlgaehApi({
-      uri: "/finance_masters/getFinanceOption",
-      module: "finance"
-    })
-      .then(res => {
-        setFinOptions(res.data.result[0]);
-        setLoading(false);
-      })
-      .catch(e => {
+    async function initData() {
+      try {
+        const results = await Promise.all([
+          newAlgaehApi({
+            uri: "/finance_masters/getCostCentersForVoucher",
+            module: "finance"
+          }),
+          newAlgaehApi({
+            uri: "/finance_masters/getFinanceOption",
+            module: "finance"
+          })
+        ]);
+        setOrganization(results[0].data.result);
+        const finOpts = results[1].data.result[0];
+        setFinOptions(finOpts);
+        setBranchID(finOpts.default_branch_id);
+        setCostCenterId(finOpts.default_cost_center_id);
+      } catch (e) {
         AlgaehMessagePop({
-          type: "error",
-          display: e.response.data.message
+          info: "error",
+          display: e.message || e.response.data.message
         });
-        setLoading(false);
-      });
+      }
+    }
+    initData();
   }, []);
+
+  useEffect(() => {
+    if (branch_id) {
+      const [required] = organization.filter(
+        el => el.hims_d_hospital_id === branch_id
+      );
+      setCostCenters(required.cost_centers);
+    }
+  }, [branch_id]);
+
+  function handleDropDown(_, value, name) {
+    if (name === "branch_id") {
+      setBranchID(value);
+    } else if (name === "cost_center_id") {
+      setCostCenterId(value);
+    } else {
+      setYear(value);
+    }
+  }
 
   function selectedClass(report) {
     return report === selected ? "active" : "";
@@ -242,6 +279,16 @@ export default function FinanceReports() {
                   }}
                 >
                   P&L by Cost center
+                </li>{" "}
+                <li
+                  className={selectedClass("PandLYear")}
+                  onClick={() => {
+                    if (checkExists()) {
+                      setSelected("PandLYear");
+                    }
+                  }}
+                >
+                  P&L by Year
                 </li>
               </ul>
             </div>
@@ -259,15 +306,17 @@ export default function FinanceReports() {
                     result={["asset", "liabilities"]}
                   />
                 ) : selected === "PL" ? (
-                  <div className="col">
-                    <div className="row">
-                      <CostCenter
-                        result={resultdata}
-                        costCenterAssin={costCenterAssin}
-                        loadData={loadData}
-                        // propCenterID={String(finOptions.default_cost_center_id)}
-                        // propBranchID={String(finOptions.default_branch_id)}
-                      />
+                  <>
+                    <div className="col">
+                      <div className="row">
+                        <CostCenter
+                          result={resultdata}
+                          costCenterAssin={costCenterAssin}
+                          loadData={loadData}
+                          // propCenterID={String(finOptions.default_cost_center_id)}
+                          // propBranchID={String(finOptions.default_branch_id)}
+                        />
+                      </div>
                     </div>
 
                     <Balance
@@ -276,15 +325,26 @@ export default function FinanceReports() {
                       result={["income", "expense"]}
                       footer={result => <div>Profit : {result.profit}</div>}
                     />
-                  </div>
+                  </>
                 ) : selected === "TB" ? (
                   <TrailBalance layout={layout} data={trailBanlance} />
                 ) : selected === "AR" ? (
-                  <ArAging layout={layout} />
+                  <AgingReport layout={layout} type="receivable" />
                 ) : selected === "AP" ? (
-                  <ApAging layout={layout} />
+                  <AgingReport layout={layout} type="payable" />
                 ) : selected === "PandL" ? (
                   <PandLCostCenter />
+                ) : selected === "PandLYear" ? (
+                  <>
+                    <PandLYear
+                      branch_id={branch_id}
+                      cost_center_id={cost_center_id}
+                      year={year}
+                      handleDropDown={handleDropDown}
+                      organization={organization}
+                      costCenters={costCenters}
+                    />
+                  </>
                 ) : null}
               </Spin>
             </div>

@@ -1,6 +1,5 @@
-import { getNewLocalIp, getCookie, getToken } from "../utils/algaehApiCall";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
-
+import { getNewLocalIp, getCookie } from "../utils/algaehApiCall";
+import { getItem } from "algaeh-react-components/storage";
 import axios from "axios";
 import config from "../utils/config.json";
 
@@ -48,6 +47,6 @@ export default async function newAlgaehApi(
     response = await axios(responseObj);
     return response;
   } catch (e) {
-    throw Error(e.response.data.message || e.message);
+    throw new Error(e.response.data.message || e.message);
   }
 }

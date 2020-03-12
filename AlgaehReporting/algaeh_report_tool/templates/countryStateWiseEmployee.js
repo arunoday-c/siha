@@ -24,8 +24,8 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
-      if (input.nationality_id > 0) {
-        strQuery += ` and E.nationality=${input.nationality_id}`;
+      if (input.country_id > 0) {
+        strQuery += ` and E.permanent_country_id=${input.country_id}`;
       }
       if (input.employee_group_id > 0) {
         strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
@@ -65,11 +65,11 @@ const executePDF = function executePDFMethod(options) {
           const result = res[1];
 
           if (result.length > 0) {
-            const nationgWiseEmp = _.chain(result)
-              .groupBy(g => g.hims_d_nationality_id)
+            const countryWiseEmp = _.chain(result)
+              .groupBy(g => g.hims_d_country_id)
               .map(m => {
                 return {
-                  nationality: m[0]["nationality"],
+                  country_name: m[0]["country_name"],
                   no_employee: m.length,
                   employees: m
                 };
@@ -79,7 +79,7 @@ const executePDF = function executePDFMethod(options) {
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: nationgWiseEmp
+              result: countryWiseEmp
             });
           } else {
             resolve({

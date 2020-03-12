@@ -6,29 +6,28 @@ export default function InfoBar({ data }) {
   if (data) {
     return (
       <div className="row infoBar">
-        {over_due ? (
-          <div className="col danger">
-            <div className="text">
-              <p>Overdue</p>
-              {over_due}
-            </div>
-          </div>
-        ) : null}
-
-        {total_receivable ? (
-          <div className="col">
-            <div className="text">
-              <p>Open Invoices</p>
-              {total_receivable}
-            </div>
-          </div>
-        ) : null}
-
+        {" "}
         {past_payments ? (
-          <div className="col">
-            <div className="text">
-              <p>Paid Last 30 days</p>
-              {past_payments}
+          <div className="col-3">
+            <div className="infoValCntr green">
+              <div className="label">Paid Last 30 days</div>
+              <h5> {past_payments}</h5>
+            </div>
+          </div>
+        ) : null}
+        {total_receivable ? (
+          <div className="col-3">
+            <div className="infoValCntr yellow">
+              <div className="label">Open Invoices</div>
+              <h5>{total_receivable}</h5>
+            </div>
+          </div>
+        ) : null}
+        {over_due ? (
+          <div className="col-3 ">
+            <div className="infoValCntr red">
+              <div className="label">Overdue</div>
+              <h5>{over_due}</h5>
             </div>
           </div>
         ) : null}

@@ -283,6 +283,7 @@ export function ScreenAssignmentEvents() {
             return { ...ele, extraPropsList: elementDetails };
           } else {
             ele.checked = _status ? true : false;
+            return { ...ele };
           }
         });
         return {
@@ -363,6 +364,7 @@ export function ScreenAssignmentEvents() {
             return { ...ele, extraPropsList: elementDetails };
           } else {
             ele.checked = _status ? true : false;
+            return { ...ele };
           }
         });
         return {

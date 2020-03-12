@@ -10,14 +10,14 @@ import {
   getHeaders,
   updateFinanceAccountsMaping,
   getFinanceAccountsMaping
-} from "./mapping.eventl";
-export default function(props) {
+} from "./mapping.event";
+export default function Mapping(props) {
   //#region State variables
   const [assets, setAssets] = useState([]);
   const [lability, setLability] = useState([]);
   const [expense, setExpense] = useState([]);
   //Its as object to send header and child id.
-  const [opControl, setOpControl] = useState(undefined);
+  // const [opControl, setOpControl] = useState(undefined);
 
   //Its as object to send header and child id.
   const [opPatientDeposit, setOpPatientDeposit] = useState(undefined);
@@ -92,12 +92,6 @@ export default function(props) {
         if (Array.isArray(result)) {
           [
             {
-              item: "OP_CON",
-              fun: res => {
-                setOpControl(res);
-              }
-            },
-            {
               item: "OP_DEP",
               fun: res => {
                 setOpPatientDeposit(res);
@@ -110,7 +104,7 @@ export default function(props) {
               }
             },
             {
-              item: "CH_IN_HA",
+              item: "cash",
               fun: res => {
                 setOPCashInHand(res);
               }
@@ -158,6 +152,7 @@ export default function(props) {
               }
             }
           ].forEach(selected => {
+            debugger;
             const output = result.find(f => f.account === selected.item);
             if (output !== undefined && typeof selected.fun === "function") {
               selected.fun(output["head_id"] + "-" + output["child_id"]);
@@ -169,6 +164,18 @@ export default function(props) {
         AlgaehMessagePop({ type: "error", display: error });
       });
   }, []);
+
+  const breakGenerate = (data, account) => {
+    if (data === undefined || data === "") {
+      return;
+    }
+    const splitter = data.split("-");
+    return {
+      head_id: splitter[0],
+      child_id: splitter[1],
+      account: account
+    };
+  };
 
   return (
     <div className="FinanceMappingScreen">
@@ -183,23 +190,13 @@ export default function(props) {
             <div className="portlet-body">
               <AlgaehValidator
                 onSubmit={() => {
-                  const breakGenerate = (data, account) => {
-                    if (data === undefined || data === "") {
-                      return;
-                    }
-                    const splitter = data.split("-");
-                    return {
-                      head_id: splitter[0],
-                      child_id: splitter[1],
-                      account: account
-                    };
-                  };
+                  debugger;
 
                   updateFinanceAccountsMaping([
-                    breakGenerate(opControl, "OP_CON"),
+                    // breakGenerate(opControl, "OP_CON"),
                     breakGenerate(opPatientDeposit, "OP_DEP"),
                     breakGenerate(opReceviable, "OP_REC"),
-                    breakGenerate(opCashInHand, "CH_IN_HA"),
+                    breakGenerate(opCashInHand, "cash"),
                     breakGenerate(opWriteOff, "OP_WF"),
                     breakGenerate(opConsultCash, "OP_CONSULT_TAX"),
                     breakGenerate(opLabTax, "OP_LAB_TAX"),
@@ -223,7 +220,7 @@ export default function(props) {
                 }}
               >
                 <div className="row">
-                  <AlgaehTreeSearch
+                  {/* <AlgaehTreeSearch
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "OP CONTROL A/C",
@@ -250,7 +247,7 @@ export default function(props) {
                       },
                       value: opControl
                     }}
-                  />
+                  /> */}
                   <AlgaehTreeSearch
                     div={{ className: "col-3 form-group" }}
                     label={{

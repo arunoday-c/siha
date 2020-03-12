@@ -544,7 +544,7 @@ export default function JournalVoucher() {
           {voucherType === "purchase" || voucherType === "sales" ? (
             <AlgaehFormGroup
               div={{
-                className: "col form-group"
+                className: "col"
               }}
               label={{
                 forceLabel: "Invoice No.",
@@ -554,7 +554,6 @@ export default function JournalVoucher() {
                 type: "text",
                 className: "form-control",
                 placeholder: "Enter Invoice No.",
-
                 value: invoiceNo,
                 onChange: e => {
                   setInvoiceNo(e.target.value === "" ? null : e.target.value);
@@ -694,7 +693,7 @@ export default function JournalVoucher() {
                   ]}
                   loading={false}
                   isEditable="onlyDelete"
-                  height="40vh"
+                  height="34vh"
                   dataSource={{
                     data: journerList
                   }}
@@ -721,7 +720,7 @@ export default function JournalVoucher() {
           </div>
           <div className="col-8">
             <button
-              className="btn btn-default btn-small"
+              className="btn btn-primary btn-small"
               onClick={() => {
                 setJournerList(result => {
                   const serialNo = result.length + 1;

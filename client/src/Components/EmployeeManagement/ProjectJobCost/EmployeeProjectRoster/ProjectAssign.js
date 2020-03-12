@@ -255,7 +255,7 @@ class ProjectAssign extends Component {
                   </li>
                   <li>
                     <p>
-                      <b>{employee.employee_name}</b>
+                      <b>{employee.employee_name}</b>789
                       <small>{employee.employee_code}</small>
                     </p>
                   </li>

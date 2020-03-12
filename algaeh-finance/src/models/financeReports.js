@@ -934,6 +934,127 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan: MONTH WISE P&L
+  getProfitAndLossMonthWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    const decimal_places = req.userIdentity.decimal_places;
+    let whrStr = " and VD.year=" + input.year;
+
+    const months = [
+      { month_name: "JAN", month_no: "1" },
+      { month_name: "FEB", month_no: "2" },
+      { month_name: "MAR", month_no: "3" },
+      { month_name: "APR", month_no: "4" },
+      { month_name: "MAY", month_no: "5" },
+      { month_name: "JUN", month_no: "6" },
+      { month_name: "JUL", month_no: "7" },
+      { month_name: "AUG", month_no: "8" },
+      { month_name: "SEP", month_no: "9" },
+      { month_name: "OCT", month_no: "10" },
+      { month_name: "NOV", month_no: "11" },
+      { month_name: "DEC", month_no: "12" }
+    ];
+    // const months = {
+    //   1: JAN,
+    //   2: FEB,
+    //   3: MAR,
+    //   4: APR,
+    //   5: MAY,
+    //   6: JUN,
+    //   7: JUL,
+    //   8: AUG,
+    //   9: SEP,
+    //   10: OCT,
+    //   11: NOV,
+    //   12: DEC
+    // };
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
+      })
+      .then(result => {
+        if (result[0]["cost_center_required"] == "Y") {
+          if (input.hospital_id > 0) {
+            whrStr += " and VD.hospital_id= " + input.hospital_id;
+          }
+
+          if (input.cost_center_id > 0) {
+            switch (result[0]["cost_center_type"]) {
+              case "P":
+                whrStr += " and VD.project_id= " + input.cost_center_id;
+
+                break;
+              case "SD":
+                whrStr +=
+                  " and  VD.sub_department_id = " + input.cost_center_id;
+
+                break;
+              case "B":
+                whrStr += " and VD.hospital_id= " + input.cost_center_id;
+            }
+          }
+        }
+        getLedgersForProfitAndLossMonthWise(
+          _mysql,
+          decimal_places,
+          4,
+          whrStr,
+          months
+        )
+          .then(income => {
+            getLedgersForProfitAndLossMonthWise(
+              _mysql,
+              decimal_places,
+              5,
+              whrStr,
+              months
+            )
+              .then(expense => {
+                _mysql.releaseConnection();
+                const totals = {};
+
+                let profit = 0;
+                months.forEach(item => {
+                  const month_no = item.month_no;
+                  const income_amount = income[month_no];
+                  const expense_amount = expense[month_no];
+
+                  let indivisual_profit = (
+                    parseFloat(income_amount) - parseFloat(expense_amount)
+                  ).toFixed(decimal_places);
+
+                  profit = (
+                    parseFloat(profit) + parseFloat(indivisual_profit)
+                  ).toFixed(decimal_places);
+
+                  totals[month_no] = indivisual_profit;
+                });
+
+                req.records = {
+                  profit: profit,
+                  months: months,
+                  income: income,
+                  expense: expense,
+                  totals: totals
+                };
+                next();
+              })
+              .catch(e => {
+                next(e);
+              });
+          })
+          .catch(e => {
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
@@ -1059,9 +1180,10 @@ function getAccountHeadsForReport(
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
-           account_parent,account_level,
-          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from
+           account_parent,account_level,          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from,
+          coalesce(H.arabic_account_name,'') as arabic_account_name,
+          coalesce(C.arabic_child_name,'') as arabic_child_name
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
            where root_id=? order by account_level,sort_order;           
@@ -1363,6 +1485,7 @@ function createHierarchy(
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
+          arabic_name: item.arabic_child_name,
           disabled: false,
           leafnode: "Y",
           created_status: item["child_created_from"]
@@ -1399,6 +1522,7 @@ function createHierarchy(
             title: item.account_name,
             label: item.account_name,
             disabled: true,
+            arabic_name: item.arabic_account_name,
             leafnode: "N"
           });
         }
@@ -1427,6 +1551,7 @@ function createHierarchy(
           subtitle: amount,
           title: item.account_name,
           label: item.account_name,
+          arabic_name: item.arabic_account_name,
           disabled: true,
           leafnode: "N"
         });
@@ -1904,7 +2029,7 @@ function getAccountHeadsForProfitAndLoss(
           _mysql
             .executeQuery({
               query: `${headQuery} ${childQuery} `,
-              printQuery: false
+              printQuery: true
             })
             .then(results => {
               _mysql.releaseConnection();
@@ -2207,4 +2332,118 @@ function buildHierarchyForProfitAndLoss(
   } catch (e) {
     console.log("MY-ERORR:", e);
   }
+}
+
+//created by :IRFAN MONTH wise profit and loss
+function getLedgersForProfitAndLossMonthWise(
+  _mysql,
+  decimal_places,
+  finance_account_head_id,
+  whrStr,
+  months
+) {
+  const utilities = new algaehUtilities();
+
+  return new Promise((resolve, reject) => {
+    if (finance_account_head_id == 4 || finance_account_head_id == 5) {
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr.";
+      if (finance_account_head_id == 5) {
+        trans_symbol = "Dr.";
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,account_parent,account_level,
+          sort_order,parent_acc_id,root_id,          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id
+          from finance_account_head H left join 
+          finance_account_child C on C.head_id=H.finance_account_head_id 
+           where root_id=? order by account_level,sort_order;  
+          
+          select max(account_level) as account_level from finance_account_head 
+          where root_id=?; `,
+
+          values: [finance_account_head_id, finance_account_head_id],
+          printQuery: false
+        })
+        .then(result => {
+          let headQuery = "";
+          let childQuery = "";
+
+          let i = 1,
+            len = 12;
+          for (i; i <= len; i++) {
+            headQuery += `  select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level  
+                            ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+                            ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount
+                            from finance_account_head H              
+                            left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A' 
+                            ${whrStr} and VD.month=${i}  where H.root_id=${finance_account_head_id}   
+                            group by H.finance_account_head_id   order by account_level; `;
+
+            childQuery += ` select C.head_id,finance_account_child_id as child_id  
+                          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+                          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount, 
+                          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+                          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+                          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+                          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'    
+                          ${whrStr} and VD.month=${i}  where H.root_id=${finance_account_head_id}   
+                          group by C.finance_account_child_id ;`;
+          }
+          _mysql
+            .executeQuery({
+              query: `${headQuery} ${childQuery} `,
+              printQuery: false
+            })
+            .then(results => {
+              _mysql.releaseConnection();
+              let child_iterator = len;
+
+              const headObj = {};
+              const childObj = {};
+
+              for (let k = 0; k < len; k++) {
+                let month_no = months[k]["month_no"];
+
+                childObj[month_no] = results[child_iterator];
+                child_iterator++;
+
+                let head_data = calcAmountForProfitAndLoss(
+                  results[k],
+                  result[1],
+                  decimal_places
+                );
+
+                headObj[month_no] = head_data;
+              }
+
+              const outputArray = buildHierarchyForProfitAndLoss(
+                result[0],
+                childObj,
+                headObj,
+                trans_symbol,
+                default_total,
+                decimal_places
+              );
+
+              resolve(outputArray[0]);
+              // utilities.logger().log("headObj:", headObj);
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              reject(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      });
+    }
+  });
 }

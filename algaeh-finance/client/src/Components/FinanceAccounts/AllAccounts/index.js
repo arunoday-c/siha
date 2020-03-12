@@ -5,19 +5,11 @@ import SortableTree, {
   removeNodeAtPath
 } from "react-sortable-tree";
 import AddNewAccount from "../AddNewAccount/AddNewAccount";
+import { AlgaehConfirm, AlgaehMessagePop } from "algaeh-react-components";
 import {
-  AlgaehConfirm,
-  AlgaehMessagePop,
-  Input,
-  Icon
-  // DatePicker
-} from "algaeh-react-components";
-import {
-  // getAccounts,
   removeAccount,
   isPositive,
   renameAccount
-  // getChartData
 } from ".././FinanceAccountEvent";
 import { newAlgaehApi } from "../../../hooks";
 import "../alice.scss";
@@ -35,12 +27,6 @@ function AllAccounts({ title, inDrawer }) {
   const [editorRecord, setEditorRecord] = useState({});
   const [assetCode, setAssetCode] = useState(null);
   const [isNewAccount, setNewAccount] = useState(false);
-
-  function isExpOrInc(code) {
-    //eslint-disable-next-line
-    const check = code == "3" || code == "5" || false;
-    return check;
-  }
 
   function addNode(rowInfo, options, addedNode) {
     return new Promise((resolve, reject) => {
@@ -180,10 +166,6 @@ function AllAccounts({ title, inDrawer }) {
   }
 
   const searchMethod = ({ node, searchQuery }) => {
-    // return (
-    //   searchQuery &&
-    //   node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1
-    // );
     return (
       (searchQuery &&
         node.title.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1) ||
@@ -228,10 +210,8 @@ function AllAccounts({ title, inDrawer }) {
                 } else {
                   setAssetCode(rowInfo.parentNode.root_id);
                   setEditorRecord(rowInfo);
-                  // if (!isExpOrInc(rowInfo.parentNode.root_id)) {
                   setShowPopup(true);
                   setNewAccount(false);
-                  // }
                 }
               }}
             >
@@ -285,62 +265,11 @@ function AllAccounts({ title, inDrawer }) {
       title: (
         <>
           <span>
-            {/* {isExpOrInc(assetCode) ? (
-              JSON.stringify(editorRecord) === JSON.stringify(rowInfo) ? (
-                <Input
-                  suffix={
-                    <Icon
-                      type="save"
-                      onClick={e => {
-                        const editedValue =
-                          e.currentTarget.offsetParent.previousElementSibling
-                            .value;
+            {node.full_name}
 
-                        const rowNode = rowInfo.node;
-                        let input = {
-                          leaf_node: rowNode.leafnode
-                        };
-                        if (rowNode.leafnode === "Y") {
-                          input["child_name"] = editedValue;
-                          input["finance_account_child_id"] =
-                            rowNode.finance_account_child_id;
-                        } else {
-                          input["account_name"] = editedValue;
-                          input["finance_account_head_id"] =
-                            rowNode.finance_account_head_id;
-                        }
-                        renameAccount(input)
-                          .then(() => {
-                            node["title"] = editedValue;
-                            setEditorRecord({});
-                            AlgaehMessagePop({
-                              type: "success",
-                              display: "Renamed successfull"
-                            });
-                          })
-                          .catch(error => {
-                            console.log("error", error);
-                            AlgaehMessagePop({
-                              type: "error",
-                              display: error
-                            });
-                          });
-                      }}
-                    />
-                  }
-                  defaultValue={node.title}
-                />
-              ) : (
-                  node.title
-                )
-            ) : (
-                node.title
-              )} */}
-            {`${node.title} / ${node.arabic_account_name} (${node.ledger_code})`}
-
-            {node.leafnode === "Y" ? null : (
+            {/* {node.leafnode === "Y" ? null : (
               <>/{node.children === undefined ? 0 : node.children.length}</>
-            )}
+            )} */}
           </span>
         </>
       ),

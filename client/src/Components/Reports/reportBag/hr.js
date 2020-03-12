@@ -545,6 +545,133 @@ export default function Hr({
         ]
       },
       {
+        subitem: "Employee - Country & Wise",
+        reportName: "countryStateWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        componentCode: "RPT_HR_EMP_NAT",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "country_id",
+            initialLoad: true,
+            isImp: false,
+            label: "country",
+            link: {
+              uri: "/masters/get/country"
+            },
+            dataSource: {
+              textField: "country_name",
+              valueField: "hims_d_country_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Sub Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
         subitem: "Employee - Religion Wise",
         reportName: "religionWiseEmployee",
         requireIframe: true,
