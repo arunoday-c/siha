@@ -1180,9 +1180,10 @@ function getAccountHeadsForReport(
       _mysql
         .executeQuery({
           query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
-           account_parent,account_level,
-          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
-          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from
+           account_parent,account_level,          H.created_from as created_status ,sort_order,parent_acc_id,root_id,
+          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from,
+          coalesce(H.arabic_account_name,'') as arabic_account_name,
+          coalesce(C.arabic_child_name,'') as arabic_child_name
           from finance_account_head H left join 
           finance_account_child C on C.head_id=H.finance_account_head_id 
            where root_id=? order by account_level,sort_order;           
@@ -1484,6 +1485,7 @@ function createHierarchy(
           title: item.child_name,
           label: item.child_name,
           head_id: item["head_id"],
+          arabic_name: item.arabic_child_name,
           disabled: false,
           leafnode: "Y",
           created_status: item["child_created_from"]
@@ -1520,6 +1522,7 @@ function createHierarchy(
             title: item.account_name,
             label: item.account_name,
             disabled: true,
+            arabic_name: item.arabic_account_name,
             leafnode: "N"
           });
         }
@@ -1548,6 +1551,7 @@ function createHierarchy(
           subtitle: amount,
           title: item.account_name,
           label: item.account_name,
+          arabic_name: item.arabic_account_name,
           disabled: true,
           leafnode: "N"
         });
