@@ -7,9 +7,10 @@ import TrailBalance from "./FinanceStandardReports/trailbalance";
 import ArAging from "./FinanceStandardReports/arAgingReport";
 import ApAging from "./FinanceStandardReports/apAgingReport";
 import CostCenter from "../costCenterComponent";
-import { getBalanceSheet } from "./FinanceReportEvents";
+import { getBalanceSheet, downloadExcel } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
 import PandLCostCenter from "./FinanceStandardReports/pandLCostCenter";
+import moment from "moment";
 let resultdata = {};
 
 function layoutReducer(state, action) {
@@ -128,7 +129,35 @@ export default function FinanceReports() {
       return true;
     }
   }
-
+  function onExportExcel() {
+    downloadExcel({
+      selected,
+      inputParam: {
+        hospital_id: branch_id,
+        cost_center_id: project_id
+      }
+    })
+      .then(response => {
+        let blob = new Blob([response.data], {
+          type: "application/octet-stream"
+        });
+        const fileName = `${selected}-${moment().format(
+          "DD-MM-YYYY-HH-MM-ss"
+        )}.xlsx`;
+        var objectUrl = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.setAttribute("href", objectUrl);
+        link.setAttribute("download", fileName);
+        link.click();
+      })
+      .catch(error => {
+        const { message } = error;
+        AlgaehMessagePop({
+          type: "error",
+          display: message !== "" ? message : error.data.message
+        });
+      });
+  }
   if (finOptions) {
     return (
       <div className="row">
@@ -222,6 +251,7 @@ export default function FinanceReports() {
                 tip="Please wait report data is fetching.."
                 delay={500}
               >
+                <button onClick={onExportExcel}>Excel</button>
                 {selected === "BS" ? (
                   <Balance
                     data={data}
