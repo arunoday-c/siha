@@ -2,7 +2,6 @@
 
 <body>
     <div class="print-body">
-
         {{!-- <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
@@ -11,13 +10,10 @@
                     </td>
                 </tr>
             </table>
-
-
         </section> --}}
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-
                     <tr>
                         <th>Sl No.</th>
                         <th>Employee Code</th>
@@ -34,8 +30,6 @@
                         <th>Country</th>
                         <th>State</th>
                         {{!-- <th>City</th> --}}
-
-
                     </tr>
 
                 </thead>
@@ -46,9 +40,8 @@
                     <tr>
                         <td colspan="14"
                             excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"CDF4EF"},"bgColor":{"argb":"747474"}}'
-                            class="tableSubHdg">Nationality: {{nationality}}
-                            <span class="textFloatRight">No
-                                Employees: {{no_employee}}</span>
+                            class="tableSubHdg">Country & State: {{country_name}}
+                            <span class="textFloatRight">No Employees: {{no_employee}}</span>
 
                         </td>
                     </tr>
@@ -70,8 +63,6 @@
                         <td>{{country_name}}</td>
                         <td>{{state_name}}</td>
                         {{!-- <td>{{city_name}}</td> --}}
-
-
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}
