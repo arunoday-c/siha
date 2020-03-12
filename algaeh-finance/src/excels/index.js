@@ -7,7 +7,7 @@ export function generateExcel(req, res, next) {
   workbook.created = new Date();
   workbook.modified = new Date();
   var worksheet = workbook.addWorksheet(sheetName, {
-    properties: { tabColor: { argb: "FFC0000" } }
+    properties: { tabColor: { argb: "FFC0000" }, useStyles: true }
   });
   worksheet.columns = columns;
   worksheet.getRow(1).fill = {
@@ -25,30 +25,40 @@ export function generateExcel(req, res, next) {
     vertical: "middle",
     horizontal: "center"
   };
-  let skipIndexes = [];
 
   (async () => {
     const CreateRecords = async records => {
-      let excelColumns = [];
       const { children } = records;
+      const hasChildrens = Array.isArray(children);
+      worksheet.addRow([]);
+      const rowIndex = worksheet.rowCount;
       await asyncForEach(columns, async (item, index) => {
         const value =
           index === 0 && children === undefined
-            ? "  " + records[item.key]
+            ? "      " + records[item.key]
             : records[item.key];
-        excelColumns.push(value);
-      });
-
-      worksheet.addRow(excelColumns);
-
-      if (Array.isArray(children)) {
-        const rowIndex = worksheet.rowCount;
-        skipIndexes.push(rowIndex);
-        worksheet.getRow(rowIndex).font = {
+        let row = worksheet.getRow(rowIndex);
+        let cells = row.getCell(index + 1);
+        row.font = {
           name: "Arial",
           size: 9,
-          bold: true
+          bold: hasChildrens
         };
+        cells.value = value;
+
+        if (item.others !== undefined) {
+          Object.keys(item.others).forEach(other => {
+            row.eachCell((cell, cIndx) => {
+              const component = item.others;
+              if (cIndx === index + 1) {
+                cell[other] = component[other];
+              }
+            });
+          });
+        }
+      });
+
+      if (hasChildrens) {
         await asyncForEach(children, async child => {
           await CreateRecords(child);
         });
@@ -62,60 +72,13 @@ export function generateExcel(req, res, next) {
     }
 
     if (Array.isArray(records)) {
+      await asyncForEach(records, async item => {
+        await CreateRecords(item);
+      });
     } else {
       const ObjRecords = Object.keys(records);
       await asyncForEach(ObjRecords, async item => {
         await CreateRecords(records[item]);
-      });
-      //   const totalRecords = worksheet.rowCount;
-      //   for (let r = 2; r <= totalRecords; r++) {
-      //     const indx = skipIndexes.find(f => f === r);
-      //     if (indx === undefined) {
-      //       worksheet.getRow(r).font = { name: "arial", size: 8 };
-      //     }
-      //     worksheet.getRow(r).eachCell(cell => {
-      //       const widthColumn = cell.value.length;
-      //       cell.width = widthColumn;
-      //       cell.border = {
-      //         top: { style: "thin" },
-      //         left: { style: "thin" },
-      //         bottom: { style: "thin" },
-      //         right: { style: "thin" },
-      //         color: { argb: "00000000" }
-      //       };
-      //     });
-      //   }
-
-      //   res.setHeader(
-      //     "Content-Type",
-      //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      //   );
-      //   res.setHeader(
-      //     "Content-Disposition",
-      //     `attachment; filename=${reportName}.xlsx`
-      //   );
-      //   workbook.xlsx.write(res).then(function(data) {
-      //     res.end();
-      //     console.log("Excel done........");
-      //   });
-    }
-
-    const totalRecords = worksheet.rowCount;
-    for (let r = 2; r <= totalRecords; r++) {
-      const indx = skipIndexes.find(f => f === r);
-      if (indx === undefined) {
-        worksheet.getRow(r).font = { name: "Arial", size: 9 };
-      }
-      worksheet.getRow(r).eachCell((cell, num) => {
-        const widthColumn = cell.value.length;
-        cell.width = widthColumn < 10 ? 10 : widthColumn;
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-          color: { argb: "00000000" }
-        };
       });
     }
 

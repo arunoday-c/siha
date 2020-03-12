@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import financeReports from "../models/financeReports";
+const accountNameWidth = 63;
+const accountNameArabicWidth = 63;
+const amountWidth = 15;
 const {
   getBalanceSheet,
   getProfitAndLoss,
@@ -34,18 +37,21 @@ export default () => {
           req.columns = [
             {
               header: "Account Name",
-              key: "title"
-              // width: 90
+              key: "title",
+              width: accountNameWidth
             },
             {
               header: "Arabic Name",
-              key: "arabic_account_name"
-              //  width: 90
+              key: "arabic_name",
+              width: accountNameArabicWidth
             },
             {
               header: "Amount",
-              key: "subtitle"
-              //  , width: 20
+              key: "subtitle",
+              width: amountWidth,
+              others: {
+                alignment: { vertical: "middle", horizontal: "right" }
+              }
             }
           ];
           next();
