@@ -20,12 +20,12 @@ export default memo(function(props) {
             const { cost_center_id, cost_center } = column;
             return {
               fieldName: String(cost_center_id),
-              lable: cost_center
+              label: cost_center
             };
           });
           createColumns.unshift({
             fieldName: "label",
-            lable: "Ledger Name",
+            label: "Ledger Name",
             freezable: true
             // filterable: true
           });
@@ -51,7 +51,7 @@ export default memo(function(props) {
         className="treeGridPL"
         columns={columns}
         data={incomeExpenceData}
-        hasFooter={true}
+        footer={true}
         // isFiltable={true}
         aggregate={field => {
           return totals[field];

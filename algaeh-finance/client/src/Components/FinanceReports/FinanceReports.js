@@ -5,11 +5,11 @@ import {
   AlgaehAutoComplete,
   AlgaehDateHandler
 } from "algaeh-react-components";
-import { Spin, Button, Tooltip } from "antd";
+import { Spin, Button, Tooltip, DatePicker } from "antd";
 import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./FinanceStandardReports/trailbalance";
-import ArAging from "./FinanceStandardReports/arAgingReport";
-import ApAging from "./FinanceStandardReports/apAgingReport";
+// import ArAging from "./FinanceStandardReports/arAgingReport";
+import AgingReport from "./FinanceStandardReports/AgingReport";
 import CostCenter from "../costCenterComponent";
 import { getBalanceSheet } from "./FinanceReportEvents";
 import { newAlgaehApi } from "../../hooks";
@@ -44,7 +44,7 @@ export default function FinanceReports() {
   const [cost_center_id, setCostCenterId] = useState(null);
   const [organization, setOrganization] = useState([]);
   const [costCenters, setCostCenters] = useState([]);
-  const [year, setYear] = useState(null);
+  const [year, setYear] = useState(new Date().getFullYear());
 
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
@@ -92,8 +92,10 @@ export default function FinanceReports() {
   function handleDropDown(_, value, name) {
     if (name === "branch_id") {
       setBranchID(value);
-    } else {
+    } else if (name === "cost_center_id") {
       setCostCenterId(value);
+    } else {
+      setYear(value);
     }
   }
 
@@ -297,80 +299,21 @@ export default function FinanceReports() {
                 ) : selected === "TB" ? (
                   <TrailBalance layout={layout} data={trailBanlance} />
                 ) : selected === "AR" ? (
-                  <ArAging layout={layout} />
+                  <AgingReport layout={layout} type="receivable" />
                 ) : selected === "AP" ? (
-                  <ApAging layout={layout} />
+                  <AgingReport layout={layout} type="payable" />
                 ) : selected === "PandL" ? (
                   <PandLCostCenter />
                 ) : selected === "PandLYear" ? (
                   <>
-                    <div
-                      className="row inner-top-search"
-                      style={{ paddingBottom: 20 }}
-                    >
-                      <AlgaehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{
-                          forceLabel: "Branch",
-                          isImp: true
-                        }}
-                        selector={{
-                          value: String(branch_id),
-                          name: "branch_id",
-                          dataSource: {
-                            data: organization,
-                            valueField: "hims_d_hospital_id",
-                            textField: "hospital_name"
-                          },
-                          onChange: handleDropDown
-                        }}
-                      />
-                      <AlgaehAutoComplete
-                        div={{ className: "col-2" }}
-                        label={{
-                          forceLabel: "Cost Center",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "cost_center_id",
-                          value: String(cost_center_id),
-                          dataSource: {
-                            data: costCenters,
-                            valueField: "cost_center_id",
-                            textField: "cost_center"
-                          },
-                          onChange: handleDropDown
-                        }}
-                      />
-
-                      <AlgaehDateHandler
-                        div={{
-                          className: "col-2 algaeh-date-fld"
-                        }}
-                        label={{
-                          forceLabel: "Year",
-                          isImp: true
-                        }}
-                        type="date"
-                        textBox={{
-                          name: "year",
-                          className: "form-control"
-                          // value: year,
-                        }}
-                        others={{ picker: "year" }}
-                        events={{
-                          onChange: momentDate => {
-                            if (momentDate) {
-                              setYear(momentDate._d);
-                            } else {
-                              setYear(undefined);
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-
-                    <PandLYear />
+                    <PandLYear
+                      branch_id={branch_id}
+                      cost_center_id={cost_center_id}
+                      year={year}
+                      handleDropDown={handleDropDown}
+                      organization={organization}
+                      costCenters={costCenters}
+                    />
                   </>
                 ) : null}
               </Spin>

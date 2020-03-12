@@ -628,21 +628,28 @@ function TreeComponent({ assetCode, title, inDrawer }) {
                             columns={[
                               {
                                 fieldName: "ledger_code",
-                                lable: "Ledger Code"
+                                label: "Ledger Code",
+                                filterable: true
                               },
-                              { fieldName: "child_name", lable: "Ledger Name" },
+                              {
+                                fieldName: "child_name",
+                                label: "Ledger Name",
+                                filterable: true
+                              },
                               {
                                 fieldName: "arabic_child_name",
-                                lable: "Ledger Arabic"
+                                label: "Ledger Arabic",
+                                filterable: true
                               },
                               {
                                 fieldName: "closing_balance",
-                                lable: "Closing Balance"
+                                label: "Closing Balance",
+                                filterable: true
                               }
                             ]}
                             data={gridData}
                             // hasFooter={true}
-                            // isFiltable={true}
+                            isFilterable={true}
                             // aggregate={field => {
                             //   return total[field];
                             // }}
