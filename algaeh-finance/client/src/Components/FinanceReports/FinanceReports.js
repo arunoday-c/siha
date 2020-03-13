@@ -9,7 +9,11 @@ import { Spin } from "antd";
 import { newAlgaehApi } from "../../hooks";
 import ToolBar from "./ToolBar";
 import ReportNavBar from "./ReportNavBar";
-import { getBalanceSheet, downloadExcel } from "./FinanceReportEvents";
+import {
+  getBalanceSheet,
+  downloadExcel,
+  handleFile
+} from "./FinanceReportEvents";
 import ReportMain from "./ReportMain";
 import "./financeReportStyle.scss";
 
@@ -40,6 +44,7 @@ export default function FinanceReports() {
     cols: 24,
     expand: false
   });
+  const year = new Date().getFullYear();
 
   useEffect(() => {
     async function initData() {
@@ -108,27 +113,17 @@ export default function FinanceReports() {
       });
   }
 
-  function onExportExcel() {
+  function onExportExcel(reportType) {
     downloadExcel({
       selected,
       inputParam: {
         hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id
-        year: year
+        cost_center_id: finOptions.default_cost_center_id,
+        year
       }
     })
       .then(response => {
-        let blob = new Blob([response.data], {
-          type: "application/octet-stream"
-        });
-        const fileName = `${selected}-${moment().format(
-          "DD-MM-YYYY-HH-MM-ss"
-        )}.xlsx`;
-        var objectUrl = URL.createObjectURL(blob);
-        var link = document.createElement("a");
-        link.setAttribute("href", objectUrl);
-        link.setAttribute("download", fileName);
-        link.click();
+        handleFile(response.data, selected);
       })
       .catch(error => {
         const { message } = error;
@@ -151,13 +146,16 @@ export default function FinanceReports() {
                 tip="Please wait report data is fetching.."
                 delay={500}
               >
-                <button onClick={onExportExcel}>Excel</button>
+                {selected !== "PL" ? (
+                  <button onClick={onExportExcel}>Excel</button>
+                ) : null}
                 <ReportMain
                   selected={selected}
                   data={data}
                   finOptions={finOptions}
                   layout={layout}
                   organization={organization}
+                  downloadExcel={onExportExcel}
                 />
               </Spin>
             </div>

@@ -9,7 +9,8 @@ import ByCostCenter from "./pandLCostCenter";
 import PnLTree from "./PnLTree";
 import { newAlgaehApi } from "../../../hooks";
 import { getYears } from "../../../utils/GlobalFunctions";
-
+import { downloadExcel, handleFile } from "../FinanceReportEvents";
+import { Button } from "antd/es/radio";
 const yearList = getYears();
 
 export default function PnLReport({ layout, finOptions, organization, style }) {
@@ -137,6 +138,29 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     }
   }
 
+  function loadExcel() {
+    if (columnType) {
+      downloadExcel({
+        selected: columnType,
+        inputParam: {
+          hospital_id: branch_id,
+          cost_center_id: cost_center_id,
+          year: year
+        }
+      })
+        .then(response => {
+          handleFile(response.data, columnType);
+        })
+        .catch(error => {
+          const { message } = error;
+          AlgaehMessagePop({
+            type: "error",
+            display: message !== "" ? message : error.data.message
+          });
+        });
+    }
+  }
+
   function Content() {
     switch (columnType) {
       case "by_year":
@@ -150,6 +174,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
 
   return (
     <>
+      <Button onClick={loadExcel}>Excel</Button>
       <div className="row">
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
