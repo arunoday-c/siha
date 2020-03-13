@@ -171,7 +171,8 @@ export default function FinanceReports() {
       selected,
       inputParam: {
         hospital_id: branch_id,
-        cost_center_id: project_id
+        cost_center_id: project_id,
+        year: year
       }
     })
       .then(response => {
@@ -298,7 +299,10 @@ export default function FinanceReports() {
                 tip="Please wait report data is fetching.."
                 delay={500}
               >
-                <button onClick={onExportExcel}>Excel</button>
+                {selected !== "" ? (
+                  <button onClick={onExportExcel}>Excel</button>
+                ) : null}
+
                 {selected === "BS" ? (
                   <Balance
                     data={data}

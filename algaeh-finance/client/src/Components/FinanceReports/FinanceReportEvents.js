@@ -41,10 +41,34 @@ export function getBalanceSheet(input) {
 export function downloadExcel(input) {
   const { selected } = input;
   let result = undefined;
+  input["inputParam"] = { ...input["inputParam"], excel: true };
   switch (selected) {
     case "BS":
       input["url"] = "getBalanceSheet";
-      input["inputParam"] = { ...input["inputParam"], excel: true };
+      result = getBalanceSheet(input);
+      break;
+    case "PL":
+      input["url"] = "getProfitAndLoss";
+      result = getBalanceSheet(input);
+      break;
+    case "TB":
+      input["url"] = "getTrialBalance";
+      result = getBalanceSheet(input);
+      break;
+    case "AP":
+      input["url"] = "getAccountPayableAging";
+      result = getBalanceSheet(input);
+      break;
+    case "AR":
+      input["url"] = "getAccountReceivableAging";
+      result = getBalanceSheet(input);
+      break;
+    case "PandL":
+      input["url"] = "getProfitAndLossCostCenterWise";
+      result = getBalanceSheet(input);
+      break;
+    case "PandLYear":
+      input["url"] = "getProfitAndLossMonthWise";
       result = getBalanceSheet(input);
       break;
   }
