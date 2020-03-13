@@ -1,4 +1,5 @@
 import React, { memo, useState } from "react";
+import "./modalGlobal.scss";
 import { AlgaehDataGrid } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";

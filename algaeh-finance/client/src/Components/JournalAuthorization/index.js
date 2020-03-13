@@ -376,11 +376,11 @@ export default memo(function(props) {
                       },
                       {
                         key: "voucher_no",
-                        title: "Vouher Number",
+                        title: "Voucher Number",
                         sortable: true,
                         displayTemplate: voucherCol
                       },
-                      { key: "voucher_type", title: "Vouher Type" },
+                      { key: "voucher_type", title: "Voucher Type" },
                       { key: "payment_date", title: "Payment Date" },
                       ...paymentTemplates,
                       { key: "amount", title: "Amount" },

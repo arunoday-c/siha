@@ -70,7 +70,7 @@ function PLYear({
     <>
       <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
         <AlgaehAutoComplete
-          div={{ className: "col-2" }}
+          div={{ className: "col-3" }}
           label={{
             forceLabel: "Branch",
             isImp: true
@@ -87,7 +87,7 @@ function PLYear({
           }}
         />
         <AlgaehAutoComplete
-          div={{ className: "col-2" }}
+          div={{ className: "col-3" }}
           label={{
             forceLabel: "Cost Center",
             isImp: true
@@ -120,23 +120,66 @@ function PLYear({
             onChange: handleDropDown
           }}
         />
-        <AlgaehButton onClick={loadReport}>Load</AlgaehButton>
+        <AlgaehButton
+          className="btn btn-primary"
+          onClick={loadReport}
+          style={{ marginTop: 15 }}
+        >
+          Load
+        </AlgaehButton>
       </div>
       {loading ? (
         <div> Please wait report is loading... </div>
       ) : incomeExpenceData.length ? (
-        <AlgaehTable
-          className="treeGridPL"
-          columns={columns}
-          data={incomeExpenceData}
-          footer={true}
-          // isFiltable={true}
-          aggregate={field => {
-            return totals[field];
-          }}
-        />
+        <>
+          <div className="financeReportHeader">
+            <div>Twareat Medical Centre</div>
+            <div>
+              Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            </div>
+            <hr></hr>
+            <h3>Profit & Loss by Month</h3>
+          </div>
+          <AlgaehTable
+            className="treeGridPL"
+            height="65vh"
+            columns={columns}
+            data={incomeExpenceData}
+            footer={true}
+            // isFiltable={true}
+            aggregate={field => {
+              return totals[field];
+            }}
+          />
+        </>
       ) : (
-        <div> Press load to see the report </div>
+        <>
+          <div className="financeReportHeader">
+            <div>Twareat Medical Centre</div>
+            <div>
+              Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            </div>
+            <hr></hr>
+            <h3>Profit & Loss by Month</h3>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <i
+              className="fas fa-filter"
+              style={{
+                fontSize: "4rem",
+                margin: "50px 0 20px",
+                color: "rgb(204, 204, 204)"
+              }}
+            ></i>
+            <p
+              style={{
+                fontSize: "1rem"
+              }}
+            >
+              Apply filter and click load
+            </p>
+          </div>
+        </>
       )}
     </>
   );
