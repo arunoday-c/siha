@@ -47,8 +47,17 @@ export default memo(function(props) {
     <div> Please wait report is loading... </div>
   ) : (
     <>
+      <div className="financeReportHeader">
+        <div>Twareat Medical Centre</div>
+        <div>
+          Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+        </div>
+        <hr></hr>
+        <h3>Profit & Loss - Cost Centre</h3>
+      </div>
       <AlgaehTable
         className="treeGridPL"
+        height="75vh"
         columns={columns}
         data={incomeExpenceData}
         footer={true}

@@ -279,7 +279,7 @@ export default function FinanceReports() {
                     }
                   }}
                 >
-                  P&L by Cost center
+                  Profit & Loss by Cost Center
                 </li>{" "}
                 <li
                   className={selectedClass("PandLYear")}
@@ -289,7 +289,7 @@ export default function FinanceReports() {
                     }
                   }}
                 >
-                  P&L by Year
+                  Profit & Loss by Month
                 </li>
               </ul>
             </div>

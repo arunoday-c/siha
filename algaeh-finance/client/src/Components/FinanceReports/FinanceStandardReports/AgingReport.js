@@ -54,7 +54,7 @@ export default function AgingReport({ style, result, layout, type }) {
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>
           <div>
-            Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
           </div>
           <hr></hr>
           <h3>{`Account ${DIFF[type].title} Aging Report`}</h3>
@@ -71,37 +71,45 @@ export default function AgingReport({ style, result, layout, type }) {
               label: "Vendor Name",
               filterable: true,
               sortable: true
+              // style: {
+              //   textStyle:"bold"
+              // }
             },
             {
               fieldName: "todays_amount",
               label: "Current",
               filterable: true
+              // alignColumn:"right",
             },
             {
               fieldName: "thirty_days_amount",
               label: "1-30 Days",
-              filterable: true,
-              others: { width: 100 }
+              filterable: true
+              // alignColumn:"right",
             },
             {
               fieldName: "sixty_days_amount",
               label: "31-60 Days",
               filterable: true
+              // alignColumn:"right",
             },
             {
               fieldName: "ninety_days_amount",
               label: "61-90 Days",
               filterable: true
+              // alignColumn:"right",
             },
             {
               fieldName: "above_ninety_days_amount",
               label: "Over 90 Days",
               filterable: true
+              // alignColumn:"right",
             },
             {
               fieldName: "balance",
               label: "Balance",
               filterable: true
+              // alignColumn:"right",
             }
           ]}
           isFilterable={true}

@@ -40,38 +40,74 @@ export default function VoucherDetails({ visible, data, onClose }) {
   if (data) {
     return (
       <AlgaehModal
-        title={`Journal Voucher Details - ${data.voucher_no}`}
+        className="modalResponsiveWidth"
+        title={`Journal Voucher Details  - ${data.voucher_no}`}
         visible={visible}
         destroyOnClose={true}
-        width={800}
         okButtonProps={{ style: { display: "none" } }}
         onCancel={() => {
           onClose();
         }}
+        // style={{ width: "100vw" }}
       >
-        <AlgaehDataGrid
-          columns={[
-            {
-              key: "ledger_code",
-              title: "Ledger Code"
-            },
-            {
-              key: "ledger_name",
-              title: "Ledger Name"
-            },
-            {
-              key: "credit_amount",
-              title: "Credit Amount"
-            },
-            {
-              key: "debit_amount",
-              title: "Debit Amount"
-            }
-          ]}
-          height="40vh"
-          rowUnique="finance_voucher_id"
-          dataSource={{ data: Details }}
-        />
+        <div className="row">
+          <div className="col-12">
+            <h6>
+              <b>Accounting Entries</b>
+            </h6>
+            <AlgaehDataGrid
+              columns={[
+                {
+                  key: "ledger_code",
+                  title: "Ledger Code"
+                },
+                {
+                  key: "ledger_name",
+                  title: "Ledger Name"
+                },
+                {
+                  key: "credit_amount",
+                  title: "Credit Amount"
+                },
+                {
+                  key: "debit_amount",
+                  title: "Debit Amount"
+                }
+              ]}
+              height="40vh"
+              rowUnique="finance_voucher_id"
+              dataSource={{ data: Details }}
+            />
+          </div>
+          {/* <div className="col-7">
+            <h6>
+              <b>Invoice Details</b>
+            </h6>
+            <AlgaehDataGrid
+              columns={[
+                {
+                  key: "ledger_code",
+                  title: "Ledger Code"
+                },
+                {
+                  key: "ledger_name",
+                  title: "Ledger Name"
+                },
+                {
+                  key: "credit_amount",
+                  title: "Credit Amount"
+                },
+                {
+                  key: "debit_amount",
+                  title: "Debit Amount"
+                }
+              ]}
+              height="40vh"
+              rowUnique="finance_voucher_id"
+              dataSource={{ data: Details }}
+            />
+          </div> */}
+        </div>
       </AlgaehModal>
     );
   } else {
