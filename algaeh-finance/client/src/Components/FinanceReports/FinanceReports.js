@@ -114,6 +114,7 @@ export default function FinanceReports() {
       inputParam: {
         hospital_id: finOptions.default_branch_id,
         cost_center_id: finOptions.default_cost_center_id
+        year: year
       }
     })
       .then(response => {

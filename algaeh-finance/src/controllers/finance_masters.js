@@ -10,7 +10,8 @@ const {
   updateFinanceOption,
   addCostCenterGroup,
   getCostCenterGroups,
-  getCostCentersForVoucher
+  getCostCentersForVoucher,
+  getFinanceDate
 } = finance_masters;
 
 export default () => {
@@ -175,5 +176,15 @@ export default () => {
       }
     }
   );
+
+  api.get("/getFinanceDate", getFinanceDate, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
+  });
   return api;
 };

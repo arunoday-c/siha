@@ -1,4 +1,6 @@
 import algaehMysql from "algaeh-mysql";
+
+import moment from "moment";
 import _ from "lodash";
 
 import algaehUtilities from "algaeh-utilities/utilities";
@@ -567,6 +569,142 @@ export default {
           };
           next();
         }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getFinanceDate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    _mysql
+      .executeQuery({
+        query: `
+          select start_month,end_month from finance_options limit 1;  `,
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        let start_month = result[0]["start_month"];
+        let end_month = result[0]["end_month"];
+
+        let from_date,
+          to_date = null;
+
+        // .startOf("month")
+        // .format("YYYY-MM-DD");
+
+        // .endOf("month")
+        // .format("YYYY-MM-DD");
+
+        switch (input.transaction_date) {
+          case "CY":
+            if (start_month > end_month) {
+              let from_year,
+                to_year = null;
+
+              let year = moment().format("YYYY");
+              let month = moment().format("M");
+
+              if (end_month > month) {
+                from_year = parseInt(year) - parseInt(1);
+                to_year = year;
+              } else {
+                from_year = year;
+                to_year = year;
+              }
+              from_date = moment(from_year + "-" + start_month, "YYYYM")
+                .startOf("year")
+                .format("YYYY-MM-DD");
+
+              to_date ==
+                moment(to_year + "-" + end_month, "YYYYM")
+                  .endOf("year")
+                  .format("YYYY-MM-DD");
+            } else {
+              from_date = moment()
+                .startOf("year")
+                .format("YYYY-MM-DD");
+
+              to_date ==
+                moment()
+                  .endOf("year")
+                  .format("YYYY-MM-DD");
+            }
+
+            break;
+
+          case "TM":
+            from_date = moment()
+              .startOf("month")
+              .format("YYYY-MM-DD");
+
+            to_date ==
+              moment()
+                .endOf("month")
+                .format("YYYY-MM-DD");
+            break;
+
+          case "TMTD":
+            from_date = moment()
+              .startOf("month")
+              .format("YYYY-MM-DD");
+
+            to_date == moment().format("YYYY-MM-DD");
+            break;
+
+          case "LM":
+            from_date = moment()
+              .add(-1, "months")
+              .startOf("month")
+              .format("YYYY-MM-DD");
+
+            to_date ==
+              moment()
+                .add(-1, "months")
+                .endOf("month")
+                .format("YYYY-MM-DD");
+            break;
+
+          default:
+            if (start_month > end_month) {
+              let from_year,
+                to_year = null;
+
+              let year = moment().format("YYYY");
+              let month = moment().format("M");
+
+              if (end_month > month) {
+                from_year = parseInt(year) - parseInt(1);
+                to_year = year;
+              } else {
+                from_year = year;
+                to_year = year;
+              }
+              from_date = moment(from_year + "-" + start_month, "YYYYM")
+                .startOf("year")
+                .format("YYYY-MM-DD");
+
+              to_date == moment().format("YYYY-MM-DD");
+            } else {
+              from_date = moment()
+                .startOf("year")
+                .format("YYYY-MM-DD");
+
+              to_date == moment().format("YYYY-MM-DD");
+            }
+        }
+        req.records = {
+          from_date: from_date,
+          to_date: to_date
+        };
+        next();
       })
       .catch(e => {
         _mysql.releaseConnection();
