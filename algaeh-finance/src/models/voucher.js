@@ -1017,7 +1017,7 @@ export default {
                             values: [
                               "Y",
                               req.userIdentity.algaeh_d_app_user_id,
-                              new Date(),
+                              moment().format("YYYY-MM-DD"),
                               input.voucher_header_id
                             ],
                             printQuery: false
@@ -1327,10 +1327,12 @@ export default {
                                   } else {
                                     updateQry = `update finance_voucher_header set settled_amount=settled_amount+${parseFloat(
                                       result[0]["amount"]
-                                    )} updated_date='${new Date()}',
+                                    )}, updated_date='${moment().format(
+                                      "YYYY-MM-DD"
+                                    )}',
                                     updated_by= ${
                                       req.userIdentity.algaeh_d_app_user_id
-                                    }, where finance_voucher_header_id=${
+                                    } where finance_voucher_header_id=${
                                       BalanceInvoice[0][
                                         "finance_voucher_header_id"
                                       ]
