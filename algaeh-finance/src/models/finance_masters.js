@@ -623,19 +623,17 @@ export default {
                 .startOf("year")
                 .format("YYYY-MM-DD");
 
-              to_date ==
-                moment(to_year + "-" + end_month, "YYYYM")
-                  .endOf("year")
-                  .format("YYYY-MM-DD");
+              to_date = moment(to_year + "-" + end_month, "YYYYM")
+                .endOf("year")
+                .format("YYYY-MM-DD");
             } else {
               from_date = moment()
                 .startOf("year")
                 .format("YYYY-MM-DD");
 
-              to_date ==
-                moment()
-                  .endOf("year")
-                  .format("YYYY-MM-DD");
+              to_date = moment()
+                .endOf("year")
+                .format("YYYY-MM-DD");
             }
 
             break;
@@ -645,10 +643,9 @@ export default {
               .startOf("month")
               .format("YYYY-MM-DD");
 
-            to_date ==
-              moment()
-                .endOf("month")
-                .format("YYYY-MM-DD");
+            to_date = moment()
+              .endOf("month")
+              .format("YYYY-MM-DD");
             break;
 
           case "TMTD":
@@ -656,7 +653,7 @@ export default {
               .startOf("month")
               .format("YYYY-MM-DD");
 
-            to_date == moment().format("YYYY-MM-DD");
+            to_date = moment().format("YYYY-MM-DD");
             break;
 
           case "LM":
@@ -665,11 +662,10 @@ export default {
               .startOf("month")
               .format("YYYY-MM-DD");
 
-            to_date ==
-              moment()
-                .add(-1, "months")
-                .endOf("month")
-                .format("YYYY-MM-DD");
+            to_date = moment()
+              .add(-1, "months")
+              .endOf("month")
+              .format("YYYY-MM-DD");
             break;
 
           default:
@@ -691,13 +687,13 @@ export default {
                 .startOf("year")
                 .format("YYYY-MM-DD");
 
-              to_date == moment().format("YYYY-MM-DD");
+              to_date = moment().format("YYYY-MM-DD");
             } else {
               from_date = moment()
                 .startOf("year")
                 .format("YYYY-MM-DD");
 
-              to_date == moment().format("YYYY-MM-DD");
+              to_date = moment().format("YYYY-MM-DD");
             }
         }
         req.records = {
