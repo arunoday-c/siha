@@ -30,7 +30,7 @@ export default function ProfitTree({ style, layout, data }) {
           <div className="financeReportHeader">
             <div>Twareat Medical Centre</div>
             <div>
-              Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+              Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
             </div>
             <hr></hr>
             <h3>Profit and Loss</h3>

@@ -67,6 +67,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       cost_center_id,
       year
     };
+    debugger;
     if (excel) {
       input.excel = true;
     }
@@ -141,12 +142,12 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     debugger;
     if (columnType === "by_year") {
       loadReportByYear(isExcel);
-    }
-    if (columnType === "by_center") {
+    } else if (columnType === "by_center") {
       loadByCostCenter(isExcel);
-    }
-    if (columnType === "total") {
+    } else if (columnType === "total") {
       loadByTotal(isExcel);
+    } else {
+      return;
     }
   }
 
@@ -220,6 +221,13 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         />
       </div>
       <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
+        {" "}
+        <i
+          className="fas fa-file-download"
+          onClick={onLoad}
+          disabled={!columnType}
+          data-name="excel"
+        />
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
           label={{
@@ -310,11 +318,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       ) : (
         <>
           {" "}
-          <i
-            className="fas fa-file-download"
-            onClick={onLoad}
-            disabled={!columnType}
-          />
           <Content />
         </>
       )}
