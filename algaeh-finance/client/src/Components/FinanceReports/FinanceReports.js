@@ -151,13 +151,16 @@ export default function FinanceReports() {
     return (
       <div className="row">
         <div className="col-12">
-          <div className="row">
+          <div className="row ">
             <ReportNavBar setSelected={setSelected} selected={selected} />
             <div className="col reportPreviewSecLeft">
               {selected !== "BS" ? (
-                <div className="row">
+                <div
+                  className="row inner-top-search"
+                  style={{ padding: "15px 0", marginTop: -15 }}
+                >
                   <AlgaehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Select Period",
                       isImp: true
@@ -197,7 +200,7 @@ export default function FinanceReports() {
                     }}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-4" }}
                     label={{ forceLabel: "Selected Range" }}
                     type="range"
                     textBox={{
@@ -217,7 +220,7 @@ export default function FinanceReports() {
                 delay={500}
               >
                 {selected === "TB" ? (
-                  <button onClick={onExportExcel}>Excel</button>
+                  <i className="fas fa-file-download" onClick={onExportExcel} />
                 ) : null}
                 <ReportMain
                   selected={selected}

@@ -57,16 +57,18 @@ export default function AgingReport({ style, result, layout, type, dates }) {
 
   return (
     <>
-      <ReactToPrint
+      {/* <ReactToPrint
         trigger={() => <i className="fas fa-print" />}
         content={() => createPrintObject.current}
         removeAfterPrint={true}
         bodyClass="reportPreviewSecLeft"
         pageStyle="printing"
-      />
-      <AlgaehButton onClick={() => loadReport(true)}>
+      /> */}
+      {/* <AlgaehButton >
         Download Excel
-      </AlgaehButton>
+      </AlgaehButton> */}
+
+      <i className="fas fa-file-download" onClick={() => loadReport(true)} />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>

@@ -280,15 +280,14 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         >
           Preview
         </AlgaehButton>
-        <AlgaehButton
+        {/* <AlgaehButton
           className="btn btn-default"
-          onClick={onLoad}
-          disabled={!columnType}
+       
           name="excel"
           style={{ marginTop: 15 }}
         >
           Download Excel
-        </AlgaehButton>
+        </AlgaehButton> */}
       </div>
       {!data ? (
         <div style={{ textAlign: "center" }}>
@@ -309,7 +308,15 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           </p>
         </div>
       ) : (
-        <Content />
+        <>
+          {" "}
+          <i
+            className="fas fa-file-download"
+            onClick={onLoad}
+            disabled={!columnType}
+          />
+          <Content />
+        </>
       )}
     </>
   );

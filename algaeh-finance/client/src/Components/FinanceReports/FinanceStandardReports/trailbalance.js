@@ -12,7 +12,7 @@ export default function TrailBalaceReport({
 
   return (
     <>
-      <ReactToPrint
+      {/* <ReactToPrint
         trigger={() => <i className="fas fa-print" />}
         content={() => createPrintObject.current}
         removeAfterPrint={true}
@@ -29,7 +29,7 @@ export default function TrailBalaceReport({
           size: auto;
           margin: 20mm;
         }"
-      />
+      /> */}
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>

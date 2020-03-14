@@ -46,34 +46,35 @@ export default function BalanceSheet({ style, footer, layout }) {
 
   return (
     <>
-      <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="@media print {
-            html, body {
-              height: initial !important;
-              overflow: initial !important;
-              -webkit-print-color-adjust: exact;
+      {/* <ReactToPrint
+          trigger={() => <i className="fas fa-print" />}
+          content={() => createPrintObject.current}
+          removeAfterPrint={true}
+          bodyClass="reportPreviewSecLeft"
+          pageStyle="@media print {
+              html, body {
+                height: initial !important;
+                overflow: initial !important;
+                -webkit-print-color-adjust: exact;
+              }
             }
-          }
-          
-          @page {
-            size: auto;
-            margin: 20mm;
-          }"
-      />
-      <AlgaehButton
+            
+            @page {
+              size: auto;
+              margin: 20mm;
+            }"
+        /> */}
+      {/* <AlgaehButton
         onClick={() => loadBalanceSheet(true)}
         className="btn btn-default"
       >
         Download Excel
-      </AlgaehButton>
-      <div className="row">
+      </AlgaehButton> */}
+
+      <div className="row inner-top-search">
         <AlgaehDateHandler
           div={{
-            className: "col-2 algaeh-date-fld"
+            className: "col-3 algaeh-date-fld"
           }}
           label={{
             forceLabel: "Select Date",
@@ -96,6 +97,11 @@ export default function BalanceSheet({ style, footer, layout }) {
         />
       </div>
       <div ref={createPrintObject}>
+        {" "}
+        <i
+          className="fas fa-file-download"
+          onClick={() => loadBalanceSheet(true)}
+        />
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>
           <div>
