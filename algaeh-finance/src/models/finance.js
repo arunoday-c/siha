@@ -695,7 +695,7 @@ export default {
         .executeQuery({
           query: strQry,
 
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

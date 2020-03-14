@@ -1,3 +1,4 @@
 import Mapping from "./mapping";
+import FinanceMapping from "./FinanceMapping";
 
-export default Mapping;
+export default FinanceMapping;
