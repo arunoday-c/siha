@@ -31,6 +31,9 @@ const InventoryDashboard = React.lazy(() =>
 const HrDashboard = React.lazy(() =>
   retry(() => import("./Components/Dashboard/hr-dashboard"))
 );
+const FinDashboard = React.lazy(() =>
+  retry(() => import("./Components/Dashboard/fin-dashboard"))
+);
 // const CommonDashboard = React.lazy(() =>
 //   retry(() => import("./Components/Dashboard/Dashboard"))
 // );
@@ -581,6 +584,11 @@ const appRoutes = [
     path: "/HrDashboard",
     isExactPath: true,
     component: <HrDashboard />
+  },
+  {
+    path: "/FinDashboard",
+    isExactPath: true,
+    component: <FinDashboard />
   },
   {
     path: "/AlgaehModules",

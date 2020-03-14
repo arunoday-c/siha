@@ -133,6 +133,130 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-hospital" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Operational Cost</p>
+
+                    {GetAmountFormart("150378.00")}
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Avg. Cost per Patient -
+                  <span>{GetAmountFormart("500.00")} </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-hand-holding-usd" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Revenue by MTD</p>
+                    {GetAmountFormart("124128.75")}
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Avg. Revenue per day-
+                  <span>{GetAmountFormart("4128.75")} </span>
+                  {/* <b onClick={this.showDetailHandler.bind(this)}>
+                    {this.state.showDetails === "d-block" ? "Hide" : "Show"}
+                  </b> */}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-users" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Total Patients</p>
+                    61,938
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Patients Admitted - <span>31,374</span>
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-user-md" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Avg. Patient per Dr. (MTD)</p>
+                    26.79
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Today Available Dr. - <span>190</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-walking" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Patient footfall (MTD)</p>
+                    58%
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Today Patient Fall - <span>18%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row card-deck">
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
                 {/* <div className="col-4">
                   <div className="icon-big text-center">
                     <i className="fas fa-building" />
@@ -164,23 +288,7 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                {/* <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-building" />
-                  </div>
-                </div> */}
-                <div className="col-12">
-                  <div className="text">
-                    <p>Total Labour</p>
-                    {this.state.total_labour_count}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
@@ -232,23 +340,6 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                {/* <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-users" />
-                  </div>
-                </div> */}
-                <div className="col-12">
-                  <div className="text">
-                    <p>Labour Cost</p>
-                    {GetAmountFormart(this.state.total_labor_salary)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="row">
@@ -288,51 +379,6 @@ class Dashboard extends Component {
                       legend={chartLegends}
                       options={chartOptionsHorizontal}
                     />
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>New Employee Joined this Month</h6>
-                  <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Join Date </th>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Gender</th>
-                          <th className="text-center">Designation</th>
-                          <th className="text-center">Sub Department</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {this.state.no_of_emp_join.length > 0 ? (
-                          this.state.no_of_emp_join.map((row, index) => (
-                            <tr key={index}>
-                              <td className="text-center">
-                                {row.date_of_joining}
-                              </td>
-                              <td className="text-center">
-                                {row.employee_code}
-                              </td>
-                              <td className="text-center">{row.full_name}</td>
-                              <td className="text-center">{row.sex}</td>
-                              <td className="text-center">{row.designation}</td>
-                              <td className="text-center">
-                                {row.sub_department_name}
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td className="text-center" colSpan="6">
-                              No New Joinee for this Month
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
                   </div>
                 </div>
               </div>
