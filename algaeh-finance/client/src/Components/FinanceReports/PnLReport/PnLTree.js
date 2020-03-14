@@ -8,7 +8,7 @@ export default function ProfitTree({ style, layout, data }) {
   if (data) {
     return (
       <>
-        <ReactToPrint
+        {/* <ReactToPrint
           trigger={() => <i className="fas fa-print" />}
           content={() => createPrintObject.current}
           removeAfterPrint={true}
@@ -25,7 +25,7 @@ export default function ProfitTree({ style, layout, data }) {
             size: auto;
             margin: 20mm;
           }"
-        />
+        /> */}
         <div ref={createPrintObject}>
           <div className="financeReportHeader">
             <div>Twareat Medical Centre</div>

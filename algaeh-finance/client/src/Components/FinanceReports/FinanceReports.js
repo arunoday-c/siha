@@ -44,7 +44,8 @@ export default function FinanceReports() {
     cols: 24,
     expand: false
   });
-  const year = new Date().getFullYear();
+  const [period, setPeriod] = useState("TMTD");
+  const [dates, setDates] = useState(undefined);
 
   useEffect(() => {
     async function initData() {
@@ -73,30 +74,43 @@ export default function FinanceReports() {
   }, []);
 
   useEffect(() => {
-    if (selected && finOptions) {
+    if (period) {
+      newAlgaehApi({
+        uri: "/finance_masters/getFinanceDate",
+        module: "finance",
+        data: {
+          transaction_date: period
+        }
+      })
+        .then(res => {
+          const { success, result } = res.data;
+          setDates([moment(result.from_date), moment(result.to_date)]);
+        })
+        .catch(e => console.log(e.message));
+    }
+  }, [period]);
+
+  useEffect(() => {
+    if (selected && finOptions && dates) {
       switch (selected) {
-        case "BS":
-          loadReport({ url: "getBalanceSheet" });
-          break;
-        case "PL":
-          loadReport({ url: "getProfitAndLoss" });
-          break;
         case "TB":
-          loadReport({ url: "getTrialBalance", reportName: "TB" });
+          loadReport({ url: "getTrialBalance", reportName: "TB", dates });
           break;
         default:
           break;
       }
     }
-  }, [selected, finOptions]);
+  }, [selected, finOptions, dates]);
 
   function loadReport(report) {
-    const { url, reportName } = report;
+    const { url, reportName, dates: inputDates } = report;
     getBalanceSheet({
       url: url,
       inputParam: {
         hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id
+        cost_center_id: finOptions.default_cost_center_id,
+        from_date: inputDates[0],
+        to_date: inputDates[1]
       }
     })
       .then(result => {
@@ -107,7 +121,7 @@ export default function FinanceReports() {
         setData([]);
         AlgaehMessagePop({
           title: "error",
-          display: error
+          display: error.message
         });
         setLoading(false);
       });
@@ -118,8 +132,7 @@ export default function FinanceReports() {
       selected,
       inputParam: {
         hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id,
-        year
+        cost_center_id: finOptions.default_cost_center_id
       }
     })
       .then(response => {
@@ -138,20 +151,81 @@ export default function FinanceReports() {
     return (
       <div className="row">
         <div className="col-12">
-          <div className="row">
+          <div className="row ">
             <ReportNavBar setSelected={setSelected} selected={selected} />
             <div className="col reportPreviewSecLeft">
+              {selected !== "BS" ? (
+                <div
+                  className="row inner-top-search"
+                  style={{ padding: "15px 0", marginTop: -15 }}
+                >
+                  <AlgaehAutoComplete
+                    div={{ className: "col-4" }}
+                    label={{
+                      forceLabel: "Select Period",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "period",
+                      value: period,
+                      dataSource: {
+                        data: [
+                          {
+                            name: "This month",
+                            value: "TM"
+                          },
+                          {
+                            name: "This Month till Date",
+                            value: "TMTD"
+                          },
+                          {
+                            name: "Last month",
+                            value: "LM"
+                          },
+                          {
+                            name: "Current Year",
+                            value: "CY"
+                          },
+                          {
+                            name: "Current Yeat till Date",
+                            value: "CYTD"
+                          }
+                        ],
+                        valueField: "value",
+                        textField: "name"
+                      },
+                      onChange: (_, value) => {
+                        setPeriod(value);
+                      }
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-4" }}
+                    label={{ forceLabel: "Selected Range" }}
+                    type="range"
+                    textBox={{
+                      value: dates
+                    }}
+                    events={{
+                      onChange: selected => {
+                        setDates(selected);
+                      }
+                    }}
+                  />
+                </div>
+              ) : null}
               <Spin
                 spinning={loading}
                 tip="Please wait report data is fetching.."
                 delay={500}
               >
-                {selected !== "PL" ? (
-                  <button onClick={onExportExcel}>Excel</button>
+                {selected === "TB" ? (
+                  <i className="fas fa-file-download" onClick={onExportExcel} />
                 ) : null}
                 <ReportMain
                   selected={selected}
                   data={data}
+                  dates={dates}
                   finOptions={finOptions}
                   layout={layout}
                   organization={organization}

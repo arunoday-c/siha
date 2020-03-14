@@ -9,7 +9,7 @@ import ByCostCenter from "./pandLCostCenter";
 import PnLTree from "./PnLTree";
 import { newAlgaehApi } from "../../../hooks";
 import { getYears } from "../../../utils/GlobalFunctions";
-import { downloadExcel, handleFile } from "../FinanceReportEvents";
+import { handleFile } from "../FinanceReportEvents";
 import { Button } from "antd/es/radio";
 const yearList = getYears();
 
@@ -53,22 +53,31 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     }
   }
 
-  function loadReportByYear() {
+  function handleResponse(response, excel) {
+    if (excel) {
+      handleFile(response.data, columnType);
+    } else {
+      setData(response.data.result);
+    }
+  }
+
+  function loadReportByYear(excel) {
+    const input = {
+      hospital_id: branch_id,
+      cost_center_id,
+      year
+    };
+    if (excel) {
+      input.excel = true;
+    }
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLossMonthWise",
       module: "finance",
-      data: {
-        hospital_id: branch_id,
-        cost_center_id,
-        year
-      }
+      data: input
     })
       .then(response => {
-        const { result, success } = response.data;
-        if (success) {
-          setData(result);
-          setLoading(false);
-        }
+        handleResponse(response, excel);
+        setLoading(false);
       })
       .catch(error => {
         setLoading(false);
@@ -79,17 +88,16 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       });
   }
 
-  function loadByCostCenter() {
+  function loadByCostCenter(excel) {
+    const input = excel ? { excel: true } : {};
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLossCostCenterWise",
-      module: "finance"
+      module: "finance",
+      data: input
     })
       .then(response => {
-        const { result, success } = response.data;
-        if (success) {
-          setData(result);
-          setLoading(false);
-        }
+        handleResponse(response, excel);
+        setLoading(false);
       })
       .catch(error => {
         setLoading(false);
@@ -100,21 +108,22 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       });
   }
 
-  function loadByTotal() {
+  function loadByTotal(excel) {
+    const input = {
+      hospital_id: branch_id,
+      cost_center_id
+    };
+    if (excel) {
+      input.excel = true;
+    }
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLoss",
       module: "finance",
-      data: {
-        hospital_id: branch_id,
-        cost_center_id
-      }
+      data: input
     })
       .then(response => {
-        const { result, success } = response.data;
-        if (success) {
-          setData(result);
-          setLoading(false);
-        }
+        handleResponse(response, excel);
+        setLoading(false);
       })
       .catch(error => {
         setLoading(false);
@@ -125,41 +134,44 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       });
   }
 
-  function onLoad() {
+  function onLoad(e) {
+    const { name } = e.target;
+    const isExcel = name === "excel";
     setLoading(true);
+    debugger;
     if (columnType === "by_year") {
-      loadReportByYear();
+      loadReportByYear(isExcel);
     }
     if (columnType === "by_center") {
-      loadByCostCenter();
+      loadByCostCenter(isExcel);
     }
     if (columnType === "total") {
-      loadByTotal();
+      loadByTotal(isExcel);
     }
   }
 
-  function loadExcel() {
-    if (columnType) {
-      downloadExcel({
-        selected: columnType,
-        inputParam: {
-          hospital_id: branch_id,
-          cost_center_id: cost_center_id,
-          year: year
-        }
-      })
-        .then(response => {
-          handleFile(response.data, columnType);
-        })
-        .catch(error => {
-          const { message } = error;
-          AlgaehMessagePop({
-            type: "error",
-            display: message !== "" ? message : error.data.message
-          });
-        });
-    }
-  }
+  // function loadExcel() {
+  //   if (columnType) {
+  //     downloadExcel({
+  //       selected: columnType,
+  //       inputParam: {
+  //         hospital_id: branch_id,
+  //         cost_center_id: cost_center_id,
+  //         year: year
+  //       }
+  //     })
+  //       .then(response => {
+  //         handleFile(response.data, columnType);
+  //       })
+  //       .catch(error => {
+  //         const { message } = error;
+  //         AlgaehMessagePop({
+  //           type: "error",
+  //           display: message !== "" ? message : error.data.message
+  //         });
+  //       });
+  //   }
+  // }
 
   function Content() {
     switch (columnType) {
@@ -174,7 +186,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
 
   return (
     <>
-      <Button onClick={loadExcel}>Excel</Button>
+      {/* <Button onClick={loadExcel}>Excel</Button> */}
       <div className="row">
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
@@ -262,10 +274,20 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         <AlgaehButton
           className="btn btn-primary"
           onClick={onLoad}
+          disabled={!columnType}
+          name="preview"
           style={{ marginTop: 15 }}
         >
-          Load
+          Preview
         </AlgaehButton>
+        {/* <AlgaehButton
+          className="btn btn-default"
+       
+          name="excel"
+          style={{ marginTop: 15 }}
+        >
+          Download Excel
+        </AlgaehButton> */}
       </div>
       {!data ? (
         <div style={{ textAlign: "center" }}>
@@ -286,7 +308,15 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           </p>
         </div>
       ) : (
-        <Content />
+        <>
+          {" "}
+          <i
+            className="fas fa-file-download"
+            onClick={onLoad}
+            disabled={!columnType}
+          />
+          <Content />
+        </>
       )}
     </>
   );
