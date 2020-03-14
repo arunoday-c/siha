@@ -7,19 +7,14 @@ import PnLReport from "./PnLReport";
 export default function ReportMain({
   selected,
   data,
+  dates,
   layout,
   finOptions,
   organization
 }) {
   switch (selected) {
     case "BS":
-      return (
-        <Balance
-          data={data}
-          layout={layout}
-          result={["asset", "liabilities"]}
-        />
-      );
+      return <Balance layout={layout} />;
     case "PL":
       return (
         <PnLReport
@@ -31,9 +26,9 @@ export default function ReportMain({
     case "TB":
       return <TrailBalance layout={layout} data={data} />;
     case "AR":
-      return <AgingReport layout={layout} type="receivable" />;
+      return <AgingReport layout={layout} type="receivable" dates={dates} />;
     case "AP":
-      return <AgingReport layout={layout} type="payable" />;
+      return <AgingReport layout={layout} type="payable" dates={dates} />;
 
     default:
       return null;

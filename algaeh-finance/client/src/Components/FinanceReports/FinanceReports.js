@@ -44,7 +44,7 @@ export default function FinanceReports() {
     cols: 24,
     expand: false
   });
-  const [period, setPeriod] = useState("");
+  const [period, setPeriod] = useState("TMTD");
   const [dates, setDates] = useState(undefined);
 
   useEffect(() => {
@@ -84,7 +84,6 @@ export default function FinanceReports() {
       })
         .then(res => {
           const { success, result } = res.data;
-          debugger;
           setDates([moment(result.from_date), moment(result.to_date)]);
         })
         .catch(e => console.log(e.message));
@@ -92,27 +91,26 @@ export default function FinanceReports() {
   }, [period]);
 
   useEffect(() => {
-    if (selected && finOptions) {
+    if (selected && finOptions && dates) {
       switch (selected) {
-        case "BS":
-          loadReport({ url: "getBalanceSheet" });
-          break;
         case "TB":
-          loadReport({ url: "getTrialBalance", reportName: "TB" });
+          loadReport({ url: "getTrialBalance", reportName: "TB", dates });
           break;
         default:
           break;
       }
     }
-  }, [selected, finOptions]);
+  }, [selected, finOptions, dates]);
 
   function loadReport(report) {
-    const { url, reportName } = report;
+    const { url, reportName, dates: inputDates } = report;
     getBalanceSheet({
       url: url,
       inputParam: {
         hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id
+        cost_center_id: finOptions.default_cost_center_id,
+        from_date: inputDates[0],
+        to_date: inputDates[1]
       }
     })
       .then(result => {
@@ -123,7 +121,7 @@ export default function FinanceReports() {
         setData([]);
         AlgaehMessagePop({
           title: "error",
-          display: error
+          display: error.message
         });
         setLoading(false);
       });
@@ -156,72 +154,75 @@ export default function FinanceReports() {
           <div className="row">
             <ReportNavBar setSelected={setSelected} selected={selected} />
             <div className="col reportPreviewSecLeft">
-              <div className="row">
-                <AlgaehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    forceLabel: "Select Period",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "period",
-                    value: period,
-                    dataSource: {
-                      data: [
-                        {
-                          name: "This month",
-                          value: "TM"
-                        },
-                        {
-                          name: "This Month till Date",
-                          value: "TMTD"
-                        },
-                        {
-                          name: "Last month",
-                          value: "LM"
-                        },
-                        {
-                          name: "Current Year",
-                          value: "CY"
-                        },
-                        {
-                          name: "Current Yeat till Date",
-                          value: "CYTD"
-                        }
-                      ],
-                      valueField: "value",
-                      textField: "name"
-                    },
-                    onChange: (_, value) => {
-                      setPeriod(value);
-                    }
-                  }}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Selected Range" }}
-                  type="range"
-                  textBox={{
-                    value: dates
-                  }}
-                  events={{
-                    onChange: selected => {
-                      setDates(selected);
-                    }
-                  }}
-                />
-              </div>
+              {selected !== "BS" ? (
+                <div className="row">
+                  <AlgaehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      forceLabel: "Select Period",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "period",
+                      value: period,
+                      dataSource: {
+                        data: [
+                          {
+                            name: "This month",
+                            value: "TM"
+                          },
+                          {
+                            name: "This Month till Date",
+                            value: "TMTD"
+                          },
+                          {
+                            name: "Last month",
+                            value: "LM"
+                          },
+                          {
+                            name: "Current Year",
+                            value: "CY"
+                          },
+                          {
+                            name: "Current Yeat till Date",
+                            value: "CYTD"
+                          }
+                        ],
+                        valueField: "value",
+                        textField: "name"
+                      },
+                      onChange: (_, value) => {
+                        setPeriod(value);
+                      }
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-3" }}
+                    label={{ forceLabel: "Selected Range" }}
+                    type="range"
+                    textBox={{
+                      value: dates
+                    }}
+                    events={{
+                      onChange: selected => {
+                        setDates(selected);
+                      }
+                    }}
+                  />
+                </div>
+              ) : null}
               <Spin
                 spinning={loading}
                 tip="Please wait report data is fetching.."
                 delay={500}
               >
-                {selected !== "PL" ? (
+                {selected === "TB" ? (
                   <button onClick={onExportExcel}>Excel</button>
                 ) : null}
                 <ReportMain
                   selected={selected}
                   data={data}
+                  dates={dates}
                   finOptions={finOptions}
                   layout={layout}
                   organization={organization}
