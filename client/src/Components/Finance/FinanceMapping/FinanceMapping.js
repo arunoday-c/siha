@@ -130,7 +130,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right" }}
+                      style={{ float: "right", marginTop: 19 }}
                     >
                       Map/Update
                     </button>
@@ -189,7 +189,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right" }}
+                      style={{ float: "right", marginTop: 19 }}
                     >
                       Map/Update
                     </button>
@@ -284,7 +284,7 @@ class FinanceMapping extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ float: "right" }}
+                      style={{ float: "right", marginTop: 19 }}
                     >
                       Map/Update
                     </button>
