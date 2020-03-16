@@ -8200,6 +8200,8 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       carry_forward_done: "N",
                       carry_forward_leave: 0
                     });
+                  } else {
+                    m["close_balance"] = m["eligible_days"];
                   }
                   return {
                     ...m,

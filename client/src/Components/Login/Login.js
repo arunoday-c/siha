@@ -420,6 +420,8 @@ function Login(props) {
               </div>
             ) : (
               <div id="loginForm" className="loginFormContainer">
+                {/* <div className="algaehLogo"></div>
+                <div className="clientLogo"></div> */}
                 <div className="col-12">
                   <div className="row">
                     <div className="col-12">

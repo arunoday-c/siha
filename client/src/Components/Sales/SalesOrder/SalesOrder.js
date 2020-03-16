@@ -90,8 +90,8 @@ class SalesOrder extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      decimal_place: userToken.decimal_places,
-      hospital_id: userToken.hims_d_hospital_id
+      decimal_place: userToken.decimal_places
+      // hospital_id: userToken.hims_d_hospital_id
     });
 
     this.HRMNGMT_Active =
