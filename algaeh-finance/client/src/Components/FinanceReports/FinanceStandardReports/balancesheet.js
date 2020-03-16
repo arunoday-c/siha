@@ -21,13 +21,23 @@ export default function BalanceSheet({ style, footer, layout }) {
   }, [date]);
 
   function loadBalanceSheet(excel) {
+    let extraHeaders = {};
+    let others = {};
+    if (excel === true) {
+      extraHeaders = {
+        Accept: "blob"
+      };
+      others = { responseType: "blob" };
+    }
     newAlgaehApi({
       uri: "/financeReports/getBalanceSheet",
       module: "finance",
       data: {
         date,
         excel
-      }
+      },
+      extraHeaders,
+      options: others
     })
       .then(res => {
         if (excel) {
