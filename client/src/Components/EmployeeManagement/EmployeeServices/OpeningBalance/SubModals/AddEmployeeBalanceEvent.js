@@ -20,9 +20,9 @@ export default function AllEvents() {
         searchGrid: {
           columns: spotlightSearch.Employee_details.employee
         },
-        searchName: "employee",
+        searchName: "employee_branch_wise",
         uri: "/gloabelSearch/get",
-        inputs: "leave_salary_process = 'Y'",
+        inputs: `leave_salary_process = 'Y' and hospital_id='${$this.props.hospital_id}'`,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
@@ -36,7 +36,6 @@ export default function AllEvents() {
       });
     },
     SaveData: $this => {
-
       let selected_uri = "";
       let inputObj = {};
 

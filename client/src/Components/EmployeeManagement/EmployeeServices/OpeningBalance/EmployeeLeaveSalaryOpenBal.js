@@ -40,13 +40,13 @@ export default class EmployeeLeaveSalaryOpenBal extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
-
     if (newProps.leave_salary_columns.length > 0) {
       this.setState({
         leave_salary_columns: newProps.leave_salary_columns,
         leave_balance: newProps.leave_balance,
         year: newProps.year,
-        loan_master: newProps.loan_master
+        loan_master: newProps.loan_master,
+        hospital_id: newProps.hospital_id
       });
     }
   }
@@ -87,7 +87,7 @@ export default class EmployeeLeaveSalaryOpenBal extends Component {
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
                   events={{
-                    onEdit: () => { },
+                    onEdit: () => {},
                     onDone: this.updateEmployeeOpeningBalance.bind(this)
                   }}
                   actions={{
@@ -105,6 +105,7 @@ export default class EmployeeLeaveSalaryOpenBal extends Component {
           HeaderCaption={this.state.HeaderCaption}
           selected_type="LS"
           year={this.state.year}
+          hospital_id={this.state.hospital_id}
           loan_master={this.state.loan_master}
         />
       </div>
