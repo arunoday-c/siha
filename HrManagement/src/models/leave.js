@@ -8115,6 +8115,8 @@ function yearlyLeaveProcess(inputs, req, mysql) {
                       (parseFloat(m.eligible_days) / parseFloat(365)) *
                         parseFloat(AllEmployees[i]["no_days_til_eoy"])
                     );
+                  } else {
+                    m["eligible_days"] = m.eligible_days;
                   }
                   return m;
                 });
