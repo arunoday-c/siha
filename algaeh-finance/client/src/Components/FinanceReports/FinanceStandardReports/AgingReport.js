@@ -24,6 +24,15 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   );
 
   function loadReport(excel) {
+    let extraHeaders = {};
+    if (excel === true) {
+      extraHeaders = {
+        headers: {
+          Accept: "blob"
+        },
+        others: { responseType: "blob" }
+      };
+    }
     algaehApiCall({
       uri: `/financeReports/${DIFF[type].url}`,
       method: "GET",
@@ -33,6 +42,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
         to_date: dates[1],
         excel
       },
+      ...extraHeaders,
       onSuccess: response => {
         if (excel) {
           handleFile(response.data, type);
