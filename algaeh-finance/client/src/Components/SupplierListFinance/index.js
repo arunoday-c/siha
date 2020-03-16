@@ -86,6 +86,22 @@ function CustomerList(props) {
                         }
                       },
                       {
+                        title: "Contact Number",
+                        sortable: true,
+                        fieldName: "contact_number",
+                        others: {
+                          width: 200
+                        }
+                      },
+                      {
+                        title: "Account Number",
+                        sortable: true,
+                        fieldName: "bank_account_no",
+                        others: {
+                          width: 200
+                        }
+                      },
+                      {
                         title: "Balance",
                         sortable: true,
                         fieldName: "balance_amount",
