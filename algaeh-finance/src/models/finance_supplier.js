@@ -12,10 +12,11 @@ export default {
     _mysql
       .executeQuery({
         query: `select C.finance_account_child_id ,C.child_name,
-         ROUND(  coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount)   ,0),${decimal_places})
-        as balance_amount from finance_account_child C left join finance_voucher_details VD
-        on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  where  finance_account_child_id in (
-        select child_id from hims_d_vendor) group by C.finance_account_child_id;
+        ROUND(  coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount)   ,0),${decimal_places})
+       as balance_amount,coalesce(V.bank_account_no,'-') as bank_account_no,V.contact_number from 
+       hims_d_vendor V inner join finance_account_child C  on V.child_id=C.finance_account_child_id
+       left join finance_voucher_details VD
+       on C.finance_account_child_id=VD.child_id and VD.auth_status='A'  group by C.finance_account_child_id;
 
         select round(coalesce(sum(amount)-sum(settled_amount),0),2)as over_due 
         from finance_voucher_header H inner join finance_voucher_details VD
