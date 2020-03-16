@@ -849,8 +849,7 @@ let algaehSearchConfig = (searchName, req) => {
           end as sales_order_mode, C.customer_name, SQ.sales_quotation_number from hims_f_sales_order SO \
           inner join hims_d_customer C on SO.customer_id = C.hims_d_customer_id \
           left join  hims_f_sales_quotation SQ on SO.sales_quotation_id = SQ.hims_f_sales_quotation_id  \
-          where SO.hospital_id=" +
-          hospitalId,
+          where 1=1",
         orderBy: "hims_f_sales_order_id desc"
       },
       {
