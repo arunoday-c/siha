@@ -338,71 +338,130 @@ export default {
   //created by irfan:
   getTrialBalance: (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
-    let option = {
-      tialBalance: "Y",
-      total_debit_amount: 0,
-      total_credit_amount: 0
-    };
 
-    getAccountHeadsForTrialBalance(decimal_places, 1, option)
-      .then(asset => {
-        getAccountHeadsForTrialBalance(decimal_places, 2, option)
-          .then(liability => {
-            getAccountHeadsForTrialBalance(decimal_places, 3, option)
-              .then(capital => {
-                // const newCapital = capital.children[0].children.find(f => {
-                //   return f.finance_account_child_id == 52;
-                // });
-                // const newCapital = capital;
-                getAccountHeadsForTrialBalance(decimal_places, 4, option)
-                  .then(income => {
-                    getAccountHeadsForTrialBalance(decimal_places, 5, option)
-                      .then(expense => {
-                        const total_debit_amount = parseFloat(
-                          parseFloat(asset.total_debit_amount) +
-                            parseFloat(capital.total_debit_amount) +
-                            parseFloat(income.total_debit_amount) +
-                            parseFloat(liability.total_debit_amount) +
-                            parseFloat(expense.total_debit_amount)
-                        ).toFixed(decimal_places);
-                        const total_credit_amount = parseFloat(
-                          parseFloat(asset.total_credit_amount) +
-                            parseFloat(capital.total_credit_amount) +
-                            parseFloat(income.total_credit_amount) +
-                            parseFloat(liability.total_credit_amount) +
-                            parseFloat(expense.total_credit_amount)
-                        ).toFixed(decimal_places);
-                        // newCapital.children = [{ ...newCapital }];
-                        req.records = {
-                          asset: asset.roots[0],
-                          liability: liability.roots[0],
-                          capital: capital.roots[0],
-                          income: income.roots[0],
-                          expense: expense.roots[0],
-                          total_debit_amount: total_debit_amount,
-                          total_credit_amount: total_credit_amount
-                        };
-                        next();
-                      })
-                      .catch(e => {
-                        next(e);
-                      });
-                  })
-                  .catch(e => {
-                    next(e);
-                  });
-              })
-              .catch(e => {
-                next(e);
-              });
-          })
-          .catch(e => {
-            next(e);
-          });
-      })
-      .catch(e => {
-        next(e);
-      });
+    let option = req.query;
+
+    if (option.old == "Y") {
+      getAccountHeadsForTrialBalance(decimal_places, 1, option)
+        .then(asset => {
+          getAccountHeadsForTrialBalance(decimal_places, 2, option)
+            .then(liability => {
+              getAccountHeadsForTrialBalance(decimal_places, 3, option)
+                .then(capital => {
+                  // const newCapital = capital.children[0].children.find(f => {
+                  //   return f.finance_account_child_id == 52;
+                  // });
+                  // const newCapital = capital;
+                  getAccountHeadsForTrialBalance(decimal_places, 4, option)
+                    .then(income => {
+                      getAccountHeadsForTrialBalance(decimal_places, 5, option)
+                        .then(expense => {
+                          const total_debit_amount = parseFloat(
+                            parseFloat(asset.total_debit_amount) +
+                              parseFloat(capital.total_debit_amount) +
+                              parseFloat(income.total_debit_amount) +
+                              parseFloat(liability.total_debit_amount) +
+                              parseFloat(expense.total_debit_amount)
+                          ).toFixed(decimal_places);
+                          const total_credit_amount = parseFloat(
+                            parseFloat(asset.total_credit_amount) +
+                              parseFloat(capital.total_credit_amount) +
+                              parseFloat(income.total_credit_amount) +
+                              parseFloat(liability.total_credit_amount) +
+                              parseFloat(expense.total_credit_amount)
+                          ).toFixed(decimal_places);
+                          // newCapital.children = [{ ...newCapital }];
+                          req.records = {
+                            asset: asset.roots[0],
+                            liability: liability.roots[0],
+                            capital: capital.roots[0],
+                            income: income.roots[0],
+                            expense: expense.roots[0],
+                            total_debit_amount: total_debit_amount,
+                            total_credit_amount: total_credit_amount
+                          };
+                          next();
+                        })
+                        .catch(e => {
+                          next(e);
+                        });
+                    })
+                    .catch(e => {
+                      next(e);
+                    });
+                })
+                .catch(e => {
+                  next(e);
+                });
+            })
+            .catch(e => {
+              next(e);
+            });
+        })
+        .catch(e => {
+          next(e);
+        });
+    } else {
+      const _mysql = new algaehMysql();
+      option["_mysql"] = _mysql;
+
+      getTrialBalanceFunc(decimal_places, 1, option)
+        .then(asset => {
+          getTrialBalanceFunc(decimal_places, 2, option)
+            .then(liability => {
+              getTrialBalanceFunc(decimal_places, 3, option)
+                .then(capital => {
+                  getTrialBalanceFunc(decimal_places, 4, option)
+                    .then(income => {
+                      getTrialBalanceFunc(decimal_places, 5, option)
+                        .then(expense => {
+                          _mysql.releaseConnection();
+                          // const total_debit_amount = parseFloat(
+                          //   parseFloat(asset.total_debit_amount) +
+                          //     parseFloat(capital.total_debit_amount) +
+                          //     parseFloat(income.total_debit_amount) +
+                          //     parseFloat(liability.total_debit_amount) +
+                          //     parseFloat(expense.total_debit_amount)
+                          // ).toFixed(decimal_places);
+                          // const total_credit_amount = parseFloat(
+                          //   parseFloat(asset.total_credit_amount) +
+                          //     parseFloat(capital.total_credit_amount) +
+                          //     parseFloat(income.total_credit_amount) +
+                          //     parseFloat(liability.total_credit_amount) +
+                          //     parseFloat(expense.total_credit_amount)
+                          // ).toFixed(decimal_places);
+
+                          req.records = {
+                            asset: asset,
+                            liability: liability,
+                            capital: capital,
+                            income: income,
+                            expense: expense,
+                            total_debit_amount: 0,
+                            total_credit_amount: 0
+                          };
+                          next();
+                        })
+                        .catch(e => {
+                          next(e);
+                        });
+                    })
+                    .catch(e => {
+                      next(e);
+                    });
+                })
+                .catch(e => {
+                  next(e);
+                });
+            })
+            .catch(e => {
+              next(e);
+            });
+        })
+        .catch(e => {
+          next(e);
+        });
+    }
   },
 
   //created by irfan: ACCOUNT RECEIVABLE REPORT
@@ -2446,4 +2505,638 @@ function getLedgersForProfitAndLossMonthWise(
       });
     }
   });
+}
+
+//created by irfan:
+function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
+  //const utilities = new algaehUtilities();
+
+  const _mysql = options._mysql;
+
+  return new Promise((resolve, reject) => {
+    if (finance_account_head_id > 0 && finance_account_head_id < 6) {
+      const default_total = parseFloat(0).toFixed(decimal_places);
+      let trans_symbol = "Cr";
+      if (finance_account_head_id == 1 || finance_account_head_id == 5) {
+        trans_symbol = "Dr";
+      }
+      let str = "";
+      let qryStr = "";
+
+      if (finance_account_head_id == 3) {
+        qryStr = " and  VD.child_id <> 1 ";
+        str = " and  finance_account_child_id <> 1 ";
+      }
+      _mysql
+        .executeQuery({
+          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,
+           account_parent,account_level, parent_acc_id,root_id,
+          finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id, 
+          coalesce(H.arabic_account_name,'') as arabic_account_name, coalesce(C.arabic_child_name,'') as arabic_child_name
+          from finance_account_head H left join finance_account_child C on C.head_id=H.finance_account_head_id ${str} where root_id=?  ; 
+
+          select C.head_id,finance_account_child_id as child_id
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount , 
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
+          and VD.payment_date < ? where H.root_id=? group by C.finance_account_child_id;
+
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
+          and VD.payment_date < ? where H.root_id=? group by H.finance_account_head_id   ; 
+
+          select C.head_id,finance_account_child_id as child_id
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount , 
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
+          and VD.payment_date between ? and ? where H.root_id=? group by C.finance_account_child_id;
+
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
+          and  VD.payment_date between ? and ? where H.root_id=? group by H.finance_account_head_id   ; 
+
+          select C.head_id,finance_account_child_id as child_id
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount , 
+          ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),${decimal_places}) as cred_minus_deb,
+          ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),${decimal_places})  as deb_minus_cred
+          from finance_account_head H inner join finance_account_child C on C.head_id=H.finance_account_head_id              
+          left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id and VD.auth_status='A'   ${qryStr}
+          and VD.payment_date <= ? where H.root_id=? group by C.finance_account_child_id;
+
+          select finance_account_head_id,coalesce(parent_acc_id,'root') as parent_acc_id  ,account_level
+          ,ROUND(coalesce(sum(debit_amount) ,0.0000),${decimal_places}) as debit_amount,
+          ROUND( coalesce(sum(credit_amount) ,0.0000),${decimal_places})  as credit_amount          from finance_account_head H              
+          left join finance_voucher_details VD on  VD.head_id=H.finance_account_head_id  and VD.auth_status='A'   ${qryStr}
+          and VD.payment_date <= ? where H.root_id=? group by H.finance_account_head_id   ;
+
+          select max(account_level) as account_level from finance_account_head where root_id=?;  `,
+
+          values: [
+            finance_account_head_id,
+            options.from_date,
+            finance_account_head_id,
+            options.from_date,
+            finance_account_head_id,
+            options.from_date,
+            options.to_date,
+            finance_account_head_id,
+            options.from_date,
+            options.to_date,
+            finance_account_head_id,
+            options.to_date,
+            finance_account_head_id,
+            options.to_date,
+            finance_account_head_id,
+            finance_account_head_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          const ledger_names = result[0];
+
+          const op_child_data = result[1];
+          const ob_heads = result[2];
+
+          const transaction_child_data = result[3];
+          const transaction_heads = result[4];
+
+          const cb_child_data = result[5];
+          const cb_heads = result[6];
+          const levels = result[7];
+
+          calcAmount(ob_heads, levels, decimal_places)
+            .then(op_head_data => {
+              calcAmount(transaction_heads, levels, decimal_places)
+                .then(transaction_head_data => {
+                  calcAmount(cb_heads, levels, decimal_places)
+                    .then(cb_head_data => {
+                      const outputArray = createHierarchyTransactionTB(
+                        ledger_names,
+                        op_head_data,
+                        op_child_data,
+                        transaction_head_data,
+                        transaction_child_data,
+                        cb_head_data,
+                        cb_child_data,
+                        trans_symbol,
+                        default_total,
+                        decimal_places
+                      );
+                      resolve(outputArray[0]);
+                    })
+                    .catch(e => {
+                      console.log("m2:", e);
+                      next(e);
+                    });
+                })
+                .catch(e => {
+                  console.log("m3:", e);
+                  next(e);
+                });
+            })
+            .catch(e => {
+              console.log("m4:", e);
+              next(e);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      });
+    }
+  });
+}
+
+//created by :IRFAN to build tree hierarchy
+function createHierarchyTransactionTB(
+  arry,
+  op_head_data,
+  op_child_data,
+  transaction_head_data,
+  transaction_child_data,
+  cb_head_data,
+  cb_child_data,
+  trans_symbol,
+  default_total,
+  decimal_places
+) {
+  try {
+    // const onlyChilds = [];
+    const utilities = new algaehUtilities();
+    let roots = [],
+      children = {};
+
+    // find the top level nodes and hash the children based on parent_acc_id
+    for (let i = 0, len = arry.length; i < len; ++i) {
+      let item = arry[i],
+        p = item.parent_acc_id,
+        //if it has no parent_acc_id
+        //seprating roots to roots array childerens to childeren array
+        target = !p ? roots : children[p] || (children[p] = []);
+
+      if (
+        item.finance_account_child_id > 0 &&
+        item.finance_account_head_id == item.head_id
+      ) {
+        let child =
+          children[item.finance_account_head_id] ||
+          (children[item.finance_account_head_id] = []);
+
+        //ST---calulating Amount
+
+        //ST calculating opening balance of from date-----
+        const OP_BALANCE = op_child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
+
+        let op_amount = default_total;
+        if (OP_BALANCE != undefined) {
+          if (trans_symbol == "Dr") {
+            if (
+              parseFloat(OP_BALANCE.deb_minus_cred) >
+              parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else if (
+              parseFloat(OP_BALANCE.deb_minus_cred) <
+              parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else {
+              op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
+          } else {
+            if (
+              parseFloat(OP_BALANCE.cred_minus_deb) >
+              parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else if (
+              parseFloat(OP_BALANCE.cred_minus_deb) <
+              parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else {
+              op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
+          }
+        }
+        ///END calculating opening balance of from date-----
+
+        //ST calculating closing balance on  to date-----
+
+        const CB_BALANCE = cb_child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
+
+        let cb_amount = default_total;
+        if (CB_BALANCE != undefined) {
+          if (trans_symbol == "Dr") {
+            if (
+              parseFloat(CB_BALANCE.deb_minus_cred) >
+              parseFloat(CB_BALANCE.cred_minus_deb)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else if (
+              parseFloat(CB_BALANCE.deb_minus_cred) <
+              parseFloat(CB_BALANCE.cred_minus_deb)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else {
+              cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
+          } else {
+            if (
+              parseFloat(CB_BALANCE.cred_minus_deb) >
+              parseFloat(CB_BALANCE.deb_minus_cred)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else if (
+              parseFloat(CB_BALANCE.cred_minus_deb) <
+              parseFloat(CB_BALANCE.deb_minus_cred)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else {
+              cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
+          }
+        }
+        //END calculating closing balance on  to date-----
+
+        //ST calculating transaction amount between  from_date  and to_date-----
+        const TR_BALANCE = transaction_child_data.find(f => {
+          return (
+            item.finance_account_head_id == f.head_id &&
+            item.finance_account_child_id == f.child_id
+          );
+        });
+        let tr_debit_amount = default_total;
+        let tr_credit_amount = default_total;
+        if (TR_BALANCE != undefined) {
+          tr_debit_amount = TR_BALANCE.debit_amount;
+          tr_credit_amount = TR_BALANCE.credit_amount;
+        }
+        ///END calculating transaction amount between  from_date  and to_date-----
+
+        //END---calulating Amount
+        child.push({
+          finance_account_child_id: item["finance_account_child_id"],
+
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
+          cb_amount: cb_amount,
+          op_amount: op_amount,
+          title: item.child_name,
+          label: item.child_name,
+          head_id: item["head_id"],
+          arabic_name: item.arabic_child_name,
+          leafnode: "Y"
+        });
+
+        //if children array doesnt contain this non-leaf node then push
+        const data = target.find(val => {
+          return val.finance_account_head_id == item.finance_account_head_id;
+        });
+
+        if (!data) {
+          //ST calculating opening balance of from date-----
+
+          const OP_BALANCE = op_head_data.find(f => {
+            return item.finance_account_head_id == f.finance_account_head_id;
+          });
+
+          let op_amount = default_total;
+          if (OP_BALANCE != undefined) {
+            if (trans_symbol == "Dr") {
+              if (
+                parseFloat(OP_BALANCE.deb_minus_cred) >
+                parseFloat(OP_BALANCE.cred_minus_deb)
+              ) {
+                op_amount =
+                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                    decimal_places
+                  ) + " Dr";
+              } else if (
+                parseFloat(OP_BALANCE.deb_minus_cred) <
+                parseFloat(OP_BALANCE.cred_minus_deb)
+              ) {
+                op_amount =
+                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                    decimal_places
+                  ) + " Cr";
+              } else {
+                op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              }
+            } else {
+              if (
+                parseFloat(OP_BALANCE.cred_minus_deb) >
+                parseFloat(OP_BALANCE.deb_minus_cred)
+              ) {
+                op_amount =
+                  parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                    decimal_places
+                  ) + " Cr";
+              } else if (
+                parseFloat(OP_BALANCE.cred_minus_deb) <
+                parseFloat(OP_BALANCE.deb_minus_cred)
+              ) {
+                op_amount =
+                  parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                    decimal_places
+                  ) + " Dr";
+              } else {
+                op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
+            }
+          }
+          ///END calculating opening balance of from date-----
+
+          //ST calculating closing balance on  to date-----
+
+          const CB_BALANCE = cb_head_data.find(f => {
+            return item.finance_account_head_id == f.finance_account_head_id;
+          });
+          let cb_amount = default_total;
+          if (CB_BALANCE != undefined) {
+            if (trans_symbol == "Dr") {
+              if (
+                parseFloat(CB_BALANCE.deb_minus_cred) >
+                parseFloat(CB_BALANCE.cred_minus_deb)
+              ) {
+                cb_amount =
+                  parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+                    decimal_places
+                  ) + " Dr";
+              } else if (
+                parseFloat(CB_BALANCE.deb_minus_cred) <
+                parseFloat(CB_BALANCE.cred_minus_deb)
+              ) {
+                cb_amount =
+                  parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+                    decimal_places
+                  ) + " Cr";
+              } else {
+                cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+                  decimal_places
+                );
+              }
+            } else {
+              if (
+                parseFloat(CB_BALANCE.cred_minus_deb) >
+                parseFloat(CB_BALANCE.deb_minus_cred)
+              ) {
+                cb_amount =
+                  parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+                    decimal_places
+                  ) + " Cr";
+              } else if (
+                parseFloat(CB_BALANCE.cred_minus_deb) <
+                parseFloat(CB_BALANCE.deb_minus_cred)
+              ) {
+                cb_amount =
+                  parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+                    decimal_places
+                  ) + " Dr";
+              } else {
+                cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+                  decimal_places
+                );
+              }
+            }
+          }
+          //END calculating closing balance on  to date-----
+
+          //ST calculating transaction amount between  from_date  and to_date-----
+          const TR_BALANCE = transaction_head_data.find(f => {
+            return item.finance_account_head_id == f.finance_account_head_id;
+          });
+          let tr_debit_amount = default_total;
+          let tr_credit_amount = default_total;
+          if (TR_BALANCE != undefined) {
+            tr_debit_amount = TR_BALANCE.total_debit_amount;
+            tr_credit_amount = TR_BALANCE.total_credit_amount;
+          }
+          ///END calculating transaction amount between  from_date  and to_date-----
+
+          target.push({
+            ...item,
+
+            tr_debit_amount: tr_debit_amount,
+            tr_credit_amount: tr_credit_amount,
+            cb_amount: cb_amount,
+            op_amount: op_amount,
+            title: item.account_name,
+            label: item.account_name,
+            arabic_name: item.arabic_account_name,
+
+            leafnode: "N"
+          });
+        }
+      } else {
+        //ST calculating opening balance of from date-----
+
+        const OP_BALANCE = op_head_data.find(f => {
+          return item.finance_account_head_id == f.finance_account_head_id;
+        });
+
+        let op_amount = default_total;
+        if (OP_BALANCE != undefined) {
+          if (trans_symbol == "Dr") {
+            if (
+              parseFloat(OP_BALANCE.deb_minus_cred) >
+              parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else if (
+              parseFloat(OP_BALANCE.deb_minus_cred) <
+              parseFloat(OP_BALANCE.cred_minus_deb)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else {
+              op_amount = parseFloat(OP_BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
+          } else {
+            if (
+              parseFloat(OP_BALANCE.cred_minus_deb) >
+              parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else if (
+              parseFloat(OP_BALANCE.cred_minus_deb) <
+              parseFloat(OP_BALANCE.deb_minus_cred)
+            ) {
+              op_amount =
+                parseFloat(OP_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else {
+              op_amount = parseFloat(OP_BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
+          }
+        }
+        ///END calculating opening balance of from date-----
+
+        //ST calculating closing balance on  to date-----
+
+        const CB_BALANCE = cb_head_data.find(f => {
+          return item.finance_account_head_id == f.finance_account_head_id;
+        });
+        let cb_amount = default_total;
+        if (CB_BALANCE != undefined) {
+          if (trans_symbol == "Dr") {
+            if (
+              parseFloat(CB_BALANCE.deb_minus_cred) >
+              parseFloat(CB_BALANCE.cred_minus_deb)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else if (
+              parseFloat(CB_BALANCE.deb_minus_cred) <
+              parseFloat(CB_BALANCE.cred_minus_deb)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else {
+              cb_amount = parseFloat(CB_BALANCE.deb_minus_cred).toFixed(
+                decimal_places
+              );
+            }
+          } else {
+            if (
+              parseFloat(CB_BALANCE.cred_minus_deb) >
+              parseFloat(CB_BALANCE.deb_minus_cred)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.cred_minus_deb).toFixed(decimal_places) +
+                " Cr";
+            } else if (
+              parseFloat(CB_BALANCE.cred_minus_deb) <
+              parseFloat(CB_BALANCE.deb_minus_cred)
+            ) {
+              cb_amount =
+                parseFloat(CB_BALANCE.deb_minus_cred).toFixed(decimal_places) +
+                " Dr";
+            } else {
+              cb_amount = parseFloat(CB_BALANCE.cred_minus_deb).toFixed(
+                decimal_places
+              );
+            }
+          }
+        }
+        //END calculating closing balance on  to date-----
+
+        //ST calculating transaction amount between  from_date  and to_date-----
+        const TR_BALANCE = transaction_head_data.find(f => {
+          return item.finance_account_head_id == f.finance_account_head_id;
+        });
+        let tr_debit_amount = default_total;
+        let tr_credit_amount = default_total;
+        if (TR_BALANCE != undefined) {
+          tr_debit_amount = TR_BALANCE.total_debit_amount;
+          tr_credit_amount = TR_BALANCE.total_credit_amount;
+        }
+        ///END calculating transaction amount between  from_date  and to_date-----
+
+        target.push({
+          ...item,
+
+          tr_debit_amount: tr_debit_amount,
+          tr_credit_amount: tr_credit_amount,
+          cb_amount: cb_amount,
+          op_amount: op_amount,
+          title: item.account_name,
+          label: item.account_name,
+          arabic_name: item.arabic_account_name,
+
+          leafnode: "N"
+        });
+      }
+    }
+
+    // utilities.logger().log("roots:", roots);
+    // utilities.logger().log("children:", children);
+
+    // function to recursively build the tree
+    let findChildren = function(parent) {
+      if (children[parent.finance_account_head_id]) {
+        const tempchilds = children[parent.finance_account_head_id];
+
+        parent.children = tempchilds;
+
+        for (let i = 0, len = parent.children.length; i < len; ++i) {
+          findChildren(parent.children[i]);
+        }
+      }
+    };
+
+    // enumerate through to handle the case where there are multiple roots
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      findChildren(roots[i]);
+    }
+
+    return roots;
+  } catch (e) {
+    console.log("MY-ERORR:", e);
+  }
 }
