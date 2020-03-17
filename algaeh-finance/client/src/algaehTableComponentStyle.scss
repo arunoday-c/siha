@@ -1,0 +1,76 @@
+.newStickyGrid {
+  .table-scroll {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    margin: auto;
+    overflow: auto;
+    table {
+      width: 100%;
+      min-width: 100vw;
+      margin: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .table-wrap {
+      position: relative;
+    }
+    th,
+    td {
+      padding: 5px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: #fff;
+      vertical-align: top;
+    }
+    thead th {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      color: #000 !important;
+      background: #c1fff9 !important;
+      text-align: center;
+      .fixed {
+        z-index: 999 !important;
+      }
+      span {
+        white-space: nowrap !important;
+      }
+    }
+    tbody {
+      td {
+        .pointer {
+          font-size: 1.3rem;
+          margin-left: 10px;
+          cursor: pointer;
+          &:hover {
+            color: #00a796;
+          }
+        }
+      }
+    }
+    /* safari and ios need the tfoot itself to be position:sticky also */
+    tfoot,
+    tfoot th,
+    tfoot td {
+      position: -webkit-sticky;
+      position: sticky;
+      bottom: 0;
+      background: #ccc !important;
+      color: #000 !important;
+      z-index: 4;
+      .pointer {
+        margin-left: 10px;
+      }
+    }
+
+    a:focus {
+      background: red;
+    } /* testing links*/
+
+    .fixed {
+      position: -webkit-sticky;
+      position: sticky;
+      z-index: 5;
+    }
+  }
+}

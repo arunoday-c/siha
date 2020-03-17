@@ -5,10 +5,7 @@ import { bindActionCreators } from "redux";
 import "./PurchaseReturnEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import {
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -66,15 +63,15 @@ class PurchaseReturnEntry extends Component {
       this.state.po_return_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where(w => w.location_type === "WH")
-          .toArray();
+            .where(w => w.location_type === "WH")
+            .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === false
-          ? ""
-          : " disableFinder";
+        ? ""
+        : " disableFinder";
 
     return (
       <div>
@@ -138,27 +135,27 @@ class PurchaseReturnEntry extends Component {
             </div>
           }
           printArea={
-            this.state.hims_f_procurement_po_header_id !== null
+            this.state.purchase_return_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Receipt for Internal",
-                    events: {
-                      onClick: () => {
-                        generatePOReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Receipt for Internal",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        }
+                      }
+                    },
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
+                        }
                       }
                     }
-                  },
-                  {
-                    label: "Receipt for Vendor",
-                    events: {
-                      onClick: () => {
-                        generatePOReceiptNoPrice(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
