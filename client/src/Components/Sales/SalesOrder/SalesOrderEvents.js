@@ -383,8 +383,6 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.addedItem = true;
         data.selectedData = true;
-
-        debugger
         let project_details = $this.state.cost_projects.find(f => f.cost_center_id === data.project_id)
         data.organizations = project_details.branches
 
@@ -403,7 +401,7 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const generateSalesOrderReport = data => {
-  console.log("data:", data);
+  // console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",

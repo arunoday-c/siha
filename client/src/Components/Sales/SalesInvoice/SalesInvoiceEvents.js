@@ -134,7 +134,7 @@ const getCtrlCode = ($this, docNumber, row) => {
 };
 
 const generateSalesInvoiceReport = data => {
-  console.log("data:", data);
+  // console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -145,7 +145,8 @@ const generateSalesInvoiceReport = data => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "SalesInvoiceEntry",
+        reportName: data.sales_invoice_mode === "I"
+          ? "SalesInvoiceEntry" : "SalesInvoiceService",
         reportParams: [
           {
             name: "invoice_number",
