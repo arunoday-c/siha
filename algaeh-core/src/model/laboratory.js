@@ -618,7 +618,9 @@ let insertLadOrderedServices = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?);\
+                "select  hims_d_investigation_test_id,test_section from hims_d_investigation_test T\
+                left join  hims_d_test_category C on T.category_id=C.hims_d_test_category_id \
+                where T.record_status='A' and T.services_id in (?);\
                   select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
                 TIMESTAMPDIFF(day, ?, curdate()) as days,\
                 TIMESTAMPDIFF(month, ?, curdate()) as months,\
@@ -637,6 +639,10 @@ let insertLadOrderedServices = (req, res, next) => {
             .then(investigation_test => {
               const test_id = investigation_test[0].map(s => {
                 return s.hims_d_investigation_test_id;
+              });
+
+              const category_type = investigation_test[0].find(f => {
+                return f.test_section == "M";
               });
 
               const age_data = investigation_test[1][0];
@@ -721,54 +727,61 @@ let insertLadOrderedServices = (req, res, next) => {
                       })
                       .then(insert_lab_sample => {
                         if (all_analytes.length > 0) {
-                        all_analytes.map(item => {
-                          const order_dtails = inserteLabSample.find(f => {
-                            return item.test_id == f.test_id;
-                          });
-
-                          item["order_id"] = order_dtails.order_id;
-                        });
-
-                         
-                        const analyts = [
-                          "order_id",
-                          "analyte_id",
-                          "analyte_type",
-                          "result_unit",
-                          "critical_low",
-                          "critical_high",
-                          "normal_low",
-                          "normal_high",
-                          "text_value",
-                          "normal_qualitative_value"
-                        ];
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
-                            values: all_analytes,
-                            includeValues: analyts,
-                            extraValues: {
-                              created_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_by: req.userIdentity.algaeh_d_app_user_id
-                            },
-                            bulkInsertOrUpdate: true,
-                            printQuery: true
-                          })
-                          .then(ord_analytes => {
-                            if (req.connection == null) {
-                              req.records = insert_lab_sample;
-                              next();
-                            } else {
-                              next();
-                            }
-                          })
-                          .catch(e => {
-                            _mysql.rollBackTransaction(() => {
-                              next(e);
+                          all_analytes.map(item => {
+                            const order_dtails = inserteLabSample.find(f => {
+                              return item.test_id == f.test_id;
                             });
+
+                            item["order_id"] = order_dtails.order_id;
                           });
 
+                          const analyts = [
+                            "order_id",
+                            "analyte_id",
+                            "analyte_type",
+                            "result_unit",
+                            "critical_low",
+                            "critical_high",
+                            "normal_low",
+                            "normal_high",
+                            "text_value",
+                            "normal_qualitative_value"
+                          ];
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
+                              values: all_analytes,
+                              includeValues: analyts,
+                              extraValues: {
+                                created_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                updated_by:
+                                  req.userIdentity.algaeh_d_app_user_id
+                              },
+                              bulkInsertOrUpdate: true,
+                              printQuery: true
+                            })
+                            .then(ord_analytes => {
+                              if (req.connection == null) {
+                                req.records = insert_lab_sample;
+                                next();
+                              } else {
+                                next();
+                              }
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+                        } else if (category_type != undefined) {
+                          if (req.connection == null) {
+                            req.records = insert_lab_sample;
+                            next();
+                          } else {
+                            next();
+                          }
                         } else {
                           _mysql.rollBackTransaction(() => {
                             next(
