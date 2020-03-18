@@ -28,14 +28,14 @@ class SampleCollectionPatient extends PureComponent {
       hospital_id: null
     };
   }
-  
+
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
 
     this.setState({
       hospital_id: userToken.hims_d_hospital_id
-    })
+    });
     if (
       this.props.deptanddoctors === undefined ||
       this.props.deptanddoctors.length === 0
@@ -106,7 +106,7 @@ class SampleCollectionPatient extends PureComponent {
                 <div>
                   <div className="col-lg-12 popupInner">
                     <div className="row form-details">
-                      <div className="col-lg-3">
+                      <div className="col-lg-2">
                         <AlgaehLabel
                           label={{
                             fieldName: "patient_code"
@@ -118,7 +118,7 @@ class SampleCollectionPatient extends PureComponent {
                             : "Patient Code"}
                         </h6>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "patient_name"
@@ -131,7 +131,7 @@ class SampleCollectionPatient extends PureComponent {
                         </h6>
                       </div>
 
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "ordered_by"

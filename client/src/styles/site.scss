@@ -1917,6 +1917,7 @@ input.autoselect-input:disabled {
       list-style: none;
       overflow: auto;
       white-space: nowrap;
+      text-align: center;
       li {
         border: 1px solid darken($primary-color, 10%);
         padding-right: 3px;
@@ -1927,6 +1928,7 @@ input.autoselect-input:disabled {
         list-style: none;
         display: inline-block;
         min-width: 3.2vw;
+        text-align: center;
 
         &:hover {
           background: darken($primary-color, 10%);

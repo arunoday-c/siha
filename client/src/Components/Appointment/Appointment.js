@@ -163,7 +163,7 @@ class Appointment extends PureComponent {
               }
               this.getAppointmentSchedule();
             },
-            onFailure: error => { }
+            onFailure: error => {}
           });
         }
       });
@@ -201,8 +201,8 @@ class Appointment extends PureComponent {
       .where(w => w.hims_d_appointment_status_id === id)
       .firstOrDefault() !== undefined
       ? Enumerable.from(this.state.appointmentStatus)
-        .where(w => w.hims_d_appointment_status_id === id)
-        .firstOrDefault().color_code
+          .where(w => w.hims_d_appointment_status_id === id)
+          .firstOrDefault().color_code
       : "#ffffff";
   }
 
@@ -753,35 +753,37 @@ class Appointment extends PureComponent {
       <div className="calendar">
         <div className="col-12">
           <div className="row">
-            {this.liGenerate().map((row, index) => {
-              const _currDate = moment(row.currentdate).format("YYYYMMDD");
-              const _activeDate = moment(act_date).format("YYYYMMDD");
-              return (
-                <div
-                  // className="col"
-                  key={index}
-                  date={row.currentdate}
-                  className={
-                    _currDate === _activeDate
-                      ? _currDate === moment().format("YYYYMMDD")
-                        ? "col activeDate CurrentDate"
-                        : "col activeDate"
-                      : _currDate === moment().format("YYYYMMDD")
-                        ? "col CurrentDate"
-                        : "col"
-                  }
-                  onClick={this.onSelectedDateHandler.bind(this)}
-                >
-                  {row.day}
-                  <span
+            <ul className="calendarDays">
+              {this.liGenerate().map((row, index) => {
+                const _currDate = moment(row.currentdate).format("YYYYMMDD");
+                const _activeDate = moment(act_date).format("YYYYMMDD");
+                return (
+                  <li
+                    // className="col"
+                    key={index}
                     date={row.currentdate}
+                    className={
+                      _currDate === _activeDate
+                        ? _currDate === moment().format("YYYYMMDD")
+                          ? " activeDate CurrentDate"
+                          : " activeDate"
+                        : _currDate === moment().format("YYYYMMDD")
+                        ? " CurrentDate"
+                        : ""
+                    }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
-                    {row.dayName}
-                  </span>
-                </div>
-              );
-            })}
+                    {row.day}
+                    <span
+                      date={row.currentdate}
+                      onClick={this.onSelectedDateHandler.bind(this)}
+                    >
+                      {row.dayName}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>
@@ -854,9 +856,9 @@ class Appointment extends PureComponent {
       (moment(patient.appointment_to_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(patient.appointment_date).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't edit past appointments",
@@ -942,7 +944,7 @@ class Appointment extends PureComponent {
             if (
               this.state.edit_appointment_status_id === this.state.checkInId &&
               moment(this.state.edit_appt_date).format("YYYYMMDD") !==
-              moment(new Date()).format("YYYYMMDD")
+                moment(new Date()).format("YYYYMMDD")
             ) {
               swalMessage({
                 title:
@@ -1042,9 +1044,9 @@ class Appointment extends PureComponent {
       (moment(appt_time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't create appointment for past time",
@@ -1108,9 +1110,9 @@ class Appointment extends PureComponent {
       (moment(appt_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(appt_date).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot re-schedule past appointments",
@@ -1161,9 +1163,9 @@ class Appointment extends PureComponent {
       (moment(new_from_time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot create schedule for past time",
@@ -1284,7 +1286,7 @@ class Appointment extends PureComponent {
           (moment(w.appointment_to_time, "hh:mm:ss") >
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") <=
-            moment(data.time, "hh:mm a")) ||
+              moment(data.time, "hh:mm a")) ||
           (moment(w.appointment_from_time, "hh:mm:ss") <=
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") >= newEndTime)
@@ -1301,18 +1303,18 @@ class Appointment extends PureComponent {
       patient === null || patient === undefined
         ? "N"
         : patient.is_stand_by === "Y"
-          ? "Y"
-          : patient.cancelled === "Y"
-            ? "N"
-            : null;
+        ? "Y"
+        : patient.cancelled === "Y"
+        ? "N"
+        : null;
 
     let date_time_val =
       (moment(data.time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD");
+        moment(new Date()).format("YYYYMMDD");
 
     if (_isstandby !== null && !date_time_val) {
       return (
@@ -1344,9 +1346,9 @@ class Appointment extends PureComponent {
       (moment(data.time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD");
+        moment(new Date()).format("YYYYMMDD");
 
     if (!date_time_val) {
       return (
@@ -1436,12 +1438,12 @@ class Appointment extends PureComponent {
       let status =
         sel_stat_id !== null
           ? Enumerable.from(
-            this.state.appointmentStatus !== undefined
-              ? this.state.appointmentStatus
-              : []
-          )
-            .where(w => w.steps > sel_steps)
-            .toArray()
+              this.state.appointmentStatus !== undefined
+                ? this.state.appointmentStatus
+                : []
+            )
+              .where(w => w.steps > sel_steps)
+              .toArray()
           : [];
       let isTodayActive = moment(this.state.activeDateHeader).isSame(
         moment(),
@@ -1467,26 +1469,26 @@ class Appointment extends PureComponent {
                 </span>
               </div>
             ) : (
-                <div
-                  appt-pat={JSON.stringify(_firstPatient)}
-                  className="dynPatient"
-                  style={{ background: "#f2f2f2" }}
-                >
-                  <span>
-                    {_firstPatient.patient_name}
-                    <br />
-                    {_firstPatient.contact_number}
-                  </span>
+              <div
+                appt-pat={JSON.stringify(_firstPatient)}
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+              >
+                <span>
+                  {_firstPatient.patient_name}
+                  <br />
+                  {_firstPatient.contact_number}
+                </span>
 
-                  <i
-                    className="fas fa-times"
-                    onClick={this.cancelAppt.bind(this, _firstPatient)}
-                  />
-                  <div className="appStatusListCntr">
-                    <i className="fas fa-clock" />
-                    <ul className="appStatusList">
-                      {status !== undefined
-                        ? status.map((data, index) => (
+                <i
+                  className="fas fa-times"
+                  onClick={this.cancelAppt.bind(this, _firstPatient)}
+                />
+                <div className="appStatusListCntr">
+                  <i className="fas fa-clock" />
+                  <ul className="appStatusList">
+                    {status !== undefined
+                      ? status.map((data, index) => (
                           <li
                             key={index}
                             onClick={this.handlePatient.bind(
@@ -1504,21 +1506,21 @@ class Appointment extends PureComponent {
                             </span>
                           </li>
                         ))
-                        : null}
-                      <li
-                        onClick={generateReport.bind(
-                          this,
-                          _firstPatient,
-                          "appointmentSlip",
-                          "Appointment Slip"
-                        )}
-                      >
-                        <span>Print App. Slip</span>
-                      </li>
-                    </ul>
-                  </div>
+                      : null}
+                    <li
+                      onClick={generateReport.bind(
+                        this,
+                        _firstPatient,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )}
+                    >
+                      <span>Print App. Slip</span>
+                    </li>
+                  </ul>
                 </div>
-              )}
+              </div>
+            )}
             {this.loadSubStandBy(standByPatients)}
           </React.Fragment>
         );
@@ -1545,13 +1547,13 @@ class Appointment extends PureComponent {
   generateChildren(data) {
     const colspan = data.mark_as_break
       ? {
-        colSpan: 2,
-        style: {
-          width: "300px",
-          background: "rgb(255, 238, 214)",
-          textTransform: "uppercase"
+          colSpan: 2,
+          style: {
+            width: "300px",
+            background: "rgb(255, 238, 214)",
+            textTransform: "uppercase"
+          }
         }
-      }
       : {};
     const _patientList = this.plotPatients({
       time: data.time,
@@ -1561,8 +1563,8 @@ class Appointment extends PureComponent {
     const patient =
       _patientList !== null
         ? Enumerable.from(_patientList)
-          .where(w => w.is_stand_by === "N" && w.cancelled === "N")
-          .firstOrDefault()
+            .where(w => w.is_stand_by === "N" && w.cancelled === "N")
+            .firstOrDefault()
         : undefined;
 
     const sel_stat_id =
@@ -1581,26 +1583,26 @@ class Appointment extends PureComponent {
     let status =
       sel_stat_id !== null
         ? Enumerable.from(
-          this.state.appointmentStatus !== undefined
-            ? this.state.appointmentStatus
-            : []
-        )
-          .where(w => w.steps > sel_steps)
-          .toArray()
+            this.state.appointmentStatus !== undefined
+              ? this.state.appointmentStatus
+              : []
+          )
+            .where(w => w.steps > sel_steps)
+            .toArray()
         : [];
 
     const _standByPatients =
       _patientList !== null
         ? Enumerable.from(_patientList)
-          .where(w => w.is_stand_by === "Y" && w.cancelled === "N")
-          .toArray()
+            .where(w => w.is_stand_by === "Y" && w.cancelled === "N")
+            .toArray()
         : undefined;
 
     let brk_bg_color = data.mark_as_break
       ? "activeSlotOpacity"
       : this.isInactiveTimeSlot(data.time)
-        ? "inActiveSlotOpacity"
-        : "activeSlotOpacity";
+      ? "inActiveSlotOpacity"
+      : "activeSlotOpacity";
 
     let isTodayActive = moment(this.state.activeDateHeader).isSame(
       moment(),
@@ -1616,10 +1618,10 @@ class Appointment extends PureComponent {
       patient != null
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
-          ? "#f2f2f2"
-          : this.isInactiveTimeSlot(data.time)
-            ? "#fbfbfb"
-            : "#ffffff";
+        ? "#f2f2f2"
+        : this.isInactiveTimeSlot(data.time)
+        ? "#fbfbfb"
+        : "#ffffff";
 
     return (
       <tr
@@ -1644,82 +1646,82 @@ class Appointment extends PureComponent {
               {this.plotAddIcon(patient, data)}
 
               {patient != null &&
-                patient.is_stand_by === "N" &&
-                patient.cancelled === "N" ? (
-                  patient.appointment_status_id === this.state.noShowId ? (
-                    <div
-                      className="dynPatient"
-                      style={{ background: bg_color }}
-                      draggable={false}
+              patient.is_stand_by === "N" &&
+              patient.cancelled === "N" ? (
+                patient.appointment_status_id === this.state.noShowId ? (
+                  <div
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={false}
+                  >
+                    <span>
+                      {patient.patient_name} <br /> {patient.contact_number}
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    appt-pat={JSON.stringify(patient)}
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={true}
+                    onDragStart={this.drag.bind(this)}
+                  >
+                    <span
+                    // onClick={this.openEditModal.bind(this, patient, null)}
                     >
-                      <span>
-                        {patient.patient_name} <br /> {patient.contact_number}
-                      </span>
-                    </div>
-                  ) : (
-                      <div
-                        appt-pat={JSON.stringify(patient)}
-                        className="dynPatient"
-                        style={{ background: bg_color }}
-                        draggable={true}
-                        onDragStart={this.drag.bind(this)}
-                      >
-                        <span
-                        // onClick={this.openEditModal.bind(this, patient, null)}
-                        >
-                          {patient.patient_name}
-                          <br />
-                          {patient.contact_number}
-                        </span>
+                      {patient.patient_name}
+                      <br />
+                      {patient.contact_number}
+                    </span>
 
-                        <i
-                          className="fas fa-times"
-                          onClick={this.cancelAppt.bind(this, patient)}
-                        />
-                        <div className="appStatusListCntr">
-                          <i className="fas fa-clock" />
-                          <ul className="appStatusList">
-                            {status !== undefined
-                              ? status.map((data, index) => (
-                                <li
-                                  key={index}
-                                  onClick={this.handlePatient.bind(
-                                    this,
-                                    patient,
-                                    data
-                                  )}
+                    <i
+                      className="fas fa-times"
+                      onClick={this.cancelAppt.bind(this, patient)}
+                    />
+                    <div className="appStatusListCntr">
+                      <i className="fas fa-clock" />
+                      <ul className="appStatusList">
+                        {status !== undefined
+                          ? status.map((data, index) => (
+                              <li
+                                key={index}
+                                onClick={this.handlePatient.bind(
+                                  this,
+                                  patient,
+                                  data
+                                )}
+                              >
+                                <span
+                                  style={{
+                                    backgroundColor: data.color_code
+                                  }}
                                 >
-                                  <span
-                                    style={{
-                                      backgroundColor: data.color_code
-                                    }}
-                                  >
-                                    {data.statusDesc}
-                                  </span>
-                                </li>
-                              ))
-                              : null}
-                            <li
-                              onClick={generateReport.bind(
-                                this,
-                                patient,
-                                "appointmentSlip",
-                                "Appointment Slip"
-                              )}
-                            >
-                              <span>Print App. Slip</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    )
-                ) : null}
+                                  {data.statusDesc}
+                                </span>
+                              </li>
+                            ))
+                          : null}
+                        <li
+                          onClick={generateReport.bind(
+                            this,
+                            patient,
+                            "appointmentSlip",
+                            "Appointment Slip"
+                          )}
+                        >
+                          <span>Print App. Slip</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )
+              ) : null}
             </React.Fragment>
           ) : (
-              <React.Fragment>
-                <span>Break Time</span>
-              </React.Fragment>
-            )}
+            <React.Fragment>
+              <span>Break Time</span>
+            </React.Fragment>
+          )}
         </td>
 
         {data.mark_as_break === false ? (
