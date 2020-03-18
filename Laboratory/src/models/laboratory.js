@@ -472,7 +472,9 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?);\
+                  "select  hims_d_investigation_test_id,test_section from hims_d_investigation_test T\
+                  left join  hims_d_test_category C on T.category_id=C.hims_d_test_category_id \
+                  where T.record_status='A' and T.services_id in (?);\
                     select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
                   TIMESTAMPDIFF(day, ?, curdate()) as days,\
                   TIMESTAMPDIFF(month, ?, curdate()) as months,\
@@ -491,6 +493,10 @@ export default {
               .then(investigation_test => {
                 const test_id = investigation_test[0].map(s => {
                   return s.hims_d_investigation_test_id;
+                });
+
+                const category_type = investigation_test[0].find(f => {
+                  return f.test_section == "M";
                 });
 
                 const age_data = investigation_test[1][0];
@@ -623,6 +629,13 @@ export default {
                                   next(e);
                                 });
                               });
+                          } else if (category_type != undefined) {
+                            if (req.connection == null) {
+                              req.records = insert_lab_sample;
+                              next();
+                            } else {
+                              next();
+                            }
                           } else {
                             _mysql.rollBackTransaction(() => {
                               next(
