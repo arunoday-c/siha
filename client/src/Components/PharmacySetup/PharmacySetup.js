@@ -199,7 +199,7 @@ class PharmacySetup extends Component {
             </ul>
           </div>
         </div>
-        <div>
+        <div style={{ marginTop: 33 }}>
           {/*  {<this.state.pageDisplay />} */}
           {/* this.state.pageDisplay === "PharmacyOptions" ? (
             <PharmacyOptions />

@@ -1055,7 +1055,7 @@ input.autoselect-input:disabled {
   *margin-left: -100px; /*ie7*/
 }
 .scrolling td,
-th {
+.scrolling th {
   vertical-align: top;
   padding: 10px;
   min-width: 100px;
@@ -1141,6 +1141,9 @@ th {
     ul.nav {
       direction: rtl;
       padding-right: 5px;
+      overflow: auto;
+      display: block;
+      white-space: nowrap;
     }
   }
 
@@ -1431,22 +1434,6 @@ th {
   //   border-right: 1px solid #ddd;
   // }
 
-  .scrolling table {
-    table-layout: inherit;
-    *margin-left: -100px; /*ie7*/
-  }
-  .scrolling td,
-  th {
-    vertical-align: top;
-    padding: 10px;
-    min-width: 100px;
-  }
-  .scrolling th {
-    position: absolute;
-    *position: relative; /*ie7*/
-    left: 0;
-    width: 120px;
-  }
   .outer {
     position: relative;
   }
@@ -1621,6 +1608,11 @@ th {
 }
 
 .tab-container {
+  .nav {
+    overflow: auto;
+    display: block;
+    white-space: nowrap;
+  }
   .tab-button {
     padding: 2px 10px;
     font-weight: normal;
@@ -1629,6 +1621,7 @@ th {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
     border-bottom: none;
+    display: inline-block;
 
     &:hover {
       background-color: #fffcf8;
@@ -1841,7 +1834,7 @@ th {
   text-align: center;
   background: $primary-color;
   color: #fff;
-
+  padding: 0;
   .myDay_date {
     position: relative;
 
@@ -1917,31 +1910,48 @@ th {
   //   //width: 1559px;
   // }
 
-  .calendar .col {
-    border: 1px solid darken($primary-color, 10%);
-    padding-right: 3px;
-    padding-left: 3px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-  }
-  .calendar .col:hover {
-    background: darken($primary-color, 10%);
-    cursor: pointer;
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
-  }
+  .calendar {
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      overflow: auto;
+      white-space: nowrap;
+      text-align: center;
+      li {
+        border: 1px solid darken($primary-color, 10%);
+        padding-right: 3px;
+        padding-left: 3px;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: inline-block;
+        min-width: 3.2vw;
+        text-align: center;
 
-  .calendar .col span {
-    padding: 0;
-    margin: 0;
-    display: block;
-    font-size: 0.8em;
-    text-transform: uppercase;
-  }
-  .activeDate {
-    border-bottom: 4px solid yellow !important;
-    background: darken($primary-color, 10%);
-  }
-  .CurrentDate {
-    border-top: 2px solid yellow !important;
+        &:hover {
+          background: darken($primary-color, 10%);
+          cursor: pointer;
+          text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+        }
+        span {
+          padding: 0;
+          margin: 0;
+          display: block;
+          font-size: 0.8em;
+          text-transform: uppercase;
+        }
+
+        .activeDate {
+          border-bottom: 4px solid yellow !important;
+          background: darken($primary-color, 10%);
+        }
+        .CurrentDate {
+          border-top: 2px solid yellow !important;
+        }
+      }
+    }
   }
 }
 

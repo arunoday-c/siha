@@ -26,10 +26,7 @@ import {
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import {
-  getYears,
-  GetAmountFormart
-} from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
 import { MainContext } from "algaeh-react-components/context";
 
@@ -60,7 +57,7 @@ class LeaveEncashmentAuth extends Component {
     };
 
     this.getHospitals();
-    this.getHrmsOptions(this)
+    this.getHrmsOptions(this);
   }
 
   getHrmsOptions() {
@@ -70,11 +67,13 @@ class LeaveEncashmentAuth extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({ leave_encash_level: res.data.result[0].leave_encash_level });
+          this.setState({
+            leave_encash_level: res.data.result[0].leave_encash_level
+          });
         }
       }
     });
-  };
+  }
 
   getHospitals() {
     algaehApiCall({
@@ -199,7 +198,7 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => { }
+          () => {}
         );
       }
     });
@@ -222,7 +221,9 @@ class LeaveEncashmentAuth extends Component {
         <div className="col-12">
           <div className="row inner-top-search" data-validate="loadEncashAuth">
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group mandatory" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory"
+              }}
               label={{
                 forceLabel: "Auth. Level",
                 isImp: true
@@ -241,7 +242,9 @@ class LeaveEncashmentAuth extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col form-group mandatory" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory"
+              }}
               label={{ forceLabel: "From Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -258,7 +261,9 @@ class LeaveEncashmentAuth extends Component {
               value={this.state.from_date}
             />
             <AlgaehDateHandler
-              div={{ className: "col form-group mandatory" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory"
+              }}
               label={{ forceLabel: "To Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -276,7 +281,9 @@ class LeaveEncashmentAuth extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group mandatory" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory"
+              }}
               label={{
                 forceLabel: "Branch",
                 isImp: true
@@ -296,7 +303,7 @@ class LeaveEncashmentAuth extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group" }}
+              div={{ className: "col-lg-2 col-md-2 col-sm-12 form-group" }}
               label={{
                 forceLabel: "Encashment Status",
                 isImp: false
@@ -314,7 +321,7 @@ class LeaveEncashmentAuth extends Component {
               }}
             />
 
-            <div className="col-3 globalSearchCntr">
+            <div className="col-lg-2 col-md-2 col-sm-12 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {this.state.employee_name
@@ -324,7 +331,10 @@ class LeaveEncashmentAuth extends Component {
               </h6>
             </div>
 
-            <div className="col form-group" style={{ textAlign: "right" }}>
+            <div
+              className="col-lg-12 form-group"
+              style={{ textAlign: "right" }}
+            >
               <button
                 onClick={this.clearState.bind(this)}
                 className="btn btn-default"
@@ -340,8 +350,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                    <i className="fas fa-spinner fa-spin" />
-                  )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
               </button>
             </div>
           </div>
@@ -412,8 +422,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                        "------"
-                                      )}
+                                "------"
+                              )}
                             </span>
                           );
                         }

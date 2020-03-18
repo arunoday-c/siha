@@ -19,5 +19,7 @@
   "vat_applicable": "Vat Applicable",
   "vat_percentage": "Vat Percentage",
   "active": "Active",
-  "inactive": "Inactive"
+  "inactive": "Inactive",
+  "bank_account_no": "Account Number",
+  "vat_number": "Vat Number"
 }

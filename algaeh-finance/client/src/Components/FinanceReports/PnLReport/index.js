@@ -67,14 +67,21 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       cost_center_id,
       year
     };
-    debugger;
+    let extraHeaders = {};
+    let others = {};
     if (excel) {
+      extraHeaders = {
+        Accept: "blob"
+      };
+      others = { responseType: "blob" };
       input.excel = true;
     }
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLossMonthWise",
       module: "finance",
-      data: input
+      data: input,
+      extraHeaders,
+      options: others
     })
       .then(response => {
         handleResponse(response, excel);
@@ -90,11 +97,23 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
   }
 
   function loadByCostCenter(excel) {
-    const input = excel ? { excel: true } : {};
+    let extraHeaders = {};
+    let others = {};
+    let input = {};
+    if (excel) {
+      extraHeaders = {
+        Accept: "blob"
+      };
+      others = { responseType: "blob" };
+      input.excel = true;
+    }
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLossCostCenterWise",
       module: "finance",
-      data: input
+      data: input,
+
+      extraHeaders,
+      options: others
     })
       .then(response => {
         handleResponse(response, excel);
@@ -114,13 +133,21 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       hospital_id: branch_id,
       cost_center_id
     };
+    let extraHeaders = {};
+    let others = {};
     if (excel) {
+      extraHeaders = {
+        Accept: "blob"
+      };
+      others = { responseType: "blob" };
       input.excel = true;
     }
     newAlgaehApi({
       uri: "/financeReports/getProfitAndLoss",
       module: "finance",
-      data: input
+      data: input,
+      extraHeaders,
+      options: others
     })
       .then(response => {
         handleResponse(response, excel);
@@ -136,10 +163,9 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
   }
 
   function onLoad(e) {
-    const { name } = e.target;
+    const name = e.target.getAttribute("data-name");
     const isExcel = name === "excel";
     setLoading(true);
-    debugger;
     if (columnType === "by_year") {
       loadReportByYear(isExcel);
     } else if (columnType === "by_center") {
@@ -221,7 +247,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         />
       </div>
       <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
-        {" "}
         <i
           className="fas fa-file-download"
           onClick={onLoad}
@@ -283,7 +308,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           className="btn btn-primary"
           onClick={onLoad}
           disabled={!columnType}
-          name="preview"
+          data-name="preview"
           style={{ marginTop: 15 }}
         >
           Preview

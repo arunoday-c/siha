@@ -1446,11 +1446,17 @@ ul.ul-legend {
   position: fixed;
   ul {
     position: relative;
+    height: 32px;
+    white-space: nowrap;
+    overflow: auto;
+    width: 100%;
+    display: block;
     li {
       border-right: 1px solid #e9e9e9;
       margin: 0;
       padding: 0;
       height: 32px;
+      display: inline-block;
       &:after {
         display: block;
 

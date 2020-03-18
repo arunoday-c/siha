@@ -5,7 +5,7 @@ export function getContractManagement(req, res, next) {
     try {
         console.log("getContractManagement: ")
         let strQuery = ""
-        if (req.query.HRMNGMT_Active === true) {
+        if (req.query.HRMNGMT_Active === "true") {
             strQuery = "SELECT CM.* , E.full_name as employee_name from hims_f_contract_management CM \
             inner join  hims_d_employee E on  CM.incharge_employee_id = E.hims_d_employee_id \
             where CM.contract_number =? "

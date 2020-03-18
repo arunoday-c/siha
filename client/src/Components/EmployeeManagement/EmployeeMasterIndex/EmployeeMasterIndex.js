@@ -42,10 +42,13 @@ class EmployeeMasterIndex extends Component {
 
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
-    this.setState({
-      selectedLang: prevLang,
-      hospital_id: userToken.hims_d_hospital_id
-    }, () => getEmployeeDetails(this, this));
+    this.setState(
+      {
+        selectedLang: prevLang,
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => getEmployeeDetails(this, this)
+    );
 
     if (
       this.props.designations === undefined ||
@@ -75,8 +78,6 @@ class EmployeeMasterIndex extends Component {
         }
       });
     }
-
-
 
     if (
       this.props.subdepartment === undefined ||
@@ -207,7 +208,7 @@ class EmployeeMasterIndex extends Component {
           <div className="portlet-body">
             <div className="row">
               <AlagehAutoComplete
-                div={{ className: "col-4" }}
+                div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
                 label={{
                   forceLabel: "Select Branch"
                 }}

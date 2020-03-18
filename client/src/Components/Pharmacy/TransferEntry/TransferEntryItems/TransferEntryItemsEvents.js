@@ -649,7 +649,7 @@ const CloseItemBatch = ($this, context, e) => {
   let expiry_date =
     e !== undefined
       ? e.selected === true
-        ? moment(e.expirydt)._d
+        ? e.expirydt !== null ? moment(e.expirydt)._d : null
         : $this.state.expiry_date
       : $this.state.expiry_date;
 

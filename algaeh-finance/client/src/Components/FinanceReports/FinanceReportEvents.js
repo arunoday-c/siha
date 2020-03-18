@@ -76,7 +76,6 @@ export function downloadExcel(input) {
 }
 
 export function handleFile(data, selected) {
-  debugger;
   let blob = new Blob([data], {
     type: "application/octet-stream"
   });
