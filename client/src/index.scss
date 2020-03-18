@@ -1448,7 +1448,8 @@ ul.ul-legend {
     position: relative;
     height: 32px;
     white-space: nowrap;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     width: 100%;
     display: block;
     li {
