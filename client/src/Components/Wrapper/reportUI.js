@@ -14,7 +14,8 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
-
+// import {AlgaehReportViewer} from "algaeh-react-components";
+// import { Document, Page } from "react-pdf/dist/entry.parcel";
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +30,8 @@ export default class ReportUI extends Component {
       hasTable: false,
       report_preview_type: 0,
       buttonDisable: true,
-      report_name: null
+      report_name: null,
+      base64Pdf: undefined
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -185,8 +187,11 @@ export default class ReportUI extends Component {
         });
     }
   }
-
+  onDocumentLoadSuccess({ numPages }) {
+    this.setState({ numPages });
+  }
   generateReport(source, e, loader) {
+    let ths = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -251,38 +256,56 @@ export default class ReportUI extends Component {
               }
             },
             onSuccess: response => {
-              const url = URL.createObjectURL(response.data);
-              loader.setState({
-                loading: false
-              });
+              const urlBlob = URL.createObjectURL(response.data);
               if (report_type === "preview") {
-                let myWindow = window.open(
-                  "",
-                  "",
-                  "width=800,height=500,left=200,top=200,"
-                );
-                myWindow.document.title = reportProperties.displayName;
-                myWindow.document.body.style.overflow = "hidden";
-                var divElem = document.createElement("div");
-                divElem.id = "algaeh_frame";
-                divElem.style.width = "100%";
-                divElem.style.height = "100%";
-                var elem = document.createElement("iframe");
-                elem.src = url;
-                elem.setAttribute("webkitallowfullscreen", true);
-                elem.setAttribute("allowfullscreen", true);
-                elem.style.width = "100%";
-                elem.style.height = "100%";
-                divElem.appendChild(elem);
-                myWindow.document.body.appendChild(divElem);
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+                window.open(origin);
+                loader.setState({
+                  loading: false
+                });
               } else {
                 const a = document.createElement("a");
-                a.href = url;
+                a.href = urlBlob;
                 a.download = `${that.props.options.report.displayName}.${
                   report_type === "excel" ? "xlsx" : "pdf"
                 }`;
                 a.click();
               }
+
+              // return;
+
+              // const url = URL.createObjectURL(response.data);
+              // loader.setState({
+              //   loading: false
+              // });
+              // if (report_type === "preview") {
+              //   let myWindow = window.open(
+              //     "",
+              //     "",
+              //     "width=800,height=500,left=200,top=200,"
+              //   );
+              //   myWindow.document.title = reportProperties.displayName;
+              //   myWindow.document.body.style.overflow = "hidden";
+              //   var divElem = document.createElement("div");
+              //   divElem.id = "algaeh_frame";
+              //   divElem.style.width = "100%";
+              //   divElem.style.height = "100%";
+              //   var elem = document.createElement("iframe");
+              //   elem.src = url;
+              //   elem.setAttribute("webkitallowfullscreen", true);
+              //   elem.setAttribute("allowfullscreen", true);
+              //   elem.style.width = "100%";
+              //   elem.style.height = "100%";
+              //   divElem.appendChild(elem);
+              //   myWindow.document.body.appendChild(divElem);
+              // } else {
+              //   const a = document.createElement("a");
+              //   a.href = url;
+              //   a.download = `${that.props.options.report.displayName}.${
+              //     report_type === "excel" ? "xlsx" : "pdf"
+              //   }`;
+              //   a.click();
+              // }
             },
             onCatch: error => {
               loader.setState({
@@ -849,6 +872,14 @@ export default class ReportUI extends Component {
                   <div className="col-lg-12">
                     {this.props.children ? this.props.children : null}
                   </div>
+                  {/* {this.state.base64Pdf !== undefined ? (
+                    <Document
+                      height="500"
+                      width="600"
+                      file={{ data: this.state.base64Pdf }}
+                      onLoadSuccess={this.onDocumentLoadSuccess}
+                    ></Document>
+                  ) : null} */}
                 </div>
               </div>
             </div>
@@ -872,7 +903,6 @@ export default class ReportUI extends Component {
                       )}
                       content={() => this.algehPrintRef}
                     /> */}
-
                     {/* <input
                       type="radio"
                       name="report_preview"
@@ -906,7 +936,6 @@ export default class ReportUI extends Component {
                       }
                     />
                     <label htmlFor="report_excel_preview">Excel</label> */}
-
                     {/*<button
                       className="btn btn-default"
                       type="button"
