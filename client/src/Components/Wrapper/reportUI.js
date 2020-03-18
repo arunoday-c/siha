@@ -740,10 +740,10 @@ export default class ReportUI extends Component {
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">
-                <div className="col-8">
+                <div className="col-lg-8 col-md-8 col-sm-9">
                   <h4>{report_name}</h4>
                 </div>
-                <div className="col-4">
+                <div className="col-lg-4 col-md-4 col-sm-3">
                   <button
                     type="button"
                     className=""

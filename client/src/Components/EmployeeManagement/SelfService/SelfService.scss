@@ -8,6 +8,9 @@
       width: 100%;
       position: fixed;
       z-index: 9999;
+      white-space: nowrap;
+      display: block;
+      overflow: auto;
 
       div {
         float: left;

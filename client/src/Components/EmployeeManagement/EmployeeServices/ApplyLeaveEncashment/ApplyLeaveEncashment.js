@@ -363,7 +363,10 @@ class ApplyLeaveEncashment extends Component {
     return (
       <React.Fragment>
         <div className="row apply_leave">
-          <div data-validate="apply-leave-div" className="col-3">
+          <div
+            data-validate="apply-leave-div"
+            className="col-lg-3 col-md-3 col-sm-12"
+          >
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -524,7 +527,7 @@ class ApplyLeaveEncashment extends Component {
               </div>
             </div>
           </div>
-          <div className="col-7">
+          <div className="col-lg-7 col-md-7 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -631,7 +634,7 @@ class ApplyLeaveEncashment extends Component {
               </div>
             </div>
           </div>
-          <div className="col-2">
+          <div className="col-lg-2 col-md-2 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveEcnashBalanceCntr">
