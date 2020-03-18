@@ -105,7 +105,7 @@ class Dashboard extends Component {
       <div className="dashboard ">
         <div className="row">
           <AlagehAutoComplete
-            div={{ className: "col-3  form-group" }}
+            div={{ className: "col-lg-3 col-md-3 col-sm-12  form-group" }}
             label={{
               forceLabel: "Select a Branch",
               isImp: true
