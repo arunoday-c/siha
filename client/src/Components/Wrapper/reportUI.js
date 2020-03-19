@@ -790,6 +790,9 @@ export default class ReportUI extends Component {
                       className="col-lg-12 margin-top-15"
                       data-validate="parameters-data"
                     >
+                      <h5>
+                        <b>Apply Filters</b>
+                      </h5>
                       <div className="row">
                         {this.generateInputParameters()}
                       </div>
@@ -843,7 +846,11 @@ export default class ReportUI extends Component {
                 </div>
               </div>
               <div className="col-12">
-                <div className="row reportActionBtns">
+                <hr></hr>
+                <h5>
+                  <b>Define Page and Layout</b>
+                </h5>
+                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-2" }}
                     label={{
