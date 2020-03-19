@@ -169,7 +169,7 @@ export default class AuditLog extends Component {
               onChange: this.dropDownHandle,
               onClear: () => {
                 this.setState({
-                  levels: null
+                  value: null
                 });
               }
             }}
