@@ -80,6 +80,7 @@ app.use((req, res, next) => {
   if (req.url.includes("/apiAuth") === true) {
     if (req.url.includes("/logout")) {
       let reqH = req.headers;
+
       let header = reqH["x-api-key"];
       if (header != null && header !== "" && header !== "null") {
         header = jwtDecode(reqH["x-api-key"]);
