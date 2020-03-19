@@ -39,6 +39,9 @@ export default class AuditLog extends Component {
     this.setState({ hospital_id: "", employee_id: "" });
   };
 
+  handleChange(value) {
+    console.log(`selected ${value}`);
+  }
   dropDownHandle = e => {
     console.log(e, "handle");
     const { name, value } = e;
@@ -92,7 +95,6 @@ export default class AuditLog extends Component {
               }
             }}
           />
-
           <AlgaehDateHandler
             div={{ className: "col-2 form-group" }}
             label={{
@@ -105,7 +107,7 @@ export default class AuditLog extends Component {
               others: {}
             }}
             value=""
-          //minDate={this.state.from_date}
+            //minDate={this.state.from_date}
           />
           <AlgaehDateHandler
             div={{ className: "col-2 form-group" }}
@@ -119,8 +121,60 @@ export default class AuditLog extends Component {
               others: {}
             }}
             value=""
-          //minDate={this.state.from_date}
+            //minDate={this.state.from_date}
           />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Modules",
+              isImp: true
+            }}
+            selector={{
+              name: "modules",
+              className: "select-fld",
+              value: this.state.modules,
+              dataSource: {
+                textField: "user",
+                valueField: "hims_d_hospital_id",
+                data: this.state.module_lst
+              },
+              onChange: this.dropDownHandle,
+              onClear: () => {
+                this.setState({
+                  module_lst: null
+                });
+              }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Levels",
+              isImp: true
+            }}
+            selector={{
+              name: "Level",
+              className: "select-fld",
+              value: this.state.levels,
+              multiselect: true,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: [
+                  { name: "Warning", value: "warning" },
+                  { name: "Information", value: "info" },
+                  { name: "Error", value: "error" }
+                ]
+              },
+              onChange: this.dropDownHandle,
+              onClear: () => {
+                this.setState({
+                  levels: null
+                });
+              }
+            }}
+          />
+
           <div className="col-3 globalSearchCntr form-group mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
@@ -206,9 +260,9 @@ export default class AuditLog extends Component {
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => { },
-                        onDelete: () => { },
-                        onDone: () => { }
+                        onEdit: () => {},
+                        onDelete: () => {},
+                        onDone: () => {}
                       }}
                     />
                   </div>
