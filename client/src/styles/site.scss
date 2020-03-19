@@ -2009,3 +2009,23 @@ input.autoselect-input:disabled {
 .swal-text {
   color: lighten($color-black, 60%);
 }
+.swallHTMLMsg {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #ccc;
+  font-size: 0.7rem;
+  margin: 10px 0;
+  width: 100%;
+  text-align: left;
+  tr {
+    td {
+      padding: 3px;
+      border: 1px solid #ccc;
+      span {
+        display: inline-block;
+        font-weight: bold;
+      }
+    }
+  }
+}

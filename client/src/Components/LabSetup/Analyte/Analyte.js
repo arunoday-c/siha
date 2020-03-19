@@ -259,12 +259,20 @@ class LabAnalyte extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "result_unit" }} />
                       ),
+                      displayTemplate: row => {
+                        return row.result_unit === "NULL"
+                          ? "--"
+                          : row.result_unit;
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
-                              value: row.result_unit,
+                              value:
+                                row.result_unit === "NULL"
+                                  ? ""
+                                  : row.result_unit,
                               className: "txt-fld",
                               name: "result_unit",
                               events: {

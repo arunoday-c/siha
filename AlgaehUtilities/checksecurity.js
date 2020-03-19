@@ -108,10 +108,17 @@ module.exports = {
               if (identity === clientIP) {
                 resolve(result);
               } else {
+                let identityName = "";
+                try {
+                  const jsonIdentity = JSON.parse(identityName);
+                  identityName = ` Mac address :${jsonIdentity.mac}, Machine Name :${jsonIdentity.name} IP address :${jsonIdentity.address}`;
+                } catch (e) {
+                  identityName = "";
+                }
                 reject(
                   // '${identity}'
                   // ${user_display_name}.
-                  `Somebody logged-in your account from another machine, And this session will be cleared. Please re-enter your password to login.`
+                  `Somebody logged-in your account from another machine ${identityName}, And this session will be cleared. Please re-enter your password to login.`
                 );
               }
             }
