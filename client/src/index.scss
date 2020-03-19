@@ -1948,11 +1948,12 @@ td {
 }
 
 .reportActionBtns {
-  margin: 10px 15px;
-  height: 32px;
+  border-top: 1px solid #e3e3e3;
+  padding-top: 10px;
   button {
-    float: right;
-    margin-left: 10px;
+    float: left;
+    margin-top: 19px;
+    margin-right: 5px;
   }
 }
 .reportPDFIframe {

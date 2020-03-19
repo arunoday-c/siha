@@ -3,6 +3,7 @@ import {
   successfulMessage,
   AlgaehValidation
 } from "../../utils/GlobalFunctions";
+import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   cancelRequest,
@@ -793,53 +794,12 @@ export default class ReportUI extends Component {
                         {this.generateInputParameters()}
                       </div>
                     </div>
-                    <div className="reportActionBtns">
-                      <ButtonType
-                        others={{ style: { float: "right" } }}
-                        classname="btn-primary"
-                        onClick={this.generateReport.bind(this, this)}
-                        label={{
-                          forceLabel: "  Preview Report",
-                          returnText: true
-                        }}
-                        others={{
-                          reporttype: "preview"
-                        }}
-                      />
-                      <ButtonType
-                        others={{ style: { float: "right" } }}
-                        classname="btn-default"
-                        onClick={this.generateReport.bind(this, this)}
-                        label={{
-                          forceLabel: "  Download as PDF",
-                          returnText: true
-                        }}
-                        others={{
-                          reporttype: "pdf"
-                        }}
-                      />
-                      {this.props.options.report.excel === "true" ? (
-                        <ButtonType
-                          others={{ style: { float: "right" } }}
-                          classname="btn-default"
-                          onClick={this.generateReport.bind(this, this)}
-                          label={{
-                            forceLabel: "  Download as Excel",
-                            returnText: true
-                          }}
-                          others={{
-                            reporttype: "excel"
-                          }}
-                        />
-                      ) : null}
-                      <button
-                        value="Cancel Generate"
-                        className="btn btn-default"
-                        onClick={this.cancelReportRequest.bind(this)}
-                      >
-                        Cancel Generate
-                      </button>
-                    </div>
+
+                    {/* <div className="col-12">
+                      <div className="row reportActionBtns">
+                      
+                      </div>
+                    </div> */}
                   </div>
                 </React.Fragment>
               ) : null}
@@ -882,77 +842,86 @@ export default class ReportUI extends Component {
                   ) : null} */}
                 </div>
               </div>
+              <div className="col-12">
+                <div className="row reportActionBtns">
+                  <AlagehAutoComplete
+                    div={{ className: "col-2" }}
+                    label={{
+                      forceLabel: "Page Size"
+                    }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      value: "",
+                      dataSource: {},
+                      autoComplete: "off"
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-2" }}
+                    label={{
+                      forceLabel: "Page Layout"
+                    }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      value: "",
+                      dataSource: {},
+                      autoComplete: "off",
+                      placeHolder: "Page Layout"
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-4"> &nbsp;</div>
-                  <div className="col-lg-8">
-                    {/* <ReactToPrint
-                      trigger={() => (
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          Print
-                        </button>
-                      )}
-                      content={() => this.algehPrintRef}
-                    /> */}
-                    {/* <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_normal_preview"
-                      value="0"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 0 ? true : false
-                      }
+                  <div className="col">
+                    {" "}
+                    <ButtonType
+                      classname="btn-primary"
+                      onClick={this.generateReport.bind(this, this)}
+                      label={{
+                        forceLabel: "  Preview Report",
+                        returnText: true
+                      }}
+                      others={{
+                        reporttype: "preview"
+                      }}
+                    />{" "}
+                    <ButtonType
+                      classname="btn-default"
+                      onClick={this.generateReport.bind(this, this)}
+                      label={{
+                        forceLabel: "  Download as PDF",
+                        returnText: true
+                      }}
+                      others={{
+                        reporttype: "pdf"
+                      }}
                     />
-                    <label htmlFor="report_normal_preview">Normal</label>
-                    <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_pdf_preview"
-                      value="1"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 1 ? true : false
-                      }
-                    />
-                    <label htmlFor="report_pdf_preview">PDF</label>
-                    <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_excel_preview"
-                      value="2"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 2 ? true : false
-                      }
-                    />
-                    <label htmlFor="report_excel_preview">Excel</label> */}
-                    {/*<button
-                      className="btn btn-default"
-                      type="button"
-                      disabled={this.state.buttonDisable}
-                      onClick={this.onChangeReportPreview.bind(this, "PDF")}
-                    >
-                      Download as PDF
-                    </button>
-
+                    {this.props.options.report.excel === "true" ? (
+                      <ButtonType
+                        classname="btn-default"
+                        onClick={this.generateReport.bind(this, this)}
+                        label={{
+                          forceLabel: "  Download as Excel",
+                          returnText: true
+                        }}
+                        others={{
+                          reporttype: "excel"
+                        }}
+                      />
+                    ) : null}{" "}
                     <button
+                      value="Cancel Generate"
                       className="btn btn-default"
-                      type="button"
-                      disabled={this.state.buttonDisable}
-                      onClick={this.onChangeReportPreview.bind(this, "XSLS")}
+                      onClick={this.cancelReportRequest.bind(this)}
                     >
-                      Download as Excel
-                    </button>*/}
+                      Cancel Generate
+                    </button>{" "}
                     <button
                       type="button"
                       className="btn btn-default"
