@@ -1,23 +1,15 @@
 const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
-// const winston = require("winston");
-const path = require("path");
 let winston = require("winston");
-require("winston-daily-rotate-file");
-const gracefulFs = require("graceful-fs");
-const fs = require("fs");
-gracefulFs.gracefulify(fs);
+require("winston-mongodb").MongoDB;
+const keys = require("algaeh-keys");
+
 function algaehUtilities(options) {
   this.options = options;
   this.keys = this.keys != null ? this.keys : require("algaeh-keys").default;
 }
 algaehUtilities.prototype.encryption = function(data) {
   try {
-    // var stringData = JSON.stringify({
-    //   ...require("./cryptoData.json"),
-    //   ...data
-    // });
-    // return new cryptr(this.keys.SECRETKey).encrypt(stringData);
     return data;
   } catch (error) {
     throw error;
@@ -25,8 +17,6 @@ algaehUtilities.prototype.encryption = function(data) {
 };
 algaehUtilities.prototype.decryption = function(data) {
   try {
-    //  var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
-    //return JSON.parse(stringData);
     return data;
   } catch (error) {
     throw error;
@@ -89,58 +79,59 @@ algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
 
 algaehUtilities.prototype.logger = function(reqTracker) {
   reqTracker = reqTracker || "";
-  var _logPath = path.join(process.cwd(), "/LOGS");
-  if (!fs.existsSync(_logPath)) {
-    fs.mkdirSync(_logPath);
-  }
 
   var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
-  var transport = new winston.transports.DailyRotateFile({
-    filename: `${_logPath}/%DATE%.log`,
-    datePattern: "YYYY-MM-DD-HH",
-    zippedArchive: true,
-    maxSize: "20m",
-    maxFiles: "14d",
-    level: _levels,
-    eol: "\r\n"
-  });
+  //Create transports;
+  let transport = undefined;
+  const { mongoDb } = keys.default;
+  // transport = new winston.transports.MongoDB({
+  //   db: mongoDb.connectionURI,
+  //   options: { useUnifiedTopology: true },
+  //   collection: "audit_logs",
+  //   handleExceptions: true,
+  //   tryReconnect: true
+  // });
+
+  if (process.env.NODE_ENV === "development") {
+    transport = new winston.transports.Console({
+      colorize: true,
+      format: winston.format.simple()
+    });
+  } else {
+    transport = new winston.transports.MongoDB({
+      db: mongoDb.connectionURI,
+      collection: "audit_logs",
+      level: "warn",
+      handleExceptions: true
+    });
+  }
 
   var logger = winston.createLogger({
-    handleExceptions: true,
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      winston.format.prettyPrint(),
-      winston.format.printf(msg => {
-        const message = `"${(msg.message !== "" && msg.message !== undefined
-          ? msg.message
-          : "input"
-        )
-          .replace(/\:/g, "")
-          .replace(/\ /g, "")}":`;
-        return `{"level":"${msg.level}", "datetime":"${new Date(
-          msg.timestamp
-        ).toLocaleString()}",
-       "message":{${message}${msg.data}}}`;
-      })
-    ),
-    transports: [transport]
+    transports: [transport],
+    format: winston.format.json()
   });
   return {
     log: (message, obj, logtype) => {
       logtype = logtype || "debug";
-      var _data =
-        obj !== null
-          ? { data: typeof obj === "string" ? obj : JSON.stringify(obj) }
-          : {};
-      if (message === "" && obj === "") {
-        logger.close();
-        return;
+      let messagectr = message;
+      if (typeof obj !== "string" && obj !== undefined) {
+        const { requestIdentity } = obj;
+
+        if (requestIdentity !== undefined) {
+          const { reqUserIdentity } = requestIdentity;
+          const {
+            algaeh_d_app_user_id,
+            hims_d_hospital_id,
+            employee_id
+          } = reqUserIdentity;
+          messagectr = `${algaeh_d_app_user_id}/${employee_id}/${hims_d_hospital_id}`;
+        }
       }
 
       logger.log({
         level: logtype,
-        message: message,
-        ..._data
+        message: messagectr,
+        metadata: obj
       });
       logger.close();
       return this;
