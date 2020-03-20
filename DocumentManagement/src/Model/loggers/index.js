@@ -6,7 +6,6 @@ export function getLogs(req, res, next) {
     from_date,
     to_date,
     employee_id,
-    user_id,
     level
   } = req.body;
   if (hims_d_hospital_id === undefined || hims_d_hospital_id === "") {
@@ -38,8 +37,8 @@ export function getLogs(req, res, next) {
   //     return;
   //   }
   const createMessage =
-    employee_id !== undefined
-      ? { message: `${user_id}/${employee_id}/${hims_d_hospital_id}` }
+    hims_d_hospital_id !== undefined
+      ? { message: `${hims_d_hospital_id}` }
       : {};
   const leveles = level !== undefined ? { level: level } : {};
   const input = {
@@ -54,7 +53,11 @@ export function getLogs(req, res, next) {
   loggerPreferences
     .find(input)
     .then(result => {
-      const records = result.map(item => {
+      let rec = result;
+      if (employee_id !== undefined && employee_id !== "") {
+        rec = result.filter(f => f.meta.employee_id === employee_id);
+      }
+      const records = rec.map(item => {
         const { level, meta } = item;
         let { dateTime, requestIdentity, requestUrl, requestMethod } = meta;
         requestIdentity = requestIdentity === undefined ? {} : requestIdentity;
