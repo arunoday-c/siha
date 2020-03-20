@@ -32,7 +32,9 @@ export default class ReportUI extends Component {
       report_preview_type: 0,
       buttonDisable: true,
       report_name: null,
-      base64Pdf: undefined
+      base64Pdf: undefined,
+      pageOrentation: "landscape",
+      pagelayout: "A3"
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -238,7 +240,9 @@ export default class ReportUI extends Component {
               });
             }
           });
+
           const reportProperties = that.props.options.report;
+
           const urlChange =
             report_type === "excel" ? "/excelReport" : "/report";
           algaehApiCall({
@@ -537,7 +541,12 @@ export default class ReportUI extends Component {
     //   [_param.name]: selectedDate
     // });
   }
-
+  handleChange(event) {
+    console.log(event);
+    this.setState({
+      [event.name]: event.value
+    });
+  }
   generateInputParameters() {
     const _parameters = this.props.options.plotUI.paramters;
     let _controls = [];
@@ -857,11 +866,20 @@ export default class ReportUI extends Component {
                       forceLabel: "Page Size"
                     }}
                     selector={{
-                      name: "",
+                      name: "pageSize",
                       className: "select-fld",
-                      value: "",
-                      dataSource: {},
-                      autoComplete: "off"
+                      value: this.state.pageSize,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "pageSize",
+                        data: [
+                          { name: "A1", pageSize: "A1" },
+                          { name: "A2", pageSize: "A2" },
+                          { name: "A3", pageSize: "A3" },
+                          { name: "A4", pageSize: "A4" }
+                        ]
+                      },
+                      onChange: this.handleChange.bind(this)
                     }}
                   />
                   <AlagehAutoComplete
@@ -870,12 +888,21 @@ export default class ReportUI extends Component {
                       forceLabel: "Page Layout"
                     }}
                     selector={{
-                      name: "",
+                      name: "pageOrentation",
                       className: "select-fld",
-                      value: "",
-                      dataSource: {},
-                      autoComplete: "off",
-                      placeHolder: "Page Layout"
+                      value: this.state.pageOrentation,
+                      dataSource: {
+                        textField: "pagelayout",
+                        valueField: "pageOrentation",
+                        data: [
+                          {
+                            pagelayout: "landscape",
+                            pageOrentation: "landscape"
+                          },
+                          { pagelayout: "potrait", pageOrentation: "potrait" }
+                        ]
+                      },
+                      onChange: this.handleChange.bind(this)
                     }}
                   />
                 </div>
