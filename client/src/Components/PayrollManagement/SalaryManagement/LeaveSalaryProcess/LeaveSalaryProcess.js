@@ -36,9 +36,10 @@ class LeaveSalaryProcess extends Component {
     super(props);
     this.state = {
       hospital_id: null,
-      hrms_options: {}
+      hrms_options: {},
+      decimal_place: null
     };
-    getEmployeeAnnualLeaveToProcess(this, this);
+
     getHrmsOptions(this);
   }
 
@@ -52,7 +53,10 @@ class LeaveSalaryProcess extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
+      decimal_place: userToken.decimal_places
+    }, () => {
+      getEmployeeAnnualLeaveToProcess(this, this);
     });
 
     if (
@@ -163,8 +167,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -248,8 +252,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                      ""
-                    )}{" "}
+                            ""
+                          )}{" "}
                   </>
                 ) : null}
               </div>

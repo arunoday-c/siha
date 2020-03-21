@@ -372,10 +372,10 @@ const deleteServices = ($this, row) => {
     row.service_type_id === 5
       ? "LAB"
       : row.service_type_id === 11
-      ? "RAD"
-      : row.service_type_id === 2
-      ? "PRO"
-      : null;
+        ? "RAD"
+        : row.service_type_id === 2
+          ? "PRO"
+          : null;
 
   const get_selected_row = _.find(
     preserviceInput,
@@ -634,13 +634,8 @@ const SaveOrdersServices = ($this, e) => {
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
-      swalMessage({
-        title: error.response.data.message,
-        type: "error"
-      });
-    },
     onCatch: error => {
+      AlgaehLoader({ show: false });
       swalMessage({
         title: error,
         type: "error"
