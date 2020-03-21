@@ -84,27 +84,26 @@ algaehUtilities.prototype.logger = function(reqTracker) {
   //Create transports;
   let transport = undefined;
   const { mongoDb } = keys.default;
-  transport = new winston.transports.MongoDB({
-    db: mongoDb.connectionURI,
-    options: { useUnifiedTopology: true },
-    collection: "audit_logs",
-    //handleExceptions: true,
-    tryReconnect: true
-  });
 
-  // if (process.env.NODE_ENV === "development") {
-  //   transport = new winston.transports.Console({
-  //     colorize: true,
-  //     format: winston.format.simple()
-  //   });
-  // } else {
-  //   transport = new winston.transports.MongoDB({
-  //     db: mongoDb.connectionURI,
-  //     collection: "audit_logs",
-  //     level: "warn",
-  //     handleExceptions: true
-  //   });
-  // }
+  // transport = new winston.transports.MongoDB({
+  //   db: mongoDb.connectionURI,
+  //   options: { useUnifiedTopology: true, poolSize: 10 },
+  //   collection: "audit_logs",
+  //   tryReconnect: true
+  // });
+  if (process.env.NODE_ENV === "development") {
+    transport = new winston.transports.Console({
+      colorize: true,
+      format: winston.format.simple()
+    });
+  } else {
+    transport = new winston.transports.MongoDB({
+      db: mongoDb.connectionURI,
+      options: { useUnifiedTopology: true, poolSize: 10 },
+      collection: "audit_logs",
+      tryReconnect: true
+    });
+  }
 
   var logger = winston.createLogger({
     transports: [transport],
@@ -113,23 +112,10 @@ algaehUtilities.prototype.logger = function(reqTracker) {
   return {
     log: (message, obj, logtype) => {
       logtype = logtype || "debug";
-      let messagectr = message;
-      let empid = {};
-      if (typeof obj !== "string" && obj !== undefined) {
-        const { requestIdentity } = obj;
-
-        if (requestIdentity !== undefined) {
-          const { reqUserIdentity } = requestIdentity;
-          const { hims_d_hospital_id, employee_id } = reqUserIdentity;
-          messagectr = `${hims_d_hospital_id}`;
-          empid = { employee_id: `${employee_id}` };
-        }
-      }
-
       logger.log({
         level: logtype,
-        message: messagectr,
-        metadata: { ...obj, ...empid }
+        message,
+        metadata: obj
       });
       logger.close();
       return this;

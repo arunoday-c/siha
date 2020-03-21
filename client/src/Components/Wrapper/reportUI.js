@@ -15,6 +15,7 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
+import { MainContext } from "algaeh-react-components/context";
 // import {AlgaehReportViewer} from "algaeh-react-components";
 // import { Document, Page } from "react-pdf/dist/entry.parcel";
 export default class ReportUI extends Component {
@@ -34,7 +35,7 @@ export default class ReportUI extends Component {
       report_name: null,
       base64Pdf: undefined,
       pageOrentation: "landscape",
-      pagelayout: "A3"
+      pageSize: "A3"
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -97,6 +98,7 @@ export default class ReportUI extends Component {
       }
     }
   }
+  static contextType = MainContext;
   callApiForParameters(arrayUrl) {
     if (arrayUrl !== undefined && arrayUrl.length > 0) {
       for (let i = 0; i < arrayUrl.length; i++) {
@@ -126,6 +128,7 @@ export default class ReportUI extends Component {
   }
 
   componentDidMount() {
+    console.log("contextType", this.context);
     this.setState({
       openPopup: true
     });
@@ -241,7 +244,11 @@ export default class ReportUI extends Component {
             }
           });
 
-          const reportProperties = that.props.options.report;
+          const reportProperties = {
+            ...that.props.options.report,
+            pageSize: that.state.pageSize,
+            pageOrentation: that.state.pageOrentation
+          };
 
           const urlChange =
             report_type === "excel" ? "/excelReport" : "/report";
@@ -892,14 +899,14 @@ export default class ReportUI extends Component {
                       className: "select-fld",
                       value: this.state.pageOrentation,
                       dataSource: {
-                        textField: "pagelayout",
-                        valueField: "pageOrentation",
+                        textField: "name",
+                        valueField: "value",
                         data: [
                           {
-                            pagelayout: "landscape",
-                            pageOrentation: "landscape"
+                            name: "Landscape",
+                            value: "landscape"
                           },
-                          { pagelayout: "potrait", pageOrentation: "potrait" }
+                          { name: "Potrait", value: "potrait" }
                         ]
                       },
                       onChange: this.handleChange.bind(this)

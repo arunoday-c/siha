@@ -364,11 +364,7 @@ function Login(props) {
       })
       .catch(error => {
         setLoginLoad(false);
-        if (
-          typeof error === "string"
-          //&&
-          //error.includes("Your are already logged")
-        ) {
+        if (typeof error === "string" && error.includes("Machine")) {
           popUpMessage(error);
           return;
         }

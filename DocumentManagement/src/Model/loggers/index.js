@@ -41,54 +41,31 @@ export function getLogs(req, res, next) {
       ? { message: `${hims_d_hospital_id}` }
       : {};
   const leveles = level !== undefined ? { level: level } : {};
+  const hasEmpId =
+    employee_id !== undefined
+      ? {
+          "meta.employee_id":
+            typeof employee_id === "string"
+              ? parseInt(employee_id)
+              : employee_id
+        }
+      : {};
+
   const input = {
     ...createMessage,
     timestamp: {
       $gte: moment(from_date).startOf("day"),
       $lte: moment(to_date).endOf("day")
     },
-    ...leveles
+    ...leveles,
+    ...hasEmpId
   };
-
   loggerPreferences
     .find(input)
     .then(result => {
-      let rec = result;
-      if (employee_id !== undefined && employee_id !== "") {
-        rec = result.filter(f => f.meta.employee_id === employee_id);
-      }
-      const records = rec.map(item => {
-        const { level, meta } = item;
-        let { dateTime, requestIdentity, requestUrl, requestMethod } = meta;
-        requestIdentity = requestIdentity === undefined ? {} : requestIdentity;
-        let { requestClient, reqUserIdentity } = requestIdentity;
-        reqUserIdentity = reqUserIdentity === undefined ? {} : reqUserIdentity;
-        const { full_name, role_name } = reqUserIdentity;
-        let client = "";
-        if (typeof requestClient !== "string") {
-          const { mac, name, address } = requestClient;
-          client = `Mac:${mac},Ip:${address},machine:${name}`;
-        } else {
-          client = requestClient;
-        }
-        let url = requestUrl;
-        if (requestMethod === "GET") {
-          url = requestUrl.split("?")[0];
-        }
-        return {
-          level,
-          dateTime,
-          url: url,
-          method: requestMethod,
-          name: full_name,
-          role: role_name,
-          machine_details: client
-        };
-      });
-
       res.status(200).json({
         success: true,
-        records: records
+        records: result
       });
     })
     .catch(error => {
