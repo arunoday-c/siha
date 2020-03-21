@@ -1800,11 +1800,12 @@ export default {
             ) {
               let _annual_salary = _.filter(salary_process, f => {
                 return (
-                  f.from_normal_salary === "N" ||
+                  f.from_normal_salary === "N" &&
                   f.hims_f_employee_annual_leave_id !== null
                 );
               });
               if (_annual_salary.length > 0) {
+                _mysql.releaseConnection();
                 req.records = {
                   invalid_input: true,
                   message:
