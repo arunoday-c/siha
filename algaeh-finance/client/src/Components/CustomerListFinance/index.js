@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { InfoBar } from "../../Wrappers";
-import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadCustomerReceivables } from "./event";
 import { Button } from "antd";
 
@@ -35,7 +35,7 @@ function CustomerList(props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
+              <div className="portlet-label">
                 <div className="caption">
                   <h3 className="caption-subject">Customer List</h3>
                 </div>
@@ -61,14 +61,14 @@ function CustomerList(props) {
               </div>
               <div className="row">
                 <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehDataGrid
+                  <AlgaehTable
                     columns={[
                       {
-                        title: "Customer / Company",
+                        label: "Customer / Company",
                         sortable: true,
                         fieldName: "child_name",
-                        filtered: true,
-                        displayTemplate: (text, record) => {
+                        filterable: true,
+                        displayTemplate: record => {
                           return (
                             <Button
                               type="link"
@@ -78,13 +78,13 @@ function CustomerList(props) {
                                 })
                               }
                             >
-                              {text}
+                              {record.child_name}
                             </Button>
                           );
                         }
                       },
                       {
-                        title: "Balance",
+                        label: "Balance",
                         sortable: true,
                         fieldName: "balance_amount",
                         others: {
@@ -93,10 +93,12 @@ function CustomerList(props) {
                       }
                     ]}
                     height="80vh"
-                    filter={true}
-                    rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: customer_receivables }}
-                  ></AlgaehDataGrid>
+                    isFilterable={true}
+                    // rowUnique="finance_voucher_header_id"
+                    row_unique_id="finance_voucher_header_id"
+                    // dataSource={{ data: customer_receivables }}
+                    data={customer_receivables || []}
+                  />
                 </div>
               </div>
             </div>

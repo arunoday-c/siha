@@ -1,7 +1,7 @@
 import React, { memo, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "antd";
-import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { LoadSupplierPayable } from "./event";
 import { InfoBar } from "../../Wrappers";
 
@@ -37,7 +37,7 @@ function CustomerList(props) {
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
+              <div className="portlet-label">
                 <div className="caption">
                   <h3 className="caption-subject">Customer List</h3>
                 </div>
@@ -63,14 +63,15 @@ function CustomerList(props) {
               </div>
               <div className="row">
                 <div className="col-lg-12 customCheckboxGrid">
-                  <AlgaehDataGrid
+                  <AlgaehTable
                     columns={[
                       {
-                        title: "Supplier / Company",
+                        label: "Supplier / Company",
                         sortable: true,
+                        filterable: true,
                         fieldName: "child_name",
                         filtered: true,
-                        displayTemplate: (text, record) => {
+                        displayTemplate: record => {
                           return (
                             <Button
                               type="link"
@@ -80,30 +81,33 @@ function CustomerList(props) {
                                 })
                               }
                             >
-                              {text}
+                              {record.child_name}
                             </Button>
                           );
                         }
                       },
                       {
-                        title: "Contact Number",
+                        label: "Contact Number",
                         sortable: true,
+                        filterable: true,
                         fieldName: "contact_number",
                         others: {
                           width: 200
                         }
                       },
                       {
-                        title: "Account Number",
+                        label: "Account Number",
                         sortable: true,
+                        filterable: true,
                         fieldName: "bank_account_no",
                         others: {
                           width: 200
                         }
                       },
                       {
-                        title: "Balance",
+                        label: "Balance",
                         sortable: true,
+                        filterable: true,
                         fieldName: "balance_amount",
                         others: {
                           width: 200
@@ -111,10 +115,11 @@ function CustomerList(props) {
                       }
                     ]}
                     height="80vh"
-                    filter={true}
-                    rowUnique="finance_voucher_header_id"
-                    dataSource={{ data: supplier_payable }}
-                  ></AlgaehDataGrid>
+                    isFilterable={true}
+                    row_unique_id="finance_voucher_header_id"
+                    // dataSource={{ data: supplier_payable }}
+                    data={supplier_payable}
+                  />
                 </div>
               </div>
             </div>
