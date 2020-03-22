@@ -36,7 +36,8 @@ export default function FinanceOptions(props) {
   useEffect(() => {
     if (finOptions.default_branch_id) {
       const [required] = organization.filter(
-        el => el.hims_d_hospital_id === finOptions.default_branch_id
+        el =>
+          el.hims_d_hospital_id === parseInt(finOptions.default_branch_id, 10)
       );
       setCostCenters(required.cost_centers);
     }
@@ -44,6 +45,9 @@ export default function FinanceOptions(props) {
 
   function handleDropDown(_, value, name) {
     setFinOptions(state => {
+      if (name === "default_branch_id") {
+        state.default_cost_center_id = null;
+      }
       return { ...state, [name]: value };
     });
   }
