@@ -203,9 +203,9 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
   function Content() {
     switch (columnType) {
       case "by_year":
-        return <ByYear data={data} />;
+        return <ByYear data={data} layout={layout} />;
       case "by_center":
-        return <ByCostCenter data={data} />;
+        return <ByCostCenter data={data} layout={layout} />;
       case "total":
         return <PnLTree data={data} layout={layout} style={style} />;
     }
@@ -213,7 +213,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
 
   return (
     <>
-      {/* <Button onClick={loadExcel}>Excel</Button> */}
       <div className="row">
         <AlgaehAutoComplete
           div={{ className: "col-3" }}
@@ -342,7 +341,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         </div>
       ) : (
         <>
-          {" "}
           <Content />
         </>
       )}

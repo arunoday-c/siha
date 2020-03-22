@@ -2,7 +2,7 @@ import React, { memo, useEffect, useState } from "react";
 import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../hooks";
 
-function PnLCostCenter({ data }) {
+function PnLCostCenter({ data, layout }) {
   const [incomeExpenceData, setincomeExpence] = useState([]);
   const [totals, setTotals] = useState({});
   const [columns, setColumn] = useState([]);
@@ -48,6 +48,7 @@ function PnLCostCenter({ data }) {
         aggregate={field => {
           return totals[field];
         }}
+        expandAll={layout.expand}
       />
     </>
   );

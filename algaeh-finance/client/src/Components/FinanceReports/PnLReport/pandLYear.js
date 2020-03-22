@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react";
 import { AlgaehTable } from "algaeh-react-components";
-function PLYear({ data }) {
+function PLYear({ data, layout }) {
   const [incomeExpenceData, setincomeExpence] = useState([]);
   const [totals, setTotals] = useState({});
   const [columns, setColumn] = useState([]);
@@ -50,6 +50,7 @@ function PLYear({ data }) {
             aggregate={field => {
               return totals[field];
             }}
+            expandAll={layout.expand}
           />
         </>
       ) : (
