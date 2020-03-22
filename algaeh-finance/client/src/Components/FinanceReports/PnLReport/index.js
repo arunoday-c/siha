@@ -14,7 +14,7 @@ import { Button } from "antd/es/radio";
 const yearList = getYears();
 
 export default function PnLReport({ layout, finOptions, organization, style }) {
-  const [columnType, setColumnType] = useState(null);
+  const [columnType, setColumnType] = useState("by_year");
   const [year, setYear] = useState(new Date().getFullYear());
   const [costCenters, setCostCenters] = useState([]);
   const [branch_id, setBranchID] = useState(finOptions.default_branch_id);
@@ -245,6 +245,8 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           }}
         />
       </div>
+      {/* <Button onClick={loadExcel}>Excel</Button> */}
+
       <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
         <i
           className="fas fa-file-download"
@@ -270,7 +272,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           }}
         />
         <AlgaehAutoComplete
-          div={{ className: "col-3" }}
+          div={{ className: "col-2" }}
           label={{
             forceLabel: "Cost Center",
             isImp: true
@@ -303,15 +305,48 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             onChange: handleDropDown
           }}
         />
-        <AlgaehButton
-          className="btn btn-primary"
-          onClick={onLoad}
-          disabled={!columnType}
-          data-name="preview"
-          style={{ marginTop: 15 }}
-        >
-          Preview
-        </AlgaehButton>
+        <AlgaehAutoComplete
+          div={{ className: "col-2" }}
+          label={{
+            forceLabel: "Based on",
+            isImp: true
+          }}
+          selector={{
+            name: "columnType",
+            value: columnType,
+            dataSource: {
+              data: [
+                {
+                  name: "Year",
+                  value: "by_year"
+                },
+                {
+                  name: "Cost Center",
+                  value: "by_center"
+                },
+                {
+                  name: "Total",
+                  value: "total"
+                }
+              ],
+              valueField: "value",
+              textField: "name"
+            },
+            onChange: handleDropDown
+          }}
+        />
+        <div className="col-2">
+          {" "}
+          <AlgaehButton
+            className="btn btn-primary"
+            onClick={onLoad}
+            disabled={!columnType}
+            data-name="preview"
+            style={{ marginTop: 15 }}
+          >
+            Preview
+          </AlgaehButton>
+        </div>
         {/* <AlgaehButton
           className="btn btn-default"
        

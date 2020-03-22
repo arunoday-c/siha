@@ -138,6 +138,7 @@ const LeaveSalProcess = $this => {
     module: "hrManagement",
     data: inputObj,
     onSuccess: response => {
+      debugger
       if (response.data.success) {
         if (response.data.result.length > 0) {
           let salaryObj = [];
@@ -162,26 +163,35 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
-          let leave_amount = GetAmountFormart(
-            response.data.result[1][0].leave_amount
+          let leave_amount = parseFloat(response.data.result[1][0].leave_amount).toFixed(
+            $this.state.decimal_place
           );
-          let airfare_amount = GetAmountFormart(
-            response.data.result[1][0].airfare_amount
+          // GetAmountFormart(
+          //   response.data.result[1][0].leave_amount
+          // );
+          let airfare_amount = parseFloat(response.data.result[1][0].airfare_amount).toFixed(
+            $this.state.decimal_place
           );
+          // GetAmountFormart(
+          //   response.data.result[1][0].airfare_amount
+          // );
 
-          let x = leave_amount.split(" ");
-          leave_amount = x[1];
+          // let x = leave_amount.split(" ");
+          // leave_amount = response.data.result[1][0].leave_amount;
 
-          x = airfare_amount.split(" ");
-          airfare_amount = x[1];
+          // x = airfare_amount.split(" ");
+          // airfare_amount = response.data.result[1][0].airfare_amount;
 
           let salary_amount = Enumerable.from(leave_salary_detail).sum(s =>
             parseFloat(s.net_amount)
           );
 
-          salary_amount = GetAmountFormart(salary_amount);
-          x = salary_amount.split(" ");
-          salary_amount = x[1];
+          salary_amount = parseFloat(salary_amount).toFixed(
+            $this.state.decimal_place
+          );
+          // GetAmountFormart(salary_amount);
+          // x = salary_amount.split(" ");
+          // salary_amount = x[1];
 
           AlgaehLoader({ show: false });
 
@@ -190,9 +200,12 @@ const LeaveSalProcess = $this => {
             parseFloat(leave_amount) +
             parseFloat(airfare_amount);
 
-          total_amount = GetAmountFormart(total_amount);
-          x = total_amount.split(" ");
-          total_amount = x[1];
+          total_amount = parseFloat(total_amount).toFixed(
+            $this.state.decimal_place
+          );
+          // GetAmountFormart(total_amount);
+          // x = total_amount.split(" ");
+          // total_amount = x[1];
 
           $this.setState({
             leave_salary_detail: leave_salary_detail,
@@ -204,12 +217,8 @@ const LeaveSalProcess = $this => {
             ProcessBtn: true,
             dis_salary_amount: GetAmountFormart(salary_amount),
             airfare_months: response.data.result[1][0].airfare_months,
-            dis_leave_amount: GetAmountFormart(
-              response.data.result[1][0].leave_amount
-            ),
-            dis_airfare_amount: GetAmountFormart(
-              response.data.result[1][0].airfare_amount
-            ),
+            dis_leave_amount: GetAmountFormart(response.data.result[1][0].leave_amount),
+            dis_airfare_amount: GetAmountFormart(response.data.result[1][0].airfare_amount),
             dis_total_amount: GetAmountFormart(total_amount)
           });
           swalMessage({

@@ -100,13 +100,16 @@ app.set("trust proxy", true);
 app.use("/api/v1", routes);
 
 process.on("warning", warning => {
-  logger.log("warn", warning);
+  logger.log("warn", "warning-Core", warning);
 });
 process.on("uncaughtException", error => {
-  logger.log("error", error);
+  logger.log("error", "uncaughtException-Core", error);
 });
 process.on("unhandledRejection", (reason, promise) => {
-  logger.error("error", { reason: reason, promise: promise });
+  logger.error("error", "unhandledRejection-Core", {
+    reason: reason,
+    promise: promise
+  });
 });
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
@@ -180,7 +183,7 @@ app.use((error, req, res, next) => {
     reqUserIdentity: req.userIdentity,
     errorDescription: error
   };
-  logger.log("error", _error);
+  logger.log("error", "unhandlerd", _error);
 });
 
 app.server.listen(_port);

@@ -15,6 +15,7 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
+import { MainContext } from "algaeh-react-components/context";
 // import {AlgaehReportViewer} from "algaeh-react-components";
 // import { Document, Page } from "react-pdf/dist/entry.parcel";
 export default class ReportUI extends Component {
@@ -32,7 +33,9 @@ export default class ReportUI extends Component {
       report_preview_type: 0,
       buttonDisable: true,
       report_name: null,
-      base64Pdf: undefined
+      base64Pdf: undefined,
+      pageOrentation: "landscape",
+      pageSize: "A3"
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -95,6 +98,7 @@ export default class ReportUI extends Component {
       }
     }
   }
+  static contextType = MainContext;
   callApiForParameters(arrayUrl) {
     if (arrayUrl !== undefined && arrayUrl.length > 0) {
       for (let i = 0; i < arrayUrl.length; i++) {
@@ -124,6 +128,7 @@ export default class ReportUI extends Component {
   }
 
   componentDidMount() {
+    console.log("contextType", this.context);
     this.setState({
       openPopup: true
     });
@@ -238,7 +243,13 @@ export default class ReportUI extends Component {
               });
             }
           });
-          const reportProperties = that.props.options.report;
+
+          const reportProperties = {
+            ...that.props.options.report,
+            pageSize: that.state.pageSize,
+            pageOrentation: that.state.pageOrentation
+          };
+
           const urlChange =
             report_type === "excel" ? "/excelReport" : "/report";
           algaehApiCall({
@@ -537,7 +548,12 @@ export default class ReportUI extends Component {
     //   [_param.name]: selectedDate
     // });
   }
-
+  handleChange(event) {
+    console.log(event);
+    this.setState({
+      [event.name]: event.value
+    });
+  }
   generateInputParameters() {
     const _parameters = this.props.options.plotUI.paramters;
     let _controls = [];
@@ -857,11 +873,20 @@ export default class ReportUI extends Component {
                       forceLabel: "Page Size"
                     }}
                     selector={{
-                      name: "",
+                      name: "pageSize",
                       className: "select-fld",
-                      value: "",
-                      dataSource: {},
-                      autoComplete: "off"
+                      value: this.state.pageSize,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "pageSize",
+                        data: [
+                          { name: "A1", pageSize: "A1" },
+                          { name: "A2", pageSize: "A2" },
+                          { name: "A3", pageSize: "A3" },
+                          { name: "A4", pageSize: "A4" }
+                        ]
+                      },
+                      onChange: this.handleChange.bind(this)
                     }}
                   />
                   <AlagehAutoComplete
@@ -870,12 +895,21 @@ export default class ReportUI extends Component {
                       forceLabel: "Page Layout"
                     }}
                     selector={{
-                      name: "",
+                      name: "pageOrentation",
                       className: "select-fld",
-                      value: "",
-                      dataSource: {},
-                      autoComplete: "off",
-                      placeHolder: "Page Layout"
+                      value: this.state.pageOrentation,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: [
+                          {
+                            name: "Landscape",
+                            value: "landscape"
+                          },
+                          { name: "Potrait", value: "potrait" }
+                        ]
+                      },
+                      onChange: this.handleChange.bind(this)
                     }}
                   />
                 </div>

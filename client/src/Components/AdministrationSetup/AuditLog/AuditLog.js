@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./AuditLog.scss";
+import moment from "moment";
 
 import {
   AlgaehDateHandler,
@@ -17,7 +18,8 @@ export default class AuditLog extends Component {
     super(props);
     this.state = {
       hospital_id: "",
-      hospitalList: []
+      hospitalList: [],
+      levels: []
     };
   }
   static contextType = MainContext;
@@ -39,15 +41,46 @@ export default class AuditLog extends Component {
     this.setState({ hospital_id: "", employee_id: "" });
   };
 
-  handleChange(value) {
-    console.log(`selected ${value}`);
+  datehandle(ctrl, e) {
+    this.setState({
+      [e]: moment(ctrl)._d
+    });
   }
+
   dropDownHandle = e => {
     console.log(e, "handle");
     const { name, value } = e;
     this.setState({ [name]: value });
   };
+  auditlogData() {
+    algaehApiCall({
+      uri: "/getLogs",
+      module: "documentManagement",
+      data: {
+        hims_d_hospital_id: this.state.hospital_id,
+        from_date: this.state.from_date,
+        to_date: this.state.to_date,
+        employee_id: this.state.employee_id,
 
+        level: this.state.levels
+      },
+      method: "GET",
+
+      onSuccess: response => {
+        if (response.data.success === true) {
+          new Promise((resolve, reject) => {
+            resolve(response.data.records);
+            // }).then(data => {
+            //   if (Array.isArray(data)) {
+            //     if (data.length > 0) {
+            //     }
+            //   } else if (data !== null || data !== undefined) {
+            //   }
+          });
+        }
+      }
+    });
+  }
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
@@ -60,6 +93,7 @@ export default class AuditLog extends Component {
         callBack(text);
       },
       onRowSelect: row => {
+        console.log("row", row);
         this.setState({
           employee_name: row.full_name,
           employee_id: row.hims_d_employee_id
@@ -95,62 +129,31 @@ export default class AuditLog extends Component {
               }
             }}
           />
+
           <AlgaehDateHandler
-            div={{ className: "col-2 form-group" }}
-            label={{
-              forceLabel: "From Date",
-              isImp: false
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              others: {}
-            }}
-            value=""
-            //minDate={this.state.from_date}
-          />
-          <AlgaehDateHandler
-            div={{ className: "col-2 form-group" }}
-            label={{
-              forceLabel: "To Date",
-              isImp: false
-            }}
-            textBox={{
-              className: "txt-fld",
-              name: "",
-              others: {}
-            }}
-            value=""
-            //minDate={this.state.from_date}
-          />
-          <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
-            label={{
-              forceLabel: "Modules",
-              isImp: true
+            label={{ forceLabel: "From Date", isImp: true }}
+            textBox={{ className: "txt-fld", name: "from_date" }}
+            events={{
+              onChange: this.datehandle.bind(this)
             }}
-            selector={{
-              name: "modules",
-              className: "select-fld",
-              value: this.state.modules,
-              dataSource: {
-                textField: "user",
-                valueField: "hims_d_hospital_id",
-                data: this.state.module_lst
-              },
-              onChange: this.dropDownHandle,
-              onClear: () => {
-                this.setState({
-                  module_lst: null
-                });
-              }
-            }}
+            value={this.state.from_date}
           />
+          <AlgaehDateHandler
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{ forceLabel: "To Date", isImp: true }}
+            textBox={{ className: "txt-fld", name: "to_date" }}
+            events={{
+              onChange: this.datehandle.bind(this)
+            }}
+            value={this.state.to_date}
+          />
+
           <AlagehAutoComplete
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Levels",
-              isImp: true
+              isImp: false
             }}
             selector={{
               name: "Level",
@@ -184,6 +187,16 @@ export default class AuditLog extends Component {
               <i className="fas fa-search fa-lg" />
             </h6>
           </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              // onClick={this.auditlogData.bind(this)}
+              className="btn btn-primary"
+            >
+              LOAD
+            </button>
+          </div>
         </div>
         <div className="row">
           <div className="col-12">
@@ -200,7 +213,7 @@ export default class AuditLog extends Component {
                       id="auditLogGrid"
                       columns={[
                         {
-                          fieldName: "auditTime",
+                          fieldName: "audit_time",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Date & Time" }}
@@ -211,47 +224,49 @@ export default class AuditLog extends Component {
                           }
                         },
                         {
-                          fieldName: "auditModule",
+                          fieldName: "audit_Level",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Module Name" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Level" }} />
                           ),
                           others: {
                             maxWidth: 250
                           }
                         },
                         {
-                          fieldName: "auditAction",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Action" }} />
-                          ),
+                          fieldName: "audit_url",
+                          label: <AlgaehLabel label={{ forceLabel: "URL" }} />,
                           others: {
                             maxWidth: 120
                           }
                         },
                         {
-                          fieldName: "auditUser",
+                          fieldName: "audit_method",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Username" }} />
+                            <AlgaehLabel label={{ forceLabel: "Method" }} />
                           ),
                           others: {
                             maxWidth: 150
                           }
                         },
                         {
-                          fieldName: "auditEmployee",
+                          fieldName: "audit_name",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Emp. Name" }} />
+                            <AlgaehLabel label={{ forceLabel: "UserName" }} />
                           ),
                           others: {
                             maxWidth: 250
                           }
                         },
                         {
-                          fieldName: "auditParameter",
+                          fieldName: "audit_role",
+                          label: <AlgaehLabel label={{ forceLabel: "Role" }} />
+                        },
+                        {
+                          fieldName: "audit_machine_details",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Parameter" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Machine Details" }}
+                            />
                           )
                         }
                       ]}
