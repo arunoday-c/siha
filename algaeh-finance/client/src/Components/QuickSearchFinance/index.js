@@ -1,11 +1,14 @@
 import React, { memo, useState } from "react";
 import "./modalGlobal.scss";
-import { AlgaehDataGrid } from "algaeh-react-components";
+import { AlgaehTable } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";
 import VoucherDetails from "./VoucherDetails";
+import { useLocation } from "react-router-dom";
 
-export default memo(function(props) {
+export default memo(function QuickSearch(props) {
+  const location = useLocation();
+
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -21,10 +24,10 @@ export default memo(function(props) {
     setVisible(false);
   }
 
-  const linkCol = (text, row) => {
+  const linkCol = row => {
     return (
       <Button type="link" onClick={() => onSelect(row)}>
-        {text}
+        {row.voucher_no}
       </Button>
     );
   };
@@ -45,54 +48,57 @@ export default memo(function(props) {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="row">
                     <div className="col-lg-12 customCheckboxGrid">
-                      <AlgaehDataGrid
+                      <AlgaehTable
                         columns={[
                           {
-                            key: "invoice_date",
-                            title: "Date",
+                            fieldName: "invoice_date",
+                            label: "Date",
                             sortable: true
                           },
                           {
-                            key: "voucher_type",
-                            title: "Type",
+                            fieldName: "voucher_type",
+                            label: "Type",
                             sortable: true,
                             filterable: true
                           },
                           {
-                            key: "voucher_no",
-                            title: "Voucher No",
+                            fieldName: "voucher_no",
+                            label: "Voucher No",
                             sortable: true,
                             filterable: true,
                             displayTemplate: linkCol
                           },
                           {
-                            key: "narration",
-                            title: "Description",
+                            fieldName: "narration",
+                            label: "Description",
                             sortable: true,
                             filterable: true
                           },
                           {
-                            key: "invoice_no",
-                            title: "Invoice No",
+                            fieldName: "invoice_no",
+                            label: "Invoice No",
                             sortable: true,
                             filterable: true
                           },
                           {
-                            key: "amount",
-                            title: "Amount",
+                            fieldName: "amount",
+                            label: "Amount",
                             sortable: true,
                             filterable: true
                           },
                           {
-                            key: "updated_date",
-                            title: "Last Modified Date",
+                            fieldName: "updated_date",
+                            label: "Last Modified Date",
                             sortable: true
                           }
                         ]}
-                        height="59vh"
-                        rowUnique="finance_voucher_header_id"
-                        dataSource={{ data: data }}
-                      ></AlgaehDataGrid>
+                        // height="80vh"
+                        isFilterable={true}
+                        // rowUnique="finance_voucher_header_id"
+                        row_unique_id="finance_voucher_header_id"
+                        // dataSource={{ data: data }}
+                        data={data || []}
+                      />
                     </div>
                   </div>
                 </div>
