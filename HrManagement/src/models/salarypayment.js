@@ -31,10 +31,10 @@ export default {
                 .executeQuery({
                     query:
                         "select hims_f_salary_id, salary_number, employee_id,present_days,display_present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary, advance_due, loan_payable_amount, \
-            loan_due_amount, emp.employee_code, emp.full_name,salary_paid from hims_f_salary, \
-            hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id \
+            loan_due_amount, emp.employee_code, emp.full_name,salary_paid from hims_f_salary S, \
+            hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id \
             and emp.sub_department_id=SD.hims_d_sub_department_id and salary_processed = 'Y' and salary_type = 'NS' and \
-            `year` = ? and `month` = ? " +
+            `year` = ? and `month` = ? and S.hospital_id=? " +
                         _stringData,
                     values: _.valuesIn(inputParam),
                     printQuery: true
