@@ -147,73 +147,72 @@ export default function FinanceReports() {
       });
   }
 
-  if (finOptions) {
+  if (finOptions && dates) {
     return (
       <div className="row">
         <div className="col-12">
           <div className="row ">
             <ReportNavBar setSelected={setSelected} selected={selected} />
             <div className="col reportPreviewSecLeft">
-              {selected !== "BS" ? (
-                <div
-                  className="row inner-top-search"
-                  style={{ padding: "15px 0", marginTop: -15 }}
-                >
-                  <AlgaehAutoComplete
-                    div={{ className: "col-4" }}
-                    label={{
-                      forceLabel: "Select Period",
-                      isImp: true
-                    }}
-                    selector={{
-                      name: "period",
-                      value: period,
-                      dataSource: {
-                        data: [
-                          {
-                            name: "This month",
-                            value: "TM"
-                          },
-                          {
-                            name: "This Month till Date",
-                            value: "TMTD"
-                          },
-                          {
-                            name: "Last month",
-                            value: "LM"
-                          },
-                          {
-                            name: "Current Year",
-                            value: "CY"
-                          },
-                          {
-                            name: "Current Yeat till Date",
-                            value: "CYTD"
-                          }
-                        ],
-                        valueField: "value",
-                        textField: "name"
-                      },
-                      onChange: (_, value) => {
-                        setPeriod(value);
-                      }
-                    }}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col-4" }}
-                    label={{ forceLabel: "Selected Range" }}
-                    type="range"
-                    textBox={{
-                      value: dates
-                    }}
-                    events={{
-                      onChange: selected => {
-                        setDates(selected);
-                      }
-                    }}
-                  />
-                </div>
-              ) : null}
+              <div
+                className="row inner-top-search"
+                style={{ padding: "15px 0", marginTop: -15 }}
+              >
+                <AlgaehAutoComplete
+                  div={{ className: "col-4" }}
+                  label={{
+                    forceLabel: "Select Period",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "period",
+                    value: period,
+                    dataSource: {
+                      data: [
+                        {
+                          name: "This month",
+                          value: "TM"
+                        },
+                        {
+                          name: "This Month till Date",
+                          value: "TMTD"
+                        },
+                        {
+                          name: "Last month",
+                          value: "LM"
+                        },
+                        {
+                          name: "Current Year",
+                          value: "CY"
+                        },
+                        {
+                          name: "Current Yeat till Date",
+                          value: "CYTD"
+                        }
+                      ],
+                      valueField: "value",
+                      textField: "name"
+                    },
+                    onChange: (_, value) => {
+                      setPeriod(value);
+                    }
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col-4" }}
+                  label={{ forceLabel: "Selected Range" }}
+                  type="range"
+                  textBox={{
+                    value: dates
+                  }}
+                  events={{
+                    onChange: selected => {
+                      setDates(selected);
+                    }
+                  }}
+                />
+              </div>
+
               <Spin
                 spinning={loading}
                 tip="Please wait report data is fetching.."

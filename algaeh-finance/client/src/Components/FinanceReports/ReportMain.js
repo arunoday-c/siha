@@ -15,7 +15,7 @@ export default function ReportMain({
 }) {
   switch (selected) {
     case "BS":
-      return <Balance layout={layout} />;
+      return <Balance layout={layout} dates={dates} />;
     case "PL":
       return (
         <PnLReport

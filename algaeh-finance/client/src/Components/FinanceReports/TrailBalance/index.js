@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { AlgaehAutoComplete } from "algaeh-react-components";
+import { Spin } from "antd";
 import { newAlgaehApi } from "../../../hooks";
 import TrailTable from "./TrailbalanceTable";
 import TrailTree from "./TrailBalanceTree";
@@ -7,6 +8,7 @@ import TrailTree from "./TrailBalanceTree";
 export default function TrailBalance({ layout, dates, finOptions }) {
   const [type, setType] = useState("table");
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function getData() {
@@ -27,7 +29,10 @@ export default function TrailBalance({ layout, dates, finOptions }) {
       setData(result.data.result);
     }
     if (finOptions && dates.length) {
-      getData();
+      setLoading(true);
+      getData()
+        .then(() => setLoading(false))
+        .catch(e => setLoading(false));
     }
   }, [type, dates]);
 
@@ -73,7 +78,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
           }
         }}
       />
-      {renderReport()}
+      <Spin spinning={loading}>{renderReport()}</Spin>
     </>
   );
 }
