@@ -710,5 +710,73 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan:
+  generateCodes: (req, res, next) => {
+    const utilities = new algaehUtilities();
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let level = parseInt(input.account_level) - parseInt(1);
+
+    _mysql
+      .executeQuery({
+        query: `SELECT * FROM tms_finance.finance_account_head where  account_level=? and account_code is null order by u_group_code; `,
+        values: [input.account_level],
+        printQuery: true
+      })
+      .then(resul => {
+        if (resul.length > 0) {
+          let len = resul.length;
+
+          let outArray = "";
+          for (let i = 0; i < len; i++) {
+            _mysql
+              .executeQuery({
+                query: `select finance_account_head_id,account_code,account_name,\
+              account_level,hierarchy_path, concat(account_code,'.',(\
+              select SUBSTRING_INDEX(max(account_code), '.', -1)+1\
+              FROM tms_finance.finance_account_head where account_parent=?)) as new_code\
+              FROM tms_finance.finance_account_head where u_group_code=?; `,
+                values: [resul[i]["account_code"], resul[i]["u_group_parent"]],
+                printQuery: true
+              })
+              .then(result => {
+                // _mysql.releaseConnection();
+                let data = result[0];
+
+                let account_code = 0;
+
+                if (data["new_code"] == null) {
+                  account_code = data["account_code"] + "." + 1;
+                } else {
+                  account_code = data["new_code"];
+                }
+
+                outArray += `update  tms_finance.finance_account_head set account_code =${account_code},account_parent=${data["account_code"]}
+                where finance_account_head_id=${resul[i]["finance_account_head_id"]}`;
+
+                if (i == len) {
+                  console.log("outArray:", outArray);
+
+                  next();
+                }
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          }
+        } else {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };

@@ -11,7 +11,8 @@ const {
   addCostCenterGroup,
   getCostCenterGroups,
   getCostCentersForVoucher,
-  getFinanceDate
+  getFinanceDate,
+  generateCodes
 } = finance_masters;
 
 export default () => {
@@ -186,5 +187,16 @@ export default () => {
       })
       .end();
   });
+
+  api.get("/generateCodes", generateCodes, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records
+      })
+      .end();
+  });
+
   return api;
 };
