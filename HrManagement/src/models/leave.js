@@ -5865,14 +5865,14 @@ export default {
       getMaxAuth({
         mysql: _mysql
       })
-        .then(result => {
+        .then(result => {                    
           if (req.userIdentity.leave_authorize_privilege >= result.MaxLeave) {
             _mysql
               .executeQuery({
                 query:
                   "select hims_f_leave_application_id,leave_application_code ,`status`\
              from hims_f_leave_application where hims_f_leave_application_id=?;\
-             select attendance_starts,at_st_date,at_end_date from hims_d_hrms_options limit 1; ",
+             select attendance_starts,at_st_date,at_end_date, annual_leave_process_separately from hims_d_hrms_options limit 1; ",
                 values: [input.hims_f_leave_application_id],
 
                 printQuery: false
@@ -5924,6 +5924,7 @@ export default {
                         ) {
                           //YOU CAN CANCEL
                           input["cancel"] = "Y";
+                          input["annual_leave_process_separately"] = attResult.annual_leave_process_separately;
                           //------------------------------------------------------------------
                           validateLeaveApplictn(req.body, _mysql)
                             .then(deductionResult => {
