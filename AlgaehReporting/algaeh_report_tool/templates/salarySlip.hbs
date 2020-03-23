@@ -32,22 +32,26 @@
                 <tr>
                     <td><label class="textEnLft">Working Days:</label><span class="valueText">{{total_days}}</span>
                     </td>
-                    <td><label class="textEnLft">Present Days:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Present Days:</label><span
+                            class="valueText">{{display_present_days}}</span>
                     </td>
-                    <td><label class="textEnLft">Paid Leave:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Paid Leave:</label><span class="valueText">{{paid_leave}}</span>
                     </td>
-                    <td><label class="textEnLft">Upaid Leave:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Upaid Leave:</label><span class="valueText">{{unpaid_leave}}</span>
                     </td>
                     </td>
                 </tr>
                 <tr>
-                    <td><label class="textEnLft">Previous Upaid Leave:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Previous Upaid Leave:</label><span
+                            class="valueText">{{pending_unpaid_leave}}</span>
                     </td>
-                    <td><label class="textEnLft">Holiday/ Weekoff:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Holiday/ Weekoff:</label><span
+                            class="valueText">{{total_holidays}}/{{total_weekoff_days}}</span>
                     </td>
-                    <td><label class="textEnLft">Total Leaves:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Total Leaves:</label><span class="valueText">{{total_leave}}</span>
                     </td>
-                    <td><label class="textEnLft">Total Paid Days:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Total Paid Days:</label><span
+                            class="valueText">{{total_paid_days}}</span>
                     </td>
                 </tr>
                 <tr>
@@ -57,14 +61,14 @@
                     <td><label class="textEnLft">Gross Deductions:</label>
                         <span class="valueText">{{total_deductions}}</span>
                     </td>
-                    <td><label class="textEnLft">Loan Payable Amt:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Date of joining:</label><span class="valueText">{{DOJ}}</span>
                     </td>
-                    <td><label class="textEnLft">Due Loan Amt:</label><span class="valueText">Nil</span>
+                    <td><label class="textEnLft">Accrued Gratuity:</label><span class="valueText">Nil</span>
                     </td>
                 </tr>
             </table>
         </section>
-        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc; height:calc(100% - 354px);">
+        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc; height:calc(100% - 252.57px);">
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
                 <thead>
                     <tr>
@@ -75,8 +79,8 @@
                 <tbody>
                     {{#each emp_earnings}}
                     <tr>
-                        <td valign="top">{{earning_description}}</td>
-                        <td valign="top" class="numberFld">{{earning_amount}}</td>
+                        <td style="height: 25px;" valign="top">{{earning_description}}</td>
+                        <td style="height: 25px;" valign="top" class="numberFld">{{earning_amount}}</td>
                     </tr>
                     {{/each}}
 
@@ -97,8 +101,8 @@
 
                     {{#each emp_deductions}}
                     <tr>
-                        <td>{{deduction_description}}</td>
-                        <td class="numberFld">{{deduction_amount}}</td>
+                        <td style="height: 25px;">{{deduction_description}}</td>
+                        <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
                     </tr>
                     {{/each}}
 
@@ -112,10 +116,14 @@
             </table>
             <table class="tableForData">
                 <tr class="footerTotalUp">
+                    <td>Loan Due Amt</td>
+                    <td class="numberFld" colspan="3">-{{loan_due_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp">
                     <td>Net Pay</td>
                     <td class="numberFld" colspan="3">{{net_salary}}</td>
                 </tr>
-                <tr>
+                <tr class="footerTotalUp">
                     <td>In Words</td>
                     <td class="numberFld salaryWord" colspan="3">{{salary_in_words}}
                     </td>
@@ -123,7 +131,7 @@
             </table>
         </section>
 
-        <p style="text-align: center">This is a computer generated Payslip. Hence signature doesn't require.</p>
+        <p style="text-align: center">This is a computer generated Payslip on {{currentDateTime 'date'}}. </p>
     </div>
 </body>
 {{/each }}
