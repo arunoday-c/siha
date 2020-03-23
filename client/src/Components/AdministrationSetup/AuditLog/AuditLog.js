@@ -191,7 +191,7 @@ export default class AuditLog extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-3 form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Levels",
               isImp: false
@@ -218,7 +218,7 @@ export default class AuditLog extends Component {
             }}
           />
 
-          <div className="col-3 globalSearchCntr form-group mandatory">
+          <div className="col globalSearchCntr form-group mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
@@ -227,22 +227,22 @@ export default class AuditLog extends Component {
               <i className="fas fa-search fa-lg" />
             </h6>
           </div>
-          <div className="col">
-            <button
-              type="submit"
-              style={{ marginTop: 19 }}
-              onClick={this.auditlogData.bind(this)}
-              className="btn btn-primary"
-            >
-              LOAD
-            </button>
+          <div className="col-2">
             <button
               type="submit"
               style={{ marginTop: 19 }}
               onClick={this.handleClear.bind(this)}
-              className="btn btn-primary"
+              className="btn btn-default"
             >
               CLEAR
+            </button>{" "}
+            <button
+              type="submit"
+              style={{ marginTop: 19, marginLeft: 10 }}
+              onClick={this.auditlogData.bind(this)}
+              className="btn btn-primary"
+            >
+              LOAD
             </button>
           </div>
         </div>
@@ -370,9 +370,6 @@ export default class AuditLog extends Component {
                           ),
                           displayTemplate: row => {
                             return JSON.stringify(row.parameters);
-                          },
-                          others: {
-                            width: 300
                           }
                         }
                       ]}
