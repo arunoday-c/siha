@@ -63,9 +63,15 @@ export function getLogs(req, res, next) {
   loggerPreferences
     .find(input)
     .then(result => {
+      const data = result.map(f => {
+        return {
+          level: f.level,
+          ...f.meta
+        };
+      });
       res.status(200).json({
         success: true,
-        records: result
+        records: data
       });
     })
     .catch(error => {
