@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name from
+          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -25,6 +25,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id
           left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id
           left join hims_d_department D on D.hims_d_department_id = SDP.department_id
+          left join hims_f_gratuity_provision GP on S.employee_id = GP.employee_id and GP.year=S.year and GP.month=S.month
           where S.employee_id in(?) and S.year=? and S.month=? ;`,
           values: [input.employees, input.year, input.month],
           printQuery: true
@@ -125,7 +126,8 @@ const executePDF = function executePDFMethod(options) {
                 unpaid_leave: employe[0].unpaid_leave,
                 total_paid_days: employe[0].total_paid_days,
                 pending_unpaid_leave: employe[0].pending_unpaid_leave,
-                loan_due_amount: employe[0].loan_due_amount
+                loan_due_amount: employe[0].loan_due_amount,
+                gratuity_amount: employe[0].gratuity_amount
               });
             });
 
