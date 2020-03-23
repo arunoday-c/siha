@@ -1,6 +1,7 @@
 import React from "react";
 import Balance from "./FinanceStandardReports/balancesheet";
-import TrailBalance from "./FinanceStandardReports/trailbalance";
+// import TrailBalance from "./FinanceStandardReports/trailbalance";
+import TrailBalance from "./TrailBalance";
 import AgingReport from "./FinanceStandardReports/AgingReport";
 import PnLReport from "./PnLReport";
 
@@ -24,7 +25,9 @@ export default function ReportMain({
         />
       );
     case "TB":
-      return <TrailBalance layout={layout} data={data} />;
+      return (
+        <TrailBalance layout={layout} dates={dates} finOptions={finOptions} />
+      );
     case "AR":
       return <AgingReport layout={layout} type="receivable" dates={dates} />;
     case "AP":

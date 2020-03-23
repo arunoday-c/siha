@@ -90,17 +90,17 @@ export default function FinanceReports() {
     }
   }, [period]);
 
-  useEffect(() => {
-    if (selected && finOptions && dates) {
-      switch (selected) {
-        case "TB":
-          loadReport({ url: "getTrialBalance", reportName: "TB", dates });
-          break;
-        default:
-          break;
-      }
-    }
-  }, [selected, finOptions, dates]);
+  // useEffect(() => {
+  //   if (selected && finOptions && dates) {
+  //     switch (selected) {
+  //       case "TB":
+  //         loadReport({ url: "getTrialBalance", reportName: "TB", dates });
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   }
+  // }, [selected, finOptions, dates]);
 
   function loadReport(report) {
     const { url, reportName, dates: inputDates } = report;
