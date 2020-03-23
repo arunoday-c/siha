@@ -66,7 +66,19 @@ const executePDF = function executePDFMethod(options) {
                   });
                 }
               });
-
+              const emp_ded_length = emp_deductions.length;
+              const emp_ear_length = emp_earnings.length;
+              if (emp_ded_length > emp_ear_length) {
+                const blankIndexs = emp_ded_length - emp_ear_length;
+                for (let d = 0; d < blankIndexs; d++) {
+                  emp_earnings.push({});
+                }
+              } else if (emp_ear_length > emp_ded_length) {
+                const blankIndexs = emp_ear_length - emp_ded_length;
+                for (let d = 0; d < blankIndexs; d++) {
+                  emp_deductions.push({});
+                }
+              }
               outputArray.push({
                 year: employe[0].year,
                 // month: employe[0].month,
