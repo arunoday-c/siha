@@ -457,7 +457,6 @@ const SaveDNEnrty = $this => {
 
   delete InputObj.dn_entry_detail;
 
-
   if (batchExpiryDate.length === 0) {
     algaehApiCall({
       uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
@@ -522,15 +521,10 @@ const generateDeliveryNoteReceipt = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Delivery Note Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Delivery Note Receipt";
     }
   });
 };
@@ -683,7 +677,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "dnitemcategory"
       },
-      afterSuccess: data => { }
+      afterSuccess: data => {}
     });
 
     $this.props.getItemGroup({
@@ -708,10 +702,7 @@ const getData = $this => {
   }
 };
 
-
-const printBulkBarcode = ($this) => {
-
-
+const printBulkBarcode = $this => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -727,7 +718,10 @@ const printBulkBarcode = ($this) => {
           height: "20mm",
           showHeaderFooter: false
         },
-        reportName: $this.state.dn_from === "INV" ? "InvProAllBarcode" : "PhrProAllBarcode",
+        reportName:
+          $this.state.dn_from === "INV"
+            ? "InvProAllBarcode"
+            : "PhrProAllBarcode",
         reportParams: [
           {
             name: "hims_f_procurement_dn_header_id",
@@ -750,8 +744,6 @@ const printBulkBarcode = ($this) => {
       myWindow.document.title = "Item Barcode";
     }
   });
-
-
 };
 export {
   texthandle,

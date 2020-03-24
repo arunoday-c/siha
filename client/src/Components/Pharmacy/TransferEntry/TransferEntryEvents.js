@@ -3,9 +3,13 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import moment from "moment"
+import moment from "moment";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -128,15 +132,10 @@ const generateMaterialTransPhar = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Material Transfer Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Material Transfer Receipt";
     }
   });
 };
@@ -147,7 +146,6 @@ const AcknowledgeTransferEntry = $this => {
     $this.state.pharmacy_stock_detail,
     f => f.ack_quantity === 0 || f.ack_quantity === ""
   );
-
 
   if (Quantity_zero.length > 0) {
     swalMessage({
@@ -164,27 +162,27 @@ const AcknowledgeTransferEntry = $this => {
       title: "Please Enter GIT Loaction to transfer item",
       type: "warning"
     });
-    return
+    return;
   } else {
-    gitLoaction_Exists = $this.props.git_locations[0]
+    gitLoaction_Exists = $this.props.git_locations[0];
   }
 
-
-  let InputObj = $this.state
+  let InputObj = $this.state;
 
   InputObj.operation = "-";
   InputObj.ack_done = "Y";
   InputObj.transaction_type = "ACK";
   InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
-  InputObj.transaction_date = moment($this.state.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+  InputObj.transaction_date = moment(
+    $this.state.transfer_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
 
   for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
-    InputObj.pharmacy_stock_detail[i].location_id =
-      InputObj.to_location_id;
-    InputObj.pharmacy_stock_detail[i].location_type =
-      InputObj.to_location_type;
+    InputObj.pharmacy_stock_detail[i].location_id = InputObj.to_location_id;
+    InputObj.pharmacy_stock_detail[i].location_type = InputObj.to_location_type;
     InputObj.pharmacy_stock_detail[i].operation = "+";
 
     InputObj.pharmacy_stock_detail[i].uom_id =
@@ -210,10 +208,15 @@ const AcknowledgeTransferEntry = $this => {
       InputObj.pharmacy_stock_detail[i].ack_quantity;
 
     InputObj.pharmacy_stock_detail[i].expiry_date =
-      InputObj.pharmacy_stock_detail[i].expiry_date === null ? null : moment(InputObj.pharmacy_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+      InputObj.pharmacy_stock_detail[i].expiry_date === null
+        ? null
+        : moment(
+            InputObj.pharmacy_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD");
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode")
+  InputObj.ScreenCode = getCookie("ScreenCode");
 
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",
@@ -243,8 +246,6 @@ const AcknowledgeTransferEntry = $this => {
 };
 
 const SaveTransferEntry = $this => {
-
-
   let gitLoaction_Exists = {};
 
   if ($this.props.git_locations.length === 0) {
@@ -252,23 +253,25 @@ const SaveTransferEntry = $this => {
       title: "Please Enter GIT Loaction to transfer item",
       type: "warning"
     });
-    return
+    return;
   } else {
-    gitLoaction_Exists = $this.props.git_locations[0]
+    gitLoaction_Exists = $this.props.git_locations[0];
   }
 
-  let InputObj = $this.state
+  let InputObj = $this.state;
   AlgaehLoader({ show: true });
   InputObj.operation = "+";
   InputObj.completed = "Y";
   InputObj.transaction_type = "ST";
   InputObj.transaction_id = InputObj.hims_f_pharmacy_transfer_header_id;
-  InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+  InputObj.transaction_date = moment(
+    InputObj.transfer_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_pharmacy_location_id;
   for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
-    InputObj.pharmacy_stock_detail[i].location_id =
-      InputObj.from_location_id;
+    InputObj.pharmacy_stock_detail[i].location_id = InputObj.from_location_id;
     InputObj.pharmacy_stock_detail[i].location_type =
       InputObj.from_location_type;
     InputObj.pharmacy_stock_detail[i].operation = "-";
@@ -292,7 +295,12 @@ const SaveTransferEntry = $this => {
       parseFloat(InputObj.pharmacy_stock_detail[i].quantity_transfer)
     ).toFixed(InputObj.decimal_places);
     InputObj.pharmacy_stock_detail[i].expiry_date =
-      InputObj.pharmacy_stock_detail[i].expiry_date === null ? null : moment(InputObj.pharmacy_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+      InputObj.pharmacy_stock_detail[i].expiry_date === null
+        ? null
+        : moment(
+            InputObj.pharmacy_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
@@ -311,8 +319,8 @@ const SaveTransferEntry = $this => {
 
   InputObj.stock_detail = stock_detail;
 
-  delete InputObj.Batch_Items
-  delete InputObj.ItemUOM
+  delete InputObj.Batch_Items;
+  delete InputObj.ItemUOM;
 
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
@@ -361,7 +369,10 @@ const PostTransferEntry = $this => {
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = moment($this.state.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+  $this.state.transaction_date = moment(
+    $this.state.transfer_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD");
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].location_id =
       $this.state.from_location_id;

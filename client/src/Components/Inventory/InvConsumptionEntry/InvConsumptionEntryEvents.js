@@ -1,6 +1,10 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
   return {
@@ -42,7 +46,7 @@ export default function ConsumptionItemsEvents() {
 
     SaveConsumptionEntry: $this => {
       AlgaehLoader({ show: true });
-      $this.state.ScreenCode = getCookie("ScreenCode")
+      $this.state.ScreenCode = getCookie("ScreenCode");
       algaehApiCall({
         uri: "/inventoryconsumption/addInventoryConsumption",
         module: "inventory",
@@ -102,15 +106,10 @@ export default function ConsumptionItemsEvents() {
           }
         },
         onSuccess: res => {
-          const url = URL.createObjectURL(res.data);
-          let myWindow = window.open(
-            "{{ product.metafields.google.custom_label_0 }}",
-            "_blank"
-          );
-          myWindow.document.write(
-            "<iframe src= '" + url + "' width='100%' height='100%' />"
-          );
-          myWindow.document.title = "Consumption Receipt - Inventory";
+          const urlBlob = URL.createObjectURL(res.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+          window.open(origin);
+          window.document.title = "Consumption Receipt - Inventory";
         }
       });
     }

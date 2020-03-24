@@ -11,7 +11,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
 const PatientSearch = ($this, e) => {
-
   AlgaehSearch({
     searchGrid: {
       columns: FrontDesk
@@ -25,17 +24,16 @@ const PatientSearch = ($this, e) => {
     onRowSelect: row => {
       AlgaehLoader({ show: true });
       let IOputs = extend(SettlementIOputs.inputParam());
-      IOputs.patient_code = row.patient_code
-      IOputs.patient_id = row.hims_d_patient_id
-      IOputs.full_name = row.full_name
-      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
-      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+      IOputs.patient_code = row.patient_code;
+      IOputs.patient_id = row.hims_d_patient_id;
+      IOputs.full_name = row.full_name;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
 
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
         getPatientDetails($this);
       });
-
     }
   });
 };
@@ -75,11 +73,10 @@ const getPatientDetails = $this => {
   });
 };
 
-const ClearData = ($this) => {
-
+const ClearData = $this => {
   let IOputs = extend(SettlementIOputs.inputParam());
-  IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
-  IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+  IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+  IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
 
   $this.setState({ ...$this.state, ...IOputs }, () => {
     getCashiersAndShiftMAP($this);
@@ -136,7 +133,7 @@ const Validations = $this => {
   //     document.querySelector("[name='cheque_date']").focus();
   //     return isError;
   //   }
-  // } 
+  // }
   if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
@@ -318,7 +315,7 @@ const SaveOPCreidt = $this => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
-        Inputobj.ScreenCode = getCookie("ScreenCode")
+        Inputobj.ScreenCode = getCookie("ScreenCode");
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",
@@ -387,15 +384,9 @@ const generateOPCreditReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "OP Credit Settlement - Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };

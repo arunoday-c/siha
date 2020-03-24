@@ -63,7 +63,7 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.addedItem = true;
         data.ItemDisable = true;
-        $this.setState(data, () => { });
+        $this.setState(data, () => {});
         AlgaehLoader({ show: false });
       }
     });
@@ -132,22 +132,18 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Material Requisition - Pharmacy";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Material Requisition - Pharmacy";
     }
   });
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
-    w => parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
+    w =>
+      parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
 
   if (auth_qty === true) {

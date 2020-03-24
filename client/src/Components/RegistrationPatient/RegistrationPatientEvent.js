@@ -82,8 +82,9 @@ const generateBillDetails = $this => {
               //   context.updateState({ ...response.data.records });
               // }
               if ($this.state.default_pay_type === "CD") {
-                response.data.records.card_amount = response.data.records.receiveable_amount
-                response.data.records.cash_amount = 0
+                response.data.records.card_amount =
+                  response.data.records.receiveable_amount;
+                response.data.records.cash_amount = 0;
               }
               $this.setState({ ...response.data.records });
             }
@@ -169,8 +170,8 @@ const ClearData = ($this, from, patcode) => {
 
       IOputs.forceRefresh = true;
       IOputs.doctors = $this.props.frontproviders;
-      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
-      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
 
       $this.setState(IOputs, () => {
         $this.props.setSelectedInsurance({
@@ -368,16 +369,9 @@ const generateIdCard = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "ID Card";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };
@@ -404,16 +398,9 @@ const generateReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };
@@ -445,7 +432,6 @@ const getCtrlCode = ($this, patcode, row) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-
 
         let hospitaldetails = _.find(
           $this.props.hospitaldetails,
