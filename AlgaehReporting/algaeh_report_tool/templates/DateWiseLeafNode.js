@@ -57,11 +57,26 @@ const executePDF = function executePDFMethod(options) {
                       on H.finance_voucher_header_id=VD.voucher_header_id inner join finance_account_child C on
                       VD.child_id=C.finance_account_child_id inner join  finance_account_head AH on
                        C.head_id=AH.finance_account_head_id     where  VD.auth_status='A' and
-                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no order by VD.payment_date;   `,
-                values: [input.child_id],
+                      VD.child_id=?  ${strQry} group by VD.payment_date,voucher_no order by VD.payment_date;
+                      select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
+                      ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
+                      from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date < ?;
+                      select  child_id,ROUND((coalesce(sum(credit_amount) ,0.0000)- coalesce(sum(debit_amount) ,0.0000) ),2) as cred_minus_deb,
+                      ROUND( (coalesce(sum(debit_amount) ,0.0000)- coalesce(sum(credit_amount) ,0.0000)),2)  as deb_minus_cred
+                      from   finance_voucher_details    where child_id=? and auth_status='A'  and payment_date <= ?;   `,
+                values: [
+                  input.child_id,
+                  input.child_id,
+                  input.from_date,
+                  input.child_id,
+                  input.to_date
+                ],
                 printQuery: true
               })
-              .then(result => {
+              .then(output => {
+                let result = output[0];
+                let opening_balance = parseFloat(0).toFixed(decimal_places);
+                let closing_balance = parseFloat(0).toFixed(decimal_places);
                 options.mysql.releaseConnection();
                 let total_debit = parseFloat(0).toFixed(decimal_places);
                 let total_credit = parseFloat(0).toFixed(decimal_places);
@@ -100,6 +115,9 @@ const executePDF = function executePDFMethod(options) {
                     }
 
                     final_balance = total_debit;
+
+                    opening_balance = output[1][0]["deb_minus_cred"];
+                    closing_balance = output[2][0]["deb_minus_cred"];
                   } else {
                     const diffrence = parseFloat(
                       total_credit - total_debit
@@ -110,6 +128,9 @@ const executePDF = function executePDFMethod(options) {
                       CB_credit_side = diffrence;
                     }
                     final_balance = total_credit;
+
+                    opening_balance = output[1][0]["cred_minus_deb"];
+                    closing_balance = output[2][0]["cred_minus_deb"];
                   }
 
                   resolve({
@@ -119,7 +140,9 @@ const executePDF = function executePDFMethod(options) {
                     total_credit: total_credit,
                     CB_debit_side: CB_debit_side,
                     CB_credit_side: CB_credit_side,
-                    final_balance: final_balance
+                    final_balance: final_balance,
+                    opening_balance: opening_balance,
+                    closing_balance: closing_balance
                   });
                 } else {
                   resolve({
