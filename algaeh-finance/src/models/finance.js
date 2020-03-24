@@ -3066,7 +3066,7 @@ function getAccountHeadsFunc(decimal_places, finance_account_head_id) {
           C.ledger_code,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,child_name,head_id,C.created_from as child_created_from,
-          concat(account_name,' / ',coalesce(group_code,account_code),
+          concat(account_name,' / ',coalesce(group_code,concat('sys-',account_code)),
           case when arabic_account_name is null then ''  else  concat(' / ',arabic_account_name)end ) as group_full_name,
           concat(child_name,' / ',ledger_code,case when arabic_child_name is null then '' 
           else  concat(' / ',arabic_child_name)end ) as child_full_name
