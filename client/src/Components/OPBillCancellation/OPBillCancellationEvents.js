@@ -166,7 +166,7 @@ const getBillDetails = $this => {
     data: { bill_number: $this.state.bill_number },
     onSuccess: response => {
       if (response.data.success) {
-        debugger
+        debugger;
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)
@@ -303,16 +303,9 @@ const generateReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };

@@ -3,9 +3,13 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import moment from "moment"
+import moment from "moment";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -133,15 +137,10 @@ const generateMaterialTransInv = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Material Transfer Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Material Transfer Receipt";
     }
   });
 };
@@ -154,22 +153,24 @@ const SaveTransferEntry = $this => {
       title: "Please Enter GIT Loaction to transfer item",
       type: "warning"
     });
-    return
+    return;
   } else {
-    gitLoaction_Exists = $this.props.git_locations[0]
+    gitLoaction_Exists = $this.props.git_locations[0];
   }
-  let InputObj = $this.state
+  let InputObj = $this.state;
   AlgaehLoader({ show: true });
   InputObj.operation = "+";
   InputObj.completed = "Y";
   InputObj.transaction_type = "ST";
   InputObj.transaction_id = InputObj.hims_f_inventory_transfer_header_id;
-  InputObj.transaction_date = moment(InputObj.transfer_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+  InputObj.transaction_date = moment(
+    InputObj.transfer_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD");
   InputObj.git_location_type = gitLoaction_Exists.location_type;
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
-    InputObj.inventory_stock_detail[i].location_id =
-      InputObj.from_location_id;
+    InputObj.inventory_stock_detail[i].location_id = InputObj.from_location_id;
     InputObj.inventory_stock_detail[i].location_type =
       InputObj.from_location_type;
     InputObj.inventory_stock_detail[i].operation = "-";
@@ -194,7 +195,12 @@ const SaveTransferEntry = $this => {
     ).toFixed(InputObj.decimal_places);
 
     InputObj.inventory_stock_detail[i].expiry_date =
-      InputObj.inventory_stock_detail[i].expiry_date === null ? null : moment(InputObj.inventory_stock_detail[i].expiry_date, "YYYY-MM-DD").format("YYYY-MM-DD");
+      InputObj.inventory_stock_detail[i].expiry_date === null
+        ? null
+        : moment(
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
@@ -212,7 +218,6 @@ const SaveTransferEntry = $this => {
   });
 
   InputObj.stock_detail = stock_detail;
-
 
   const settings = { header: undefined, footer: undefined };
   algaehApiCall({
@@ -524,12 +529,12 @@ const AcknowledgeTransferEntry = $this => {
       title: "Please Enter GIT Loaction to transfer item",
       type: "warning"
     });
-    return
+    return;
   } else {
-    gitLoaction_Exists = $this.props.git_locations[0]
+    gitLoaction_Exists = $this.props.git_locations[0];
   }
 
-  let InputObj = $this.state
+  let InputObj = $this.state;
   InputObj.operation = "-";
   InputObj.ack_done = "Y";
   InputObj.transaction_type = "ACK";
@@ -539,8 +544,7 @@ const AcknowledgeTransferEntry = $this => {
   InputObj.git_location_id = gitLoaction_Exists.hims_d_inventory_location_id;
 
   for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
-    InputObj.inventory_stock_detail[i].location_id =
-      InputObj.to_location_id;
+    InputObj.inventory_stock_detail[i].location_id = InputObj.to_location_id;
     InputObj.inventory_stock_detail[i].location_type =
       InputObj.to_location_type;
     InputObj.inventory_stock_detail[i].operation = "+";
@@ -568,7 +572,7 @@ const AcknowledgeTransferEntry = $this => {
       InputObj.inventory_stock_detail[i].ack_quantity;
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode")
+  InputObj.ScreenCode = getCookie("ScreenCode");
 
   algaehApiCall({
     uri: "/inventorytransferEntry/updatetransferEntry",

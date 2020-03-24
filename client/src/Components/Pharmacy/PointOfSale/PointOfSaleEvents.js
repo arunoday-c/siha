@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-          [name]: value,
-          mode_of_pay: "1",
-          OTItemAddDis: false
-        })
+            [name]: value,
+            mode_of_pay: "1",
+            OTItemAddDis: false
+          })
         : $this.setState({
-          [name]: value,
-          mode_of_pay: "",
-          OTItemAddDis: false
-        });
+            [name]: value,
+            mode_of_pay: "",
+            OTItemAddDis: false
+          });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-          [name]: value,
-          insurance_yesno: "N",
-          insured: "N"
-        })
+            [name]: value,
+            insurance_yesno: "N",
+            insured: "N"
+          })
         : $this.setState({
-          [name]: value,
-          insurance_yesno: "Y",
-          insured: "Y"
-        });
+            [name]: value,
+            insurance_yesno: "Y",
+            insured: "Y"
+          });
       break;
 
     default:
@@ -259,8 +259,10 @@ const ClearData = ($this, e) => {
           if (response.data.records.selectedValue !== undefined) {
             IOputs.location_type = response.data.records.selectedValue;
           }
-          IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
-          IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
+          IOputs.Cashchecked =
+            $this.state.default_pay_type === "CH" ? true : false;
+          IOputs.Cardchecked =
+            $this.state.default_pay_type === "CD" ? true : false;
 
           $this.setState(IOputs, () => {
             const element = ReactDOM.findDOMNode(
@@ -491,9 +493,10 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-    let location_details = $this.props.poslocations.find(f =>
-      f.hims_d_pharmacy_location_id === $this.state.location_id)
-    posdata.location_type = location_details.location_type
+    let location_details = $this.props.poslocations.find(
+      f => f.hims_d_pharmacy_location_id === $this.state.location_id
+    );
+    posdata.location_type = location_details.location_type;
     // debugger
     algaehApiCall({
       uri: callUri,
@@ -542,7 +545,8 @@ const SavePosEnrty = $this => {
           Promise.all(_arrayImages).then(result => {
             // debugger
             const pos_number =
-              $this.state.hims_f_pharmacy_pos_header_id !== null ? $this.state.pos_number
+              $this.state.hims_f_pharmacy_pos_header_id !== null
+                ? $this.state.pos_number
                 : response.data.records.pos_number;
             getPosEntry($this, pos_number);
             // $this.setState({
@@ -629,11 +633,12 @@ const PostPosEntry = $this => {
           $this.state.transaction_id =
             $this.state.hims_f_pharmacy_pos_header_id;
           $this.state.transaction_date = $this.state.pos_date;
-          debugger
-          let location_details = $this.props.poslocations.find(f =>
-            f.hims_d_pharmacy_location_id === $this.state.location_id)
+          debugger;
+          let location_details = $this.props.poslocations.find(
+            f => f.hims_d_pharmacy_location_id === $this.state.location_id
+          );
 
-          $this.state.location_type = location_details.location_type
+          $this.state.location_type = location_details.location_type;
           for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
             $this.state.pharmacy_stock_detail[i].location_id =
               $this.state.location_id;
@@ -651,7 +656,7 @@ const PostPosEntry = $this => {
             $this.state.pharmacy_stock_detail[i].net_total =
               $this.state.pharmacy_stock_detail[i].net_extended_cost;
           }
-          debugger
+          debugger;
           let callUri =
             $this.state.hims_f_pharmacy_pos_header_id !== null
               ? "/posEntry/postPosEntry"
@@ -1074,16 +1079,10 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = rpt_desc;
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = rpt_desc;
     }
   });
 };
@@ -1113,16 +1112,9 @@ const generatePharmacyLabel = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };
@@ -1195,8 +1187,8 @@ const ClosePrescribedItem = ($this, e) => {
           sum_data.hims_f_pharmacy_pos_detail_id = null;
 
           if ($this.state.default_pay_type === "CD") {
-            sum_data.card_amount = sum_data.receiveable_amount
-            sum_data.cash_amount = 0
+            sum_data.card_amount = sum_data.receiveable_amount;
+            sum_data.cash_amount = 0;
           }
 
           $this.setState({

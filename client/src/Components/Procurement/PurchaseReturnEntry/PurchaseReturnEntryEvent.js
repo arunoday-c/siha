@@ -1,4 +1,8 @@
-import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import moment from "moment";
 // import Enumerable from "linq";
 
@@ -123,7 +127,9 @@ const datehandle = ($this, ctrl, e) => {
 
 const ReceiptSearch = ($this, e) => {
   let Inputs =
-    "grn_for = '" + $this.state.po_return_from + "' and return_done = 'N' and posted = 'Y'";
+    "grn_for = '" +
+    $this.state.po_return_from +
+    "' and return_done = 'N' and posted = 'Y'";
 
   if (
     $this.state.po_return_from === "PHR" &&
@@ -369,7 +375,7 @@ const getData = ($this, po_return_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => { }
+      afterSuccess: data => {}
     });
 
     $this.props.getItemGroup({
@@ -420,15 +426,10 @@ const generatePOReceipt = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Purchase Order Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Purchase Order Receipt";
     }
   });
 };
@@ -459,15 +460,10 @@ const generatePOReceiptNoPrice = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Purchase Order Return ReceipT";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Purchase Order Return ReceipT";
     }
   });
 };
@@ -542,7 +538,7 @@ const PostPOReturnEntry = $this => {
     InputObj.po_return_entry_detail = InputObj.inventory_stock_detail;
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode")
+  InputObj.ScreenCode = getCookie("ScreenCode");
 
   algaehApiCall({
     uri: "/PurchaseReturnEntry/postPurchaseOrderEntry",

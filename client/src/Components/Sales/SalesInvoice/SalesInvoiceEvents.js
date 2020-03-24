@@ -145,8 +145,10 @@ const generateSalesInvoiceReport = data => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: data.sales_invoice_mode === "I"
-          ? "SalesInvoiceEntry" : "SalesInvoiceService",
+        reportName:
+          data.sales_invoice_mode === "I"
+            ? "SalesInvoiceEntry"
+            : "SalesInvoiceService",
         reportParams: [
           {
             name: "invoice_number",
@@ -157,15 +159,10 @@ const generateSalesInvoiceReport = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Invoice Report";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Invoice Report";
     }
   });
 };
