@@ -19,6 +19,7 @@ class VendorSetup extends Component {
     super(props);
 
     this.state = {
+      hims_d_vendor_id: null,
       openModal: false,
       vendors: [],
       countries: [],
@@ -35,6 +36,7 @@ class VendorSetup extends Component {
 
   resetSaveState() {
     this.setState({
+      hims_d_vendor_id: null,
       vendor_code: "",
       vendor_name: "",
       business_registration_no: "",
@@ -53,7 +55,9 @@ class VendorSetup extends Component {
       bank_name: null,
       address: "",
       hims_d_vendor_id: null,
-      openModal: false
+      openModal: false,
+      bank_account_no: null,
+      vat_number: null
     });
   }
 
@@ -128,7 +132,9 @@ class VendorSetup extends Component {
           postal_code: this.state.postal_code,
           bank_name: this.state.bank_name,
           address: this.state.address,
-          vendor_status: this.state.vendor_status
+          vendor_status: this.state.vendor_status,
+          bank_account_no: this.state.bank_account_no,
+          vat_number: this.state.vat_number
         };
 
         algaehApiCall({
@@ -497,7 +503,7 @@ class VendorSetup extends Component {
                     }}
                   />
 
-                  {this.state.hims_d_customer_id !== null ?
+                  {this.state.hims_d_vendor_id !== null ?
                     <div className="col-3">
                       <label>Vendor Status</label>
                       <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -591,7 +597,39 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
-                  <div
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      fieldName: "bank_account_no",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "bank_account_no",
+                      value: this.state.bank_account_no,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      fieldName: "vat_number",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "vat_number",
+                      value: this.state.vat_number,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  {/* <div
                     className="col-2 customCheckbox"
                     style={{ paddingTop: "10px" }}
                   >
@@ -631,7 +669,7 @@ class VendorSetup extends Component {
                         disabled: !this.state.vat_applicable
                       }
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>

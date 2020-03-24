@@ -24,7 +24,7 @@ const requestTracking = (message, obj) => {
   utliites
     .AlgaehUtilities()
     .logger()
-    .log("", message, "info");
+    .log("requestTracking", message, "info");
 };
 
 export default { logger, debugLog, debugFunction, requestTracking };

@@ -1,0 +1,144 @@
+.newStickyGrid {
+  .table-scroll {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    margin: auto;
+    overflow: auto;
+    min-height: 10vh;
+    max-height: 40vh;
+    table {
+      width: 100%;
+      margin: auto;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    .table-wrap {
+      position: relative;
+    }
+    th,
+    td {
+      padding: 5px 10px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      background: #fff;
+      vertical-align: top;
+      min-width: 80px;
+    }
+    thead {
+      th {
+        color: #000 !important;
+        background: #c1fff9 !important;
+        text-align: center;
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        .fixed {
+          z-index: 999 !important;
+        }
+        span {
+          white-space: nowrap !important;
+        }
+      }
+      .filterEnable {
+        th {
+          top: 33px !important;
+          z-index: 9;
+        }
+      }
+    }
+    tbody {
+      td {
+        .pointer {
+          font-size: 1.3rem;
+          margin-left: 10px;
+          cursor: pointer;
+          &:hover {
+            color: #00a796;
+          }
+        }
+      }
+    }
+    /* safari and ios need the tfoot itself to be position:sticky also */
+    tfoot,
+    tfoot th,
+    tfoot td {
+      position: -webkit-sticky;
+      position: sticky;
+      bottom: 0;
+      background: #efefef !important;
+      color: #000 !important;
+      z-index: 4;
+      font-weight: bold;
+      .pointer {
+        margin-left: 10px;
+      }
+    }
+
+    a:focus {
+      background: red;
+    } /* testing links*/
+
+    .fixed {
+      position: -webkit-sticky;
+      position: sticky;
+      z-index: 5;
+    }
+  }
+  .paginationCntr {
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    .center {
+      text-align: center;
+    }
+    .left {
+      text-align: left;
+    }
+    .right {
+      text-align: right;
+    }
+    .pagination-options {
+      display: inline-block;
+      span {
+        vertical-align: top;
+        display: inline-block;
+        border-right: 1px solid #dadada;
+        padding: 5px;
+        margin-right: 5px;
+      }
+      select {
+        margin-right: 5px;
+      }
+      b {
+        font-size: 1rem;
+      }
+    }
+    .pagination {
+      display: inline-block;
+      text-align: right;
+      margin-left: 5px;
+      input {
+        border-radius: 0 !important;
+        display: inline-block;
+        width: 50px;
+        text-align: center;
+        vertical-align: top;
+        height: 24px;
+        font-weight: bold;
+        font-size: 1rem;
+        margin-top: 3px;
+      }
+      button {
+        border-radius: 0 !important;
+        display: inline-block;
+        width: 30px;
+        height: 24px;
+        text-align: center;
+        vertical-align: top;
+        font-weight: bold;
+        font-size: 1rem;
+        margin-top: 3px;
+      }
+    }
+  }
+}

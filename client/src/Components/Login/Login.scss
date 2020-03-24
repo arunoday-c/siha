@@ -1,5 +1,27 @@
 @import "../../styles/algaehCssVariables.scss";
 $borderRadius: 10px;
+.algaehLogo {
+  background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center #fff;
+  height: 65px;
+  background-size: 90%;
+  width: 150px;
+  position: absolute;
+  left: 0;
+  top: -43px;
+  border-radius: 0 0 10px 0;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+}
+.clientLogo {
+  background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center #fff;
+  height: 65px;
+  background-size: 90%;
+  width: 150px;
+  position: absolute;
+  right: 0;
+  top: -43px;
+  border-radius: 0 0 0 10px;
+  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
+}
 .login {
   font-family: "Roboto", sans-serif;
   min-width: 100%;

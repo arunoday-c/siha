@@ -41,10 +41,7 @@ export function algaehApiCall(options) {
     }
   }
 
-  let collection =
-    options.notoken === undefined
-      ? [getItem("token")]
-      : [];
+  let collection = options.notoken === undefined ? [getItem("token")] : [];
   Promise.all(collection)
     .then(detailResult => {
       const myIP = getNewLocalIp();
@@ -614,7 +611,7 @@ export function reLoginPopup({ message, username }) {
   }
   swal
     .fire({
-      text: message,
+      html: message,
       imageUrl:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAfpJREFUWIXtlc9rE0EUx7/vdQvrIXhY8RREkB7rpd68+UeElKqQU6AlG1csnkouYvFQWAIKOcUfRSTqP+Cpt1K9efNmTzkF6hQk4uQ9L90gIbuZsAkL4vc0O/Od7/swO7sP+K+CRfNu6PV6K/1+v6qqm8x8S0SuADDM/EVVD33ff1ev138vBSCO4zVm/gDgZobt62g0qkRR9G2hAHEcrwE4ZuZglldEBqp62wWCXYq3Wi0PwMekuIj8BLBnrb0xGAxWmfk6gL2LeTBzQETvO53O6qxszwUgCIIqgPWkuKreCcPw5C/LKYAn7Xb7E4AjAJeYeX04HFYBvMnKdjoBAJvjDcz7URSdTDOFYfgZwH7yTER3ZwW7AmwkA2vt2xnew2QgIhtZRmcAEbmajMvl8mmWt9FofB+HO1xYJwBmHn8tlUpllOUlInXJnAtgmSocIPVH1O12fWPMgapuMfPlHDXOAbwulUqParXacHIx9T9gjDkgom2iudvFpEoAdowxCqAxuZj6ClR1K2/libx70+ZTAXIeu3Ne4ZcwL8BDVfVVdbcQAFV90Ww2f1lrnxcCQERNAPA870EhAACeXYA8LQogt3IDxHF8rVAAZs5sz0sHyKssgPNFFhKRH/MCvFwkABFNzUvthqq6S0QQkfs5+8KZqr4C8DhHxj+sP0qDqkZPL8SGAAAAAElFTkSuQmCC",
       confirmButtonColor: "#3085d6",
@@ -803,30 +800,41 @@ export function collectIP() {
       r(identity);
       return;
     }
-
-    var w = window,
-      a = new (w.RTCPeerConnection ||
-        w.mozRTCPeerConnection ||
-        w.webkitRTCPeerConnection)({ iceServers: [] }),
-      b = () => {};
-    const autoIP = new IDGenerator().generate();
-    a.createDataChannel("");
-    a.createOffer(c => a.setLocalDescription(c, b, b), b);
-    if (a.onicecandidate === null) {
-      r(autoIP);
-      return;
-    }
-    a.onicecandidate = c => {
-      try {
-        c.candidate.candidate
-          .match(
-            /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-          )
-          .forEach(r);
-      } catch (e) {
+    axios
+      .get("http://localhost:1212/machineinfo")
+      .then(response => {
+        let machineInfo = JSON.stringify(response.data);
+        r(machineInfo);
+      })
+      .catch(error => {
+        const autoIP = new IDGenerator().generate();
         r(autoIP);
-      }
-    };
+      });
+    // }
+
+    // var w = window,
+    //   a = new (w.RTCPeerConnection ||
+    //     w.mozRTCPeerConnection ||
+    //     w.webkitRTCPeerConnection)({ iceServers: [] }),
+    //   b = () => {};
+
+    // a.createDataChannel("");
+    // a.createOffer(c => a.setLocalDescription(c, b, b), b);
+    // if (a.onicecandidate === null) {
+    //   r(autoIP);
+    //   return;
+    // }
+    // a.onicecandidate = c => {
+    //   try {
+    //     c.candidate.candidate
+    //       .match(
+    //         /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
+    //       )
+    //       .forEach(r);
+    //   } catch (e) {
+    //     r(autoIP);
+    //   }
+    // };
   });
   if (identity === null) {
     findIP.then(ip => {

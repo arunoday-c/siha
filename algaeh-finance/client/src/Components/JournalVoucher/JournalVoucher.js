@@ -152,50 +152,70 @@ export default function JournalVoucher() {
 
     if (location.state) {
       const { type, data } = location.state;
-      const {
-        voucher_type,
-        invoice_no,
-        balance_amount,
-        head_id,
-        child_id
-      } = data;
-      let currentVoucher =
-        voucher_type === "sales"
-          ? "receipt"
-          : voucher_type === "purchase"
-          ? "payment"
-          : null;
-      setVoucherType(currentVoucher);
-      setSelInvoice(invoice_no);
       setPayment(state => ({ ...state, payment_mode: "CASH" }));
-      getCashAccount()
-        .then(res => {
-          if (res.data.success) {
-            const [defaultAC] = res.data.result;
-            setJournerList(state => {
-              const first = state[0];
-              const second = state[1];
-              first.head_id = defaultAC.head_id;
-              first.child_id = defaultAC.child_id;
-              first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
-              second.head_id = parseInt(head_id, 10);
-              second.child_id = child_id;
-              second.sourceName = `${head_id}-${child_id}`;
-              first.amount = balance_amount;
-              second.amount = balance_amount;
-              if (type === "customer") {
-                first.payment_type = "DR";
-                second.payment_type = "CR";
-              }
-              if (type === "supplier") {
-                first.payment_type = "CR";
-                second.payment_type = "DR";
-              }
-              return [first, second];
-            });
-          }
-        })
-        .catch(e => console.log(e));
+      if (type === "duplicate") {
+        const { Details, voucher_type, amount } = data;
+        let currentVoucher =
+          voucher_type === "sales"
+            ? "receipt"
+            : voucher_type === "purchase"
+            ? "payment"
+            : voucher_type;
+        setVoucherType(currentVoucher);
+        const records = Details.map((single, index) => ({
+          slno: index + 1,
+          head_id: single.head_id,
+          child_id: single.child_id,
+          sourceName: `${single.head_id}-${single.child_id}`,
+          payment_type: single.payment_type,
+          amount
+        }));
+        setJournerList(records);
+      } else {
+        const {
+          voucher_type,
+          invoice_no,
+          balance_amount,
+          head_id,
+          child_id
+        } = data;
+        let currentVoucher =
+          voucher_type === "sales"
+            ? "receipt"
+            : voucher_type === "purchase"
+            ? "payment"
+            : null;
+        setVoucherType(currentVoucher);
+        setSelInvoice(invoice_no);
+        getCashAccount()
+          .then(res => {
+            if (res.data.success) {
+              const [defaultAC] = res.data.result;
+              setJournerList(state => {
+                const first = state[0];
+                const second = state[1];
+                first.head_id = defaultAC.head_id;
+                first.child_id = defaultAC.child_id;
+                first.sourceName = `${defaultAC.head_id}-${defaultAC.child_id}`;
+                second.head_id = parseInt(head_id, 10);
+                second.child_id = child_id;
+                second.sourceName = `${head_id}-${child_id}`;
+                first.amount = balance_amount;
+                second.amount = balance_amount;
+                if (type === "customer") {
+                  first.payment_type = "DR";
+                  second.payment_type = "CR";
+                }
+                if (type === "supplier") {
+                  first.payment_type = "CR";
+                  second.payment_type = "DR";
+                }
+                return [first, second];
+              });
+            }
+          })
+          .catch(e => console.log(e));
+      }
     }
   }, [location.state]);
 

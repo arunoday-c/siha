@@ -500,7 +500,7 @@ class DayEndProcess extends Component {
         )}
         <div className="row">
           <div className="col-lg-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
               <div className="row">
                 <div
                   className="col-lg-12 customCheckboxGrid"

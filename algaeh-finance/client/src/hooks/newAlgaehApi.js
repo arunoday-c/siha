@@ -23,21 +23,30 @@ function createUrl(inputs) {
 }
 
 export default async function newAlgaehApi(
-  inputs = { uri: "", method: "", module: "", data: {} }
+  inputs = {
+    uri: "",
+    method: "",
+    module: "",
+    data: {},
+    extraHeaders: {},
+    options: {}
+  }
 ) {
   const token = await getItem("token");
   const headers = {
     "x-api-key": token,
     "x-client-ip": getNewLocalIp(),
     "x-app-user-identity": getCookie("keyResources"),
-    "x-branch": getCookie("HospitalId")
+    "x-branch": getCookie("HospitalId"),
+    ...inputs.extraHeaders
   };
   try {
     let response;
     let responseObj = {
       url: createUrl(inputs),
       method: inputs.method,
-      headers
+      headers,
+      ...inputs.options
     };
     if (inputs.method === "GET" || !inputs.method) {
       responseObj.params = inputs.data;

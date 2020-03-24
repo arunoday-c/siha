@@ -780,30 +780,32 @@ class NurseWorkbench extends Component {
       <div className="calendar">
         <div className="col-12">
           <div className="row">
-            {this.liGenerate().map((row, index) => {
-              const _currDate = moment(row.currentdate).format("YYYYMMDD");
-              const _activeDate = moment(act_date).format("YYYYMMDD");
-              return (
-                <div
-                  // className="col"
-                  key={index}
-                  date={row.currentdate}
-                  className={
-                    _currDate === _activeDate
-                      ? _currDate === moment().format("YYYYMMDD")
-                        ? "col activeDate CurrentDate"
-                        : "col activeDate"
-                      : _currDate === moment().format("YYYYMMDD")
-                      ? "col CurrentDate"
-                      : "col"
-                  }
-                  onClick={this.onSelectedDateHandler.bind(this)}
-                >
-                  {row.day}
-                  <span>{row.dayName}</span>
-                </div>
-              );
-            })}
+            <ul className="calendarDays">
+              {this.liGenerate().map((row, index) => {
+                const _currDate = moment(row.currentdate).format("YYYYMMDD");
+                const _activeDate = moment(act_date).format("YYYYMMDD");
+                return (
+                  <li
+                    // className="col"
+                    key={index}
+                    date={row.currentdate}
+                    className={
+                      _currDate === _activeDate
+                        ? _currDate === moment().format("YYYYMMDD")
+                          ? " activeDate CurrentDate"
+                          : " activeDate"
+                        : _currDate === moment().format("YYYYMMDD")
+                        ? " CurrentDate"
+                        : ""
+                    }
+                    onClick={this.onSelectedDateHandler.bind(this)}
+                  >
+                    {row.day}
+                    <span>{row.dayName}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>

@@ -116,10 +116,10 @@ export default {
       .executeQuery({
         query: `select finance_voucher_id,ROUND( debit_amount,${decimal_places}) as debit_amount,
             ROUND( credit_amount,${decimal_places}) as credit_amount,
-            concat(H.account_name,'->',C.child_name) as ledger_name,C.ledger_code\
-            from finance_voucher_details VD \
-            left join finance_account_head H on VD.head_id=H.finance_account_head_id\
-            left join finance_account_child C on VD.child_id=C.finance_account_child_id\
+            concat(H.account_name,'->',C.child_name) as ledger_name,C.ledger_code,
+            finance_account_child_id as child_id, finance_account_head_id as head_id, payment_type from finance_voucher_details VD 
+            left join finance_account_head H on VD.head_id=H.finance_account_head_id
+            left join finance_account_child C on VD.child_id=C.finance_account_child_id
             where VD.voucher_header_id=?; `,
         values: [input.finance_voucher_header_id]
       })

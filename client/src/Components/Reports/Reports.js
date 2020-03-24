@@ -99,7 +99,7 @@ class Reports extends Component {
                   <AlgaehSecurityComponent componentCode={item.componentCode}>
                     <div
                       key={index}
-                      className="col-lg-2 reportList"
+                      className="col-lg-2 col-md-2 col-sm-6 reportList"
                       onClick={() => {
                         let pageProperies = {
                           displayName: item.subitem,

@@ -218,8 +218,9 @@ class LeaveYearlyProcess extends Component {
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      searchName: "employee",
+      searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },

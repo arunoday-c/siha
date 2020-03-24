@@ -10,7 +10,7 @@ import {
 export default class ReorderQtyMasterPharmacy extends Component {
   render() {
     return (
-      <div className="ReorderQtyMasterPharmacyScreen">
+      <div className="ReorderQtyMasterPharmacyScreen" style={{ marginTop: 43 }}>
         <div className="row margin-top-15">
           <div className="col-4">
             <div className="portlet portlet-bordered marginBottom-15">

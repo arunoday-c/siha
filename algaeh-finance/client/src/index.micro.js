@@ -13,6 +13,7 @@ import CustomerPayment from "./Components/CustomerListFinance/CustomerPayment";
 import SupplierListFinance from "./Components/SupplierListFinance";
 import SupplierPayment from "./Components/SupplierListFinance/SupplierPayment";
 import "react-sortable-tree/style.css";
+import "./algaehTableComponentStyle.scss";
 const Pages = {
   Accounts,
   Transactions,

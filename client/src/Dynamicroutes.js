@@ -22,6 +22,7 @@ import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
 import HISDashboard from "./Components/Dashboard/HISDashboard";
 import HrDashboard from "./Components/Dashboard/hr-dashboard";
+import FinDashboard from "./Components/Dashboard/fin-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";

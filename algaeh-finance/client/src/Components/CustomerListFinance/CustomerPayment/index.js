@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
-import { AlgaehDataGrid, AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehMessagePop, AlgaehTable } from "algaeh-react-components";
 import { InfoBar } from "../../../Wrappers";
 import { LedgerReport } from "../../InvoiceCommon";
 import { getInvoicesForCustomer } from "./CusPaymentEvents";
@@ -76,7 +76,7 @@ export default memo(function(props) {
           <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
+                <div className="portlet-label">
                   <div className="actions">
                     <button
                       className="btn btn-default"
@@ -88,62 +88,75 @@ export default memo(function(props) {
                 </div>
                 <div className="row">
                   <div className="col-lg-12 customCheckboxGrid">
-                    <AlgaehDataGrid
+                    <AlgaehTable
                       columns={[
                         {
-                          key: "invoice_date",
-                          title: "Date",
-                          sortable: true
+                          fieldName: "invoice_date",
+                          label: "Date",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "invoice_no",
-                          title: "Invoice No",
-                          sortable: true
+                          fieldName: "invoice_no",
+                          label: "Invoice No",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "narration",
-                          title: "Description"
+                          fieldName: "narration",
+                          label: "Description",
+                          filterable: true
                         },
                         {
-                          key: "due_date",
-                          title: "Due Date",
-                          sortable: true
+                          fieldName: "due_date",
+                          label: "Due Date",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "invoice_amount",
-                          title: "Invoice Amount",
-                          sortable: true
+                          fieldName: "invoice_amount",
+                          label: "Invoice Amount",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "settled_amount",
-                          title: "Paid Amount",
-                          sortable: true
+                          fieldName: "settled_amount",
+                          label: "Paid Amount",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "balance_amount",
-                          title: "Balance Amount",
-                          sortable: true
+                          fieldName: "balance_amount",
+                          label: "Balance Amount",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "invoice_status",
-                          title: "Status",
-                          displayTemplate: text => text.toUpperCase(),
-                          sortable: true
+                          fieldName: "invoice_status",
+                          label: "Status",
+                          displayTemplate: row =>
+                            row.invoice_status.toUpperCase(),
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          key: "last_modified",
-                          title: "Last Modified Date",
-                          sortable: true
+                          fieldName: "last_modified",
+                          label: "Last Modified Date",
+                          sortable: true,
+                          filterable: true
                         },
                         {
-                          title: "Action",
+                          label: "Action",
                           displayTemplate: receive
                         }
                       ]}
-                      // height="40vh"
-                      rowUnique="finance_voucher_header_id"
-                      dataSource={{ data: data }}
-                    ></AlgaehDataGrid>
+                      height="80vh"
+                      // rowUnique="finance_voucher_header_id"
+                      isFilterable={true}
+                      row_unique_id="finance_voucher_header_id"
+                      // dataSource={{ data: data }}
+                      data={data || []}
+                    />
                   </div>
                 </div>
               </div>

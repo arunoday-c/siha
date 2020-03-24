@@ -36,9 +36,10 @@ class LeaveSalaryProcess extends Component {
     super(props);
     this.state = {
       hospital_id: null,
-      hrms_options: {}
+      hrms_options: {},
+      decimal_place: null
     };
-    getEmployeeAnnualLeaveToProcess(this, this);
+
     getHrmsOptions(this);
   }
 
@@ -51,9 +52,15 @@ class LeaveSalaryProcess extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
 
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    });
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id,
+        decimal_place: userToken.decimal_places
+      },
+      () => {
+        getEmployeeAnnualLeaveToProcess(this, this);
+      }
+    );
 
     if (
       this.props.organizations === undefined ||
@@ -435,7 +442,7 @@ class LeaveSalaryProcess extends Component {
                     onClick={LeaveSalProcess.bind(this, this)}
                     style={{ marginLeft: 10 }}
                   >
-                    Load
+                    Calculate
                   </button>
                 </div>
               </div>

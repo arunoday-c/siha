@@ -302,35 +302,37 @@ class DoctorsWorkbench extends Component {
       <div className="calendar">
         <div className="col-12">
           <div className="row">
-            {this.liGenerate().map((row, index) => {
-              const _currDate = moment(row.currentdate).format("YYYYMMDD");
-              const _activeDate = moment(act_date).format("YYYYMMDD");
-              return (
-                <div
-                  // className="col"
-                  key={index}
-                  date={row.currentdate}
-                  className={
-                    _currDate === _activeDate
-                      ? _currDate === moment().format("YYYYMMDD")
-                        ? "col activeDate CurrentDate"
-                        : "col activeDate"
-                      : _currDate === moment().format("YYYYMMDD")
-                      ? "col CurrentDate"
-                      : "col"
-                  }
-                  onClick={this.onSelectedDateHandler.bind(this)}
-                >
-                  {row.day}
-                  <span
-                  // date={row.currentdate}
-                  // onClick={this.onSelectedDateHandler.bind(this)}
+            <ul className="calendarDays">
+              {this.liGenerate().map((row, index) => {
+                const _currDate = moment(row.currentdate).format("YYYYMMDD");
+                const _activeDate = moment(act_date).format("YYYYMMDD");
+                return (
+                  <li
+                    // className="col"
+                    key={index}
+                    date={row.currentdate}
+                    className={
+                      _currDate === _activeDate
+                        ? _currDate === moment().format("YYYYMMDD")
+                          ? " activeDate CurrentDate"
+                          : " activeDate"
+                        : _currDate === moment().format("YYYYMMDD")
+                        ? " CurrentDate"
+                        : ""
+                    }
+                    onClick={this.onSelectedDateHandler.bind(this)}
                   >
-                    {row.dayName}
-                  </span>
-                </div>
-              );
-            })}
+                    {row.day}
+                    <span
+                    // date={row.currentdate}
+                    // onClick={this.onSelectedDateHandler.bind(this)}
+                    >
+                      {row.dayName}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>
@@ -430,7 +432,7 @@ class DoctorsWorkbench extends Component {
 
         <div className="row card-deck panel-layout">
           {/* Appointment UI Panel Start*/}
-          <div className="col-3">
+          <div className="col-lg-3 col-md-3 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -490,7 +492,7 @@ class DoctorsWorkbench extends Component {
           </div>
           {/* Appointment UI Panel End*/}
           {/* Left Pane Start */}
-          <div className="col-3" style={{ padding: 0 }}>
+          <div className="col-lg-3 col-md-3 col-sm-12" style={{ padding: 0 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -599,7 +601,7 @@ class DoctorsWorkbench extends Component {
 
           {/* Right Pane Start */}
 
-          <div className="col-6">
+          <div className="col-lg-6 col-md-6 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">

@@ -18,7 +18,8 @@ const LoadSalaryPayment = ($this, inputs) => {
           inputs = $this.state.inputs;
           let inputObj = {
             year: inputs.year,
-            month: inputs.month
+            month: inputs.month,
+            hospital_id: inputs.hospital_id
           };
 
           if (inputs.hims_d_employee_id !== null) {

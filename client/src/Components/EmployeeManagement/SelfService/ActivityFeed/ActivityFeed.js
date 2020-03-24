@@ -51,18 +51,17 @@ export default class ActivityFeed extends Component {
   }
 
   skipTab(type, data, e) {
-
     e.preventDefault();
     let sendData = {};
 
     sendData =
       type === "AttendanceRegularization"
         ? {
-          pageDisplay: type,
-          regularize: data
-        }
+            pageDisplay: type,
+            regularize: data
+          }
         : type === "absent"
-          ? {
+        ? {
             pageDisplay: "AttendanceRegularization",
             regularize: {
               login_date: data.absent_date,
@@ -70,7 +69,7 @@ export default class ActivityFeed extends Component {
               absent_id: data.hims_f_absent_id
             }
           }
-          : {
+        : {
             pageDisplay: type,
             leave: {
               from_date: data.absent_date,
@@ -98,7 +97,7 @@ export default class ActivityFeed extends Component {
     return (
       <div className="ActivityFeedScreen">
         <div className="row">
-          <div className="col-8">
+          <div className="col-lg-8 col-md-8 col-sm-12">
             <div className="activity-feed">
               {regz.length > 0 || abzs.length > 0 ? (
                 <React.Fragment>
@@ -155,10 +154,7 @@ export default class ActivityFeed extends Component {
                           </a>
                           for
                           <span className="reqDate">
-
-                            {moment(data.absent_date).format(
-                              "DD MMM YYYY"
-                            )}
+                            {moment(data.absent_date).format("DD MMM YYYY")}
                           </span>
                         </div>
                       </div>
@@ -166,11 +162,11 @@ export default class ActivityFeed extends Component {
                   ))}
                 </React.Fragment>
               ) : (
-                  <div className="noActivityData">
-                    <h1>Relax! You don't have any activity</h1>
-                    <i className="fas fa-tasks" />
-                  </div>
-                )}
+                <div className="noActivityData">
+                  <h1>Relax! You don't have any activity</h1>
+                  <i className="fas fa-tasks" />
+                </div>
+              )}
             </div>
           </div>
         </div>

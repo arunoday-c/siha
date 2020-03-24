@@ -303,7 +303,7 @@ export function addDispatchNote(req, res, next) {
                                             "INSERT INTO hims_f_sales_dispatch_note_detail (item_id, uom_id,ordered_quantity, \
                                                 dispatched_quantity, quantity_outstanding, delivered_to_date, \
                                                 dispatch_note_header_id) \
-                                                VALUES (?,?,?,?,?,?,?)",
+                                                VALUES (?,?,?,?,?,?,?);",
                                         values: [
                                             input.stock_detail[i]["item_id"],
                                             input.stock_detail[i]["uom_id"],
@@ -344,7 +344,7 @@ export function addDispatchNote(req, res, next) {
                                         _mysql
                                             .executeQuery({
                                                 query:
-                                                    "INSERT INTO hims_f_sales_dispatch_note_batches(??) VALUES ?",
+                                                    "INSERT INTO hims_f_sales_dispatch_note_batches(??) VALUES ?;",
                                                 values: input.stock_detail[i]["inventory_stock_detail"],
                                                 includeValues: IncludeSubValues,
                                                 extraValues: {

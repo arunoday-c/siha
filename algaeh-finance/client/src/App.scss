@@ -2,24 +2,3 @@
   margin: auto;
   text-align: center;
 }
-.newStickyGrid {
-  .paginationCntr {
-    background-color: #f9f9f9;
-
-    .pagination-options {
-      margin: 0;
-      display: inline-block;
-      padding: 8px;
-      select {
-        margin-right: 10px;
-      }
-    }
-    .pagination {
-      margin: 0;
-      border-radius: 50px;
-      float: right;
-      width: 150px;
-      padding: 8px;
-    }
-  }
-}

@@ -2,11 +2,12 @@ import React, { useRef, useEffect, useState } from "react";
 // import { Row, Col } from "antd";
 import "./antTableCustomStyle.scss";
 
-import { AlgaehTable } from "algaeh-react-components";
+import { AlgaehTable, AlgaehButton } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
-export default function AgingReport({ style, result, layout, type }) {
+import { handleFile } from "../FinanceReportEvents";
+export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
     receivable: { url: "getAccountReceivableAging", title: "Receivable" }
@@ -17,11 +18,35 @@ export default function AgingReport({ style, result, layout, type }) {
   const [footerData, setFooterData] = useState({});
   useEffect(
     function() {
-      algaehApiCall({
-        uri: `/financeReports/${DIFF[type].url}`,
-        method: "GET",
-        module: "finance",
-        onSuccess: response => {
+      loadReport();
+    },
+    [type, dates]
+  );
+
+  function loadReport(excel) {
+    let extraHeaders = {};
+    if (excel === true) {
+      extraHeaders = {
+        headers: {
+          Accept: "blob"
+        },
+        others: { responseType: "blob" }
+      };
+    }
+    algaehApiCall({
+      uri: `/financeReports/${DIFF[type].url}`,
+      method: "GET",
+      module: "finance",
+      data: {
+        from_date: dates[0],
+        to_date: dates[1],
+        excel
+      },
+      ...extraHeaders,
+      onSuccess: response => {
+        if (excel) {
+          handleFile(response.data, type);
+        } else {
           if (response.data.success === true) {
             setData(response.data.result.data);
             const footer = response.data.result;
@@ -36,20 +61,24 @@ export default function AgingReport({ style, result, layout, type }) {
             });
           }
         }
-      });
-    },
-    [type]
-  );
+      }
+    });
+  }
 
   return (
     <>
-      <ReactToPrint
+      {/* <ReactToPrint
         trigger={() => <i className="fas fa-print" />}
         content={() => createPrintObject.current}
         removeAfterPrint={true}
         bodyClass="reportPreviewSecLeft"
         pageStyle="printing"
-      />
+      /> */}
+      {/* <AlgaehButton >
+        Download Excel
+      </AlgaehButton> */}
+
+      <i className="fas fa-file-download" onClick={() => loadReport(true)} />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>

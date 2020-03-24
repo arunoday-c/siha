@@ -378,7 +378,7 @@ class LoanRequest extends Component {
     let allYears = getYears();
     return (
       <div className="row loan_request">
-        <div className="col-3">
+        <div className="col-lg-3 col-md-3 col-sm-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -670,7 +670,7 @@ class LoanRequest extends Component {
             </div>
           </div>
         </div>
-        <div className="col-9">
+        <div className="col-lg-9 col-md-9 col-sm-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">

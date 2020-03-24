@@ -10,11 +10,12 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select hims_f_salary_id ,S.employee_id, S.year,S.month,ED.hims_d_earning_deduction_id as earning_id,
-          ED.earning_deduction_description as earning_description , S.net_salary,S.total_days,S.display_present_days,
+          ED.earning_deduction_description as earning_description , S.net_salary,S.total_days,
+          S.display_present_days,S.absent_days,S.total_work_days,S.total_weekoff_days,S.total_holidays,S.total_leave,S.paid_leave,S.unpaid_leave,S.total_paid_days,S.pending_unpaid_leave,S.loan_due_amount,
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name ,DE.designation,H.hospital_name from
+          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -24,6 +25,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id
           left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id
           left join hims_d_department D on D.hims_d_department_id = SDP.department_id
+          left join hims_f_gratuity_provision GP on S.employee_id = GP.employee_id and GP.year=S.year and GP.month=S.month
           where S.employee_id in(?) and S.year=? and S.month=? ;`,
           values: [input.employees, input.year, input.month],
           printQuery: true
@@ -66,7 +68,19 @@ const executePDF = function executePDFMethod(options) {
                   });
                 }
               });
-
+              const emp_ded_length = emp_deductions.length;
+              const emp_ear_length = emp_earnings.length;
+              if (emp_ded_length > emp_ear_length) {
+                const blankIndexs = emp_ded_length - emp_ear_length;
+                for (let d = 0; d < blankIndexs; d++) {
+                  emp_earnings.push({});
+                }
+              } else if (emp_ear_length > emp_ded_length) {
+                const blankIndexs = emp_ear_length - emp_ded_length;
+                for (let d = 0; d < blankIndexs; d++) {
+                  emp_deductions.push({});
+                }
+              }
               outputArray.push({
                 year: employe[0].year,
                 // month: employe[0].month,
@@ -96,12 +110,24 @@ const executePDF = function executePDFMethod(options) {
                 department_name: employe[0].department_name,
                 employee_code: employe[0].employee_code,
                 full_name: employe[0].full_name,
+                DOJ: employe[0].date_of_joining,
                 designation: employe[0].designation,
                 hospital_name: employe[0].hospital_name,
                 emp_earnings: emp_earnings,
                 emp_deductions: emp_deductions,
                 total_days: employe[0].total_days,
-                display_present_days: employe[0].display_present_days
+                display_present_days: employe[0].display_present_days,
+                absent_days: employe[0].absent_days,
+                total_work_days: employe[0].total_work_days,
+                total_weekoff_days: employe[0].total_weekoff_days,
+                total_holidays: employe[0].total_holidays,
+                total_leave: employe[0].total_leave,
+                paid_leave: employe[0].paid_leave,
+                unpaid_leave: employe[0].unpaid_leave,
+                total_paid_days: employe[0].total_paid_days,
+                pending_unpaid_leave: employe[0].pending_unpaid_leave,
+                loan_due_amount: employe[0].loan_due_amount,
+                gratuity_amount: employe[0].gratuity_amount
               });
             });
 

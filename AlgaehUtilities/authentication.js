@@ -9,24 +9,50 @@ module.exports = {
 
     if (verify) {
       req.userIdentity = verify;
-      const { username, stream, gatepass } = verify;
-
+      const {
+        username,
+        stream,
+        gatepass,
+        algaeh_d_app_user_id,
+        full_name,
+        arabic_name,
+        product_type,
+        role_discreption,
+        role_code,
+        app_group_code,
+        app_group_desc,
+        employee_id,
+        hims_d_hospital_id,
+        hospital_name
+      } = verify;
+      const parameters = req.method === "GET" ? req.query : req.body;
+      let onlyUrl = req.originalUrl;
+      if (req.method === "GET") {
+        onlyUrl = onlyUrl.split("?")[0];
+      }
       _utilis.logger("res-tracking").log(
-        "",
+        hims_d_hospital_id,
         {
           dateTime: new Date().toLocaleString(),
-          requestIdentity: {
-            requestClient: reqH["x-client-ip"],
-            reqUserIdentity: verify
-          },
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          },
-          requestMethod: req.method
+          requestClient: reqH["x-client-ip"],
+          stream,
+          algaeh_d_app_user_id,
+          full_name,
+          arabic_name,
+          product_type,
+          role_discreption,
+          role_code,
+          app_group_code,
+          app_group_desc,
+          employee_id,
+          hims_d_hospital_id,
+          hospital_name,
+          requestUrl: onlyUrl,
+          host: reqH.host,
+          origin: reqH.origin,
+          "user-agent": reqH["user-agent"],
+          requestMethod: req.method,
+          parameters: parameters
         },
         "info"
       );

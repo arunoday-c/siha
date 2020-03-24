@@ -8,7 +8,7 @@
   border-right: 1px solid #d3d3d3;
   min-height: 93vh !important;
   background: #f9f9f9;
-  max-width: 280px !important;
+  max-width: 230px !important;
   h6 {
     margin: 0 -15px 0;
     font-size: 0.75rem;
@@ -46,6 +46,15 @@
   overflow: auto;
   max-height: 93vh;
   i.fa-print {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 2rem;
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    cursor: pointer;
+  }
+  i.fa-file-download {
     position: absolute;
     right: 0;
     top: 0;
@@ -309,44 +318,5 @@
   }
   .footerTotal {
     background: #f3f3f3;
-  }
-}
-
-.newStickyGrid {
-  .scrolling td,
-  th {
-    min-width: 85px !important;
-  }
-
-  .table-scroll tfoot,
-  .newStickyGrid .table-scroll tfoot th,
-  .table-scroll tfoot td {
-    position: -webkit-sticky;
-    position: sticky;
-    bottom: 0;
-    background: #ffe !important;
-    color: #000 !important;
-    z-index: 4;
-    text-align: right;
-  }
-
-  .paginationCntr {
-    background-color: #f9f9f9;
-
-    .pagination-options {
-      margin: 0;
-      display: inline-block;
-      padding: 8px;
-      select {
-        margin-right: 10px;
-      }
-    }
-    .pagination {
-      margin: 0;
-      border-radius: 50px;
-      float: right;
-      width: 150px;
-      padding: 8px;
-    }
   }
 }

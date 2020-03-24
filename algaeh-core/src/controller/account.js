@@ -68,12 +68,19 @@ export default ({ config, db }) => {
           next();
         } else {
           const { loginDateTime, user_display_name, identity } = result;
+          let identityName = loginDateTime;
+          try {
+            const jsonIdentity = JSON.parse(identity);
+            identityName = `<table class="swallHTMLMsg"><tr><td><span>Time:</span></td><td>${loginDateTime}</td></tr><tr><td><span>Mac address:</span></td><td>${jsonIdentity.mac}.</td></tr><tr><td><span>Machine Name:</span></td><td>${jsonIdentity.name}.</td></tr><tr><td><span>IP address:</span></td><td>${jsonIdentity.address}.</td></tr></table>`;
+          } catch (e) {
+            identityName = loginDateTime;
+          }
+          console.log("msg", identityName);
           res.status(httpStatus.ok).json({
             success: false,
             // '${identity}'
             //'${user_display_name}'
-            message: `Your are already logged in another machine on ${loginDateTime},
-            Please Re-enter password to continue here.`
+            message: `Machine Details ${identityName}`
           });
         }
       });

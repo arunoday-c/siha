@@ -803,7 +803,11 @@ export default function Mapping(props) {
                     }}
                   /> */}
 
-                  <AlgaehButton htmlType="submit" className="btn btn-primary">
+                  <AlgaehButton
+                    htmlType="submit"
+                    className="btn btn-primary"
+                    style={{ marginTop: 16 }}
+                  >
                     {" "}
                     MAP/UPDATE{" "}
                   </AlgaehButton>

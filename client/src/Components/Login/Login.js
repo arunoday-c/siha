@@ -88,7 +88,7 @@ function Login(props) {
     //const { value: password } =
     Swal.fire({
       title: "Already Logged In!",
-      text: message,
+      html: message,
       input: "password",
       confirmButtonText: "Login",
       showCancelButton: true,
@@ -364,10 +364,7 @@ function Login(props) {
       })
       .catch(error => {
         setLoginLoad(false);
-        if (
-          typeof error === "string" &&
-          error.includes("Your are already logged")
-        ) {
+        if (typeof error === "string" && error.includes("Machine")) {
           popUpMessage(error);
           return;
         }
@@ -420,6 +417,8 @@ function Login(props) {
               </div>
             ) : (
               <div id="loginForm" className="loginFormContainer">
+                {/* <div className="algaehLogo"></div>
+                <div className="clientLogo"></div> */}
                 <div className="col-12">
                   <div className="row">
                     <div className="col-12">

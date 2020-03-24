@@ -1,5 +1,5 @@
 import { algaehApiCall } from "../../utils/algaehApiCall";
-
+import moment from "moment";
 export function getBalanceSheet(input) {
   const { url, inputParam } = input;
   const { excel } = inputParam;
@@ -47,10 +47,6 @@ export function downloadExcel(input) {
       input["url"] = "getBalanceSheet";
       result = getBalanceSheet(input);
       break;
-    case "PL":
-      input["url"] = "getProfitAndLoss";
-      result = getBalanceSheet(input);
-      break;
     case "TB":
       input["url"] = "getTrialBalance";
       result = getBalanceSheet(input);
@@ -63,14 +59,30 @@ export function downloadExcel(input) {
       input["url"] = "getAccountReceivableAging";
       result = getBalanceSheet(input);
       break;
-    case "PandL":
+    case "total":
+      input["url"] = "getProfitAndLoss";
+      result = getBalanceSheet(input);
+      break;
+    case "by_center":
       input["url"] = "getProfitAndLossCostCenterWise";
       result = getBalanceSheet(input);
       break;
-    case "PandLYear":
+    case "by_year":
       input["url"] = "getProfitAndLossMonthWise";
       result = getBalanceSheet(input);
       break;
   }
   return result;
+}
+
+export function handleFile(data, selected) {
+  let blob = new Blob([data], {
+    type: "application/octet-stream"
+  });
+  const fileName = `${selected}-${moment().format("DD-MM-YYYY-HH-MM-ss")}.xlsx`;
+  var objectUrl = URL.createObjectURL(blob);
+  var link = document.createElement("a");
+  link.setAttribute("href", objectUrl);
+  link.setAttribute("download", fileName);
+  link.click();
 }

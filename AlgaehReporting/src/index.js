@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import algaehKeys from "algaeh-keys";
 import reportGen from "./report_generation";
+import utliites from "algaeh-utilities/utilities";
 // import algaehUtilities from "algaeh-utilities/utilities";
 // import { userSecurity } from "algaeh-utilities/checksecurity";
 import { authentication } from "algaeh-utilities/authentication";
@@ -41,18 +42,24 @@ app.use(
 //   )
 // );
 app.use(compression());
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 process.setMaxListeners(0);
 process.on("warning", warning => {
-  console.warning("warning", warning);
+  new utliites().logger().log("warning-Reports", warning, "warn");
 });
 process.on("uncaughtException", error => {
-  console.error("Uncaught Exception", error);
+  new utliites().logger().log("uncaughtException-Reports", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection", { reason: reason, promise: promise });
+  new utliites()
+    .logger()
+    .log(
+      "unhandledRejection-Reports",
+      { reason: reason, promise: promise },
+      "error"
+    );
 });
 app.use("/barcode", (req, res) => {
   if (req.url.indexOf("/?bcid=") != 0) {
@@ -65,64 +72,6 @@ app.use("/barcode", (req, res) => {
 app.use((req, res, next) => {
   authentication(req, res, next);
 });
-
-// app.use((req, res, next) => {
-//   const reqH = req.headers;
-//   const _token = reqH["x-api-key"];
-//   const utilities = new algaehUtilities();
-//   utilities.logger().log("Xapi", _token, "debug");
-//   const _verify = utilities.tokenVerify(_token);
-//   if (_verify) {
-//     let header = reqH["x-app-user-identity"];
-//     if (header != null && header != "" && header != "null") {
-//       header = utilities.decryption(header);
-//       // req.userIdentity = header;
-//       req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-//       let reqUser = utilities.getTokenData(_token).id;
-//
-//       const { username } = req.userIdentity;
-//       userSecurity(reqH["x-client-ip"], username)
-//         .then(() => {
-//           res.setHeader("connection", "keep-alive");
-//           next();
-//         })
-//         .catch(error => {
-//           res.status(423).json({
-//             success: false,
-//             message: error,
-//             username: error === "false" ? undefined : username
-//           });
-//           return;
-//         });
-//
-//       utilities.logger("res-tracking").log(
-//         "",
-//         {
-//           dateTime: new Date().toLocaleString(),
-//           requestIdentity: {
-//             requestClient: reqH["x-client-ip"],
-//             requestAPIUser: reqUser,
-//             reqUserIdentity: req.userIdentity
-//           },
-//           requestUrl: req.originalUrl,
-//           requestHeader: {
-//             host: reqH.host,
-//             "user-agent": reqH["user-agent"],
-//             "cache-control": reqH["cache-control"],
-//             origin: reqH.origin
-//           },
-//           requestMethod: req.method
-//         },
-//         "info"
-//       );
-//     }
-//   } else {
-//     res.status(utilities.httpStatus().unAuthorized).json({
-//       success: false,
-//       message: "unauthorized access"
-//     });
-//   }
-// });
 
 app.use("/api/v1/report", getReport);
 app.use("/api/v1/excelReport", getExcelReport);
@@ -196,15 +145,6 @@ app.use("/api/v1/pentahoreport", (req, res) => {
   );
 });
 app.use("/api/v1/printReportRaw", printReportRaw);
-process.on("warning", warning => {
-  console.log("Waring := ", warning);
-});
-process.on("uncaughtException", error => {
-  console.log("uncatched Exception :=", error);
-});
-process.on("unhandledRejection", (reason, promise) => {
-  console.log("Unhandled rejection :=", { reason: reason, promise: promise });
-});
 
 app.server.listen(_port);
 console.log(`Report Server is running  on PORT  - ${_port} *`);
