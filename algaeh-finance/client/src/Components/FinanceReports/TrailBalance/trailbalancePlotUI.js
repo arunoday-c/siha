@@ -1,5 +1,5 @@
 import React from "react";
-import { childicon, parenticon, parenticonOpen } from "./icons";
+import { ChildIcon, ParentIcon, ParentIconOpen } from "./icons";
 function hasChildren(node) {
   return (
     typeof node === "object" &&
