@@ -1,4 +1,8 @@
-import { swalMessage, algaehApiCall, getCookie } from "../../../utils/algaehApiCall";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -34,7 +38,6 @@ const vendortexthandle = ($this, e) => {
     tax_percentage: e.selected.vat_percentage
   });
 };
-
 
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -91,7 +94,6 @@ const numberchangeTexts = ($this, context, e) => {
         [name]: value
       });
     }
-
   }
 };
 
@@ -118,11 +120,12 @@ const InvoiceSearch = ($this, e) => {
         uri: "/SalesReturnEntry/getInvoiceEntryItems",
         module: "sales",
         method: "GET",
-        data: { hims_f_sales_invoice_header_id: row.hims_f_sales_invoice_header_id },
+        data: {
+          hims_f_sales_invoice_header_id: row.hims_f_sales_invoice_header_id
+        },
         method: "GET",
         onSuccess: response => {
           if (response.data.success) {
-
             let data = response.data.records;
 
             data.saveEnable = false;
@@ -143,7 +146,6 @@ const InvoiceSearch = ($this, e) => {
 };
 
 const ClearData = ($this, e) => {
-
   $this.setState({
     sales_return_number: null,
     invoice_number: null,
@@ -212,66 +214,69 @@ const SaveSalesReutrnEnrty = $this => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
-  $this.setState({
-    hims_f_sales_return_header_id: null,
-    return_date: new Date(),
-    sales_return_number: null,
-    invoice_number: null,
-    sales_invoice_header_id: null,
-    customer_name: null,
-    hospital_name: null,
-    project_name: null,
-    sales_return_detail: [],
-    dataFinder: false,
-    dataExitst: false,
+  $this.setState(
+    {
+      hims_f_sales_return_header_id: null,
+      return_date: new Date(),
+      sales_return_number: null,
+      invoice_number: null,
+      sales_invoice_header_id: null,
+      customer_name: null,
+      hospital_name: null,
+      project_name: null,
+      sales_return_detail: [],
+      dataFinder: false,
+      dataExitst: false,
 
-    sub_total: null,
-    receipt_net_total: null,
-    receipt_net_payable: null,
-    net_total: null,
-    return_total: null,
-    inv_is_posted: "N",
-    tax_amount: null,
-    discount_amount: null,
-    comment: null,
+      sub_total: null,
+      receipt_net_total: null,
+      receipt_net_payable: null,
+      net_total: null,
+      return_total: null,
+      inv_is_posted: "N",
+      tax_amount: null,
+      discount_amount: null,
+      comment: null,
 
-    location_description: null,
-    location_type: null,
-    location_id: null
-  }, () => {
-    algaehApiCall({
-      uri: "/SalesReturnEntry/getSalesReturn",
-      module: "sales",
-      method: "GET",
-      data: { sales_return_number: docNumber },
-      onSuccess: response => {
-        if (response.data.success) {
-          let data = response.data.records;
+      location_description: null,
+      location_type: null,
+      location_id: null
+    },
+    () => {
+      algaehApiCall({
+        uri: "/SalesReturnEntry/getSalesReturn",
+        module: "sales",
+        method: "GET",
+        data: { sales_return_number: docNumber },
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
 
-          data.saveEnable = true;
-          data.dataExitst = true;
-          data.dataFinder = true;
-          data.inv_is_posted = data.is_posted
-          if (data.is_posted === "N") {
-            data.postEnable = false;
-          } else {
-            data.postEnable = true;
+            data.saveEnable = true;
+            data.dataExitst = true;
+            data.dataFinder = true;
+            data.inv_is_posted = data.is_posted;
+            if (data.is_posted === "N") {
+              data.postEnable = false;
+            } else {
+              data.postEnable = true;
+            }
+
+            $this.setState(data);
+            AlgaehLoader({ show: false });
           }
-
-          $this.setState(data);
           AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
-        AlgaehLoader({ show: false });
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  });
+      });
+    }
+  );
 };
 
 const generateSalesInvoice = data => {
@@ -297,19 +302,13 @@ const generateSalesInvoice = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Return Entry";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Return Entry";
     }
   });
 };
-
 
 const PostSalesReturnEntry = $this => {
   AlgaehLoader({ show: true });
@@ -334,7 +333,7 @@ const PostSalesReturnEntry = $this => {
     InputObj.sales_return_detail[i].operation = "+";
   }
 
-  InputObj.ScreenCode = getCookie("ScreenCode")
+  InputObj.ScreenCode = getCookie("ScreenCode");
 
   algaehApiCall({
     uri: "/SalesReturnEntry/postSalesReturnEntry",

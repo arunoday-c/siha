@@ -23,11 +23,11 @@ const PatientSearch = ($this, e) => {
 
     onRowSelect: row => {
       let IOputs = extend(SettlementIOputs.inputParam());
-      IOputs.patient_code = row.patient_code
-      IOputs.patient_id = row.hims_d_patient_id
-      IOputs.full_name = row.full_name
-      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
-      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+      IOputs.patient_code = row.patient_code;
+      IOputs.patient_id = row.hims_d_patient_id;
+      IOputs.full_name = row.full_name;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
 
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
@@ -99,8 +99,8 @@ const ClearData = ($this, e) => {
       let IOputs = extend(SettlementIOputs.inputParam());
 
       // IOputs.counter_id = counter_id;
-      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false
-      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
@@ -158,7 +158,7 @@ const Validations = $this => {
   //     document.querySelector("[name='cheque_date']").focus();
   //     return isError;
   //   }
-  // } 
+  // }
   if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
@@ -337,8 +337,8 @@ const SavePosCreidt = $this => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
-        Inputobj.reciept_amount = Inputobj.receipt_amount
-        Inputobj.ScreenCode = getCookie("ScreenCode")
+        Inputobj.reciept_amount = Inputobj.receipt_amount;
+        Inputobj.ScreenCode = getCookie("ScreenCode");
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/POSCreditSettlement/addPOSCreidtSettlement",
@@ -407,15 +407,10 @@ const generatePOSCreditSettlementReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Pharmacy Credit Settlement - Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Pharmacy Credit Settlement - Receipt";
     }
   });
 };

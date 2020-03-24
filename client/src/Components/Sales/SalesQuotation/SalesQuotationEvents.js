@@ -71,18 +71,15 @@ const ClearData = ($this, e) => {
     comment_list: [],
     qotation_status: "G",
 
-
     service_name: "",
     services_id: null,
     service_frequency: null
-
   };
 
   $this.setState(IOputs);
 };
 
 const SaveSalesQuotation = $this => {
-
   if ($this.state.hims_f_sales_quotation_id !== null) {
     if ($this.state.comments === null || $this.state.comments === "") {
       swalMessage({
@@ -122,7 +119,6 @@ const SaveSalesQuotation = $this => {
       querySelector: "data-validate='HeaderDiv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-
         if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
           swalMessage({
             type: "warning",
@@ -340,7 +336,6 @@ const deleteComment = ($this, row) => {
 };
 
 const generateSalesQuotation = ($this, data) => {
-
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -366,15 +361,10 @@ const generateSalesQuotation = ($this, data) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Sales Quotation Report";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Sales Quotation Report";
     }
   });
 };

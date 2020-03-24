@@ -1,9 +1,6 @@
 // import AlgaehLoader from "../Wrapper/fullPageLoader";
 import PatRegIOputs from "../../Models/RegistrationPatient";
-import {
-  algaehApiCall,
-  getCookie
-} from "../../utils/algaehApiCall.js";
+import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
 
 const ClearData = ($this, e) => {
   let IOputs = PatRegIOputs.inputParam();
@@ -39,16 +36,9 @@ const generateIdCard = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "ID Card";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };

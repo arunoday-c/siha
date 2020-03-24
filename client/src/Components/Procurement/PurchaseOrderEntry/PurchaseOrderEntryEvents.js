@@ -157,8 +157,6 @@ const RequisitionSearch = ($this, e) => {
           if (response.data.success === true) {
             let data = response.data.records;
             if (data !== null && data !== undefined) {
-
-
               data.saveEnable = false;
 
               data.location_type = "MS";
@@ -250,9 +248,9 @@ const RequisitionSearch = ($this, e) => {
                 parseFloat(s.tax_amount)
               );
 
-              let detail_discount = Enumerable.from(data.po_entry_detail).sum(
-                s => parseFloat(s.sub_discount_amount)
-              );
+              let detail_discount = Enumerable.from(
+                data.po_entry_detail
+              ).sum(s => parseFloat(s.sub_discount_amount));
 
               data.sub_total = sub_total;
               data.net_total = net_total;
@@ -284,8 +282,8 @@ const ClearData = ($this, e) => {
 
   IOputs.dataExitst = false;
   $this.setState(IOputs);
-  clearItemDetails($this)
-  getPOOptions($this)
+  clearItemDetails($this);
+  getPOOptions($this);
 };
 
 const SavePOEnrty = $this => {
@@ -496,7 +494,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => { }
+      afterSuccess: data => {}
     });
 
     $this.props.getItemGroup({
@@ -547,15 +545,10 @@ const generatePOReceipt = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Purchase Order Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Purchase Order Receipt";
     }
   });
 };
@@ -586,15 +579,10 @@ const generatePOReceiptNoPrice = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Purchase Order Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Purchase Order Receipt";
     }
   });
 };
@@ -689,7 +677,7 @@ const getVendorMaster = $this => {
   });
 };
 
-const clearItemDetails = ($this) => {
+const clearItemDetails = $this => {
   $this.props.getItems({
     redux: {
       type: "ITEM_GET_DATA",
@@ -699,7 +687,6 @@ const clearItemDetails = ($this) => {
   });
 
   $this.props.getLocation({
-
     redux: {
       type: "LOCATIONS_GET_DATA",
       mappingName: "polocations",
@@ -732,7 +719,7 @@ const clearItemDetails = ($this) => {
   });
 };
 
-const VendorQuotationSearch = ($this) => {
+const VendorQuotationSearch = $this => {
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Purchase.VendorQuotation
@@ -744,7 +731,6 @@ const VendorQuotationSearch = ($this) => {
       callBack(text);
     },
     onRowSelect: row => {
-
       algaehApiCall({
         uri: "/VendorsQuotation/getVendorQuotation",
         module: "procurement",
@@ -753,7 +739,7 @@ const VendorQuotationSearch = ($this) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
-            data.po_entry_detail = data.quotation_detail
+            data.po_entry_detail = data.quotation_detail;
             for (let i = 0; i < data.po_entry_detail.length; i++) {
               // uom_requested_id
               // if ($this.state.po_from === "PHR") {
@@ -778,25 +764,36 @@ const VendorQuotationSearch = ($this) => {
               //     data.po_entry_detail[i].inventory_uom_id;
               // }
 
-              data.po_entry_detail[i].order_quantity = data.po_entry_detail[i].quantity;
-              data.po_entry_detail[i].total_quantity = data.po_entry_detail[i].quantity
-              data.po_entry_detail[i].unit_price = data.po_entry_detail[i].unit_price
-              data.po_entry_detail[i].extended_price = data.po_entry_detail[i].extended_price
-              data.po_entry_detail[i].sub_discount_percentage = data.po_entry_detail[i].discount_percentage
-              data.po_entry_detail[i].sub_discount_amount = data.po_entry_detail[i].discount_amount
-              data.po_entry_detail[i].extended_cost = data.po_entry_detail[i].net_extended_cost
-              data.po_entry_detail[i].net_extended_cost = data.po_entry_detail[i].net_extended_cost
-              data.po_entry_detail[i].unit_cost =
-                (parseFloat(data.po_entry_detail[i].extended_cost) / parseFloat(data.po_entry_detail[i].quantity))
-                  .toFixed($this.state.decimal_places)
-              data.po_entry_detail[i].authorize_quantity = 0
-              data.po_entry_detail[i].quantity_outstanding = 0
-              data.po_entry_detail[i].rejected_quantity = 0
-              data.po_entry_detail[i].tax_percentage = data.po_entry_detail[i].tax_percentage
-              data.po_entry_detail[i].tax_amount = data.po_entry_detail[i].tax_amount
-              data.po_entry_detail[i].total_amount = data.po_entry_detail[i].total_amount
+              data.po_entry_detail[i].order_quantity =
+                data.po_entry_detail[i].quantity;
+              data.po_entry_detail[i].total_quantity =
+                data.po_entry_detail[i].quantity;
+              data.po_entry_detail[i].unit_price =
+                data.po_entry_detail[i].unit_price;
+              data.po_entry_detail[i].extended_price =
+                data.po_entry_detail[i].extended_price;
+              data.po_entry_detail[i].sub_discount_percentage =
+                data.po_entry_detail[i].discount_percentage;
+              data.po_entry_detail[i].sub_discount_amount =
+                data.po_entry_detail[i].discount_amount;
+              data.po_entry_detail[i].extended_cost =
+                data.po_entry_detail[i].net_extended_cost;
+              data.po_entry_detail[i].net_extended_cost =
+                data.po_entry_detail[i].net_extended_cost;
+              data.po_entry_detail[i].unit_cost = (
+                parseFloat(data.po_entry_detail[i].extended_cost) /
+                parseFloat(data.po_entry_detail[i].quantity)
+              ).toFixed($this.state.decimal_places);
+              data.po_entry_detail[i].authorize_quantity = 0;
+              data.po_entry_detail[i].quantity_outstanding = 0;
+              data.po_entry_detail[i].rejected_quantity = 0;
+              data.po_entry_detail[i].tax_percentage =
+                data.po_entry_detail[i].tax_percentage;
+              data.po_entry_detail[i].tax_amount =
+                data.po_entry_detail[i].tax_amount;
+              data.po_entry_detail[i].total_amount =
+                data.po_entry_detail[i].total_amount;
             }
-
 
             data.vendor_quotation_number = data.vendor_quotation_number;
             data.vendor_quotation_header_id =
@@ -824,8 +821,8 @@ const VendorQuotationSearch = ($this) => {
               parseFloat(s.tax_amount)
             );
 
-            let detail_discount = Enumerable.from(data.po_entry_detail).sum(
-              s => parseFloat(s.sub_discount_amount)
+            let detail_discount = Enumerable.from(data.po_entry_detail).sum(s =>
+              parseFloat(s.sub_discount_amount)
             );
 
             data.sub_total = sub_total;
@@ -841,7 +838,6 @@ const VendorQuotationSearch = ($this) => {
           } else {
             AlgaehLoader({ show: false });
           }
-
         },
         onFailure: error => {
           AlgaehLoader({ show: false });
@@ -853,9 +849,9 @@ const VendorQuotationSearch = ($this) => {
       });
     }
   });
-}
+};
 
-const getPOOptions = ($this) => {
+const getPOOptions = $this => {
   algaehApiCall({
     uri: "/POSettings/getPOOptions",
     method: "GET",
@@ -866,7 +862,7 @@ const getPOOptions = ($this) => {
       }
     }
   });
-}
+};
 
 export {
   texthandle,

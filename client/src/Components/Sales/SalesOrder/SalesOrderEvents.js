@@ -383,8 +383,10 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.addedItem = true;
         data.selectedData = true;
-        let project_details = $this.state.cost_projects.find(f => f.cost_center_id === data.project_id)
-        data.organizations = project_details.branches
+        let project_details = $this.state.cost_projects.find(
+          f => f.cost_center_id === data.project_id
+        );
+        data.organizations = project_details.branches;
 
         $this.setState(data);
       }
@@ -426,15 +428,10 @@ const generateSalesOrderReport = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Sales Order";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Sales Order";
     }
   });
 };
@@ -462,15 +459,10 @@ const generatePOReceiptNoPrice = data => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Sales Order Report";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
+      window.document.title = "Sales Order Report";
     }
   });
 };
