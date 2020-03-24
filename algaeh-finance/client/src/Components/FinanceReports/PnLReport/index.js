@@ -213,38 +213,6 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
 
   return (
     <>
-      <div className="row">
-        <AlgaehAutoComplete
-          div={{ className: "col-3" }}
-          label={{
-            forceLabel: "Based on",
-            isImp: true
-          }}
-          selector={{
-            name: "columnType",
-            value: columnType,
-            dataSource: {
-              data: [
-                {
-                  name: "Year",
-                  value: "by_year"
-                },
-                {
-                  name: "Cost Center",
-                  value: "by_center"
-                },
-                {
-                  name: "Total",
-                  value: "total"
-                }
-              ],
-              valueField: "value",
-              textField: "name"
-            },
-            onChange: handleDropDown
-          }}
-        />
-      </div>
       {/* <Button onClick={loadExcel}>Excel</Button> */}
 
       <div className="row inner-top-search" style={{ paddingBottom: 20 }}>
@@ -317,7 +285,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             dataSource: {
               data: [
                 {
-                  name: "Year",
+                  name: "Period",
                   value: "by_year"
                 },
                 {

@@ -1382,8 +1382,8 @@ export default {
             query:
               "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
-               then 'days' end as age_desc,from_age,to_age\
-            from hims_d_lab_analytes_range where analyte_id=? ",
+               then 'days' end as age_desc,from_age,to_age,from_oprator,to_operator, \
+               low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? ",
             values: [input[0].analyte_id],
             printQuery: true
           })
@@ -1442,7 +1442,11 @@ export default {
                 "normal_low",
                 "normal_high",
                 "normal_qualitative_value",
-                "text_value"
+                "text_value",
+                "from_oprator",
+                "to_operator",
+                "low_operator",
+                "high_operator"
               ];
 
               _mysql
@@ -1495,8 +1499,8 @@ export default {
         .executeQuery({
           query:
             "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,from_age,to_age,\
-            critical_low,critical_high,normal_low,normal_qualitative_value,text_value,normal_high\
-            from hims_d_lab_analytes_range where analyte_id=? ",
+            critical_low,critical_high,normal_low,normal_qualitative_value,text_value,normal_high,\
+            from_oprator,to_operator,low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? ",
           values: [req.query.analyte_id],
           printQuery: true
         })
@@ -1527,8 +1531,8 @@ export default {
             query:
               "select hims_d_lab_analytes_range_id,analyte_id,gender,age_type,\
               case age_type when 'Y' then 'Years' when 'M' then 'Months' when 'D'\
-               then 'days' end as age_desc,from_age,to_age\
-            from hims_d_lab_analytes_range where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
+               then 'days' end as age_desc,from_age,to_age,from_oprator,to_operator,\
+               low_operator,high_operator from hims_d_lab_analytes_range where analyte_id=? and  hims_d_lab_analytes_range_id<>?; ",
             values: [item.analyte_id, item.hims_d_lab_analytes_range_id],
             printQuery: true
           })
@@ -1577,7 +1581,8 @@ export default {
                   query:
                     " update hims_d_lab_analytes_range \
                     set gender=?, age_type=?,from_age=?,to_age=?, critical_low=?,critical_high=?,\
-                    normal_low=?,normal_high=?,normal_qualitative_value=?,text_value=?, updated_by=?,updated_date=? \
+                    normal_low=?,normal_high=?,normal_qualitative_value=?,text_value=?, updated_by=?,\
+                    updated_date=?,from_oprator=?,to_operator=?,low_operator=?,high_operator=? \
                     where hims_d_lab_analytes_range_id=? ",
                   values: [
                     item.gender,
@@ -1592,6 +1597,10 @@ export default {
                     item.text_value,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
+                    item.from_oprator,
+                    item.to_operator,
+                    item.low_operator,
+                    item.high_operator,
                     item.hims_d_lab_analytes_range_id
                   ],
                   printQuery: true

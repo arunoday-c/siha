@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./AuditLog.scss";
 import moment from "moment";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 import {
   AlgaehDateHandler,
@@ -9,7 +10,7 @@ import {
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { MainContext } from "algaeh-react-components/context";
@@ -19,7 +20,9 @@ export default class AuditLog extends Component {
     this.state = {
       hospital_id: "",
       hospitalList: [],
-      levels: []
+      levels: null,
+      employee_id: undefined,
+      auditdata: []
     };
   }
   static contextType = MainContext;
@@ -46,38 +49,74 @@ export default class AuditLog extends Component {
       [e]: moment(ctrl)._d
     });
   }
+  handleClear() {
+    this.setState({
+      employee_name: undefined,
+      from_date: undefined,
+      to_date: undefined,
+      levels: null,
+      auditdata: []
+    });
+  }
 
   dropDownHandle = e => {
     console.log(e, "handle");
     const { name, value } = e;
     this.setState({ [name]: value });
   };
+  handleChange = evnt => {
+    console.log(evnt);
+    this.setState({
+      levels: evnt.value
+    });
+  };
   auditlogData() {
+    if (this.state.from_date === undefined) {
+      swalMessage({
+        title: "Please Select From date first",
+        type: "warning"
+      });
+      return;
+    }
+    if (this.state.to_date === undefined) {
+      swalMessage({
+        title: "Please Select to date first",
+        type: "warning"
+      });
+      return;
+    }
+    const employee_id =
+      this.state.employee_id === undefined
+        ? {}
+        : { employee_id: this.state.employee_id };
+    const levels =
+      this.state.levels === null ? {} : { level: this.state.levels };
+    const input = {
+      hims_d_hospital_id: this.state.hospital_id,
+      from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
+      to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
+      ...employee_id,
+      ...levels
+    };
+
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/getLogs",
       module: "documentManagement",
-      data: {
-        hims_d_hospital_id: this.state.hospital_id,
-        from_date: this.state.from_date,
-        to_date: this.state.to_date,
-        employee_id: this.state.employee_id,
+      data: input,
 
-        level: this.state.levels
-      },
-      method: "GET",
+      method: "POST",
 
       onSuccess: response => {
-        if (response.data.success === true) {
-          new Promise((resolve, reject) => {
-            resolve(response.data.records);
-            // }).then(data => {
-            //   if (Array.isArray(data)) {
-            //     if (data.length > 0) {
-            //     }
-            //   } else if (data !== null || data !== undefined) {
-            //   }
-          });
+        AlgaehLoader({ show: false });
+        const { success, records } = response.data;
+        if (success === true) {
+          this.setState({ auditdata: records });
         }
+      },
+      onCatch: error => {
+        AlgaehLoader({ show: false });
+        console.error(error);
       }
     });
   }
@@ -132,6 +171,7 @@ export default class AuditLog extends Component {
 
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
+            isImp={true}
             label={{ forceLabel: "From Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "from_date" }}
             events={{
@@ -141,6 +181,7 @@ export default class AuditLog extends Component {
           />
           <AlgaehDateHandler
             div={{ className: "col-2 form-group mandatory" }}
+            isImp={true}
             label={{ forceLabel: "To Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "to_date" }}
             events={{
@@ -150,7 +191,7 @@ export default class AuditLog extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-3 form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Levels",
               isImp: false
@@ -159,17 +200,16 @@ export default class AuditLog extends Component {
               name: "Level",
               className: "select-fld",
               value: this.state.levels,
-              multiselect: true,
               dataSource: {
                 textField: "name",
                 valueField: "value",
                 data: [
-                  { name: "Warning", value: "warning" },
+                  { name: "Warning", value: "warn" },
                   { name: "Information", value: "info" },
                   { name: "Error", value: "error" }
                 ]
               },
-              onChange: this.dropDownHandle,
+              onChange: this.handleChange.bind(this),
               onClear: () => {
                 this.setState({
                   value: null
@@ -178,7 +218,7 @@ export default class AuditLog extends Component {
             }}
           />
 
-          <div className="col-3 globalSearchCntr form-group mandatory">
+          <div className="col globalSearchCntr form-group mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name
@@ -187,11 +227,19 @@ export default class AuditLog extends Component {
               <i className="fas fa-search fa-lg" />
             </h6>
           </div>
-          <div className="col">
+          <div className="col-2">
             <button
               type="submit"
               style={{ marginTop: 19 }}
-              // onClick={this.auditlogData.bind(this)}
+              onClick={this.handleClear.bind(this)}
+              className="btn btn-default"
+            >
+              CLEAR
+            </button>{" "}
+            <button
+              type="submit"
+              style={{ marginTop: 19, marginLeft: 10 }}
+              onClick={this.auditlogData.bind(this)}
               className="btn btn-primary"
             >
               LOAD
@@ -213,72 +261,135 @@ export default class AuditLog extends Component {
                       id="auditLogGrid"
                       columns={[
                         {
-                          fieldName: "audit_time",
+                          fieldName: "dateTime",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Date & Time" }}
                             />
-                          ),
-                          others: {
-                            maxWidth: 200
-                          }
+                          )
                         },
                         {
-                          fieldName: "audit_Level",
+                          fieldName: "level",
+                          label: <AlgaehLabel label={{ forceLabel: "LEVEL" }} />
+                        },
+                        {
+                          fieldName: "full_name",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Level" }} />
-                          ),
-                          others: {
-                            maxWidth: 250
-                          }
+                            <AlgaehLabel label={{ forceLabel: "FULL NAME" }} />
+                          )
                         },
                         {
-                          fieldName: "audit_url",
-                          label: <AlgaehLabel label={{ forceLabel: "URL" }} />,
-                          others: {
-                            maxWidth: 120
-                          }
-                        },
-                        {
-                          fieldName: "audit_method",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Method" }} />
-                          ),
-                          others: {
-                            maxWidth: 150
-                          }
-                        },
-                        {
-                          fieldName: "audit_name",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "UserName" }} />
-                          ),
-                          others: {
-                            maxWidth: 250
-                          }
-                        },
-                        {
-                          fieldName: "audit_role",
-                          label: <AlgaehLabel label={{ forceLabel: "Role" }} />
-                        },
-                        {
-                          fieldName: "audit_machine_details",
+                          fieldName: "arabic_name",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Machine Details" }}
+                              label={{ forceLabel: "ARABIC NAME" }}
                             />
                           )
+                        },
+                        {
+                          fieldName: "stream",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "STREAM" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.stream === null ? "No" : row.stream;
+                          }
+                        },
+                        {
+                          fieldName: "role_discreption",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "ROLE DESCRIPTION" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "app_group_desc",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "APP GROUP DESC" }}
+                            />
+                          )
+                        },
+
+                        {
+                          fieldName: "requestMethod",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "METHOD" }} />
+                          )
+                        },
+                        {
+                          fieldName: "requestUrl",
+                          label: <AlgaehLabel label={{ forceLabel: "URL" }} />
+                        },
+                        {
+                          fieldName: "requestClient",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "REQUEST CLIENT" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            if (typeof row.requestClient !== "string") {
+                              return JSON.stringify(row.requestClient);
+                            } else {
+                              return row.requestClient;
+                            }
+                          }
+                        },
+
+                        {
+                          fieldName: "product_type",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "PRODUCT TYPE" }}
+                            />
+                          )
+                        },
+
+                        {
+                          fieldName: "host",
+                          label: <AlgaehLabel label={{ forceLabel: "HOST" }} />
+                        },
+                        {
+                          fieldName: "origin",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "ORIGIN" }} />
+                          )
+                        },
+                        {
+                          fieldName: "user-agent",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "USER AGENT" }} />
+                          )
+                        },
+                        {
+                          fieldName: "parameters",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "PARAMETERS" }} />
+                          ),
+                          displayTemplate: row => {
+                            return JSON.stringify(row.parameters);
+                          }
                         }
                       ]}
-                      keyId=""
-                      dataSource={{}}
-                      isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 20 }}
-                      events={{
-                        onEdit: () => {},
-                        onDelete: () => {},
-                        onDone: () => {}
+                      rowClassName={row => {
+                        let className = "error";
+                        switch (row.level) {
+                          case "error":
+                            className = "error";
+                            break;
+                          case "warning":
+                            className = "warning";
+                            break;
+                          case "info":
+                            className = "";
+                            break;
+                        }
+                        return className;
                       }}
+                      dataSource={{ data: this.state.auditdata }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                     />
                   </div>
                 </div>

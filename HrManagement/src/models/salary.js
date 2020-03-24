@@ -4391,7 +4391,7 @@ function InsertGratuityProvision(options) {
         .executeQuery({
           query:
             "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
-            datediff(date(?),date(date_of_joining))/365 endOfServiceYears, employee_code, exit_date,\
+            ((datediff(date(?),date(date_of_joining)))+1)/365 endOfServiceYears, employee_code, exit_date,\
             full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth \
             from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
             select * from hims_d_end_of_service_options;",
@@ -4419,24 +4419,30 @@ function InsertGratuityProvision(options) {
             for (let k = 0; k < _employee.length; k++) {
               new Promise((resolve, reject) => {
                 try {
+                  console.log("_optionsDetals.end_of_service_type", _optionsDetals.end_of_service_type)
                   if (_optionsDetals.end_of_service_type == "S") {
                     if (
                       _employee[k].endOfServiceYears >= 0 &&
                       _employee[k].endOfServiceYears <=
                       _optionsDetals.from_service_range1
                     ) {
+
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days1;
+                      console.log("1", _eligibleDays)
                     } else if (
                       _employee[k].endOfServiceYears >=
                       _optionsDetals.from_service_range1 &&
                       _employee[k].endOfServiceYears <=
                       _optionsDetals.from_service_range2
                     ) {
+                      console.log("2", _employee[k].endOfServiceYears)
+                      console.log("2", _optionsDetals.eligible_days2)
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days2;
+                      console.log("2", _eligibleDays)
                     } else if (
                       _employee[k].endOfServiceYears >=
                       _optionsDetals.from_service_range2 &&
@@ -4446,6 +4452,7 @@ function InsertGratuityProvision(options) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days3;
+                      console.log("3", _eligibleDays)
                     } else if (
                       _employee[k].endOfServiceYears >=
                       _optionsDetals.from_service_range3 &&
@@ -4455,6 +4462,7 @@ function InsertGratuityProvision(options) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days4;
+                      console.log("4", _eligibleDays)
                     } else if (
                       _employee[k].endOfServiceYears >=
                       _optionsDetals.from_service_range4 &&
@@ -4464,6 +4472,7 @@ function InsertGratuityProvision(options) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days5;
+                      console.log("5", _eligibleDays)
                     } else if (
                       _employee[k].endOfServiceYears >=
                       _optionsDetals.from_service_range5
@@ -4471,6 +4480,7 @@ function InsertGratuityProvision(options) {
                       _eligibleDays =
                         _employee[k].endOfServiceYears *
                         _optionsDetals.eligible_days5;
+                      console.log("6", _eligibleDays)
                     }
                   } else if (_optionsDetals.end_of_service_type == "H") {
                     let by =
@@ -4575,9 +4585,11 @@ function InsertGratuityProvision(options) {
                     })
                     .then(earnings => {
                       // _mysql.releaseConnection();
+                      console.log("earnings", earnings)
                       let _computatedAmout = [];
                       if (_optionsDetals.end_of_service_calculation == "AN") {
                         _computatedAmout = _.chain(earnings).map(items => {
+                          console.log("items", items)
                           return (items.amount * 12) / 365;
                         });
                       } else if (
@@ -4590,11 +4602,15 @@ function InsertGratuityProvision(options) {
                         });
                       }
 
+                      console.log("_eligibleDays", _eligibleDays)
                       let _computatedAmoutSum =
                         _computatedAmout.reduce((a, b) => {
+                          console.log("a", a)
+                          console.log("b", b)
                           return a + b;
                         }, 0) * _eligibleDays;
 
+                      console.log("_computatedAmoutSum", _computatedAmoutSum)
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
                         decimal_places

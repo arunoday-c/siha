@@ -25,13 +25,14 @@ class AnalytesRange extends PureComponent {
     if (
       (this.props.active &&
         this.props.active.hims_d_lab_analytes_id !==
-        prevProps.active.hims_d_lab_analytes_id) ||
+          prevProps.active.hims_d_lab_analytes_id) ||
       this.state.refresh
     ) {
       const { hims_d_lab_analytes_id } = this.props.active;
       try {
         if (hims_d_lab_analytes_id) {
           const result = await this.getAnalyteDetail(hims_d_lab_analytes_id);
+          console.log("result.data.records", result.data.records);
           this.setState({
             analyteDetail: result.data.records,
             refresh: false,
@@ -64,6 +65,14 @@ class AnalytesRange extends PureComponent {
     this.setState({ loading: true });
     const { hims_d_lab_analytes_id } = this.props.active;
     input.analyte_id = hims_d_lab_analytes_id;
+    input.from_oprator =
+      input.from_oprator === "notselected" ? null : input.from_oprator;
+    input.to_operator =
+      input.to_operator === "notselected" ? null : input.to_operator;
+    input.low_operator =
+      input.low_operator === "notselected" ? null : input.low_operator;
+    input.high_operator =
+      input.high_operator === "notselected" ? null : input.high_operator;
     try {
       const res = await newAlgaehApi({
         uri: "/labmasters/addAnalyteRages",
@@ -137,7 +146,17 @@ class AnalytesRange extends PureComponent {
   handleChange = (row, e) => {
     const name = e.name || e.target.name;
     const value = e.value || e.target.value;
-    row[name] = value;
+    if (
+      name === "from_oprator" ||
+      name === "to_operator" ||
+      name === "low_operator" ||
+      name === "high_operator"
+    ) {
+      row[name] = value === "notselected" ? null : value;
+    } else {
+      row[name] = value;
+    }
+
     row.update({ ...row });
   };
 
@@ -200,7 +219,51 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
-
+                      {
+                        fieldName: "from_oprator",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "From Operator" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.from_oprator === null
+                            ? "Not Selected"
+                            : row.from_oprator;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                sort: "off",
+                                name: "from_oprator",
+                                className: "select-fld",
+                                value:
+                                  row["from_oprator"] === null
+                                    ? "notselected"
+                                    : row["from_oprator"],
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: [
+                                    {
+                                      name: "Not selected",
+                                      value: "notselected"
+                                    },
+                                    { name: "=", value: "=" },
+                                    { name: "<", value: "<" },
+                                    { name: ">", value: ">" },
+                                    { name: ">=", value: ">=" },
+                                    { name: "<=", value: "<=" }
+                                  ]
+                                },
+                                onChange: e => this.handleChange(row, e)
+                              }}
+                            />
+                          );
+                        }
+                      },
                       {
                         fieldName: "from_age",
                         label: (
@@ -221,6 +284,49 @@ class AnalytesRange extends PureComponent {
                                   onChangeonChange: e =>
                                     this.handleChange(row, e)
                                 }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "to_operator",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Operator" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.to_operator === null
+                            ? "Not Selected"
+                            : row.to_operator;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                sort: "off",
+                                name: "to_operator",
+                                className: "select-fld",
+                                value:
+                                  row["to_operator"] === null
+                                    ? "notselected"
+                                    : row["to_operator"],
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: [
+                                    {
+                                      name: "Not selected",
+                                      value: "notselected"
+                                    },
+                                    { name: "=", value: "=" },
+                                    { name: "<", value: "<" },
+                                    { name: ">", value: ">" },
+                                    { name: ">=", value: ">=" },
+                                    { name: "<=", value: "<=" }
+                                  ]
+                                },
+                                onChange: e => this.handleChange(row, e)
                               }}
                             />
                           );
@@ -251,6 +357,7 @@ class AnalytesRange extends PureComponent {
                           );
                         }
                       },
+
                       {
                         fieldName: "age_type",
                         label: (
@@ -289,6 +396,50 @@ class AnalytesRange extends PureComponent {
                         }
                       },
                       {
+                        fieldName: "low_operator",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Low Operator" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.low_operator === null
+                            ? "Not Selected"
+                            : row.low_operator;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                sort: "off",
+                                name: "low_operator",
+                                className: "select-fld",
+                                value:
+                                  row["low_operator"] === null
+                                    ? "notselected"
+                                    : row["low_operator"],
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: [
+                                    {
+                                      name: "Not selected",
+                                      value: "notselected"
+                                    },
+                                    { name: "=", value: "=" },
+                                    { name: "<", value: "<" },
+                                    { name: ">", value: ">" },
+                                    { name: ">=", value: ">=" },
+                                    { name: "<=", value: "<=" }
+                                  ]
+                                },
+                                onChange: e => this.handleChange(row, e)
+                              }}
+                            />
+                          );
+                        }
+                      },
+
+                      {
                         fieldName: "normal_low",
                         label: <AlgaehLabel label={{ forceLabel: "Low" }} />,
                         editorTemplate: row => {
@@ -314,6 +465,51 @@ class AnalytesRange extends PureComponent {
                         }
                       },
                       {
+                        fieldName: "high_operator",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "High Operator" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.high_operator === null
+                            ? "Not Selected"
+                            : row.high_operator;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                sort: "off",
+                                name: "high_operator",
+                                className: "select-fld",
+                                value:
+                                  row["high_operator"] === null
+                                    ? "notselected"
+                                    : row["high_operator"],
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: [
+                                    {
+                                      name: "Not selected",
+                                      value: "notselected"
+                                    },
+                                    { name: "=", value: "=" },
+                                    { name: "<", value: "<" },
+                                    { name: ">", value: ">" },
+                                    { name: ">=", value: ">=" },
+                                    { name: "<=", value: "<=" }
+                                  ]
+                                },
+                                onChange: e => this.handleChange(row, e)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
                         fieldName: "normal_high",
                         label: <AlgaehLabel label={{ forceLabel: "High" }} />,
                         editorTemplate: row => {
@@ -335,56 +531,7 @@ class AnalytesRange extends PureComponent {
                           show: isQuantity
                         }
                       },
-                      // {
-                      //   fieldName: "critical_low",
-                      //   label: (
-                      //     <AlgaehLabel label={{ forceLabel: "critical_low" }} />
-                      //   ),
-                      //   editorTemplate: row => {
-                      //     return (
-                      //       <AlagehFormGroup
-                      //         div={{}}
-                      //         textBox={{
-                      //           value: row.critical_low,
-                      //           className: "txt-fld",
-                      //           name: "critical_low",
-                      //           events: {
-                      //             onChange: e => this.handleChange(row, e)
-                      //           }
-                      //         }}
-                      //       />
-                      //     );
-                      //   },
-                      //   others: {
-                      //     show: isQuantity
-                      //   }
-                      // },
-                      // {
-                      //   fieldName: "critical_high",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "critical_high" }}
-                      //     />
-                      //   ),
-                      //   editorTemplate: row => {
-                      //     return (
-                      //       <AlagehFormGroup
-                      //         div={{}}
-                      //         textBox={{
-                      //           value: row.critical_high,
-                      //           className: "txt-fld",
-                      //           name: "critical_high",
-                      //           events: {
-                      //             onChange: e => this.handleChange(row, e)
-                      //           }
-                      //         }}
-                      //       />
-                      //     );
-                      //   },
-                      //   others: {
-                      //     show: isQuantity
-                      //   }
-                      // },
+
                       {
                         fieldName: "text_value",
                         label: <AlgaehLabel label={{ forceLabel: "Text" }} />,
@@ -443,7 +590,7 @@ class AnalytesRange extends PureComponent {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deleteAnalyte,
-                      onEdit: row => { },
+                      onEdit: row => {},
                       onDone: this.updateAnalyte
                     }}
                   />

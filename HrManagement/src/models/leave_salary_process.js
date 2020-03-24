@@ -30,7 +30,7 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days, \
+                "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_applied_days, \
                 E.hospital_id FROM hims_f_leave_application LA inner join  hims_d_employee E \
                 on E.hims_d_employee_id = LA.employee_id left join  hims_f_employee_annual_leave AL \
                 on LA.hims_f_leave_application_id = AL.leave_application_id where AL.from_normal_salary = 'N' \
@@ -41,6 +41,7 @@ export default {
             .then(annul_leave => {
               let annul_leave_app = annul_leave[0];
               let hrms_options = annul_leave[1][0];
+              let total_applied_days = annul_leave_app[0].total_applied_days
 
               if (annul_leave_app.length > 0) {
                 let leave_salary_detail = [];
@@ -94,12 +95,12 @@ export default {
                   annul_leave_app[0].from_date,
                   "YYYY-MM-DD"
                 ).format("YYYY-MM-DD");
-                console.log("from_date", from_date);
-                console.log("to_date", to_date);
+                // console.log("from_date", from_date);
+                // console.log("to_date", to_date);
                 let intValue = 0;
                 while (from_date <= to_date) {
-                  console.log("from_date", from_date);
-                  console.log("to_date_month", to_date_month);
+                  // console.log("from_date", from_date);
+                  // console.log("to_date_month", to_date_month);
 
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
@@ -115,18 +116,18 @@ export default {
 
                   let no_of_days = 0;
 
-                  console.log(
-                    "attendance_starts",
-                    hrms_options.attendance_starts
-                  );
+                  // console.log(
+                  //   "attendance_starts",
+                  //   hrms_options.attendance_starts
+                  // );
                   if (hrms_options.attendance_starts === "PM") {
                     let selected_year = moment(from_date).year();
                     let selected_month = moment(from_date).format("M");
                     let selected_day = moment(from_date).format("DD");
 
-                    console.log("selected_day", selected_day);
-                    console.log("at_st_date", hrms_options.at_st_date);
-                    console.log("selected_month", selected_month);
+                    // console.log("selected_day", selected_day);
+                    // console.log("at_st_date", hrms_options.at_st_date);
+                    // console.log("selected_month", selected_month);
 
                     if (
                       parseFloat(selected_day) >=
@@ -139,12 +140,12 @@ export default {
                       date_month = 1;
                     }
 
-                    console.log("date_month", date_month);
+                    // console.log("date_month", date_month);
 
                     if (to_date_month === date_month) {
                       let end_selected_day = moment(to_date).format("DD");
-                      console.log("end_selected_day", end_selected_day);
-                      console.log("at_end_date", hrms_options.at_end_date);
+                      // console.log("end_selected_day", end_selected_day);
+                      // console.log("at_end_date", hrms_options.at_end_date);
                       if (intValue > 0) {
                         fromDate_firstDate = moment(
                           selected_year +
@@ -299,9 +300,7 @@ export default {
                   leave_start_date: leave_start_date,
                   leave_end_date: to_date,
                   leave_salary_detail: leave_salary_detail,
-                  leave_period: _.sumBy(leave_salary_detail, s => {
-                    return s.leave_period;
-                  }),
+                  leave_period: total_applied_days,
                   leave_application_id:
                     annul_leave_app[0].hims_f_leave_application_id,
                   hospital_id: annul_leave_app[0].hospital_id
@@ -488,7 +487,7 @@ export default {
                 if (intValue > 0) {
                   req.query.leave_salary = "Y";
                 }
-                console.log("leave_salary: ", req.query.leave_salary);
+                // console.log("leave_salary: ", req.query.leave_salary);
 
                 let _attandance = null;
                 let _sarary = null;
@@ -507,7 +506,7 @@ export default {
                 }
 
                 // let _sarary = await newProcessSalary(req, res, next);
-                console.log("_sarary before:  ", _sarary);
+                // console.log("_sarary before:  ", _sarary);
                 if (_sarary === undefined) {
                   utilities.logger().log("Salary Inside: ");
                   _mysql.commitTransaction(() => {
@@ -566,7 +565,7 @@ export default {
                     .format("YYYY-MM-DD");
                 }
 
-                console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
+                // console.log("Promise fromDate_lastDate: ", fromDate_lastDate);
                 start_date = moment(fromDate_lastDate)
                   .add(1, "days")
                   .format("YYYYMMDD");
@@ -670,8 +669,6 @@ export default {
           leave_salary_number = generatedNumbers.LEAVE_SALARY;
           leave_salary_acc_number = generatedNumbers.LEAVE_ACCRUAL;
 
-
-
           _mysql
             .executeQuery({
               query:
@@ -698,7 +695,7 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 req.userIdentity.hospital_id
               ],
-              printQuery: true
+              //printQuery: true
             })
             .then(leave_header => {
               req.body.leave_salary_number = leave_salary_number;
@@ -728,7 +725,7 @@ export default {
                     leave_salary_header_id: leave_header.insertId
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  //  printQuery: true
                 })
                 .then(leave_detail => {
                   let leave_application_id = _.chain(
@@ -745,7 +742,7 @@ export default {
                       query:
                         "update hims_f_leave_application SET processed='Y' where hims_f_leave_application_id in (?)",
                       values: [leave_application_id],
-                      printQuery: true
+                      // printQuery: true
                     })
                     .then(leave_application => {
                       req.body.salary_header_id = inputParam.leave_salary_detail[0].salary_header_id;
@@ -754,22 +751,14 @@ export default {
 
                       for (let i = 0; i < inputParam.leave_salary_detail.length; i++) {
 
-                        const leave_end_date = moment(inputParam.leave_salary_detail[i].leave_end_date, "YYYYMMDD").format("YYYYMMDD")
-                        const sal_end_date = moment(inputParam.leave_salary_detail[i].end_date, "YYYYMMDD").format("YYYYMMDD")
+                        const leave_end_date = inputParam.leave_salary_detail[i].leave_end_date; //moment(inputParam.leave_salary_detail[i].leave_end_date, "YYYYMMDD").format("YYYYMMDD");
+                        const sal_end_date = inputParam.leave_salary_detail[i].end_date;//moment(inputParam.leave_salary_detail[i].end_date, "YYYYMMDD").format("YYYYMMDD");
 
-                        console.log("leave_end_date", leave_end_date)
-                        console.log("sal_end_date", sal_end_date)
+                        //console.log("leave_end_date", leave_end_date)
+                        // console.log("sal_end_date", sal_end_date)
                         if (parseInt(leave_end_date) >= parseInt(sal_end_date)) {
-                          bulk_year.push(inputParam.leave_salary_detail[i].year)
-                          bulk_month.push(inputParam.leave_salary_detail[i].month)
-                          // const _salaryHeader_id = _.map(
-                          //   inputParam.leave_salary_detail,
-                          //   o => {
-                          //     return o.salary_header_id;
-                          //   }
-                          // );
-
-
+                          bulk_year.push(inputParam.leave_salary_detail[i].year);
+                          bulk_month.push(inputParam.leave_salary_detail[i].month);
 
                           let strQuery = "";
                           if (inputParam.annual_leave_calculation === "A") {
@@ -837,8 +826,8 @@ export default {
                               //   s => {
                               //     return parseFloat(s.airfare_amount);
                               //   }
-                              // );
-
+                              // );                              
+                              // console.log("Before");
                               _mysql
                                 .executeQuery({
                                   query:
@@ -850,16 +839,18 @@ export default {
                                     leave_salary_acc_number,
                                     inputParam.leave_salary_detail[i].year,
                                     inputParam.leave_salary_detail[i].month,
-                                    leave_salary_accrual_detail.leave_salary,
-                                    leave_salary_accrual_detail.airfare_amount,
+                                    leave_salary_accrual_detail[0].leave_salary,
+                                    leave_salary_accrual_detail[0].airfare_amount,
                                     req.userIdentity.hospital_id,
                                     moment(new Date()).format("YYYY-MM-DD"),
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id
                                   ],
-                                  printQuery: true
+                                  //printQuery: true
                                 })
                                 .then(accrual_header => {
+
+                                  // console.log("accrual_header")
                                   let leave_salary_header_id =
                                     accrual_header.insertId;
 
@@ -887,6 +878,7 @@ export default {
                                       printQuery: true
                                     })
                                     .then(leave_detail => {
+                                      // console.log("leave_detail")
                                       req.body.employee_code = leave_detail[1][0].employee_code;
                                       req.body.employee_name = leave_detail[1][0].full_name;
                                       req.body.hospital_id = leave_detail[1][0].hospital_id;
@@ -913,14 +905,14 @@ export default {
                                               // _mysql.commitTransaction(() => {
                                               //   _mysql.releaseConnection();
                                               if (i == inputParam.leave_salary_detail.length - 1) {
-                                                console.log("bulk_year", bulk_year)
+                                                // console.log("bulk_year", bulk_year)
 
                                                 req.body.bulk_year = bulk_year
                                                 req.body.bulk_month = bulk_month
                                                 req.records = {
                                                   leave_salary_number: leave_salary_number
                                                 };
-                                                console.log("bulk_month", bulk_month)
+                                                // console.log("bulk_month", bulk_month)
                                                 next();
                                               }
                                               // });
@@ -945,6 +937,7 @@ export default {
                                     });
                                 })
                                 .catch(error => {
+                                  // console.log("Data 1 ")
                                   _mysql.rollBackTransaction(() => {
                                     next(error);
                                   });
@@ -1129,6 +1122,7 @@ export default {
   generateAccountingEntry: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
+    // console.log("generateAccountingEntry")
     try {
 
 
@@ -1136,7 +1130,8 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
+          printQuery: true
         })
         .then(org_data => {
           if (
@@ -1489,10 +1484,7 @@ function InsertEmployeeLeaveSalary(options) {
       let decimal_places = options.decimal_places;
       let annual_leave_data = options.annual_leave_data;
       const utilities = new algaehUtilities();
-
-      utilities
-        .logger()
-        .log("leave_salary_accrual_detail: ", leave_salary_accrual_detail);
+      // console.log("InsertEmployeeLeaveSalary")
 
       _mysql
         .executeQuery({
@@ -1511,16 +1503,12 @@ function InsertEmployeeLeaveSalary(options) {
           printQuery: true
         })
         .then(employee_leave_salary => {
+          // console.log("employee_leave_salary: ", employee_leave_salary);
           let employee_leave_salary_header = employee_leave_salary[0];
           let monthly_leave = employee_leave_salary[1][0];
 
-          utilities
-            .logger()
-            .log(
-              "employee_leave_salary_header: ",
-              employee_leave_salary_header
-            );
-          utilities.logger().log("monthly_leave: ", monthly_leave);
+          // console.log("employee_leave_salary_header: ", employee_leave_salary_header);
+          // console.log("monthly_leave: ", monthly_leave);
 
           if (employee_leave_salary_header.length > 0) {
             let leave_days =
@@ -1565,14 +1553,6 @@ function InsertEmployeeLeaveSalary(options) {
               balance_airticket_amount,
               decimal_places
             );
-            // utilized_leave_salary_amount = utilities.decimalPoints(
-            //   utilized_leave_salary_amount,
-            //   decimal_places
-            // );
-            // utilized_airticket_amount = utilities.decimalPoints(
-            //   utilized_airticket_amount,
-            //   decimal_places
-            // );
 
             let projected_applied_leaves = parseFloat(
               monthly_leave.projected_applied_leaves
@@ -1640,12 +1620,10 @@ function InsertEmployeeLeaveSalary(options) {
               })
               .then(update_employee_leave => {
                 // console.log("apple");
-                utilities.logger().log("Done : ", update_employee_leave);
                 resolve();
               })
               .catch(e => {
                 // console.log("bottle");
-                utilities.logger().log("reject: ", e);
                 reject(e);
               });
           } else {
@@ -1772,12 +1750,15 @@ function InsertEmployeeLeaveSalary(options) {
           }
         })
         .catch(e => {
+          // console.log("reject 1", e)
           reject(e);
         });
     } catch (e) {
+      // console.log("reject 2")
       reject(e);
     }
   }).catch(e => {
+    // console.log("reject 3")
     options.next(e);
   });
 }

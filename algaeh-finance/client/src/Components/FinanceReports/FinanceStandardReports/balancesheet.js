@@ -11,14 +11,13 @@ import {
   AlgaehMessagePop
 } from "algaeh-react-components";
 
-export default function BalanceSheet({ style, footer, layout }) {
+export default function BalanceSheet({ style, footer, layout, dates }) {
   const createPrintObject = useRef(undefined);
-  const [date, setDate] = useState(moment());
   const [data, setData] = useState([]);
 
   useEffect(() => {
     loadBalanceSheet();
-  }, [date]);
+  }, [dates]);
 
   function loadBalanceSheet(excel) {
     let extraHeaders = {};
@@ -33,7 +32,8 @@ export default function BalanceSheet({ style, footer, layout }) {
       uri: "/financeReports/getBalanceSheet",
       module: "finance",
       data: {
-        date,
+        from_date: dates[0],
+        to_date: dates[1],
         excel
       },
       extraHeaders,
@@ -56,12 +56,12 @@ export default function BalanceSheet({ style, footer, layout }) {
 
   return (
     <>
-      {/* <ReactToPrint
-          trigger={() => <i className="fas fa-print" />}
-          content={() => createPrintObject.current}
-          removeAfterPrint={true}
-          bodyClass="reportPreviewSecLeft"
-          pageStyle="@media print {
+      <ReactToPrint
+        trigger={() => <i className="fas fa-print" />}
+        content={() => createPrintObject.current}
+        removeAfterPrint={true}
+        bodyClass="reportPreviewSecLeft"
+        pageStyle="@media print {
               html, body {
                 height: initial !important;
                 overflow: initial !important;
@@ -73,7 +73,7 @@ export default function BalanceSheet({ style, footer, layout }) {
               size: auto;
               margin: 20mm;
             }"
-        /> */}
+      />
       {/* <AlgaehButton
         onClick={() => loadBalanceSheet(true)}
         className="btn btn-default"
@@ -81,7 +81,7 @@ export default function BalanceSheet({ style, footer, layout }) {
         Download Excel
       </AlgaehButton> */}
 
-      <div className="row inner-top-search">
+      {/* <div className="row inner-top-search">
         <AlgaehDateHandler
           div={{
             className: "col-3 algaeh-date-fld"
@@ -105,9 +105,8 @@ export default function BalanceSheet({ style, footer, layout }) {
             }
           }}
         />
-      </div>
+      </div> */}
       <div ref={createPrintObject}>
-        {" "}
         <i
           className="fas fa-file-download"
           onClick={() => loadBalanceSheet(true)}
@@ -122,7 +121,8 @@ export default function BalanceSheet({ style, footer, layout }) {
           <h3>Balance Sheet</h3>
 
           <p>
-            As on: <b>{moment(date).format("D/M/Y")}</b>
+            As on: <b>{moment(dates[0]).format("D/M/Y")}</b> to{" "}
+            <b>{moment(dates[1]).format("D/M/Y")}</b>
           </p>
         </div>
         <div className="reportBodyArea">

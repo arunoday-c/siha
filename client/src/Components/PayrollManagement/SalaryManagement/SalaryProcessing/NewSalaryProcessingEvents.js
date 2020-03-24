@@ -180,9 +180,8 @@ const FinalizeSalary = $this => {
         return f.leave_salary_accrual_amount > 0;
       });
 
-
       let salary_date =
-        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
+        $this.state.inputs.year + "-" + + $this.state.inputs.month + "-01";
       let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");

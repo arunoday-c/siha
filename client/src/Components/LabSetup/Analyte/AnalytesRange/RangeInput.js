@@ -4,7 +4,6 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
-
 export default function RangeInput({ addAnalyte, analyteType }) {
   const baseInput = {
     gender: "MALE",
@@ -16,7 +15,11 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     critical_low: 0,
     critical_high: 0,
     text_value: "",
-    normal_qualitative_value: ""
+    normal_qualitative_value: "",
+    from_oprator: "notselected",
+    to_operator: "notselected",
+    low_operator: "notselected",
+    high_operator: "notselected"
   };
 
   const [inputs, setinputs] = useState(baseInput);
@@ -36,7 +39,18 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     addAnalyte({ ...inputs });
     setinputs(baseInput);
   }
-
+  function onLostFocus(e) {
+    const _target = e.target;
+    const { value } = _target;
+    const parent = _target.parentElement;
+    const opposite = parent.getAttribute("opposite");
+    const oppositeValue =
+      typeof inputs["opposite"] === "string"
+        ? parseFloat(inputs["opposite"])
+        : inputs["opposite"];
+    const currentValue = typeof value === "string" ? parseFloat(value) : value;
+    console.log("value", value);
+  }
   return (
     <div className="row" data-validate="analyte_range_details">
       <AlagehAutoComplete
@@ -75,7 +89,32 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           onChange: handleChange
         }}
       />
-
+      <AlagehAutoComplete
+        div={{ className: "col" }}
+        label={{
+          forceLabel: "Operator",
+          isImp: false
+        }}
+        selector={{
+          sort: "off",
+          name: "from_oprator",
+          className: "select-fld",
+          value: inputs["from_oprator"],
+          dataSource: {
+            textField: "name",
+            valueField: "value",
+            data: [
+              { name: "Not selected", value: "notselected" },
+              { name: "=", value: "=" },
+              { name: "<", value: "<" },
+              { name: ">", value: ">" },
+              { name: ">=", value: ">=" },
+              { name: "<=", value: "<=" }
+            ]
+          },
+          onChange: handleChange
+        }}
+      />
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
@@ -91,10 +130,39 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           },
           events: {
             onChange: handleChange
+          },
+          others: {
+            opposite: "to_age"
+            // onBlur: onLostFocus
           }
         }}
       />
-
+      <AlagehAutoComplete
+        div={{ className: "col" }}
+        label={{
+          forceLabel: "Operator",
+          isImp: false
+        }}
+        selector={{
+          sort: "off",
+          name: "to_operator",
+          className: "select-fld",
+          value: inputs["to_operator"],
+          dataSource: {
+            textField: "name",
+            valueField: "value",
+            data: [
+              { name: "Not selected", value: "notselected" },
+              { name: "=", value: "=" },
+              { name: "<", value: "<" },
+              { name: ">", value: ">" },
+              { name: ">=", value: ">=" },
+              { name: "<=", value: "<=" }
+            ]
+          },
+          onChange: handleChange
+        }}
+      />
       <AlagehFormGroup
         div={{ className: "col" }}
         label={{
@@ -110,12 +178,42 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           value: inputs.to_age,
           events: {
             onChange: handleChange
+          },
+          others: {
+            opposite: "from_age"
+            //   onBlur: onLostFocus
           }
         }}
       />
 
       {analyteType === "QN" ? (
         <>
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Operator",
+              isImp: false
+            }}
+            selector={{
+              sort: "off",
+              name: "low_operator",
+              className: "select-fld",
+              value: inputs["low_operator"],
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: [
+                  { name: "Not selected", value: "notselected" },
+                  { name: "=", value: "=" },
+                  { name: "<", value: "<" },
+                  { name: ">", value: ">" },
+                  { name: ">=", value: ">=" },
+                  { name: "<=", value: "<=" }
+                ]
+              },
+              onChange: handleChange
+            }}
+          />
           <AlagehFormGroup
             div={{ className: "col" }}
             label={{
@@ -129,6 +227,32 @@ export default function RangeInput({ addAnalyte, analyteType }) {
               events: {
                 onChange: handleChange
               }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Operator",
+              isImp: false
+            }}
+            selector={{
+              sort: "off",
+              name: "high_operator",
+              className: "select-fld",
+              value: inputs["high_operator"],
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: [
+                  { name: "Not selected", value: "notselected" },
+                  { name: "=", value: "=" },
+                  { name: "<", value: "<" },
+                  { name: ">", value: ">" },
+                  { name: ">=", value: ">=" },
+                  { name: "<=", value: "<=" }
+                ]
+              },
+              onChange: handleChange
             }}
           />
           <AlagehFormGroup
@@ -193,21 +317,21 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Text"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "text_value",
-                value: inputs.text_value,
-                events: {
-                  onChange: handleChange
-                }
-              }}
-            />
-          )}
+        <AlagehFormGroup
+          div={{ className: "col" }}
+          label={{
+            forceLabel: "Text"
+          }}
+          textBox={{
+            className: "txt-fld",
+            name: "text_value",
+            value: inputs.text_value,
+            events: {
+              onChange: handleChange
+            }
+          }}
+        />
+      )}
 
       <div className="col" style={{ padding: 0 }}>
         <button
