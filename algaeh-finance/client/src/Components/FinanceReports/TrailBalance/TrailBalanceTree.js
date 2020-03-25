@@ -1,35 +1,16 @@
-import React, { useRef } from "react";
-import ReactToPrint from "react-to-print";
+import React from "react";
 import { PlotUI } from "./trailbalancePlotUI";
 export default function TrailBalaceReport({
   style,
   data,
   nonZero = true,
-  layout
+  layout,
+  createPrintObject
 }) {
-  const createPrintObject = useRef(undefined);
   const { asset, expense, liability, capital, income } = data;
 
   return (
     <>
-      {/* <ReactToPrint
-        trigger={() => <i className="fas fa-print" />}
-        content={() => createPrintObject.current}
-        removeAfterPrint={true}
-        bodyClass="reportPreviewSecLeft"
-        pageStyle="@media print {
-          html, body {
-            height: initial !important;
-            overflow: initial !important;
-            -webkit-print-color-adjust: exact;
-          }
-        }
-        
-        @page {
-          size: auto;
-          margin: 20mm;
-        }"
-      /> */}
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>Twareat Medical Centre</div>
