@@ -621,7 +621,7 @@ let insertLadOrderedServices = (req, res, next) => {
                 "SELECT T.hims_d_investigation_test_id,T.description ,C.test_section ,A.analyte_id\
                 FROM hims_d_investigation_test T inner join  hims_d_test_category C on \
                 T.category_id=C.hims_d_test_category_id and T.services_id in (?) \
-                left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id; \
+                left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id group by T.hims_d_investigation_test_id; \
                   select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
                 TIMESTAMPDIFF(day, ?, curdate()) as days,\
                 TIMESTAMPDIFF(month, ?, curdate()) as months,\
