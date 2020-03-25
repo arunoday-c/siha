@@ -25,7 +25,11 @@ export default {
         from finance_voucher_header H inner join finance_voucher_details VD
         on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A' 
         where   H.voucher_type='sales' and H.invoice_no is not null and VD.child_id in ( select child_id from hims_d_customer) 
-        and H.settlement_status='P'; `,
+        and H.settlement_status='P'; 
+        
+        select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H 
+        inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
+        where SD.child_id in(select child_id from hims_d_customer)  and  H.posted='N';   `,
         printQuery: true
       })
       .then(result => {
@@ -34,7 +38,8 @@ export default {
         req.records = {
           result: result[0],
           over_due: result[1][0]["over_due"],
-          total_receivable: result[2][0]["open"]
+          total_receivable: result[2][0]["open"],
+          day_end_pending: result[3][0]["day_end_pending"]
         };
         next();
       })
@@ -48,6 +53,7 @@ export default {
     // const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     const decimal_places = req.userIdentity.decimal_places;
+    const child_id = req.query.child_id;
     _mysql
       .executeQuery({
         query: `select finance_voucher_header_id ,round(amount ,${decimal_places})as invoice_amount,
@@ -81,13 +87,11 @@ export default {
         from  finance_voucher_header H inner join finance_voucher_details VD
         on H.finance_voucher_header_id=VD.voucher_header_id and VD.auth_status='A'
         where  VD.child_id=? and voucher_type='receipt' and 
-        H.payment_date >date_sub(curdate(), INTERVAL 30 DAY);`,
-        values: [
-          req.query.child_id,
-          req.query.child_id,
-          req.query.child_id,
-          req.query.child_id
-        ],
+        H.payment_date >date_sub(curdate(), INTERVAL 30 DAY); 
+        select count(finance_day_end_header_id) as day_end_pending from finance_day_end_header H 
+        inner join finance_day_end_sub_detail SD on H.finance_day_end_header_id= SD.day_end_header_id 
+        where SD.child_id in(?)  and  H.posted='N';`,
+        values: [child_id, child_id, child_id, child_id, child_id],
         printQuery: true
       })
       .then(result => {
@@ -99,7 +103,8 @@ export default {
           result: result[0],
           over_due: result[1][0]["over_due"],
           total_receivable: result[2][0]["open"],
-          past_payments: result[3][0]["past_payments"]
+          past_payments: result[3][0]["past_payments"],
+          day_end_pending: result[4][0]["day_end_pending"]
         };
         next();
       })
