@@ -14,7 +14,8 @@ export default memo(function(props) {
   const [info, setInfo] = useState({
     over_due: "0.00",
     total_receivable: "0.00",
-    past_payments: "0.00"
+    past_payments: "0.00",
+    day_end_pending: "0"
   });
 
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,8 @@ export default memo(function(props) {
               ...state,
               over_due: result.over_due,
               total_receivable: result.total_receivable,
-              past_payments: result.past_payments
+              past_payments: result.past_payments,
+              day_end_pending: result.day_end_pending
             }));
             setLoading(false);
           }

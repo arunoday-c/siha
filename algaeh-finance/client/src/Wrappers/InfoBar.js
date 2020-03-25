@@ -2,11 +2,10 @@ import React from "react";
 import "./infobar.scss";
 
 export default function InfoBar({ data }) {
-  const { over_due, total_receivable, past_payments } = data;
+  const { over_due, total_receivable, past_payments, day_end_pending } = data;
   if (data) {
     return (
       <div className="row infoBar">
-        {" "}
         {past_payments ? (
           <div className="col">
             <div className="infoValCntr green">
@@ -31,18 +30,14 @@ export default function InfoBar({ data }) {
             </div>
           </div>
         ) : null}
-        <div className="col ">
-          <div className="infoValCntr blue">
-            <div className="label">Day & Process</div>
-            <h5>{over_due}</h5>
+        {day_end_pending ? (
+          <div className="col ">
+            <div className="infoValCntr blue">
+              <div className="label">Dayend Pending Transactions</div>
+              <h5>{day_end_pending}</h5>
+            </div>
           </div>
-        </div>
-        <div className="col ">
-          <div className="infoValCntr purple">
-            <div className="label">Not Posted</div>
-            <h5>{over_due}</h5>
-          </div>
-        </div>
+        ) : null}
       </div>
     );
   } else {

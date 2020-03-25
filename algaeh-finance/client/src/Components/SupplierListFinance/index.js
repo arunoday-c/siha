@@ -10,7 +10,8 @@ function CustomerList(props) {
   const history = useHistory();
   const [info, setInfo] = useState({
     over_due: "",
-    total_receivable: ""
+    total_receivable: "",
+    day_end_pending: ""
   });
 
   useEffect(() => {
@@ -19,7 +20,8 @@ function CustomerList(props) {
         setSupplierPayable(data.result);
         setInfo({
           over_due: data.over_due,
-          total_receivable: data.total_receivable
+          total_receivable: data.total_receivable,
+          day_end_pending: data.day_end_pending
         });
       })
       .catch(error => {
