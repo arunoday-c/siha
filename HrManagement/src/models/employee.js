@@ -1279,7 +1279,7 @@ export default {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
+            hospital_id: input.hospital_id
           },
           bulkInsertOrUpdate: true,
           printQuery: true
