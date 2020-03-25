@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-// import moment from "moment";
+import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -339,7 +339,10 @@ export default {
   getTrialBalance: (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
 
-    let option = req.query;
+    let option = {
+      from_date: moment(req.query.from_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
+      to_date: moment(req.query.to_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+    };
 
     if (option.old == "Y") {
       getAccountHeadsForTrialBalance(decimal_places, 1, option)
@@ -1142,7 +1145,7 @@ function getAccountHeadsForTrialBalance(
       }
       _mysql
         .executeQuery({
-          query: `select finance_account_head_id,account_code,concat(account_name,' / ',account_code)as account_name,account_parent,account_level,
+          query: `select finance_account_head_id,account_code,concat(account_name,' / ',coalesce(group_code,concat('sys-',account_code))) as account_name,account_parent,account_level,
           H.created_from as created_status ,sort_order,parent_acc_id,root_id,
           finance_account_child_id,concat(child_name,' / ',ledger_code) as child_name,head_id,C.created_from as child_created_from
           from finance_account_head H left join 
