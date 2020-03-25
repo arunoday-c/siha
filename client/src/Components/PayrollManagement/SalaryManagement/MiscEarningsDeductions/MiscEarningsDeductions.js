@@ -575,18 +575,17 @@ export default class MiscEarningsDeductions extends Component {
                             ),
                             displayTemplate: row => {
                               return (
-                                <span>
+                                <span
+                                  style={{
+                                    pointerEvents:
+                                      row.salary_processed === "N"
+                                        ? ""
+                                        : "none",
+                                    opacity:
+                                      row.salary_processed === "N" ? "" : "0.1"
+                                  }}
+                                >
                                   <i
-                                    style={{
-                                      pointerEvents:
-                                        row.salary_processed === "N"
-                                          ? "none"
-                                          : "",
-                                      opacity:
-                                        row.salary_processed === "N"
-                                          ? "0.1"
-                                          : ""
-                                    }}
                                     onClick={this.deleteMiscEarningsDeductions.bind(
                                       this,
                                       row
@@ -765,8 +764,7 @@ export default class MiscEarningsDeductions extends Component {
                             //   );
                             // },
                             displayTemplate: row => {
-                              return row.salary_processed === "N" ||
-                                row.salary_processed === null ? (
+                              return (
                                 <AlagehFormGroup
                                   div={{ className: "col" }}
                                   textBox={{
@@ -782,13 +780,41 @@ export default class MiscEarningsDeductions extends Component {
                                     },
                                     others: {
                                       errormessage: "Amount - cannot be blank",
-                                      required: true
+                                      required: true,
+                                      disabled:
+                                        row.salary_processed === "N" ||
+                                        row.salary_processed === null
+                                          ? false
+                                          : true
                                     }
                                   }}
                                 />
-                              ) : (
-                                GetAmountFormart(row.amount)
                               );
+                              // return row.salary_processed === "N" ||
+                              //   row.salary_processed === null ? (
+                              //   <AlagehFormGroup
+                              //     div={{ className: "col" }}
+                              //     textBox={{
+                              //       decimal: { allowNegative: false },
+                              //       className: "txt-fld",
+                              //       name: "amount",
+                              //       value: row.amount,
+                              //       events: {
+                              //         onChange: this.changeGridEditors.bind(
+                              //           this,
+                              //           row
+                              //         )
+                              //       },
+                              //       others: {
+                              //         errormessage: "Amount - cannot be blank",
+                              //         required: true,
+
+                              //       }
+                              //     }}
+                              //   />
+                              // ) : (
+                              //   GetAmountFormart(row.amount)
+                              // );
                             }
                           }
                         ]}
