@@ -361,8 +361,8 @@ export default {
           .executeQuery({
             query:
               "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
-                deducting_year, advance_reason,created_date,created_by,updated_date,updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?)",
+                deducting_year, advance_reason, hospital_id, created_date,created_by,updated_date,updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               generatedNumbers.EMPLOYEE_ADVANCE,
               input.employee_id,
@@ -370,6 +370,7 @@ export default {
               input.deducting_month,
               input.deducting_year,
               input.advance_reason,
+              input.hospital_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -450,6 +451,43 @@ export default {
                 inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
                 left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
                 where E.record_status = 'A' and E.suspend_salary = 'Y' and LA.status='APR' and LA.processed='Y' ;",
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch(e => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  cancelAdvance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        // const utilities = new algaehUtilities();
+
+        _mysql
+          .executeQuery({
+            query:
+              "update hims_f_employee_advance set advance_status='REJ', updated_date=?, updated_by=? \
+              where hims_f_employee_advance_id=?",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              req.body.hims_f_employee_advance_id
+            ],
             printQuery: true
           })
           .then(result => {

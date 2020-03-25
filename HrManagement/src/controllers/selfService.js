@@ -14,7 +14,8 @@ const {
   getEmployeeAdvance,
   addEmployeeAdvance,
   addEmployeeIdentification,
-  getRejoinAnnualLeave
+  getRejoinAnnualLeave,
+  cancelAdvance
 } = selfService;
 
 export default () => {
@@ -177,6 +178,18 @@ export default () => {
   api.post(
     "/addEmployeeIdentification",
     addEmployeeIdentification,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
+  api.put(
+    "/cancelAdvance",
+    cancelAdvance,
     (req, res, next) => {
       let result = req.records;
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

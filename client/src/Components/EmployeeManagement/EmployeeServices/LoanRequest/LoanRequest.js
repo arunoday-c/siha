@@ -22,6 +22,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { MainContext } from "algaeh-react-components/context";
+import swal from "sweetalert2";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class LoanRequest extends Component {
   constructor(props) {
@@ -153,7 +155,13 @@ class LoanRequest extends Component {
             employee_id: row.hims_d_employee_id,
             hims_d_employee_id: row.hims_d_employee_id
           },
-          () => this.getEmployeeLoans()
+          () => {
+            if (this.state.request_type === "AD") {
+              this.getEmployeeAdvances();
+            } else {
+              this.getLoanMaster();
+            }
+          }
         );
       }
     });
@@ -240,6 +248,7 @@ class LoanRequest extends Component {
             type: "warning"
           });
         } else {
+          debugger
           algaehApiCall({
             uri: "/selfService/addEmployeeAdvance",
             module: "hrManagement",
@@ -249,7 +258,8 @@ class LoanRequest extends Component {
               advance_amount: this.state.advance_amount,
               deducting_month: this.state.deducting_month,
               deducting_year: this.state.deducting_year,
-              advance_reason: this.state.advance_reason
+              advance_reason: this.state.advance_reason,
+              hospital_id: this.state.hospital_id
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -474,6 +484,42 @@ class LoanRequest extends Component {
     );
   }
 
+  cancelAdvance(row) {
+
+    swal({
+      title: "Are you Sure you want to Cancel?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willCancel => {
+      if (willCancel.value) {
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/selfService/cancelAdvance",
+          module: "hrManagement",
+          method: "PUT",
+          data: {
+            hims_f_employee_advance_id: row.hims_f_employee_advance_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Cancelled Successfully",
+                type: "success"
+              });
+              this.getEmployeeAdvances()
+              AlgaehLoader({ show: false });
+            }
+          }
+        });
+      }
+    });
+
+  }
+
   renderList() {
     const { request_type } = this.state;
     if (request_type === "LO") {
@@ -514,8 +560,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                              "------"
-                            )}
+                                      "------"
+                                    )}
                           </span>
                         );
                       },
@@ -559,8 +605,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                          <span className="badge badge-success">Closed</span>
-                        );
+                            <span className="badge badge-success">Closed</span>
+                          );
                       }
                     },
 
@@ -653,9 +699,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
-                    onDelete: () => {},
-                    onDone: () => {}
+                    onEdit: () => { },
+                    onDelete: () => { },
+                    onDone: () => { }
                   }}
                 />
               </div>
@@ -685,6 +731,65 @@ class LoanRequest extends Component {
                   forceRender={this.state.forceRender}
                   datavalidate="AdvanceRequestGrid"
                   columns={[
+                    {
+                      fieldName: "action",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Action"
+                          }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span
+                            style={{
+                              pointerEvents:
+                                row.advance_status !== "APR" ? "none" : null,
+                              opacity:
+                                row.advance_status !== "APR" ? "0.1" : null
+                            }}>
+                            <i
+                              className="fas fa-times"
+                              onClick={this.cancelAdvance.bind(this, row)}
+                            ></i>
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 100,
+                        filterable: false
+                      }
+                    },
+                    {
+                      fieldName: "advance_status",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.advance_status === "APR" ? (
+                              <span className="badge badge-warning">
+                                Payment Pending
+                              </span>
+                            ) : row.advance_status === "PAI" ? (
+                              <span className="badge badge-success">
+                                Paid
+                              </span>
+                            ) : row.advance_status === "REJ" ? (
+                              <span className="badge badge-danger">
+                                Cancelled
+                              </span>
+                            ) : (
+                                    "------"
+                                  )}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 80
+                      }
+                    },
                     {
                       fieldName: "advance_number",
                       label: (
@@ -726,9 +831,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                                row.deducting_month +
-                                "-" +
-                                row.deducting_year,
+                              row.deducting_month +
+                              "-" +
+                              row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
@@ -1027,7 +1132,7 @@ class LoanRequest extends Component {
                         onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
+                      //disabled={this.state.Request_enable}
                       >
                         Request Loan
                       </button>
@@ -1128,7 +1233,7 @@ class LoanRequest extends Component {
                         onClick={this.applyAdvance.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
+                      //disabled={this.state.Request_enable}
                       >
                         Request Advance
                       </button>
