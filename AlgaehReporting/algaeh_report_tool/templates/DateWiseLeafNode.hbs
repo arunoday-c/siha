@@ -32,22 +32,20 @@
                     </tr>
 
                     {{/each }}
-                    {{/each }}
-                    {{/each }}
 
                     <tr class="numberFld ">
                         <td class="numberFld" colspan="3"></td>
                         <td class="numberFld">{{total_debit}}</td>
                         <td class="numberFld">{{total_credit}}</td>
                     </tr>
-                    <tr class="numberFld ">
+                    {{!-- <tr class="numberFld ">
                         <td class="numberFld" colspan="3">Closing Balance</td>
                         <td class="numberFld">{{CB_debit_side}}</td>
                         <td class="numberFld">{{CB_credit_side}}</td>
-                    </tr>
+                    </tr> --}}
                     <tr class="numberFld ">
                         <td class="numberFld" colspan="3">Closing Balance</td>
-                        <td class="numberFld">{{closing_balance}}</td>
+                        <td class="numberFld" colspan="2">{{closing_balance}}</td>
                     </tr>
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="3"></td>

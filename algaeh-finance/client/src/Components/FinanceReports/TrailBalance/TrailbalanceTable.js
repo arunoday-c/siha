@@ -5,14 +5,15 @@ export default function TrailBalaceReport({
   style,
   data,
   nonZero = true,
-  layout
+  layout,
+  createPrintObject
 }) {
   const { asset, expense, liability, capital, income } = data;
   const accounts = [asset, expense, liability, capital, income];
   if (data.asset) {
     return (
       <>
-        <div>
+        <div ref={createPrintObject}>
           <div className="financeReportHeader">
             <div>Twareat Medical Centre</div>
             <div>

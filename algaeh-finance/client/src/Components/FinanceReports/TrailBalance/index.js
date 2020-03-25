@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AlgaehAutoComplete } from "algaeh-react-components";
 import { Spin } from "antd";
 import { newAlgaehApi } from "../../../hooks";
+import ReactToPrint from "react-to-print";
+
 import TrailTable from "./TrailbalanceTable";
 import TrailTree from "./TrailBalanceTree";
 
@@ -9,6 +11,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   const [type, setType] = useState("table");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const createPrintObject = useRef(undefined);
 
   useEffect(() => {
     async function getData() {
@@ -39,9 +42,21 @@ export default function TrailBalance({ layout, dates, finOptions }) {
   function renderReport() {
     if (data) {
       if (type === "table") {
-        return <TrailTable data={data} layout={layout} />;
+        return (
+          <TrailTable
+            data={data}
+            layout={layout}
+            createPrintObject={createPrintObject}
+          />
+        );
       } else {
-        return <TrailTree data={data} layout={layout} />;
+        return (
+          <TrailTree
+            data={data}
+            layout={layout}
+            createPrintObject={createPrintObject}
+          />
+        );
       }
     } else {
       return null;
@@ -77,6 +92,24 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             setType(value);
           }
         }}
+      />
+      <ReactToPrint
+        trigger={() => <i className="fas fa-print" />}
+        content={() => createPrintObject.current}
+        removeAfterPrint={true}
+        bodyClass="reportPreviewSecLeft"
+        pageStyle="@media print {
+          html, body {
+            height: initial !important;
+            overflow: initial !important;
+            -webkit-print-color-adjust: exact;
+          }
+        }
+        
+        @page {
+          size: auto;
+          margin: 20mm;
+        }"
       />
       <Spin spinning={loading}>{renderReport()}</Spin>
     </>
