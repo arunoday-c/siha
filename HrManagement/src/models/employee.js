@@ -1299,7 +1299,26 @@ export default {
       return;
     }
   },
-
+  //Suhail
+  updateMisEarnDedcToEmployees: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let { hims_f_miscellaneous_earning_deduction_id, amount } = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_miscellaneous_earning_deduction set amount=? where hims_f_miscellaneous_earning_deduction_id =? ",
+        values: [amount, hims_f_miscellaneous_earning_deduction_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
   UpdateEmployeeRejoined: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
