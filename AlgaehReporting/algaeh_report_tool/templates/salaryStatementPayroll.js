@@ -57,7 +57,7 @@ const executePDF = function executePDFMethod(options) {
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary,S.total_earnings,S.total_deductions,S.salary_paid_date,\
+				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.total_paid_days,S.net_salary,S.total_earnings,S.total_deductions,S.salary_paid_date,\
         S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
         coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
 				from hims_d_employee E\
