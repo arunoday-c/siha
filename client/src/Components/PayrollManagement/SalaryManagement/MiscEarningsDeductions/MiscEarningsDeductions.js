@@ -301,11 +301,13 @@ export default class MiscEarningsDeductions extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
+          const data = res.data.records;
+          const isProcessed = data.find(f => f.salary_processed === "Y");
           this.setState({
-            employee_miscellaneous: res.data.records,
+            employee_miscellaneous: data,
             employee_id: row.hims_d_employee_id,
             emp_name: row.full_name,
-            addBtnEnable: false
+            addBtnEnable: isProcessed === undefined ? false : true
           });
         }
       },
