@@ -51,7 +51,8 @@ const {
   InsertOpeningBalanceGratuity,
   UpdateOpeningBalanceGratuity,
   InsertOpeningBalanceLoan,
-  UpdateOpeningBalanceLoan
+  UpdateOpeningBalanceLoan,
+  updateMisEarnDedcToEmployees
 } = empModels;
 
 export default () => {
@@ -470,6 +471,16 @@ export default () => {
           result: req.records
         });
       }
+    }
+  );
+  api.put(
+    "/updateMisEarnDedcToEmployees",
+    updateMisEarnDedcToEmployees,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
     }
   );
 

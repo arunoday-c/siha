@@ -75,6 +75,33 @@ export default class MiscEarningsDeductions extends Component {
     });
   }
 
+  changeAmount(row, e) {
+    const amount = e.target.value;
+    const hims_f_miscellaneous_earning_deduction_id =
+      row.hims_f_miscellaneous_earning_deduction_id;
+
+    algaehApiCall({
+      uri: "/employee/updateMisEarnDedcToEmployees",
+      module: "hrManagement",
+      method: "PUT",
+      data: { amount, hims_f_miscellaneous_earning_deduction_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onCatch: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   getHospitals() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
@@ -781,6 +808,7 @@ export default class MiscEarningsDeductions extends Component {
                                     others: {
                                       errormessage: "Amount - cannot be blank",
                                       required: true,
+                                      onBlur: this.changeAmount.bind(this, row),
                                       disabled:
                                         row.salary_processed === "N" ||
                                         row.salary_processed === null
