@@ -1,4 +1,8 @@
-import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -245,7 +249,7 @@ const generatePaySlip = ($this, inputs) => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "salarySlip",
+        reportName: "SalarySlip",
         reportParams: {
           employees: input_array,
           year: $this.state.inputs.year,
