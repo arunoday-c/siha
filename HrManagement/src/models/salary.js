@@ -4625,7 +4625,7 @@ function InsertGratuityProvision(options) {
                   }
 
                   let gratuity_month = parseFloat(inputParam.month) === 1 ? 12 : parseFloat(inputParam.month) - 1
-                  let gratuity_year = parseFloat(inputParam.month) === 1 ? parseFloat(inputParam.year) - 1 : 12
+                  let gratuity_year = parseFloat(inputParam.month) === 1 ? parseFloat(inputParam.year) - 1 : parseFloat(inputParam.year)
 
                   // console.log("previous_month", previous_month)
                   _mysql
