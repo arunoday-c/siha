@@ -56,7 +56,7 @@ const executePDF = function executePDFMethod(options) {
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-        S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary, \
+        S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.total_paid_days,S.net_salary, \
         case S.loan_due_amount when '0.000' then '-' else S.loan_due_amount end as loan_due_amount, S.total_earnings,S.total_deductions,S.salary_paid_date,\
         S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
         coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
@@ -67,7 +67,7 @@ const executePDF = function executePDFMethod(options) {
 				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
 				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
 				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
+				where E.hospital_id=? and  E.suspend_salary ='N' and S.salary_type <>'LS' and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
           values: [
             input.hospital_id,
             input.employee_group_id,

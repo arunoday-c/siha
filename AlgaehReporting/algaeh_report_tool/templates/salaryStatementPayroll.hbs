@@ -13,6 +13,7 @@
                         <th>Desgnation</th>
                         <th>Nationality</th>
                         <th>PR Days</th>
+                        <th>Paid Days</th>
                         <th>Total Earnings</th>
                         <th>Total Deduction </th>
                         <th>Net Salary</th>
@@ -23,7 +24,7 @@
                 </thead>
                 <tbody>
                     <tr class="numberFld numberFldTotalBottom">
-                        <td class="numberFld" colspan="6"></td>
+                        <td class="numberFld" colspan="7"></td>
                         <td class="numberFld">{{sum_earnings}}</td>
                         <td class="numberFld">{{sum_deductions}}</td>
                         <td class="numberFld">{{sum_net_salary}}</td>
@@ -38,6 +39,7 @@
                         <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         <td>{{display_present_days}}</td>
+                        <td>{{total_paid_days}}</td>
                         <td class="numberFld numberFldTotal">{{total_earnings}}</td>
                         <td class="numberFld numberFldTotal">{{total_deductions}}</td>
                         <td class="numberFld numberFldTotal">{{net_salary}}</td>
@@ -47,7 +49,7 @@
                     </tr>
                     {{/each }}{{else}}
                     <tr>
-                        <td class="noResultTextReport" colspan="12">No Records Found</td>
+                        <td class="noResultTextReport" colspan="13">No Records Found</td>
                     </tr>
                 </tbody>
             </table>

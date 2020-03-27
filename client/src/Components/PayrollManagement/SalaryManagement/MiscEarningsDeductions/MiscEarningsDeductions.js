@@ -75,6 +75,33 @@ export default class MiscEarningsDeductions extends Component {
     });
   }
 
+  changeAmount(row, e) {
+    const amount = e.target.value;
+    const hims_f_miscellaneous_earning_deduction_id =
+      row.hims_f_miscellaneous_earning_deduction_id;
+
+    algaehApiCall({
+      uri: "/employee/updateMisEarnDedcToEmployees",
+      module: "hrManagement",
+      method: "PUT",
+      data: { amount, hims_f_miscellaneous_earning_deduction_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onCatch: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   getHospitals() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
@@ -139,6 +166,19 @@ export default class MiscEarningsDeductions extends Component {
   }
 
   ApplyEarningsDeds() {
+    const canProcessForMonth = this.state.employee_miscellaneous.find(
+      f =>
+        f.salary_processed === "Y" &&
+        f.month === this.state.month &&
+        f.year === parseInt(this.state.year)
+    );
+    if (canProcessForMonth !== undefined) {
+      swalMessage({
+        title: `Already processed for selected month and year.`,
+        type: "warning"
+      });
+      return;
+    }
     if (this.state.earning_deduction_id === null) {
       swalMessage({
         title: "Select Component",
@@ -274,8 +314,9 @@ export default class MiscEarningsDeductions extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
+          const data = res.data.records;
           this.setState({
-            employee_miscellaneous: res.data.records,
+            employee_miscellaneous: data,
             employee_id: row.hims_d_employee_id,
             emp_name: row.full_name,
             addBtnEnable: false
@@ -781,6 +822,7 @@ export default class MiscEarningsDeductions extends Component {
                                     others: {
                                       errormessage: "Amount - cannot be blank",
                                       required: true,
+                                      onBlur: this.changeAmount.bind(this, row),
                                       disabled:
                                         row.salary_processed === "N" ||
                                         row.salary_processed === null

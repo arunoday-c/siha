@@ -15,6 +15,7 @@ import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
 import utilitites from "algaeh-utilities/utilities";
 import { convertMilimetersToPixel } from "algaeh-utilities/reportConvetions";
+import { generatePDFReport } from "./hummus/index";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
