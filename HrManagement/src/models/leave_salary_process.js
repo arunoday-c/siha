@@ -1952,15 +1952,22 @@ function InsertGratuityProvision(options) {
                         "select hims_d_employee_earnings_id,employee_id, earnings_id,earning_deduction_description,\
                   EE.short_desc, amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where \
                   ED.hims_d_earning_deduction_id = EE.earnings_id \
-                  and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
+                  and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A';\
+                  select gratuity_amount,acc_gratuity from hims_f_gratuity_provision where employee_id = ?  and month = ?",
                       values: [
                         _employee[k].hims_d_employee_id,
-                        _componentsList_total
+                        _componentsList_total,
+                        _employee[k].hims_d_employee_id,
+                        previous_month
                       ],
                       printQuery: true
                     })
-                    .then(earnings => {
+                    .then(result_data => {
                       // _mysql.releaseConnection();
+                      // console.log("result_data", result_data)
+                      let earnings = result_data[0];
+                      let gratuity_data = result_data[1];
+
                       let _computatedAmout = [];
                       if (_optionsDetals.end_of_service_calculation == "AN") {
                         _computatedAmout = _.chain(earnings).map(items => {
@@ -1986,13 +1993,21 @@ function InsertGratuityProvision(options) {
                         decimal_places
                       );
 
+                      let gratuity_amount = 0;
+                      if (gratuity_data.length > 0) {
+                        gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
+                      } else {
+                        gratuity_amount = _computatedAmoutSum
+                      }
+
                       strQry += mysql.format(
                         "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
-                      `month`,`gratuity_amount`) VALUE(?,?,?,?);",
+                      `month`,`gratuity_amount`, `acc_gratuity`) VALUE(?,?,?,?,?);",
                         [
                           _employee[k].hims_d_employee_id,
                           inputParam.year,
                           inputParam.month,
+                          gratuity_amount,
                           _computatedAmoutSum
                         ]
                       );
