@@ -487,15 +487,15 @@ export default {
     try {
       const _mysql = new algaehMysql();
       const inputParam = req.query;
-
+      //and S.`year`=? and S.`month`=?
       _mysql
         .executeQuery({
           query:
-            "select MED.*, ED.earning_deduction_description, S.salary_processed from  hims_f_miscellaneous_earning_deduction MED \
+            "select MED.*, ED.earning_deduction_description, COALESCE( S.salary_processed,'N') salary_processed from  hims_f_miscellaneous_earning_deduction MED \
             inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = MED.earning_deductions_id \
-            left join hims_f_salary S on S.employee_id = MED.employee_id and S.`year`=? and S.`month`=? \
+            left join hims_f_salary S on S.employee_id = MED.employee_id and S.month =MED.month and S.year =MED.year \
             where MED.employee_id=?",
-          values: [inputParam.year, inputParam.month, inputParam.employee_id],
+          values: [inputParam.employee_id], //inputParam.year, inputParam.month,
           printQuery: true
         })
         .then(result => {

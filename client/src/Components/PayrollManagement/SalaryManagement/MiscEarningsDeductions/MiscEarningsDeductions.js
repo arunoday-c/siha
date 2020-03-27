@@ -166,6 +166,19 @@ export default class MiscEarningsDeductions extends Component {
   }
 
   ApplyEarningsDeds() {
+    const canProcessForMonth = this.state.employee_miscellaneous.find(
+      f =>
+        f.salary_processed === "Y" &&
+        f.month === this.state.month &&
+        f.year === parseInt(this.state.year)
+    );
+    if (canProcessForMonth !== undefined) {
+      swalMessage({
+        title: `Already processed for selected month and year.`,
+        type: "warning"
+      });
+      return;
+    }
     if (this.state.earning_deduction_id === null) {
       swalMessage({
         title: "Select Component",
@@ -302,12 +315,11 @@ export default class MiscEarningsDeductions extends Component {
       onSuccess: res => {
         if (res.data.success) {
           const data = res.data.records;
-          const isProcessed = data.find(f => f.salary_processed === "Y");
           this.setState({
             employee_miscellaneous: data,
             employee_id: row.hims_d_employee_id,
             emp_name: row.full_name,
-            addBtnEnable: isProcessed === undefined ? false : true
+            addBtnEnable: false
           });
         }
       },
