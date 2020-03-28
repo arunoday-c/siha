@@ -1060,7 +1060,7 @@ export default {
           query:
             "select hims_f_leave_salary_header_id,leave_salary_date,employee_id,salary_amount,leave_amount,airfare_amount,\
           total_amount,leave_period, status, E.employee_code, E.full_name  as employee_name, E.hospital_id\
-          from hims_f_leave_salary_header LSH, hims_d_employee E where E.suspend_salary='N' and LSH.employee_id = E.hims_d_employee_id  and \
+          from hims_f_leave_salary_header LSH, hims_d_employee E where LSH.employee_id = E.hims_d_employee_id  and \
           hims_f_leave_salary_header_id = ?; ",
 
           values: [inputParam.hims_f_leave_salary_header_id],
