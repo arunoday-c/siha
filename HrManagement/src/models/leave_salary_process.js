@@ -2044,6 +2044,7 @@ function InsertGratuityProvision(options) {
                         decimal_places
                       );
 
+                      console.log("gratuity_data", gratuity_data)
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
                         gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)

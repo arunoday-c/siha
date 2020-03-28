@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let input = {};
       let params = options.args.reportParams;
@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_f_gratuity_provision_id, employee_id, gratuity_amount, E.employee_code, E.full_name,  \
+          query: `select hims_f_gratuity_provision_id, employee_id, gratuity_amount, acc_gratuity, E.employee_code, E.full_name,  \
 					SD.sub_department_name, D.department_name, EG.group_description from hims_f_gratuity_provision GP \
 					inner join hims_d_employee E on GP.employee_id = E.hims_d_employee_id \
 					left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id  \
@@ -50,7 +50,7 @@ const executePDF = function executePDFMethod(options) {
           let sum_gratuity_amount = 0;
           if (ress.length > 0) {
             sum_gratuity_amount = _.sumBy(ress, s =>
-              parseFloat(s.gratuity_amount)
+              parseFloat(s.acc_gratuity)
             );
             const result = {
               details: ress,
