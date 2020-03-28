@@ -56,9 +56,9 @@ class POSCreditSettlement extends Component {
 
     const userToken = this.context.userToken;
 
-    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
-    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
-    IOputs.default_pay_type = userToken.default_pay_type
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
 
     this.setState({ ...this.state, ...IOputs });
   }
@@ -167,17 +167,17 @@ class POSCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generatePOSCreditSettlementReceipt(this.state);
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generatePOSCreditSettlementReceipt(this.state);
+                        }
                       }
                     }
-                  }
-                ]
-              }
+                  ]
+                }
               : ""
           }
           // printArea={
@@ -220,7 +220,29 @@ class POSCreditSettlement extends Component {
             className="row inner-top-search"
             style={{ paddingTop: 10, paddingBottom: 10 }}
           >
-            <div className="col-lg-3">
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6
+                onClick={PatientSearch.bind(this, this)}
+                style={{
+                  cursor: "pointer",
+                  pointerEvents:
+                    this.state.Billexists === true
+                      ? "none"
+                      : this.state.patient_code
+                      ? "none"
+                      : ""
+                }}
+              >
+                {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                {this.state.patient_code
+                  ? this.state.patient_code
+                  : "Search Patient"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            {/* <div className="col-lg-3">
               <div
                 className="row"
                 style={{
@@ -258,7 +280,7 @@ class POSCreditSettlement extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-lg-3">
@@ -356,8 +378,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(POSCreditSettlement)
+  connect(mapStateToProps, mapDispatchToProps)(POSCreditSettlement)
 );
