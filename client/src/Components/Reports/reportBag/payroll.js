@@ -300,7 +300,7 @@ export default function Payroll({
               data: LEAVE_STATUS
             },
             events: {
-              onChange: (reportState, currentValue) => {}
+              onChange: (reportState, currentValue) => { }
             }
           },
           {
@@ -327,39 +327,39 @@ export default function Payroll({
         pageOrentation: "landscape", //"portrait",
         input: "sub_department_id=?",
         reportParameters: [
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            value: moment().year(),
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2 form-group mandatory",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            value: moment().format("M"),
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
+          // {
+          //   className: "col-2 form-group mandatory",
+          //   type: "dropdown",
+          //   name: "year",
+          //   isImp: true,
+          //   initialLoad: true,
+          //   value: moment().year(),
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: allYears
+          //   }
+          //   // events: {
+          //   //   onChange: (reportState, currentValue) => {}
+          //   // }
+          // },
+          // {
+          //   className: "col-2 form-group mandatory",
+          //   type: "dropdown",
+          //   sort: "off",
+          //   name: "month",
+          //   isImp: true,
+          //   initialLoad: true,
+          //   value: moment().format("M"),
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: MONTHS
+          //   },
+          //   others: {
+          //     sort: "off"
+          //   }
+          // },
           {
             className: "col-2 form-group mandatory",
             type: "dropdown",

@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let input = {};
       let params = options.args.reportParams;
@@ -27,14 +27,14 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_f_leave_salary_accrual_detail_id,employee_id,year,month,leave_days, leave_salary, \
-					LA.airfare_amount, E.employee_code, E.full_name, SD.sub_department_name, D.department_name, EG.group_description \
-					from hims_f_leave_salary_accrual_detail LA inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
-					left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
-					left join hims_d_department D on SD.department_id=D.hims_d_department_id \
-					left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
-					where LA.year=? and LA.month=? and E.hospital_id=? ${strData} ;`,
-          values: [input.year, input.month, input.hospital_id],
+          query: `select balance_leave_days,balance_leave_salary_amount,
+          balance_airticket_amount, E.employee_code, E.full_name, SD.sub_department_name, D.department_name, EG.group_description 
+          from hims_f_employee_leave_salary_header LA inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id 
+          left join hims_d_department D on SD.department_id=D.hims_d_department_id 
+          left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
+          where E.hospital_id=? ${strData} ;`,
+          values: [input.hospital_id],
           printQuery: true
         })
         .then(ress => {
@@ -42,9 +42,9 @@ const executePDF = function executePDFMethod(options) {
           let sum_airfare_amount = 0;
 
           if (ress.length > 0) {
-            sum_leave_salary = _.sumBy(ress, s => parseFloat(s.leave_salary));
+            sum_leave_salary = _.sumBy(ress, s => parseFloat(s.balance_leave_salary_amount));
             sum_airfare_amount = _.sumBy(ress, s =>
-              parseFloat(s.airfare_amount)
+              parseFloat(s.balance_airticket_amount)
             );
 
             const result = {
