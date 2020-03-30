@@ -10,6 +10,7 @@ export function authenticate(socket, data, callback) {
 export function postAuthenticate(socket, data) {
   const { token, moduleList } = data;
   socket.client.user = token.employee_id;
+  socket.client.details = token;
   socket.join(token.employee_id, err => {
     console.log(err);
   });
