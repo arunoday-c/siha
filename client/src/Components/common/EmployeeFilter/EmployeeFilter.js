@@ -88,7 +88,7 @@ export default function EmployeeFilter(props) {
           setHospitals(res.data.records);
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -179,6 +179,9 @@ export default function EmployeeFilter(props) {
       if (inputs.designation_id !== null) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
+    }
+    if (inputs.employee_group_id !== null) {
+      input_data += " and employee_group_id=" + inputs.group_id;
     }
     AlgaehSearch({
       searchGrid: {

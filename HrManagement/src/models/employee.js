@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => {},
+          printQuery: query => { },
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -1199,7 +1199,7 @@ export default {
 
     let strQuery = "";
     if (input.sub_department_id > 0) {
-      strQuery += ` and AM.sub_department_id=${input.sub_department_id}`;
+      strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
     }
 
     if (input.department_id > 0) {
@@ -1207,7 +1207,7 @@ export default {
     }
 
     if (input.employee_id > 0) {
-      strQuery += ` and AM.employee_id=${input.employee_id}`;
+      strQuery += ` and E.hims_d_employee_id=${input.employee_id}`;
     }
 
     if (input.employee_group_id > 0) {
