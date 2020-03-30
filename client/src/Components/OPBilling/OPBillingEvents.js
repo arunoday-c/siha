@@ -51,6 +51,18 @@ const ClearData = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
+  // else if ($this.state.bank_card_id === null) {
+  //   isError = true;
+
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Select Card."
+  //   });
+
+  //   document.querySelector("[name='bank_card_id']").focus();
+  //   return isError;
+  // } 
+
   if ($this.state.Cardchecked === true) {
     if (
       $this.state.card_check_number === null ||
@@ -64,16 +76,6 @@ const Validations = $this => {
       });
 
       document.querySelector("[name='card_check_number']").focus();
-      return isError;
-    } else if ($this.state.bank_card_id === null) {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Select Card."
-      });
-
-      document.querySelector("[name='bank_card_id']").focus();
       return isError;
     } else if (parseFloat($this.state.card_amount) === 0) {
       isError = true;

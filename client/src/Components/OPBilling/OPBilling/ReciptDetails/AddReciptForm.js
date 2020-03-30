@@ -234,7 +234,7 @@ class AddReciptForm extends Component {
                     </label>
                   </div>
 
-                  {this.state.Cardchecked === true ? (
+                  {/* {this.state.Cardchecked === true ? (
                     <AlagehAutoComplete
                       div={{ className: "col-lg-2 mandatory" }}
                       label={{
@@ -264,7 +264,7 @@ class AddReciptForm extends Component {
                         }
                       }}
                     />
-                  ) : null}
+                  ) : null} */}
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-2" }}

@@ -214,8 +214,8 @@ class AddBillingForm extends Component {
                           {this.state.bill_number
                             ? this.state.bill_number
                             : this.state.selectedLang === "en"
-                            ? "Not Generated"
-                            : "غير مولدة"}
+                              ? "Not Generated"
+                              : "غير مولدة"}
                         </h6>
                       </div>
 
@@ -405,8 +405,8 @@ class AddBillingForm extends Component {
                             {this.state.receipt_number
                               ? this.state.receipt_number
                               : this.state.selectedLang === "en"
-                              ? "Not Generated"
-                              : "غير مولدة"}
+                                ? "Not Generated"
+                                : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -418,8 +418,8 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_date
                               ? moment(this.state.receipt_date).format(
-                                  "DD-MM-YYYY"
-                                )
+                                "DD-MM-YYYY"
+                              )
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
@@ -567,7 +567,7 @@ class AddBillingForm extends Component {
                             </span>
                           </label>
                         </div>
-                        {this.state.Cardchecked === true ? (
+                        {/* {this.state.Cardchecked === true ? (
                           <AlagehAutoComplete
                             div={{ className: "col-2 mandatory" }}
                             label={{
@@ -589,7 +589,7 @@ class AddBillingForm extends Component {
                               }
                             }}
                           />
-                        ) : null}
+                        ) : null} */}
 
                         <AlagehFormGroup
                           div={{ className: "col-2  mandatory" }}

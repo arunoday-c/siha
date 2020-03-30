@@ -46,7 +46,7 @@ class BankMaster extends Component {
         ? true
         : false;
     if (active === true) {
-      this.getCardkMaster();
+      // this.getCardkMaster();
     }
     this.setState({
       HIMS_Active: active
@@ -268,10 +268,10 @@ class BankMaster extends Component {
   }
 
   render() {
-    const col_setup = this.state.HIMS_Active === true ? "col-8" : "col-12";
+    // const col_setup = this.state.HIMS_Active === true ? "col-8" : "col-12";
     return (
       <div className="row BankMasterScreen" style={{ paddingTop: 15 }}>
-        <div className={col_setup}>
+        <div className="col-12">
           <div
             id="bankMaster"
             className="portlet portlet-bordered margin-bottom-15"
@@ -629,7 +629,7 @@ class BankMaster extends Component {
             </div>
           </div>
         </div>
-        {this.state.HIMS_Active === true ? (
+        {/* {this.state.HIMS_Active === true ? (
           <div className="col-4">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
@@ -758,7 +758,7 @@ class BankMaster extends Component {
               </div>
             </div>
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     );
   }
