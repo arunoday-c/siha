@@ -3,7 +3,8 @@ import "./Notifications.scss";
 import { notification } from "antd";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
 // import isEqual from "lodash/isEqual";
-import alNotification from "../../Wrapper/algaehNotification.js";
+import { MainContext } from "algaeh-react-components/context";
+// import alNotification from "../../Wrapper/algaehNotification.js";
 import sockets from "../../../sockets";
 import moment from "moment";
 
@@ -12,11 +13,12 @@ export default class Notifications extends Component {
     super(props);
 
     this.state = {
-      moduleList: [],
       notiList: []
     };
     this.socket = sockets;
   }
+
+  static contextType = MainContext;
 
   formatTime(time) {
     return moment(time, "HH:mm:ss").format("hh:mm A");
@@ -33,21 +35,35 @@ export default class Notifications extends Component {
 
   componentDidMount() {
     // use fat arrow functions as callbacks to inherit "this"
+    const check = Array.isArray(this.context.userMenu);
     if (this.socket.connected) {
-      this.socket.on("refresh_appointment", patient => {
-        this.addToNotiList(
-          `Patient ${patient.patient_name} added to ${this.formatTime(
-            patient.appointment_from_time
-          )} slot ${this.formatDate(patient.appointment_date)}`
-        );
+      this.socket.emit("authentication", {
+        token: this.context.userToken,
+        moduleList: check
+          ? this.context.userMenu.map(item => item.module_name.toLowerCase())
+          : []
       });
-      this.socket.on("patient_added", patient => {
-        const time = this.formatTime(patient.appointment_from_time);
-        const date = this.formatDate(patient.appointment_date);
-        this.addToNotiList(
-          `${patient.patient_name} booked an appointment on ${time}
-          ${date}`
-        );
+
+      this.socket.on("authenticated", data => {
+        console.log(data, "after auth");
+        this.socket.emit("getAll");
+      });
+
+      this.socket.on("receiveAll", data => {
+        console.log(data);
+        if (data && Array.isArray(data)) {
+          const result = data.map(item => item.message);
+          this.setState({
+            notiList: result
+          });
+        }
+      });
+
+      this.socket.on("refresh_appointment", msg => {
+        this.addToNotiList(msg);
+      });
+      this.socket.on("patient_added", msg => {
+        this.addToNotiList(msg);
       });
       this.socket.on("service_added", services => {
         let serStr = "";
@@ -80,33 +96,26 @@ export default class Notifications extends Component {
   }
 
   addToNotiList = text => {
+    debugger;
     const { notiList } = this.state;
     notiList.push(text);
-    // notification.open({
-    //   message: "Notification",
-    //   description: text,
-    //   duration: 6
-    // });
     this.setState(
       {
         notiList
       },
       () => {
-        alNotification({
-          type: "info",
-          text
+        this.socket.emit("save", {
+          message: text,
+          user_id: this.context.userToken.user_id
+        });
+        notification.open({
+          message: "Notification",
+          description: text,
+          duration: 6
         });
       }
     );
   };
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (!isEqual(prevProps.modules, this.props.modules)) {
-  //     this.setState({
-  //       moduleList: this.props.modules
-  //     });
-  //   }
-  // }
 
   render() {
     const { notiList } = this.state;

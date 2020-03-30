@@ -336,7 +336,9 @@ class Appointment extends PureComponent {
               data: send_data,
               onSuccess: response => {
                 if (response.data.success) {
+                  debugger;
                   if (this.appSock.connected) {
+                    debugger;
                     this.appSock.emit("appointment_created", send_data);
                   }
                   if (

@@ -1,5 +1,4 @@
 import io from "socket.io-client";
-import { getCookie } from "./utils/algaehApiCall";
 
 function createSockets() {
   const _localaddress =
@@ -19,10 +18,6 @@ const socket = createSockets();
 socket.on("connect", () => {
   console.log("connected");
 });
-
-// socket.on("connect", () => {
-//   socket.emit("authentication", { token: getCookie("authToken") });
-// });
 
 socket.on("disconnect", () => {
   socket.open();

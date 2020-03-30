@@ -6,90 +6,114 @@ import express from "express";
 import socketAuth from "socketio-auth";
 import socketIO from "socket.io";
 import redisAdapter from "socket.io-redis";
-const _port = process.env.PORT;
-const exp = express();
-
-//middlewares
-exp.use(cors());
-// exp.use(bodyParser())
-
-const app = http.createServer(exp);
-
-const io = socketIO(app);
-
-io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
-
-import { authenticate } from "./socketAuth";
+import mongoose from "mongoose";
+import { authenticate, postAuthenticate, disconnect } from "./socketAuth";
+import { notifiModel } from "./model";
 import appsock from "./appointmentSocket";
 import labsock from "./labSocket";
 import selfServiceSocket from "./selfServiceSocket";
-// socketAuth(io, {
-//   authenticate,
-//   timeout: "none"
-// });
+const _port = process.env.PORT;
+const exp = express();
 
-const utils = utilities.AlgaehUtilities();
-// const logger = utils.logger();
-
-process.on("warning", warn => {
-  console.log("warn", warn, "warn");
-});
-process.on("uncaughtException", error => {
-  console.log("uncatched Exception", error, "error");
-});
-process.on("unhandledRejection", (reason, promise) => {
-  console.log(
-    "Unhandled rejection",
-    { reason: reason, promise: promise },
-    "error"
-  );
+mongoose.connect(keys.default.mongoDb.connectionURI, {
+  useNewUrlParser: true,
+  useFindAndModify: true,
+  useUnifiedTopology: true
 });
 
-io.on("connection", socket => {
-  socket.on("unauthorized", function(err) {
-    console.log("There was an error with the authentication:", err.message);
+var db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", function() {
+  // we're connected!
+  //middlewares
+  exp.use(cors());
+  // exp.use(bodyParser())
+
+  const app = http.createServer(exp);
+
+  const io = socketIO(app);
+
+  io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
+
+  socketAuth(io, {
+    authenticate,
+    postAuthenticate,
+    disconnect,
+    timeout: "none"
   });
 
-  socket.emit("/success", "hello, you are connected");
+  const utils = utilities.AlgaehUtilities();
+  // const logger = utils.logger();
 
-  socket.on("user_logged", function(user, moduleList, authToken) {
-    try {
-      console.log(`${user} connected`);
-      console.log(moduleList, "modules");
-      authToken = utils.tokenVerify(authToken);
-      console.log(authToken.employee_id, "id");
-      socket.join(authToken.employee_id, err => {});
-      // socket.join(moduleList, err => console.log(err));
-      socket.join(moduleList, err => {});
-      console.log(io.clients().listenerCount(), socket.rooms, "count");
-    } catch (e) {
-      console.warn(e.message);
-    }
+  process.on("warning", warn => {
+    console.log("warn", warn, "warn");
+  });
+  process.on("uncaughtException", error => {
+    console.log("uncatched Exception", error, "error");
+  });
+  process.on("unhandledRejection", (reason, promise) => {
+    console.log(
+      "Unhandled rejection",
+      { reason: reason, promise: promise },
+      "error"
+    );
   });
 
-  socket.on("unauthorized", reason => {
-    console.log("Unauthorized:", reason);
+  io.on("connection", socket => {
+    socket.on("unauthorized", function(err) {
+      console.log("There was an error with the authentication:", err.message);
+    });
 
-    error = reason.message;
-    console.log(error);
+    // socket.on("user_logged", function(user, moduleList, authToken) {
+    //   try {
+    //     authToken = utils.tokenVerify(authToken);
+    //     socket.join(authToken.employee_id, err => {});
+    //     // socket.join(moduleList, err => console.log(err));
+    //     socket.join(moduleList, err => {});
+    //   } catch (e) {
+    //     console.warn(e.message);
+    //   }
+    // });
 
-    socket.disconnect();
+    socket.on("unauthorized", reason => {
+      console.log("Unauthorized:", reason);
+
+      error = reason.message;
+      console.log(error);
+
+      socket.disconnect();
+    });
+
+    socket.on("user_logout", function() {
+      console.log(socket.rooms);
+      socket.disconnect();
+    });
+
+    socket.on("getAll", () => {
+      console.log(socket.client.user, "user id");
+      notifiModel.find(
+        {
+          user_id: socket.client.user
+        },
+        (err, docs) => {
+          console.log(docs, err, "docs");
+          if (!err) {
+            socket.emit("receiveAll", docs);
+          }
+        }
+      );
+    });
+
+    appsock(socket);
+    labsock(socket);
+    selfServiceSocket(socket);
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected");
+    });
   });
 
-  socket.on("user_logout", function() {
-    console.log(socket.rooms);
-    socket.disconnect();
-  });
+  app.listen(_port);
 
-  appsock(socket);
-  labsock(socket);
-  selfServiceSocket(socket);
-
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });
+  console.log(`IO Sockets are running on PORT - *${_port}`);
 });
-
-app.listen(_port);
-
-console.log(`IO Sockets are running on PORT - *${_port}`);
