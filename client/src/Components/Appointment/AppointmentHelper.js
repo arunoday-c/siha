@@ -13,7 +13,7 @@ export function generateTimeslotsForDoctor(data) {
   let result = [];
   let count = 0;
   let newFrom = from_work_hr.clone();
-  for (;;) {
+  for (; ;) {
     let isBreak = false;
 
     newFrom = count === 0 ? newFrom : newFrom.add(slot, "minutes");
@@ -70,15 +70,19 @@ export function generateReport($this, rpt_name, rpt_desc) {
     },
     onSuccess: res => {
       const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${url}&filename=${rpt_desc}`;
+      window.open(origin);
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = rpt_desc;
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
+
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      // myWindow.document.title = rpt_desc;
     }
   });
 }
