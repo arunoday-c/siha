@@ -16,6 +16,7 @@ export default function Notification({ open, handlePanel }) {
   const base = Array(5).fill({ loading: true, message: "", title: "" });
   const [list, setList] = useState(base);
   const [loading, setLoading] = useState(true);
+  const [authed, setAuthed] = useState(false);
   const context = useContext(MainContext);
   const { socket, userToken } = context;
 
@@ -27,15 +28,17 @@ export default function Notification({ open, handlePanel }) {
         state.push({ message: text });
         return [...state];
       });
-      notification.open({
+      notification.info({
         message: "Notification",
         description: text,
-        duration: 6
+        duration: 6,
+        style: {
+          zIndex: 9999
+        }
       });
     };
 
-    if (socket.connected && Object.entries(userToken).length) {
-      debugger;
+    if (socket.connected && Object.entries(userToken).length && !authed) {
       socket.emit("authentication", {
         token: userToken,
         moduleList: check
@@ -44,6 +47,7 @@ export default function Notification({ open, handlePanel }) {
       });
 
       socket.on("authenticated", data => {
+        setAuthed(true);
         console.log(data, "after auth");
         socket.emit("getAll");
       });
