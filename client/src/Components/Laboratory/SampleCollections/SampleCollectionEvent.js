@@ -66,6 +66,11 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "specimenBarcode",
         reportParams: [
           {
@@ -78,15 +83,17 @@ const printBarcode = ($this, row, e) => {
     },
     onSuccess: res => {
       const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${url}&filename=Specimen Barcode`;
+      window.open(origin);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Specimen Barcode";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      // myWindow.document.title = "Specimen Barcode";
     }
   });
 };
