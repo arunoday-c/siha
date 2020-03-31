@@ -22,9 +22,10 @@
                         <th>Total Working Hours</th>
                         <th>Total Worked Hours</th>
                         <th>OT Hours</th>
-                        <th>Shortage Hours</th>
-                        <th>Week Off OT</th>
-                        <th>Holiday OT</th>
+                        {{!-- <th>Shortage Hours</th> --}}
+                        {{!-- <th>Week Off OT</th>
+                        <th>Holiday OT</th> --}}
+                        <th>Total Holiday OT</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,9 +47,10 @@
                         <td>{{total_working_hours}}</td>
                         <td>{{total_hours}}</td>
                         <td>{{ot_work_hours}}</td>
-                        <td>{{shortage_hours}}</td>
-                        <td>{{ot_weekoff_hours}}</td>
-                        <td>{{ot_holiday_hours}}</td>
+                        {{!-- <td>{{shortage_hours}}</td> --}}
+                        {{!-- <td>{{ot_weekoff_hours}}</td>
+                        <td>{{ot_holiday_hours}}</td> --}}
+                        <td>{{total_ot_hr}}</td>
                     </tr>
                     {{/each }}
 
