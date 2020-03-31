@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { MainContext } from "algaeh-react-components/context";
+import socket from "./sockets";
 export default function(props) {
   const { children } = props;
   const [menu, setMenu] = useState([]);
@@ -49,6 +50,7 @@ export default function(props) {
         selectedMenu: selectedMenu,
         selectElement: elements,
         userPreferences: userPreferences,
+        socket,
         setSelectedMenuItem,
         setUserMenu,
         setUserLanguage,

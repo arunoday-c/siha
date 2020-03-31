@@ -1,13 +1,8 @@
 import React, { Suspense } from "react";
-import {
-  Switch,
-  Route,
-  BrowserRouter,
-  HashRouter,
-  useRouteMatch
-} from "react-router-dom";
+import { Switch, Route, BrowserRouter } from "react-router-dom";
 import { retry } from "./utils/GlobalFunctions";
 import Login from "./Components/Login/Login";
+import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
 import ConcurrentTest from "./Components/concurrent-test";
 const HISDashboard = React.lazy(() =>
@@ -40,9 +35,9 @@ const FinDashboard = React.lazy(() =>
 const PatientRegistration = React.lazy(() =>
   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
 );
-const Layout = React.lazy(() =>
-  retry(() => import("./Components/common/layout"))
-);
+// const Layout = React.lazy(() =>
+//   retry(() => import("./Components/common/layout"))
+// );
 const UpdatePatientDetails = React.lazy(() =>
   retry(() => import("./Components/UpdatePatientDetails/UpdatePatientDetails"))
 );
@@ -513,19 +508,19 @@ const DefaultLandingPage = React.lazy(() =>
 );
 function LoadComponent({ path, noSecurityCheck, children }) {
   return (
-    <Suspense
-      fallback={
-        <div className="loader-container">
-          <div className="algaeh-progress float shadow">
-            <div className="progress__item">loading</div>
+    <Layout path={path} noSecurityCheck={noSecurityCheck}>
+      <Suspense
+        fallback={
+          <div className="loader-container">
+            <div className="algaeh-progress float shadow">
+              <div className="progress__item">loading</div>
+            </div>
           </div>
-        </div>
-      }
-    >
-      <Layout path={path} noSecurityCheck={noSecurityCheck}>
+        }
+      >
         {children}
-      </Layout>
-    </Suspense>
+      </Suspense>
+    </Layout>
   );
 }
 
