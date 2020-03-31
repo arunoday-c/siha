@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import "./Notifications.scss";
 import {
   notification,
   Drawer,
@@ -32,9 +33,7 @@ export default function Notification({ open, handlePanel }) {
         message: "Notification",
         description: text,
         duration: 6,
-        style: {
-          zIndex: 9999
-        }
+        className: "notifySlide"
       });
     };
 
@@ -107,6 +106,7 @@ export default function Notification({ open, handlePanel }) {
       width={540}
       onClose={handlePanel}
       visible={open}
+      className="notifyDrawer"
     >
       {list.length ? (
         <List
