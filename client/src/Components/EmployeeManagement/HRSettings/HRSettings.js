@@ -63,8 +63,8 @@ class HRSettings extends Component {
                   }}
                 />
               ),
-              children: <AuthorizationSetup />,
-              componentCode: "HR_SET_DOC_MTR"
+              children: <DocumentMaster />,
+              componentCode: "HR_SET_AUT_SET"
             },
             {
               title: (
@@ -74,8 +74,8 @@ class HRSettings extends Component {
                   }}
                 />
               ),
-              children: <DocumentMaster />,
-              componentCode: "HR_SET_AUT_SET"
+              children: <AuthorizationSetup />,
+              componentCode: "HR_SET_DOC_MTR"
             }
           ]}
           renderClass="hrSettingsSection"
