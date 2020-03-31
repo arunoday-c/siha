@@ -49,21 +49,26 @@ function NavBars(props) {
       });
     });
   }, []);
+
   function showMenuClick() {
     setShowMenu(true);
   }
+
   function showNotification() {
-    setOpenNotif(true);
+    setOpenNotif(state => !state);
   }
+
   function languageChange(e) {
     const { lang } = e.target;
     if (userLanguage !== lang) {
       setUserLanguage(lang);
     }
   }
+
   function onPasswordChange() {
     setShowPasswordChange(true);
   }
+
   function onLogoutClick() {
     algaehApiCall({
       uri: "/apiAuth/logout",

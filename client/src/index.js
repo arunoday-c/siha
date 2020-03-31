@@ -12,7 +12,7 @@ import "./styles/site.scss";
 import "./loader.scss";
 
 // import * as serviceWorker from "./serviceWorker";
-import MainContex from "./indexProps";
+import MainProvider from "./MainProvider";
 const middleware =
   process.env.NODE_ENV === "development"
     ? applyMiddleware(thunk, logger)
@@ -20,15 +20,16 @@ const middleware =
 
 const store = createStore(AlagehReducers, middleware);
 
-ReactDOM.render(
-  <MainContex>
+const App = () => (
+  <MainProvider>
     <Provider store={store}>
       {/* <ContextBinding> */}
       <Routes />
       {/* </ContextBinding> */}
     </Provider>
-  </MainContex>,
-  document.getElementById("root")
+  </MainProvider>
 );
+
+ReactDOM.render(<App />, document.getElementById("root"));
 
 // serviceWorker.register();
