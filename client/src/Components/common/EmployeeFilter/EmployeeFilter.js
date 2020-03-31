@@ -180,7 +180,7 @@ export default function EmployeeFilter(props) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
     }
-    if (inputs.employee_group_id !== null) {
+    if (inputs.group_id !== null) {
       input_data += " and employee_group_id=" + inputs.group_id;
     }
     AlgaehSearch({
