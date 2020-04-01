@@ -69,7 +69,7 @@ class RulesDetails extends PureComponent {
                     </span>
                   </label>
                 </div>
-
+                {/* 
                 <div
                   className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
@@ -85,7 +85,7 @@ class RulesDetails extends PureComponent {
                       <AlgaehLabel label={{ forceLabel: "Late Coming Rule" }} />
                     </span>
                   </label>
-                </div>
+                </div> */}
 
                 <div
                   className="col-3 customCheckbox form-group"
