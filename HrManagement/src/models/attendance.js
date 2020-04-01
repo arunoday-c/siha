@@ -8482,7 +8482,8 @@ function processBulkAtt_Normal(data) {
                 const AttenResult = result;
                 //present month
                 if (AttenResult.length > 0) {
-                  for (let i = 0; i < AttenResult.length; i++) {
+                  const at_leng = AttenResult.length;
+                  for (let i = 0; i < at_leng; i++) {
                     let shortage_time = 0;
                     let shortage_min = 0;
                     let ot_time = 0;
