@@ -7191,15 +7191,40 @@ function generateExcelTimesheet(input) {
           ) {
             color = "#ff0000";
           }
-          emp["data"].push({
-            attendance_date: attendance_date,
-            status: TimeSheetUploaded.status,
-            [moment(attendance_date, "YYYY-MM-DD").format(
-              "YYYYMMDD"
-            )]: TimeSheetUploaded.worked_hours,
-            isTimeSheet: "Y",
-            color: color
-          });
+          // emp["data"].push({
+          //   attendance_date: attendance_date,
+          //   status: TimeSheetUploaded.status,
+          //   [moment(attendance_date, "YYYY-MM-DD").format(
+          //     "YYYYMMDD"
+          //   )]: TimeSheetUploaded.worked_hours,
+          //   isTimeSheet: "Y",
+          //   color: color
+          // });
+
+          if (
+            TimeSheetUploaded.status == "PL" ||
+            TimeSheetUploaded.status == "UL"
+          ) {
+            emp["data"].push({
+              attendance_date: attendance_date,
+              status: TimeSheetUploaded.status,
+              [moment(attendance_date, "YYYY-MM-DD").format(
+                "YYYYMMDD"
+              )]: TimeSheetUploaded.status,
+              isTimeSheet: "Y",
+              color: color
+            });
+          } else {
+            emp["data"].push({
+              attendance_date: attendance_date,
+              status: TimeSheetUploaded.status,
+              [moment(attendance_date, "YYYY-MM-DD").format(
+                "YYYYMMDD"
+              )]: TimeSheetUploaded.worked_hours,
+              isTimeSheet: "Y",
+              color: color
+            });
+          }
         } else {
           // emp["data"].push({
           //   attendance_date: attendance_date,
@@ -7394,17 +7419,46 @@ function generateProjectRosterTimesheet(input) {
             ) {
               color = "#ff0000";
             }
-            outputArray.push({
-              attendance_date: attendance_date,
-              status: TimeSheetUploaded.status,
-              [moment(attendance_date, "YYYY-MM-DD").format(
-                "YYYYMMDD"
-              )]: TimeSheetUploaded.worked_hours,
-              project_id: TimeSheetUploaded.project_id,
-              project_desc: TimeSheetUploaded.project_desc,
-              isTimeSheet: "Y",
-              color: color
-            });
+            // outputArray.push({
+            //   attendance_date: attendance_date,
+            //   status: TimeSheetUploaded.status,
+            //   [moment(attendance_date, "YYYY-MM-DD").format(
+            //     "YYYYMMDD"
+            //   )]: TimeSheetUploaded.worked_hours,
+            //   project_id: TimeSheetUploaded.project_id,
+            //   project_desc: TimeSheetUploaded.project_desc,
+            //   isTimeSheet: "Y",
+            //   color: color
+            // });
+
+            if (
+              TimeSheetUploaded.status == "PL" ||
+              TimeSheetUploaded.status == "UL"
+            ) {
+              outputArray.push({
+                attendance_date: attendance_date,
+                status: TimeSheetUploaded.status,
+                [moment(attendance_date, "YYYY-MM-DD").format(
+                  "YYYYMMDD"
+                )]: TimeSheetUploaded.status,
+                project_id: TimeSheetUploaded.project_id,
+                project_desc: TimeSheetUploaded.project_desc,
+                isTimeSheet: "Y",
+                color: color
+              });
+            } else {
+              outputArray.push({
+                attendance_date: attendance_date,
+                status: TimeSheetUploaded.status,
+                [moment(attendance_date, "YYYY-MM-DD").format(
+                  "YYYYMMDD"
+                )]: TimeSheetUploaded.worked_hours,
+                project_id: TimeSheetUploaded.project_id,
+                project_desc: TimeSheetUploaded.project_desc,
+                isTimeSheet: "Y",
+                color: color
+              });
+            }
           } else {
             const ProjAssgned = emp.find(e => {
               return e.attendance_date == attendance_date;
