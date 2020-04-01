@@ -1080,9 +1080,9 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
       window.open(origin);
-      window.document.title = rpt_desc;
+      // window.document.title = rpt_desc;
     }
   });
 };

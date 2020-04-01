@@ -111,10 +111,6 @@ export const generateAdvanceRefundReceipt = (row, that) => {
       }
     },
     onSuccess: res => {
-
-      const url = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${url}&filename=Receipt`;
-      window.open(origin);
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -124,7 +120,11 @@ export const generateAdvanceRefundReceipt = (row, that) => {
       // myWindow.document.write(
       //   "<iframe src= '" + url + "' width='100%' height='100%' />"
       // );
-      // myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName ="Receipt"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Receipt`;
+      window.open(origin);
+     
     }
   });
 };

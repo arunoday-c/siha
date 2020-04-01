@@ -36,7 +36,9 @@ export default class Notifications extends Component {
   componentDidMount() {
     // use fat arrow functions as callbacks to inherit "this"
     const check = Array.isArray(this.context.userMenu);
-    if (this.socket.connected) {
+    debugger;
+    console.log(this.context.socket);
+    if (this.context.socket.connected) {
       this.socket.emit("authentication", {
         token: this.context.userToken,
         moduleList: check

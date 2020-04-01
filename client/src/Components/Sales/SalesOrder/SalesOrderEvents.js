@@ -429,9 +429,10 @@ const generateSalesOrderReport = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.sales_order_number}-Sales Order Report`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
-      window.document.title = "Sales Order";
+      // window.document.title = "Sales Order";
     }
   });
 };
@@ -459,10 +460,11 @@ const generatePOReceiptNoPrice = data => {
       }
     },
     onSuccess: res => {
+      
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sales Order Report`;
       window.open(origin);
-      window.document.title = "Sales Order Report";
+      // window.document.title = "Sales Order Report";
     }
   });
 };

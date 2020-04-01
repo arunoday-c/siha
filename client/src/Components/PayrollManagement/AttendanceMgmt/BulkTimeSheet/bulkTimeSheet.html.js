@@ -189,46 +189,48 @@ function BulkTimeSheet(props) {
                   <ol dangerouslySetInnerHTML={{ __html: message }} />
                 </div>
               ) : (
-                <table id="bulkTimeSheetPreview">
-                  <thead>
-                    <tr>
-                      <th>Emp Name & Code</th>
-                      {dates.map((item, index) => (
-                        <th key={item}>
-                          <span>
-                            {moment(item, "YYYY-MM-DD").format("ddd")}
-                          </span>
-                          <br />
-                          <span>
-                            {moment(item, "YYYY-MM-DD").format("DD/MMM")}
-                          </span>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((item, index) => (
-                      <tr key={item.employee_id}>
-                        <td>
-                          <span>{item.employee_name}</span>
-                          <small>{item.employee_code}</small>
-                        </td>
-                        {item.roster.map((itm, indx) => {
-                          return (
-                            <TableCells
-                              itm={itm}
-                              indx={indx}
-                              key={`${item.employee_id}_${itm.attendance_date}`}
-                              employee_name={item.employee_name}
-                              editingProjectRoster={editingProjectRoster}
-                              setSelectedTD={selectedITD}
-                            />
-                          );
-                        })}
+                <div className="bulkTimeScroll">
+                  <table id="bulkTimeSheetPreview">
+                    <thead>
+                      <tr>
+                        <th className="fixed freeze">Emp Name & Code</th>
+                        {dates.map((item, index) => (
+                          <th key={item} className="fixed freeze_vertical">
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("ddd")}
+                            </span>
+                            <br />
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("DD/MMM")}
+                            </span>
+                          </th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {data.map((item, index) => (
+                        <tr key={item.employee_id}>
+                          <td className="fixed freeze">
+                            <span>{item.employee_name}</span>
+                            <small>{item.employee_code}</small>
+                          </td>
+                          {item.roster.map((itm, indx) => {
+                            return (
+                              <TableCells
+                                itm={itm}
+                                indx={indx}
+                                key={`${item.employee_id}_${itm.attendance_date}`}
+                                employee_name={item.employee_name}
+                                editingProjectRoster={editingProjectRoster}
+                                setSelectedTD={selectedITD}
+                              />
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
           </div>

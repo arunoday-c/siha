@@ -164,16 +164,10 @@ class PatientProfile extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
-
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Consent Form";
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=General Consent Form`;
+        window.open(origin);
+        // window.document.title = "Consent Form";
       }
     });
   }
@@ -209,16 +203,11 @@ class PatientProfile extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
-
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Consent Form";
+        const urlBlob = URL.createObjectURL(res.data);
+        const documentName = "Medical Consent Form"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
+        window.open(origin);
+        
       }
     });
   }

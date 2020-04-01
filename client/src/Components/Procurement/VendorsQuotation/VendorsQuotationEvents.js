@@ -303,8 +303,10 @@ const generateVendorQuotation = data => {
     headers: {
       Accept: "blob"
     },
+    
     others: { responseType: "blob" },
     data: {
+      
       report: {
         reportName:
           data.quotation_for === "PHR"
@@ -314,16 +316,23 @@ const generateVendorQuotation = data => {
           {
             name: "vendor_quotation_number",
             value: data.vendor_quotation_number
+            
+
           }
+          
         ],
+        
         outputFileType: "PDF"
       }
+      
     },
     onSuccess: res => {
+      
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.vendor_quotation_number}-Vendor Quotation`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Vendor Quotation";
+      // window.document.title = "Vendor Quotation";
     }
   });
 };

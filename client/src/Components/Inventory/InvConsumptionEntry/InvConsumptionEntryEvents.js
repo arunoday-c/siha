@@ -107,9 +107,10 @@ export default function ConsumptionItemsEvents() {
         },
         onSuccess: res => {
           const urlBlob = URL.createObjectURL(res.data);
-          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${consumption_number}-Consumption Receipt - Inventory`
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
           window.open(origin);
-          window.document.title = "Consumption Receipt - Inventory";
+          // window.document.title = "Consumption Receipt - Inventory";
         }
       });
     }

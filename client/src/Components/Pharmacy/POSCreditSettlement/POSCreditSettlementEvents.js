@@ -408,9 +408,10 @@ const generatePOSCreditSettlementReceipt = $this => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${$this.pos_credit_number}-Pharmacy Credit Settlement - Receipt`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Pharmacy Credit Settlement - Receipt";
+      // window.document.title = "Pharmacy Credit Settlement - Receipt";
     }
   });
 };

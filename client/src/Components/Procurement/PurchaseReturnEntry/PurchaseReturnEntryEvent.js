@@ -427,9 +427,11 @@ const generatePOReceipt = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Purchase Order Receipt";
+      // window.document.title = "Purchase Order Receipt";
     }
   });
 };
@@ -461,9 +463,11 @@ const generatePOReceiptNoPrice = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.purchase_return_number}-Purchase Order Return Receipt`
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Purchase Order Return ReceipT";
+      // window.document.title = "Purchase Order Return Receipt";
     }
   });
 };

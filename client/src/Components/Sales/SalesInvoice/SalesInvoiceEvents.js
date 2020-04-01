@@ -160,9 +160,10 @@ const generateSalesInvoiceReport = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.invoice_number}-Invoice Report`
+            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
-      window.document.title = "Invoice Report";
+      // window.document.title = "Invoice Report";
     }
   });
 };

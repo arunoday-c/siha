@@ -180,16 +180,10 @@ class SickLeave extends Component {
               }
             },
             onSuccess: res => {
-              const url = URL.createObjectURL(res.data);
-              let myWindow = window.open(
-                "{{ product.metafields.google.custom_label_0 }}",
-                "_blank"
-              );
-
-              myWindow.document.write(
-                "<iframe src= '" + url + "' width='100%' height='100%' />"
-              );
-              myWindow.document.title = "Sick Leave";
+              const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sick Leave`;
+      window.open(origin);
+              // window.document.title = "";
             }
           });
         }

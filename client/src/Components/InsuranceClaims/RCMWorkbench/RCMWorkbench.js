@@ -245,16 +245,19 @@ class RCMWorkbench extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
+        // const url = URL.createObjectURL(res.data);
+        // let myWindow = window.open(
+        //   "{{ product.metafields.google.custom_label_0 }}",
+        //   "_blank"
+        // );
 
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Algaeh Merdge";
+        // myWindow.document.write(
+        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+        // );
+        const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh Merdge`;
+      window.open(origin);
+        // window.document.title = "Algaeh Merdge";
         AlgaehLoader({ show: false });
       },
       onFailure: error => {
@@ -390,11 +393,14 @@ class RCMWorkbench extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "prevalidate.pdf");
-        link.click();
+        // const url = URL.createObjectURL(res.data);
+        // const link = document.createElement("a");
+        // link.setAttribute("href", url);
+        // link.setAttribute("download", ".pdf");
+        // link.click();
+        const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Prevalidation`;
+      window.open(origin);
       }
     });
   }

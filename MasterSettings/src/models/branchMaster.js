@@ -9,13 +9,14 @@ export default {
       if (req.userIdentity.role_type != "GN") {
         const _mysql = new algaehMysql();
         const input = req.body;
+        input.algaeh_api_auth_id = 1;
         _mysql
           .executeQuery({
             query:
               "INSERT INTO hims_d_hospital (hospital_code, default_nationality, default_country, default_currency, \
                 hospital_name, hospital_address, requied_emp_id, algaeh_api_auth_id, created_date, created_by, \
-                updated_date, updated_by) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                updated_date, updated_by,organization_id ) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.hospital_code,
               input.default_nationality,
@@ -28,7 +29,8 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.organization_id
             ],
             printQuery: true
           })

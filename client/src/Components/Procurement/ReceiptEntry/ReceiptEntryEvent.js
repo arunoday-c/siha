@@ -504,9 +504,9 @@ const generateReceiptEntryReport = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Receipt Entry Report`;
       window.open(origin);
-      window.document.title = "Receipt Entry Report";
+      // window.document.title = "Receipt Entry Report";
     }
   });
 };

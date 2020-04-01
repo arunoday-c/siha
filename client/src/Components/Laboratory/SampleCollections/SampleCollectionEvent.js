@@ -82,9 +82,7 @@ const printBarcode = ($this, row, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${url}&filename=Specimen Barcode`;
-      window.open(origin);
+      // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
       //   "_blank"
@@ -93,7 +91,10 @@ const printBarcode = ($this, row, e) => {
       // myWindow.document.write(
       //   "<iframe src= '" + url + "' width='100%' height='100%' />"
       // );
-      // myWindow.document.title = "Specimen Barcode";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+      window.open(origin);
+      // window.document.title = "Specimen Barcode";
     }
   });
 };
