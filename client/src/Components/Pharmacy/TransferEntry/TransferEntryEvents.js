@@ -133,9 +133,10 @@ const generateMaterialTransPhar = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.transfer_number}-Material Transfer Receipt`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
-      window.document.title = "Material Transfer Receipt";
+      // window.document.title = "Material Transfer Receipt";
     }
   });
 };

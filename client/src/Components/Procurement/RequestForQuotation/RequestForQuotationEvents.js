@@ -327,9 +327,9 @@ const generateRequestQuotation = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Quotation Request`;
       window.open(origin);
-      window.document.title = "Quotation Request";
+      // window.document.title = "Quotation Request";
     }
   });
 };

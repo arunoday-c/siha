@@ -269,9 +269,10 @@ const generateDispatchReport = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.dispatch_note_number}-Dispatch Note Report`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Dispatch Note Report";
+      // window.document.title = "Dispatch Note Report";
     }
   });
 };

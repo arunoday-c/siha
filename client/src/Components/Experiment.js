@@ -275,16 +275,20 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                const url = URL.createObjectURL(res.data);
-                let myWindow = window.open(
-                  "{{ product.metafields.google.custom_label_0 }}",
-                  "_blank"
-                );
+                // const url = URL.createObjectURL(res.data);
+                // let myWindow = window.open(
+                //   "{{ product.metafields.google.custom_label_0 }}",
+                //   "_blank"
+                // );
 
-                myWindow.document.write(
-                  "<iframe src= '" + url + "' width='100%' height='100%' />"
-                );
-                myWindow.document.title = "Algaeh Merdge";
+                // myWindow.document.write(
+                //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+                // );
+                const urlBlob = URL.createObjectURL(res.data);
+                const documentName = "Algaeh Merdge"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
+      window.open(origin);
+                ;
               }
             });
           }}

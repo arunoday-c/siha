@@ -1189,24 +1189,29 @@
           throw new Error("Not implemented: initPassiveLoading");
         },
         setTitleUsingUrl: function setTitleUsingUrl() {
-          var url =
-            arguments.length > 0 && arguments[0] !== undefined
-              ? arguments[0]
-              : "";
-          this.url = url;
-          this.baseUrl = url.split("#")[0];
-          var title = (0, _ui_utils.getPDFFileNameFromURL)(url, "");
-
-          if (!title) {
-            try {
-              title =
-                decodeURIComponent((0, _pdfjsLib.getFilenameFromUrl)(url)) ||
-                url;
-            } catch (ex) {
-              title = url;
-            }
-          }
-
+        //   var url =
+        //     arguments.length > 0 && arguments[0] !== undefined
+        //       ? arguments[0]
+        //       : "";
+        //  this.url = url;
+       
+        //  this.baseUrl = url.split("#")[0];
+       
+        //  var title = (0, _ui_utils.getPDFFileNameFromURL)(url, "");
+       
+        //   if (!title) {
+        //     try {
+        //       title =
+        //         decodeURIComponent((0, _pdfjsLib.getFilenameFromUrl)(url)) ||
+        //         url;
+        //     } catch (ex) {
+        //       console.log("exxxxx")
+        //       title = url;
+        //     }
+        //   }
+        const urlParams = new URLSearchParams(window.location.search);
+        const myParam = urlParams.get('filename');
+        var title =myParam ===null||myParam ===""?"document":myParam;
           this.setTitle(title);
         },
         setTitle: function setTitle(title) {

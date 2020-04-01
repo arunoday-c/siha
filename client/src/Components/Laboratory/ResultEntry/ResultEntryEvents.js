@@ -40,7 +40,7 @@ export function generateLabResultReport(data) {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Hematology Test Report`;
       window.open(origin);
     }
   });
