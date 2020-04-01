@@ -8100,9 +8100,9 @@ function mergeTimesheetData(input) {
             case "HPL":
               if (day["worked_status"] == day["status"]) {
                 insertArray.push({
-                  worked_hours: 0,
-                  hours: 0,
-                  minutes: 0,
+                  worked_hours: HALF_HR + "." + HALF_MIN,
+                  hours: HALF_HR,
+                  minutes: HALF_MIN,
                   actual_hours: HALF_HR,
                   actual_minutes: HALF_MIN,
                   employee_id: day.employee_id,
