@@ -66,6 +66,11 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "specimenBarcode",
         reportParams: [
           {

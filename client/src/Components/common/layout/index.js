@@ -68,31 +68,27 @@ export default function Layout({ path, noSecurityCheck, children }) {
 
   return (
     <>
-      {pageLoading === true ? (
-        <>
-          <Menu />
-          <main
-            className={`mainPageArea container-fluid ${
-              userLanguage === "en"
-                ? "english_component"
-                : userLanguage + "_component"
-            }`}
-            id="hisapp"
-          >
-            {/* {checkHasAccessToPage() ? ( */}
-            <>{children}</>
-            {/* ) : (
-              <Result
-                status="403"
-                title="403"
-                subTitle="Sorry, you are not authorized to access this page."
-              />
-            )} */}
-          </main>
-        </>
-      ) : (
-        <center>{text}</center>
-      )}
+      <Menu />
+      <main
+        className={`mainPageArea container-fluid ${
+          userLanguage === "en"
+            ? "english_component"
+            : userLanguage + "_component"
+        }`}
+        id="hisapp"
+      >
+        {pageLoading ? <>{children}</> : <center>{text}</center>}
+      </main>
     </>
   );
 }
+
+/* {checkHasAccessToPage() ? ( 
+  <>{children}</>
+ ) : (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Sorry, you are not authorized to access this page."
+      />
+    )} */

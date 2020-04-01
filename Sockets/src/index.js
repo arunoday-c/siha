@@ -1,3 +1,5 @@
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 import http from "http";
 import cors from "cors";
 import keys from "algaeh-keys";

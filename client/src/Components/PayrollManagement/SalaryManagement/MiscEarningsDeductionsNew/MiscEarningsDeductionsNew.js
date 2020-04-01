@@ -42,7 +42,7 @@ export default class MiscEarningsDeductionsNew extends Component {
     };
     this.getEarnDed("E");
     this.getHospitals();
-    this.getSubDepts();
+    // this.getSubDepts();
   }
 
   static contextType = MainContext;
@@ -54,7 +54,7 @@ export default class MiscEarningsDeductionsNew extends Component {
     });
 
     getEmpGroups(data => this.setState({ empGroups: data }));
-    getBranchWiseDepartments({ hospital_id: this.state.hospital_id }, data =>
+    getBranchWiseDepartments({ hospital_id: userToken.hims_d_hospital_id }, data =>
       this.setState({
         allDepartments: data
       })
@@ -101,7 +101,7 @@ export default class MiscEarningsDeductionsNew extends Component {
         }
       },
 
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -227,22 +227,22 @@ export default class MiscEarningsDeductionsNew extends Component {
               });
             }
           } else if (!res.data.success) {
+            this.setState({
+              loading: true
+            });
             swalMessage({
               title: res.data.records.message,
               type: "warning"
             });
-            this.setState({
-              loading: false
-            });
           }
         },
         onFailure: err => {
+          this.setState({
+            loading: true
+          });
           swalMessage({
             title: err.message,
             type: "error"
-          });
-          this.setState({
-            loading: false
           });
         }
       });
@@ -360,14 +360,14 @@ export default class MiscEarningsDeductionsNew extends Component {
 
     type === "B"
       ? (data = {
-          component_type: type,
-          component_category: "E",
-          miscellaneous_component: "Y"
-        })
+        component_type: type,
+        component_category: "E",
+        miscellaneous_component: "Y"
+      })
       : (data = {
-          component_category: type,
-          miscellaneous_component: "Y"
-        });
+        component_category: type,
+        miscellaneous_component: "Y"
+      });
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
@@ -685,8 +685,8 @@ export default class MiscEarningsDeductionsNew extends Component {
                         {!this.state.loading ? (
                           <span>Load</span>
                         ) : (
-                          <i className="fas fa-spinner fa-spin" />
-                        )}
+                            <i className="fas fa-spinner fa-spin" />
+                          )}
                       </button>
                     </div>
                   </div>
@@ -781,10 +781,10 @@ export default class MiscEarningsDeductionsNew extends Component {
                                       Processed
                                     </span>
                                   ) : (
-                                    <span className="badge badge-warning">
-                                      Not Processed
+                                      <span className="badge badge-warning">
+                                        Not Processed
                                     </span>
-                                  )}
+                                    )}
                                 </span>
                               );
                             },
@@ -906,8 +906,8 @@ export default class MiscEarningsDeductionsNew extends Component {
                           allowDelete: false
                         }}
                         events={{
-                          onEdit: () => {},
-                          onDelete: () => {},
+                          onEdit: () => { },
+                          onDelete: () => { },
                           onDone: this.addEarningsForEmployee.bind(this)
                         }}
                       />

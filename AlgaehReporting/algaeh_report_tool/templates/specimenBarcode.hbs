@@ -1,9 +1,9 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
-<div class="barcodeSpecimen">
-  <img src={{barcode "code128" header.lab_id_number}}  />
-  <p style="width:100%;margin-bottom:3px;font-size:12px;">{{header.full_name}}</p>
-  <p>{{header.patient_code}}</p>
-  <p>{{header.age_in_years}}Y {{header.age_in_months}}M {{header.age_in_days}}D / {{header.gender}}</p>
-  <!-- <p>{{header.registration_date}}</p>
-  <p>{{header.description}}</p> -->
+<div class="barcodeLine">
+
+  <small class="small-top-left">{{header.full_name}}</small>
+  <img src={{barcode "code128" header.lab_id_number false }} />
+  <small class="small-left"><b>{{header.patient_code}}</b></small>
+  <small class="small-right">{{header.age_in_years}}Y {{header.age_in_months}}M {{header.age_in_days}}D /
+    {{header.gender}}</small>
 </div>

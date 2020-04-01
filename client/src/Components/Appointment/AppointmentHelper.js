@@ -13,7 +13,7 @@ export function generateTimeslotsForDoctor(data) {
   let result = [];
   let count = 0;
   let newFrom = from_work_hr.clone();
-  for (;;) {
+  for (; ;) {
     let isBreak = false;
 
     newFrom = count === 0 ? newFrom : newFrom.add(slot, "minutes");
