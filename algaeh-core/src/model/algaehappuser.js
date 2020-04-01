@@ -4,7 +4,7 @@ import httpStatus from "../utils/httpStatus";
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
 import _ from "lodash";
-
+import moment from "moment";
 const keyPath = require("algaeh-keys/keys");
 
 const { whereCondition, releaseDBConnection, selectStatement } = utils;
@@ -82,10 +82,10 @@ let getLoginUserMasterOLD = (req, res, next) => {
         inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id inner join algaeh_d_app_roles R on  \
         RU.role_id=R.app_d_app_roles_id inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
         where E.record_status='A' and U.record_status='A' " +
-        adminUSer +
-        "and " +
-        where.condition +
-        " order by algaeh_m_role_user_mappings_id desc",
+          adminUSer +
+          "and " +
+          where.condition +
+          " order by algaeh_m_role_user_mappings_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -843,10 +843,11 @@ let createUserLogin = (req, res, next) => {
           })
           .then(result => {
             if (result.insertId != null && result.insertId != undefined) {
-              let new_password = generatePwd(); //"12345";
+              let new_password = generatePwd(input.username); //"12345";
               // if (process.env.NODE_ENV == "production") {
               //   new_password = generatePwd();
               // }
+              console.log("new_password", new_password);
               _mysql
                 .executeQuery({
                   query:
@@ -1318,10 +1319,13 @@ export default {
   verifyEmployeeEmailID
 };
 
-function generatePwd() {
-  return Math.random()
-    .toString(36)
-    .slice(-8);
+function generatePwd(userName) {
+  const first = userName.substring(0, 3).toLowerCase();
+  const mmyy = moment().format("MMYY");
+  return `${first}${mmyy}`;
+  // return Math.random()
+  //   .toString(36)
+  //   .slice(-8);
 }
 
 function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
@@ -1332,14 +1336,22 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       name: n_name,
       Password: n_Password
     };
+    const proxy =
+      process.env.EMAIL_PROXY === undefined
+        ? {}
+        : { proxy: process.env.EMAIL_PROXY };
+    const pass =
+      process.env.EMAIL_PASS === undefined
+        ? "heagla100%"
+        : process.env.EMAIL_PASS;
     let transporter = nodemailer.createTransport({
       service: "gmail",
       host: "smtp.gmail.com",
       secure: "false",
-      port: "465",
+      port: 465,
       auth: {
         user: "we@algaeh.com",
-        pass: "heagla100%"
+        pass: pass
       }
     });
 
@@ -1358,7 +1370,6 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
 
     let mailOptions = {
       from: "we@algaeh.com",
-      // to: "irfan.algaeh@gmail.com",
       to: n_to_mail,
       subject: "HRMS Application Credentials",
       template: "index",
@@ -1368,7 +1379,7 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       }
     };
 
-    transporter.sendMail(mailOptions, function (e, r) {
+    transporter.sendMail(mailOptions, function(e, r) {
       transporter.close();
       if (e) {
         console.log(e);

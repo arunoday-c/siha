@@ -94,6 +94,7 @@ class LoginUsers extends Component {
       current_user_type: userToken.user_type
     });
   }
+
   searchSelect(data) {
     const email =
       data.work_email !== null && data.work_email !== ""
@@ -768,7 +769,6 @@ class LoginUsers extends Component {
                           }}
                         />
                       )}
-
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
