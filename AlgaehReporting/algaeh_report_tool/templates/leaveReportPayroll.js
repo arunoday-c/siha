@@ -14,6 +14,10 @@ const executePDF = function executePDFMethod(options) {
 
       //utilities.logger().log("input: ", input);
 
+      if (input.hospital_id > 0) {
+        str += ` and E.hospital_id=${input.hospital_id}`;
+      }
+
       if (input.hims_d_leave_id > 0) {
         str += ` and leave_id=${input.hims_d_leave_id}`;
       }
@@ -58,8 +62,8 @@ const executePDF = function executePDFMethod(options) {
          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
          left join hims_d_department D on SD.department_id=D.hims_d_department_id \
          left join hims_f_employee_annual_leave EAL on EAL.leave_application_id=LA.hims_f_leave_application_id \
-         left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\          	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
-
+         left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\ 
+                  	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
 			   where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)) ${is_local}	${str};`,
           values: [
             input.from_date,
