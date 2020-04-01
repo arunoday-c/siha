@@ -114,7 +114,7 @@ export function generatePDFReport(req, res) {
               .showcompay{float:right;padding-right:5px;font-size: 08px;}
               </style>
               <div class="pdffooter">
-              <span class="showreportname">${report_name_for_header}</span>
+              <span class="showreportname">System Generated Report - ${report_name_for_header}</span>
               <span>Page </span>
               <span class="pageNumber"></span> / <span class="totalPages"></span>
               <span class="showcompay">Powered by Algaeh Techonologies.</span>

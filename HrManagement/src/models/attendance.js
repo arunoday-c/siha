@@ -7191,15 +7191,40 @@ function generateExcelTimesheet(input) {
           ) {
             color = "#ff0000";
           }
-          emp["data"].push({
-            attendance_date: attendance_date,
-            status: TimeSheetUploaded.status,
-            [moment(attendance_date, "YYYY-MM-DD").format(
-              "YYYYMMDD"
-            )]: TimeSheetUploaded.worked_hours,
-            isTimeSheet: "Y",
-            color: color
-          });
+          // emp["data"].push({
+          //   attendance_date: attendance_date,
+          //   status: TimeSheetUploaded.status,
+          //   [moment(attendance_date, "YYYY-MM-DD").format(
+          //     "YYYYMMDD"
+          //   )]: TimeSheetUploaded.worked_hours,
+          //   isTimeSheet: "Y",
+          //   color: color
+          // });
+
+          if (
+            TimeSheetUploaded.status == "PL" ||
+            TimeSheetUploaded.status == "UL"
+          ) {
+            emp["data"].push({
+              attendance_date: attendance_date,
+              status: TimeSheetUploaded.status,
+              [moment(attendance_date, "YYYY-MM-DD").format(
+                "YYYYMMDD"
+              )]: TimeSheetUploaded.status,
+              isTimeSheet: "Y",
+              color: color
+            });
+          } else {
+            emp["data"].push({
+              attendance_date: attendance_date,
+              status: TimeSheetUploaded.status,
+              [moment(attendance_date, "YYYY-MM-DD").format(
+                "YYYYMMDD"
+              )]: TimeSheetUploaded.worked_hours,
+              isTimeSheet: "Y",
+              color: color
+            });
+          }
         } else {
           // emp["data"].push({
           //   attendance_date: attendance_date,
@@ -7394,17 +7419,46 @@ function generateProjectRosterTimesheet(input) {
             ) {
               color = "#ff0000";
             }
-            outputArray.push({
-              attendance_date: attendance_date,
-              status: TimeSheetUploaded.status,
-              [moment(attendance_date, "YYYY-MM-DD").format(
-                "YYYYMMDD"
-              )]: TimeSheetUploaded.worked_hours,
-              project_id: TimeSheetUploaded.project_id,
-              project_desc: TimeSheetUploaded.project_desc,
-              isTimeSheet: "Y",
-              color: color
-            });
+            // outputArray.push({
+            //   attendance_date: attendance_date,
+            //   status: TimeSheetUploaded.status,
+            //   [moment(attendance_date, "YYYY-MM-DD").format(
+            //     "YYYYMMDD"
+            //   )]: TimeSheetUploaded.worked_hours,
+            //   project_id: TimeSheetUploaded.project_id,
+            //   project_desc: TimeSheetUploaded.project_desc,
+            //   isTimeSheet: "Y",
+            //   color: color
+            // });
+
+            if (
+              TimeSheetUploaded.status == "PL" ||
+              TimeSheetUploaded.status == "UL"
+            ) {
+              outputArray.push({
+                attendance_date: attendance_date,
+                status: TimeSheetUploaded.status,
+                [moment(attendance_date, "YYYY-MM-DD").format(
+                  "YYYYMMDD"
+                )]: TimeSheetUploaded.status,
+                project_id: TimeSheetUploaded.project_id,
+                project_desc: TimeSheetUploaded.project_desc,
+                isTimeSheet: "Y",
+                color: color
+              });
+            } else {
+              outputArray.push({
+                attendance_date: attendance_date,
+                status: TimeSheetUploaded.status,
+                [moment(attendance_date, "YYYY-MM-DD").format(
+                  "YYYYMMDD"
+                )]: TimeSheetUploaded.worked_hours,
+                project_id: TimeSheetUploaded.project_id,
+                project_desc: TimeSheetUploaded.project_desc,
+                isTimeSheet: "Y",
+                color: color
+              });
+            }
           } else {
             const ProjAssgned = emp.find(e => {
               return e.attendance_date == attendance_date;
@@ -8100,9 +8154,9 @@ function mergeTimesheetData(input) {
             case "HPL":
               if (day["worked_status"] == day["status"]) {
                 insertArray.push({
-                  worked_hours: 0,
-                  hours: 0,
-                  minutes: 0,
+                  worked_hours: HALF_HR + "." + HALF_MIN,
+                  hours: HALF_HR,
+                  minutes: HALF_MIN,
                   actual_hours: HALF_HR,
                   actual_minutes: HALF_MIN,
                   employee_id: day.employee_id,
@@ -8482,7 +8536,8 @@ function processBulkAtt_Normal(data) {
                 const AttenResult = result;
                 //present month
                 if (AttenResult.length > 0) {
-                  for (let i = 0; i < AttenResult.length; i++) {
+                  const at_leng = AttenResult.length;
+                  for (let i = 0; i < at_leng; i++) {
                     let shortage_time = 0;
                     let shortage_min = 0;
                     let ot_time = 0;

@@ -85,9 +85,9 @@ class RadScheduledList extends Component {
       },
       onSuccess: res => {
         const urlBlob = URL.createObjectURL(res.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Radiology Report`;
         window.open(origin);
-        window.document.title = "Radiology Report";
+        // window.document.title = "Radiology Report";
       }
     });
   }

@@ -183,16 +183,19 @@ const printPrescription = (that, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Prescription";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+      window.open(origin);
+      // window.document.title = "Prescription";
     }
   });
 };

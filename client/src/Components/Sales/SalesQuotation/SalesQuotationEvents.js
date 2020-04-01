@@ -361,10 +361,12 @@ const generateSalesQuotation = ($this, data) => {
       }
     },
     onSuccess: res => {
+      // console.log("gg",data)
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.sales_quotation_number}-Sales Quotation Report`
+            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
-      window.document.title = "Sales Quotation Report";
+      // window.document.title = "Sales Quotation Report";
     }
   });
 };

@@ -195,7 +195,10 @@ function excelManualTimeSheet(req, res, next) {
                   cell.value == "HPL" ||
                   cell.value == "HUL"
                 ) {
-                  console.log("valueColor:", valueColor);
+                  if (cell.value == "PL" || cell.value == "UL") {
+                    cell.protection = { locked: true };
+                  }
+
                   cell.note = {
                     texts: [
                       {

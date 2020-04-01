@@ -119,9 +119,11 @@ const generateVendorQuotation = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.vendor_quotation_number}-Purchase Order Receipt`
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName} `;
       window.open(origin);
-      window.document.title = "Purchase Order Receipt";
+      // window.document.title = "Purchase Order Receipt";
     }
   });
 };

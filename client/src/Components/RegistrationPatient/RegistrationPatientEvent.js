@@ -370,7 +370,8 @@ const generateIdCard = $this => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${$this.state.patient_code}-ID Card`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
     }
   });

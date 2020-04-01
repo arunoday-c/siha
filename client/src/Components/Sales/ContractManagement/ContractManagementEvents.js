@@ -203,9 +203,10 @@ const generateContractReport = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.contract_number}-Contract`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Sales Order";
+      // window.document.title = "Sales Order";
     }
   });
 };

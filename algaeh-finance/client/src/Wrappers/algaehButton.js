@@ -40,13 +40,15 @@ export default class ButtonType extends PureComponent {
   }
 
   launchReport(data) {
-    let myWindow = window.open("", "", "width=800,height=500,left=200,top=200");
+    // let myWindow = window.open("", "", "width=800,height=500,left=200,top=200");
 
-    myWindow.document.write(
-      "<iframe src= '" + data + "' width='100%' height='100%' />"
-    );
-    myWindow.document.title = this.props.displayName;
-    myWindow.document.body.style.overflow = "hidden";
+    // myWindow.document.write(
+    //   "<iframe src= '" + data + "' width='100%' height='100%' />"
+    // );
+    // myWindow.document.title = this.props.displayName;
+    // myWindow.document.body.style.overflow = "hidden";
+    const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${data}&filename=${this.props.displayName}`;
+    window.open(origin);
   }
   componentWillUnmount() {
     if (this.externalWindow !== null) this.externalWindow.close();

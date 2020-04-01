@@ -127,9 +127,11 @@ const generateMaterialReqInv = (data, rpt_name, rpt_desc) => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.material_requisition_number}-Material Requisition - Inventory`
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Material Requisition - Inventory";
+      // window.document.title = "Material Requisition - Inventory";
     }
   });
 };

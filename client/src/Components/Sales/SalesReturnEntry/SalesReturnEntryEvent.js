@@ -303,9 +303,10 @@ const generateSalesInvoice = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      const reportName = `${data.sales_return_number}-Sales Quotation Report`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
-      window.document.title = "Return Entry";
+      // window.document.title = "Return Entry";
     }
   });
 };
