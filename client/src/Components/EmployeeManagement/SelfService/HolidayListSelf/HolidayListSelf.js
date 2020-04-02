@@ -11,15 +11,19 @@ export default class HolidayListSelf extends Component {
     this.state = {
       holidays: []
     };
-    this.getHolidayMaster();
   }
 
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    });
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => {
+        this.getHolidayMaster();
+      }
+    );
   }
   getHolidayMaster() {
     algaehApiCall({
@@ -28,7 +32,7 @@ export default class HolidayListSelf extends Component {
       method: "GET",
 
       data: {
-        hospital_id: "",
+        hospital_id: this.state.hospital_id, //"",
         type: "H"
       },
       onSuccess: res => {

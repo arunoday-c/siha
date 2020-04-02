@@ -4,13 +4,15 @@ import Dropzone from "react-dropzone";
 import {
   algaehApiCall,
   getCookie,
-  swalMessage
+  swalMessage,
+  cancelRequest
 } from "../../utils/algaehApiCall";
 // import noImage from "../../assets/images/no-image.jpg";
 import SelectNoImage from "./images";
 import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import Webcam from "react-webcam";
 export default class AlgaehFileUploader extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
 
@@ -94,26 +96,34 @@ export default class AlgaehFileUploader extends Component {
     // }
   }
   componentDidMount() {
-    if (this.props.onlyDragDrop === undefined) {
-      if (
-        this.props.onref !== undefined &&
-        typeof this.props.onref === "function"
-      ) {
-        this.props.onref(this);
-        this.getDisplayImage(this.props);
-      } else this.getDisplayImage(this.props);
-    } else {
-      this.setState({
-        filePreview: undefined
-      });
+    this._isMounted = true;
+    if (this._isMounted) {
+      if (this.props.onlyDragDrop === undefined) {
+        if (
+          this.props.onref !== undefined &&
+          typeof this.props.onref === "function"
+        ) {
+          this.props.onref(this);
+          this.getDisplayImage(this.props);
+        } else this.getDisplayImage(this.props);
+      } else {
+        this.setState({
+          filePreview: undefined
+        });
+      }
     }
   }
   componentWillUnmount() {
+    this._isMounted = false;
+    const { uniqueID } = this.props.serviceParameters;
+
     if (
       this.props.onref !== undefined &&
       typeof this.props.onref === "function"
-    )
+    ) {
       this.props.onref(undefined);
+      cancelRequest(uniqueID);
+    }
   }
   getDisplayImage(propsP) {
     const { uniqueID, fileType } = propsP.serviceParameters;
@@ -137,10 +147,14 @@ export default class AlgaehFileUploader extends Component {
       displayFileFromServer({
         uri: "/Document/get",
         module: "documentManagement",
+        cancelRequestId: uniqueID,
         fileType: fileType,
         destinationName: uniqueID,
         addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
         onFileSuccess: data => {
+          if (that._isMounted === false) {
+            return;
+          }
           if (propsP.events !== undefined) {
             if (typeof propsP.events.onSuccess === "function") {
               propsP.events.onSuccess(data);
@@ -158,6 +172,9 @@ export default class AlgaehFileUploader extends Component {
           }
         },
         onNoContent: () => {
+          if (that._isMounted === false) {
+            return;
+          }
           that.setState({
             filePreview: this.noImage,
             showLoader: false,
@@ -170,6 +187,9 @@ export default class AlgaehFileUploader extends Component {
               propsP.events.onFailure(data);
             }
           } else {
+            if (that._isMounted === false) {
+              return;
+            }
             that.setState({
               filePreview: this.noImage,
               showLoader: false,
@@ -184,6 +204,9 @@ export default class AlgaehFileUploader extends Component {
           propsP.events.onFailure();
         }
       } else {
+        if (that._isMounted === false) {
+          return;
+        }
         that.setState({
           filePreview: this.noImage,
           showLoader: false,

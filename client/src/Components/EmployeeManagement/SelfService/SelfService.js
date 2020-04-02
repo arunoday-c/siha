@@ -292,13 +292,7 @@ export default class SelfService extends Component {
                 />
               ),
               children: (
-                <>
-                  {console.log(
-                    "this.state.employee_details",
-                    this.state.employee_details
-                  )}
-                  <SelfPersonalDetails empData={this.state.employee_details} />
-                </>
+                <SelfPersonalDetails empData={this.state.employee_details} />
               ),
               componentCode: "SEL_PER_INF"
             },

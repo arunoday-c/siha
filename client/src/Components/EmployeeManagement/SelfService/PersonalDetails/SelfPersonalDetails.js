@@ -47,12 +47,6 @@ class SelfPersonalDetails extends Component {
       month: moment().format("M"),
       year: this.currentYear
     };
-
-    this.getFamilyDetails();
-    this.getIdDetails();
-    this.getIdTypes();
-    this.getEmployeeWorkExp();
-    this.getEmployeeEducation();
   }
 
   scrollToPosition(e) {
@@ -92,6 +86,11 @@ class SelfPersonalDetails extends Component {
   }
 
   componentDidMount() {
+    this.getFamilyDetails();
+    this.getIdDetails();
+    this.getIdTypes();
+    this.getEmployeeWorkExp();
+    this.getEmployeeEducation();
     let data = this.props.empData !== null ? this.props.empData : {};
     this.setState(data);
   }
@@ -180,9 +179,8 @@ class SelfPersonalDetails extends Component {
         // );
         const urlBlob = URL.createObjectURL(res.data);
         // const documentName="Salary Slip"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
-      window.open(origin);
-        
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
       }
     });
   }
