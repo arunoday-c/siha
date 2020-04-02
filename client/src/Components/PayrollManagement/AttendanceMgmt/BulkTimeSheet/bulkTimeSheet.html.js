@@ -156,7 +156,10 @@ function BulkTimeSheet(props) {
             const { rowID, cellID } = selectedTD;
             data[rowID]["roster"][cellID - 1]["project_id"] = project_id;
             data[rowID]["roster"][cellID - 1]["worked_hours"] = worked_hours;
-            data[rowID]["roster"][cellID - 1]["abbreviation"] = abbreviation;
+            if (abbreviation !== undefined) {
+              data[rowID]["roster"][cellID - 1]["abbreviation"] = abbreviation;
+            }
+
             setSelectedTD({});
             setData(data);
           }
@@ -217,7 +220,7 @@ function BulkTimeSheet(props) {
                           {item.roster.map((itm, indx) => {
                             return (
                               <TableCells
-                                itm={itm}
+                                itm={{ ...itm, project_id: item.project_id }}
                                 indx={indx}
                                 key={`${item.employee_id}_${itm.attendance_date}`}
                                 employee_name={item.employee_name}
@@ -270,7 +273,6 @@ function BulkTimeSheet(props) {
                     setLoadingProcess(false);
 
                     if (errorMessage.response !== undefined) {
-                      debugger;
                       const hasLi = errorMessage.response.data.message.includes(
                         "<li>"
                       );

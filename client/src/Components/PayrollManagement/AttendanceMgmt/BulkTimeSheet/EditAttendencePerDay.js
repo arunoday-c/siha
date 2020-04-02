@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import _ from "lodash";
-import moment from "moment";
+import moment, { min } from "moment";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
@@ -35,7 +35,20 @@ export default function EditAttendencePerDay(props) {
       onSuccess: response => {
         if (response.data.success) {
           setLoadingProcess(false);
-          onClose(response.data.result[0]);
+          if (response.data.result[0] === undefined) {
+            const split_hr_min = _workHr.toString().split(".");
+            let mins = "00";
+            if (split_hr_min.length > 1) {
+              mins =
+                split_hr_min[1].length === 1
+                  ? split_hr_min[1] + "0"
+                  : split_hr_min[1];
+            }
+            const hr_min = `${split_hr_min[0].substring(0, 2)}.${mins}`;
+            onClose({ project_id: _proID, worked_hours: hr_min });
+          } else {
+            onClose(response.data.result[0]);
+          }
         }
       },
       onFailure: error => {

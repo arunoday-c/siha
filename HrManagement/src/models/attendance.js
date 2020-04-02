@@ -5825,7 +5825,7 @@ export default {
                 _mysql
                   .executeQuery({
                     query: `select  hims_f_daily_time_sheet_id,E.employee_code,E.full_name, employee_id,attendance_date,
-                  status,worked_hours from hims_d_employee E
+                  status,worked_hours,T.project_id from hims_d_employee E
                 inner join hims_f_daily_time_sheet  T on E.hims_d_employee_id=T.employee_id 
                  and T.attendance_date between date(?) and date(?)  ${deptStr}
                 where E.hospital_id=? and E.suspend_salary <>'Y' and
@@ -5850,7 +5850,8 @@ export default {
                           const emp_details = {
                             employee_id: emp[0].employee_id,
                             employee_code: emp[0].employee_code,
-                            employee_name: emp[0].full_name
+                            employee_name: emp[0].full_name,
+                            project_id: emp[0].project_id
                           };
                           const data = [];
                           allDates.forEach(dat => {
