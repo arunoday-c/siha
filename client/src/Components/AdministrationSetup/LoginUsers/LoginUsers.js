@@ -909,11 +909,8 @@ class LoginUsers extends Component {
                               </span>
                             )}
                           </div>
-                          <div
-                            className="col-12 form-group"
-                            style={{ backgroundColor: "#ffffe6" }}
-                          >
-                            <strong>Suggested Username</strong>
+                          <div className="col-12 form-group userSuggcntr">
+                            <p>Suggested Username</p>
                             <ul>
                               {this.state.suggesteedUserNames.map(
                                 (item, index) => (

@@ -9,6 +9,25 @@
   .userNameExt {
     padding: 25px 0 0;
   }
+  .userSuggcntr {
+    font-size: 0.8rem;
+    background-color: #e9fffd;
+    padding: 10px;
+    p {
+      margin: 0;
+      font-weight: bold;
+    }
+    ul {
+      margin: 0 0 0 15px;
+      padding: 0;
+      list-style: square;
+      li {
+        margin: 0;
+        padding: 5px 0;
+        border-bottom: 1px solid #abc2c0;
+      }
+    }
+  }
 }
 .branchList {
   margin: 0;
