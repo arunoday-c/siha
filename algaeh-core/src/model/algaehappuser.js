@@ -1356,7 +1356,10 @@ export default {
 };
 
 function generatePwd(userName) {
-  const first = userName.substring(0, 3).toLowerCase();
+  const first = userName
+    .trim()
+    .substring(0, 4)
+    .toLowerCase();
   const mmyy = moment().format("MMYY");
   return `${first}${mmyy}`;
   // return Math.random()
