@@ -20,7 +20,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
-import { Button } from "algaeh-react-components";
+import { Button, Input } from "algaeh-react-components";
 class LoginUsers extends Component {
   _isMounted = false;
   constructor(props) {
@@ -40,8 +40,15 @@ class LoginUsers extends Component {
       verify_password: true,
       load_verify_email: false,
       employee_id: "",
-      editData: false
+      editData: false,
+      full_name: "",
+      enableSuggestions: false,
+      suggesteedUserNames: [],
+      checkavilablity: false,
+      employee_code: "",
+      loaduserNameCheck: false
     };
+    this.userNameIntervalId = undefined;
   }
 
   static contextType = MainContext;
@@ -94,7 +101,12 @@ class LoginUsers extends Component {
       current_user_type: userToken.user_type
     });
   }
-
+  onSuggestionClick(e) {
+    this.setState({
+      username: e.target.innerText,
+      checkavilablity: true
+    });
+  }
   searchSelect(data) {
     const email =
       data.work_email !== null && data.work_email !== ""
@@ -102,15 +114,43 @@ class LoginUsers extends Component {
         : data.email !== null && data.email !== ""
         ? data.email
         : "";
-    this.setState({
-      employee_id: data.hims_d_employee_id,
-      sub_department_id: data.sub_department_id,
-      full_name: data.full_name,
-      display_name: data.full_name,
-      username: data.full_name.split(" ")[0].toLowerCase(),
-      password_email: email,
-      verify_password: email === "" ? true : false
-    });
+    const username = data.full_name.split(" ")[0].toLowerCase();
+
+    this.setState(
+      {
+        employee_id: data.hims_d_employee_id,
+        sub_department_id: data.sub_department_id,
+        full_name: data.full_name,
+        display_name: data.full_name,
+        username: username,
+        password_email: email,
+        verify_password: email === "" ? true : false,
+        employee_code: data.employee_code
+      },
+      () => {
+        this.getVerifyUser(username, data.hims_d_employee_id)
+          .then(result => {
+            if (result === false) {
+              const dtl = data.employee_code.replace(/" "/g, "");
+              const suggestiveName = dtl.substring(dtl.length - 4);
+              this.setState({
+                enableSuggestions: true,
+                suggesteedUserNames: [suggestiveName, data.work_email],
+                checkavilablity: false
+              });
+            } else {
+              this.setState({
+                enableSuggestions: false,
+                suggesteedUserNames: [],
+                checkavilablity: false
+              });
+            }
+          })
+          .catch(() => {
+            this.setState({ enableSuggestions: false, checkavilablity: false });
+          });
+      }
+    );
   }
 
   resetSaveState() {
@@ -130,7 +170,12 @@ class LoginUsers extends Component {
       branch_desc: "",
       password_email: "",
       verify_password: true,
-      editData: false
+      editData: false,
+      enableSuggestions: false,
+      suggesteedUserNames: [],
+      checkavilablity: false,
+      employee_code: "",
+      loaduserNameCheck: false
     });
     this.getBranchDetail();
   }
@@ -250,6 +295,108 @@ class LoginUsers extends Component {
         });
       }
     });
+  }
+  getVerifyUser(username, hims_d_employee_id) {
+    return new Promise((resolve, reject) => {
+      algaehApiCall({
+        uri: "/algaehappuser/verifyUserNameExists",
+        method: "GET",
+        data: { username: username, hims_d_employee_id: hims_d_employee_id },
+        onSuccess: response => {
+          const { success } = response.data;
+          resolve(success);
+        },
+        onCatch: error => {
+          reject();
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    });
+  }
+
+  onChangeUser(e) {
+    const value = e.target.value.trim();
+    // const target = e.target;
+    e.persist();
+
+    const showLoading = value.length >= 4 ? { loaduserNameCheck: true } : {};
+
+    this.setState(
+      {
+        ...showLoading,
+        username: value
+      },
+      () => {
+        const dtl = this.state.employee_code.replace(/" "/g, "");
+        const suggestiveName = dtl.substring(dtl.length - 4);
+        if (value.length < 4) {
+          this.setState({
+            loaduserNameCheck: false,
+            enableSuggestions: true,
+            suggesteedUserNames: [suggestiveName, this.state.password_email],
+            checkavilablity: false
+          });
+          return;
+        }
+        const hims_d_employee_id = this.state.employee_id;
+        clearInterval(this.userNameIntervalId);
+        this.userNameIntervalId = setInterval(() => {
+          this.getVerifyUser(e.target.value.trim(), hims_d_employee_id)
+            .then(result => {
+              // const dtl = this.state.employee_code.replace(/" "/g, "");
+              // const suggestiveName = dtl.substring(dtl.length - 4);
+              if (result === false) {
+                this.setState({
+                  loaduserNameCheck: false,
+
+                  enableSuggestions: true,
+                  suggesteedUserNames: [
+                    suggestiveName,
+                    this.state.password_email
+                  ],
+                  checkavilablity: false
+                });
+              } else {
+                this.setState({
+                  loaduserNameCheck: false,
+                  enableSuggestions: true,
+                  checkavilablity: true,
+                  suggesteedUserNames: [
+                    suggestiveName,
+                    this.state.password_email
+                  ]
+                });
+              }
+            })
+            .catch(() => {
+              this.setState({
+                loaduserNameCheck: false,
+                checkavilablity: false,
+                loaduserNameCheck: false
+              });
+            });
+          clearInterval(this.userNameIntervalId);
+        }, 1000);
+      }
+    );
+    // }
+    // this.debouncedFn();
+    // } else {
+    //   this.setState(
+    //     {
+    //       username: value,
+    //       checkavilablity: false,
+    //       loaduserNameCheck: false
+    //     },
+    //     () => {
+    //       debugger;
+    //       target.focus();
+    //     }
+    //   );
+    // }
   }
 
   getGroups() {
@@ -475,7 +622,6 @@ class LoginUsers extends Component {
   }
 
   selectBranch(data, e) {
-    debugger;
     let branch_detail = this.state.branch_detail;
     let selecte_branch = _.find(
       branch_detail,
@@ -522,7 +668,10 @@ class LoginUsers extends Component {
       branch_detail: branch_detail,
       password_email: email,
       verify_password: email !== "" ? false : true,
-      editData: true
+      editData: true,
+      enableSuggestions: false,
+      checkavilablity: false,
+      suggesteedUserNames: []
       // branch_data: branch_data
     });
   }
@@ -537,6 +686,13 @@ class LoginUsers extends Component {
   }
 
   onVerifyEmailID() {
+    if (this.state.password_email === "") {
+      swalMessage({
+        title: "Please provide email address.",
+        type: "info"
+      });
+      return;
+    }
     this.setState({ load_verify_email: true }, () => {
       algaehApiCall({
         uri: "/algaehappuser/verifyEmployeeEmail",
@@ -572,7 +728,13 @@ class LoginUsers extends Component {
       display_name: "",
       username: "",
       branch_detail: [],
-      password_email: ""
+      password_email: "",
+      verify_password: true,
+      load_verify_email: false,
+      enableSuggestions: false,
+      suggesteedUserNames: [],
+      checkavilablity: false,
+      algaeh_d_app_user_id: null
     });
   }
 
@@ -689,7 +851,28 @@ class LoginUsers extends Component {
                   />
                   {!this.state.verify_password ? (
                     <>
-                      <AlagehFormGroup
+                      <div className="col-12 form-group">
+                        <label className="style_Label ">
+                          User Name<span className="imp">&nbsp;*</span>
+                        </label>
+                        <div
+                          algaeh_required="true"
+                          className="ui input txt-fld"
+                        >
+                          <Input.Search
+                            name="username"
+                            loading={this.state.loaduserNameCheck}
+                            value={this.state.username}
+                            disabled={
+                              this.state.algaeh_d_app_user_id === null
+                                ? false
+                                : true
+                            }
+                            onChange={this.onChangeUser.bind(this)}
+                          />
+                        </div>
+                      </div>
+                      {/* <AlagehFormGroup
                         div={{ className: "col-12 form-group" }}
                         label={{
                           fieldName: "username",
@@ -709,35 +892,58 @@ class LoginUsers extends Component {
                                 : true
                           }
                         }}
-                      />
-                      {/* <div
-                        className="col-12 form-group"
-                        style={{ textAlign: "center" }}
-                      >
-                        <span className=" badge badge-danger">
-                          This username is taken, Try Another.
-                        </span>
-                      </div>{" "}
-                      <div
-                        className="col-12 form-group"
-                        style={{ backgroundColor: "#ffffe6" }}
-                      >
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Suggested Username"
-                          }}
-                        />
-                        <h6>Abcd</h6>
-                      </div> */}
-                      {/* <div className="col-6 userNameExt">
-                        <span>
-                          <b>{this.getHospitalShortDesc()}</b>
-                        </span>
-                      </div> 
-                      this.state.PR_USER_TYPE.find(
-                        f => f.value === this.state.user_type
-                      ) === undefined &&
-                      */}
+                      /> */}
+                      {this.state.enableSuggestions === true ? (
+                        <>
+                          <div
+                            className="col-12 form-group"
+                            style={{ textAlign: "center" }}
+                          >
+                            {this.state.checkavilablity === false ? (
+                              <span className=" badge badge-danger">
+                                This username is taken, Try Another.
+                              </span>
+                            ) : (
+                              <span className=" badge badge-success">
+                                This username is available.
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className="col-12 form-group"
+                            style={{ backgroundColor: "#ffffe6" }}
+                          >
+                            <strong>Suggested Username</strong>
+                            <ul>
+                              {this.state.suggesteedUserNames.map(
+                                (item, index) => (
+                                  <li key={index}>
+                                    <span
+                                      style={{
+                                        textDecoration: "underline",
+                                        cursor: "pointer",
+                                        color: "blue"
+                                      }}
+                                      onClick={this.onSuggestionClick.bind(
+                                        this
+                                      )}
+                                    >
+                                      {item}
+                                    </span>
+                                    {this.state.username === item ? (
+                                      <i
+                                        style={{ marginLeft: "5%" }}
+                                        className="fas fa-check"
+                                      />
+                                    ) : null}
+                                  </li>
+                                )
+                              )}
+                            </ul>
+                          </div>
+                        </>
+                      ) : null}
+
                       {this.state.user_type === "AD" &&
                       this.state.current_user_type !== "SU" &&
                       this.state.editData === true ? (
@@ -913,7 +1119,8 @@ class LoginUsers extends Component {
                         </button>
                       </div>
                     </>
-                  ) : (
+                  ) : this.state.full_name !== "" &&
+                    this.state.password_email === "" ? (
                     <div className="col-12">
                       <Button
                         type="primary"
@@ -925,7 +1132,7 @@ class LoginUsers extends Component {
                         Verify Email
                       </Button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>

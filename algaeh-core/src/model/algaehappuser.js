@@ -1010,6 +1010,41 @@ let createUserLogin = (req, res, next) => {
   }
 };
 
+let verifyUserNameExists = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    const { username, hims_d_employee_id } = req.query;
+    // console.log("hims_d_employee_id", hims_d_employee_id);
+    _mysql
+      .executeQuery({
+        query: `select employee_id,username from algaeh_d_app_user where LOWER(username) = LOWER(?)`,
+        values: [username],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        const record = result.find(
+          f => String(f.employee_id) === hims_d_employee_id
+        );
+        console.log("record", record);
+        req.records =
+          result.length !== 0 && record === undefined
+            ? false
+            : result.length === 0 && record === undefined
+            ? true
+            : false;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 //created by irfan: to
 let changePassword = (req, res, next) => {
   try {
@@ -1316,7 +1351,8 @@ export default {
   getLoginUserMaster,
   changePassword,
   updateUser,
-  verifyEmployeeEmailID
+  verifyEmployeeEmailID,
+  verifyUserNameExists
 };
 
 function generatePwd(userName) {
@@ -1344,6 +1380,7 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       process.env.EMAIL_PASS === undefined
         ? "heagla100%"
         : process.env.EMAIL_PASS;
+
     let transporter = nodemailer.createTransport({
       service: "gmail",
       host: "smtp.gmail.com",

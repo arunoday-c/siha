@@ -13,7 +13,8 @@ const {
   getLoginUserMaster,
   changePassword,
   updateUser,
-  verifyEmployeeEmailID
+  verifyEmployeeEmailID,
+  verifyUserNameExists
 } = userModel;
 
 export default ({ config, db }) => {
@@ -172,6 +173,14 @@ export default ({ config, db }) => {
     res.status(httpStatus.ok).json({
       success: true,
       message: `Successfully verified and updated email to employee.`
+    });
+  });
+  api.get("/verifyUserNameExists", verifyUserNameExists, (req, res) => {
+    const exists = req.records;
+    res.status(httpStatus.ok).json({
+      success: exists,
+      message:
+        exists === true ? `User id is already exists please use another id` : ""
     });
   });
 
