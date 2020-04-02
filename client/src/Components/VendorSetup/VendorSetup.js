@@ -585,38 +585,6 @@ class VendorSetup extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-3 mandatory" }}
                     label={{
-                      fieldName: "bank_name",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "bank_name",
-                      value: this.state.bank_name,
-                      events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    label={{
-                      fieldName: "bank_account_no",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "bank_account_no",
-                      value: this.state.bank_account_no,
-                      events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-3 mandatory" }}
-                    label={{
                       fieldName: "vat_number",
                       isImp: true
                     }}
@@ -629,6 +597,40 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "bank_name",
+                      isImp: this.state.payment_mode === "BT" ? true : false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "bank_name",
+                      value: this.state.bank_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "bank_account_no",
+                      isImp: this.state.payment_mode === "BT" ? true : false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "bank_account_no",
+                      value: this.state.bank_account_no,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+
+
                   {/* <div
                     className="col-2 customCheckbox"
                     style={{ paddingTop: "10px" }}

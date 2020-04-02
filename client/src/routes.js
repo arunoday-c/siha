@@ -396,6 +396,11 @@ const SalesQuotationList = React.lazy(() =>
 const SalesOrderList = React.lazy(() =>
   retry(() => import("./Components/Sales/SalesOrderList/SalesOrderSwitch"))
 );
+
+const SalesReturnEntry = React.lazy(() =>
+  retry(() => import("./Components/Sales/SalesReturnEntry/SalesReturnEntry"))
+);
+
 const PatientRecall = React.lazy(() =>
   retry(() => import("./Components/PatientRecall/PatientRecall"))
 );
@@ -1030,6 +1035,11 @@ const appRoutes = [
     path: "/SalesOrderList",
     isExactPath: true,
     component: <SalesOrderList />
+  },
+  {
+    path: "/SalesReturnEntry",
+    isExactPath: true,
+    component: <SalesReturnEntry />
   },
 
   {

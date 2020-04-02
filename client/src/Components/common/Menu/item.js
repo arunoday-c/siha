@@ -28,6 +28,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     });
   }
   function redirectToScreen(item, display, others) {
+    debugger
     const screenName = display.replace(/ /g, "");
     const selMenu = { ...item, ...others };
     setItem("userSelectedMenu", selMenu);
@@ -36,8 +37,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-      item.redirect_url !== "" &&
-      item.redirect_url !== null
+        item.redirect_url !== "" &&
+        item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -117,8 +118,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                   {moduleSelect === item.module_name || searchText !== "" ? (
                     <i className="fas fa-angle-up" />
                   ) : (
-                    <i className="fas fa-angle-down" />
-                  )}
+                      <i className="fas fa-angle-down" />
+                    )}
                 </div>
               </div>
               {moduleSelect === item.module_name || searchText !== "" ? (
@@ -134,6 +135,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                               : ""
                           }
                           onClick={() => {
+                            debugger
                             const { screen_name, s_other_language } = screen;
                             redirectToScreen(screen, screen.page_to_redirect, {
                               screen_name,

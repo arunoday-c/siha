@@ -91,7 +91,7 @@ export default {
                 contact_number,payment_terms,payment_mode,vat_applicable,vat_percentage,  postal_code,address, \
                 country_id, state_id, city_id, bank_account_no, vat_number, \
                 created_date, created_by, updated_date, updated_by,head_id,child_id)\
-                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       inputParam.vendor_code,
                       inputParam.vendor_name,
