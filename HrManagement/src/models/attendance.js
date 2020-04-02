@@ -7154,9 +7154,9 @@ function generateExcelTimesheet(input) {
     const outputArray = [];
 
     allEmployees.map(emp => {
+      const date_of_joining = emp["date_of_joining"];
       const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
         from_date,
-
         emp,
         allHolidays
       );
@@ -7180,17 +7180,17 @@ function generateExcelTimesheet(input) {
         let color = "";
 
         if (TimeSheetUploaded != undefined) {
-          if (
-            TimeSheetUploaded.status == "PL" ||
-            TimeSheetUploaded.status == "HPL"
-          ) {
-            color = "#ec7c00";
-          } else if (
-            TimeSheetUploaded.status == "UL" ||
-            TimeSheetUploaded.status == "HUL"
-          ) {
-            color = "#ff0000";
-          }
+          // if (
+          //   TimeSheetUploaded.status == "PL" ||
+          //   TimeSheetUploaded.status == "HPL"
+          // ) {
+          //   color = "#ec7c00";
+          // } else if (
+          //   TimeSheetUploaded.status == "UL" ||
+          //   TimeSheetUploaded.status == "HUL"
+          // ) {
+          //   color = "#ff0000";
+          // }
           // emp["data"].push({
           //   attendance_date: attendance_date,
           //   status: TimeSheetUploaded.status,
@@ -7201,9 +7201,30 @@ function generateExcelTimesheet(input) {
           //   color: color
           // });
 
+          switch (TimeSheetUploaded.status) {
+            case "PL":
+            case "HPL":
+              color = "#ec7c00";
+              break;
+
+            case "UL":
+            case "HUL":
+              color = "#ff0000";
+              break;
+            case "WO":
+              color = "#E7FEFD";
+              break;
+            case "HO":
+              color = "#EAEAFD";
+              break;
+            case "AB":
+              color = "9C9A99";
+              break;
+          }
           if (
             TimeSheetUploaded.status == "PL" ||
-            TimeSheetUploaded.status == "UL"
+            TimeSheetUploaded.status == "UL" ||
+            TimeSheetUploaded.status == "AB"
           ) {
             emp["data"].push({
               attendance_date: attendance_date,
@@ -7335,12 +7356,19 @@ function generateExcelTimesheet(input) {
                 color: "#EAEAFD"
               });
             }
-          } else {
+          } else if (date_of_joining <= attendance_date) {
             emp["data"].push({
               status: "PR",
               attendance_date: attendance_date,
               [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "PR",
               color: "#F5F5F5"
+            });
+          } else {
+            emp["data"].push({
+              status: "N",
+              attendance_date: attendance_date,
+              [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "N",
+              color: ""
             });
           }
 
@@ -7408,17 +7436,17 @@ function generateProjectRosterTimesheet(input) {
           let color = "";
 
           if (TimeSheetUploaded != undefined) {
-            if (
-              TimeSheetUploaded.status == "PL" ||
-              TimeSheetUploaded.status == "HPL"
-            ) {
-              color = "#ec7c00";
-            } else if (
-              TimeSheetUploaded.status == "UL" ||
-              TimeSheetUploaded.status == "HUL"
-            ) {
-              color = "#ff0000";
-            }
+            // if (
+            //   TimeSheetUploaded.status == "PL" ||
+            //   TimeSheetUploaded.status == "HPL"
+            // ) {
+            //   color = "#ec7c00";
+            // } else if (
+            //   TimeSheetUploaded.status == "UL" ||
+            //   TimeSheetUploaded.status == "HUL"
+            // ) {
+            //   color = "#ff0000";
+            // }
             // outputArray.push({
             //   attendance_date: attendance_date,
             //   status: TimeSheetUploaded.status,
@@ -7431,9 +7459,31 @@ function generateProjectRosterTimesheet(input) {
             //   color: color
             // });
 
+            switch (TimeSheetUploaded.status) {
+              case "PL":
+              case "HPL":
+                color = "#ec7c00";
+                break;
+
+              case "UL":
+              case "HUL":
+                color = "#ff0000";
+                break;
+              case "WO":
+                color = "#E7FEFD";
+                break;
+              case "HO":
+                color = "#EAEAFD";
+                break;
+              case "AB":
+                color = "9C9A99";
+                break;
+            }
+
             if (
               TimeSheetUploaded.status == "PL" ||
-              TimeSheetUploaded.status == "UL"
+              TimeSheetUploaded.status == "UL" ||
+              TimeSheetUploaded.status == "AB"
             ) {
               outputArray.push({
                 attendance_date: attendance_date,
