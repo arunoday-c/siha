@@ -151,13 +151,15 @@ const changeGridEditors = ($this, row, e) => {
 
 const OpenCalculator = ($this, e) => {
     $this.setState({
-        selectCalculate: "d-block"
+        selectCalculate: "d-block",
+        calculator_values: $this.state.formula
     });
 }
 
 const CLoseCalculator = ($this, e) => {
     $this.setState({
-        selectCalculate: "d-none"
+        selectCalculate: "d-none",
+        calculator_values: null
     });
 }
 const onChangeCalculatorInput = ($this, e) => {

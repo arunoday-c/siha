@@ -250,8 +250,8 @@ export default {
       input.year > 0
         ? input.year
         : moment()
-            .startOf("year")
-            .format("YYYY-MM-DD");
+          .startOf("year")
+          .format("YYYY-MM-DD");
 
     const start_of_year = moment(year, "YYYY")
       .startOf("year")
@@ -499,6 +499,9 @@ export default {
   getEarningDeduction: (req, res, next) => {
     const _mysql = new algaehMysql();
 
+    let _stringData = req.query.miscellaneous_component != null ? ` and miscellaneous_component= '${req.query.miscellaneous_component}'` : ""
+    console.log("_stringData", _stringData)
+
     _mysql
       .executeQuery({
         query:
@@ -507,7 +510,7 @@ export default {
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id \
-          from hims_d_earning_deduction where record_status='A'  order by hims_d_earning_deduction_id desc",
+          from hims_d_earning_deduction where record_status='A'" + _stringData + " order by hims_d_earning_deduction_id desc",
         printQuery: true
       })
       .then(result => {
