@@ -85,44 +85,20 @@ class PayRollDetails extends Component {
         }
       }
     });
-    // if (
-    //   this.props.payrollcomponents === undefined ||
-    //   this.props.payrollcomponents.length === 0
-    // ) {
     this.props.getEarningDeduction({
       uri: "/payrollsettings/getEarningDeduction",
       module: "hrManagement",
       method: "GET",
+      data: { miscellaneous_component: "N" },
       redux: {
         type: "PAYROLL_COMPONENT_DATA",
         mappingName: "payrollcomponents"
       }
     });
-    // }
+
   }
 
   render() {
-    // const earnings = Enumerable.from(this.props.payrollcomponents)
-    //   .where(
-    //     w =>
-    //       w.component_category === "E" &&
-    //       w.nationality_id === this.state.nationality
-    //   )
-    //   .toArray();
-    // const deducation = Enumerable.from(this.props.payrollcomponents)
-    //   .where(
-    //     w =>
-    //       w.component_category === "D" &&
-    //       w.nationality_id === this.state.nationality
-    //   )
-    //   .toArray();
-    // const contribution = Enumerable.from(this.props.payrollcomponents)
-    //   .where(
-    //     w =>
-    //       w.component_category === "C" &&
-    //       w.nationality_id === this.state.nationality
-    //   )
-    //   .toArray();
 
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
