@@ -7115,7 +7115,7 @@ function getEmployeeWeekOffsandHolidays(from_date, employee, allHolidays) {
               w.holiday_type == "RS" &&
               w.religion_id == employee["religion_id"]) ||
             w.weekoff === "Y") &&
-          w.holiday_date > employee["date_of_joining"]
+          w.holiday_date >= employee["date_of_joining"]
         );
       });
     } else {
