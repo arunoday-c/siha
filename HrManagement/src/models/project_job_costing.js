@@ -872,7 +872,7 @@ export default {
     }
   },
   //created by irfan: to
-  addProjectRoster: (req, res, next) => {
+  addProjectRoster_04_april_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
     try {
@@ -912,6 +912,98 @@ export default {
             _mysql.releaseConnection();
             req.records = result;
             next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        //please send valid
+
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide valid From & to dates"
+        };
+
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by irfan: to
+  addProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    try {
+      let input = req.body;
+
+      if (
+        moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
+        moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+      ) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_employee_id,date_of_joining from hims_d_employee where hims_d_employee_id in (?); ",
+            values: input.roster,
+            bulkInsertOrUpdate: true,
+            printQuery: false
+          })
+          .then(employee => {
+            const allDates = getDaysArray2(
+              new Date(input.from_date),
+              new Date(input.to_date)
+            );
+
+            const insertArray = [];
+
+            employee.forEach(item => {
+              if (item.date_of_joining <= input.from_date) {
+                allDates.forEach(dat => {
+                  insertArray.push({
+                    employee_id: item.hims_d_employee_id,
+                    attendance_date: dat,
+                    project_id: input["project_id"],
+                    hospital_id: input["hospital_id"]
+                  });
+                });
+              } else {
+                const custmDates = getDaysArray2(
+                  new Date(item.date_of_joining),
+                  new Date(input.to_date)
+                );
+
+                custmDates.forEach(dat => {
+                  insertArray.push({
+                    employee_id: item.hims_d_employee_id,
+                    attendance_date: dat,
+                    project_id: input["project_id"],
+                    hospital_id: input["hospital_id"]
+                  });
+                });
+              }
+            });
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_project_roster (??) VALUES ? \
+              ON DUPLICATE KEY UPDATE project_id= values(project_id); ",
+                values: insertArray,
+                bulkInsertOrUpdate: true,
+                printQuery: false
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
           })
           .catch(e => {
             _mysql.releaseConnection();
