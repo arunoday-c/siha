@@ -23,7 +23,9 @@ export default class BranchMaster extends Component {
       allBranches: [],
       allDepartments: [],
       Departments: [],
-      editBranch: false
+      editBranch: false,
+      filterArray:[],
+      searchText:""
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -508,8 +510,23 @@ export default class BranchMaster extends Component {
       editBranch: true
     });
   }
+  filterBranchList(e){
+    const value =e.target.value.toLowerCase();
+    if(value ===""){
+      this.setState({filterArray:[],searchText:e.target.value});
+    }
+   const filterd = this.state.allBranches.filter(f => f.hospital_name.toLowerCase().includes(value)
+    || f.hospital_code.toLowerCase().includes(value));
+    this.setState({filterArray:filterd,searchText:e.target.value});
+  }
+
 
   render() {
+    const branchList  = this.state.searchText !=="" && 
+    this.state.filterArray.length===0? this.state.filterArray:
+    this.state.searchText ==="" && 
+    this.state.filterArray.length===0 ?
+    this.state.allBranches:this.state.filterArray;
     return (
       <div className="BranchMaster">
         <div className="row">
@@ -665,11 +682,30 @@ export default class BranchMaster extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Branch List</h3>
                 </div>
+                   <div className="row">
+
+                <AlagehFormGroup
+                    div={{
+                     className: "col form-group"
+                      }}
+                      label={{
+                      forceLabel: "Search: ",
+                      isImp: false
+                      }}
+                      textBox={{
+                       type: "text" ,  
+                       events: { onChange: this.filterBranchList.bind(this) },                    
+                        placeholder: "Search",
+                         value: this.state.searchText
+                            }}
+                   />
+
+                   </div>
               </div>
               <div className="portlet-body" id="">
                 <div className="row">
                   <div className="col-12" id="branchCompanyList">
-                    {this.state.allBranches.map((data, index) => (
+                    {branchList.map((data, index) => (
                       <div className="row branchEachList" key={index}>
                         <div className="col-12">
                           <label>Branch Name</label>
