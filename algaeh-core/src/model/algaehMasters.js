@@ -1,17 +1,49 @@
 "use strict";
 import extend from "extend";
 import utils from "../utils";
-//import moment from "moment";
+import moment from "moment";
 import logUtils from "../utils/logging";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 import { LINQ } from "node-linq";
 import _ from "lodash";
+import path from "path";
+//For testing
+import algaehMail from "algaeh-utilities/mail-send";
 const { debugLog } = logUtils;
 const { releaseDBConnection } = utils;
 
 //created by irfan: to add AlgaehGroupMAster
 let addAlgaehGroupMAster = (req, res, next) => {
+  // new algaehMail()
+  //   .to("rahulsharma6208@gmail.com")
+  //   .subject("testing email")
+  //   .text("Hello world how are you")
+  //   .calender(
+  //     {
+  //       start: moment(),
+  //       end: new Date(),
+  //       description: "There is an event for the day",
+  //       organizer: "Algaeh technologies private limited",
+  //       alarm: 300,
+  //       attendees: [{ email: "syednoor.algaeh@gmail.com", name: "Syed Noor" }]
+  //     },
+  //     "Algaeh event",
+  //     "Meeting"
+  //   )
+  //   .templateHbs("userWelcome.hbs", { name: "rahul", Password: "rahu0420" })
+  //   .send(true)
+  //   .then(result => {
+  //     console.log("email result", result);
+  //     res.status(200).json({ success: true });
+  //     return;
+  //   })
+  //   .catch(error => {
+  //     console.log("errMail", error);
+  //     res.status(400).json({ success: false });
+  //     return;
+  //   });
+  // return;
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = req.body;

@@ -6,7 +6,7 @@ import mysql from "mysql";
 import _ from "lodash";
 import moment from "moment";
 const keyPath = require("algaeh-keys/keys");
-
+import algaehMail from "algaeh-utilities/mail-send";
 const { whereCondition, releaseDBConnection, selectStatement } = utils;
 
 let selectAppUsers = (req, res, next) => {
@@ -847,7 +847,7 @@ let createUserLogin = (req, res, next) => {
               // if (process.env.NODE_ENV == "production") {
               //   new_password = generatePwd();
               // }
-              console.log("new_password", new_password);
+
               _mysql
                 .executeQuery({
                   query:
@@ -909,28 +909,43 @@ let createUserLogin = (req, res, next) => {
                               printQuery: true
                             })
                             .then(user_employee_res => {
-                              const email =
-                                process.env.NODE_ENV === "production"
-                                  ? input.password_email
-                                  : "syednoor.algaeh@gmail.com";
+                              const email = input.password_email;
+                              process.env.NODE_ENV === "production"
+                                ? input.password_email
+                                : "syednoor.algaeh@gmail.com";
                               if (
                                 // user_employee_res[1][0]["email"] != null &&
                                 //  process.env.NODE_ENV == "production"
                                 email !== ""
                               ) {
-                                sendMailFunction(
-                                  input.username,
-                                  new_password,
-                                  "",
-                                  email
-                                  // user_employee_res[1][0]["email"]
-                                )
-                                  .then(rs => {
-                                    console.log("resultemail:", rs);
+                                new algaehMail()
+                                  .to(email)
+                                  .subject("Login Credentials")
+                                  .templateHbs("userWelcome.hbs", {
+                                    name: input.username,
+                                    Password: new_password
                                   })
-                                  .catch(e => {
-                                    console.log("resultemail:", e);
+                                  .send()
+                                  .then(result => {
+                                    console.log("Email sent : ", result);
+                                  })
+                                  .catch(error => {
+                                    console.error("Email error", error);
                                   });
+
+                                // sendMailFunction(
+                                //   input.username,
+                                //   new_password,
+                                //   "",
+                                //   email
+
+                                // )
+                                //   .then(rs => {
+                                //     console.log("resultemail:", rs);
+                                //   })
+                                //   .catch(e => {
+                                //     console.log("resultemail:", e);
+                                //   });
 
                                 _mysql.commitTransaction(() => {
                                   _mysql.releaseConnection();

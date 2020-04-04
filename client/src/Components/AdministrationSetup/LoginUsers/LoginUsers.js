@@ -1116,8 +1116,7 @@ class LoginUsers extends Component {
                         </button>
                       </div>
                     </>
-                  ) : this.state.full_name !== "" &&
-                    this.state.password_email === "" ? (
+                  ) : this.state.full_name !== "" ? (
                     <div className="col-12">
                       <Button
                         type="primary"
