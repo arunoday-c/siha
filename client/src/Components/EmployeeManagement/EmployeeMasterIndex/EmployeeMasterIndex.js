@@ -7,7 +7,7 @@ import "../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -19,7 +19,7 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import {
   getEmployeeDetails,
   EditEmployeeMaster,
-  texthandle
+  texthandle,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
@@ -33,7 +33,7 @@ class EmployeeMasterIndex extends Component {
       selectedLang: "en",
       editEmployee: false,
       forceRender: false,
-      hospital_id: ""
+      hospital_id: "",
     };
   }
   static contextType = MainContext;
@@ -45,7 +45,7 @@ class EmployeeMasterIndex extends Component {
     this.setState(
       {
         selectedLang: prevLang,
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       () => getEmployeeDetails(this, this)
     );
@@ -60,8 +60,8 @@ class EmployeeMasterIndex extends Component {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "designations"
-        }
+          mappingName: "designations",
+        },
       });
     }
 
@@ -74,8 +74,8 @@ class EmployeeMasterIndex extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -87,13 +87,13 @@ class EmployeeMasterIndex extends Component {
         uri: "/department/get/subdepartment",
         module: "masterSettings",
         data: {
-          sub_department_status: "A"
+          sub_department_status: "A",
         },
         method: "GET",
         redux: {
           type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
-        }
+          mappingName: "subdepartment",
+        },
       });
     }
   }
@@ -103,7 +103,7 @@ class EmployeeMasterIndex extends Component {
       ...this.state,
       isOpen: !this.state.isOpen,
       employeeDetailsPop: {},
-      editEmployee: false
+      editEmployee: false,
     });
   }
 
@@ -111,7 +111,7 @@ class EmployeeMasterIndex extends Component {
     this.setState(
       {
         isOpen: !this.state.isOpen,
-        afterClose: true
+        afterClose: true,
       },
       () => {
         if (e === true) {
@@ -121,7 +121,7 @@ class EmployeeMasterIndex extends Component {
     );
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -129,7 +129,7 @@ class EmployeeMasterIndex extends Component {
 
   setUpdateComponent(row, e) {
     this.setState({
-      isOpen: true
+      isOpen: true,
     });
   }
 
@@ -138,7 +138,7 @@ class EmployeeMasterIndex extends Component {
     this.setState({
       isOpen: !this.state.isOpen,
       servicePop: row,
-      addNew: false
+      addNew: false,
     });
   }
 
@@ -182,17 +182,25 @@ class EmployeeMasterIndex extends Component {
             </div>
             <div className="actions">
               <a
+                className="btn btn-default btn-circle active"
+                // onClick={this.ShowModel.bind(this)}
+                // Download action come here
+              >
+                <i className="fas fa-download" />
+              </a>
+              <a
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
               </a>
+
               <EmployeeMaster
                 HeaderCaption={
                   <AlgaehLabel
                     label={{
                       fieldName: "employee_master",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -210,7 +218,7 @@ class EmployeeMasterIndex extends Component {
               <AlagehAutoComplete
                 div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
                 label={{
-                  forceLabel: "Select Branch"
+                  forceLabel: "Select Branch",
                 }}
                 selector={{
                   name: "hospital_id",
@@ -219,17 +227,17 @@ class EmployeeMasterIndex extends Component {
                   dataSource: {
                     textField: "hospital_name",
                     valueField: "hims_d_hospital_id",
-                    data: this.props.organizations
+                    data: this.props.organizations,
                   },
                   onChange: texthandle.bind(this, this),
                   others: {
-                    tabIndex: "2"
+                    tabIndex: "2",
                   },
                   onClear: () => {
                     this.setState({
-                      hospital_id: null
+                      hospital_id: null,
                     });
-                  }
+                  },
                 }}
               />
             </div>
@@ -243,7 +251,7 @@ class EmployeeMasterIndex extends Component {
                       fieldName: "action",
 
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -257,15 +265,15 @@ class EmployeeMasterIndex extends Component {
                         maxWidth: 65,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "employee_img",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Profile Img" }} />
                       ),
-                      displayTemplate: row => (
+                      displayTemplate: (row) => (
                         <AlgaehFile
                           name="attach_photo"
                           accept="image/*"
@@ -274,7 +282,7 @@ class EmployeeMasterIndex extends Component {
                           serviceParameters={{
                             uniqueID: row.employee_code,
                             destinationName: row.employee_code,
-                            fileType: "Employees"
+                            fileType: "Employees",
                           }}
                         />
                       ),
@@ -282,13 +290,13 @@ class EmployeeMasterIndex extends Component {
                         maxWidth: 90,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "employee_status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.employee_status === "A" ? (
                           <span className="badge badge-success">Active</span>
                         ) : row.employee_status === "I" ? (
@@ -304,8 +312,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 70,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "employee_code",
@@ -315,8 +323,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 100,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "full_name",
@@ -326,8 +334,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         // minWidth: 200,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "sex",
@@ -335,8 +343,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 80,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "designation",
@@ -349,8 +357,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 200,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "nationality_name",
@@ -361,8 +369,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "religion_name",
@@ -371,8 +379,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
 
                     {
@@ -384,8 +392,8 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "sub_department_name",
@@ -396,9 +404,9 @@ class EmployeeMasterIndex extends Component {
                       others: {
                         maxWidth: 150,
                         resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    }
+                        style: { textAlign: "center" },
+                      },
+                    },
                     // {
                     //   fieldName: "license_number",
                     //   label: (
@@ -436,7 +444,7 @@ class EmployeeMasterIndex extends Component {
                   ]}
                   keyId="service_code"
                   dataSource={{
-                    data: this.state.Employeedetails
+                    data: this.state.Employeedetails,
                   }}
                   filter={true}
                   // isEditable={true}
@@ -455,7 +463,7 @@ function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
     designations: state.designations,
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
@@ -464,7 +472,7 @@ function mapDispatchToProps(dispatch) {
     {
       getSubDepartment: AlgaehActions,
       getDesignations: AlgaehActions,
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );
