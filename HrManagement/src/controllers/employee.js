@@ -52,7 +52,8 @@ const {
   UpdateOpeningBalanceGratuity,
   InsertOpeningBalanceLoan,
   UpdateOpeningBalanceLoan,
-  updateMisEarnDedcToEmployees
+  updateMisEarnDedcToEmployees,
+  downloadEmployeeMaster
 } = empModels;
 
 export default () => {
@@ -481,6 +482,26 @@ export default () => {
         success: true,
         records: req.records
       });
+    }
+  );
+
+  api.get(
+    "/downloadEmployeeMaster",
+    downloadEmployeeMaster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            message: req.records.message
+          });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
     }
   );
 

@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => { },
+          printQuery: query => {},
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -1751,6 +1751,74 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan
+  downloadEmployeeMaster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    if (req.query.hospital_id > 0) {
+      _mysql
+        .executeQuery({
+          query: `select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=? limit 1;\
+            select  E.employee_code,E.full_name as name,E.sex as gender ,
+            coalesce(E.date_of_joining,'-') as  date_of_joining,
+            coalesce(concat(RP.employee_code,' / ', left(RP.full_name,12)),'-') as reporting_to,
+            coalesce(G.group_description,'-') as emloyee_group,
+            case E.employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
+            when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
+            end as employee_status,   coalesce(DG.designation,'-') as designation,
+            coalesce( N.nationality,'-') as nationality,coalesce(R.religion_name,'-') as religion,
+            coalesce(SD.sub_department_name,'-') as sub_department,coalesce(D.department_name,'-') as department,
+            case E.employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
+            when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
+            when  'VC' then  'VISITING CONSULTANT'end as employee_type,
+            coalesce(state_name,'-') as state,coalesce(city_name,'-') as city,
+            coalesce(country_name,'-') as country,coalesce(E.date_of_birth,'-') as date_of_birth,
+            coalesce(E.date_of_resignation,'-') as date_of_resignation,coalesce(E.exit_date,'-') as exit_date,
+            coalesce(E.work_email,'-') as work_email,coalesce(E.primary_contact_no,'-') as 
+            primary_contact_no,E.mode_of_payment
+            from hims_d_employee E left join hims_d_employee RP on E.reporting_to_id=RP.hims_d_employee_id
+            left join hims_d_designation DG on E.employee_designation_id=DG.hims_d_designation_id
+            left join hims_d_religion R on E.religion_id=R.hims_d_religion_id
+            left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
+            left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            left join hims_d_department D on SD.department_id=D.hims_d_department_id
+            left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
+            left join hims_d_city C on E.permanent_city_id=C.hims_d_city_id 
+            left join hims_d_state S on E.permanent_state_id=S.hims_d_state_id
+            left join hims_d_country CO  on E.permanent_country_id=CO.hims_d_country_id  
+            where E.hospital_id=? and E.record_status='A' order by cast( E.employee_code as unsigned); `,
+          values: [req.query.hospital_id, req.query.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          let data = result[1][0];
+          let x;
+          const columns = [];
+
+          for (x in data) {
+            columns.push(x);
+          }
+
+          req.records = {
+            hospital_name: result[0][0]["hospital_name"],
+            columns: columns,
+            employees: result[1]
+          };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = { invalid_input: true, message: "Please select branch" };
+      next();
+      return;
+    }
   }
 };
 
