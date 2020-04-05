@@ -270,7 +270,7 @@ export default class ReportUI extends Component {
             onSuccess: response => {
               const urlBlob = URL.createObjectURL(response.data);
               if (report_type === "preview") {
-                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportProperties.displayName}`;
                 window.open(origin);
                 loader.setState({
                   loading: false
