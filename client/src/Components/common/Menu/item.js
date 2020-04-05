@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, getItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
-
+import { Drawer } from "algaeh-react-components";
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   const { name } = useParams();
   const { userMenu, userToken, userLanguage, setSelectedMenuItem } = useContext(
@@ -15,10 +15,11 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   const [activeModule, setActiveModule] = useState("");
   const [activeScreen, setActiveScreen] = useState("");
 
+  //Abu comment this
   if (showMenu === false) {
     return null;
   }
-
+  //till here
   function activateModule(module_id) {
     setActiveModule(moduleId => {
       if (moduleId === module_id) {
@@ -28,7 +29,6 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     });
   }
   function redirectToScreen(item, display, others) {
-    debugger
     const screenName = display.replace(/ /g, "");
     const selMenu = { ...item, ...others };
     setItem("userSelectedMenu", selMenu);
@@ -37,8 +37,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-        item.redirect_url !== "" &&
-        item.redirect_url !== null
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -76,7 +76,15 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     searchText === "" ? (userMenu === null ? [] : userMenu) : modules;
 
   return (
-    <div className={`animated leftNavCntr`}>
+    //Abu uncommentthis
+    // <Drawer
+    //   placement="left"
+    //   closable={false}
+    //   onClose={onVisibityChange}
+    //   visible={showMenu}
+    // >
+    // till here
+    <div className={`leftNavCntr`}>
       <div className="hptl-phase1-sideMenuBar">
         <div className="menuBar-title">
           <i
@@ -118,8 +126,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                   {moduleSelect === item.module_name || searchText !== "" ? (
                     <i className="fas fa-angle-up" />
                   ) : (
-                      <i className="fas fa-angle-down" />
-                    )}
+                    <i className="fas fa-angle-down" />
+                  )}
                 </div>
               </div>
               {moduleSelect === item.module_name || searchText !== "" ? (
@@ -135,7 +143,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                               : ""
                           }
                           onClick={() => {
-                            debugger
+                            debugger;
                             const { screen_name, s_other_language } = screen;
                             redirectToScreen(screen, screen.page_to_redirect, {
                               screen_name,
@@ -160,6 +168,9 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
         </div>
       </div>
     </div>
+    //Abu uncomment this
+    // </Drawer>
+    //till here
   );
 }
 export default memo(MenuItems);

@@ -51,7 +51,7 @@ function NavBars(props) {
   }, []);
 
   function showMenuClick() {
-    setShowMenu(true);
+    setShowMenu(result => !result);
   }
 
   function showNotification() {
