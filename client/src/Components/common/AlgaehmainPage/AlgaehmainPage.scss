@@ -125,6 +125,9 @@ header {
     padding: 0;
   }
 }
+.leftDrawer {
+  z-index: 9999;
+}
 .leftNavCntr {
   background: #292929;
   margin-top: 0;
@@ -134,6 +137,7 @@ header {
   width: 255px;
   box-shadow: 0 0 300px rgba(0, 0, 0, 0.5);
   animation-duration: 0.4s;
+  left: 0;
 }
 
 /* Light Side Bar Menu */
@@ -141,7 +145,7 @@ header {
   .sideMenu-header {
     color: #212529;
     background: #f7f7f7;
-    margin-top: 52px;
+    margin-top: 28px;
     height: 93vh;
     overflow-y: auto;
     overflow-x: hidden;

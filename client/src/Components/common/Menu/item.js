@@ -16,12 +16,12 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
   const [activeScreen, setActiveScreen] = useState("");
 
   //Abu comment this
-  if (showMenu === false) {
-    return null;
-  }
+  // if (showMenu === false) {
+  //   return null;
+  //}
   //till here
   function activateModule(module_id) {
-    setActiveModule(moduleId => {
+    setActiveModule((moduleId) => {
       if (moduleId === module_id) {
         return "";
       }
@@ -47,9 +47,9 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     const value = e.target.value;
     if (value !== "") {
       let result = [];
-      userMenu.filter(f => {
+      userMenu.filter((f) => {
         let screens = [];
-        const filScren = f.ScreenList.filter(s => {
+        const filScren = f.ScreenList.filter((s) => {
           const { screen_name, s_other_language } = s;
           if (
             screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
@@ -76,101 +76,102 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     searchText === "" ? (userMenu === null ? [] : userMenu) : modules;
 
   return (
-    //Abu uncommentthis
-    // <Drawer
-    //   placement="left"
-    //   closable={false}
-    //   onClose={onVisibityChange}
-    //   visible={showMenu}
-    // >
-    // till here
-    <div className={`leftNavCntr`}>
-      <div className="hptl-phase1-sideMenuBar">
-        <div className="menuBar-title">
-          <i
-            onClick={onVisibityChange}
-            className="fas fa-chevron-circle-left sideBarClose"
-          />
-          <input
-            type="text"
-            autoComplete="off"
-            name="searchModules"
-            className="subMenuSearchFld"
-            placeholder="Search Modules"
-            // value={searchModule}
-            autoFocus={true}
-            onChange={searchModuleText}
-          />
-        </div>
-        <div className="sideMenu-header">
-          <div className="menuBarLoader d-none">
-            <i className="fas fa-spinner fa-spin" />
+    <Drawer
+      placement="left"
+      closable={false}
+      onClose={onVisibityChange}
+      visible={showMenu}
+      className="leftDrawer"
+    >
+      <div className={`leftNavCntr`}>
+        <div className="hptl-phase1-sideMenuBar">
+          <div className="menuBar-title">
+            <i
+              onClick={onVisibityChange}
+              className="fas fa-chevron-circle-left sideBarClose"
+            />
+            <input
+              type="text"
+              autoComplete="off"
+              name="searchModules"
+              className="subMenuSearchFld"
+              placeholder="Search Modules"
+              // value={searchModule}
+              autoFocus={true}
+              onChange={searchModuleText}
+            />
           </div>
-          {list.map((item, index) => (
-            <div key={index} className="container-fluid">
-              <div
-                className="row clearfix side-menu-title"
-                onClick={() => {
-                  activateModule(item.module_name);
-                }}
-              >
-                <div className="col-2" style={{ marginTop: "2px" }}>
-                  <i className={item.icons} />
-                </div>
-                <div className="col-8 ">
-                  {userLanguage === "en"
-                    ? item.module_name
-                    : item.other_language}
-                </div>
-                <div className="col-2" style={{ marginTop: "2px" }}>
-                  {moduleSelect === item.module_name || searchText !== "" ? (
-                    <i className="fas fa-angle-up" />
-                  ) : (
-                    <i className="fas fa-angle-down" />
-                  )}
-                </div>
-              </div>
-              {moduleSelect === item.module_name || searchText !== "" ? (
-                <div className="row sub-menu-option">
-                  <ul className="tree-structure-menu">
-                    {item.ScreenList.map((screen, idx) => {
-                      return (
-                        <li
-                          key={idx}
-                          className={
-                            screenSelected === screen.screen_name
-                              ? "active"
-                              : ""
-                          }
-                          onClick={() => {
-                            debugger;
-                            const { screen_name, s_other_language } = screen;
-                            redirectToScreen(screen, screen.page_to_redirect, {
-                              screen_name,
-                              s_other_language
-                            });
-                          }}
-                        >
-                          <i className="fas fa-arrow-circle-right fa-1x " />
-                          <span>
-                            {userLanguage === "en"
-                              ? screen.screen_name
-                              : screen.other_language}
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              ) : null}
+          <div className="sideMenu-header">
+            <div className="menuBarLoader d-none">
+              <i className="fas fa-spinner fa-spin" />
             </div>
-          ))}
+            {list.map((item, index) => (
+              <div key={index} className="container-fluid">
+                <div
+                  className="row clearfix side-menu-title"
+                  onClick={() => {
+                    activateModule(item.module_name);
+                  }}
+                >
+                  <div className="col-2" style={{ marginTop: "2px" }}>
+                    <i className={item.icons} />
+                  </div>
+                  <div className="col-8 ">
+                    {userLanguage === "en"
+                      ? item.module_name
+                      : item.other_language}
+                  </div>
+                  <div className="col-2" style={{ marginTop: "2px" }}>
+                    {moduleSelect === item.module_name || searchText !== "" ? (
+                      <i className="fas fa-angle-up" />
+                    ) : (
+                      <i className="fas fa-angle-down" />
+                    )}
+                  </div>
+                </div>
+                {moduleSelect === item.module_name || searchText !== "" ? (
+                  <div className="row sub-menu-option">
+                    <ul className="tree-structure-menu">
+                      {item.ScreenList.map((screen, idx) => {
+                        return (
+                          <li
+                            key={idx}
+                            className={
+                              screenSelected === screen.screen_name
+                                ? "active"
+                                : ""
+                            }
+                            onClick={() => {
+                              debugger;
+                              const { screen_name, s_other_language } = screen;
+                              redirectToScreen(
+                                screen,
+                                screen.page_to_redirect,
+                                {
+                                  screen_name,
+                                  s_other_language,
+                                }
+                              );
+                            }}
+                          >
+                            <i className="fas fa-arrow-circle-right fa-1x " />
+                            <span>
+                              {userLanguage === "en"
+                                ? screen.screen_name
+                                : screen.other_language}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-    //Abu uncomment this
-    // </Drawer>
-    //till here
+    </Drawer>
   );
 }
 export default memo(MenuItems);
