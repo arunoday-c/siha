@@ -49,9 +49,10 @@
                         <th>
                             Mode Of Payment
                         </th>
-                        <th>
+                        {{!-- <th>
                             Salary Payed Date
-                        </th>
+                        </th> --}}
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,10 +129,11 @@
                         <td>
                             {{mode_of_payment}}
                         </td>
-                        <td>
-                            {{!-- {{salary_paid_date}} --}}
-                            30
-                        </td>
+                        {{!-- <td>
+                            {{salary_paid_date}}
+                           
+                        </td> --}}
+                        <td>{{processed_status}} / {{payment_status}}</td>
                     </tr>
                     {{/each }}{{else}}
                     <tr>

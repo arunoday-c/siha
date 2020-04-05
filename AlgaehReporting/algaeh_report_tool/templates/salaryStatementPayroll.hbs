@@ -19,7 +19,9 @@
                         <th>Net Salary</th>
                         <th>Total Contribution</th>
                         <th>Mode Of Payment</th>
-                        <th>Salary Payed Date</th>
+                        {{!-- <th>Salary Payed Date</th> --}}
+                        <th>Status</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -45,7 +47,8 @@
                         <td class="numberFld numberFldTotal">{{net_salary}}</td>
                         <td class="numberFld numberFldTotal">{{total_contributions}}</td>
                         <td>{{mode_of_payment}}</td>
-                        <td>{{!-- {{salary_paid_date}} --}}30</td>
+                        {{!-- <td>{{salary_paid_date}}30</td> --}}
+                        <td>{{processed_status}} / {{payment_status}}</td>
                     </tr>
                     {{/each }}{{else}}
                     <tr>
