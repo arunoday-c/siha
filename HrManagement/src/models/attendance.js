@@ -5897,8 +5897,11 @@ export default {
                         sub_department_id: input.sub_department_id,
                         year: input.year,
                         month: input.month,
-                        data: outputArray,
+                        data: _.chain(outputArray).sortBy((s) =>
+                          parseInt(s.employee_code)
+                        ),
                       };
+
                       next();
                     } else {
                       req.records = {
@@ -8460,7 +8463,11 @@ function mergeTimesheetData(input) {
                     })
                     .value();
 
-                  resolve(outputArray);
+                  resolve(
+                    _.chain(outputArray).sortBy((s) =>
+                      parseInt(s.employee_code)
+                    )
+                  );
                 } else {
                   reject({
                     message: "No  Time sheet data found",
