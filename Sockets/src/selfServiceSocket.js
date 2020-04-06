@@ -15,15 +15,16 @@ import { createNotification } from "./utils";
 
 function selfSocket(socket) {
   // leave section
-  socket.on("/leave/applied", payload => {
+  socket.on("/leave/applied", (payload) => {
     const { full_name, reporting_to_id, leave_days, leave_type } = payload;
     const msg = `${full_name} is applied ${leave_type} for ${leave_days} days`;
     createNotification({
       message: msg,
-      user_id: reporting_to_id
+      user_id: reporting_to_id,
+      title: "HR Management",
     })
-      .then(() => {
-        socket.to(`${reporting_to_id}`).emit("/leave/requested", msg);
+      .then((doc) => {
+        socket.to(`${reporting_to_id}`).emit("/leave/requested", doc);
       })
       .catch(() => console.log(err));
   });
@@ -32,9 +33,10 @@ function selfSocket(socket) {
     const msg = `Your request for leave on ${leave_date} has been authorized by Level ${level}`;
     createNotification({
       user_id: emp_id,
-      message: msg
-    }).then(() => {
-      socket.to(`${emp_id}`).emit("/leave/status", msg);
+      message: msg,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${emp_id}`).emit("/leave/status", doc);
     });
   });
 
@@ -42,20 +44,23 @@ function selfSocket(socket) {
     const msg = `Your request for leave on ${leave_date} has been rejected by Level ${level}`;
     createNotification({
       message: msg,
-      user_id: emp_id
-    }).then(() => {
-      socket.to(`${emp_id}`).emit("/leave/status", msg);
+      user_id: emp_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${emp_id}`).emit("/leave/status", doc);
     });
   });
 
   //loan section
-  socket.on("/loan/applied", (name, receiver, loan) => {
-    const msg = `${name} requested a ${loan}`;
+  socket.on("/loan/applied", (payload) => {
+    const { full_name, reporting_to_id, loan_description } = payload;
+    const msg = `${full_name} requested a ${loan_description}`;
     createNotification({
       message: msg,
-      user_id: receiver
-    }).then(() => {
-      socket.to(`${receiver}`).emit("/loan/requested", msg);
+      user_id: reporting_to_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
     });
   });
 
@@ -63,9 +68,10 @@ function selfSocket(socket) {
     const msg = `Your loan request has been accepted by Level ${level}`;
     createNotification({
       message: msg,
-      user_id: emp_id
-    }).then(() => {
-      socket.to(`${emp_id}`).emit("/loan/status", msg);
+      user_id: emp_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${emp_id}`).emit("/loan/status", doc);
     });
   });
 
@@ -73,9 +79,10 @@ function selfSocket(socket) {
     const msg = `Your loan request has been rejected by Level ${level}`;
     createNotification({
       message: msg,
-      user_id: emp_id
-    }).then(() => {
-      socket.to(`${emp_id}`).emit("/loan/status", msg);
+      user_id: emp_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${emp_id}`).emit("/loan/status", doc);
     });
   });
 }

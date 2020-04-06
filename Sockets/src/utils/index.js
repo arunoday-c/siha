@@ -19,11 +19,24 @@ export async function createNotification({ message, user_id, module }) {
     const notifi = new notifiModel({
       user_id: user_id ? user_id : null,
       module: module ? module : null,
-      message
+      message,
     });
     const result = await notifi.save();
     return result;
   } catch (error) {
     throw new Error(error.message);
   }
+}
+
+export function deleteNotification({ id }) {
+  return new Promise((resolve, reject) => {
+    notifiModel.findByIdAndRemove(id, (err, doc) => {
+      if (err) {
+        reject(err.message);
+      } else {
+        console.log(doc, "doc");
+        resolve(doc);
+      }
+    });
+  });
 }

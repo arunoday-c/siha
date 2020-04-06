@@ -1,6 +1,7 @@
 export function authenticate(socket, data, callback) {
   const { token } = data;
   if (token && token.user_id) {
+    console.log("authed");
     return callback(null, true);
   } else {
     return callback(new Error("You are not allowed to access"));

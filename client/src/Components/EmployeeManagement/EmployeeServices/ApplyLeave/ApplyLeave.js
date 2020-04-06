@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -47,7 +47,7 @@ class ApplyLeave extends Component {
       Request_enable: true,
       projected_applied_leaves: null,
       is_projected_leave: "N",
-      loading_Process: false
+      loading_Process: false,
     };
     this.getLeaveTypes();
   }
@@ -75,7 +75,7 @@ class ApplyLeave extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.organizations === undefined ||
@@ -86,8 +86,8 @@ class ApplyLeave extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
   }
@@ -96,7 +96,7 @@ class ApplyLeave extends Component {
     this.clearState();
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -104,15 +104,15 @@ class ApplyLeave extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            employee_id: row.hims_d_employee_id
+            employee_id: row.hims_d_employee_id,
           },
           () => this.getEmployees()
         );
-      }
+      },
     });
   }
 
@@ -124,8 +124,8 @@ class ApplyLeave extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         AlgaehLoader({ show: true });
         algaehApiCall({
@@ -134,30 +134,30 @@ class ApplyLeave extends Component {
           module: "hrManagement",
           data: {
             employee_id: data.employee_id,
-            hims_f_leave_application_id: data.hims_f_leave_application_id
+            hims_f_leave_application_id: data.hims_f_leave_application_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             AlgaehLoader({ show: false });
             if (res.data.success) {
               swalMessage({
                 title: "Leave Application Deleted Successfully",
-                type: "success"
+                type: "success",
               });
               this.getEmployeeLeaveHistory();
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -186,30 +186,30 @@ class ApplyLeave extends Component {
         if (from_leave_session === "SH" && to_leave_session === "FH") {
           swalMessage({
             title: "Please Select a proper range",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
             from_leave_session: null,
-            to_leave_session: null
+            to_leave_session: null,
           });
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState({
             from_leave_session: "FD",
-            to_leave_session: "FD"
+            to_leave_session: "FD",
           });
         } else if (from_leave_session === "SH" && to_leave_session === "FD") {
           swalMessage({
             title: "Please Select a proper range",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
             from_leave_session: null,
-            to_leave_session: null
+            to_leave_session: null,
           });
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
           this.setState({
             to_leave_session: "FD",
-            from_leave_session: "FD"
+            from_leave_session: "FD",
           });
         }
 
@@ -220,28 +220,28 @@ class ApplyLeave extends Component {
       ) {
         if (from_leave_session === "FH" && to_leave_session === "FH") {
           this.setState({
-            from_leave_session: "FD"
+            from_leave_session: "FD",
           });
         } else if (to_leave_session === "SH") {
           this.setState(
             {
-              to_leave_session: "FD"
+              to_leave_session: "FD",
             },
             () => {}
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState({
             from_leave_session: "FD",
-            to_leave_session: "FD"
+            to_leave_session: "FD",
           });
         } else if (from_leave_session === "FH" && to_leave_session === "FD") {
           this.setState({
             from_leave_session: "FD",
-            to_leave_session: "FD"
+            to_leave_session: "FD",
           });
         } else if (from_leave_session === "SH" && to_leave_session === "SH") {
           this.setState({
-            to_leave_session: "FD"
+            to_leave_session: "FD",
           });
         }
 
@@ -252,7 +252,7 @@ class ApplyLeave extends Component {
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -271,9 +271,9 @@ class ApplyLeave extends Component {
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
         employee_id: this.state.employee_id,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           AlgaehLoader({ show: false });
           if (res.data.records.is_across_year_leave === "Y") {
@@ -281,20 +281,21 @@ class ApplyLeave extends Component {
             const { available_balance } = this.state;
             swal({
               title: "Applying across the year leave?",
-              text: `Employee have ${available_balance -
-                calculatedLeaveDays} balance leave, Do you want to Encash Leave or Transfer to next year?`,
+              text: `Employee have ${
+                available_balance - calculatedLeaveDays
+              } balance leave, Do you want to Encash Leave or Transfer to next year?`,
               type: "warning",
               showCancelButton: true,
               confirmButtonText: "Request Encashment",
               confirmButtonColor: "#44b8bd",
               cancelButtonColor: "#d33",
-              cancelButtonText: "Transfer Leave"
-            }).then(willDelete => {
+              cancelButtonText: "Transfer Leave",
+            }).then((willDelete) => {
               if (!willDelete.value) {
                 swalMessage({
                   title:
                     "Please enter remarks and request leave. Employee leave will transfer after leave Approval.",
-                  type: "info"
+                  type: "info",
                 });
                 this.setState({
                   total_applied_days: res.data.records.calculatedLeaveDays,
@@ -309,14 +310,14 @@ class ApplyLeave extends Component {
                     holiday_included: res.data.records.include_holidays,
                     holidays: res.data.records.total_holiday,
                     weekoff_included: res.data.records.include_week_offs,
-                    weekoff_days: res.data.records.total_weekOff
-                  }
+                    weekoff_days: res.data.records.total_weekOff,
+                  },
                 });
               } else {
                 swalMessage({
                   title:
                     "Please request leave encashment then apply annual leave.",
-                  type: "info"
+                  type: "info",
                 });
               }
             });
@@ -334,29 +335,29 @@ class ApplyLeave extends Component {
                 holiday_included: res.data.records.include_holidays,
                 holidays: res.data.records.total_holiday,
                 weekoff_included: res.data.records.include_week_offs,
-                weekoff_days: res.data.records.total_weekOff
-              }
+                weekoff_days: res.data.records.total_weekOff,
+              },
             });
           }
         } else if (!res.data.success) {
           AlgaehLoader({ show: false });
           this.setState({
             Request_enable: true,
-            total_applied_days: 0
+            total_applied_days: 0,
           });
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -367,24 +368,24 @@ class ApplyLeave extends Component {
           document.getElementById("toLvDt").focus();
           swalMessage({
             title: "Please select the to leave session",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            to_leave_session: null
+            to_leave_session: null,
           });
         } else if (this.state.from_leave_session === undefined) {
           document.getElementById("frm-lv-ssn").focus();
           swalMessage({
             title: "Please Select the from session first",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            to_leave_session: null
+            to_leave_session: null,
           });
         } else {
           this.setState(
             {
-              [value.name]: value.value
+              [value.name]: value.value,
             },
             () => {
               this.validate();
@@ -401,15 +402,15 @@ class ApplyLeave extends Component {
           document.getElementById("leave-frm-dt").focus();
           swalMessage({
             title: "Please Select the from Date first",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            from_leave_session: null
+            from_leave_session: null,
           });
         } else {
           this.setState(
             {
-              [value.name]: value.value
+              [value.name]: value.value,
             },
             () => {
               this.validate();
@@ -422,11 +423,11 @@ class ApplyLeave extends Component {
         this.setState(
           {
             [value.name]: value.value,
-            hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id
+            hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id,
           },
           () => {
             let myObj = Enumerable.from(this.state.leave_types)
-              .where(w => w.hims_d_leave_id === value.value)
+              .where((w) => w.hims_d_leave_id === value.value)
               .firstOrDefault();
 
             this.setState({
@@ -436,7 +437,7 @@ class ApplyLeave extends Component {
                 myObj.leave_category === "A" &&
                 myObj.avail_if_no_balance === "Y"
                   ? true
-                  : false
+                  : false,
             });
 
             this.validate();
@@ -448,7 +449,7 @@ class ApplyLeave extends Component {
       default:
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.validate();
@@ -473,11 +474,14 @@ class ApplyLeave extends Component {
       Request_enable: true,
       projected_applied_leaves: null,
       is_projected_leave: "N",
-      loading_Process: false
+      loading_Process: false,
     });
   }
 
   applyLeave() {
+    const leave_desc = this.state.emp_leaves_data.filter(
+      (leave) => leave.leave_id === this.state.leave_id
+    );
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
@@ -501,15 +505,23 @@ class ApplyLeave extends Component {
             absent_id: this.state.absent_id,
             leave_from: this.state.leave_from ? this.state.leave_from : "SS",
             hospital_id: this.state.hospital_id,
-            ...this.state.extra
+            ...this.state.extra,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             AlgaehLoader({ show: false });
             if (res.data.success) {
               swalMessage({
                 title: "Leave Applied Successfully",
-                type: "success"
+                type: "success",
               });
+              if (this.context.socket.connected) {
+                this.context.socket.emit("/leave/applied", {
+                  full_name: this.state.employee.full_name,
+                  reporting_to_id: this.state.employee.reporting_to_id,
+                  leave_days: this.state.total_applied_days,
+                  leave_type: leave_desc[0].leave_description,
+                });
+              }
               this.setState({ loading_Process: false });
               this.getEmployeeLeaveHistory();
               this.clearState();
@@ -517,20 +529,20 @@ class ApplyLeave extends Component {
               this.setState({ loading_Process: false }, () => {
                 swalMessage({
                   title: res.data.records.message,
-                  type: "error"
+                  type: "error",
                 });
               });
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -540,16 +552,16 @@ class ApplyLeave extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            leave_his: res.data.records
+            leave_his: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -562,17 +574,17 @@ class ApplyLeave extends Component {
         employee_id: this.state.employee_id,
         // year: moment().year(),
         gender: this.state.employee.gender,
-        employee_type: this.state.employee.employee_type
+        employee_type: this.state.employee.employee_type,
         // selfservice: "Y"
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            emp_leaves_data: res.data.records
+            emp_leaves_data: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -581,17 +593,17 @@ class ApplyLeave extends Component {
       uri: "/selfService/getLeaveMaster",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         this.setState({
-          leave_types: res.data.records
+          leave_types: res.data.records,
         });
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -601,13 +613,13 @@ class ApplyLeave extends Component {
       module: "hrManagement",
       data: {
         hims_d_employee_id: this.state.employee_id,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         this.setState(
           {
-            employee: res.data.records[0]
+            employee: res.data.records[0],
           },
           () => {
             this.getEmployeeLeaveData();
@@ -615,12 +627,12 @@ class ApplyLeave extends Component {
           }
         );
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -630,7 +642,7 @@ class ApplyLeave extends Component {
         employee_id: data.hims_d_employee_id,
         full_name: data.full_name,
         display_name: data.full_name,
-        sub_department_id: data.sub_department_id
+        sub_department_id: data.sub_department_id,
       },
       () => this.getEmployees()
     );
@@ -659,7 +671,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Select Branch",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "hospital_id",
@@ -668,14 +680,14 @@ class ApplyLeave extends Component {
                       dataSource: {
                         textField: "hospital_name",
                         valueField: "hims_d_hospital_id",
-                        data: this.props.organizations
+                        data: this.props.organizations,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          hospital_id: null
+                          hospital_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <div className="col-12 globalSearchCntr form-group mandatory">
@@ -712,7 +724,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Leave Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "leave_id",
@@ -721,23 +733,23 @@ class ApplyLeave extends Component {
                       dataSource: {
                         textField: "leave_description",
                         valueField: "leave_id",
-                        data: this.state.emp_leaves_data
+                        data: this.state.emp_leaves_data,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          leave_id: null
+                          leave_id: null,
                         });
                       },
                       others: {
-                        id: "leaveTyp"
-                      }
+                        id: "leaveTyp",
+                      },
                     }}
                   />
                   <div className="col-6 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Available Balance"
+                        forceLabel: "Available Balance",
                       }}
                     />
                     <h6>{this.state.available_balance} days(s)</h6>
@@ -748,7 +760,7 @@ class ApplyLeave extends Component {
                     <div className="col-12 margin-bottom-15">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Projected Leaves"
+                          forceLabel: "Projected Leaves",
                         }}
                       />
                       <h6>{this.state.projected_applied_leaves} day(s)</h6>
@@ -758,7 +770,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date From",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -768,11 +780,11 @@ class ApplyLeave extends Component {
                         id: "leave-frm-dt",
                         onBlur: () => {
                           //Blurr Here
-                        }
-                      }
+                        },
+                      },
                     }}
                     events={{
-                      onChange: selDate => {
+                      onChange: (selDate) => {
                         if (
                           this.state.leave_id === null ||
                           this.state.leave_id === undefined
@@ -780,19 +792,19 @@ class ApplyLeave extends Component {
                           document.getElementById("leaveTyp").focus();
                           swalMessage({
                             title: "Please Select the leave type first",
-                            type: "warning"
+                            type: "warning",
                           });
                         } else {
                           this.setState(
                             {
-                              from_date: selDate
+                              from_date: selDate,
                             },
                             () => {
                               this.validate();
                             }
                           );
                         }
-                      }
+                      },
                     }}
                     value={this.state.from_date}
                   />
@@ -800,7 +812,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "From Session",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "from_leave_session",
@@ -809,24 +821,24 @@ class ApplyLeave extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.LEAVE_SESSIONS
+                        data: GlobalVariables.LEAVE_SESSIONS,
                       },
                       others: {
-                        id: "frm-lv-ssn"
+                        id: "frm-lv-ssn",
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          from_leave_session: null
+                          from_leave_session: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Date To",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -843,28 +855,28 @@ class ApplyLeave extends Component {
                               swalMessage({
                                 title:
                                   "To Date should be greater than from Date",
-                                type: "warning"
+                                type: "warning",
                               });
                               this.setState({
-                                to_date: null
+                                to_date: null,
                               });
                             }
                           }
-                        }
-                      }
+                        },
+                      },
                     }}
                     events={{
-                      onChange: selDate => {
+                      onChange: (selDate) => {
                         if (this.state.from_date === undefined) {
                           document.getElementById("leave-frm-dt").focus();
                           swalMessage({
                             title: "Please Select From date first",
-                            type: "warning"
+                            type: "warning",
                           });
                         } else {
                           this.setState(
                             {
-                              to_date: selDate
+                              to_date: selDate,
                             },
                             () => {
                               this.getDateRange(
@@ -875,7 +887,7 @@ class ApplyLeave extends Component {
                             }
                           );
                         }
-                      }
+                      },
                     }}
                     value={this.state.to_date}
                     minDate={this.state.from_date}
@@ -884,7 +896,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "To Session",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "to_leave_session",
@@ -893,20 +905,20 @@ class ApplyLeave extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.LEAVE_SESSIONS
+                        data: GlobalVariables.LEAVE_SESSIONS,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          to_leave_session: null
+                          to_leave_session: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <div className="col-12">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Appliying for"
+                        forceLabel: "Appliying for",
                       }}
                     />
                     <h6>{this.state.total_applied_days} day(s)</h6>
@@ -915,15 +927,15 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Reason for Leave",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "remarks",
                       value: this.state.remarks,
                       events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
+                        onChange: this.changeTexts.bind(this),
+                      },
                     }}
                   />
                   <div className="col-12" style={{ textAlign: "right" }}>
@@ -966,7 +978,7 @@ class ApplyLeave extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <i
                                 className="fas fa-trash-alt"
@@ -979,18 +991,18 @@ class ApplyLeave extends Component {
                           },
                           others: {
                             filterable: false,
-                            maxWidth: 60
-                          }
+                            maxWidth: 60,
+                          },
                         },
                         {
                           fieldName: "employee_code",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "full_name",
-                          label: <AlgaehLabel label={{ forceLabel: "Name" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "Name" }} />,
                         },
                         {
                           fieldName: "leave_application_code",
@@ -998,8 +1010,8 @@ class ApplyLeave extends Component {
                             <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
                           ),
                           others: {
-                            minWidth: 120
-                          }
+                            minWidth: 120,
+                          },
                         },
                         {
                           fieldName: "status",
@@ -1007,7 +1019,7 @@ class ApplyLeave extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.status === "PEN" ? (
@@ -1034,8 +1046,8 @@ class ApplyLeave extends Component {
                           },
 
                           others: {
-                            maxWidth: 80
-                          }
+                            maxWidth: 80,
+                          },
                         },
                         {
                           fieldName: "leave_description",
@@ -1043,8 +1055,8 @@ class ApplyLeave extends Component {
                             <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                           ),
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
 
                         {
@@ -1055,7 +1067,7 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Leave Reason" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.remarks !== null
@@ -1065,8 +1077,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            minWidth: 250
-                          }
+                            minWidth: 250,
+                          },
                         },
                         {
                           fieldName: "total_applied_days",
@@ -1077,8 +1089,8 @@ class ApplyLeave extends Component {
                             />
                           ),
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "application_date",
@@ -1087,7 +1099,7 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Requested On" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.application_date).format(
@@ -1097,8 +1109,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "from_date",
@@ -1107,7 +1119,7 @@ class ApplyLeave extends Component {
                             <AlgaehLabel label={{ forceLabel: "Leave From" }} />
                           ),
 
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.from_date).format("DD-MM-YYYY")}
@@ -1115,8 +1127,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "to_date",
@@ -1124,7 +1136,7 @@ class ApplyLeave extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave To" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.to_date).format("DD-MM-YYYY")}
@@ -1132,8 +1144,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "authorized1",
@@ -1143,7 +1155,7 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Auth. Level 1" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.authorized1 === "Y" ? "Done" : "Pending"}
@@ -1151,8 +1163,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "authorized2",
@@ -1162,7 +1174,7 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Auth. Level 2" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.authorized2 === "Y" ? "Done" : "Pending"}
@@ -1170,8 +1182,8 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "authorized3",
@@ -1181,7 +1193,7 @@ class ApplyLeave extends Component {
                               label={{ forceLabel: "Auth. Level 3" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.authorized3 === "Y" ? "Done" : "Pending"}
@@ -1189,20 +1201,20 @@ class ApplyLeave extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
-                        }
+                            maxWidth: 150,
+                          },
+                        },
                       ]}
                       keyId="hims_f_leave_application_id"
                       dataSource={{
-                        data: this.state.leave_his
+                        data: this.state.leave_his,
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onEdit: () => {},
                         onDelete: () => {},
-                        onDone: () => {}
+                        onDone: () => {},
                       }}
                     />
                   </div>
@@ -1222,7 +1234,7 @@ class ApplyLeave extends Component {
                       >
                         <AlgaehLabel
                           label={{
-                            forceLabel: data.leave_description
+                            forceLabel: data.leave_description,
                           }}
                         />
                         <h6>
@@ -1253,14 +1265,14 @@ class ApplyLeave extends Component {
 
 function mapStateToProps(state) {
   return {
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );
