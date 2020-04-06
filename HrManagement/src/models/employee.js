@@ -35,13 +35,8 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-<<<<<<< HEAD
-          printQuery: (query) => {},
-          bulkInsertOrUpdate: true,
-=======
           printQuery: query => { },
           bulkInsertOrUpdate: true
->>>>>>> 244bd2a2efa69d00ebb50519f1d0e73b9257dff7
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1743,12 +1738,8 @@ export default {
           input.pending_tenure,
           input.installment_amount,
           input.pending_loan,
-<<<<<<< HEAD
-          input.hims_f_loan_application_id,
-=======
           input.start_month,
           input.hims_f_loan_application_id
->>>>>>> 244bd2a2efa69d00ebb50519f1d0e73b9257dff7
         ],
         printQuery: true,
       })

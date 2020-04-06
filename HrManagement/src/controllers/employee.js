@@ -495,7 +495,7 @@ export default () => {
     const {hospital_name,
     columns,
     employees}=  req.records;
-    console.log(columns);
+   
       //Create instance of excel
 var workbook = new Excel.Workbook();
 workbook.creator = "Algaeh technologies private limited";
