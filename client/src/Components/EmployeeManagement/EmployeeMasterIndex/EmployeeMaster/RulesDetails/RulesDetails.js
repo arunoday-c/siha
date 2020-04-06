@@ -104,7 +104,7 @@ class RulesDetails extends PureComponent {
                   </label>
                 </div>
 
-                <div
+                {/* <div
                   className="col-3 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
@@ -119,7 +119,7 @@ class RulesDetails extends PureComponent {
                       <AlgaehLabel label={{ forceLabel: "PF Applicable" }} />
                     </span>
                   </label>
-                </div>
+                </div> */}
 
                 <div
                   className="col-3 customCheckbox form-group"
