@@ -98,9 +98,9 @@ function selfSocket(socket) {
     });
   });
 
-  socket.on("/advance/applied", (payload) => {
-    const { full_name, reporting_to_id, leave_type, days } = payload;
-    const msg = `${full_name} requested ${leave_type} encashment for ${days} days `;
+  socket.on("/encash/applied", (payload) => {
+    const { full_name, reporting_to_id, leave_type, leave_days } = payload;
+    const msg = `${full_name} requested ${leave_type} encashment for ${leave_days} days `;
     createNotification({
       message: msg,
       user_id: reporting_to_id,
