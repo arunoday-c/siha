@@ -16,20 +16,24 @@ const TreeTable = treeTableHOC(ReactTable);
 class HistoricalData extends Component {
   constructor(props) {
     super(props);
-    this.getPatientVitals();
-    this.getPatientDiagnosis();
-    this.getPatientMedication();
-    this.getPatientPaymentDetails();
-    this.getPatientInvestigation();
-    this.getPatientTreatments();
     this.state = {
       patientVitals: [],
       patientDiagnosis: [],
       patientMedication: [],
       patientPayments: [],
       patientInvestigations: [],
-      patientTreatements: []
+      patientTreatements: [],
     };
+  }
+
+  componentDidMount() {
+    algaehLoader({ show: true });
+    this.getPatientVitals();
+    this.getPatientDiagnosis();
+    this.getPatientMedication();
+    this.getPatientPaymentDetails();
+    this.getPatientInvestigation();
+    this.getPatientTreatments();
   }
 
   getPatientVitals() {
@@ -37,22 +41,22 @@ class HistoricalData extends Component {
       uri: "/doctorsWorkBench/getPatientVitals",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientVitals1",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientVitals: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -62,22 +66,22 @@ class HistoricalData extends Component {
       // module: "MRD",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientTreatments",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientTreatements: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -89,22 +93,22 @@ class HistoricalData extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientDiagnosis",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientDiagnosis: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -114,22 +118,22 @@ class HistoricalData extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientMedication",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientMedication: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -139,22 +143,22 @@ class HistoricalData extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientPaymentDetails",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientPayments: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -164,22 +168,22 @@ class HistoricalData extends Component {
       module: "MRD",
       method: "GET",
       data: {
-        patient_id: Window.global["mrd_patient"]
+        patient_id: Window.global["mrd_patient"],
       },
       cancelRequestId: "getPatientInvestigation",
-      onSuccess: response => {
+      onSuccess: (response) => {
         algaehLoader({ show: false });
         if (response.data.success) {
           this.setState({ patientInvestigations: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         algaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -187,50 +191,50 @@ class HistoricalData extends Component {
     return [
       {
         accessor: "visit_date",
-        Cell: props => (
+        Cell: (props) => (
           <span>{moment(props.visit_date).format("DD-MM-YYYY")}</span>
-        )
+        ),
       },
       {
         Header: "Recorded Time",
-        accessor: "visit_time"
+        accessor: "visit_time",
       },
       {
         Header: "Temp. Oral",
-        accessor: "temperature_celsisus"
+        accessor: "temperature_celsisus",
       },
       {
         Header: "BP Systole",
-        accessor: "systolic"
+        accessor: "systolic",
       },
       {
         Header: "bp Dyastole",
-        accessor: "diastolic"
+        accessor: "diastolic",
       },
       {
         Header: "Heart Rate",
-        accessor: "heart_rate"
+        accessor: "heart_rate",
       },
       {
         Header: "Respiratory Rate",
-        accessor: "respiratory_rate"
+        accessor: "respiratory_rate",
       },
       {
         Header: "Height",
-        accessor: "height"
+        accessor: "height",
       },
       {
         Header: "Weight",
-        accessor: "weight"
+        accessor: "weight",
       },
       {
         Header: "BMI",
-        accessor: "bmi"
+        accessor: "bmi",
       },
       {
         Header: "BSA",
-        accessor: "bsa"
-      }
+        accessor: "bsa",
+      },
     ];
   }
 
@@ -246,7 +250,7 @@ class HistoricalData extends Component {
           pri_company_payble: _get.pri_company_payble,
           sec_insurance_provider_name: _get.sec_insurance_provider_name,
           sec_company_payable: _get.sec_company_payable,
-          list: g.getSource()
+          list: g.getSource(),
         };
       })
       .toArray();
@@ -265,15 +269,15 @@ class HistoricalData extends Component {
         obj["dateTime"] = key;
 
         Enumerable.from(g.getSource())
-          .select(s => {
+          .select((s) => {
             obj = {
               ...obj,
               ...{
                 [s.vitals_name
                   .toString()
                   .toLowerCase()
-                  .replace(/\s/g, "_")]: s.vital_value
-              }
+                  .replace(/\s/g, "_")]: s.vital_value,
+              },
             };
           })
           .toArray();
@@ -286,19 +290,19 @@ class HistoricalData extends Component {
       .groupBy("$.vital_id", null, (k, gg) => {
         if (k === 1 || k === 3 || k === 4 || k === 7 || k === 8 || k === 9) {
           let _gId = Enumerable.from(gg.getSource())
-            .where(w => w.vital_id === k)
+            .where((w) => w.vital_id === k)
             .firstOrDefault();
           let _names = String(_gId.vital_short_name).replace(/" "/g, "_");
 
           let row = Enumerable.from(_yAxes)
-            .where(w => w.id === _names)
+            .where((w) => w.id === _names)
             .firstOrDefault();
           const _index = _yAxes.indexOf(row);
           if (_index > -1) {
             _yAxes.splice(_index, 1);
           }
           _yAxes.push({
-            id: _names
+            id: _names,
           });
 
           let _bground = "";
@@ -347,9 +351,9 @@ class HistoricalData extends Component {
             borderColor: _borderColor,
             yAxisID: _names,
             data: Enumerable.from(gg.getSource())
-              .where(w => w.vital_id === k)
-              .select(s => s.vital_value)
-              .toArray()
+              .where((w) => w.vital_id === k)
+              .select((s) => s.vital_value)
+              .toArray(),
           });
         }
       })
@@ -373,56 +377,56 @@ class HistoricalData extends Component {
                       columns={[
                         {
                           fieldName: "dateTime",
-                          label: "Date"
+                          label: "Date",
                         },
                         {
                           fieldName: "weight",
-                          label: "Weight"
+                          label: "Weight",
                         },
                         {
                           fieldName: "height",
-                          label: "Height"
+                          label: "Height",
                         },
                         {
                           fieldName: "bmi",
-                          label: "BMI"
+                          label: "BMI",
                         },
                         {
                           fieldName: "temperature",
-                          label: "Temp."
+                          label: "Temp.",
                         },
                         {
                           fieldName: "heart_rate",
-                          label: "Heart Rate"
+                          label: "Heart Rate",
                         },
                         {
                           fieldName: "respiratory_rate",
-                          label: "Respiratory Rate"
+                          label: "Respiratory Rate",
                         },
                         {
                           fieldName: "bp_systolic",
-                          label: "BP (sys)"
+                          label: "BP (sys)",
                         },
                         {
                           fieldName: "bp_diastolic",
-                          label: "BP (dia)"
+                          label: "BP (dia)",
                         },
                         {
                           fieldName: "glucose_fbs",
-                          label: "Glucose FBS"
+                          label: "Glucose FBS",
                         },
                         {
                           fieldName: "glucose_rbs",
-                          label: "Glucose RBS"
+                          label: "Glucose RBS",
                         },
                         {
                           fieldName: "glucose_pbs",
-                          label: "Glucose PBS"
+                          label: "Glucose PBS",
                         },
                         {
                           fieldName: "head_ircumference",
-                          label: "Head Circumference"
-                        }
+                          label: "Head Circumference",
+                        },
                       ]}
                       dataSource={{ data: _vitalsGroup }}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -460,12 +464,12 @@ class HistoricalData extends Component {
                   <Line
                     options={{
                       scales: {
-                        yAxes: _yAxes
-                      }
+                        yAxes: _yAxes,
+                      },
                     }}
                     data={{
                       datasets: _plotGraph,
-                      labels: _chartLabels
+                      labels: _chartLabels,
                     }}
                   />
                 </div>
@@ -497,31 +501,31 @@ class HistoricalData extends Component {
                       columns={[
                         {
                           accessor: "diagnosis_date",
-                          Cell: props => (
+                          Cell: (props) => (
                             <span>{props.diagnosis_date + "HAllalalal"}</span>
-                          )
+                          ),
                         },
                         {
                           Header: "Diagnosis",
-                          accessor: "daignosis_description"
+                          accessor: "daignosis_description",
                         },
                         {
                           Header: "Diagnosis Code",
-                          accessor: "daignosis_code"
+                          accessor: "daignosis_code",
                         },
 
                         {
                           id: "diagnosis_type",
                           Header: "Diagnosis Type",
-                          accessor: d =>
-                            d.diagnosis_type === "S" ? "Secondary" : "Primary"
+                          accessor: (d) =>
+                            d.diagnosis_type === "S" ? "Secondary" : "Primary",
                         },
                         {
                           id: "final_daignosis",
                           Header: "Final Diagnosis",
-                          accessor: f =>
-                            f.final_daignosis === "Y" ? "Yes" : "No"
-                        }
+                          accessor: (f) =>
+                            f.final_daignosis === "Y" ? "Yes" : "No",
+                        },
                       ]}
                       defaultPageSize={10}
                     />
@@ -552,25 +556,25 @@ class HistoricalData extends Component {
                       pivotBy={["visit_date"]}
                       columns={[
                         {
-                          accessor: "visit_date"
+                          accessor: "visit_date",
                         },
 
                         {
                           Header: "Doctor Name",
-                          accessor: "doctor_name"
+                          accessor: "doctor_name",
                         },
                         {
                           Header: "Service Name",
-                          accessor: "service_name"
+                          accessor: "service_name",
                         },
                         {
                           Header: "Service Description",
-                          accessor: "service_desc"
+                          accessor: "service_desc",
                         },
                         {
                           Header: "Teeth Number",
-                          accessor: "teeth_number"
-                        }
+                          accessor: "teeth_number",
+                        },
                       ]}
                       defaultPageSize={10}
                     />
@@ -605,33 +609,33 @@ class HistoricalData extends Component {
                       pivotBy={["prescription_date"]}
                       columns={[
                         {
-                          accessor: "prescription_date"
+                          accessor: "prescription_date",
                         },
                         {
                           accessor: "start_date",
-                          Header: "Start Date"
+                          Header: "Start Date",
                         },
                         {
                           accessor: "generic_name",
-                          Header: "Generic Name"
+                          Header: "Generic Name",
                         },
                         {
                           accessor: "item_description",
-                          Header: "Item Description"
+                          Header: "Item Description",
                         },
 
                         {
                           accessor: "dosage",
-                          Header: "Dosage"
+                          Header: "Dosage",
                         },
                         {
                           accessor: "frequency",
-                          Header: "Frequency"
+                          Header: "Frequency",
                         },
                         {
                           accessor: "no_of_days",
-                          Header: "No. of Days"
-                        }
+                          Header: "No. of Days",
+                        },
                       ]}
                       defaultPageSize={10}
                     />
@@ -662,33 +666,33 @@ class HistoricalData extends Component {
                       pivotBy={["visit_date"]}
                       columns={[
                         {
-                          accessor: "visit_date"
+                          accessor: "visit_date",
                         },
 
                         {
                           Header: "Service Name",
-                          accessor: "service_name"
+                          accessor: "service_name",
                         },
                         {
                           Header: "Doctor Name",
-                          accessor: "provider_name"
+                          accessor: "provider_name",
                         },
                         {
                           Header: "Lab Order Status",
-                          accessor: "lab_ord_status"
+                          accessor: "lab_ord_status",
                         },
                         {
                           Header: "Lab Billed",
-                          accessor: "lab_billed"
+                          accessor: "lab_billed",
                         },
                         {
                           Header: "Radiology Order Status",
-                          accessor: "rad_ord_status"
+                          accessor: "rad_ord_status",
                         },
                         {
                           Header: "Radiology Billed",
-                          accessor: "rad_billed"
-                        }
+                          accessor: "rad_billed",
+                        },
                       ]}
                       defaultPageSize={10}
                     />
@@ -847,16 +851,16 @@ class HistoricalData extends Component {
                   columns={[
                     {
                       Header: "Date",
-                      accessor: "bill_date",
-                      Cell: row => (
+                      id: "bill_date",
+                      accessor: (row) => (
                         <span>
                           {moment(row.bill_date).format("DD-MM-YYYY")}
                         </span>
-                      )
+                      ),
                     },
                     {
                       Header: "Doctor",
-                      accessor: "provider_name"
+                      accessor: "provider_name",
                     },
                     {
                       Header: "Bill Details",
@@ -864,7 +868,7 @@ class HistoricalData extends Component {
                         {
                           Header: "Bill No.",
                           id: "bill_number",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, index) => (
@@ -872,12 +876,12 @@ class HistoricalData extends Component {
                                 ))}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Gross Amt.",
                           id: "net_amount",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, index) => (
@@ -885,12 +889,12 @@ class HistoricalData extends Component {
                                 ))}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Amount Paid",
                           id: "receiveable_amount",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, index) => (
@@ -898,12 +902,12 @@ class HistoricalData extends Component {
                                 ))}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Due",
                           id: "credit_amount",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, index) => (
@@ -911,9 +915,9 @@ class HistoricalData extends Component {
                                 ))}
                               </React.Fragment>
                             );
-                          }
-                        }
-                      ]
+                          },
+                        },
+                      ],
                     },
                     {
                       Header: "Receipt Details",
@@ -921,7 +925,7 @@ class HistoricalData extends Component {
                         {
                           Header: "Receipt Date",
                           id: "receipt_date",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, i) => {
@@ -939,12 +943,12 @@ class HistoricalData extends Component {
                                 })}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Receipt No.",
                           id: "receipt_number",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, i) => {
@@ -960,12 +964,12 @@ class HistoricalData extends Component {
                                 })}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Total Amt.",
                           id: "total_amount",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, i) => {
@@ -979,12 +983,12 @@ class HistoricalData extends Component {
                                 })}
                               </React.Fragment>
                             );
-                          }
+                          },
                         },
                         {
                           Header: "Amount Paid",
                           id: "receiveable_amount",
-                          accessor: acc => {
+                          accessor: (acc) => {
                             return (
                               <React.Fragment>
                                 {acc.list.map((r, i) => {
@@ -998,38 +1002,39 @@ class HistoricalData extends Component {
                                 })}
                               </React.Fragment>
                             );
-                          }
-                        }
-                      ]
+                          },
+                        },
+                      ],
                     },
                     {
                       Header: "Primary Insurar",
                       columns: [
                         {
                           Header: "Name",
-                          accessor: "pri_insurance_provider_name"
+                          accessor: "pri_insurance_provider_name",
                         },
                         {
                           Header: "Amt.",
-                          accessor: "pri_company_payble"
-                        }
-                      ]
+                          accessor: "pri_company_payble",
+                        },
+                      ],
                     },
                     {
                       Header: "Secondary Insurar",
                       columns: [
                         {
                           Header: "Name",
-                          accessor: "sec_insurance_provider_name"
+                          accessor: "sec_insurance_provider_name",
                         },
                         {
                           Header: "Amt.",
-                          accessor: "sec_company_payable"
-                        }
-                      ]
-                    }
+                          accessor: "sec_company_payable",
+                        },
+                      ],
+                    },
                   ]}
                   data={_groupData}
+                  // data={this.state.patientPayments}
                   defaultPageSize={10}
                 />
               </div>
