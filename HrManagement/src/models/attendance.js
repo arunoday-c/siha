@@ -5109,7 +5109,7 @@ export default {
                           where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                           E.date_of_joining <= date(?) and
                           (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
-                          and ( S.salary_processed is null or  S.salary_processed='N') ${strQry} order by cast( E.employee_code as unsigned);                
+                          and ( S.salary_processed is null or  S.salary_processed='N') ${strQry}  ;                
                           
                           select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                           case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
@@ -5195,7 +5195,7 @@ export default {
                         where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                         E.date_of_joining <= date(?) and
                         (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
-                        and ( S.salary_processed is null or  S.salary_processed='N') ${strQry} order by cast( E.employee_code as unsigned);                
+                        and ( S.salary_processed is null or  S.salary_processed='N') ${strQry}  ;                
                         
                         select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                         case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type,
@@ -7382,7 +7382,8 @@ function generateExcelTimesheet(input) {
       });
     });
 
-    return outputArray;
+    const sort_data = _.sortBy(outputArray, (s) => parseInt(s.employee_code));
+    return sort_data;
   } catch (e) {
     return e;
   }
@@ -7657,7 +7658,8 @@ function generateProjectRosterTimesheet(input) {
         });
       })
       .value();
-    return final_roster;
+    const sort_data = _.sortBy(final_roster, (s) => parseInt(s.employee_code));
+    return sort_data;
   } catch (e) {
     console.log("ERRR:", e);
     return e;
