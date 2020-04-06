@@ -35,8 +35,13 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
+<<<<<<< HEAD
           printQuery: (query) => {},
           bulkInsertOrUpdate: true,
+=======
+          printQuery: query => { },
+          bulkInsertOrUpdate: true
+>>>>>>> 244bd2a2efa69d00ebb50519f1d0e73b9257dff7
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -108,9 +113,9 @@ export default {
             query:
               "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,N.nationality as nationality_name,\
                 R.religion_name, DE.designation,employee_group_id  FROM hims_d_employee E \
-                inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
-                inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
-                inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
+                left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+                left join hims_d_department D on SD.department_id = D.hims_d_department_id \
+                left join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
                 left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
                 E.record_status = 'A'  " +
               specificEmployee +
@@ -1732,13 +1737,18 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=? \
+          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=?, start_month=? \
           WHERE hims_f_loan_application_id = ?",
         values: [
           input.pending_tenure,
           input.installment_amount,
           input.pending_loan,
+<<<<<<< HEAD
           input.hims_f_loan_application_id,
+=======
+          input.start_month,
+          input.hims_f_loan_application_id
+>>>>>>> 244bd2a2efa69d00ebb50519f1d0e73b9257dff7
         ],
         printQuery: true,
       })

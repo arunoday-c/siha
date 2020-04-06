@@ -4,7 +4,11 @@ const notSchema = new Schema(
   {
     user_id: Number,
     module: String,
-    message: String
+    message: String,
+    title: String,
+    pageToRedirect: String,
+    fromUserId: Number,
+    fromModule: String
   },
   {
     timestamps: true

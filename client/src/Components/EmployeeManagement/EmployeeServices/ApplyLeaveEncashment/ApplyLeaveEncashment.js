@@ -9,7 +9,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -41,7 +41,7 @@ class ApplyLeaveEncashment extends Component {
       total_amount: 0,
       encashDetail: [],
       leave_id: null,
-      leave_days: 0
+      leave_days: 0,
     };
     this.getLeaveTypes();
   }
@@ -52,20 +52,7 @@ class ApplyLeaveEncashment extends Component {
 
   static contextType = MainContext;
   componentDidMount() {
-    const userToken = this.context.userToken;
-    if (this.props.empData) {
-      this.setState(
-        {
-          employee_id: this.props.empData.hims_d_employee_id,
-          hospital_id: userToken.hims_d_hospital_id,
-          decimal_place: userToken.decimal_places
-        },
-        () => {
-          this.getEmployeeLeaveData();
-          this.getEmployeeEncashDetails();
-        }
-      );
-    }
+    const { userToken } = this.context;
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -75,10 +62,31 @@ class ApplyLeaveEncashment extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id,
+        decimal_place: userToken.decimal_places,
+      },
+      () => {
+        if (this.props.empData) {
+          this.setState(
+            {
+              employee_id: this.props.empData.hims_d_employee_id,
+              reporting_to_id: this.props.empData.reporting_to_id,
+              employee_name: this.props.empData.full_name,
+            },
+            () => {
+              this.getEmployeeLeaveData();
+              this.getEmployeeEncashDetails();
+            }
+          );
+        }
+      }
+    );
   }
 
   dateFormater(value) {
@@ -90,7 +98,7 @@ class ApplyLeaveEncashment extends Component {
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -98,7 +106,7 @@ class ApplyLeaveEncashment extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
@@ -115,14 +123,15 @@ class ApplyLeaveEncashment extends Component {
             total_amount: 0,
             encashDetail: [],
             leave_id: null,
-            leave_days: 0
+            leave_days: 0,
+            reporting_to_id: row.reporting_to_id,
           },
           () => {
             this.getEmployeeLeaveData();
             this.getEmployeeEncashDetails();
           }
         );
-      }
+      },
     });
   }
 
@@ -132,15 +141,15 @@ class ApplyLeaveEncashment extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            encashDetail: res.data.result
+            encashDetail: res.data.result,
           });
         }
-      }
+      },
     });
   }
 
@@ -153,7 +162,7 @@ class ApplyLeaveEncashment extends Component {
             hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id,
             available_balance: value.selected.close_balance,
             close_balance: value.selected.close_balance,
-            Request_enable: false
+            Request_enable: false,
           },
           () => this.LoadLeaveEncashment()
         );
@@ -161,14 +170,14 @@ class ApplyLeaveEncashment extends Component {
         break;
       case "hospital_id":
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
 
         break;
       default:
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.validate();
@@ -184,7 +193,7 @@ class ApplyLeaveEncashment extends Component {
     let inputObj = {
       employee_id: this.state.employee_id,
       year: this.state.year,
-      leave_id: this.state.leave_id
+      leave_id: this.state.leave_id,
     };
 
     algaehApiCall({
@@ -192,7 +201,7 @@ class ApplyLeaveEncashment extends Component {
       module: "hrManagement",
       data: inputObj,
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.result.length > 0) {
           let data = response.data.result[0];
 
@@ -205,18 +214,18 @@ class ApplyLeaveEncashment extends Component {
             ),
             leave_days: data.leave_days,
             hims_f_employee_monthly_leave_id:
-              data.hims_f_employee_monthly_leave_id
+              data.hims_f_employee_monthly_leave_id,
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message || error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -235,11 +244,20 @@ class ApplyLeaveEncashment extends Component {
       full_name: null,
       Request_enable: true,
       is_projected_leave: "N",
-      loading_Process: false
+      loading_Process: false,
     });
   }
 
   applyLeave() {
+    const {
+      employee_name: full_name,
+      reporting_to_id,
+      leave_id,
+      leave_days,
+    } = this.state;
+    const leave_desc = this.state.emp_leaves_data.filter(
+      (leave) => leave.leave_id === leave_id
+    );
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
@@ -251,23 +269,31 @@ class ApplyLeaveEncashment extends Component {
           module: "hrManagement",
           data: this.state,
           method: "POST",
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
             this.getEmployeeEncashDetails();
+            if (this.context.socket.connected) {
+              this.context.socket.emit("/encash/applied", {
+                full_name,
+                reporting_to_id,
+                leave_type: leave_desc[0].leave_description,
+                leave_days,
+              });
+            }
             swalMessage({
               title: "Requested Succesfully...",
-              type: "success"
+              type: "success",
             });
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message || error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -279,15 +305,15 @@ class ApplyLeaveEncashment extends Component {
       data: {
         employee_id: this.state.employee_id,
         year: this.state.year,
-        leave_encash: "Y"
+        leave_encash: "Y",
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            emp_leaves_data: res.data.records
+            emp_leaves_data: res.data.records,
           });
         }
-      }
+      },
     });
   }
 
@@ -296,17 +322,17 @@ class ApplyLeaveEncashment extends Component {
       uri: "/selfService/getLeaveMaster",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         this.setState({
-          leave_types: res.data.records
+          leave_types: res.data.records,
         });
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -315,7 +341,7 @@ class ApplyLeaveEncashment extends Component {
     if (parseFloat(value) > parseFloat(this.state.available_balance)) {
       swalMessage({
         title: "Cannot be greater than Available Balance",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -323,7 +349,7 @@ class ApplyLeaveEncashment extends Component {
     let inputObj = {
       employee_id: this.state.employee_id,
       year: this.state.year,
-      leave_days: value
+      leave_days: value,
     };
 
     AlgaehLoader({ show: true });
@@ -332,7 +358,7 @@ class ApplyLeaveEncashment extends Component {
       module: "hrManagement",
       data: inputObj,
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.result.length > 0) {
           let data = response.data.result[0];
 
@@ -343,18 +369,18 @@ class ApplyLeaveEncashment extends Component {
             leave_amount: parseFloat(data.leave_amount).toFixed(
               this.state.decimal_place
             ),
-            leave_days: data.leave_days
+            leave_days: data.leave_days,
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message || error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -380,7 +406,7 @@ class ApplyLeaveEncashment extends Component {
                       div={{ className: "col-12 form-group mandatory" }}
                       label={{
                         forceLabel: "Select Branch",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "hospital_id",
@@ -389,14 +415,14 @@ class ApplyLeaveEncashment extends Component {
                         dataSource: {
                           textField: "hospital_name",
                           valueField: "hims_d_hospital_id",
-                          data: this.props.organizations
+                          data: this.props.organizations,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            hospital_id: null
+                            hospital_id: null,
                           });
-                        }
+                        },
                       }}
                     />
                   ) : null}
@@ -416,7 +442,7 @@ class ApplyLeaveEncashment extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Start Year.",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "year",
@@ -425,14 +451,14 @@ class ApplyLeaveEncashment extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: allYears
+                        data: allYears,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          year: null
+                          year: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -440,7 +466,7 @@ class ApplyLeaveEncashment extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Leave Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "leave_id",
@@ -449,7 +475,7 @@ class ApplyLeaveEncashment extends Component {
                       dataSource: {
                         textField: "leave_description",
                         valueField: "leave_id",
-                        data: this.state.emp_leaves_data
+                        data: this.state.emp_leaves_data,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
@@ -458,18 +484,18 @@ class ApplyLeaveEncashment extends Component {
                           Request_enable: true,
                           hims_d_leave_detail_id: null,
                           available_balance: 0.0,
-                          close_balance: 0
+                          close_balance: 0,
                         });
                       },
                       others: {
-                        id: "leaveTyp"
-                      }
+                        id: "leaveTyp",
+                      },
                     }}
                   />
                   <div className="col-6 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Available Balance"
+                        forceLabel: "Available Balance",
                       }}
                     />
                     <h6>{this.state.available_balance} days(s)</h6>
@@ -479,7 +505,7 @@ class ApplyLeaveEncashment extends Component {
                     div={{ className: "col-6 mandatory form-group" }}
                     label={{
                       forceLabel: "Applying For",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.leave_days,
@@ -487,19 +513,19 @@ class ApplyLeaveEncashment extends Component {
                       name: "leave_days",
                       number: {
                         thousandSeparator: ",",
-                        allowNegative: false
+                        allowNegative: false,
                       },
                       dontAllowKeys: ["-", "e"],
                       events: {
-                        onChange: this.numberhandle.bind(this)
-                      }
+                        onChange: this.numberhandle.bind(this),
+                      },
                     }}
                   />
 
                   <div className="col-6 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Encash Amount"
+                        forceLabel: "Encash Amount",
                       }}
                     />
                     <h6>{GetAmountFormart(this.state.total_amount)}</h6>
@@ -546,7 +572,7 @@ class ApplyLeaveEncashment extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.authorized === "PEN" ? (
                               <span className="badge badge-success">
                                 Pending
@@ -562,7 +588,7 @@ class ApplyLeaveEncashment extends Component {
                             ) : (
                               "-------"
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "encashment_number",
@@ -570,7 +596,7 @@ class ApplyLeaveEncashment extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Encashment Number" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "encashment_date",
@@ -579,13 +605,13 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Encashment Date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {this.dateFormater(row.encashment_date)}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "leave_description",
@@ -593,7 +619,7 @@ class ApplyLeaveEncashment extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Leave Description" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "close_balance",
@@ -601,7 +627,7 @@ class ApplyLeaveEncashment extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Available Balance" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "leave_days",
@@ -609,7 +635,7 @@ class ApplyLeaveEncashment extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Applied for Encash" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "leave_amount",
@@ -618,12 +644,12 @@ class ApplyLeaveEncashment extends Component {
                               label={{ forceLabel: "Encashment Amount" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{GetAmountFormart(row.leave_amount)}</span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="leave_id"
                       dataSource={{ data: this.state.encashDetail }}
@@ -646,7 +672,7 @@ class ApplyLeaveEncashment extends Component {
                       >
                         <AlgaehLabel
                           label={{
-                            forceLabel: data.leave_description
+                            forceLabel: data.leave_description,
                           }}
                         />
                         <h6>
@@ -677,14 +703,14 @@ class ApplyLeaveEncashment extends Component {
 
 function mapStateToProps(state) {
   return {
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );

@@ -1,8 +1,8 @@
 import { notifiModel } from "./model";
 import { formatDate, formatTime } from "./utils";
 
-const apsock = socket => {
-  socket.on("appointment_created", patient => {
+const apsock = (socket) => {
+  socket.on("appointment_created", (patient) => {
     // frontdesk users
     const frontMsg = `Patient ${patient.patient_name} added to ${formatTime(
       patient.appointment_from_time
@@ -12,11 +12,12 @@ const apsock = socket => {
 
     const frontDeskNot = new notifiModel({
       module: "ftdsk",
-      message: frontMsg
+      message: frontMsg,
+      title: "FrontDesk",
     });
-    frontDeskNot.save().then(() => {
+    frontDeskNot.save().then((doc) => {
       console.log("saved");
-      socket.broadcast.to("ftdsk").emit("refresh_appointment", frontMsg);
+      socket.broadcast.to("ftdsk").emit("refresh_appointment", doc);
     });
 
     // doctor
@@ -26,13 +27,12 @@ const apsock = socket => {
     ${date}`;
     const docNoti = new notifiModel({
       user_id: patient.provider_id,
-      message: docMsg
+      message: docMsg,
+      title: "FrontDesk",
     });
-    docNoti.save().then(() => {
+    docNoti.save().then((doc) => {
       console.log("saved");
-      socket.broadcast
-        .to(`${patient.provider_id}`)
-        .emit("patient_added", docMsg);
+      socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
     });
   });
 };
