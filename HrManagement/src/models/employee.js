@@ -1732,12 +1732,13 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=? \
+          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=?, start_month=? \
           WHERE hims_f_loan_application_id = ?",
         values: [
           input.pending_tenure,
           input.installment_amount,
           input.pending_loan,
+          input.start_month,
           input.hims_f_loan_application_id
         ],
         printQuery: true
