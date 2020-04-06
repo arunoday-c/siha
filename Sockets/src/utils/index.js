@@ -14,11 +14,12 @@ export function formatDate(date) {
   }
 }
 
-export async function createNotification({ message, user_id, module }) {
+export async function createNotification({ message, user_id, module, title }) {
   try {
     const notifi = new notifiModel({
       user_id: user_id ? user_id : null,
       module: module ? module : null,
+      title,
       message,
     });
     const result = await notifi.save();

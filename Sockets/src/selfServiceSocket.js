@@ -85,6 +85,30 @@ function selfSocket(socket) {
       socket.to(`${emp_id}`).emit("/loan/status", doc);
     });
   });
+
+  socket.on("/advance/applied", (payload) => {
+    const { full_name, reporting_to_id, advance_amount } = payload;
+    const msg = `${full_name} requested ${advance_amount} as advance`;
+    createNotification({
+      message: msg,
+      user_id: reporting_to_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
+    });
+  });
+
+  socket.on("/advance/applied", (payload) => {
+    const { full_name, reporting_to_id, leave_type, days } = payload;
+    const msg = `${full_name} requested ${leave_type} encashment for ${days} days `;
+    createNotification({
+      message: msg,
+      user_id: reporting_to_id,
+      title: "HR Management",
+    }).then((doc) => {
+      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
+    });
+  });
 }
 
 export default selfSocket;

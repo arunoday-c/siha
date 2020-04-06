@@ -227,6 +227,11 @@ class LoanRequest extends Component {
   }
 
   applyAdvance() {
+    const {
+      employee_name: full_name,
+      reporting_to_id,
+      advance_amount,
+    } = this.state;
     const { deducting_month, deducting_year } = this.state;
     const current_year = parseInt(moment().format("YYYY"), 10);
     const current_month = parseInt(moment().format("M"), 10);
@@ -264,6 +269,13 @@ class LoanRequest extends Component {
                   title: "Record Added Successfully",
                   type: "success",
                 });
+                if (this.context.socket.connected) {
+                  this.context.socket.emit("/advance/applied", {
+                    full_name,
+                    reporting_to_id,
+                    advance_amount,
+                  });
+                }
                 this.clearAdvanceState();
                 this.getEmployeeAdvances();
               }
