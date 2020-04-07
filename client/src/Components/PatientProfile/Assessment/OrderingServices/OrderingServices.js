@@ -8,7 +8,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -28,7 +28,7 @@ import {
   selectToProcess,
   ProcessFromFavourite,
   openViewFavouriteOrder,
-  closeViewFavouriteOrder
+  closeViewFavouriteOrder,
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.scss";
 import "../../../../styles/site.scss";
@@ -92,7 +92,8 @@ class OrderingServices extends PureComponent {
       all_favouriteservices: [],
       add_to_list: true,
       all_favourites: [],
-      deleteserviceInput: []
+      deleteserviceInput: [],
+      originalLength: 0,
     };
   }
 
@@ -100,7 +101,7 @@ class OrderingServices extends PureComponent {
     let prevLang = getCookie("Language");
 
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     if (
@@ -113,8 +114,8 @@ class OrderingServices extends PureComponent {
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
+          mappingName: "servicetype",
+        },
       });
     }
 
@@ -128,8 +129,8 @@ class OrderingServices extends PureComponent {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
+          mappingName: "serviceslist",
+        },
       });
     }
     this.getPatientInsurance();
@@ -143,13 +144,13 @@ class OrderingServices extends PureComponent {
       method: "GET",
       data: {
         patient_id: this.state.patient_id,
-        patient_visit_id: this.state.visit_id
+        patient_visit_id: this.state.visit_id,
       },
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinginsurance"
+        mappingName: "existinginsurance",
       },
-      afterSuccess: data => {
+      afterSuccess: (data) => {
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -161,7 +162,7 @@ class OrderingServices extends PureComponent {
             secondary_insurance_provider_id:
               data[0].secondary_insurance_provider_id,
             secondary_network_id: data[0].secondary_network_id,
-            secondary_network_office_id: data[0].secondary_network_office_id
+            secondary_network_office_id: data[0].secondary_network_office_id,
           });
 
           this.props.getServices({
@@ -171,8 +172,8 @@ class OrderingServices extends PureComponent {
             data: { insurance_id: data[0].insurance_provider_id },
             redux: {
               type: "SERVICES_INS_GET_DATA",
-              mappingName: "services"
-            }
+              mappingName: "services",
+            },
           });
         } else {
           this.setState({
@@ -183,7 +184,7 @@ class OrderingServices extends PureComponent {
             sec_insured: null,
             secondary_insurance_provider_id: null,
             secondary_network_id: null,
-            secondary_network_office_id: null
+            secondary_network_office_id: null,
           });
           this.props.getServices({
             uri: "/serviceType/getService",
@@ -191,22 +192,18 @@ class OrderingServices extends PureComponent {
             method: "GET",
             redux: {
               type: "SERVICES_GET_DATA",
-              mappingName: "services"
-            }
+              mappingName: "services",
+            },
           });
         }
-      }
+      },
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    let saved = true;
-    const orderservicesdata = _.filter(nextProps.orderedList, f => {
+    const orderservicesdata = _.filter(nextProps.orderedList, (f) => {
       return f.trans_package_detail_id === null;
     });
-    if (orderservicesdata.length > 0) {
-      saved = false;
-    }
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -217,7 +214,7 @@ class OrderingServices extends PureComponent {
       output.approval_limit_yesno = nextProps.approval_limit_yesno;
       output.orderservicesdata = orderservicesdata;
       output.preserviceInput = nextProps.preserviceInput;
-      output.saved = saved;
+      output.originalLength = orderservicesdata.length || 0;
 
       this.setState({ ...output });
     } else {
@@ -225,14 +222,14 @@ class OrderingServices extends PureComponent {
         insured: "N",
         approval_amt: nextProps.approval_amt,
         orderservicesdata: orderservicesdata,
+        originalLength: orderservicesdata.length || 0,
         preserviceInput: nextProps.preserviceInput,
         approval_limit_yesno: nextProps.approval_limit_yesno,
-        saved: saved
       });
     }
   }
 
-  onClose = e => {
+  onClose = (e) => {
     const { current_patient, visit_id } = Window.global;
     getFavouriteServices(this);
     this.setState(
@@ -241,8 +238,8 @@ class OrderingServices extends PureComponent {
         s_service: null,
         selectedLang: "en",
 
-        patient_id: current_patient,//Window.global["current_patient"],
-        visit_id: visit_id,//Window.global["visit_id"],
+        patient_id: current_patient, //Window.global["current_patient"],
+        visit_id: visit_id, //Window.global["visit_id"],
         doctor_id: null,
         vat_applicable: this.props.vat_applicable,
 
@@ -273,7 +270,7 @@ class OrderingServices extends PureComponent {
         discount_amount: null,
         net_total: null,
         add_to_list: true,
-        deleteserviceInput: []
+        deleteserviceInput: [],
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -282,12 +279,14 @@ class OrderingServices extends PureComponent {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-    const { current_patient, visit_id, provider_id } = Window.global;
+    const { provider_id } = Window.global;
+    const notAllowed =
+      this.state.originalLength === this.state.orderservicesdata.length;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Order Investigation"
           openPopup={this.props.open}
@@ -325,7 +324,7 @@ class OrderingServices extends PureComponent {
                     covered,
                     pre_approval,
                     service_name,
-                    service_type
+                    service_type,
                   }) => {
                     let properStyle;
                     if (this.state.insured === "Y") {
@@ -362,11 +361,11 @@ class OrderingServices extends PureComponent {
                   displayField="service_name"
                   value={this.state.service_name}
                   extraParameters={{
-                    insurance_id: insurance_id
+                    insurance_id: insurance_id,
                   }}
                   searchName="insservicemaster"
                   onClick={serviceHandeler.bind(this, this)}
-                  ref={attReg => {
+                  ref={(attReg) => {
                     this.attReg = attReg;
                   }}
                 />
@@ -374,7 +373,7 @@ class OrderingServices extends PureComponent {
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{
-                    fieldName: "tst_type"
+                    fieldName: "tst_type",
                   }}
                   selector={{
                     name: "test_type",
@@ -383,10 +382,10 @@ class OrderingServices extends PureComponent {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.FORMAT_PRIORITY
+                      data: GlobalVariables.FORMAT_PRIORITY,
                     },
                     onChange: texthandle.bind(this, this),
-                    autoComplete: "off"
+                    autoComplete: "off",
                   }}
                 />
 
@@ -428,21 +427,21 @@ class OrderingServices extends PureComponent {
                       {
                         fieldName: "actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
                                 style={{
                                   pointerEvents:
                                     row.billed === "N" ? "" : "none",
-                                  opacity: row.billed === "N" ? "" : "0.1"
+                                  opacity: row.billed === "N" ? "" : "0.1",
                                 }}
                                 onClick={deleteServices.bind(this, this, row)}
                                 className="fas fa-trash-alt"
                               />
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "service_type_id",
@@ -451,12 +450,12 @@ class OrderingServices extends PureComponent {
                             label={{ fieldName: "service_type_id" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_service_type_id ===
                                   row.service_type_id
                               );
@@ -471,12 +470,12 @@ class OrderingServices extends PureComponent {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_service_type_id ===
                                   row.service_type_id
                               );
@@ -490,7 +489,7 @@ class OrderingServices extends PureComponent {
                                 : ""}
                             </span>
                           );
-                        }
+                        },
                       },
 
                       {
@@ -498,12 +497,13 @@ class OrderingServices extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
                               );
 
                           return (
@@ -516,12 +516,13 @@ class OrderingServices extends PureComponent {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
                               );
 
                           return (
@@ -535,8 +536,8 @@ class OrderingServices extends PureComponent {
                           );
                         },
                         others: {
-                          minWidth: 400
-                        }
+                          minWidth: 400,
+                        },
                       },
                       {
                         fieldName: "unit_cost",
@@ -545,8 +546,8 @@ class OrderingServices extends PureComponent {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 80
-                        }
+                          minWidth: 80,
+                        },
                       },
 
                       {
@@ -556,7 +557,7 @@ class OrderingServices extends PureComponent {
                             label={{ fieldName: "discount_percentage" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -570,20 +571,20 @@ class OrderingServices extends PureComponent {
                                     this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
                                     this.state.insured === "Y" ? true : false,
                                   onBlur: makeZeroIngrid.bind(this, this, row),
-                                  onFocus: e => {
+                                  onFocus: (e) => {
                                     e.target.oldvalue = e.target.value;
-                                  }
-                                }
+                                  },
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "discount_amout",
@@ -592,7 +593,7 @@ class OrderingServices extends PureComponent {
                             label={{ fieldName: "discount_amout" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -606,20 +607,20 @@ class OrderingServices extends PureComponent {
                                     this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   disabled:
                                     this.state.insured === "Y" ? true : false,
                                   onBlur: makeZeroIngrid.bind(this, this, row),
-                                  onFocus: e => {
+                                  onFocus: (e) => {
                                     e.target.oldvalue = e.target.value;
-                                  }
-                                }
+                                  },
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
 
                       {
@@ -627,30 +628,30 @@ class OrderingServices extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "net_amout" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "insurance_yesno",
                         label: (
                           <AlgaehLabel label={{ fieldName: "insurance" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.insurance_yesno === "Y"
                             ? "Covered"
                             : "Not Covered";
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.insurance_yesno === "Y"
                             ? "Covered"
                             : "Not Covered";
-                        }
+                        },
                       },
                       {
                         fieldName: "pre_approval",
                         label: (
                           <AlgaehLabel label={{ fieldName: "pre_approval" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.pre_approval === "Y"
@@ -659,7 +660,7 @@ class OrderingServices extends PureComponent {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {row.pre_approval === "Y"
@@ -667,7 +668,7 @@ class OrderingServices extends PureComponent {
                                 : "Not Required"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "total_tax",
@@ -676,8 +677,8 @@ class OrderingServices extends PureComponent {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 80
-                        }
+                          minWidth: 80,
+                        },
                       },
                       {
                         fieldName: "patient_payable",
@@ -686,7 +687,7 @@ class OrderingServices extends PureComponent {
                             label={{ fieldName: "patient_payable" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "company_payble",
@@ -697,13 +698,13 @@ class OrderingServices extends PureComponent {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 80
-                        }
-                      }
+                          minWidth: 80,
+                        },
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderservicesdata
+                      data: this.state.orderservicesdata,
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -712,7 +713,7 @@ class OrderingServices extends PureComponent {
                       onDelete: deleteServices.bind(this, this),
                       onEdit: EditGrid.bind(this, this),
                       onCancel: EditGrid.bind(this, this),
-                      onDone: updateBillDetail.bind(this, this)
+                      onDone: updateBillDetail.bind(this, this),
                     }}
                   />
                 </div>
@@ -727,12 +728,12 @@ class OrderingServices extends PureComponent {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Select"
+                              forceLabel: "Select",
                             }}
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <input
@@ -748,8 +749,8 @@ class OrderingServices extends PureComponent {
                         },
                         others: {
                           maxWidth: 50,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "service_type_id",
@@ -758,12 +759,12 @@ class OrderingServices extends PureComponent {
                             label={{ fieldName: "service_type_id" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_service_type_id ===
                                   row.service_type_id
                               );
@@ -780,8 +781,8 @@ class OrderingServices extends PureComponent {
                         },
                         others: {
                           maxWidth: 120,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "services_id",
@@ -790,12 +791,13 @@ class OrderingServices extends PureComponent {
                             label={{ forceLabel: "Favourite Service" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                f => f.hims_d_services_id === row.services_id
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
                               );
 
                           return (
@@ -807,12 +809,12 @@ class OrderingServices extends PureComponent {
                                 : ""}
                             </span>
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.all_favouriteservices
+                      data: this.state.all_favouriteservices,
                     }}
                     filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -821,7 +823,7 @@ class OrderingServices extends PureComponent {
                       onDelete: deleteServices.bind(this, this),
                       onEdit: EditGrid.bind(this, this),
                       onCancel: EditGrid.bind(this, this),
-                      onDone: updateBillDetail.bind(this, this)
+                      onDone: updateBillDetail.bind(this, this),
                     }}
                   />
 
@@ -857,7 +859,7 @@ class OrderingServices extends PureComponent {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      fieldName: "sub_ttl"
+                      fieldName: "sub_ttl",
                     }}
                   />
                   <h5>{GetAmountFormart(this.state.sub_total_amount)}</h5>
@@ -865,7 +867,7 @@ class OrderingServices extends PureComponent {
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
                     label={{
-                      fieldName: "dsct_amt"
+                      fieldName: "dsct_amt",
                     }}
                   />
                   <h5>{GetAmountFormart(this.state.discount_amount)}</h5>
@@ -874,7 +876,7 @@ class OrderingServices extends PureComponent {
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
                     label={{
-                      fieldName: "net_ttl"
+                      fieldName: "net_ttl",
                     }}
                   />
                   <h5>{GetAmountFormart(this.state.net_total)}</h5>
@@ -882,7 +884,7 @@ class OrderingServices extends PureComponent {
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
                     label={{
-                      fieldName: "pat_payable"
+                      fieldName: "pat_payable",
                     }}
                   />
                   <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
@@ -890,7 +892,7 @@ class OrderingServices extends PureComponent {
                 <div className="col" style={{ textAlign: "right" }}>
                   <AlgaehLabel
                     label={{
-                      fieldName: "co_payable"
+                      fieldName: "co_payable",
                     }}
                   />
                   <h5>{GetAmountFormart(this.state.company_payble)}</h5>
@@ -902,7 +904,7 @@ class OrderingServices extends PureComponent {
               show={this.state.isOpen}
               onClose={openFavouriteOrder.bind(this, this)}
               from="ClinicalDesk"
-              doctor_id={provider_id}//Window.global["provider_id"]}
+              doctor_id={provider_id} //Window.global["provider_id"]}
             />
 
             <ViewFavouriteOrder
@@ -930,7 +932,7 @@ class OrderingServices extends PureComponent {
                       <button
                         className="btn btn-primary"
                         onClick={SaveOrdersServices.bind(this, this)}
-                        disabled={this.state.saved}
+                        disabled={this.state.saved || notAllowed}
                       >
                         Save Service
                       </button>
@@ -971,7 +973,7 @@ function mapStateToProps(state) {
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
     serviceslist: state.serviceslist,
-    orderedList: state.orderedList
+    orderedList: state.orderedList,
   };
 }
 
@@ -982,7 +984,7 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       generateBill: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      billingCalculations: AlgaehActions
+      billingCalculations: AlgaehActions,
     },
     dispatch
   );
