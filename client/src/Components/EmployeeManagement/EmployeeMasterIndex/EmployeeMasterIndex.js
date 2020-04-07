@@ -14,7 +14,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
 import Options from "../../../Options.json";
-import { getCookie } from "../../../utils/algaehApiCall";
+import { getCookie,algaehApiCall,swalMessage } from "../../../utils/algaehApiCall";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import {
   getEmployeeDetails,
@@ -97,6 +97,46 @@ class EmployeeMasterIndex extends Component {
       });
     }
   }
+  
+    onClickHandler(e) {
+      algaehApiCall({
+        uri: "/employee/downloadEmployeeMaster",
+        method: "GET",
+        data:{ hospital_id:this.state.hospital_id},
+        headers: {
+          Accept: "blob"
+        },
+        module: "hrManagement",
+        others: { responseType: "blob" },
+        onSuccess: res => {
+          
+          let blob = new Blob([res.data], {
+            type: "application/octet-stream"
+          });
+          const fileName = `EmployeeMaster.xlsx`;
+          var objectUrl = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.setAttribute("href", objectUrl);
+          link.setAttribute("download", fileName);
+          link.click();
+          
+        },
+        onCatch: error => {
+          var reader = new FileReader();
+          reader.onload = function() {
+           
+            const parse = JSON.parse(reader.result);
+            swalMessage({
+              type: "error",
+              title: parse !== undefined ? parse.result.message : parse
+            });
+          };
+          reader.readAsText(error.response.data);
+        }
+      });
+      
+    }
+  
 
   ShowModel(e) {
     this.setState({
@@ -183,7 +223,7 @@ class EmployeeMasterIndex extends Component {
             <div className="actions">
               <a
                 className="btn btn-default btn-circle active"
-                // onClick={this.ShowModel.bind(this)}
+                onClick={this.onClickHandler.bind(this)}
                 // Download action come here
               >
                 <i className="fas fa-download" />
@@ -240,6 +280,7 @@ class EmployeeMasterIndex extends Component {
                   },
                 }}
               />
+              
             </div>
             <div className="row">
               <div className="col-lg-12" id="employeeIndexGrid">

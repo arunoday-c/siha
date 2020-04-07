@@ -96,7 +96,7 @@ export default function ManualAttendanceEvents() {
         },
         onCatch: error => {
           var reader = new FileReader();
-          reader.onload = function() {
+          reader.onload = function () {
             AlgaehLoader({ show: false });
             const parse = JSON.parse(reader.result);
 
@@ -206,6 +206,61 @@ export default function ManualAttendanceEvents() {
               label: <AlgaehLabel label={{ forceLabel: "Loan" }} />,
               editorTemplate: row => {
                 return row.loan_description;
+              },
+              disabled: true,
+              others: {
+                filterable: false
+              }
+            },
+            {
+              fieldName: "start_month",
+              label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+              others: {
+                filterable: false
+              },
+              displayTemplate: row => {
+                let display = GlobalVariables.MONTHS.filter(
+                  f => f.value === row.start_month
+                );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? display[0].name
+                      : ""}
+                  </span>
+                );
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    selector={{
+                      sort: "off",
+                      name: "start_month",
+                      className: "select-fld",
+                      value: row.start_month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS
+                      },
+                      onChange: changeGridEditors.bind($this, $this, row),
+                      onClear: () => {
+                        row["start_month"] = null;
+                        row.update();
+                      }
+                    }}
+                  />
+                );
+              }
+            },
+
+            {
+              fieldName: "start_year",
+              label: <AlgaehLabel label={{ forceLabel: "Start Year" }} />,
+              editorTemplate: row => {
+                return row.start_year;
               },
               disabled: true,
               others: {
@@ -378,7 +433,7 @@ export default function ManualAttendanceEvents() {
                         valueField: "value",
                         data: GlobalVariables.MONTHS
                       },
-                      onChange: changeGridEditors.bind($this, row),
+                      onChange: changeGridEditors.bind($this, $this, row),
                       onClear: () => {
                         row["month"] = null;
                         row.update();
@@ -584,7 +639,7 @@ export default function ManualAttendanceEvents() {
       // let employee_Leave_Update = [];
       let inputData = "";
       if (selected_type === "LE") {
-        var result = Object.keys(row).map(function(key) {
+        var result = Object.keys(row).map(function (key) {
           if (row[key] !== "N" && isNaN(Number(key)) === false) {
             return {
               leave_id: Number(key),
@@ -755,29 +810,29 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                  <Input
-                    value={row[item.hims_d_leave_id]}
-                    name={item.hims_d_leave_id}
-                    row={row}
-                  />
+                    <Input
+                      value={row[item.hims_d_leave_id]}
+                      name={item.hims_d_leave_id}
+                      row={row}
+                    />
 
-                  // <AlagehFormGroup
-                  //   div={{ className: "col" }}
-                  //   textBox={{
-                  //     number: {
-                  //       allowNegative: false,
-                  //       thousandSeparator: ","
-                  //     },
-                  //     dontAllowKeys: ["-", "e"],
-                  //     className: "txt-fld",
-                  //     name: item.hims_d_leave_id,
-                  //     value: row[item.hims_d_leave_id],
-                  //     events: {
-                  //       onChange: changeGridEditors.bind($this, $this, row)
-                  //     }
-                  //   }}
-                  // />
-                );
+                    // <AlagehFormGroup
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     number: {
+                    //       allowNegative: false,
+                    //       thousandSeparator: ","
+                    //     },
+                    //     dontAllowKeys: ["-", "e"],
+                    //     className: "txt-fld",
+                    //     name: item.hims_d_leave_id,
+                    //     value: row[item.hims_d_leave_id],
+                    //     events: {
+                    //       onChange: changeGridEditors.bind($this, $this, row)
+                    //     }
+                    //   }}
+                    // />
+                  );
               },
               others: {
                 filterable: false

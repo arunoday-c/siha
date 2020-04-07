@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import empModels from "../models/employee";
+import Excel from "exceljs/modern.browser";
+
 
 import OpenBalExcelModels from "../models/OpeningBalanceExcel";
 import openingBalanceUpload from "../models/openingBalanceUpload";
@@ -488,20 +490,70 @@ export default () => {
   api.get(
     "/downloadEmployeeMaster",
     downloadEmployeeMaster,
+
     (req, res, next) => {
-      if (req.records.invalid_input == true) {
-        res
-          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
-          .json({
-            success: false,
-            message: req.records.message
-          });
-      } else {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-          success: true,
-          records: req.records
+    const {hospital_name,
+    columns,
+    employees}=  req.records;
+   
+      //Create instance of excel
+var workbook = new Excel.Workbook();
+workbook.creator = "Algaeh technologies private limited";
+workbook.lastModifiedBy = "Manual Time sheet";
+workbook.created = new Date();
+workbook.modified = new Date();
+// Set workbook dates to 1904 date system
+        // workbook.properties.date1904 = true;
+
+        //Work worksheet creation
+        var worksheet = workbook.addWorksheet(hospital_name,{
+          properties: { tabColor: { argb: "FFC0000" } }
         });
-      }
+        //Adding columns
+        worksheet.columns = columns.map(item=>{
+          return {
+            header:item,
+            key:item,
+            width:30
+          }
+        });
+        ; //require("../../testDB/data.json");
+
+  // Add a couple of Rows by key-value, after the last current row, using the column keys
+    for (let i = 0; i < employees.length; i++) {
+          const rest = employees[i];
+          
+          worksheet.addRow(rest);
+        }
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+          "Content-Disposition",
+          "attachment; filename=" + "Report.xlsx"
+        );
+        workbook.xlsx.write(res).then(function(data) {
+          res.end();
+          console.log("File write done........");
+        });
+      
+      
+    
+
+      // if (req.records.invalid_input == true) {
+      //   res
+      //     .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+      //     .json({
+      //       success: false,
+      //       message: req.records.message
+      //     });
+      // } else {
+      //   res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      //     success: true,
+      //     records: req.records
+      //   });
+      // }
     }
   );
 

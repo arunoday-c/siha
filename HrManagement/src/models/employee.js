@@ -25,30 +25,30 @@ export default {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             created_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date()
+            updated_date: new Date(),
           },
           onDuplicateKeyUpdate: [
             "earning_deductions_id",
             "year",
             "month",
-            "employee_id"
+            "employee_id",
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => { },
-          bulkInsertOrUpdate: true
+          printQuery: (query) => {},
+          bulkInsertOrUpdate: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
           resolve(result);
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
           reject(e);
         });
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -118,15 +118,15 @@ export default {
               show_active +
               _strAppend,
             // values: [req.userIdentity.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -134,7 +134,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -213,11 +213,11 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
@@ -249,7 +249,7 @@ export default {
             //     reject(e);
             //   });
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -257,7 +257,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -357,136 +357,136 @@ export default {
               input.inactive_date,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_d_employee_id
-            ]
+              input.hims_d_employee_id,
+            ],
           })
-          .then(update_employee => {
+          .then((update_employee) => {
             const utilities = new algaehUtilities();
 
             let _InsertEmployeeDept = InsertEmployeeDepartment({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmployeeDept = UpdateEmployeeDepartment({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertServiceComm = InsertServiceCommission({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateServiceComm = UpdateServiceCommission({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertServiceTypeComm = InsertServiceTypeCommission({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateServiceTypeComm = UpdateServiceTypeCommission({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertEmpEarning = InsertEmployeeEarnings({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmpEarning = UpdateEmployeeEarnings({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _DeleteEmpEarning = DeleteEmployeeEarnings({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertEmpDeduction = InsertEmployeeDeduction({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmpDeduction = UpdateEmployeeDeduction({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _DeleteEmpDeduction = DeleteEmployeeDeduction({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertEmpContributions = InsertEmployeeContributions({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmpContributions = UpdateEmployeeContributions({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _DeleteEmpContributions = DeleteEmployeeContributions({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertEmpIdentification = InsertEmployeeIdentification({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmpIdentification = UpdateEmployeeIdentification({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _DeleteEmpIdentification = DeleteEmployeeIdentification({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _InsertEmpDependents = InsertEmployeeDependents({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _UpdateEmpDependents = UpdateEmployeeDependents({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             let _DeleteEmpDependents = DeleteEmployeeDependents({
               req: req,
               _mysql: _mysql,
-              next: next
+              next: next,
             });
 
             Promise.all([
@@ -510,20 +510,20 @@ export default {
               _DeleteEmpIdentification,
               _InsertEmpDependents,
               _UpdateEmpDependents,
-              _DeleteEmpDependents
+              _DeleteEmpDependents,
             ])
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
                 resolve(result);
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
                 reject(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -531,7 +531,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -567,15 +567,15 @@ export default {
             and ED.category_speciality_id = CS.hims_m_category_speciality_mappings_id " +
               _stringData,
             values: inputValues,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -583,7 +583,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -600,15 +600,15 @@ export default {
             SD.hims_d_sub_department_id = E.sub_department_id and E.record_status = 'A' and E.hospital_id = ? \
             group by SD.hims_d_sub_department_id ; ",
             values: [req.query.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -616,7 +616,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -633,15 +633,15 @@ export default {
                 D.hims_d_designation_id = E.employee_designation_id and E.record_status = 'A' and E.hospital_id = ? \
                 group by D.hims_d_designation_id ; ",
             values: [req.query.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -649,7 +649,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -675,15 +675,15 @@ export default {
           from_date,to_date,previous_company_name,designation,experience_years, experience_months from hims_d_employee_experience\
           where record_status='A' and employee_id=?",
             values: employee_id,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -691,7 +691,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -721,16 +721,16 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
-            ]
+              req.userIdentity.algaeh_d_app_user_id,
+            ],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -738,7 +738,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -766,16 +766,16 @@ export default {
               input.experience_months,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_d_employee_experience_id
-            ]
+              input.hims_d_employee_experience_id,
+            ],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -783,7 +783,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -798,15 +798,15 @@ export default {
           .executeQuery({
             query:
               "DELETE FROM hims_d_employee_experience  WHERE hims_d_employee_experience_id=?",
-            values: [input.hims_d_employee_experience_id]
+            values: [input.hims_d_employee_experience_id],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -814,7 +814,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -841,15 +841,15 @@ export default {
           qualification,qualitfication_type,year,university from hims_d_employee_education\
           where record_status='A' and employee_id=?",
             values: employee_id,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -857,7 +857,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -885,16 +885,16 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
-            ]
+              req.userIdentity.algaeh_d_app_user_id,
+            ],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -902,7 +902,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -927,17 +927,17 @@ export default {
               input.university,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_d_employee_education_id
+              input.hims_d_employee_education_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -945,7 +945,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -960,15 +960,15 @@ export default {
           .executeQuery({
             query:
               "DELETE FROM hims_d_employee_education  WHERE hims_d_employee_education_id=?",
-            values: [input.hims_d_employee_education_id]
+            values: [input.hims_d_employee_education_id],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -976,7 +976,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1000,15 +1000,15 @@ export default {
                 where employee_id = ? " +
               _strAppend,
             values: [input.employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1016,7 +1016,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1035,15 +1035,15 @@ export default {
                 inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EMD.deductions_id \
                 where employee_id = ?;",
             values: [input.employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1051,7 +1051,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1070,15 +1070,15 @@ export default {
                 inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EC.contributions_id \
                 where employee_id = ?;",
             values: [input.employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1086,7 +1086,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1105,15 +1105,15 @@ export default {
           SELECT hims_d_employee_dependents_id,employee_id,dependent_type,dependent_name,dependent_identity_type,\
           dependent_identity_no from hims_d_employee_dependents where employee_id = ?;",
             values: [input.employee_id, input.employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1121,7 +1121,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1138,15 +1138,15 @@ export default {
           op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
            from hims_m_doctor_service_commission where record_status='A'and provider_id=? and hospital_id=?",
             values: [input.provider_id, req.userIdentity.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1154,7 +1154,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1171,15 +1171,15 @@ export default {
         op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
          from hims_m_doctor_service_type_commission where record_status='A' and provider_id=? and hospital_id=?",
             values: [input.provider_id, req.userIdentity.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -1187,7 +1187,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1235,16 +1235,16 @@ export default {
             input.year,
             input.month,
             input.earning_deductions_id,
-            input.hospital_id
+            input.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -1279,17 +1279,17 @@ export default {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: input.hospital_id
+            hospital_id: input.hospital_id,
           },
           bulkInsertOrUpdate: true,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -1307,14 +1307,14 @@ export default {
       .executeQuery({
         query:
           "update hims_f_miscellaneous_earning_deduction set amount=? where hims_f_miscellaneous_earning_deduction_id =? ",
-        values: [amount, hims_f_miscellaneous_earning_deduction_id]
+        values: [amount, hims_f_miscellaneous_earning_deduction_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1339,14 +1339,14 @@ export default {
           strQry,
         values: [input.last_salary_process_date, input.hims_d_employee_id],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1378,9 +1378,9 @@ export default {
                 select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
                 where record_status='A';`,
             values: [input.year, input.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             const employees_leave = result[0];
@@ -1388,16 +1388,16 @@ export default {
             let outputArray = [];
             if (employees_leave.length > 0 && leave_master.length > 0) {
               _.chain(employees_leave)
-                .groupBy(g => g.hims_d_employee_id)
-                .forEach(emp => {
+                .groupBy((g) => g.hims_d_employee_id)
+                .forEach((emp) => {
                   let data = {
                     employee_code: emp[0]["employee_code"],
                     full_name: emp[0]["full_name"],
                     employee_id: emp[0]["hims_d_employee_id"],
-                    year: emp[0]["year"]
+                    year: emp[0]["year"],
                   };
-                  leave_master.forEach(leave => {
-                    const leave_assignd = emp.find(item => {
+                  leave_master.forEach((leave) => {
+                    const leave_assignd = emp.find((item) => {
                       return item["leave_id"] == leave["hims_d_leave_id"];
                     });
                     if (leave_assignd != undefined) {
@@ -1414,26 +1414,26 @@ export default {
 
               req.records = {
                 leaves: result[1],
-                employee_leaves: outputArray
+                employee_leaves: outputArray,
               };
               next();
             } else {
               req.records = {
                 message: "No Employes Found",
-                invalid_input: true
+                invalid_input: true,
               };
               next();
               return;
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       } else {
         req.records = {
           message: "Please provide valid input",
-          invalid_input: true
+          invalid_input: true,
         };
         next();
       }
@@ -1463,16 +1463,16 @@ export default {
           input.leave_salary_amount,
           input.airticket_amount,
           input.airfare_months,
-          input.hospital_id
+          input.hospital_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1506,9 +1506,9 @@ export default {
               where E.leave_salary_process = 'Y' and E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
               strQry,
             values: [input.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result.length > 0) {
@@ -1518,20 +1518,20 @@ export default {
             } else {
               req.records = {
                 message: "No Employes Found",
-                invalid_input: true
+                invalid_input: true,
               };
               next();
               return;
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       } else {
         req.records = {
           message: "Please provide valid input",
-          invalid_input: true
+          invalid_input: true,
         };
         next();
       }
@@ -1568,14 +1568,14 @@ export default {
           " order by E.hims_d_employee_id;",
 
         values: [input.hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1602,9 +1602,9 @@ export default {
           where E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
           strQry,
         values: [input.hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         // let final_result = _.sortBy(result, s => s.employee_code);
@@ -1612,7 +1612,7 @@ export default {
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1631,16 +1631,16 @@ export default {
           input.employee_id,
           input.year,
           input.month,
-          input.gratuity_amount
+          input.gratuity_amount,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1654,9 +1654,9 @@ export default {
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
         numgen_codes: ["EMPLOYEE_LOAN"],
-        table_name: "hims_f_hrpayroll_numgen"
+        table_name: "hims_f_hrpayroll_numgen",
       })
-      .then(generatedNumbers => {
+      .then((generatedNumbers) => {
         _mysql
           .executeQuery({
             query:
@@ -1674,24 +1674,24 @@ export default {
               input.pending_loan,
               input.start_year,
               input.start_month,
-              input.hospital_id
+              input.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = result;
               next();
             });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -1710,16 +1710,16 @@ export default {
         values: [
           input.month,
           input.gratuity_amount,
-          input.hims_f_gratuity_provision_id
+          input.hims_f_gratuity_provision_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1732,22 +1732,23 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=? \
+          "UPDATE hims_f_loan_application set pending_tenure=?,installment_amount=?, pending_loan=?, start_month=? \
           WHERE hims_f_loan_application_id = ?",
         values: [
           input.pending_tenure,
           input.installment_amount,
           input.pending_loan,
-          input.hims_f_loan_application_id
+          input.start_month,
+          input.hims_f_loan_application_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1768,13 +1769,14 @@ export default {
             case E.employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
             when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
             end as employee_status,   coalesce(DG.designation,'-') as designation,
-            coalesce( N.nationality,'-') as nationality,coalesce(R.religion_name,'-') as religion,
-            coalesce(SD.sub_department_name,'-') as sub_department,coalesce(D.department_name,'-') as department,
+            coalesce( N.nationality,'-') as nationality,coalesce(R.religion_name,'-') as religion
+            ,coalesce(D.department_name,'-') as department,
+            coalesce(SD.sub_department_name,'-') as sub_department,
             case E.employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
             when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
-            when  'VC' then  'VISITING CONSULTANT'end as employee_type,
+            when  'VC' then  'VISITING CONSULTANT'end as employee_type,   coalesce(country_name,'-') as country,
             coalesce(state_name,'-') as state,coalesce(city_name,'-') as city,
-            coalesce(country_name,'-') as country,coalesce(E.date_of_birth,'-') as date_of_birth,
+            coalesce(E.date_of_birth,'-') as date_of_birth,
             coalesce(E.date_of_resignation,'-') as date_of_resignation,coalesce(E.exit_date,'-') as exit_date,
             coalesce(E.work_email,'-') as work_email,coalesce(E.primary_contact_no,'-') as 
             primary_contact_no,E.mode_of_payment
@@ -1790,9 +1792,9 @@ export default {
             left join hims_d_country CO  on E.permanent_country_id=CO.hims_d_country_id  
             where E.hospital_id=? and E.record_status='A' order by cast( E.employee_code as unsigned); `,
           values: [req.query.hospital_id, req.query.hospital_id],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           let data = result[1][0];
@@ -1806,11 +1808,11 @@ export default {
           req.records = {
             hospital_name: result[0][0]["hospital_name"],
             columns: columns,
-            employees: result[1]
+            employees: result[1],
           };
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -1819,7 +1821,7 @@ export default {
       next();
       return;
     }
-  }
+  },
 };
 
 //Employee Dept Start
@@ -1838,7 +1840,7 @@ function InsertEmployeeDepartment(options) {
           "user_id",
           "employee_designation_id",
           "reporting_to_id",
-          "from_date"
+          "from_date",
         ];
 
         _mysql
@@ -1852,16 +1854,16 @@ function InsertEmployeeDepartment(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -1871,7 +1873,7 @@ function InsertEmployeeDepartment(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -1903,7 +1905,7 @@ function UpdateEmployeeDepartment(options) {
               inputParam[i].record_status,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_d_employee_department_id
+              inputParam[i].hims_d_employee_department_id,
             ]
           );
         }
@@ -1912,13 +1914,13 @@ function UpdateEmployeeDepartment(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -1928,7 +1930,7 @@ function UpdateEmployeeDepartment(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -1949,7 +1951,7 @@ function InsertServiceCommission(options) {
           "op_cash_commission_percent",
           "op_credit_commission_percent",
           "ip_cash_commission_percent",
-          "ip_credit_commission_percent"
+          "ip_credit_commission_percent",
         ];
 
         _mysql
@@ -1962,16 +1964,16 @@ function InsertServiceCommission(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -1981,7 +1983,7 @@ function InsertServiceCommission(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2012,7 +2014,7 @@ function UpdateServiceCommission(options) {
               inputParam[i].record_status,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_m_doctor_service_commission_id
+              inputParam[i].hims_m_doctor_service_commission_id,
             ]
           );
         }
@@ -2021,13 +2023,13 @@ function UpdateServiceCommission(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2037,7 +2039,7 @@ function UpdateServiceCommission(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2057,7 +2059,7 @@ function InsertServiceTypeCommission(options) {
           "op_cash_comission_percent",
           "op_credit_comission_percent",
           "ip_cash_commission_percent",
-          "ip_credit_commission_percent"
+          "ip_credit_commission_percent",
         ];
 
         _mysql
@@ -2071,16 +2073,16 @@ function InsertServiceTypeCommission(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2090,7 +2092,7 @@ function InsertServiceTypeCommission(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2120,7 +2122,7 @@ function UpdateServiceTypeCommission(options) {
               inputParam[i].record_status,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_m_doctor_service_type_commission_id
+              inputParam[i].hims_m_doctor_service_type_commission_id,
             ]
           );
         }
@@ -2129,13 +2131,13 @@ function UpdateServiceTypeCommission(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2145,7 +2147,7 @@ function UpdateServiceTypeCommission(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2171,7 +2173,7 @@ function InsertEmployeeEarnings(options) {
           "revision_type",
           "revision_date",
           "revised_amount",
-          "applicable_annual_leave"
+          "applicable_annual_leave",
         ];
 
         _mysql
@@ -2181,15 +2183,15 @@ function InsertEmployeeEarnings(options) {
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
             extraValues: {
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2199,7 +2201,7 @@ function InsertEmployeeEarnings(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2221,7 +2223,7 @@ function UpdateEmployeeEarnings(options) {
             [
               inputParam[i].amount,
               inputParam[i].allocate,
-              inputParam[i].hims_d_employee_earnings_id
+              inputParam[i].hims_d_employee_earnings_id,
             ]
           );
         }
@@ -2230,13 +2232,13 @@ function UpdateEmployeeEarnings(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2246,7 +2248,7 @@ function UpdateEmployeeEarnings(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2272,13 +2274,13 @@ function DeleteEmployeeEarnings(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2288,7 +2290,7 @@ function DeleteEmployeeEarnings(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2313,7 +2315,7 @@ function InsertEmployeeDeduction(options) {
           "calculation_type",
           "revision_type",
           "revision_date",
-          "revised_amount"
+          "revised_amount",
         ];
 
         _mysql
@@ -2323,15 +2325,15 @@ function InsertEmployeeDeduction(options) {
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
             extraValues: {
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2341,7 +2343,7 @@ function InsertEmployeeDeduction(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2366,7 +2368,7 @@ function UpdateEmployeeDeduction(options) {
             [
               inputParam[i].amount,
               inputParam[i].allocate,
-              inputParam[i].hims_d_employee_deductions_id
+              inputParam[i].hims_d_employee_deductions_id,
             ]
           );
         }
@@ -2375,13 +2377,13 @@ function UpdateEmployeeDeduction(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2391,7 +2393,7 @@ function UpdateEmployeeDeduction(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2417,13 +2419,13 @@ function DeleteEmployeeDeduction(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2433,7 +2435,7 @@ function DeleteEmployeeDeduction(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2458,7 +2460,7 @@ function InsertEmployeeContributions(options) {
           "calculation_type",
           "revision_type",
           "revision_date",
-          "revised_amount"
+          "revised_amount",
         ];
 
         _mysql
@@ -2468,15 +2470,15 @@ function InsertEmployeeContributions(options) {
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
             extraValues: {
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2486,7 +2488,7 @@ function InsertEmployeeContributions(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2508,7 +2510,7 @@ function UpdateEmployeeContributions(options) {
             [
               inputParam[i].amount,
               inputParam[i].allocate,
-              inputParam[i].hims_d_employee_contributions_id
+              inputParam[i].hims_d_employee_contributions_id,
             ]
           );
         }
@@ -2517,13 +2519,13 @@ function UpdateEmployeeContributions(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2533,7 +2535,7 @@ function UpdateEmployeeContributions(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2559,13 +2561,13 @@ function DeleteEmployeeContributions(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2575,7 +2577,7 @@ function DeleteEmployeeContributions(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2596,7 +2598,7 @@ function InsertEmployeeIdentification(options) {
           "valid_upto",
           "issue_date",
           "alert_required",
-          "alert_date"
+          "alert_date",
         ];
 
         _mysql
@@ -2608,16 +2610,16 @@ function InsertEmployeeIdentification(options) {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
+              updated_date: new Date(),
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2627,7 +2629,7 @@ function InsertEmployeeIdentification(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2650,7 +2652,7 @@ function UpdateEmployeeIdentification(options) {
               inputParam[i].identity_number,
               moment(inputParam[i].issue_date).format("YYYY-MM-DD"),
               moment(inputParam[i].valid_upto).format("YYYY-MM-DD"),
-              inputParam[i].hims_d_employee_identification_id
+              inputParam[i].hims_d_employee_identification_id,
             ]
           );
         }
@@ -2659,13 +2661,13 @@ function UpdateEmployeeIdentification(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2675,7 +2677,7 @@ function UpdateEmployeeIdentification(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2701,13 +2703,13 @@ function DeleteEmployeeIdentification(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2717,7 +2719,7 @@ function DeleteEmployeeIdentification(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2736,7 +2738,7 @@ function InsertEmployeeDependents(options) {
           "dependent_type",
           "dependent_name",
           "dependent_identity_type",
-          "dependent_identity_no"
+          "dependent_identity_no",
         ];
 
         _mysql
@@ -2749,16 +2751,16 @@ function InsertEmployeeDependents(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2768,7 +2770,7 @@ function InsertEmployeeDependents(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2792,7 +2794,7 @@ function UpdateEmployeeDependents(options) {
               inputParam[i].dependent_name,
               inputParam[i].dependent_identity_type,
               inputParam[i].dependent_identity_no,
-              inputParam[i].hims_d_employee_dependents_id
+              inputParam[i].hims_d_employee_dependents_id,
             ]
           );
         }
@@ -2801,13 +2803,13 @@ function UpdateEmployeeDependents(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2817,7 +2819,7 @@ function UpdateEmployeeDependents(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -2843,13 +2845,13 @@ function DeleteEmployeeDependents(options) {
           .executeQuery({
             query: qry,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             req.records = result;
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             options.next(e);
             reject(e);
           });
@@ -2859,7 +2861,7 @@ function DeleteEmployeeDependents(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
