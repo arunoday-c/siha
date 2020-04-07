@@ -26,6 +26,9 @@ export default class BranchMaster extends Component {
       editBranch: false,
       filterArray: [],
       searchText: "",
+      searchSubBranchText:"",
+      filterdDepartmentArray:[],
+      checkAll:false
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -367,67 +370,102 @@ export default class BranchMaster extends Component {
   }
 
   changeDepartments(data, e) {
+    // console.log("data",data);
     const _status = e.target.checked;
-    let val = parseInt(e.target.value, 10);
-
-    let Departments = this.state.allDepartments;
-
-    const subdepartments = data.subDepts.map((item) => {
+    const index=  this.state.allDepartments.indexOf(data);
+    data.checked=_status;
+    data.subDepts =  data.subDepts.map(item=>{
       return {
         ...item,
-        checked: _status ? true : false,
-      };
-    });
-
-    let newDepats = _.map(Departments, (f) => {
-      let _sList = f.subDepts;
-      let _checked = { checked: f.checked ? true : false };
-      if (f.hims_d_department_id === val) {
-        _sList = subdepartments;
-        _checked = { checked: _status ? true : false };
+        checked:_status
       }
-      return {
-        ...f,
-        ..._checked,
-        subDepts: _sList,
-      };
     });
+    this.state.allDepartments[index] = data;
+    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
+    const allDepts = this.state.allDepartments.length;
+    
+this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ===allDepts?true:false });
 
-    this.setState({ allDepartments: newDepats });
+  //   let val = parseInt(e.target.value, 10);
+   
+  //   let Departments = this.state.allDepartments;
+
+  //   const subdepartments = data.subDepts.map((item) => {
+  //     return {
+  //       ...item,
+  //       checked: _status //? true : false,
+  //     };
+  //   });
+
+  //   let newDepats = _.map(Departments, (f) => {
+  //     let _sList = f.subDepts;
+  //     let _checked = { checked: f.checked ? true : false };
+  //     if (f.hims_d_department_id === val) {
+  //       _sList = subdepartments;
+  //       _checked = { checked: _status ? true : false };
+  //     }
+  //     return {
+  //       ...f,
+  //       ..._checked,
+  //       subDepts: _sList,
+  //     };
+  //   });
+  //  this.setState({ allDepartments: newDepats });
   }
 
-  changeSubdepartment(data, e) {
+  changeSubdepartment(item, e) {
     const _status = e.target.checked;
-    let val = parseInt(e.target.value, 10);
+    const {data,sub} =item;
+    const mainStateIndex = this.state.allDepartments.indexOf[data];
+    const index = data.subDepts.indexOf(sub);
+    sub.checked = _status;
+    data.subDepts[index] = sub;
+    const checkedStatus= data.subDepts.filter(f=>f.checked===true).length;
+    const deptLength =data.subDepts.length;
+    if(checkedStatus===deptLength){
+      data.checked =true;
+    }else{
+      data.checked =false;
+    }
+    this.state.allDepartments[mainStateIndex] =data;
+    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
+    const allDepts = this.state.allDepartments.length;
 
-    let Departments = this.state.allDepartments;
+    this.setState({
+      allDepartments: this.state.allDepartments,
+      checkAll:selectedDept === allDepts?true:false
+    })
+   
+    // let val = parseInt(e.target.value, 10);
 
-    const _subDepart = data.subDepts.map((item) => {
-      if (item.hims_d_sub_department_id === val) {
-        item.checked = _status ? true : false;
-      }
-      return {
-        ...item,
-      };
-    });
+    // let Departments = this.state.allDepartments;
 
-    const _check = _.filter(_subDepart, (f) => {
-      return f.checked === true;
-    });
+    // const _subDepart = data.subDepts.map((item) => {
+    //   if (item.hims_d_sub_department_id === val) {
+    //     item.checked = _status ? true : false;
+    //   }
+    //   return {
+    //     ...item,
+    //   };
+    // });
 
-    let newDepats = _.map(Departments, (f) => {
-      let _sList = f.subDepts;
-      if (f.hims_d_department_id === data.hims_d_department_id) {
-        _sList = _subDepart;
-        f.checked = _check.length > 0 ? true : false;
-      }
-      return {
-        ...f,
-        subDepts: _sList,
-      };
-    });
+    // const _check = _.filter(_subDepart, (f) => {
+    //   return f.checked === true;
+    // });
 
-    this.setState({ allDepartments: newDepats });
+    // let newDepats = _.map(Departments, (f) => {
+    //   let _sList = f.subDepts;
+    //   if (f.hims_d_department_id === data.hims_d_department_id) {
+    //     _sList = _subDepart;
+    //     f.checked = _check.length > 0 ? true : false;
+    //   }
+    //   return {
+    //     ...f,
+    //     subDepts: _sList,
+    //   };
+    // });
+
+    // this.setState({ allDepartments: newDepats });
   }
 
   assignDepartments() {
@@ -524,6 +562,56 @@ export default class BranchMaster extends Component {
     );
     this.setState({ filterArray: filterd, searchText: e.target.value });
   }
+  filterSubDepartment(e) {
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterdDepartmentArray: [], searchSubBranchText: e.target.value });
+    }
+    const filterd = this.state.allDepartments.map(item =>
+      {const subDpartments=  item.subDepts.filter(
+        (f) =>
+          f.sub_department_name.toLowerCase().includes(value) 
+          
+      );
+    if(subDpartments.length>0 ){
+      return {
+        ...item,
+        subDepts:subDpartments
+      }
+    }
+  } ).filter(f=>f !== undefined);
+    
+
+    this.setState({ filterdDepartmentArray: filterd, searchSubBranchText: e.target.value });
+
+    
+  
+}
+selectAll(e){
+  const status = e.target.checked;
+  const checkedDeparts =    this.state.allDepartments.map((item) =>
+        {
+          const subDpartments=  item.subDepts.map(sItems=>{
+            return {
+              ...sItems,
+              checked:status,
+              
+            }
+          });
+          return {
+            ...item,
+            checked:status,
+            subDepts:subDpartments
+          }
+         
+
+          });
+  this.setState({allDepartments:checkedDeparts,checkAll:status})
+    
+        
+
+
+}
 
   render() {
     const branchList =
@@ -532,6 +620,12 @@ export default class BranchMaster extends Component {
         : this.state.searchText === "" && this.state.filterArray.length === 0
         ? this.state.allBranches
         : this.state.filterArray;
+    const departments =
+        this.state.searchSubBranchText !== "" && this.state.filterdDepartmentArray.length === 0
+          ? this.state.filterdDepartmentArray
+          : this.state.searchSubBranchText === "" && this.state.filterdDepartmentArray.length === 0
+          ? this.state.allDepartments
+          : this.state.filterdDepartmentArray;
     return (
       <div className="BranchMaster">
         <div className="row">
@@ -769,8 +863,8 @@ export default class BranchMaster extends Component {
                         type="checkbox"
                         value=""
                         name=""
-                        // checked={this.state.checkAll}
-                        // onChange={this.selectAll.bind(this)}
+                        checked={this.state.checkAll}
+                        onChange={this.selectAll.bind(this)}
                       />
                       <span>Select All</span>
                     </label>
@@ -781,8 +875,8 @@ export default class BranchMaster extends Component {
                     }}
                     textBox={{
                       type: "text",
-                      // events: { onChange: this.filterBranchList.bind(this) },
-                      value: this.state.searchText,
+                      events: { onChange: this.filterSubDepartment.bind(this) },
+                      value: this.state.searchSubBranchText,
                       others: {
                         placeholder: "Search Sub Department",
                       },
@@ -792,11 +886,13 @@ export default class BranchMaster extends Component {
                 <div className="row">
                   <div className="col-12">
                     <ul className="deptUl">
-                      {this.state.allDepartments.map((data, index) => {
+                      {departments.map((data, index) => {
+                        
                         return (
                           <li key={data.hims_d_department_id}>
                             <span>
                               <input
+                              id={"dept_"+ data.hims_d_department_id}
                                 type="checkbox"
                                 onChange={this.changeDepartments.bind(
                                   this,
@@ -811,7 +907,7 @@ export default class BranchMaster extends Component {
                                 value={data.hims_d_department_id}
                               />
                             </span>
-                            <a>{data.department_name}</a>
+                            <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label>
 
                             <ul className="subDeptUl">
                               {data.subDepts.map((sub, index) => {
@@ -822,8 +918,9 @@ export default class BranchMaster extends Component {
                                         type="checkbox"
                                         onChange={this.changeSubdepartment.bind(
                                           this,
-                                          data
+                                          {data,sub}
                                         )}
+                                        id={"sub_"+sub.hims_d_sub_department_id}
                                         name="subDepartments"
                                         checked={
                                           sub.checked === undefined
@@ -833,13 +930,14 @@ export default class BranchMaster extends Component {
                                         value={sub.hims_d_sub_department_id}
                                       />
                                     </span>
-                                    <a>{sub.sub_department_name}</a>
+                                    <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"sub_"+sub.hims_d_sub_department_id}>{sub.sub_department_name}</label>
                                   </li>
                                 );
                               })}
                             </ul>
                           </li>
                         );
+                            
                       })}
                     </ul>
                   </div>
