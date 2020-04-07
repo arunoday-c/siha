@@ -11,7 +11,7 @@ const texthandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -20,7 +20,7 @@ const serviceHandeler = ($this, e) => {
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
     insurance_service_name: e.service_name,
-    service_name: e.service_name
+    service_name: e.service_name,
   });
 };
 
@@ -34,14 +34,14 @@ const ProcessService = ($this, favouriteOrder, e) => {
   if ($this.state.s_service_type !== 2) {
     SelectedService = _.find(
       $this.props.orderedList,
-      f =>
+      (f) =>
         f.service_type_id === $this.state.s_service_type &&
         f.services_id === $this.state.s_service
     );
 
     PreSelectedService = _.find(
       $this.state.orderservicesdata,
-      f =>
+      (f) =>
         f.service_type_id === $this.state.s_service_type &&
         f.services_id === $this.state.s_service
     );
@@ -68,8 +68,8 @@ const ProcessService = ($this, favouriteOrder, e) => {
           secondary_network_office_id: $this.state.secondary_network_office_id,
           approval_amt: $this.state.approval_amt,
           approval_limit_yesno: $this.state.approval_limit_yesno,
-          preapp_limit_amount: $this.state.preapp_limit_amount
-        }
+          preapp_limit_amount: $this.state.preapp_limit_amount,
+        },
       ];
 
       algaehApiCall({
@@ -77,7 +77,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
         module: "billing",
         method: "POST",
         data: serviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             if (
@@ -93,8 +93,8 @@ const ProcessService = ($this, favouriteOrder, e) => {
                 confirmButtonText: "Yes!",
                 confirmButtonColor: "#",
                 cancelButtonColor: "#d33",
-                cancelButtonText: "No"
-              }).then(willProceed => {
+                cancelButtonText: "No",
+              }).then((willProceed) => {
                 if (willProceed.value) {
                   preserviceInput.push(serviceInput[0]);
                   for (let k = 0; k < preserviceInput.length; k++) {
@@ -110,7 +110,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                     module: "billing",
                     method: "POST",
                     data: preserviceInput,
-                    onSuccess: response => {
+                    onSuccess: (response) => {
                       if (response.data.success) {
                         let Service_data = response.data.records;
 
@@ -160,7 +160,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                           // s_service_type: null,
                           s_service: null,
                           test_type: "R",
-                          service_name: ""
+                          service_name: "",
                         });
 
                         algaehApiCall({
@@ -168,7 +168,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                           module: "billing",
                           method: "POST",
                           data: { billdetails: Service_data.billdetails },
-                          onSuccess: response => {
+                          onSuccess: (response) => {
                             if (response.data.success) {
                               $this.setState({
                                 sub_total_amount:
@@ -183,28 +183,28 @@ const ProcessService = ($this, favouriteOrder, e) => {
                                 copay_amount:
                                   response.data.records.copay_amount,
                                 sec_copay_amount:
-                                  response.data.records.sec_copay_amount
+                                  response.data.records.sec_copay_amount,
                               });
                               AlgaehLoader({ show: false });
                             }
                           },
-                          onFailure: error => {
+                          onFailure: (error) => {
                             AlgaehLoader({ show: false });
                             swalMessage({
                               title: error.message,
-                              type: "error"
+                              type: "error",
                             });
-                          }
+                          },
                         });
                       }
                     },
-                    onFailure: error => {
+                    onFailure: (error) => {
                       AlgaehLoader({ show: false });
                       swalMessage({
                         title: error.message,
-                        type: "error"
+                        type: "error",
                       });
-                    }
+                    },
                   });
                 } else {
                   AlgaehLoader({ show: false });
@@ -246,7 +246,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
               ) {
                 swalMessage({
                   title: "Selected Service is Pre-Approval required.",
-                  type: "warning"
+                  type: "warning",
                 });
               } else if (
                 data.billdetails[0].insurance_yesno === "Y" &&
@@ -273,7 +273,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                 // s_service_type: null,
                 s_service: null,
                 test_type: "R",
-                service_name: ""
+                service_name: "",
               });
 
               algaehApiCall({
@@ -281,7 +281,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                 module: "billing",
                 method: "POST",
                 data: { billdetails: existingservices },
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     AlgaehLoader({ show: false });
                     $this.setState({
@@ -291,24 +291,24 @@ const ProcessService = ($this, favouriteOrder, e) => {
                       patient_payable: response.data.records.patient_payable,
                       company_payble: response.data.records.company_payble,
                       copay_amount: response.data.records.copay_amount,
-                      sec_copay_amount: response.data.records.sec_copay_amount
+                      sec_copay_amount: response.data.records.sec_copay_amount,
                     });
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   AlgaehLoader({ show: false });
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             }
 
             if (favouriteOrder === "F") {
               let fav_exists = _.find(
                 $this.state.all_favouriteservices,
-                f =>
+                (f) =>
                   f.service_type_id === s_service_type &&
                   f.services_id === s_service
               );
@@ -320,44 +320,44 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   data: {
                     services_id: s_service,
                     service_type_id: s_service_type,
-                    doctor_id: Window.global["provider_id"]
+                    doctor_id: Window.global["provider_id"],
                   },
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       getFavouriteServices($this);
                     }
                     AlgaehLoader({ show: false });
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     AlgaehLoader({ show: false });
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
               }
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       swalMessage({
         title: "Please select service and service type.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else {
     swalMessage({
       title: "Selected Service already ordered.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
@@ -372,14 +372,14 @@ const deleteServices = ($this, row) => {
     row.service_type_id === 5
       ? "LAB"
       : row.service_type_id === 11
-        ? "RAD"
-        : row.service_type_id === 2
-          ? "PRO"
-          : null;
+      ? "RAD"
+      : row.service_type_id === 2
+      ? "PRO"
+      : null;
 
   const get_selected_row = _.find(
     preserviceInput,
-    f => f.hims_d_services_id === row["services_id"]
+    (f) => f.hims_d_services_id === row["services_id"]
   );
 
   const _index = preserviceInput.indexOf(get_selected_row);
@@ -389,7 +389,7 @@ const deleteServices = ($this, row) => {
   if (row.hims_f_ordered_services_id > 0) {
     deleteserviceInput.push({
       hims_f_ordered_services_id: row.hims_f_ordered_services_id,
-      service_type: service_type
+      service_type: service_type,
     });
   }
 
@@ -410,7 +410,7 @@ const deleteServices = ($this, row) => {
         module: "billing",
         method: "POST",
         data: preserviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
 
@@ -419,26 +419,31 @@ const deleteServices = ($this, row) => {
               module: "billing",
               method: "POST",
               data: { billdetails: data.billdetails },
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
-
                   for (let i = 0; i < data.billdetails.length; i++) {
                     data.billdetails[i].visit_id = $this.state.visit_id;
                     data.billdetails[i].patient_id = $this.state.patient_id;
 
-                    data.billdetails[i].doctor_id = Window.global["provider_id"];
-                    data.billdetails[i].insurance_provider_id = $this.state.insurance_provider_id;
-                    data.billdetails[i].insurance_sub_id = $this.state.sub_insurance_provider_id;
+                    data.billdetails[i].doctor_id =
+                      Window.global["provider_id"];
+                    data.billdetails[i].insurance_provider_id =
+                      $this.state.insurance_provider_id;
+                    data.billdetails[i].insurance_sub_id =
+                      $this.state.sub_insurance_provider_id;
                     data.billdetails[i].network_id = $this.state.network_id;
-                    data.billdetails[i].policy_number = $this.state.policy_number;
+                    data.billdetails[i].policy_number =
+                      $this.state.policy_number;
 
                     data.billdetails[i].sec_company = $this.state.sec_insured;
                     // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
                     // Approval Table
 
-                    data.billdetails[i].insurance_network_office_id = $this.state.hims_d_insurance_network_office_id;
+                    data.billdetails[i].insurance_network_office_id =
+                      $this.state.hims_d_insurance_network_office_id;
 
-                    data.billdetails[i].requested_quantity = data.billdetails[i].quantity;
+                    data.billdetails[i].requested_quantity =
+                      data.billdetails[i].quantity;
                     data.billdetails[i].test_type = $this.state.test_type;
                   }
 
@@ -455,25 +460,25 @@ const deleteServices = ($this, row) => {
                     company_payble: response.data.records.company_payble,
                     copay_amount: response.data.records.copay_amount,
                     sec_copay_amount: response.data.records.sec_copay_amount,
-                    deleteserviceInput: deleteserviceInput
+                    deleteserviceInput: deleteserviceInput,
                   });
                 }
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       algaehApiCall({
@@ -481,7 +486,7 @@ const deleteServices = ($this, row) => {
         module: "billing",
         method: "POST",
         data: { billdetails: orderservicesdata },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             $this.setState({
               orderservicesdata: orderservicesdata,
@@ -495,16 +500,16 @@ const deleteServices = ($this, row) => {
               patient_payable: response.data.records.patient_payable,
               company_payble: response.data.records.company_payble,
               copay_amount: response.data.records.copay_amount,
-              sec_copay_amount: response.data.records.sec_copay_amount
+              sec_copay_amount: response.data.records.sec_copay_amount,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   } else {
@@ -514,7 +519,7 @@ const deleteServices = ($this, row) => {
         module: "billing",
         method: "POST",
         data: { billdetails: orderservicesdata },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             $this.setState({
               deleteserviceInput: deleteserviceInput,
@@ -528,16 +533,16 @@ const deleteServices = ($this, row) => {
               patient_payable: response.data.records.patient_payable,
               company_payble: response.data.records.company_payble,
               copay_amount: response.data.records.copay_amount,
-              sec_copay_amount: response.data.records.sec_copay_amount
+              sec_copay_amount: response.data.records.sec_copay_amount,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       saved = true;
@@ -551,7 +556,7 @@ const deleteServices = ($this, row) => {
         deleteserviceInput: deleteserviceInput,
         orderservicesdata: orderservicesdata,
         preserviceInput: preserviceInput,
-        approval_amt: app_amt
+        approval_amt: app_amt,
         // saved: saved,
       });
     }
@@ -560,7 +565,6 @@ const deleteServices = ($this, row) => {
 //Save Order
 const SaveOrdersServices = ($this, e) => {
   AlgaehLoader({ show: true });
-
 
   let inputObj = {
     visit_id: $this.state.visit_id,
@@ -574,13 +578,14 @@ const SaveOrdersServices = ($this, e) => {
     billdetails: $this.state.orderservicesdata,
     deleteserviceInput: $this.state.deleteserviceInput,
     date_of_birth: $this.props.date_of_birth,
-    gender: $this.props.gender
+    gender: $this.props.gender,
   };
+  debugger;
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
     data: inputObj,
     method: "POST",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState(
           {
@@ -617,7 +622,7 @@ const SaveOrdersServices = ($this, e) => {
             sub_total_amount: null,
             discount_amount: null,
             net_total: null,
-            deleteserviceInput: []
+            deleteserviceInput: [],
           },
           () => {
             if ($this.serviceSocket.connected) {
@@ -629,18 +634,18 @@ const SaveOrdersServices = ($this, e) => {
 
         swalMessage({
           title: "Ordered Successfully.",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onCatch: error => {
+    onCatch: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -659,13 +664,13 @@ const calculateAmount = ($this, row, e) => {
   if (parseFloat(discount_percentage) > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
     discount_percentage = 0;
   } else if (discount_amout > parseFloat(row.unit_cost)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Unit Cost.",
-      type: "warning"
+      type: "warning",
     });
     discount_amout = 0;
   }
@@ -690,8 +695,8 @@ const calculateAmount = ($this, row, e) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
-    }
+      preapp_limit_amount: $this.state.preapp_limit_amount,
+    },
   ];
 
   algaehApiCall({
@@ -699,7 +704,7 @@ const calculateAmount = ($this, row, e) => {
     module: "billing",
     method: "POST",
     data: inputParam,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         extend(row, data.billdetails[0]);
@@ -709,7 +714,7 @@ const calculateAmount = ($this, row, e) => {
           module: "billing",
           method: "POST",
           data: { billdetails: orderservicesdata },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               let header_data = response.data.records;
               $this.setState({
@@ -722,25 +727,25 @@ const calculateAmount = ($this, row, e) => {
                 copay_amount: header_data.copay_amount,
                 sec_copay_amount: header_data.sec_copay_amount,
                 deductable_amount: header_data.deductable_amount,
-                sec_deductable_amount: header_data.sec_deductable_amount
+                sec_deductable_amount: header_data.sec_deductable_amount,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -752,9 +757,9 @@ const updateBillDetail = ($this, e) => {
     data: { billdetails: $this.state.orderservicesdata },
     redux: {
       type: "BILL_HEADER_GEN_GET_DATA",
-      mappingName: "genbill"
+      mappingName: "genbill",
     },
-    afterSuccess: data => {
+    afterSuccess: (data) => {
       $this.setState({
         sub_total_amount: data.sub_total_amount,
         discount_amount: data.discount_amount,
@@ -766,9 +771,9 @@ const updateBillDetail = ($this, e) => {
         deductable_amount: data.deductable_amount,
         sec_deductable_amount: data.sec_deductable_amount,
         addNewService: !$this.state.addNewService,
-        saved: !$this.state.saved
+        saved: !$this.state.saved,
       });
-    }
+    },
   });
 };
 
@@ -782,7 +787,7 @@ const EditGrid = ($this, cancelRow) => {
   $this.setState({
     saved: !$this.state.saved,
     addNewService: !$this.state.addNewService,
-    orderservicesdata: _orderservicesdata
+    orderservicesdata: _orderservicesdata,
   });
 };
 
@@ -795,24 +800,24 @@ const makeZeroIngrid = ($this, row, e) => {
 
     orderservicesdata[_index] = row;
     $this.setState({
-      orderservicesdata: orderservicesdata
+      orderservicesdata: orderservicesdata,
     });
   }
 };
 
-const openFavouriteOrder = $this => {
+const openFavouriteOrder = ($this) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
   });
 };
 
-const openViewFavouriteOrder = $this => {
+const openViewFavouriteOrder = ($this) => {
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteOrder",
     module: "masterSettings",
     method: "GET",
     data: { doctor_id: Window.global["provider_id"] },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let ItemList = Enumerable.from(response.data.records)
           .groupBy("$.hims_d_favourite_orders_header_id", null, (k, g) => {
@@ -822,17 +827,17 @@ const openViewFavouriteOrder = $this => {
               hims_d_favourite_orders_header_id:
                 firstRecordSet.hims_d_favourite_orders_header_id,
               favourite_description: firstRecordSet.favourite_description,
-              favourite_details: g.getSource()
+              favourite_details: g.getSource(),
             };
           })
           .toArray();
 
         $this.setState({
           all_favourites: ItemList,
-          isFavOpen: !$this.state.isFavOpen
+          isFavOpen: !$this.state.isFavOpen,
         });
       }
-    }
+    },
   });
 };
 
@@ -841,7 +846,7 @@ const closeViewFavouriteOrder = ($this, e) => {
     $this.setState(
       {
         all_favourites: e,
-        isFavOpen: !$this.state.isFavOpen
+        isFavOpen: !$this.state.isFavOpen,
       },
       () => {
         ProcessFromFavourite($this, "Orders");
@@ -849,32 +854,32 @@ const closeViewFavouriteOrder = ($this, e) => {
     );
   } else {
     $this.setState({
-      isFavOpen: !$this.state.isFavOpen
+      isFavOpen: !$this.state.isFavOpen,
     });
   }
 };
-const getFavouriteServices = $this => {
+const getFavouriteServices = ($this) => {
   const { provider_id } = Window.global;
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteServices",
     module: "masterSettings",
     method: "GET",
     data: {
-      doctor_id: provider_id //Window.global["provider_id"]
+      doctor_id: provider_id, //Window.global["provider_id"]
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
-          all_favouriteservices: response.data.records
+          all_favouriteservices: response.data.records,
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -890,14 +895,14 @@ const selectToProcess = ($this, row, e) => {
   all_favouriteservices[row.rowIdx] = row;
 
   let listOfinclude = Enumerable.from(all_favouriteservices)
-    .where(w => w.select_to_process === "Y")
+    .where((w) => w.select_to_process === "Y")
     .toArray();
   if (listOfinclude.length > 0) {
     add_to_list = false;
   }
   $this.setState({
     add_to_list: add_to_list,
-    all_favouriteservices: all_favouriteservices
+    all_favouriteservices: all_favouriteservices,
   });
 };
 
@@ -911,7 +916,7 @@ const ProcessFromFavourite = ($this, from) => {
   let Selected_Services = null;
   if (from === "Services") {
     Selected_Services = Enumerable.from($this.state.all_favouriteservices)
-      .where(w => w.select_to_process === "Y")
+      .where((w) => w.select_to_process === "Y")
       .toArray();
   } else {
     Selected_Services = $this.state.all_favourites;
@@ -920,7 +925,7 @@ const ProcessFromFavourite = ($this, from) => {
   if (Selected_Services.length <= 0) {
     swalMessage({
       title: "Need to select atleast one sevice",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -931,14 +936,14 @@ const ProcessFromFavourite = ($this, from) => {
     if (Selected_Services[d].service_type_id !== 2) {
       SelectedService = _.find(
         $this.props.orderedList,
-        f =>
+        (f) =>
           f.service_type_id === Selected_Services[d].service_type_id &&
           f.services_id === Selected_Services[d].services_id
       );
 
       PreSelectedService = _.find(
         $this.state.orderservicesdata,
-        f =>
+        (f) =>
           f.service_type_id === Selected_Services[d].service_type_id &&
           f.services_id === Selected_Services[d].services_id
       );
@@ -947,7 +952,7 @@ const ProcessFromFavourite = ($this, from) => {
     if (SelectedService !== undefined || PreSelectedService !== undefined) {
       swalMessage({
         title: "Selected Service already ordered.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -967,7 +972,7 @@ const ProcessFromFavourite = ($this, from) => {
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
       preapp_limit_amount: $this.state.preapp_limit_amount,
-      bulkProcess: "Y"
+      bulkProcess: "Y",
     });
 
     preserviceInput.push({
@@ -985,7 +990,7 @@ const ProcessFromFavourite = ($this, from) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
-      preapp_limit_amount: $this.state.preapp_limit_amount
+      preapp_limit_amount: $this.state.preapp_limit_amount,
     });
   }
 
@@ -997,12 +1002,12 @@ const ProcessFromFavourite = ($this, from) => {
     module: "billing",
     method: "POST",
     data: serviceInput,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         let preapp_limit_exceed = _.find(
           data.billdetails,
-          f => f.preapp_limit_exceed === "Y"
+          (f) => f.preapp_limit_exceed === "Y"
         );
         if (
           preapp_limit_exceed !== undefined &&
@@ -1019,8 +1024,8 @@ const ProcessFromFavourite = ($this, from) => {
             cancelButtonColor: "#d33",
             cancelButtonText: "No",
             allowEscapeKey: false,
-            allowOutsideClick: false
-          }).then(willProceed => {
+            allowOutsideClick: false,
+          }).then((willProceed) => {
             if (willProceed.value) {
               // preserviceInput.push(serviceInput[0]);
 
@@ -1036,7 +1041,7 @@ const ProcessFromFavourite = ($this, from) => {
                 module: "billing",
                 method: "POST",
                 data: preserviceInput,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     let Service_data = response.data.records;
 
@@ -1083,7 +1088,7 @@ const ProcessFromFavourite = ($this, from) => {
                       // s_service_type: null,
                       s_service: null,
                       test_type: "R",
-                      service_name: ""
+                      service_name: "",
                     });
 
                     algaehApiCall({
@@ -1091,7 +1096,7 @@ const ProcessFromFavourite = ($this, from) => {
                       module: "billing",
                       method: "POST",
                       data: { billdetails: Service_data.billdetails },
-                      onSuccess: response => {
+                      onSuccess: (response) => {
                         if (response.data.success) {
                           $this.setState({
                             sub_total_amount:
@@ -1107,33 +1112,33 @@ const ProcessFromFavourite = ($this, from) => {
                             sec_copay_amount:
                               response.data.records.sec_copay_amount,
 
-                            add_to_list: true
+                            add_to_list: true,
                           });
                           AlgaehLoader({ show: false });
                         }
                       },
-                      onFailure: error => {
+                      onFailure: (error) => {
                         AlgaehLoader({ show: false });
                         swalMessage({
                           title: error.message,
-                          type: "error"
+                          type: "error",
                         });
-                      }
+                      },
                     });
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   AlgaehLoader({ show: false });
                   swalMessage({
                     title: error.message,
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             } else {
               AlgaehLoader({ show: false });
               $this.setState({
-                preserviceInput: []
+                preserviceInput: [],
               });
             }
           });
@@ -1175,7 +1180,7 @@ const ProcessFromFavourite = ($this, from) => {
             ) {
               swalMessage({
                 title: "Selected Service is Pre-Approval required.",
-                type: "warning"
+                type: "warning",
               });
             } else if (
               data.billdetails[c].insurance_yesno === "Y" &&
@@ -1196,7 +1201,6 @@ const ProcessFromFavourite = ($this, from) => {
             // preserviceInput.push(serviceInput[c]);
           }
 
-
           $this.setState({
             orderservicesdata: existingservices,
             approval_amt: approval_amt,
@@ -1206,7 +1210,7 @@ const ProcessFromFavourite = ($this, from) => {
             // s_service_type: null,
             s_service: null,
             test_type: "R",
-            service_name: ""
+            service_name: "",
           });
 
           algaehApiCall({
@@ -1214,7 +1218,7 @@ const ProcessFromFavourite = ($this, from) => {
             module: "billing",
             method: "POST",
             data: { billdetails: existingservices },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 $this.setState({
                   sub_total_amount: response.data.records.sub_total_amount,
@@ -1225,28 +1229,28 @@ const ProcessFromFavourite = ($this, from) => {
                   copay_amount: response.data.records.copay_amount,
                   sec_copay_amount: response.data.records.sec_copay_amount,
 
-                  add_to_list: true
+                  add_to_list: true,
                 });
               }
               AlgaehLoader({ show: false });
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 export {
@@ -1264,5 +1268,5 @@ export {
   selectToProcess,
   ProcessFromFavourite,
   openViewFavouriteOrder,
-  closeViewFavouriteOrder
+  closeViewFavouriteOrder,
 };
