@@ -22,7 +22,6 @@ import PackageUtilizeEvent from "./PackageUtilizeEvent";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AddAdvanceModal from "../../Advance/AdvanceModal";
 import ConsumtionItemBatches from "./ConsumtionItemBatches";
-import moment from "moment";
 import ClosePackage from "./ClosePackage";
 import UtilizedPackageofVisit from "./UtilizedPackageofVisit";
 
@@ -48,7 +47,7 @@ class PackageUtilize extends Component {
     this.baseState = this.state;
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.from_billing === true) {
@@ -213,15 +212,15 @@ class PackageUtilize extends Component {
                     }}
                   />
                 ) : (
-                  <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Package Name"
-                      }}
-                    />
-                    <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
-                  </div>
-                )}
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Package Name"
+                        }}
+                      />
+                      <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                    </div>
+                  )}
                 {this.state.consultation === true ? (
                   <label className="checkbox inline">
                     <input
@@ -285,10 +284,10 @@ class PackageUtilize extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -310,8 +309,8 @@ class PackageUtilize extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.service_id
-                                );
+                                f => f.hims_d_services_id === row.service_id
+                              );
 
                           return (
                             <span>
@@ -367,28 +366,28 @@ class PackageUtilize extends Component {
                           return row.service_type_id === 4 ? (
                             row.quantity
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.quantity,
-                                className: "txt-fld",
-                                name: "quantity",
-                                dontAllowKeys: ["-", "e", "."],
-                                events: {
-                                  onChange: this.onquantitycol.bind(this, row)
-                                },
-                                others: {
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.quantity,
+                                  className: "txt-fld",
+                                  name: "quantity",
+                                  dontAllowKeys: ["-", "e", "."],
+                                  events: {
+                                    onChange: this.onquantitycol.bind(this, row)
+                                  },
+                                  others: {
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
-                                }
-                              }}
-                            />
-                          );
+                                }}
+                              />
+                            );
                         },
                         disabled: true,
                         others: {
@@ -534,14 +533,14 @@ class PackageUtilize extends Component {
                       ) : null}
 
                       {this.props.from_billing === true &&
-                      this.props.from !== "frontDesk" ? (
-                        <button
-                          className="btn btn-default"
-                          onClick={this.ShowVistUtilizedSer.bind(this)}
-                        >
-                          Utilized Services
+                        this.props.from !== "frontDesk" ? (
+                          <button
+                            className="btn btn-default"
+                            onClick={this.ShowVistUtilizedSer.bind(this)}
+                          >
+                            Utilized Services
                         </button>
-                      ) : null}
+                        ) : null}
 
                       {this.props.from_billing === true ? (
                         <button

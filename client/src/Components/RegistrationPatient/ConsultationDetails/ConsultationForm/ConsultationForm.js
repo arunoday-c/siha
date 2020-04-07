@@ -25,7 +25,6 @@ import {
   texthandle,
   clearBillDetails
 } from "./AddConsultationDetails";
-import _ from "lodash";
 
 class AddConsultationForm extends Component {
   constructor(props) {
@@ -132,8 +131,7 @@ class AddConsultationForm extends Component {
     const departments =
       this.props.deptanddoctors === undefined
         ? []
-        : this.props.deptanddoctors.departmets;
-    const hideMaternity = this.state.gender === "Female" ? "" : "hide";
+        : this.props.deptanddoctors.departmets;    
 
     const Package_Exists =
       this.props.PatientPackageList === undefined

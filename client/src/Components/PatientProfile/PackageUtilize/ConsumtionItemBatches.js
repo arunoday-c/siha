@@ -13,7 +13,7 @@ import {
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import _ from "lodash";
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 class ConsumtionItemBatches extends PureComponent {
   constructor(props) {

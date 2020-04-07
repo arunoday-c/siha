@@ -54,13 +54,13 @@ class NewInvestigation extends PureComponent {
 
   static getDerivedStateFromProps(props, state) {
     if (
-      props.InvestigationPop.hims_d_investigation_test_id ==
+      props.InvestigationPop.hims_d_investigation_test_id ===
       state.hims_d_investigation_test_id
     ) {
       return null;
     } else {
       if (
-        props.InvestigationPop.hims_d_investigation_test_id != undefined &&
+        props.InvestigationPop.hims_d_investigation_test_id !== undefined &&
         props.open
       ) {
         let IOputs = props.InvestigationPop;
@@ -312,8 +312,8 @@ class NewInvestigation extends PureComponent {
                       {this.state.investigation_type === "L" ? (
                         <LabInvestigation InvestigationIOputs={this.state} />
                       ) : (
-                        <RadInvestigation InvestigationIOputs={this.state} />
-                      )}
+                          <RadInvestigation InvestigationIOputs={this.state} />
+                        )}
                     </MyContext.Provider>
                   </div>
                 </div>
@@ -332,8 +332,8 @@ class NewInvestigation extends PureComponent {
                           {this.state.hims_d_investigation_test_id === null ? (
                             <AlgaehLabel label={{ fieldName: "btnSave" }} />
                           ) : (
-                            <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                          )}
+                              <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                            )}
                         </button>
                         <button
                           onClick={e => {

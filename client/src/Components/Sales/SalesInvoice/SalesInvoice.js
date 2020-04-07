@@ -22,7 +22,6 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 // import SalesInvoiceInp from "../../../Models/SalesInvoice";
 import MyContext from "../../../utils/MyContext";
-import _ from "lodash";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
 import InvoiceListService from "./InvoiceListService/InvoiceListService";
@@ -73,7 +72,6 @@ class SalesInvoice extends Component {
             data: {
                 division_id: userToken.hims_d_hospital_id
             },
-            method: "GET",
             redux: {
                 type: "PROJECT_GET_DATA",
                 mappingName: "projects"

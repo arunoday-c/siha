@@ -1,4 +1,4 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import "./OrgChart.scss";
 import { EmployeeView, DepartmentView } from ".";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";

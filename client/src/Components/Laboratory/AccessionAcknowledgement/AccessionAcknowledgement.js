@@ -80,7 +80,7 @@ class AccessionAcknowledgement extends Component {
   }
 
   render() {
-    let _Ordered = [];
+    // let _Ordered = [];
 
     let _Collected = [];
 
@@ -89,9 +89,9 @@ class AccessionAcknowledgement extends Component {
 
     let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
-      _Ordered = _.filter(this.state.sample_collection, f => {
-        return f.status === "O";
-      });
+      // _Ordered = _.filter(this.state.sample_collection, f => {
+      //   return f.status === "O";
+      // });
 
       _Collected = _.filter(this.state.sample_collection, f => {
         return f.status === "CL";

@@ -11,7 +11,6 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components/context";
-import { AlgaehTreeSearch } from "algaeh-react-components";
 
 class LoanMaster extends Component {
   constructor(props) {

@@ -37,7 +37,6 @@ export default {
       billing_header_id: null,
       total_amount: 0,
       counter_id: null,
-      shift_id: null,
       unbalanced_amount: 0,
 
       updated_date: null,

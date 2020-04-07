@@ -15,17 +15,12 @@ import {
   discounthandle,
   cashtexthandle,
   cardtexthandle,
-  // chequetexthandle,
   adjustadvance,
-  // ProcessInsurance,
   checkcashhandaler,
   checkcardhandler,
-  // checkcheckhandaler,
   credittexthandle,
-  discountCal,
   cashtexthCal,
   cardtexthCal,
-  // chequetexthCal,
   makeZero,
   makeDiscountZero
 } from "./AddBillingDetails";

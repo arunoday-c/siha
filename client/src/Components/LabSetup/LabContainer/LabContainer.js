@@ -16,10 +16,8 @@ import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
   changeTexts,
   onchangegridcol,
-  insertLabContainer,
-  deleteLabContainer,
-  updateLabContainer,
-  testData
+  insertLabContainer,  
+  updateLabContainer  
 } from "./LabContainerEvents";
 import Options from "../../../Options.json";
 import moment from "moment";

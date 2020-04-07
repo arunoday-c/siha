@@ -179,7 +179,7 @@ export default function EmpProjectRoster(props) {
                 AlgaehLoader({ show: true });
                 getEmployeesForProjectRoster(inputs)
                   .then(result => {
-                    const { records, fromDate, toDate } = result;
+                    const { records } = result;
                     setProjectRosterState({
                       total_rosted: records.total_rosted,
                       total_non_rosted: records.total_non_rosted,
@@ -205,8 +205,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table ref={tableRef} editing={editingProjectRoster} />
-                  )}
+                      <Table ref={tableRef} editing={editingProjectRoster} />
+                    )}
                 </div>
               </div>
             </div>

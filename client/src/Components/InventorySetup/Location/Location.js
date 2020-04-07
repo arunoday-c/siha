@@ -462,7 +462,6 @@ class Location extends Component {
                   }}
                   filter={true}
                   isEditable={true}
-                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: deleteLocation.bind(this, this),

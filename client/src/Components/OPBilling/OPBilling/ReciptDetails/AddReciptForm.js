@@ -8,12 +8,9 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler,
-  calculateRecipt,
-  countertexthandle
+  calculateRecipt
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,

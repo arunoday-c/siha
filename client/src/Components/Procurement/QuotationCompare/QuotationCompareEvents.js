@@ -1,11 +1,8 @@
-import React from "react";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import _ from "lodash";
 import Enumerable from "linq";
-import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;

@@ -7,7 +7,6 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  // AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
@@ -15,13 +14,8 @@ import moment from "moment";
 import ReceiptItemList from "./ReceiptItemList/ReceiptItemList";
 
 import {
-  // vendortexthandle,
-  // loctexthandle,
-  // texthandle,
-  // poforhandle,
   ClearData,
   SaveReceiptEnrty,
-  // DeliverySearch,
   getCtrlCode,
   PostReceiptEntry,
   PurchaseOrderSearch,
@@ -30,13 +24,10 @@ import {
   textEventhandle,
   generateReceiptEntryReport
 } from "./ReceiptEntryEvent";
-// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import Enumerable from "linq";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
-// import AlgaehReport from "../../Wrapper/printReports";
-import _ from "lodash";
+
 
 class ReceiptEntry extends Component {
   constructor(props) {
@@ -70,9 +61,6 @@ class ReceiptEntry extends Component {
   }
 
   render() {
-    const _mainStore = Enumerable.from(this.props.receiptlocations)
-      .where(w => w.location_type === "WH")
-      .toArray();
     const class_finder = this.state.dataExitst === true
       ? " disableFinder"
       : ""

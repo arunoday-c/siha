@@ -16,19 +16,15 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import {
-  RAD_EXAM_STATUS,
   FORMAT_RAD_STATUS,
   RAD_REPORT_TYPE
 } from "../../../utils/GlobalVariables.json";
 import {
   texthandle,
-  // examhandle,
   templatehandle,
   rtehandle,
-  // onvalidate,
   handleExamStatus
 } from "./RadResultEntryEvents";
-import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 
 class RadResultEntry extends Component {
   constructor(props) {
@@ -257,8 +253,8 @@ class RadResultEntry extends Component {
                       <time>
                         {this.state.exam_start_date_time !== null
                           ? moment(this.state.exam_start_date_time).format(
-                              Options.timeFormat
-                            )
+                            Options.timeFormat
+                          )
                           : "00:00:00"}
                       </time>
                     </div>
@@ -286,8 +282,8 @@ class RadResultEntry extends Component {
                       <time>
                         {this.state.exam_end_date_time !== null
                           ? moment(this.state.exam_end_date_time).format(
-                              Options.timeFormat
-                            )
+                            Options.timeFormat
+                          )
                           : "00:00:00"}
                       </time>
                     </div>

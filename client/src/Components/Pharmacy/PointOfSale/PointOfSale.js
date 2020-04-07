@@ -21,7 +21,6 @@ import {
   nationalityhandle,
   CancelPosEntry,
   generateReport,
-  generatePharmacyLabel,
   getCashiersAndShiftMAP,
   ClosePrescribedItem
 } from "./PointOfSaleEvents";

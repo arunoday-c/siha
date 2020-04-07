@@ -23,7 +23,6 @@ import {
   EditGrid
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import moment from "moment";
 
 class RequisitionItems extends Component {
   constructor(props) {

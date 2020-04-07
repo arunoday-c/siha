@@ -1,5 +1,5 @@
-import { getNewLocalIp, getCookie, getToken } from "../utils/algaehApiCall";
-import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import { getNewLocalIp, getCookie } from "../utils/algaehApiCall";
+import { getItem } from "algaeh-react-components/storage";
 
 import axios from "axios";
 import config from "../utils/config.json";

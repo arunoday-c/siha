@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "../AlgaehmainPage/AlgaehmainPage.scss";
 import Menu from "../Menu";
-import { Result } from "algaeh-react-components";
+
 import { MainContext } from "algaeh-react-components/context";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 export default function Layout({ path, noSecurityCheck, children }) {
@@ -12,11 +12,10 @@ export default function Layout({ path, noSecurityCheck, children }) {
     setUserToken,
     setElementsItems,
     setSelectedMenuItem,
-    selectedMenu,
     setUserPreferencesData
   } = useContext(MainContext);
   const [pageLoading, setPageLoading] = useState(false);
-  const [text, setText] = useState("Please wait configure is in process");
+  const [text] = useState("Please wait configure is in process");
 
   useEffect(() => {
     if (Object.keys(userToken).length > 0) {
@@ -42,29 +41,29 @@ export default function Layout({ path, noSecurityCheck, children }) {
     }
   }, []);
 
-  function checkHasAccessToPage() {
-    if (noSecurityCheck === true) return true;
-    if (selectedMenu === null) return false;
-    if (Object.keys(selectedMenu).length === 0) {
-      return false;
-    } else {
-      if (
-        String(path).toLowerCase() ===
-        "/" +
-          String(selectedMenu["page_to_redirect"])
-            .toLowerCase()
-            .replace(/ /g, "")
-      ) {
-        return true;
-      } else {
-        const hasPage = selectedMenu["child_pages"].find(
-          f => String(f).toLowerCase() === String(path).toLowerCase()
-        );
-        if (hasPage !== undefined) return true;
-        else return false;
-      }
-    }
-  }
+  // function checkHasAccessToPage() {
+  //   if (noSecurityCheck === true) return true;
+  //   if (selectedMenu === null) return false;
+  //   if (Object.keys(selectedMenu).length === 0) {
+  //     return false;
+  //   } else {
+  //     if (
+  //       String(path).toLowerCase() ===
+  //       "/" +
+  //         String(selectedMenu["page_to_redirect"])
+  //           .toLowerCase()
+  //           .replace(/ /g, "")
+  //     ) {
+  //       return true;
+  //     } else {
+  //       const hasPage = selectedMenu["child_pages"].find(
+  //         f => String(f).toLowerCase() === String(path).toLowerCase()
+  //       );
+  //       if (hasPage !== undefined) return true;
+  //       else return false;
+  //     }
+  //   }
+  // }
 
   return (
     <>
@@ -74,7 +73,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
           userLanguage === "en"
             ? "english_component"
             : userLanguage + "_component"
-        }`}
+          }`}
         id="hisapp"
       >
         {pageLoading ? <>{children}</> : <center>{text}</center>}
@@ -83,7 +82,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
   );
 }
 
-/* {checkHasAccessToPage() ? ( 
+/* {checkHasAccessToPage() ? (
   <>{children}</>
  ) : (
       <Result

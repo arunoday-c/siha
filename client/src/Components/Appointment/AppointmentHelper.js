@@ -1,5 +1,5 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 export function generateTimeslotsForDoctor(data) {
   // Takes Appointment Schedule as input and returns an Array with time and "break"

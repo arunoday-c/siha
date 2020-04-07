@@ -26,7 +26,7 @@ export function decimalPointSet(value, decimal_point) {
   let data_value = value;
   if (typeof value === "string") {
     data_value = parseFloat(
-      value == "" || value == null || value == undefined ? "0" : value
+      value === "" || value === null || value === undefined ? "0" : value
     );
   }
 
@@ -326,7 +326,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function() {
+  xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -376,10 +376,10 @@ export function AlgaehValidation(options) {
           _checkVal = _Validateerror[i].getAttribute("checkvalidation");
         }
       }
-      let value = "";
+
       if (_checkVal !== null) {
         const _val = _element.value; //=== "" ? "''" : _element.value;
-        value = _val;
+        // value = _val;
         _checkVal = _checkVal.replace(/\$value/g, _val);
       }
       const _role = _element.getAttribute("data_role");
@@ -437,11 +437,11 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                  .replace("*", "")
-                  .toLowerCase()
-                  .replace(/^\w/, c => {
-                    return c.toUpperCase();
-                  }) + "- Cannot be empty"
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  return c.toUpperCase();
+                }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
@@ -512,8 +512,8 @@ export function numberFormater(value, options, CurrencyDetail) {
   let s = prec
     ? toFixedFix(n, prec)
     : Math.round(n)
-        .toString()
-        .split(".");
+      .toString()
+      .split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
@@ -613,8 +613,8 @@ export function SetBulkState(options) {
     return _objectCreation;
   }
 }
-const algorithm = "aes-256-ctr";
-const containerId = "algaeh_hims_erp_container_1.0.0";
+// const algorithm = "aes-256-ctr";
+// const containerId = "algaeh_hims_erp_container_1.0.0";
 export function AlgaehCloseContainer(string) {
   // let cipher = crypto.createCipher(algorithm, containerId);
   // let crypted = cipher.update(string, "utf8", "hex");

@@ -14,7 +14,6 @@ import {
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 import isEmpty from "lodash/isEmpty";
-import Notification from "../Wrapper/algaehNotification";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import spotlightSearch from "../../Search/spotlightSearch";
 import AlgaehSearch from "../Wrapper/globalSearch";

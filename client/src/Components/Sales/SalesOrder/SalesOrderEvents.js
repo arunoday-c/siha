@@ -264,7 +264,6 @@ const ClearData = ($this, e) => {
     unit_cost: 0,
     tax_percent: 0,
     selectedData: false,
-    delivery_date: null,
     organizations: []
     // services_required: "N"
   };
@@ -437,37 +436,37 @@ const generateSalesOrderReport = data => {
   });
 };
 
-const generatePOReceiptNoPrice = data => {
-  console.log("data:", data);
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob"
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        reportName: "SalesOrderReport",
-        reportParams: [
-          {
-            name: "hims_f_sales_order_number",
-            value: data.hims_f_sales_order_number
-          }
-        ],
-        outputFileType: "PDF"
-      }
-    },
-    onSuccess: res => {
-      
-      const urlBlob = URL.createObjectURL(res.data);
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sales Order Report`;
-      window.open(origin);
-      // window.document.title = "Sales Order Report";
-    }
-  });
-};
+// const generatePOReceiptNoPrice = data => {
+//   console.log("data:", data);
+//   algaehApiCall({
+//     uri: "/report",
+//     method: "GET",
+//     module: "reports",
+//     headers: {
+//       Accept: "blob"
+//     },
+//     others: { responseType: "blob" },
+//     data: {
+//       report: {
+//         reportName: "SalesOrderReport",
+//         reportParams: [
+//           {
+//             name: "hims_f_sales_order_number",
+//             value: data.hims_f_sales_order_number
+//           }
+//         ],
+//         outputFileType: "PDF"
+//       }
+//     },
+//     onSuccess: res => {
+
+//       const urlBlob = URL.createObjectURL(res.data);
+//       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Sales Order Report`;
+//       window.open(origin);
+//       // window.document.title = "Sales Order Report";
+//     }
+//   });
+// };
 
 const getSalesOptions = $this => {
   algaehApiCall({

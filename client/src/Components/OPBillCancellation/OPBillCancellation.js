@@ -27,11 +27,7 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-
-import AlgaehReport from "../Wrapper/printReports";
-
 import moment from "moment";
-import Options from "../../Options.json";
 
 class OPBillCancellation extends Component {
   constructor(props) {

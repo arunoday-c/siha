@@ -29,8 +29,7 @@ const updateMicroGroup = ($this, data) => {
         group_name: data.group_name,
         group_status: data.group_status,
         group_type: data.group_type,
-        arabic_group_name: data.arabic_group_name,
-        group_status: data.group_status
+        arabic_group_name: data.arabic_group_name        
     };
     algaehApiCall({
         uri: "/labmasters/updateMicroGroup",

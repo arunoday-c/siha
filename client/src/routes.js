@@ -358,9 +358,9 @@ const PackageSetup = React.lazy(() =>
 const FavouriteOrderList = React.lazy(() =>
   retry(() => import("./Components/FavouriteOrderList/FavouriteOrderList"))
 );
-const PackageBilling = React.lazy(() =>
-  retry(() => import("./Components/PackageBilling/PackageBilling"))
-);
+// const PackageBilling = React.lazy(() =>
+//   retry(() => import("./Components/PackageBilling/PackageBilling"))
+// );
 const DiagramMaster = React.lazy(() =>
   retry(() => import("./Components/DiagramMaster/DiagramMaster"))
 );
@@ -981,11 +981,11 @@ const appRoutes = [
     isExactPath: true,
     component: <FavouriteOrderList />
   },
-  {
-    path: "/PackageBilling",
-    isExactPath: true,
-    component: <PackageBilling />
-  },
+  // {
+  //   path: "/PackageBilling",
+  //   isExactPath: true,
+  //   component: <PackageBilling />
+  // },
   {
     path: "/DiagramMaster",
     isExactPath: true,
@@ -1294,7 +1294,7 @@ function Routes() {
     <BrowserRouter>
       <Switch>
         {appRoutes.map((routeItem, idx) => {
-          const others = routeItem.others === undefined ? {} : routeItem.others;
+          // const others = routeItem.others === undefined ? {} : routeItem.others;
           const path = routeItem.path.replace("/?", "?");
           const noSecurityCheck = routeItem.noSecurityCheck;
           return (

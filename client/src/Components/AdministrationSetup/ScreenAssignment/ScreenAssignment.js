@@ -9,7 +9,7 @@ import {
   updateScreenElementRoles
 } from "./ScreenAssignmentEvents";
 import { MainContext } from "algaeh-react-components/context";
-import { Checkbox, Radio, Button } from "algaeh-react-components";
+import { Checkbox, Button } from "algaeh-react-components";
 class ScreenAssignment extends Component {
   _isMounted = false;
   constructor(props) {
@@ -416,31 +416,31 @@ class ScreenAssignment extends Component {
                                                     </Checkbox>
                                                   </li>
                                                 ) : (
-                                                  <React.Fragment>
-                                                    {stages.map(stage => {
-                                                      const {
-                                                        checked,
-                                                        value,
-                                                        text
-                                                      } = stage;
-                                                      return (
-                                                        <li key={value}>
-                                                          <Checkbox
-                                                            defaultChecked={
-                                                              checked
-                                                            }
-                                                            onChange={this.onClickElementClick.bind(
-                                                              this,
-                                                              stage
-                                                            )}
-                                                          >
-                                                            {text}
-                                                          </Checkbox>
-                                                        </li>
-                                                      );
-                                                    })}
-                                                  </React.Fragment>
-                                                )}
+                                                    <React.Fragment>
+                                                      {stages.map(stage => {
+                                                        const {
+                                                          checked,
+                                                          value,
+                                                          text
+                                                        } = stage;
+                                                        return (
+                                                          <li key={value}>
+                                                            <Checkbox
+                                                              defaultChecked={
+                                                                checked
+                                                              }
+                                                              onChange={this.onClickElementClick.bind(
+                                                                this,
+                                                                stage
+                                                              )}
+                                                            >
+                                                              {text}
+                                                            </Checkbox>
+                                                          </li>
+                                                        );
+                                                      })}
+                                                    </React.Fragment>
+                                                  )}
                                               </React.Fragment>
                                             );
                                           })}
@@ -470,12 +470,12 @@ class ScreenAssignment extends Component {
             </div>
           </div>
         ) : (
-          <div className="selectGroupRole">
-            {" "}
-            <h5>Select a Group & Role</h5>
-            <p>To the define Screens/Component/Element/Authorizations</p>
-          </div>
-        )}
+            <div className="selectGroupRole">
+              {" "}
+              <h5>Select a Group & Role</h5>
+              <p>To the define Screens/Component/Element/Authorizations</p>
+            </div>
+          )}
       </div>
     );
   }

@@ -177,7 +177,7 @@ const onconfirm = $this => {
 
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  // let value = e.value || e.target.value;
   let microAntbiotic = $this.state.microAntbiotic;
   let _index = microAntbiotic.indexOf(row);
 

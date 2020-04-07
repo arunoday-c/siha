@@ -25,7 +25,7 @@ class Encounters extends Component {
   }
 
   setEncounterDetails(row, e) {
-    const enc_id = e.currentTarget.getAttribute("enc-id");
+    // const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
 

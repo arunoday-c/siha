@@ -17,7 +17,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
-import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
 
 class DeptMaster extends Component {

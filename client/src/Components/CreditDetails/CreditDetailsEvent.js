@@ -33,15 +33,13 @@ const writeOffhandle = ($this, context, ctrl, e) => {
       unbalanced_amount: recievable_amount,
       cash_amount: $this.state.default_pay_type === "CH" ? recievable_amount : 0,
       card_amount: $this.state.default_pay_type === "CD" ? recievable_amount : 0,
-      unbalanced_amount: 0
+      // unbalanced_amount: 0
     });
   }
 };
 
 const updateCridetSettlement = ($this, context) => {
-  const check_header = $this.props.fromPos
-    ? "hims_f_pos_credit_header_id"
-    : "hims_f_credit_header_id";
+
   let saveEnable = true;
 
   let receipt_amount = Enumerable.from($this.state.criedtdetails)
@@ -65,7 +63,7 @@ const updateCridetSettlement = ($this, context) => {
       cash_amount: $this.state.default_pay_type === "CH" ? receipt_amount : 0,
       card_amount: $this.state.default_pay_type === "CD" ? receipt_amount : 0,
       cheque_amount: 0,
-      unbalanced_amount: 0
+      // unbalanced_amount: 0
     });
   }
 };

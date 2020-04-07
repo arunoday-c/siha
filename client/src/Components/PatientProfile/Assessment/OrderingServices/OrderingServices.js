@@ -233,7 +233,7 @@ class OrderingServices extends PureComponent {
   }
 
   onClose = e => {
-    const {current_patient,visit_id} = Window.global;
+    const { current_patient, visit_id } = Window.global;
     getFavouriteServices(this);
     this.setState(
       {
@@ -282,7 +282,7 @@ class OrderingServices extends PureComponent {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-const {current_patient,visit_id,provider_id} = Window.global;
+    const { current_patient, visit_id, provider_id } = Window.global;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -456,10 +456,10 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -476,10 +476,10 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -503,8 +503,8 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -521,8 +521,8 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -763,10 +763,10 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -795,8 +795,8 @@ const {current_patient,visit_id,provider_id} = Window.global;
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>

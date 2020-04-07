@@ -223,9 +223,7 @@ class OrderingPackages extends Component {
     });
   }
 
-  ShowPackageDetail(row) {
-    let orderpackagedata = this.state.orderpackagedata;
-    // let selected_row_index = orderpackagedata.indexOf(row);
+  ShowPackageDetail(row) {    
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: row,

@@ -16,7 +16,6 @@ import {
   ShowTemplate,
   CloseTemplate,
   ViewEditTemplate,
-  deleteRadInvestigation,
   updateRadInvestigation,
   deleteRadTemplate
 } from "./RadInvestigationEvent";
@@ -185,7 +184,7 @@ class RadInvestigation extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteRadTemplate.bind(this, this, context),
-                        onEdit: row => {},
+                        onEdit: row => { },
 
                         onDone: updateRadInvestigation.bind(this, this)
                       }}

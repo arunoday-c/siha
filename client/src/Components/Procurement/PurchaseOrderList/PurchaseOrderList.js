@@ -11,8 +11,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {
   LocationchangeTexts,
-  dateFormater,
-  texthandle,
+  dateFormater,  
   poforhandle,
   datehandle,
   changeEventHandaler

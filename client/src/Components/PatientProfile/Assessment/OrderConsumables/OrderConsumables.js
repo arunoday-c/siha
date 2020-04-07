@@ -19,7 +19,6 @@ import {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
   ItemChargable,
   makeZeroIngrid
@@ -132,12 +131,12 @@ class OrderConsumables extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, f => {
-            return (
-              f.hims_d_inventory_location_id === nextProps.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id === nextProps.inventory_location_id
+          );
+        })
         : [];
 
     if (
@@ -396,10 +395,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -416,10 +415,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -443,8 +442,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -461,8 +460,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -783,28 +782,3 @@ function mapDispatchToProps(dispatch) {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(OrderConsumables)
 );
-{
-  /*displayTemplate: row => {
-  return (
-    <AlagehFormGroup
-      div={{}}
-      textBox={{
-        value: row.quantity,
-        className: "txt-fld",
-        name: "quantity",
-        events: {
-          onChange: onchangegridcol.bind(
-            this,
-            this,
-            row
-          )
-        },
-        others: {
-          disabled:
-            this.state.insured === "Y" ? true : false
-        }
-      }}
-    />
-  );
-}*/
-}

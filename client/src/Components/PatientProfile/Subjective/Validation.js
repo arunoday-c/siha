@@ -1,4 +1,4 @@
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 export function Validations(state) {
   let isError = false;

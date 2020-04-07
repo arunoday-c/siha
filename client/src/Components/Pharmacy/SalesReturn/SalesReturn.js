@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
@@ -185,8 +185,8 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.sales_return_date
                       ? moment(this.state.sales_return_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -263,8 +263,8 @@ class SalesReturn extends Component {
                 {this.state.mode_of_pay === "1"
                   ? "Self"
                   : this.state.mode_of_pay === "2"
-                  ? "Insurance"
-                  : "-----------"}
+                    ? "Insurance"
+                    : "-----------"}
               </h6>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 const texthandle = ($this, e) => {

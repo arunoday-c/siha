@@ -8,7 +8,6 @@ import "../../index.scss";
 import TermsConditions from "./TermsConditions/TermsConditions";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
-import _ from "lodash";
 
 class SalesSetup extends Component {
   constructor(props) {

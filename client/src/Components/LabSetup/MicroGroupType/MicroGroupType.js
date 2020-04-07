@@ -29,7 +29,6 @@ import {
   updateComments,
   onchangegridcol
 } from "./MicroGroupEvent";
-import _ from "lodash";
 
 class MicroGroupType extends Component {
   constructor(props) {

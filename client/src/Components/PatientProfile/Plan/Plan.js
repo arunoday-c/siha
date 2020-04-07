@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./plan.scss";
 import {
   AlgaehLabel,
-  AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import DietAdvice from "./DietAdvice/DietAdvice";
@@ -11,8 +10,8 @@ import FollowUp from "./FollowUp/FollowUp";
 import OrderMedication from "./OrderMedication/OrderMedication";
 import ActiveMedication from "./ActiveMedication/ActiveMedication";
 import MedicationHistory from "./MedicationHistory/MedicationHistory";
-import OwnMedication from "./OwnMedication/OwnMedication";
-import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+// import OwnMedication from "./OwnMedication/OwnMedication";
+// import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import { removeGlobal } from "../../../utils/GlobalFunctions";
 class Plan extends Component {
   constructor(props) {

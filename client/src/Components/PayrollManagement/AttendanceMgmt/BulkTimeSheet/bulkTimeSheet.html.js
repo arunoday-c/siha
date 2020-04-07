@@ -192,49 +192,49 @@ function BulkTimeSheet(props) {
                   <ol dangerouslySetInnerHTML={{ __html: message }} />
                 </div>
               ) : (
-                <div className="bulkTimeScroll">
-                  <table id="bulkTimeSheetPreview">
-                    <thead>
-                      <tr>
-                        <th className="fixed freeze">Emp Name & Code</th>
-                        {dates.map((item, index) => (
-                          <th key={item} className="fixed freeze_vertical">
-                            <span>
-                              {moment(item, "YYYY-MM-DD").format("ddd")}
-                            </span>
-                            <br />
-                            <span>
-                              {moment(item, "YYYY-MM-DD").format("DD/MMM")}
-                            </span>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.map((item, index) => (
-                        <tr key={item.employee_id}>
-                          <td className="fixed freeze">
-                            <span>{item.employee_name}</span>
-                            <small>{item.employee_code}</small>
-                          </td>
-                          {item.roster.map((itm, indx) => {
-                            return (
-                              <TableCells
-                                itm={{ ...itm, project_id: item.project_id }}
-                                indx={indx}
-                                key={`${item.employee_id}_${itm.attendance_date}`}
-                                employee_name={item.employee_name}
-                                editingProjectRoster={editingProjectRoster}
-                                setSelectedTD={selectedITD}
-                              />
-                            );
-                          })}
+                  <div className="bulkTimeScroll">
+                    <table id="bulkTimeSheetPreview">
+                      <thead>
+                        <tr>
+                          <th className="fixed freeze">Emp Name & Code</th>
+                          {dates.map((item, index) => (
+                            <th key={item} className="fixed freeze_vertical">
+                              <span>
+                                {moment(item, "YYYY-MM-DD").format("ddd")}
+                              </span>
+                              <br />
+                              <span>
+                                {moment(item, "YYYY-MM-DD").format("DD/MMM")}
+                              </span>
+                            </th>
+                          ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                      </thead>
+                      <tbody>
+                        {data.map((item, index) => (
+                          <tr key={item.employee_id}>
+                            <td className="fixed freeze">
+                              <span>{item.employee_name}</span>
+                              <small>{item.employee_code}</small>
+                            </td>
+                            {item.roster.map((itm, indx) => {
+                              return (
+                                <TableCells
+                                  itm={{ ...itm, project_id: item.project_id }}
+                                  indx={indx}
+                                  key={`${item.employee_id}_${itm.attendance_date}`}
+                                  employee_name={item.employee_name}
+                                  editingProjectRoster={editingProjectRoster}
+                                  setSelectedTD={selectedITD}
+                                />
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -302,8 +302,8 @@ function BulkTimeSheet(props) {
                   label={{ forceLabel: "Process", returnText: true }}
                 />
               ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+                  <i className="fas fa-spinner fa-spin" />
+                )}
             </button>
           </div>
         </div>
@@ -316,7 +316,6 @@ export default BulkTimeSheet;
 function TableCells(props) {
   const {
     itm,
-    indx,
     editingProjectRoster,
     setSelectedTD,
     employee_name
@@ -327,20 +326,20 @@ function TableCells(props) {
     const editableTD =
       status !== "N"
         ? {
-            style: { cursor: "pointer" },
-            onDoubleClick: e => {
-              const element = e.target.offsetParent;
-              const rowID = element.parentElement.sectionRowIndex;
-              const cellID = element.cellIndex;
+          style: { cursor: "pointer" },
+          onDoubleClick: e => {
+            const element = e.target.offsetParent;
+            const rowID = element.parentElement.sectionRowIndex;
+            const cellID = element.cellIndex;
 
-              setSelectedTD({
-                attendance_date: attendance_date,
-                cellID,
-                rowID
-              });
-              editingProjectRoster(itm, employee_name);
-            }
+            setSelectedTD({
+              attendance_date: attendance_date,
+              cellID,
+              rowID
+            });
+            editingProjectRoster(itm, employee_name);
           }
+        }
         : {};
     setEditable(editableTD);
   }, []);

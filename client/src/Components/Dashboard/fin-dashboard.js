@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./dashboard.scss";
-import { Bar, HorizontalBar } from "react-chartjs-2";
+import { HorizontalBar } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -8,14 +8,11 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import DashBoardEvents, {
   chartLegends,
-  chartOptions,
   chartOptionsHorizontal
 } from "./DashBoardEvents";
 import { MainContext } from "algaeh-react-components/context";
 import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid
+  AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 
 const dashEvents = DashBoardEvents();

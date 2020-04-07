@@ -19,7 +19,6 @@ import {
 } from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
-import _ from "lodash";
 
 class TermsConditions extends Component {
   constructor(props) {
@@ -305,9 +304,9 @@ class TermsConditions extends Component {
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
-                                      f.algaeh_d_app_user_id === row.created_by
-                                  );
+                                  f =>
+                                    f.algaeh_d_app_user_id === row.created_by
+                                );
 
                             return (
                               <span>

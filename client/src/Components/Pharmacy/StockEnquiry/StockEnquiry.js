@@ -22,7 +22,6 @@ import {
 import "./StockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
@@ -157,10 +156,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                              f =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.pharmacy_location_id
-                            );
+                            f =>
+                              f.hims_d_pharmacy_location_id ===
+                              row.pharmacy_location_id
+                          );
 
                       return (
                         <span>
@@ -175,10 +174,10 @@ class StockEnquiry extends Component {
                         this.props.locations === undefined
                           ? []
                           : this.props.locations.filter(
-                              f =>
-                                f.hims_d_pharmacy_location_id ===
-                                row.pharmacy_location_id
-                            );
+                            f =>
+                              f.hims_d_pharmacy_location_id ===
+                              row.pharmacy_location_id
+                          );
 
                       return (
                         <span>
@@ -199,8 +198,8 @@ class StockEnquiry extends Component {
                         this.props.itemlist === undefined
                           ? []
                           : this.props.itemlist.filter(
-                              f => f.hims_d_item_master_id === row.item_id
-                            );
+                            f => f.hims_d_item_master_id === row.item_id
+                          );
 
                       return (
                         <span
@@ -218,8 +217,8 @@ class StockEnquiry extends Component {
                         this.props.itemlist === undefined
                           ? []
                           : this.props.itemlist.filter(
-                              f => f.hims_d_item_master_id === row.item_id
-                            );
+                            f => f.hims_d_item_master_id === row.item_id
+                          );
 
                       return (
                         <span
@@ -247,9 +246,9 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              f =>
-                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                            );
+                            f =>
+                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -264,9 +263,9 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              f =>
-                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
-                            );
+                            f =>
+                              f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -286,8 +285,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              f => f.hims_d_pharmacy_uom_id === row.sales_uom
-                            );
+                            f => f.hims_d_pharmacy_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -302,8 +301,8 @@ class StockEnquiry extends Component {
                         this.props.itemuom === undefined
                           ? []
                           : this.props.itemuom.filter(
-                              f => f.hims_d_pharmacy_uom_id === row.sales_uom
-                            );
+                            f => f.hims_d_pharmacy_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -326,8 +325,8 @@ class StockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        parseFloat(row.qtyhand)
-                      );
+                          parseFloat(row.qtyhand)
+                        );
                     },
                     disabled: true,
                     others: { filterable: false }
@@ -398,7 +397,7 @@ class StockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
-                  onEdit: row => {},
+                  onEdit: row => { },
                   onDone: updateStockDetils.bind(this, this)
                 }}
               />

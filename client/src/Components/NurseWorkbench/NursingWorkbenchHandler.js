@@ -1,5 +1,4 @@
 import Enumerable from "linq";
-import swal from "sweetalert2";
 import moment from "moment";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";

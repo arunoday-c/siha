@@ -369,12 +369,10 @@ function AppointmentComponent(props) {
                         },
                         others: {
                           type: "number",
-                          onBlur: props.validateAge
-                        },
-                        value: props.state.age,
-                        others: {
+                          onBlur: props.validateAge,
                           disabled: props.state.fromSearch || false
                         },
+                        value: props.state.age,                        
                         events: {
                           onChange: props.dobHandler
                         }
@@ -439,12 +437,10 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "contact_number",
                         others: {
-                          type: "number"
-                        },
-                        value: props.state.contact_number,
-                        others: {
+                          type: "number",
                           disabled: props.state.fromSearch || false
                         },
+                        value: props.state.contact_number,                        
                         events: {
                           onChange: props.texthandle
                         }

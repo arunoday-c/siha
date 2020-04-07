@@ -35,7 +35,6 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
 import {
-  generateBillDetails,
   ShowRefundScreen,
   ClearData,
   ShowAdvanceScreen,
@@ -363,11 +362,15 @@ class RegistrationPatient extends Component {
       this.props.visittypes.length > 0
     ) {
       const exit_consultation = _.find(this.props.visittypes, f => {
-        return f.consultation == "Y";
+        return f.consultation === "Y";
       });
       if (exit_consultation.hims_d_visit_type_id !== null) {
-        this.state.visit_type = exit_consultation.hims_d_visit_type_id;
-        this.state.consultation = "Y";
+        this.setState({
+          visit_type: exit_consultation.hims_d_visit_type_id,
+          consultation: "Y"
+        })
+        // this.state.visit_type = exit_consultation.hims_d_visit_type_id;
+        // this.state.consultation = "Y";
       }
     }
   }
@@ -402,10 +405,6 @@ class RegistrationPatient extends Component {
                   const _patInsuranceFrontImg =
                     $this.state.patInsuranceFrontImg;
                   const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
-                  const _patSecInsuranceFrontImg =
-                    $this.state.patSecInsuranceFrontImg;
-                  const _patSecInsuranceBackImg =
-                    $this.state.patSecInsuranceBackImg;
                   delete patientdata.patSecInsuranceFrontImg;
                   delete patientdata.patientIdCard;
                   delete patientdata.patInsuranceFrontImg;
@@ -804,8 +803,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -818,28 +817,28 @@ class RegistrationPatient extends Component {
           }}
           printArea={
             this.state.patient_code !== null &&
-            this.state.patient_code !== undefined &&
-            this.state.patient_code !== ""
+              this.state.patient_code !== undefined &&
+              this.state.patient_code !== ""
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(this, this);
-                        }
-                      }
-                    },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          showAdvanceRefundList(this, this);
-                        }
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(this, this);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        showAdvanceRefundList(this, this);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
