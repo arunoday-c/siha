@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import "./BranchMaster.scss";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
@@ -24,8 +24,8 @@ export default class BranchMaster extends Component {
       allDepartments: [],
       Departments: [],
       editBranch: false,
-      filterArray:[],
-      searchText:""
+      filterArray: [],
+      searchText: "",
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -44,7 +44,7 @@ export default class BranchMaster extends Component {
       hospital_name: null,
       hospital_address: null,
       requied_emp_id: null,
-      editBranch: false
+      editBranch: false,
     });
   }
 
@@ -55,7 +55,7 @@ export default class BranchMaster extends Component {
   changeTexts(e) {
     const { name, value } = e.target;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -68,24 +68,24 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getBranchMaster",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allBranches: response.data.records
+            allBranches: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -94,24 +94,24 @@ export default class BranchMaster extends Component {
       uri: "/currency/getCurrencyMaster",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            currencyMaster: response.data.records
+            currencyMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getCountryMaster() {
@@ -119,24 +119,24 @@ export default class BranchMaster extends Component {
       uri: "/masters/get/country",
       method: "GET",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            countryMaster: response.data.records
+            countryMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getnationalityMaster() {
@@ -144,24 +144,24 @@ export default class BranchMaster extends Component {
       uri: "/masters/get/nationality",
       method: "GET",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            nationalityMaster: response.data.records
+            nationalityMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -170,24 +170,24 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getActiveDepartments",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allDepartments: response.data.records
+            allDepartments: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -211,26 +211,26 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
-              hospital_id: this.state.hims_d_hospital_id
+              hospital_id: this.state.hims_d_hospital_id,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
                 this.getBranchMaster();
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
-        }
+        },
       });
     } else {
       AlgaehValidation({
@@ -248,26 +248,26 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
-              algaeh_api_auth_id: algaeh_api_auth_id
+              algaeh_api_auth_id: algaeh_api_auth_id,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
                 this.getBranchMaster();
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
-        }
+        },
       });
     }
   }
@@ -276,7 +276,7 @@ export default class BranchMaster extends Component {
     this.clearState();
     if (e.hims_d_hospital_id > 0) {
       this.setState({
-        hospital_id: e.hims_d_hospital_id
+        hospital_id: e.hims_d_hospital_id,
       });
     }
 
@@ -284,10 +284,10 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getActiveDepartments",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allDepartments: response.data.records
+            allDepartments: response.data.records,
           });
 
           algaehApiCall({
@@ -297,30 +297,31 @@ export default class BranchMaster extends Component {
             data: {
               hospital_id: e.hims_d_hospital_id
                 ? e.hims_d_hospital_id
-                : this.state.hospital_id
+                : this.state.hospital_id,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 let data = res.data.records;
                 if (data.length > 0) {
                   let allDepartments = this.state.allDepartments;
-                  data.map(item => {
+                  data.map((item) => {
                     let find_dep = _.find(
                       allDepartments,
-                      m => m.hims_d_department_id === item.hims_d_department_id
+                      (m) =>
+                        m.hims_d_department_id === item.hims_d_department_id
                     );
                     const index = allDepartments.indexOf(find_dep);
 
                     allDepartments[index] = {
                       ...allDepartments[index],
                       checked: true,
-                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
+                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id,
                     };
 
-                    item.subDepts.map(sub => {
+                    item.subDepts.map((sub) => {
                       let find_sub = _.find(
                         allDepartments[index]["subDepts"],
-                        s =>
+                        (s) =>
                           s.hims_d_sub_department_id ===
                           sub.hims_d_sub_department_id
                       );
@@ -330,37 +331,38 @@ export default class BranchMaster extends Component {
                       allDepartments[index]["subDepts"][indexS] = {
                         ...allDepartments[index]["subDepts"][indexS],
                         checked: true,
-                        hims_m_branch_dept_map_id: sub.hims_m_branch_dept_map_id
+                        hims_m_branch_dept_map_id:
+                          sub.hims_m_branch_dept_map_id,
                       };
                     });
                   });
 
                   this.setState({
-                    allDepartments: allDepartments
+                    allDepartments: allDepartments,
                   });
                 }
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -370,14 +372,14 @@ export default class BranchMaster extends Component {
 
     let Departments = this.state.allDepartments;
 
-    const subdepartments = data.subDepts.map(item => {
+    const subdepartments = data.subDepts.map((item) => {
       return {
         ...item,
-        checked: _status ? true : false
+        checked: _status ? true : false,
       };
     });
 
-    let newDepats = _.map(Departments, f => {
+    let newDepats = _.map(Departments, (f) => {
       let _sList = f.subDepts;
       let _checked = { checked: f.checked ? true : false };
       if (f.hims_d_department_id === val) {
@@ -387,7 +389,7 @@ export default class BranchMaster extends Component {
       return {
         ...f,
         ..._checked,
-        subDepts: _sList
+        subDepts: _sList,
       };
     });
 
@@ -400,20 +402,20 @@ export default class BranchMaster extends Component {
 
     let Departments = this.state.allDepartments;
 
-    const _subDepart = data.subDepts.map(item => {
+    const _subDepart = data.subDepts.map((item) => {
       if (item.hims_d_sub_department_id === val) {
         item.checked = _status ? true : false;
       }
       return {
-        ...item
+        ...item,
       };
     });
 
-    const _check = _.filter(_subDepart, f => {
+    const _check = _.filter(_subDepart, (f) => {
       return f.checked === true;
     });
 
-    let newDepats = _.map(Departments, f => {
+    let newDepats = _.map(Departments, (f) => {
       let _sList = f.subDepts;
       if (f.hims_d_department_id === data.hims_d_department_id) {
         _sList = _subDepart;
@@ -421,7 +423,7 @@ export default class BranchMaster extends Component {
       }
       return {
         ...f,
-        subDepts: _sList
+        subDepts: _sList,
       };
     });
 
@@ -434,8 +436,8 @@ export default class BranchMaster extends Component {
     const remove_sub = [];
     const add_new_sub = [];
 
-    this.state.allDepartments.forEach(dept => {
-      dept.subDepts.forEach(sub => {
+    this.state.allDepartments.forEach((dept) => {
+      dept.subDepts.forEach((sub) => {
         if (
           sub.hims_m_branch_dept_map_id !== undefined &&
           sub.checked === false
@@ -445,8 +447,8 @@ export default class BranchMaster extends Component {
       });
     });
 
-    this.state.allDepartments.forEach(dept => {
-      dept.subDepts.forEach(sub => {
+    this.state.allDepartments.forEach((dept) => {
+      dept.subDepts.forEach((sub) => {
         if (
           sub.hims_m_branch_dept_map_id === undefined &&
           sub.checked === true
@@ -463,7 +465,7 @@ export default class BranchMaster extends Component {
     if (!remove_sub.length > 0 && !add_new_sub.length > 0) {
       swalMessage({
         title: "No changes found",
-        type: "warning"
+        type: "warning",
       });
     } else {
       algaehApiCall({
@@ -471,11 +473,11 @@ export default class BranchMaster extends Component {
         method: "POST",
         module: "masterSettings",
         data: inputObj,
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Assigned Successfully.",
-              type: "success"
+              type: "success",
             });
 
             inputObj = {};
@@ -483,16 +485,16 @@ export default class BranchMaster extends Component {
           } else {
             swalMessage({
               title: res.data.records.message,
-              type: "warning"
+              type: "warning",
             });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -507,26 +509,29 @@ export default class BranchMaster extends Component {
       hospital_name: data.hospital_name,
       hospital_address: data.hospital_address,
       requied_emp_id: data.requied_emp_id,
-      editBranch: true
+      editBranch: true,
     });
   }
-  filterBranchList(e){
-    const value =e.target.value.toLowerCase();
-    if(value ===""){
-      this.setState({filterArray:[],searchText:e.target.value});
+  filterBranchList(e) {
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterArray: [], searchText: e.target.value });
     }
-   const filterd = this.state.allBranches.filter(f => f.hospital_name.toLowerCase().includes(value)
-    || f.hospital_code.toLowerCase().includes(value));
-    this.setState({filterArray:filterd,searchText:e.target.value});
+    const filterd = this.state.allBranches.filter(
+      (f) =>
+        f.hospital_name.toLowerCase().includes(value) ||
+        f.hospital_code.toLowerCase().includes(value)
+    );
+    this.setState({ filterArray: filterd, searchText: e.target.value });
   }
 
-
   render() {
-    const branchList  = this.state.searchText !=="" && 
-    this.state.filterArray.length===0? this.state.filterArray:
-    this.state.searchText ==="" && 
-    this.state.filterArray.length===0 ?
-    this.state.allBranches:this.state.filterArray;
+    const branchList =
+      this.state.searchText !== "" && this.state.filterArray.length === 0
+        ? this.state.filterArray
+        : this.state.searchText === "" && this.state.filterArray.length === 0
+        ? this.state.allBranches
+        : this.state.filterArray;
     return (
       <div className="BranchMaster">
         <div className="row">
@@ -538,7 +543,7 @@ export default class BranchMaster extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -546,15 +551,15 @@ export default class BranchMaster extends Component {
                       value: this.state.hospital_code,
                       events: { onChange: this.changeTexts.bind(this) },
                       option: {
-                        type: "text"
-                      }
+                        type: "text",
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -562,8 +567,8 @@ export default class BranchMaster extends Component {
                       value: this.state.hospital_name,
                       events: { onChange: this.changeTexts.bind(this) },
                       option: {
-                        type: "text"
-                      }
+                        type: "text",
+                      },
                     }}
                   />
                   <AlagehAutoComplete
@@ -576,9 +581,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "country_name",
                         valueField: "hims_d_country_id",
-                        data: this.state.countryMaster
+                        data: this.state.countryMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehAutoComplete
@@ -591,9 +596,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "nationality",
                         valueField: "hims_d_nationality_id",
-                        data: this.state.nationalityMaster
+                        data: this.state.nationalityMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehAutoComplete
@@ -607,9 +612,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "currency_description",
                         valueField: "hims_d_currency_id",
-                        data: this.state.currencyMaster
+                        data: this.state.currencyMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
 
@@ -623,16 +628,16 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: FORMAT_YESNO
+                        data: FORMAT_YESNO,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Full Address",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -642,12 +647,12 @@ export default class BranchMaster extends Component {
                         //type: "email"
                       },
                       events: {
-                        onChange: this.changeTexts.bind(this)
+                        onChange: this.changeTexts.bind(this),
                       },
                       others: {
                         placeholder:
-                          "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001"
-                      }
+                          "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
+                      },
                     }}
                   />
                   <div className="col-12">
@@ -682,25 +687,22 @@ export default class BranchMaster extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Branch List</h3>
                 </div>
-                   <div className="row">
-
-                <AlagehFormGroup
+                <div className="actions">
+                  {" "}
+                  <AlagehFormGroup
                     div={{
-                     className: "col form-group"
-                      }}
-                      label={{
-                      forceLabel: "Search: ",
-                      isImp: false
-                      }}
-                      textBox={{
-                       type: "text" ,  
-                       events: { onChange: this.filterBranchList.bind(this) },                    
-                        placeholder: "Search",
-                         value: this.state.searchText
-                            }}
-                   />
-
-                   </div>
+                      className: "",
+                    }}
+                    textBox={{
+                      type: "text",
+                      events: { onChange: this.filterBranchList.bind(this) },
+                      value: this.state.searchText,
+                      others: {
+                        placeholder: "Search Branch",
+                      },
+                    }}
+                  />
+                </div>
               </div>
               <div className="portlet-body" id="">
                 <div className="row">
@@ -760,6 +762,33 @@ export default class BranchMaster extends Component {
 
               {/* ----------sssstart------------ */}
               <div className="portlet-body departmentBranchMapList">
+                <div className="row">
+                  <div className="col-5 customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        value=""
+                        name=""
+                        // checked={this.state.checkAll}
+                        // onChange={this.selectAll.bind(this)}
+                      />
+                      <span>Select All</span>
+                    </label>
+                  </div>
+                  <AlagehFormGroup
+                    div={{
+                      className: "col-7 form-group",
+                    }}
+                    textBox={{
+                      type: "text",
+                      // events: { onChange: this.filterBranchList.bind(this) },
+                      value: this.state.searchText,
+                      others: {
+                        placeholder: "Search Sub Department",
+                      },
+                    }}
+                  />
+                </div>
                 <div className="row">
                   <div className="col-12">
                     <ul className="deptUl">
