@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import {
-  checkSecurity,
-  AlgaehOpenContainer
+  checkSecurity  
 } from "../../utils/GlobalFunctions";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";

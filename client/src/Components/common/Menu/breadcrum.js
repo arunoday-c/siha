@@ -1,10 +1,10 @@
 import React, { memo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { setItem } from "algaeh-react-components/storage";
-import { MainContext } from "algaeh-react-components/context";
+// import { MainContext } from "algaeh-react-components/context";
 import { setCookie } from "../../../utils/algaehApiCall";
 
-export default memo(function({
+export default memo(function ({
   selectedMenu,
   userMenu,
   userLanguage,
@@ -15,8 +15,7 @@ export default memo(function({
     module_name,
     screen_name,
     other_language,
-    s_other_language,
-    ScreenList
+    s_other_language
   } = selectedMenu;
 
   const menuDetails = userMenu === null ? [] : userMenu;
@@ -49,8 +48,8 @@ export default memo(function({
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-      item.redirect_url !== "" &&
-      item.redirect_url !== null
+        item.redirect_url !== "" &&
+        item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);

@@ -1,8 +1,7 @@
 import {
-  APPT_TYPE,
+
   LEAVE_STATUS,
   MONTHS,
-  RECEIPT_TYPE,
   LOCAL_TYPE,
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
@@ -12,9 +11,8 @@ import {
   DATE_OF_JOIN,
   EMPLOYEE_TYPE
 } from "../../utils/GlobalVariables.json";
-import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
-import _ from "lodash";
 import moment from "moment";
 import Insurance from "./reportBag/insurance";
 import Income from "./reportBag/income";
@@ -28,16 +26,6 @@ import Project from "./reportBag/projectpayroll";
 import Vat from "./reportBag/vat";
 let allYears = getYears();
 
-let hospital_id = null;
-
-const pushData = (result, current) => {
-  if (result.length === 0) {
-    result = current;
-  } else {
-    result = result.concat(current);
-  }
-  return result;
-};
 export default function loadActiveReports(
   userToken,
   selectedMenu,
@@ -49,8 +37,8 @@ export default function loadActiveReports(
         hims_d_hospital_id
         //  product_type
       } = userToken;
-      const { screen_code } = selectedMenu;
-      hospital_id = hims_d_hospital_id;
+      // const { screen_code } = selectedMenu;
+      // hospital_id = hims_d_hospital_id;
       let result = [];
       switch (parameterName) {
         case "insurance":
@@ -125,6 +113,8 @@ export default function loadActiveReports(
             MONTHS,
             algaehApiCall
           });
+          break;
+        default:
           break;
       }
       resolve(result);

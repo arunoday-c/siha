@@ -12,10 +12,6 @@ import Location from "./Location/Location";
 
 import LocationPermission from "./LocationPermission/LocationPermission";
 import ReorderQtyMasterInventory from "./ReorderQtyMasterInventory/ReorderQtyMasterInventory";
-
-// import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import InventoryOptions from "./InventoryOptions/InventoryOptions";
-
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 

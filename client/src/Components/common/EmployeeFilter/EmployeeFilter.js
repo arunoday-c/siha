@@ -27,7 +27,6 @@ export default function EmployeeFilter(props) {
     group_id: null,
     hims_d_employee_id: null,
     emp_name: null,
-    hims_d_employee_id: null,
     inputChanged: false
   };
   const [inputs, setInputs] = useState({ ...baseInput });

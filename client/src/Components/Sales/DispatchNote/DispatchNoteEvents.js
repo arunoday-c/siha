@@ -16,6 +16,7 @@ const texthandle = ($this, ctrl, e) => {
         location_type: e.selected.location_type,
         ReqData: false
       });
+      break;
     default:
       $this.setState({
         [name]: value
@@ -137,9 +138,9 @@ const SaveDispatchNote = $this => {
     InputObj.inventory_stock_detail[i].expiry_date =
       InputObj.inventory_stock_detail[i].expiry_date !== null
         ? moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
+          InputObj.inventory_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
         : null;
   }
   delete InputObj.item_details;

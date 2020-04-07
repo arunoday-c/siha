@@ -316,8 +316,7 @@ const itemchangeText = ($this, e, ctrl) => {
               item_group_id: e.group_id,
               Batch_Items: data.locationResult,
               addItemButton: false,
-              item_description: e.item_description,
-              addItemButton: false
+              item_description: e.item_description              
             });
           } else {
             swalMessage({
@@ -443,8 +442,7 @@ const AddItemtoList = ($this) => {
         uom_description: null,
         item_description: "",
         adjustment_type: null,
-        reason: null,
-        uom_id: null,
+        reason: null,        
         sales_uom: null,
         qtyhand: 0,
         sales_price: 0,

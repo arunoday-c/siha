@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import "./BranchMaster.scss";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
@@ -24,8 +24,11 @@ export default class BranchMaster extends Component {
       allDepartments: [],
       Departments: [],
       editBranch: false,
-      filterArray:[],
-      searchText:""
+      filterArray: [],
+      searchText: "",
+      searchSubBranchText:"",
+      filterdDepartmentArray:[],
+      checkAll:false
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -44,7 +47,7 @@ export default class BranchMaster extends Component {
       hospital_name: null,
       hospital_address: null,
       requied_emp_id: null,
-      editBranch: false
+      editBranch: false,
     });
   }
 
@@ -55,7 +58,7 @@ export default class BranchMaster extends Component {
   changeTexts(e) {
     const { name, value } = e.target;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -68,24 +71,24 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getBranchMaster",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allBranches: response.data.records
+            allBranches: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -94,24 +97,24 @@ export default class BranchMaster extends Component {
       uri: "/currency/getCurrencyMaster",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            currencyMaster: response.data.records
+            currencyMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getCountryMaster() {
@@ -119,24 +122,24 @@ export default class BranchMaster extends Component {
       uri: "/masters/get/country",
       method: "GET",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            countryMaster: response.data.records
+            countryMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getnationalityMaster() {
@@ -144,24 +147,24 @@ export default class BranchMaster extends Component {
       uri: "/masters/get/nationality",
       method: "GET",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            nationalityMaster: response.data.records
+            nationalityMaster: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -170,24 +173,24 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getActiveDepartments",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allDepartments: response.data.records
+            allDepartments: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -211,26 +214,26 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
-              hospital_id: this.state.hims_d_hospital_id
+              hospital_id: this.state.hims_d_hospital_id,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
                 this.getBranchMaster();
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
-        }
+        },
       });
     } else {
       AlgaehValidation({
@@ -248,26 +251,26 @@ export default class BranchMaster extends Component {
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
               requied_emp_id: this.state.requied_emp_id,
-              algaeh_api_auth_id: algaeh_api_auth_id
+              algaeh_api_auth_id: algaeh_api_auth_id,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 this.clearState();
                 this.getBranchMaster();
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
-        }
+        },
       });
     }
   }
@@ -276,7 +279,7 @@ export default class BranchMaster extends Component {
     this.clearState();
     if (e.hims_d_hospital_id > 0) {
       this.setState({
-        hospital_id: e.hims_d_hospital_id
+        hospital_id: e.hims_d_hospital_id,
       });
     }
 
@@ -284,10 +287,10 @@ export default class BranchMaster extends Component {
       uri: "/branchMaster/getActiveDepartments",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allDepartments: response.data.records
+            allDepartments: response.data.records,
           });
 
           algaehApiCall({
@@ -297,30 +300,31 @@ export default class BranchMaster extends Component {
             data: {
               hospital_id: e.hims_d_hospital_id
                 ? e.hims_d_hospital_id
-                : this.state.hospital_id
+                : this.state.hospital_id,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 let data = res.data.records;
                 if (data.length > 0) {
                   let allDepartments = this.state.allDepartments;
-                  data.map(item => {
+                  data.map((item) => {
                     let find_dep = _.find(
                       allDepartments,
-                      m => m.hims_d_department_id === item.hims_d_department_id
+                      (m) =>
+                        m.hims_d_department_id === item.hims_d_department_id
                     );
                     const index = allDepartments.indexOf(find_dep);
 
                     allDepartments[index] = {
                       ...allDepartments[index],
                       checked: true,
-                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
+                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id,
                     };
 
-                    item.subDepts.map(sub => {
+                    item.subDepts.map((sub) => {
                       let find_sub = _.find(
                         allDepartments[index]["subDepts"],
-                        s =>
+                        (s) =>
                           s.hims_d_sub_department_id ===
                           sub.hims_d_sub_department_id
                       );
@@ -330,102 +334,138 @@ export default class BranchMaster extends Component {
                       allDepartments[index]["subDepts"][indexS] = {
                         ...allDepartments[index]["subDepts"][indexS],
                         checked: true,
-                        hims_m_branch_dept_map_id: sub.hims_m_branch_dept_map_id
+                        hims_m_branch_dept_map_id:
+                          sub.hims_m_branch_dept_map_id,
                       };
                     });
                   });
 
                   this.setState({
-                    allDepartments: allDepartments
+                    allDepartments: allDepartments,
                   });
                 }
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   changeDepartments(data, e) {
+    // console.log("data",data);
     const _status = e.target.checked;
-    let val = parseInt(e.target.value, 10);
-
-    let Departments = this.state.allDepartments;
-
-    const subdepartments = data.subDepts.map(item => {
+    const index=  this.state.allDepartments.indexOf(data);
+    data.checked=_status;
+    data.subDepts =  data.subDepts.map(item=>{
       return {
         ...item,
-        checked: _status ? true : false
-      };
-    });
-
-    let newDepats = _.map(Departments, f => {
-      let _sList = f.subDepts;
-      let _checked = { checked: f.checked ? true : false };
-      if (f.hims_d_department_id === val) {
-        _sList = subdepartments;
-        _checked = { checked: _status ? true : false };
+        checked:_status
       }
-      return {
-        ...f,
-        ..._checked,
-        subDepts: _sList
-      };
     });
+    this.state.allDepartments[index] = data;
+    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
+    const allDepts = this.state.allDepartments.length;
+    
+this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ===allDepts?true:false });
 
-    this.setState({ allDepartments: newDepats });
+  //   let val = parseInt(e.target.value, 10);
+   
+  //   let Departments = this.state.allDepartments;
+
+  //   const subdepartments = data.subDepts.map((item) => {
+  //     return {
+  //       ...item,
+  //       checked: _status //? true : false,
+  //     };
+  //   });
+
+  //   let newDepats = _.map(Departments, (f) => {
+  //     let _sList = f.subDepts;
+  //     let _checked = { checked: f.checked ? true : false };
+  //     if (f.hims_d_department_id === val) {
+  //       _sList = subdepartments;
+  //       _checked = { checked: _status ? true : false };
+  //     }
+  //     return {
+  //       ...f,
+  //       ..._checked,
+  //       subDepts: _sList,
+  //     };
+  //   });
+  //  this.setState({ allDepartments: newDepats });
   }
 
-  changeSubdepartment(data, e) {
+  changeSubdepartment(item, e) {
     const _status = e.target.checked;
-    let val = parseInt(e.target.value, 10);
+    const {data,sub} =item;
+    const mainStateIndex = this.state.allDepartments.indexOf[data];
+    const index = data.subDepts.indexOf(sub);
+    sub.checked = _status;
+    data.subDepts[index] = sub;
+    const checkedStatus= data.subDepts.filter(f=>f.checked===true).length;
+    const deptLength =data.subDepts.length;
+    if(checkedStatus===deptLength){
+      data.checked =true;
+    }else{
+      data.checked =false;
+    }
+    this.state.allDepartments[mainStateIndex] =data;
+    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
+    const allDepts = this.state.allDepartments.length;
 
-    let Departments = this.state.allDepartments;
+    this.setState({
+      allDepartments: this.state.allDepartments,
+      checkAll:selectedDept === allDepts?true:false
+    })
+   
+    // let val = parseInt(e.target.value, 10);
 
-    const _subDepart = data.subDepts.map(item => {
-      if (item.hims_d_sub_department_id === val) {
-        item.checked = _status ? true : false;
-      }
-      return {
-        ...item
-      };
-    });
+    // let Departments = this.state.allDepartments;
 
-    const _check = _.filter(_subDepart, f => {
-      return f.checked === true;
-    });
+    // const _subDepart = data.subDepts.map((item) => {
+    //   if (item.hims_d_sub_department_id === val) {
+    //     item.checked = _status ? true : false;
+    //   }
+    //   return {
+    //     ...item,
+    //   };
+    // });
 
-    let newDepats = _.map(Departments, f => {
-      let _sList = f.subDepts;
-      if (f.hims_d_department_id === data.hims_d_department_id) {
-        _sList = _subDepart;
-        f.checked = _check.length > 0 ? true : false;
-      }
-      return {
-        ...f,
-        subDepts: _sList
-      };
-    });
+    // const _check = _.filter(_subDepart, (f) => {
+    //   return f.checked === true;
+    // });
 
-    this.setState({ allDepartments: newDepats });
+    // let newDepats = _.map(Departments, (f) => {
+    //   let _sList = f.subDepts;
+    //   if (f.hims_d_department_id === data.hims_d_department_id) {
+    //     _sList = _subDepart;
+    //     f.checked = _check.length > 0 ? true : false;
+    //   }
+    //   return {
+    //     ...f,
+    //     subDepts: _sList,
+    //   };
+    // });
+
+    // this.setState({ allDepartments: newDepats });
   }
 
   assignDepartments() {
@@ -434,8 +474,8 @@ export default class BranchMaster extends Component {
     const remove_sub = [];
     const add_new_sub = [];
 
-    this.state.allDepartments.forEach(dept => {
-      dept.subDepts.forEach(sub => {
+    this.state.allDepartments.forEach((dept) => {
+      dept.subDepts.forEach((sub) => {
         if (
           sub.hims_m_branch_dept_map_id !== undefined &&
           sub.checked === false
@@ -445,8 +485,8 @@ export default class BranchMaster extends Component {
       });
     });
 
-    this.state.allDepartments.forEach(dept => {
-      dept.subDepts.forEach(sub => {
+    this.state.allDepartments.forEach((dept) => {
+      dept.subDepts.forEach((sub) => {
         if (
           sub.hims_m_branch_dept_map_id === undefined &&
           sub.checked === true
@@ -463,7 +503,7 @@ export default class BranchMaster extends Component {
     if (!remove_sub.length > 0 && !add_new_sub.length > 0) {
       swalMessage({
         title: "No changes found",
-        type: "warning"
+        type: "warning",
       });
     } else {
       algaehApiCall({
@@ -471,11 +511,11 @@ export default class BranchMaster extends Component {
         method: "POST",
         module: "masterSettings",
         data: inputObj,
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Assigned Successfully.",
-              type: "success"
+              type: "success",
             });
 
             inputObj = {};
@@ -483,16 +523,16 @@ export default class BranchMaster extends Component {
           } else {
             swalMessage({
               title: res.data.records.message,
-              type: "warning"
+              type: "warning",
             });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -507,26 +547,85 @@ export default class BranchMaster extends Component {
       hospital_name: data.hospital_name,
       hospital_address: data.hospital_address,
       requied_emp_id: data.requied_emp_id,
-      editBranch: true
+      editBranch: true,
     });
   }
-  filterBranchList(e){
-    const value =e.target.value.toLowerCase();
-    if(value ===""){
-      this.setState({filterArray:[],searchText:e.target.value});
+  filterBranchList(e) {
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterArray: [], searchText: e.target.value });
     }
-   const filterd = this.state.allBranches.filter(f => f.hospital_name.toLowerCase().includes(value)
-    || f.hospital_code.toLowerCase().includes(value));
-    this.setState({filterArray:filterd,searchText:e.target.value});
+    const filterd = this.state.allBranches.filter(
+      (f) =>
+        f.hospital_name.toLowerCase().includes(value) ||
+        f.hospital_code.toLowerCase().includes(value)
+    );
+    this.setState({ filterArray: filterd, searchText: e.target.value });
   }
+  filterSubDepartment(e) {
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterdDepartmentArray: [], searchSubBranchText: e.target.value });
+    }
+    const filterd = this.state.allDepartments.map(item =>
+      {const subDpartments=  item.subDepts.filter(
+        (f) =>
+          f.sub_department_name.toLowerCase().includes(value) 
+          
+      );
+    if(subDpartments.length>0 ){
+      return {
+        ...item,
+        subDepts:subDpartments
+      }
+    }
+  } ).filter(f=>f !== undefined);
+    
 
+    this.setState({ filterdDepartmentArray: filterd, searchSubBranchText: e.target.value });
+
+    
+  
+}
+selectAll(e){
+  const status = e.target.checked;
+  const checkedDeparts =    this.state.allDepartments.map((item) =>
+        {
+          const subDpartments=  item.subDepts.map(sItems=>{
+            return {
+              ...sItems,
+              checked:status,
+              
+            }
+          });
+          return {
+            ...item,
+            checked:status,
+            subDepts:subDpartments
+          }
+         
+
+          });
+  this.setState({allDepartments:checkedDeparts,checkAll:status})
+    
+        
+
+
+}
 
   render() {
-    const branchList  = this.state.searchText !=="" && 
-    this.state.filterArray.length===0? this.state.filterArray:
-    this.state.searchText ==="" && 
-    this.state.filterArray.length===0 ?
-    this.state.allBranches:this.state.filterArray;
+    const branchList =
+      this.state.searchText !== "" && this.state.filterArray.length === 0
+        ? this.state.filterArray
+        : this.state.searchText === "" && this.state.filterArray.length === 0
+        ? this.state.allBranches
+        : this.state.filterArray;
+    const departments =
+        this.state.searchSubBranchText !== "" && this.state.filterdDepartmentArray.length === 0
+          ? this.state.filterdDepartmentArray
+          : this.state.searchSubBranchText === "" && this.state.filterdDepartmentArray.length === 0
+          ? this.state.allDepartments
+          : this.state.filterdDepartmentArray;
     return (
       <div className="BranchMaster">
         <div className="row">
@@ -538,7 +637,7 @@ export default class BranchMaster extends Component {
                     div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -546,15 +645,15 @@ export default class BranchMaster extends Component {
                       value: this.state.hospital_code,
                       events: { onChange: this.changeTexts.bind(this) },
                       option: {
-                        type: "text"
-                      }
+                        type: "text",
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -562,8 +661,8 @@ export default class BranchMaster extends Component {
                       value: this.state.hospital_name,
                       events: { onChange: this.changeTexts.bind(this) },
                       option: {
-                        type: "text"
-                      }
+                        type: "text",
+                      },
                     }}
                   />
                   <AlagehAutoComplete
@@ -576,9 +675,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "country_name",
                         valueField: "hims_d_country_id",
-                        data: this.state.countryMaster
+                        data: this.state.countryMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehAutoComplete
@@ -591,9 +690,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "nationality",
                         valueField: "hims_d_nationality_id",
-                        data: this.state.nationalityMaster
+                        data: this.state.nationalityMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehAutoComplete
@@ -607,9 +706,9 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "currency_description",
                         valueField: "hims_d_currency_id",
-                        data: this.state.currencyMaster
+                        data: this.state.currencyMaster,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
 
@@ -623,16 +722,16 @@ export default class BranchMaster extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: FORMAT_YESNO
+                        data: FORMAT_YESNO,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownHandler.bind(this),
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Full Address",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -642,12 +741,12 @@ export default class BranchMaster extends Component {
                         //type: "email"
                       },
                       events: {
-                        onChange: this.changeTexts.bind(this)
+                        onChange: this.changeTexts.bind(this),
                       },
                       others: {
                         placeholder:
-                          "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001"
-                      }
+                          "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
+                      },
                     }}
                   />
                   <div className="col-12">
@@ -682,25 +781,22 @@ export default class BranchMaster extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Branch List</h3>
                 </div>
-                   <div className="row">
-
-                <AlagehFormGroup
+                <div className="actions">
+                  {" "}
+                  <AlagehFormGroup
                     div={{
-                     className: "col form-group"
-                      }}
-                      label={{
-                      forceLabel: "Search: ",
-                      isImp: false
-                      }}
-                      textBox={{
-                       type: "text" ,  
-                       events: { onChange: this.filterBranchList.bind(this) },                    
-                        placeholder: "Search",
-                         value: this.state.searchText
-                            }}
-                   />
-
-                   </div>
+                      className: "",
+                    }}
+                    textBox={{
+                      type: "text",
+                      events: { onChange: this.filterBranchList.bind(this) },
+                      value: this.state.searchText,
+                      others: {
+                        placeholder: "Search Branch",
+                      },
+                    }}
+                  />
+                </div>
               </div>
               <div className="portlet-body" id="">
                 <div className="row">
@@ -761,13 +857,42 @@ export default class BranchMaster extends Component {
               {/* ----------sssstart------------ */}
               <div className="portlet-body departmentBranchMapList">
                 <div className="row">
+                  <div className="col-5 customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        value=""
+                        name=""
+                        checked={this.state.checkAll}
+                        onChange={this.selectAll.bind(this)}
+                      />
+                      <span>Select All</span>
+                    </label>
+                  </div>
+                  <AlagehFormGroup
+                    div={{
+                      className: "col-7 form-group",
+                    }}
+                    textBox={{
+                      type: "text",
+                      events: { onChange: this.filterSubDepartment.bind(this) },
+                      value: this.state.searchSubBranchText,
+                      others: {
+                        placeholder: "Search Sub Department",
+                      },
+                    }}
+                  />
+                </div>
+                <div className="row">
                   <div className="col-12">
                     <ul className="deptUl">
-                      {this.state.allDepartments.map((data, index) => {
+                      {departments.map((data, index) => {
+                        
                         return (
                           <li key={data.hims_d_department_id}>
                             <span>
                               <input
+                              id={"dept_"+ data.hims_d_department_id}
                                 type="checkbox"
                                 onChange={this.changeDepartments.bind(
                                   this,
@@ -782,7 +907,7 @@ export default class BranchMaster extends Component {
                                 value={data.hims_d_department_id}
                               />
                             </span>
-                            <a>{data.department_name}</a>
+                            <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label>
 
                             <ul className="subDeptUl">
                               {data.subDepts.map((sub, index) => {
@@ -793,8 +918,9 @@ export default class BranchMaster extends Component {
                                         type="checkbox"
                                         onChange={this.changeSubdepartment.bind(
                                           this,
-                                          data
+                                          {data,sub}
                                         )}
+                                        id={"sub_"+sub.hims_d_sub_department_id}
                                         name="subDepartments"
                                         checked={
                                           sub.checked === undefined
@@ -804,13 +930,14 @@ export default class BranchMaster extends Component {
                                         value={sub.hims_d_sub_department_id}
                                       />
                                     </span>
-                                    <a>{sub.sub_department_name}</a>
+                                    <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"sub_"+sub.hims_d_sub_department_id}>{sub.sub_department_name}</label>
                                   </li>
                                 );
                               })}
                             </ul>
                           </li>
                         );
+                            
                       })}
                     </ul>
                   </div>

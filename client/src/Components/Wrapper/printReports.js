@@ -1,11 +1,9 @@
-import JsBarcode from "jsbarcode";
 import React from "react";
 import ReactDOM from "react-dom";
 import ReportUI from "../Wrapper/reportUI";
 import { successfulMessage } from "../../utils/GlobalFunctions";
 const reportWindow = document.getElementById("reportWindow");
 export function accessReport(options) {
-  let getReport = options.report;
   // const { printReport } = require("../../Reports/" +
   //   getReport.fileName +
   //   ".js");

@@ -16,7 +16,6 @@ import {
   changeTexts,
   onchangegridcol,
   insertAntibiotic,
-  deleteAntibiotic,
   updateAntibiotic
 } from "./AntiBioMasterEvents";
 import Options from "../../../Options.json";

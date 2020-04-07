@@ -135,8 +135,7 @@ class PhySchSetup extends Component {
       from_break_hr1: "",
       to_break_hr1: "",
       from_break_hr2: "",
-      to_break_hr2: "",
-      openScheduler: false,
+      to_break_hr2: "",      
       schedule_detail: []
     });
   }
@@ -150,8 +149,8 @@ class PhySchSetup extends Component {
         schedule_detail: [],
         year: moment().year(),
         month: moment().format("M"),
-        from_date: "",
-        to_date: "",
+        from_date: null,
+        to_date: null,
         all: false,
         monday: false,
         tuesday: false,
@@ -166,9 +165,7 @@ class PhySchSetup extends Component {
         openModifier: false,
         send_obj: {},
         slot: "",
-        schedule_status: "Y",
-        from_date: null,
-        to_date: null,
+        schedule_status: "Y",        
         from_work_hr: "",
         to_work_hr: "",
         work_break1: "",
@@ -256,7 +253,7 @@ class PhySchSetup extends Component {
     const docs = Enumerable.from(this.state.scheduleDoctors)
       .where(
         w =>
-          w.appointment_schedule_header_id ==
+          w.appointment_schedule_header_id ===
           data.hims_d_appointment_schedule_header_id
       )
       .select(s => {
@@ -665,6 +662,8 @@ class PhySchSetup extends Component {
           this.setState({ all: false });
         }
         break;
+      default:
+        break;
     }
     if (e.target.name === "All") {
       this.setState(
@@ -674,24 +673,24 @@ class PhySchSetup extends Component {
         () => {
           this.state.all
             ? this.setState({
-                monday: true,
-                tuesday: true,
-                wednesday: true,
-                thursday: true,
-                friday: true,
-                saturday: true,
-                sunday: true,
-                days: [0, 1, 2, 3, 4, 5, 6]
-              })
+              monday: true,
+              tuesday: true,
+              wednesday: true,
+              thursday: true,
+              friday: true,
+              saturday: true,
+              sunday: true,
+              days: [0, 1, 2, 3, 4, 5, 6]
+            })
             : this.setState({
-                monday: false,
-                tuesday: false,
-                wednesday: false,
-                thursday: false,
-                friday: false,
-                saturday: false,
-                sunday: false
-              });
+              monday: false,
+              tuesday: false,
+              wednesday: false,
+              thursday: false,
+              friday: false,
+              saturday: false,
+              sunday: false
+            });
         }
       );
     } else {
@@ -1191,8 +1190,8 @@ class PhySchSetup extends Component {
                         <span>
                           {row.work_break1 === "Y"
                             ? moment(row.from_break_hr1, "hh:mm:ss").format(
-                                "hh:mm A"
-                              )
+                              "hh:mm A"
+                            )
                             : "--"}
                         </span>
                       );
@@ -1224,8 +1223,8 @@ class PhySchSetup extends Component {
                         <span>
                           {row.work_break1 === "Y"
                             ? moment(row.to_break_hr1, "hh:mm:ss").format(
-                                "hh:mm A"
-                              )
+                              "hh:mm A"
+                            )
                             : "--"}
                         </span>
                       );
@@ -1257,8 +1256,8 @@ class PhySchSetup extends Component {
                         <span>
                           {row.work_break2 === "Y"
                             ? moment(row.from_break_hr2, "hh:mm:ss").format(
-                                "hh:mm A"
-                              )
+                              "hh:mm A"
+                            )
                             : "--"}
                         </span>
                       );
@@ -1290,8 +1289,8 @@ class PhySchSetup extends Component {
                         <span>
                           {row.work_break2 === "Y"
                             ? moment(row.to_break_hr2, "hh:mm:ss").format(
-                                "hh:mm A"
-                              )
+                              "hh:mm A"
+                            )
                             : "--"}
                         </span>
                       );
@@ -1323,8 +1322,8 @@ class PhySchSetup extends Component {
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onEdit: () => {},
-                  onDelete: () => {},
+                  onEdit: () => { },
+                  onDelete: () => { },
                   onDone: this.updateDoctorScheduleDateWise.bind(this)
                 }}
               />
@@ -1340,8 +1339,8 @@ class PhySchSetup extends Component {
             this.state.openEdit
               ? "Edit Schedule"
               : this.state.openScheduler
-              ? "Create Schedule"
-              : ""
+                ? "Create Schedule"
+                : ""
           }
           deptDropDownHandler={this.deptDropDownHandler.bind(this)}
           changeTexts={this.changeTexts.bind(this)}
@@ -1480,16 +1479,16 @@ class PhySchSetup extends Component {
                         </li>
                       ))
                     ) : (
-                      <span className="noDataStyle">
-                        <h1>
-                          <i className="fas fa-calendar-check" />
-                        </h1>
-                        <p>
-                          Select Year & Department to <br />
-                          View Schedule List
+                        <span className="noDataStyle">
+                          <h1>
+                            <i className="fas fa-calendar-check" />
+                          </h1>
+                          <p>
+                            Select Year & Department to <br />
+                            View Schedule List
                         </p>
-                      </span>
-                    )}
+                        </span>
+                      )}
                   </ul>
                 </div>
               </div>
@@ -1550,8 +1549,8 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.from_date
                                     ? moment(this.state.from_date).format(
-                                        "DD-MM-YYYY"
-                                      )
+                                      "DD-MM-YYYY"
+                                    )
                                     : "DD/MM/YYYY"}
                                 </h6>
                               </div>
@@ -1567,8 +1566,8 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.to_date
                                     ? moment(this.state.to_date).format(
-                                        "DD-MM-YYYY"
-                                      )
+                                      "DD-MM-YYYY"
+                                    )
                                     : "DD/MM/YYYY"}
                                 </h6>
                               </div>
@@ -1590,9 +1589,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.from_work_hr
                                     ? moment(
-                                        this.state.from_work_hr,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.from_work_hr,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "00:00"}
                                 </h6>
                               </div>
@@ -1608,9 +1607,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.to_work_hr
                                     ? moment(
-                                        this.state.to_work_hr,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.to_work_hr,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "00:00"}
                                 </h6>
                               </div>
@@ -1633,9 +1632,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.work_break1 === "Y"
                                     ? moment(
-                                        this.state.from_break_hr1,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.from_break_hr1,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1650,9 +1649,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.work_break1 === "Y"
                                     ? moment(
-                                        this.state.to_break_hr1,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.to_break_hr1,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1673,9 +1672,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.work_break2 === "Y"
                                     ? moment(
-                                        this.state.from_break_hr2,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.from_break_hr2,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1690,9 +1689,9 @@ class PhySchSetup extends Component {
                                 <h6>
                                   {this.state.work_break2 === "Y"
                                     ? moment(
-                                        this.state.to_break_hr2,
-                                        "hh:mm:ss"
-                                      ).format("hh:mm a")
+                                      this.state.to_break_hr2,
+                                      "hh:mm:ss"
+                                    ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1737,31 +1736,31 @@ class PhySchSetup extends Component {
                                   <span>{data.full_name}</span>
                                 </li>
                               ) : (
-                                <li key={index}>
-                                  <i
-                                    provider-name={data.full_name}
-                                    provider-id={data.provider_id}
-                                    id={data.appointment_schedule_header_id}
-                                    onClick={this.openModifierPopup.bind(this)}
-                                    className="fas fa-pen"
-                                  />
-                                  <i
-                                    onClick={this.deleteDocFromSchedule.bind(
-                                      this
-                                    )}
-                                    provider-id={data.provider_id}
-                                    id={data.appointment_schedule_header_id}
-                                    className="fas fa-trash-alt"
-                                  />
-                                  <span>{data.full_name}</span>
-                                </li>
-                              )
+                                  <li key={index}>
+                                    <i
+                                      provider-name={data.full_name}
+                                      provider-id={data.provider_id}
+                                      id={data.appointment_schedule_header_id}
+                                      onClick={this.openModifierPopup.bind(this)}
+                                      className="fas fa-pen"
+                                    />
+                                    <i
+                                      onClick={this.deleteDocFromSchedule.bind(
+                                        this
+                                      )}
+                                      provider-id={data.provider_id}
+                                      id={data.appointment_schedule_header_id}
+                                      className="fas fa-trash-alt"
+                                    />
+                                    <span>{data.full_name}</span>
+                                  </li>
+                                )
                             )
                           ) : (
-                            <span className="noDataStyle">
-                              Select schedule to view doctors
+                              <span className="noDataStyle">
+                                Select schedule to view doctors
                             </span>
-                          )}
+                            )}
                         </ul>
                       </div>
                       <button
@@ -1775,13 +1774,13 @@ class PhySchSetup extends Component {
                   </div>
                 </div>
               ) : (
-                <span className="noDataStyle">
-                  <h1>
-                    <i className="fas fa-info-circle" />
-                  </h1>
-                  <p>Select a Schedule for more details</p>
-                </span>
-              )}
+                  <span className="noDataStyle">
+                    <h1>
+                      <i className="fas fa-info-circle" />
+                    </h1>
+                    <p>Select a Schedule for more details</p>
+                  </span>
+                )}
             </div>
           </div>
         </div>

@@ -167,17 +167,17 @@ class POSCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generatePOSCreditSettlementReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generatePOSCreditSettlementReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           // printArea={
@@ -230,8 +230,8 @@ class POSCreditSettlement extends Component {
                     this.state.Billexists === true
                       ? "none"
                       : this.state.patient_code
-                      ? "none"
-                      : ""
+                        ? "none"
+                        : ""
                 }}
               >
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -330,8 +330,8 @@ class POSCreditSettlement extends Component {
                 onClick={SavePosCreidt.bind(this, this)}
                 disabled={
                   this.state.saveEnable ||
-                  this.state.receipt_amount == 0 ||
-                  this.state.unbalanced_amount != 0
+                  this.state.receipt_amount === 0 ||
+                  this.state.unbalanced_amount !== 0
                 }
               >
                 <AlgaehLabel

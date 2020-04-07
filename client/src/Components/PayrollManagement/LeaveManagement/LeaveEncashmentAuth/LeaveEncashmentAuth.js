@@ -26,7 +26,7 @@ import {
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import EncashmentAuthDtls from "./EncashmentAuthDtls";
 import { MainContext } from "algaeh-react-components/context";
 
@@ -198,7 +198,7 @@ class LeaveEncashmentAuth extends Component {
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -215,7 +215,6 @@ class LeaveEncashmentAuth extends Component {
     );
   }
   render() {
-    let allYears = getYears();
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
@@ -350,8 +349,8 @@ class LeaveEncashmentAuth extends Component {
                 {!this.state.loading ? (
                   <span>Load</span>
                 ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
               </button>
             </div>
           </div>
@@ -422,8 +421,8 @@ class LeaveEncashmentAuth extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         }

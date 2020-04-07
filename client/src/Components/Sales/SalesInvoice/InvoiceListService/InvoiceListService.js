@@ -3,16 +3,10 @@ import MyContext from "../../../../utils/MyContext";
 import "./../../../../styles/site.scss";
 import {
     AlgaehDataGrid,
-    AlgaehLabel,
-    // AlagehFormGroup
+    AlgaehLabel    
 } from "../../../Wrapper/algaehWrapper";
-
-// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
-
 import { deleteSalesDetail } from "./InvoiceListServiceEvents";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-// import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import _ from "lodash";
+
 
 export default class InvoiceListService extends Component {
     constructor(props) {

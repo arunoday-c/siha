@@ -18,8 +18,7 @@ import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import {
-  InsertUpdateEmployee,
-  generateEmployeeContract
+  InsertUpdateEmployee  
 } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";

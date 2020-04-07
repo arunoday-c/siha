@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import "./user_shift_mapping.scss";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler

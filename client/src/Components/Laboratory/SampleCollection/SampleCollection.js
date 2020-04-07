@@ -84,8 +84,6 @@ class SampleCollection extends Component {
 
     let _Confirmed = [];
     let _Validated = [];
-
-    let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
       _Ordered = _.filter(this.state.sample_collection, f => {
         return f.status === "O";
@@ -102,9 +100,9 @@ class SampleCollection extends Component {
         return f.status === "CF";
       });
 
-      _Cancelled = _.filter(this.state.sample_collection, f => {
-        return f.status === "CN";
-      });
+      // _Cancelled = _.filter(this.state.sample_collection, f => {
+      //   return f.status === "CN";
+      // });
     }
 
     // let sampleCollection =

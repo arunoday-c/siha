@@ -1,8 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import moment from "moment";
-import Enumerable from "linq";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-import Options from "../../../../Options.json";
 import _ from "lodash";
 
 const deleteInvoiceItemDetail = ($this, row, context) => {

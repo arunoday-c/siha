@@ -1,12 +1,12 @@
-import React, { useState, useContext, memo, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useState, useContext, memo } from "react";
+import { useHistory } from "react-router-dom";
 import { MainContext } from "algaeh-react-components/context";
-import { setItem, getItem } from "algaeh-react-components/storage";
+import { setItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
 import { Drawer } from "algaeh-react-components";
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
-  const { name } = useParams();
-  const { userMenu, userToken, userLanguage, setSelectedMenuItem } = useContext(
+
+  const { userMenu, userLanguage, setSelectedMenuItem } = useContext(
     MainContext
   );
   const history = useHistory();
@@ -37,8 +37,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-      item.redirect_url !== "" &&
-      item.redirect_url !== null
+        item.redirect_url !== "" &&
+        item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -125,8 +125,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     {moduleSelect === item.module_name || searchText !== "" ? (
                       <i className="fas fa-angle-up" />
                     ) : (
-                      <i className="fas fa-angle-down" />
-                    )}
+                        <i className="fas fa-angle-down" />
+                      )}
                   </div>
                 </div>
                 {moduleSelect === item.module_name || searchText !== "" ? (

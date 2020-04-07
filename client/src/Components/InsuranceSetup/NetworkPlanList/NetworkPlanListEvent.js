@@ -77,7 +77,7 @@ const showconfirmDialog = ($this, row) => {
           });
         }
       });
-    } 
+    }
   });
 };
 
@@ -187,8 +187,6 @@ const onchangegridnumber = ($this, row, e) => {
 };
 
 const gridDatehandle = ($this, row, ctrl, e) => {
-  let network_plan = $this.state.network_plan;
-  let _index = network_plan.indexOf(row);
 
   row[e] = moment(ctrl)._d;
   row.update();
@@ -197,8 +195,6 @@ const gridDatehandle = ($this, row, ctrl, e) => {
 const dateValidate = ($this, row, value, e) => {
   let inRange = false;
   let name = e.name || e.target.name;
-  let network_plan = $this.state.network_plan;
-  let _index = network_plan.indexOf(row);
 
   if (name === "effective_start_date") {
     inRange = moment(value).isAfter(

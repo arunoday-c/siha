@@ -1,4 +1,3 @@
-import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -59,7 +58,7 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.ItemDisable = true;
         data.addedItem = true;
-        $this.setState(data, () => {});
+        $this.setState(data, () => { });
         AlgaehLoader({ show: false });
       }
     });

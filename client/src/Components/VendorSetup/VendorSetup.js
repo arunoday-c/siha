@@ -10,7 +10,6 @@ import {
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
-import swal from "sweetalert2";
 import Enumerable from "linq";
 
 
@@ -26,8 +25,7 @@ class VendorSetup extends Component {
       states: [],
       cities: [],
       vat_applicable: false,
-      btn_txt: "ADD",
-      hims_d_vendor_id: null,
+      btn_txt: "ADD",      
       vendor_status: "A"
     };
     this.getAllVendors();
@@ -53,8 +51,7 @@ class VendorSetup extends Component {
       city_id: null,
       postal_code: null,
       bank_name: null,
-      address: "",
-      hims_d_vendor_id: null,
+      address: "",      
       openModal: false,
       bank_account_no: null,
       vat_number: null

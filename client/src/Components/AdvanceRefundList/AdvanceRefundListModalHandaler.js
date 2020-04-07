@@ -1,4 +1,3 @@
-import moment from "moment";
 import {
   algaehApiCall,
   swalMessage
@@ -124,7 +123,7 @@ export const generateAdvanceRefundReceipt = (row, that) => {
       // const documentName ="Receipt"
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Receipt`;
       window.open(origin);
-     
+
     }
   });
 };

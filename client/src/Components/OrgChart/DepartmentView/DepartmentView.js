@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import isEqual from "lodash/isEqual";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./DepartmentView.scss";
 
@@ -106,7 +105,7 @@ export default class DepartmentView extends Component {
             {/* branch */}
             <ul
               className="eachShelf animated slideInLeft faster"
-              // style={{ minHeight: "85vh" }}
+            // style={{ minHeight: "85vh" }}
             >
               {allBranches &&
                 allBranches.map(branch => (
@@ -172,26 +171,26 @@ export default class DepartmentView extends Component {
                     </CSSTransition>
                   ))
                 ) : (
-                  <CSSTransition
-                    in={this.state.toggleDept}
-                    appear={false}
-                    classNames={{
-                      enterActive: "eachChild animated slideInLeft faster",
-                      enterDone: "eachChild",
-                      exitActive: "eachChild animated slideOutLeft faster",
-                      exitDone: "eachChild"
-                    }}
-                    unmountOnExit
-                    timeout={500}
-                    key={1232}
-                  >
-                    <li id="sub-child">
-                      <span className="contentSection">
-                        <h1>No Departments Available under this branch</h1>
-                      </span>
-                    </li>
-                  </CSSTransition>
-                )}
+                    <CSSTransition
+                      in={this.state.toggleDept}
+                      appear={false}
+                      classNames={{
+                        enterActive: "eachChild animated slideInLeft faster",
+                        enterDone: "eachChild",
+                        exitActive: "eachChild animated slideOutLeft faster",
+                        exitDone: "eachChild"
+                      }}
+                      unmountOnExit
+                      timeout={500}
+                      key={1232}
+                    >
+                      <li id="sub-child">
+                        <span className="contentSection">
+                          <h1>No Departments Available under this branch</h1>
+                        </span>
+                      </li>
+                    </CSSTransition>
+                  )}
               </ul>
             </TransitionGroup>
 

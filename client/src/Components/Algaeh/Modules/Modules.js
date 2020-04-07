@@ -44,7 +44,7 @@ class Modules extends Component {
       method: "DELETE",
       data: { algaeh_d_module_id: row.algaeh_d_module_id },
       onSuccess: response => {
-        const { success, message } = response.data;
+        const { message } = response.data;
         swalMessage({
           title: message,
           type: "success"
@@ -52,7 +52,7 @@ class Modules extends Component {
         this.getModules();
       },
       onCatch: error => {
-        const { success, message } = error.response.data;
+        const { message } = error.response.data;
         swalMessage({
           title: message,
           type: "error"
@@ -374,10 +374,10 @@ class Modules extends Component {
                                   {row.module_plan === "S"
                                     ? "Silver"
                                     : row.module_plan === "G"
-                                    ? "Gold"
-                                    : row.module_plan === "P"
-                                    ? "Platinum"
-                                    : ""}
+                                      ? "Gold"
+                                      : row.module_plan === "P"
+                                        ? "Platinum"
+                                        : ""}
                                 </span>
                               );
                             },
@@ -387,10 +387,10 @@ class Modules extends Component {
                                   {row.module_plan === "S"
                                     ? "Silver"
                                     : row.module_plan === "G"
-                                    ? "Gold"
-                                    : row.module_plan === "P"
-                                    ? "Platinum"
-                                    : ""}
+                                      ? "Gold"
+                                      : row.module_plan === "P"
+                                        ? "Platinum"
+                                        : ""}
                                 </span>
                               );
                             }
@@ -539,7 +539,7 @@ class Modules extends Component {
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{
-                          onEdit: () => {},
+                          onEdit: () => { },
                           // onDelete: this.deleteModules.bind(this),
                           onDone: this.updateModules.bind(this)
                         }}

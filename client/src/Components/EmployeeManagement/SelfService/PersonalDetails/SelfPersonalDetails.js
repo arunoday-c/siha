@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Doughnut } from "react-chartjs-2";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -21,17 +21,6 @@ import {
   AlgaehValidation,
   getYearswithMinMax
 } from "../../../../utils/GlobalFunctions";
-
-const PieData = {
-  labels: ["Earnings", "Deductions"],
-  datasets: [
-    {
-      data: [24, 76],
-      backgroundColor: ["#34b8bc", "#DCAC66"],
-      hoverBackgroundColor: ["#34b8bc", "#DCAC66"]
-    }
-  ]
-};
 
 class SelfPersonalDetails extends Component {
   constructor(props) {

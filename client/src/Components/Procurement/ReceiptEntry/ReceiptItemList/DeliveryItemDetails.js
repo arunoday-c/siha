@@ -11,7 +11,6 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-import extend from "extend";
 import Options from "../../../../Options.json";
 import moment from "moment";
 
@@ -338,93 +337,3 @@ export default withRouter(
     mapDispatchToProps
   )(DNItemList)
 );
-
-{
-  /*
-  {
-    fieldName: "po_quantity",
-    label: (
-      <AlgaehLabel label={{ forceLabel: "PO Quantity" }} />
-    ),
-    disabled: true
-  },
-  {
-  fieldName: "unit_cost",
-  label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />,
-  displayTemplate: row => {
-    return (
-      <span>
-        {getAmountFormart(row.unit_cost, {
-          appendSymbol: false
-        })}
-      </span>
-    );
-  },
-
-  disabled: true
-},
-{
-  fieldName: "sales_price",
-  label: (
-    <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
-  ),
-  displayTemplate: row => {
-    return (
-      <span>
-        {getAmountFormart(row.sales_price, {
-          appendSymbol: false
-        })}
-      </span>
-    );
-  }
-},
-
-{
-  fieldName: "batchno",
-  label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
-
-  others: {
-    minWidth: 150,
-    resizable: false
-  }
-},
-
-{
-  fieldName: "vendor_batchno",
-  label: (
-    <AlgaehLabel
-      label={{ forceLabel: "Vendor Batch  No." }}
-    />
-  ),
-
-  others: {
-    minWidth: 150,
-    resizable: false
-  }
-
-  {
-    fieldName: "quantity_outstanding",
-    label: (
-      <AlgaehLabel
-        label={{
-          forceLabel: "Qty Outstanding"
-        }}
-      />
-    ),
-    disabled: true,
-    others: { minWidth: 140 }
-  },
-  {
-    fieldName: "quantity_recieved_todate",
-    label: (
-      <AlgaehLabel
-        label={{
-          forceLabel: "Qty Received till date"
-        }}
-      />
-    ),
-    disabled: true,
-    others: { minWidth: 150 }
-  },
-},*/
-}

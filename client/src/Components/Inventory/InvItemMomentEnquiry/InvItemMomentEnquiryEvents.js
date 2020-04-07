@@ -1,7 +1,7 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {

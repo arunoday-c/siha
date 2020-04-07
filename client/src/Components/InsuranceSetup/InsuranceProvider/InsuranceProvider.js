@@ -22,8 +22,7 @@ import {
 
 import {
   FORMAT_INSURANCE_TYPE,
-  FORMAT_SERVICE_PRICE,
-  FORMAT_YESNO,
+  FORMAT_SERVICE_PRICE,  
   FORMAT_PACKAGE_CLAIM,
   FORMAT_PAYMENT_TYPE
 } from "../../../utils/GlobalVariables.json";

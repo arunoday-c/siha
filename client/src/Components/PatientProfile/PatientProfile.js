@@ -1,11 +1,7 @@
 import React, { Component, Suspense } from "react";
 import "./patientprofile.scss";
 import Overview from "./Overview/Overview";
-// import Subjective from "./Subjective/Subjective";
 import BasicSubjective from "./Subjective/BasicSubjective";
-// import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
-// import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
-// import Assesment from "./Assessment/Assessment";
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
@@ -13,7 +9,7 @@ import {
   cancelRequest,
   getCookie,
   swalMessage,
-  setCookie
+  setCookie,
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import moment from "moment";
@@ -27,12 +23,8 @@ import {
   getPatientVitals,
   getPatientDiet,
   getPatientDiagnosis,
-  // getPatientAllergies,
-  //getPatientHistory,
-  printPrescription
+  printPrescription,
 } from "./PatientProfileHandlers";
-// import AlgaehReport from "../Wrapper/printReports";
-// import { getPatientAllergies } from "./Allergies/AllergiesHandlers";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
@@ -50,14 +42,11 @@ const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
 const OcafEditor = React.lazy(() => import("../ucafEditors/ocaf"));
 
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
-let allergyPopUp;
 
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
     this.selected_module = getCookie("module_id");
-
-    allergyPopUp = props.open_allergy_popup;
 
     this.state = {
       pageDisplay: "subjective",
@@ -74,7 +63,8 @@ class PatientProfile extends Component {
       OCAFData: [],
       chart_type: "",
       alergyExist: "",
-      patientAllergies: []
+      showAllergyPopup: true,
+      patientAllergies: [],
     };
 
     this.changeTabs = this.changeTabs.bind(this);
@@ -92,10 +82,10 @@ class PatientProfile extends Component {
           this.state.firstLaunch === undefined ? this.props.firstLaunch : false,
         patient_code:
           this.props.patient_profile !== undefined &&
-          this.props.patient_profile.length > 0
+            this.props.patient_profile.length > 0
             ? this.props.patient_profile[0].patient_code
             : "",
-        chart_type: patientDetails["chart_type"]
+        chart_type: patientDetails["chart_type"],
       },
       () => {
         getPatientProfile(this);
@@ -117,19 +107,19 @@ class PatientProfile extends Component {
 
   openAllergies(e) {
     this.setState({
-      openAlergy: true
+      openAlergy: true,
     });
   }
 
   closeAllergies(e) {
     this.setState({
-      openAlergy: false
+      openAlergy: false,
     });
   }
 
   showSickLeave() {
     this.setState({
-      openSickLeave: !this.state.openSickLeave
+      openSickLeave: !this.state.openSickLeave,
     });
   }
 
@@ -140,7 +130,7 @@ class PatientProfile extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -149,26 +139,26 @@ class PatientProfile extends Component {
           reportParams: [
             {
               name: "patient_id",
-              value: current_patient
+              value: current_patient,
             },
             {
               name: "visit_id",
-              value: visit_id
+              value: visit_id,
             },
             {
               name: "episode_id",
-              value: episode_id
-            }
+              value: episode_id,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=General Consent Form`;
         window.open(origin);
         // window.document.title = "Consent Form";
-      }
+      },
     });
   }
 
@@ -179,7 +169,7 @@ class PatientProfile extends Component {
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -188,27 +178,26 @@ class PatientProfile extends Component {
           reportParams: [
             {
               name: "patient_id",
-              value: current_patient
+              value: current_patient,
             },
             {
               name: "visit_id",
-              value: visit_id
+              value: visit_id,
             },
             {
               name: "episode_id",
-              value: episode_id
-            }
+              value: episode_id,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         const urlBlob = URL.createObjectURL(res.data);
-        const documentName = "Medical Consent Form"
+        const documentName = "Medical Consent Form";
         const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
         window.open(origin);
-        
-      }
+      },
     });
   }
 
@@ -221,24 +210,18 @@ class PatientProfile extends Component {
         uri: "/inventory/getInventoryLocation",
         module: "inventory",
         data: {
-          location_status: "A"
+          location_status: "A",
         },
         method: "GET",
         redux: {
           type: "LOCATIONS_GET_DATA",
-          mappingName: "inventorylocations"
-        }
+          mappingName: "inventorylocations",
+        },
       });
     }
   }
 
   changeTabs(e) {
-    const {
-      chief_complaint,
-      significant_signs,
-      vitals_mandatory
-    } = Window.global;
-
     var element = document.querySelectorAll("[algaehsoap]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
@@ -246,7 +229,7 @@ class PatientProfile extends Component {
     e.currentTarget.classList.add("active");
     var page = e.currentTarget.getAttribute("algaehsoap");
     this.setState({
-      pageDisplay: page
+      pageDisplay: page,
     });
   }
 
@@ -259,8 +242,8 @@ class PatientProfile extends Component {
       redux: {
         type: "PATIENT_ALLERGIES",
         mappingName: "patient_allergies",
-        data: []
-      }
+        data: [],
+      },
     });
   }
 
@@ -268,31 +251,37 @@ class PatientProfile extends Component {
     if (props.patient_allergies !== undefined) {
       if (this.state.patientAllergies.length === 0)
         this.showAllergyAlert(props.patient_allergies);
-      this.setState({
-        alergyExist: props.patient_allergies.length > 0 ? " AllergyActive" : "",
-        patientAllergies: Enumerable.from(props.patient_allergies)
-          .groupBy("$.allergy_type", null, (k, g) => {
-            return {
-              allergy_type: k,
-              allergy_type_desc:
-                k === "F"
-                  ? "Food"
-                  : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                  ? "Animal  &  Insect"
-                  : k === "C"
-                  ? "Chemical & Others"
-                  : "",
-              allergyList: g.getSource()
-            };
-          })
-          .toArray()
-      });
+      this.setState(
+        {
+          alergyExist:
+            props.patient_allergies.length > 0 ? " AllergyActive" : "",
+          patientAllergies: Enumerable.from(props.patient_allergies)
+            .groupBy("$.allergy_type", null, (k, g) => {
+              return {
+                allergy_type: k,
+                allergy_type_desc:
+                  k === "F"
+                    ? "Food"
+                    : k === "A"
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
+                allergyList: g.getSource(),
+              };
+            })
+            .toArray(),
+        },
+        () => {
+          this.showAllergyAlert(props.patient_allergies);
+        }
+      );
     } else {
       this.setState({
         alergyExist: "",
-        patientAllergies: []
+        patientAllergies: [],
       });
     }
   }
@@ -303,30 +292,30 @@ class PatientProfile extends Component {
       significant_signs,
       vitals_mandatory,
       current_patient,
-      visit_id
+      visit_id,
     } = Window.global;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
@@ -335,7 +324,7 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -345,19 +334,19 @@ class PatientProfile extends Component {
         data: {
           patient_id: current_patient, //Window.global["current_patient"],
           visit_id: visit_id, //Window.global["visit_id"],
-          forceReplace: true
+          forceReplace: true,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openUCAF: true, UCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
@@ -368,19 +357,19 @@ class PatientProfile extends Component {
       significant_signs,
       vitals_mandatory,
       current_patient,
-      visit_id
+      visit_id,
     } = Window.global;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -390,12 +379,12 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
@@ -404,7 +393,7 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -413,20 +402,20 @@ class PatientProfile extends Component {
         method: "GET",
         data: {
           patient_id: current_patient, //Window.global["current_patient"],
-          visit_id: visit_id //Window.global["visit_id"]
+          visit_id: visit_id, //Window.global["visit_id"]
           // forceReplace: true
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openDCAF: true, DCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
@@ -437,19 +426,19 @@ class PatientProfile extends Component {
       significant_signs,
       vitals_mandatory,
       current_patient,
-      visit_id
+      visit_id,
     } = Window.global;
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -459,12 +448,12 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
@@ -473,7 +462,7 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -482,35 +471,35 @@ class PatientProfile extends Component {
         method: "GET",
         data: {
           patient_id: current_patient, //Window.global["current_patient"],
-          visit_id: visit_id //Window.global["visit_id"]
+          visit_id: visit_id, //Window.global["visit_id"]
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openOCAF: true, OCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
 
   showAllergyAlert(_patient_allergies) {
-    if (allergyPopUp && _patient_allergies.length > 0) {
-      allergyPopUp = false;
+    if (this.state.showAllergyPopup && _patient_allergies.length > 0) {
       swalMessage({
         title: "Alergy Exists...",
-        type: "warning"
+        type: "warning",
       });
+      this.setState({ showAllergyPopup: false });
     }
   }
   decissionAllergyOnSet(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-      .where(w => w.value === row.onset)
+      .where((w) => w.value === row.onset)
       .firstOrDefault();
     if (_onSet !== undefined) {
       return _onSet.name;
@@ -521,8 +510,8 @@ class PatientProfile extends Component {
       redux: {
         type: "PATIENT_PROFILE",
         mappingName: "patient_profile",
-        data: []
-      }
+        data: [],
+      },
     });
     setCookie("ScreenName", "DoctorsWorkbench");
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
@@ -538,7 +527,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openDCAF: false });
-          }
+          },
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
@@ -553,7 +542,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openOCAF: false });
-          }
+          },
         }}
       >
         <OcafEditor dataProps={this.state.OCAFData} />
@@ -568,7 +557,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openUCAF: false });
-          }
+          },
         }}
       >
         <UcafEditor dataProps={this.state.UCAFData} />
@@ -577,13 +566,7 @@ class PatientProfile extends Component {
   }
 
   OpenMrdHandler(e) {
-    const {
-      chief_complaint,
-      significant_signs,
-      vitals_mandatory,
-      current_patient,
-      visit_id
-    } = Window.global;
+
     // let chief_complaint = Window.global["chief_complaint"];
     // let significant_signs = Window.global["significant_signs"];
     // const _Vitals =
@@ -638,10 +621,10 @@ class PatientProfile extends Component {
       mrd_patient: details["current_patient"],
       nationality: document.querySelector("[patient_nationality='true']")
         .innerText,
-      gender: details["gender"]
+      gender: details["gender"],
     });
     this.setState({
-      pageDisplay: page
+      pageDisplay: page,
     });
     // }
   }
@@ -649,7 +632,7 @@ class PatientProfile extends Component {
   goback = () => {
     if (!Window.global) {
       this.props.history.push({
-        pathname: "/DoctorsWorkbench"
+        pathname: "/DoctorsWorkbench",
       });
     }
   };
@@ -657,17 +640,17 @@ class PatientProfile extends Component {
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-      this.props.patient_profile.length > 0
+        this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
 
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-            .uniqBy(u => u.vital_id)
-            .orderBy(o => o.sequence_order)
-            .value()
+          .uniqBy((u) => u.vital_id)
+          .orderBy((o) => o.sequence_order)
+          .value()
         : [];
 
     const _patient_allergies = this.state.patientAllergies;
@@ -687,7 +670,7 @@ class PatientProfile extends Component {
             <button
               id="btn-outer-component-load"
               className="d-none"
-              //  onClick={this.setPatientGlobalParameters.bind(this)}
+            //  onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
               onClick={this.renderBackButton.bind(this)}
@@ -707,7 +690,7 @@ class PatientProfile extends Component {
               serviceParameters={{
                 uniqueID: _pat_profile.patient_code,
                 destinationName: _pat_profile.patient_code,
-                fileType: "Patients"
+                fileType: "Patients",
               }}
               forceRefresh={true}
             />
@@ -735,8 +718,8 @@ class PatientProfile extends Component {
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
-                  ? "Self"
-                  : ""}
+                    ? "Self"
+                    : ""}
               </b>
             </span>
           </div>
@@ -813,10 +796,10 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                  <span>UCAF Report</span>
-                </li>
-              )}
+                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                      <span>UCAF Report</span>
+                    </li>
+                  )}
             </ul>
           </div>
         </div>
@@ -923,23 +906,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
+                                        ? "Adulthood"
+                                        : allergy.onset === "C"
+                                          ? "Childhood"
+                                          : allergy.onset === "P"
+                                            ? "Pre Terms"
+                                            : allergy.onset === "T"
+                                              ? "Teenage"
+                                              : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
+                                        ? "Mild"
+                                        : allergy.severity === "SE"
+                                          ? "Severe"
+                                          : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>
@@ -1080,7 +1063,7 @@ function mapStateToProps(state) {
     patient_diet: state.patient_diet,
     patient_diagnosis: state.patient_diagnosis,
     inventorylocations: state.inventorylocations,
-    patient_history: state.patient_history
+    patient_history: state.patient_history,
   };
 }
 
@@ -1092,7 +1075,7 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
       //getPatientHistory: AlgaehActions
     },
     dispatch

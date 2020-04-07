@@ -122,20 +122,6 @@ class InvRequisitionEntry extends Component {
         return f.location_type !== "WH";
       }
     );
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, f => {
-          return (
-            f.hims_d_inventory_location_id === this.state.from_location_id
-          );
-        })
-        : [];
-    const to_location_name =
-      this.state.to_location_id !== null
-        ? _.filter(this.props.inventoryreqlocations, f => {
-          return f.hims_d_inventory_location_id === this.state.to_location_id;
-        })
-        : [];
 
     return (
       <React.Fragment>

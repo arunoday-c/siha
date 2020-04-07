@@ -1,21 +1,11 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-
-import moment from "moment";
 import "./AdvanceRefundListModal.scss";
 import "./../../styles/site.scss";
 import {
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
+  AlgaehLabel,  
   AlgaehModalPopUp,
   AlgaehDataGrid
 } from "../Wrapper/algaehWrapper";
-
-import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
 import {
   getAdvanceRefundList,
@@ -23,15 +13,6 @@ import {
 } from "./AdvanceRefundListModalHandaler";
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
-import AlgaehLoader from "../Wrapper/fullPageLoader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
-import {
-  algaehApiCall,
-  swalMessage,
-  getCookie
-} from "../../utils/algaehApiCall.js";
-import { AlgaehActions } from "../../actions/algaehActions";
-import MyContext from "../../utils/MyContext";
 
 export default class AdvanceRefundListModal extends PureComponent {
   constructor(props) {

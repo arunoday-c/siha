@@ -408,8 +408,7 @@ function showconfirmDialog($this, row) {
 function getPatientDiagnosis($this) {
   const {
     current_patient,
-    episode_id,
-    visit_id
+    episode_id
   } = Window.global;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",

@@ -13,7 +13,6 @@ import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 import { MainContext } from "algaeh-react-components/context";
-import _ from "lodash";
 
 class CommonSetup extends Component {
   constructor(props) {

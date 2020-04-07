@@ -173,7 +173,7 @@ class VisitType extends Component {
     e.preventDefault();
 
     const exit_consultation = _.filter(this.props.visittypes, f => {
-      return f.consultation == "Y";
+      return f.consultation === "Y";
     });
     if (exit_consultation.length > 0) {
       swalMessage({

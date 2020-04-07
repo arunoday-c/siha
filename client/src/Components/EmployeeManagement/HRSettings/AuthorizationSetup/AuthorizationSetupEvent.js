@@ -1,7 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import Enumerable from "linq";
 import _ from "lodash";
 
 export default function AuthorizationSetupEvent() {
@@ -192,9 +189,9 @@ export default function AuthorizationSetupEvent() {
           }
         }
       } else if ($this.state.loan_level_set === "2") {
-        for (var i = 0; i < employees_list.length; i++) {
-          if (employees_list[i].select_to_process === "Y") {
-            employees_list[i].loan_level2 = $this.state.lo_employee_id;
+        for (var j = 0; j < employees_list.length; j++) {
+          if (employees_list[j].select_to_process === "Y") {
+            employees_list[j].loan_level2 = $this.state.lo_employee_id;
           }
         }
       }
@@ -221,15 +218,15 @@ export default function AuthorizationSetupEvent() {
           }
         }
       } else if ($this.state.leave_level_set === "2") {
-        for (var i = 0; i < employees_list.length; i++) {
-          if (employees_list[i].select_to_process === "Y") {
-            employees_list[i].leave_level2 = $this.state.l_employee_id;
+        for (var j = 0; j < employees_list.length; j++) {
+          if (employees_list[j].select_to_process === "Y") {
+            employees_list[j].leave_level2 = $this.state.l_employee_id;
           }
         }
       } else if ($this.state.leave_level_set === "3") {
-        for (var i = 0; i < employees_list.length; i++) {
-          if (employees_list[i].select_to_process === "Y") {
-            employees_list[i].leave_level3 = $this.state.l_employee_id;
+        for (var k = 0; k < employees_list.length; k++) {
+          if (employees_list[k].select_to_process === "Y") {
+            employees_list[k].leave_level3 = $this.state.l_employee_id;
           }
         }
       }

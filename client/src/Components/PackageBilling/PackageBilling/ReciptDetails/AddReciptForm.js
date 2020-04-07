@@ -8,10 +8,8 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler,
   calculateRecipt,
   countertexthandle
 } from "./AddReciptFormHandaler";

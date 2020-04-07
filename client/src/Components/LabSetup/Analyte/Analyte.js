@@ -16,9 +16,7 @@ import {
   changeTexts,
   onchangegridcol,
   insertLabAnalytes,
-  updateLabAnalytes,
-  deleteLabAnalytes,
-  EditInvestigationTest
+  updateLabAnalytes  
 } from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
