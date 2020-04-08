@@ -964,6 +964,33 @@ export default class AttendanceSettings extends Component {
                       Ramzan Time off (Change every year)
                     </label>
                     <div className="row">
+                      <div className="col">
+                        <label>Ramzan Timing Required</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Y"
+                              name="ramazanTimingActive"
+                              // checked={this.state.external_finance === "Y"}
+                              // onChange={this.textHandler.bind(this)}
+                            />
+                            <span>Yes</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="N"
+                              name="ramazanTimingActive"
+                              // checked={this.state.external_finance === "N"}
+                              // onChange={this.textHandler.bind(this)}
+                            />
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
