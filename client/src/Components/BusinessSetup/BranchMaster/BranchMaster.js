@@ -14,6 +14,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
+import {Checkbox} from "algaeh-react-components";
 // /branchMaster/getBranchMaster
 
 export default class BranchMaster extends Component {
@@ -28,7 +29,10 @@ export default class BranchMaster extends Component {
       searchText: "",
       searchSubBranchText:"",
       filterdDepartmentArray:[],
-      checkAll:false
+      checkAll:false,
+      checkAllIntermediate:undefined,
+      selectedBranchName:""
+      
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -280,6 +284,7 @@ export default class BranchMaster extends Component {
     if (e.hims_d_hospital_id > 0) {
       this.setState({
         hospital_id: e.hims_d_hospital_id,
+        selectedBranchName:e.hospital_name
       });
     }
 
@@ -374,6 +379,7 @@ export default class BranchMaster extends Component {
     const _status = e.target.checked;
     const index=  this.state.allDepartments.indexOf(data);
     data.checked=_status;
+    data.indeterminate =undefined;
     data.subDepts =  data.subDepts.map(item=>{
       return {
         ...item,
@@ -383,8 +389,20 @@ export default class BranchMaster extends Component {
     this.state.allDepartments[index] = data;
     const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
     const allDepts = this.state.allDepartments.length;
-    
-this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ===allDepts?true:false });
+    let indeterminate=undefined;
+    let checkall = false;
+    const inter=this.state.allDepartments.filter(f=>f.indeterminate === true);
+    if( inter.length >0){
+      indeterminate=true;
+    }else if(selectedDept >0 && inter.length===0){
+      indeterminate=true;
+    }else if(selectedDept ===allDepts){
+      indeterminate=false;
+    }
+   
+     checkall= selectedDept ===allDepts?true:false;
+      this.setState({allDepartments:this.state.allDepartments,
+     checkAll:checkall,checkAllIntermediate:indeterminate });
 
   //   let val = parseInt(e.target.value, 10);
    
@@ -416,24 +434,41 @@ this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ==
   changeSubdepartment(item, e) {
     const _status = e.target.checked;
     const {data,sub} =item;
-    const mainStateIndex = this.state.allDepartments.indexOf[data];
+    const allDept = this.state.allDepartments;
+    const filterData = allDept.find(f=>f.hims_d_department_id === data.hims_d_department_id); 
+    const mainStateIndex = allDept.indexOf[filterData];
     const index = data.subDepts.indexOf(sub);
     sub.checked = _status;
     data.subDepts[index] = sub;
     const checkedStatus= data.subDepts.filter(f=>f.checked===true).length;
     const deptLength =data.subDepts.length;
+    debugger;
     if(checkedStatus===deptLength){
       data.checked =true;
-    }else{
+    }else if(checkedStatus===0){
+       data.indeterminate = false;
+    }else  {
+      data.indeterminate =true;
       data.checked =false;
     }
-    this.state.allDepartments[mainStateIndex] =data;
+   
+        this.state.allDepartments[mainStateIndex] =data;
     const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
     const allDepts = this.state.allDepartments.length;
+    let inter =this.state.allDepartments.filter(f=>f.indeterminate === true).length;
 
+        let indeterminate =false
+    if(inter >0){
+      indeterminate =true;
+    }else if(inter===0 && selectedDept >0){
+      indeterminate =true;
+    } else if(allDepts===selectedDept ){
+      indeterminate =false;
+    }
     this.setState({
       allDepartments: this.state.allDepartments,
-      checkAll:selectedDept === allDepts?true:false
+      checkAll:selectedDept === allDepts?true:false,
+      checkAllIntermediate:indeterminate
     })
    
     // let val = parseInt(e.target.value, 10);
@@ -501,7 +536,7 @@ this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ==
     inputObj["hospital_id"] = this.state.hospital_id;
 
     if (!remove_sub.length > 0 && !add_new_sub.length > 0) {
-      swalMessage({
+            swalMessage({
         title: "No changes found",
         type: "warning",
       });
@@ -512,9 +547,10 @@ this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ==
         module: "masterSettings",
         data: inputObj,
         onSuccess: (res) => {
+          console.log(inputObj)
           if (res.data.success) {
             swalMessage({
-              title: "Assigned Successfully.",
+              title: `Assigned Successfully To ${this.state.selectedBranchName} Branch `,
               type: "success",
             });
 
@@ -850,7 +886,7 @@ selectAll(e){
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Map Dept. to Branch</h3>
+                  <h3 className="caption-subject">{`Map Dept. to Branch To ${this.state.selectedBranchName}`}</h3>
                 </div>
               </div>
 
@@ -858,16 +894,24 @@ selectAll(e){
               <div className="portlet-body departmentBranchMapList">
                 <div className="row">
                   <div className="col-5 customCheckbox">
-                    <label className="checkbox inline">
-                      <input
+                    {/* <label className="checkbox inline"> */}
+                     
+                      {/* <input
                         type="checkbox"
                         value=""
                         name=""
                         checked={this.state.checkAll}
                         onChange={this.selectAll.bind(this)}
-                      />
-                      <span>Select All</span>
-                    </label>
+                      /> */}
+                      {/* <span>Select All</span> */}
+                    {/* </label> */}
+                    <Checkbox
+                    checked={this.state.checkAll}
+                    onChange={this.selectAll.bind(this)}
+                    indeterminate={this.state.checkAllIntermediate}
+                    >
+                    Select All
+                    </Checkbox>
                   </div>
                   <AlagehFormGroup
                     div={{
@@ -890,8 +934,21 @@ selectAll(e){
                         
                         return (
                           <li key={data.hims_d_department_id}>
-                            <span>
-                              <input
+                            {/* <span> */}
+                              <Checkbox
+                             indeterminate={data.indeterminate}
+                               checked={
+                                data.checked === undefined
+                                  ? false
+                                  : data.checked}
+                                  onChange={this.changeDepartments.bind(
+                                    this,
+                                    data
+                                  )} >
+                                {data.department_name}
+                              </Checkbox>
+                              {/* <input
+                              indeterminate ={data.indeterminate}
                               id={"dept_"+ data.hims_d_department_id}
                                 type="checkbox"
                                 onChange={this.changeDepartments.bind(
@@ -905,9 +962,9 @@ selectAll(e){
                                     : data.checked
                                 }
                                 value={data.hims_d_department_id}
-                              />
-                            </span>
-                            <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label>
+                              /> */}
+                            {/* </span> */}
+                            {/* <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label> */}
 
                             <ul className="subDeptUl">
                               {data.subDepts.map((sub, index) => {
@@ -948,6 +1005,7 @@ selectAll(e){
                       className="btn btn-primary"
                       style={{ marginTop: 19, float: "right" }}
                       onClick={this.assignDepartments.bind(this)}
+                      disabled={this.state.selectedBranchName === "" ? true :false}
                     >
                       Map to Branch
                     </button>
@@ -955,6 +1013,8 @@ selectAll(e){
                       type="button"
                       className="btn btn-default"
                       style={{ marginTop: 19, marginRight: 10, float: "right" }}
+                      
+                            
                     >
                       Clear
                     </button>
