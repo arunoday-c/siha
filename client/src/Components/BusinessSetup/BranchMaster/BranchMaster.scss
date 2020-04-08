@@ -58,6 +58,9 @@
   }
 
   .departmentBranchMapList {
+    .selectAllCheck {
+      font-size: 0.8rem;
+    }
     ul,
     li {
       margin: 0;
@@ -68,26 +71,40 @@
       border: 1px solid #d3d3d3;
       overflow-y: auto;
       overflow-x: hidden;
-      min-height: 63vh;
-      max-height: 63vh;
+      min-height: 53vh;
+      max-height: 53vh;
       font-size: 0.85rem;
       li {
         border-bottom: 1px solid #d3d3d3;
         font-weight: 500;
-        span {
-          width: 30px;
-          height: auto;
-          display: inline-block;
-          padding: 0 8px;
-          text-align: center;
-          vertical-align: top;
-          input {
-            margin-top: 8px;
-          }
-          label {
-            margin-bottom: 5px;
+        .depCheck {
+          width: 100%;
+          span {
+            display: inline-block;
+            &:first-child {
+              border: 1px solid #d9d9d9;
+              width: 15px;
+              margin: 6px;
+              height: 15px;
+              border-radius: 1px;
+              background-color: #fff;
+              input {
+                border: none;
+              }
+              .ant-checkbox-inner {
+                border: 0;
+                width: 13px;
+                height: 13px;
+                text-align: center;
+              }
+            }
+            &:last-child {
+              width: calc(100% - 29px);
+              font-size: 0.8rem;
+            }
           }
         }
+
         a {
           display: inline-block;
           border-left: 1px solid #d3d3d3;
@@ -106,6 +123,18 @@
             font-weight: normal;
             &:last-child {
               border-bottom: none;
+            }
+            span {
+              &:first-child {
+                width: 25px;
+                padding: 6px;
+                display: inline-block;
+              }
+            }
+            label {
+              width: calc(100% - 25px);
+              font-size: 0.8rem;
+              display: inline-block;
             }
           }
         }
