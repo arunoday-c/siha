@@ -89,7 +89,7 @@ export default function Filter(props) {
 
   useEffect(() => {
     const dateCalcl = () => {
-      debugger;
+
       let maxDate, minDate;
       if (atStartType === "FE") {
         const parsedMonth = parseInt(month) - 1;

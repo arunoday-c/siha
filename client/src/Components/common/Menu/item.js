@@ -142,7 +142,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                                 : ""
                             }
                             onClick={() => {
-                              debugger;
+
                               const { screen_name, s_other_language } = screen;
                               redirectToScreen(
                                 screen,

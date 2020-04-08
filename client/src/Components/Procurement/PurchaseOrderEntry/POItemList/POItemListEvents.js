@@ -38,7 +38,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    debugger
+
     let sub_discount_percentage = 0;
     let sub_discount_amount = 0;
     let extended_cost = 0;
@@ -236,7 +236,7 @@ const itemchangeText = ($this, context, e) => {
           tax_percentage: e.selected.vat_percent
         });
 
-        debugger
+
         if (context !== undefined) {
           context.updateState({
             [name]: value,
@@ -331,7 +331,7 @@ const AddItems = ($this, context) => {
       type: "warning"
     });
   } else {
-    debugger
+
     let ItemInput = {
       completed: "N",
       phar_item_category: $this.state.phar_item_category,

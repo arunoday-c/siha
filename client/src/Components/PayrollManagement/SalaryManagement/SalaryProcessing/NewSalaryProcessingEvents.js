@@ -167,8 +167,6 @@ const FinalizeSalary = $this => {
       const employee_id = salaryprocess_header.map(o => {
         return o.employee_id;
       });
-
-      debugger
       const net_salary = salaryprocess_header.map(o => {
         return {
           net_salary: o.net_salary,

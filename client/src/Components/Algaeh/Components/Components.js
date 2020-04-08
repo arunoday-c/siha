@@ -135,7 +135,7 @@ class Components extends Component {
 
   deleteComponents() { }
   updateComponents(row) {
-    debugger
+
     algaehApiCall({
       uri: "/algaehMasters/updateAlgaehComponent",
       method: "PUT",
