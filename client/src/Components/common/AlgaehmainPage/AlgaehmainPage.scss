@@ -417,7 +417,9 @@ header {
   border-left: 1px solid darken($primary-color, 10%);
   margin: 0;
   margin-right: -15px;
+  background: $primary-color;
   cursor: pointer;
+
   .dropdown-menu {
     left: inherit;
     right: -1px;

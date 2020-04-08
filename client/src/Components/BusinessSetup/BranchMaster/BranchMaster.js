@@ -442,7 +442,7 @@ export default class BranchMaster extends Component {
     data.subDepts[index] = sub;
     const checkedStatus= data.subDepts.filter(f=>f.checked===true).length;
     const deptLength =data.subDepts.length;
-    debugger;
+    
     if(checkedStatus===deptLength){
       data.checked =true;
     }else if(checkedStatus===0){

@@ -10,7 +10,6 @@ import PnLTree from "./PnLTree";
 import { newAlgaehApi } from "../../../hooks";
 import { getYears } from "../../../utils/GlobalFunctions";
 import { handleFile } from "../FinanceReportEvents";
-import { Button } from "antd/es/radio";
 const yearList = getYears();
 
 export default function PnLReport({ layout, finOptions, organization, style }) {
@@ -208,6 +207,8 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
         return <ByCostCenter data={data} layout={layout} />;
       case "total":
         return <PnLTree data={data} layout={layout} style={style} />;
+      default:
+        break;
     }
   }
 
@@ -343,10 +344,10 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           </p>
         </div>
       ) : (
-        <>
-          <Content />
-        </>
-      )}
+          <>
+            <Content />
+          </>
+        )}
     </>
   );
 }

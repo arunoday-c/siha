@@ -168,9 +168,11 @@ const FinalizeSalary = $this => {
         return o.employee_id;
       });
 
+      debugger
       const net_salary = salaryprocess_header.map(o => {
         return {
           net_salary: o.net_salary,
+          gross_salary: o.gross_salary,
           total_paid_days: o.total_paid_days,
           employee_id: o.employee_id
         };

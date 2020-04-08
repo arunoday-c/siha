@@ -4,10 +4,10 @@ import { AlgaehTable } from "algaeh-react-components";
 import { Spin, Button } from "antd";
 import FilterComponent from "./FilterComponent";
 import VoucherDetails from "./VoucherDetails";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 export default memo(function QuickSearch(props) {
-  const location = useLocation();
+  // const location = useLocation();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);

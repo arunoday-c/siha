@@ -10,7 +10,7 @@ import { newAlgaehApi } from "../../hooks";
 import ToolBar from "./ToolBar";
 import ReportNavBar from "./ReportNavBar";
 import {
-  getBalanceSheet,
+  // getBalanceSheet,
   downloadExcel,
   handleFile
 } from "./FinanceReportEvents";
@@ -83,7 +83,7 @@ export default function FinanceReports() {
         }
       })
         .then(res => {
-          const { success, result } = res.data;
+          const { result } = res.data;
           setDates([moment(result.from_date), moment(result.to_date)]);
         })
         .catch(e => console.log(e.message));
@@ -102,30 +102,30 @@ export default function FinanceReports() {
   //   }
   // }, [selected, finOptions, dates]);
 
-  function loadReport(report) {
-    const { url, reportName, dates: inputDates } = report;
-    getBalanceSheet({
-      url: url,
-      inputParam: {
-        hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id,
-        from_date: inputDates[0],
-        to_date: inputDates[1]
-      }
-    })
-      .then(result => {
-        setData(result);
-        setLoading(false);
-      })
-      .catch(error => {
-        setData([]);
-        AlgaehMessagePop({
-          title: "error",
-          display: error.message
-        });
-        setLoading(false);
-      });
-  }
+  // function loadReport(report) {
+  //   const { url, reportName, dates: inputDates } = report;
+  //   getBalanceSheet({
+  //     url: url,
+  //     inputParam: {
+  //       hospital_id: finOptions.default_branch_id,
+  //       cost_center_id: finOptions.default_cost_center_id,
+  //       from_date: inputDates[0],
+  //       to_date: inputDates[1]
+  //     }
+  //   })
+  //     .then(result => {
+  //       setData(result);
+  //       setLoading(false);
+  //     })
+  //     .catch(error => {
+  //       setData([]);
+  //       AlgaehMessagePop({
+  //         title: "error",
+  //         display: error.message
+  //       });
+  //       setLoading(false);
+  //     });
+  // }
 
   function onExportExcel(reportType) {
     downloadExcel({

@@ -4394,7 +4394,7 @@ function UpdateProjectWisePayroll(options) {
 
         if (parseFloat(total_complete_hours) > 0) {
           cost =
-            parseFloat(net_salary_amt[0].net_salary) /
+            parseFloat(net_salary_amt[0].gross_salary) /
             parseFloat(total_complete_hours);
         } else {
           cost = 0;
