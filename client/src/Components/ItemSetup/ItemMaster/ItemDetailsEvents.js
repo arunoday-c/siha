@@ -298,7 +298,7 @@ const deleteUOM = ($this, row, rowId) => {
   let insertItemUomMap = $this.state.insertItemUomMap;
   let stocking_uom_id = $this.state.stocking_uom_id;
   const stocking_Uom = _.filter(detail_item_uom, f => {
-    return f.stocking_uom == "Y";
+    return f.stocking_uom === "Y";
   });
 
   if (stocking_Uom !== undefined && stocking_Uom.length > 0) {

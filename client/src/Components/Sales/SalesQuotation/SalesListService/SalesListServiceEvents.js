@@ -1,8 +1,7 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
-import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
 const UomchangeTexts = ($this, context, ctrl, e) => {

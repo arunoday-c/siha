@@ -1,7 +1,6 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./PatientRecall.scss";
 import {
-  // AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
@@ -9,12 +8,10 @@ import { AlgaehButton } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 // import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
-import Options from "../../Options.json";
 
 function PatientRecall() {
   const [departments, setDepartments] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [patients, setPatients] = useState([]);
   const today = moment().format("YYYY/MM/DD");
   const baseState = {
     sub_department_id: null,
@@ -78,12 +75,12 @@ function PatientRecall() {
     }
   }
 
-  function dateFormater(value) {
-    if (value !== null) {
-      return String(moment(value).format(Options.dateFormat));
-    }
-    // "DD-MM-YYYY"
-  }
+  // function dateFormater(value) {
+  //   if (value !== null) {
+  //     return String(moment(value).format(Options.dateFormat));
+  //   }
+  //   // "DD-MM-YYYY"
+  // }
 
   function handleInput(e) {
     const { name, value } = e.target;
@@ -93,41 +90,41 @@ function PatientRecall() {
     }));
   }
 
-  function loadPatients() {
-    const { provider_id, recall_start, sub_department_id } = inputs;
-    if (!sub_department_id && !provider_id && !recall_start) {
-      swalMessage({
-        title: "Department/Doctor/Date is mandatory to load data.",
-        type: "warning"
-      });
-      return undefined;
-    } else {
-      let inputObj = {
-        date_of_recall: recall_start,
-        provider_id,
-        sub_department_id
-      };
+  // function loadPatients() {
+  //   const { provider_id, recall_start, sub_department_id } = inputs;
+  //   if (!sub_department_id && !provider_id && !recall_start) {
+  //     swalMessage({
+  //       title: "Department/Doctor/Date is mandatory to load data.",
+  //       type: "warning"
+  //     });
+  //     return undefined;
+  //   } else {
+  //     let inputObj = {
+  //       date_of_recall: recall_start,
+  //       provider_id,
+  //       sub_department_id
+  //     };
 
-      algaehApiCall({
-        uri: "/doctorsWorkBench/getFollowUp",
-        method: "GET",
-        data: inputObj,
-        onSuccess: response => {
-          if (response.data.success) {
-            this.setState({
-              patients: response.data.records
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    }
-  }
+  //     algaehApiCall({
+  //       uri: "/doctorsWorkBench/getFollowUp",
+  //       method: "GET",
+  //       data: inputObj,
+  //       onSuccess: response => {
+  //         if (response.data.success) {
+  //           this.setState({
+  //             patients: response.data.records
+  //           });
+  //         }
+  //       },
+  //       onFailure: error => {
+  //         swalMessage({
+  //           title: error.message,
+  //           type: "error"
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   const fakeData = [
     {

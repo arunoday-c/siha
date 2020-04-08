@@ -1,20 +1,14 @@
 //PatientDetals
-
-"use strict";
 import axios from "axios";
 import {
-  setToken,
-  getLocalIP,
   collectIP,
   algaehApiCall
 } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
 import {
   successfulMessage,
-  // AlgaehCloseContainer,
   encrypter
 } from "../../utils/GlobalFunctions";
-import { setItem } from "algaeh-react-components/storage";
 export function getTokenDetals(options) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
@@ -40,7 +34,7 @@ export function getTokenDetals(options) {
     //     : _myRoute.url;
     const final_url = `${_localaddress}${
       isProxy ? _myRoute.path : `:${_myRoute.port}`
-    }${auth_url}`;
+      }${auth_url}`;
     axios({
       method: "GET",
       url: final_url,

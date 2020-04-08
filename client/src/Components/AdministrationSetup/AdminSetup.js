@@ -5,7 +5,7 @@ import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
 import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
 import AuditLog from "./AuditLog/AuditLog";
-import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
+// import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
 // import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";

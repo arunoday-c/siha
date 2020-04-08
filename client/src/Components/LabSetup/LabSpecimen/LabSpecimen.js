@@ -13,8 +13,7 @@ import {
   changeTexts,
   onchangegridcol,
   insertLabSpecimen,
-  updateLabSpecimen,
-  deleteLabSpecimen,
+  updateLabSpecimen,  
   UrineSpecimen
 } from "./LabSpecimenEvents";
 

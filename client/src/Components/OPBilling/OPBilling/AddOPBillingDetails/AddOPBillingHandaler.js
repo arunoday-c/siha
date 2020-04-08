@@ -239,7 +239,7 @@ const onchangegridcol = ($this, row, e) => {
 const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let oldvalue = e.oldvalue || e.target.oldvalue;
+  // let oldvalue = e.oldvalue || e.target.oldvalue;
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
   // if (value === undefined) {

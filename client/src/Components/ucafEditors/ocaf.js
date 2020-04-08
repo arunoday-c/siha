@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./udocaf.scss";
 import { AlagehFormGroup, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
-import _ from "lodash";
+// import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
 
@@ -104,7 +104,7 @@ export default class OcafEditor extends Component {
 
 
   render() {
-    const _isPrimary = "primary";
+    // const _isPrimary = "primary";
     // const _hims_f_ocaf_header = this.props.dataProps.hims_f_ocaf_header[0];
     // const _insurnce = _.find(
     //   this.props.dataProps.hims_f_ocaf_insurance_details,
@@ -275,158 +275,158 @@ export default class OcafEditor extends Component {
                             </div>
                           </div>
                         ) : (
-                          <div className="col-12">
-                            <div className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "Insured Name",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.patient_full_name,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "ID. Card No.",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.primary_card_number,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col-4 form-group" }}
-                                label={{
-                                  forceLabel: "Sex",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.patient_gender,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />{" "}
-                              <AlagehFormGroup
-                                div={{ className: "col-4 form-group" }}
-                                label={{
-                                  forceLabel: "Age",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.age_in_years,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />{" "}
-                              <AlagehFormGroup
-                                div={{ className: "col-4 form-group" }}
-                                label={{
-                                  forceLabel: "Class",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.class,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "Policy Holder",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value:
-                                    this.state.insurance_holder === undefined
-                                      ? this.state.insurance_holder === ""
-                                        ? this.state.patient_full_name
-                                        : this.state.insurance_holder
-                                      : this.state.insurance_holder,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />{" "}
-                              <AlagehFormGroup
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "Policy No.",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "",
-                                  value: this.state.primary_policy_num,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />
-                              <AlgaehDateHandler
-                                div={{ className: "col-6" }}
-                                label={{
-                                  forceLabel: "Expiry Date",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: ""
-                                }}
-                                value={this.state.primary_effective_end_date}
-                                maxDate={new Date()}
-                                events={{}}
-                              />
-                              <AlagehFormGroup
-                                div={{ className: "col-6 form-group" }}
-                                label={{
-                                  forceLabel: "Approval",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "insurance_approved",
-                                  value: this.state.insurance_approved,
-                                  events: {},
-                                  option: {
-                                    type: "text"
-                                  }
-                                }}
-                              />
+                            <div className="col-12">
+                              <div className="row">
+                                <AlagehFormGroup
+                                  div={{ className: "col-6 form-group" }}
+                                  label={{
+                                    forceLabel: "Insured Name",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.patient_full_name,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col-6 form-group" }}
+                                  label={{
+                                    forceLabel: "ID. Card No.",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.primary_card_number,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col-4 form-group" }}
+                                  label={{
+                                    forceLabel: "Sex",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.patient_gender,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />{" "}
+                                <AlagehFormGroup
+                                  div={{ className: "col-4 form-group" }}
+                                  label={{
+                                    forceLabel: "Age",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.age_in_years,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />{" "}
+                                <AlagehFormGroup
+                                  div={{ className: "col-4 form-group" }}
+                                  label={{
+                                    forceLabel: "Class",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.class,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col-6 form-group" }}
+                                  label={{
+                                    forceLabel: "Policy Holder",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value:
+                                      this.state.insurance_holder === undefined
+                                        ? this.state.insurance_holder === ""
+                                          ? this.state.patient_full_name
+                                          : this.state.insurance_holder
+                                        : this.state.insurance_holder,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />{" "}
+                                <AlagehFormGroup
+                                  div={{ className: "col-6 form-group" }}
+                                  label={{
+                                    forceLabel: "Policy No.",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "",
+                                    value: this.state.primary_policy_num,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />
+                                <AlgaehDateHandler
+                                  div={{ className: "col-6" }}
+                                  label={{
+                                    forceLabel: "Expiry Date",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: ""
+                                  }}
+                                  value={this.state.primary_effective_end_date}
+                                  maxDate={new Date()}
+                                  events={{}}
+                                />
+                                <AlagehFormGroup
+                                  div={{ className: "col-6 form-group" }}
+                                  label={{
+                                    forceLabel: "Approval",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "insurance_approved",
+                                    value: this.state.insurance_approved,
+                                    events: {},
+                                    option: {
+                                      type: "text"
+                                    }
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                       </div>
                     </div>
                   </div>

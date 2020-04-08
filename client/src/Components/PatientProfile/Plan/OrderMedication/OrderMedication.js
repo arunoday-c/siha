@@ -18,17 +18,14 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  texthandle,
-  genericnamehandle,
+  texthandle,  
   itemhandle,
   AddItems,
   deleteItems,
   datehandle,
-  SaveMedication,
-  printPrescription,
+  SaveMedication,  
   dateFormater,
-  numberhandle,
-  calcuateDispense,
+  numberhandle,  
   updateItems,
   onchangegridcol,
   EditGrid,
@@ -40,8 +37,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
-import { Label } from "semantic-ui-react";
-import ButtonType from "../../../Wrapper/algaehButton";
+
 import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
 class OrderMedication extends Component {
   constructor(props) {
@@ -217,7 +213,6 @@ class OrderMedication extends Component {
       item_category_id: null,
       item_group_id: null,
       pre_approval: null,
-      instructions: null,
       generic_name: "",
       item_description: "",
       instructions: "",
@@ -227,7 +222,7 @@ class OrderMedication extends Component {
   };
 
   clearAction = e => {
-    {
+    
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -247,7 +242,7 @@ class OrderMedication extends Component {
           );
         }
       });
-    }
+    
   };
 
   render() {

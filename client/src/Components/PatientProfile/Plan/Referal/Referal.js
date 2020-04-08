@@ -1,8 +1,7 @@
 import React, { PureComponent } from "react";
 import { withRouter } from "react-router-dom";
 import {
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup  
 } from "../../../Wrapper/algaehWrapper";
 import "./Referal.scss";
 import "../../../../styles/site.scss";

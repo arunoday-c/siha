@@ -16,7 +16,6 @@ export default {
             hospital_name: null,
             payment_terms: null,
             customer_id: null,
-            payment_terms: null,
             sales_order_number: null,
             sales_quotation_number: null,
             invoice_entry_detail_item: [],

@@ -1,5 +1,5 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 function getInputDates(inputs) {
   let yearMonth = inputs.year + "-" + inputs.month + "-01";
@@ -40,7 +40,7 @@ export function getEmployeesForProjectRoster(inputs) {
           employee_group_id: group_id
         },
         onSuccess: res => {
-          const { success, records, message } = res.data;
+          const { success, records } = res.data;
           if (success === true) {
             resolve({ records, fromDate, toDate });
           } else {
@@ -85,7 +85,7 @@ export function getProjects(hospital_id) {
 export function createReport(input, options) {
   return new Promise((resolve, reject) => {
     try {
-      const settings = { header: undefined, footer: undefined, ...options };
+      // const settings = { header: undefined, footer: undefined, ...options };
       algaehApiCall({
         uri: "/printReportRaw",
         skipParse: true,

@@ -1,7 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
+// import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -550,49 +550,47 @@ const deletePODetail = ($this, context, row) => {
       }
     }
   } else {
-    {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
 
-      inventory_stock_detail.splice(row.rowIdx, 1);
+    inventory_stock_detail.splice(row.rowIdx, 1);
 
-      sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.extended_price)
+    sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
+
+    net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+    total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
+    detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
+      parseFloat(s.sub_discount_amount)
+    );
+
+    if (inventory_stock_detail.length === 0) {
+      assignDataandclear(
+        $this,
+        context,
+        inventory_stock_detail,
+        "inventory_stock_detail"
       );
-
-      net_total = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.net_extended_cost)
-      );
-
-      net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.total_amount)
-      );
-
-      total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.tax_amount)
-      );
-
-      detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
-        parseFloat(s.sub_discount_amount)
-      );
-
-      if (inventory_stock_detail.length === 0) {
-        assignDataandclear(
-          $this,
-          context,
-          inventory_stock_detail,
-          "inventory_stock_detail"
-        );
-      } else {
-        if (context !== undefined) {
-          context.updateState({
-            inventory_stock_detail: inventory_stock_detail,
-            sub_total: sub_total,
-            net_total: net_total,
-            net_payable: net_payable,
-            total_tax: total_tax,
-            detail_discount: detail_discount
-          });
-        }
+    } else {
+      if (context !== undefined) {
+        context.updateState({
+          inventory_stock_detail: inventory_stock_detail,
+          sub_total: sub_total,
+          net_total: net_total,
+          net_payable: net_payable,
+          total_tax: total_tax,
+          detail_discount: detail_discount
+        });
       }
     }
   }

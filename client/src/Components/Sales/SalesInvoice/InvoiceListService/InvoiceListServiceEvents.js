@@ -1,4 +1,4 @@
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";

@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../utils/algaehApiCall";
+import {  algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatientProfile = $this => {
   const { current_patient, episode_id } = Window.global;

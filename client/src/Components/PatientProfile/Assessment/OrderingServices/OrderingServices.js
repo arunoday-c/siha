@@ -455,10 +455,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                (f) =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -475,10 +475,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                (f) =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -502,9 +502,9 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -521,9 +521,9 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -764,10 +764,10 @@ class OrderingServices extends PureComponent {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  (f) =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                (f) =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -796,9 +796,9 @@ class OrderingServices extends PureComponent {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  (f) =>
-                                    f.hims_d_services_id === row.services_id
-                                );
+                                (f) =>
+                                  f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>

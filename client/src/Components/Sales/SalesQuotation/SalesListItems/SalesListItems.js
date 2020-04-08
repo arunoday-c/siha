@@ -24,7 +24,6 @@ import {
     qtyonchangegridcol,
 } from "./SalesListItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class SalesListItems extends Component {

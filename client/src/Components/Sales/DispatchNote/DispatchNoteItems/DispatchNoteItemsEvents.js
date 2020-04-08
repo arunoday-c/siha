@@ -1,5 +1,5 @@
 import moment from "moment";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage } from "../../../../utils/algaehApiCall.js";
 // import swal from "sweetalert2";
 import Options from "../../../../Options.json";
 import _ from "lodash";

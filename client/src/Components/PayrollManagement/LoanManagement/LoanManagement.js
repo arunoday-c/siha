@@ -61,8 +61,8 @@ class LoanManagement extends Component {
   }
 }
 
-function ChildrenItem({ children }) {
-  return <div className="loan-management-section">{children}</div>;
-}
+// function ChildrenItem({ children }) {
+//   return <div className="loan-management-section">{children}</div>;
+// }
 
 export default LoanManagement;

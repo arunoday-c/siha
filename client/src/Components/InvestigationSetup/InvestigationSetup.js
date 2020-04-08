@@ -18,7 +18,7 @@ import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
 import InvestigationComments from "./InvestigationComments/InvestigationComments";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 class InvestigationSetup extends Component {
   constructor(props) {

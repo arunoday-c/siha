@@ -146,31 +146,6 @@ class Summary extends Component {
             .value()
         : [];
 
-    let _pat_socialHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.social
-        : [];
-
-    // let _pat_medicalHistory =
-    //   this.props.patient_history !== undefined
-    //     ? this.props.patient_history.medical
-    //     : [];
-    //
-    // let _pat_surgicalHistory =
-    //   this.props.patient_history !== undefined
-    //     ? this.props.patient_history.surgical
-    //     : [];
-    //
-    // let _pat_familyHistory =
-    //   this.props.patient_history !== undefined
-    //     ? this.props.patient_history.family
-    //     : [];
-    //
-    // let _pat_birthHistory =
-    //   this.props.patient_history !== undefined
-    //     ? this.props.patient_history.birth
-    //     : [];
-    //
     let _pat_patientDiagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis

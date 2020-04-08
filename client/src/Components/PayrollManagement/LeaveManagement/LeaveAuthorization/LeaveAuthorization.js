@@ -15,7 +15,6 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
 import Socket from "../../../../sockets";
 import { MainContext } from "algaeh-react-components/context";
-import { AlgaehSecurityElement } from "algaeh-react-components";
 export default class LeaveAuthorization extends Component {
   constructor(props) {
     super(props);

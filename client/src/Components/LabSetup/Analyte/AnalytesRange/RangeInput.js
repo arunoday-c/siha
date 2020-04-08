@@ -39,18 +39,18 @@ export default function RangeInput({ addAnalyte, analyteType }) {
     addAnalyte({ ...inputs });
     setinputs(baseInput);
   }
-  function onLostFocus(e) {
-    const _target = e.target;
-    const { value } = _target;
-    const parent = _target.parentElement;
-    const opposite = parent.getAttribute("opposite");
-    const oppositeValue =
-      typeof inputs["opposite"] === "string"
-        ? parseFloat(inputs["opposite"])
-        : inputs["opposite"];
-    const currentValue = typeof value === "string" ? parseFloat(value) : value;
-    console.log("value", value);
-  }
+  // function onLostFocus(e) {
+  //   const _target = e.target;
+  //   const { value } = _target;
+  //   const parent = _target.parentElement;
+  //   const opposite = parent.getAttribute("opposite");
+  //   const oppositeValue =
+  //     typeof inputs["opposite"] === "string"
+  //       ? parseFloat(inputs["opposite"])
+  //       : inputs["opposite"];
+  //   const currentValue = typeof value === "string" ? parseFloat(value) : value;
+  //   console.log("value", value);
+  // }
   return (
     <div className="row" data-validate="analyte_range_details">
       <AlagehAutoComplete
@@ -317,21 +317,21 @@ export default function RangeInput({ addAnalyte, analyteType }) {
           }}
         />
       ) : (
-        <AlagehFormGroup
-          div={{ className: "col" }}
-          label={{
-            forceLabel: "Text"
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "text_value",
-            value: inputs.text_value,
-            events: {
-              onChange: handleChange
-            }
-          }}
-        />
-      )}
+            <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Text"
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "text_value",
+                value: inputs.text_value,
+                events: {
+                  onChange: handleChange
+                }
+              }}
+            />
+          )}
 
       <div className="col" style={{ padding: 0 }}>
         <button

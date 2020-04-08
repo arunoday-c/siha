@@ -127,8 +127,8 @@ class StockAdjustment extends Component {
                 <h6>
                   {this.state.adjustment_date
                     ? moment(this.state.adjustment_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -408,8 +408,8 @@ class StockAdjustment extends Component {
                         ? this.state.location_type === "WH"
                           ? "Warehouse"
                           : this.state.location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                            ? "Main Store"
+                            : "Sub Store"
                         : "----------"}
                     </h6>
                   </div>
@@ -462,7 +462,6 @@ class StockAdjustment extends Component {
                         item_description: "",
                         adjustment_type: null,
                         reason: null,
-                        uom_id: null,
                         sales_uom: null,
                         qtyhand: 0,
                         sales_price: 0
@@ -573,75 +572,75 @@ class StockAdjustment extends Component {
                     }}
                   />
                   {this.state.adjustment_type === "IQ" ||
-                  this.state.adjustment_type === "DQ" ||
-                  this.state.adjustment_type === "BI" ||
-                  this.state.adjustment_type === "BD" ? (
-                    <AlagehFormGroup
-                      div={{
-                        className: "col-6 form-group mandatory"
-                      }}
-                      label={{
-                        forceLabel: "Adjust Qty",
-                        isImp:
-                          this.state.adjustment_type === "IQ" ||
-                          this.state.adjustment_type === "DQ" ||
-                          this.state.adjustment_type === "BI" ||
-                          this.state.adjustment_type === "BD"
-                            ? true
-                            : false
-                      }}
-                      textBox={{
-                        number: {
-                          allowNegative: false,
-                          thousandSeparator: ","
-                        },
-                        className: "txt-fld",
-                        name: "adjust_qty",
-                        value: this.state.adjust_qty,
-                        dontAllowKeys: ["-", "e"],
-                        events: {
-                          onChange: adjustQtyHandaler.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
-                  ) : null}
+                    this.state.adjustment_type === "DQ" ||
+                    this.state.adjustment_type === "BI" ||
+                    this.state.adjustment_type === "BD" ? (
+                      <AlagehFormGroup
+                        div={{
+                          className: "col-6 form-group mandatory"
+                        }}
+                        label={{
+                          forceLabel: "Adjust Qty",
+                          isImp:
+                            this.state.adjustment_type === "IQ" ||
+                              this.state.adjustment_type === "DQ" ||
+                              this.state.adjustment_type === "BI" ||
+                              this.state.adjustment_type === "BD"
+                              ? true
+                              : false
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          className: "txt-fld",
+                          name: "adjust_qty",
+                          value: this.state.adjust_qty,
+                          dontAllowKeys: ["-", "e"],
+                          events: {
+                            onChange: adjustQtyHandaler.bind(this, this)
+                          },
+                          others: {
+                            disabled: this.state.dataExists
+                          }
+                        }}
+                      />
+                    ) : null}
 
                   {this.state.adjustment_type === "IA" ||
-                  this.state.adjustment_type === "DA" ||
-                  this.state.adjustment_type === "BI" ||
-                  this.state.adjustment_type === "BD" ? (
-                    <AlagehFormGroup
-                      div={{
-                        className: "col-6 form-group mandatory"
-                      }}
-                      label={{
-                        forceLabel: "Adjust Amt.",
-                        isImp:
-                          this.state.adjustment_type === "IA" ||
-                          this.state.adjustment_type === "DA" ||
-                          this.state.adjustment_type === "BI" ||
-                          this.state.adjustment_type === "BD"
-                            ? true
-                            : false
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "adjust_amount",
-                        value: this.state.adjust_amount,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.dataExists,
-                          onBlur: adjustAmtHandaler.bind(this, this)
-                        }
-                      }}
-                    />
-                  ) : null}
+                    this.state.adjustment_type === "DA" ||
+                    this.state.adjustment_type === "BI" ||
+                    this.state.adjustment_type === "BD" ? (
+                      <AlagehFormGroup
+                        div={{
+                          className: "col-6 form-group mandatory"
+                        }}
+                        label={{
+                          forceLabel: "Adjust Amt.",
+                          isImp:
+                            this.state.adjustment_type === "IA" ||
+                              this.state.adjustment_type === "DA" ||
+                              this.state.adjustment_type === "BI" ||
+                              this.state.adjustment_type === "BD"
+                              ? true
+                              : false
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "adjust_amount",
+                          value: this.state.adjust_amount,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            disabled: this.state.dataExists,
+                            onBlur: adjustAmtHandaler.bind(this, this)
+                          }
+                        }}
+                      />
+                    ) : null}
 
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group mandatory" }}
@@ -714,7 +713,7 @@ class StockAdjustment extends Component {
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].name
                                       : ""}
                                   </span>
@@ -803,9 +802,9 @@ class StockAdjustment extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onDelete: rows => {}, //deleteDeptUser.bind(this, this),
-                            onEdit: row => {},
-                            onDone: rows => {} //updateDeptUser.bind(this, this)
+                            onDelete: rows => { }, //deleteDeptUser.bind(this, this),
+                            onEdit: row => { },
+                            onDone: rows => { } //updateDeptUser.bind(this, this)
                           }}
                         />
                       </div>

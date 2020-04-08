@@ -133,7 +133,7 @@ class StaffCashCollection extends Component {
     let status_suffix = "_status";
 
     //getting the payment mode
-    const [_, mode] = name.split("_");
+    const [ mode] = name.split("_");
 
     if (value && value > 0) {
       let diff = this.state[exp_prefix + mode] - value;

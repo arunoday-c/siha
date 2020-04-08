@@ -11,8 +11,7 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import {
   texthandle,
-  datehandle,
-  accomodationProvided,
+  datehandle,  
   otEntitleHandaler,
   employeeStatusHandler,
   dateFormater,
@@ -23,8 +22,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-import { MainContext } from "algaeh-react-components/context";
-import _ from "lodash";
+
 
 class OfficalDetails extends Component {
   constructor(props) {

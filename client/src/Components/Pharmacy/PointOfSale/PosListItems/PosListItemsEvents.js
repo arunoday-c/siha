@@ -166,9 +166,7 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (name === "quantity") {
-    let required_qty_stock =
-      parseFloat(value) * parseFloat($this.state.conversion_factor);
+  if (name === "quantity") {    
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",

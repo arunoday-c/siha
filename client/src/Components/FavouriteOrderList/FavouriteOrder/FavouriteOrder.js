@@ -14,7 +14,6 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import FavouriteOrderEvent from "./FavouriteOrderEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import GlobalVariables from "../../../utils/GlobalVariables";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import _ from "lodash";
@@ -181,9 +180,7 @@ class FavouriteOrder extends PureComponent {
                     label={{ forceLabel: "Search Investigation" }}
                     title="Search Investigation"
                     id="service_id_search"
-                    template={({ service_name, service_type }) => {
-                      let properStyle;
-
+                    template={({ service_name, service_type }) => {                      
                       return (
                         <div className={`row resultSecStyles`}>
                           <div className="col-12 padd-10">

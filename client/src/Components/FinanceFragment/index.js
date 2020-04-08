@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { getCookie, getLocalIP, getToken } from "../../utils/algaehApiCall";
 
 export default function FinanceFragment(props) {
   const [Component, setComp] = useState(null);

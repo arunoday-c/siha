@@ -21,12 +21,9 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler,
   Validations,
-  // countertexthandle,
   getCashiersAndShiftMAP
 } from "./AdvanceModalHandaler";
 

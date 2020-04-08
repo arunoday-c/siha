@@ -23,7 +23,6 @@ import "./InvItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {

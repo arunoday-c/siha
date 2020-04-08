@@ -15,7 +15,6 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import Options from "../../../Options.json";
-import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
 
 class InvConsumptionEntry extends Component {
@@ -159,8 +158,8 @@ class InvConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -169,19 +168,19 @@ class InvConsumptionEntry extends Component {
             printArea={
               this.state.hims_f_inventory_consumption_header_id !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            ConsumptionItemsEvents().generateConsumptionRecpt(
-                              this.state.consumption_number
-                            );
-                          }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          ConsumptionItemsEvents().generateConsumptionRecpt(
+                            this.state.consumption_number
+                          );
                         }
                       }
-                    ]
-                  }
+                    }
+                  ]
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -224,8 +223,8 @@ class InvConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>

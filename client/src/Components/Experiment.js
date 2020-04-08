@@ -81,7 +81,7 @@ class Experiment extends Component {
         <button
           className="btn btn-primary"
           onClick={() => {
-            let that = this;
+            // let that = this;
             algaehApiCall({
               uri: "/excelReport", //"/report",
               method: "GET",
@@ -286,8 +286,8 @@ class Experiment extends Component {
                 // );
                 const urlBlob = URL.createObjectURL(res.data);
                 const documentName = "Algaeh Merdge"
-      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
-      window.open(origin);
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
+                window.open(origin);
                 ;
               }
             });

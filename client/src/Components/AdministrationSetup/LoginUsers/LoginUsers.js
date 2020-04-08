@@ -374,8 +374,7 @@ class LoginUsers extends Component {
             .catch(() => {
               this.setState({
                 loaduserNameCheck: false,
-                checkavilablity: false,
-                loaduserNameCheck: false
+                checkavilablity: false                
               });
             });
           clearInterval(this.userNameIntervalId);

@@ -4,12 +4,8 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
-import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
-import {
-  AlgaehOpenContainer,
-  getYears
-} from "../../../../../utils/GlobalFunctions";
+import { getYears } from "../../../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../../../Wrapper/globalSearch";
 
 import {
@@ -55,7 +51,7 @@ export default function Filter(props) {
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
   const [atStartType, setATStartType] = useState("");
-  const [onlyExcel, setOnlyExcel] = useState("");
+  // const [onlyExcel, setOnlyExcel] = useState("");
   const [upload, setUpload] = useState("Y");
   const [selYear, setSelYear] = useState("");
   const [loadYear, setLoadYear] = useState([]);
@@ -111,8 +107,8 @@ export default function Filter(props) {
         const searchYear =
           month === "01"
             ? moment(`01-01-${selYear}`, "DD-MM-YYYY")
-                .add(-1, "year")
-                .format("YYYY")
+              .add(-1, "year")
+              .format("YYYY")
             : selYear;
         maxDate = `${selYear}-${month}-${endDt}`;
         let prevMonths = moment(maxDate, "YYYY-MM-DD")
@@ -435,8 +431,8 @@ export default function Filter(props) {
               <i className="fas fa-file-download"></i> Download
             </span>
           ) : (
-            <i className="fas fa-spinner fa-spin" />
-          )}
+              <i className="fas fa-spinner fa-spin" />
+            )}
         </button>
         <button
           onClick={() => {
@@ -466,8 +462,8 @@ export default function Filter(props) {
               <i className="fas fa-eye"></i> Preview
             </span>
           ) : (
-            <i className="fas fa-spinner fa-spin" />
-          )}
+              <i className="fas fa-spinner fa-spin" />
+            )}
         </button>
 
         <button

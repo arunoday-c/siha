@@ -239,9 +239,7 @@ const getHospitalDetails = $this => {
 };
 
 const getCashiersAndShiftMAP = ($this, type) => {
-  // AlgaehLoader({ show: true });
-  let year = moment().format("YYYY");
-  let month = moment().format("M");
+
   let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
@@ -444,7 +442,7 @@ const getCtrlCode = ($this, patcode, row) => {
         if (
           hospitaldetails.local_vat_applicable === "N" &&
           hospitaldetails.default_nationality ===
-            data.patientRegistration.nationality_id
+          data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
         }

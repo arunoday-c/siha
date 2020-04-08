@@ -1,5 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";

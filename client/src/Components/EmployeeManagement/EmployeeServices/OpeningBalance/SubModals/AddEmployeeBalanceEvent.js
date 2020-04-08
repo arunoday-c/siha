@@ -1,4 +1,3 @@
-import React from "react";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../../../Wrapper/globalSearch";

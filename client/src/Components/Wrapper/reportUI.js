@@ -117,7 +117,7 @@ export default class ReportUI extends Component {
         .forEach(item => {
           item.removeEventListener(
             "scroll",
-            function(e) {
+            function (e) {
               e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
               e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
             },
@@ -186,7 +186,7 @@ export default class ReportUI extends Component {
       document
         .querySelectorAll("[algaeh-report-table='true']")
         .forEach(item => {
-          item.addEventListener("scroll", function(e) {
+          item.addEventListener("scroll", function (e) {
             e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
             e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
           });
@@ -197,7 +197,7 @@ export default class ReportUI extends Component {
     this.setState({ numPages });
   }
   generateReport(source, e, loader) {
-    let ths = this;
+    // let ths = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -233,9 +233,9 @@ export default class ReportUI extends Component {
                 labelValue === ""
                   ? {}
                   : {
-                      label: label.replace("*", ""),
-                      labelValue: labelValue
-                    };
+                    label: label.replace("*", ""),
+                    labelValue: labelValue
+                  };
               parameters.push({
                 name: item.name,
                 value: data,
@@ -280,7 +280,7 @@ export default class ReportUI extends Component {
                 a.href = urlBlob;
                 a.download = `${that.props.options.report.displayName}.${
                   report_type === "excel" ? "xlsx" : "pdf"
-                }`;
+                  }`;
                 a.click();
               }
 
@@ -324,7 +324,7 @@ export default class ReportUI extends Component {
                 loading: false
               });
               var reader = new FileReader();
-              reader.onload = function() {
+              reader.onload = function () {
                 //AlgaehLoader({ show: false });
                 const parse = JSON.parse(reader.result);
                 swalMessage({
@@ -432,7 +432,7 @@ export default class ReportUI extends Component {
     } else {
       let _inputText = "";
       const _inputBox = document.getElementsByName(e.name);
-      if (_inputBox.length != 0) {
+      if (_inputBox.length !== 0) {
         _inputText = _inputBox[0].value;
       }
 
@@ -797,31 +797,31 @@ export default class ReportUI extends Component {
             <div />
             <div>
               {this.props.options !== undefined &&
-              this.props.options.plotUI !== undefined ? (
-                <React.Fragment>
-                  <div id="report_generation_interface">
-                    {/* {this.props.options.plotUI.paramters()} */}
+                this.props.options.plotUI !== undefined ? (
+                  <React.Fragment>
+                    <div id="report_generation_interface">
+                      {/* {this.props.options.plotUI.paramters()} */}
 
-                    <div
-                      className="col-lg-12 margin-top-15"
-                      data-validate="parameters-data"
-                    >
-                      <h5>
-                        <b>Apply Filters</b>
-                      </h5>
-                      <div className="row">
-                        {this.generateInputParameters()}
+                      <div
+                        className="col-lg-12 margin-top-15"
+                        data-validate="parameters-data"
+                      >
+                        <h5>
+                          <b>Apply Filters</b>
+                        </h5>
+                        <div className="row">
+                          {this.generateInputParameters()}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* <div className="col-12">
+                      {/* <div className="col-12">
                       <div className="row reportActionBtns">
                       
                       </div>
                     </div> */}
-                  </div>
-                </React.Fragment>
-              ) : null}
+                    </div>
+                  </React.Fragment>
+                ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
             <div

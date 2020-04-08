@@ -123,7 +123,6 @@ const InvoiceSearch = ($this, e) => {
         data: {
           hims_f_sales_invoice_header_id: row.hims_f_sales_invoice_header_id
         },
-        method: "GET",
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
@@ -162,7 +161,6 @@ const ClearData = ($this, e) => {
     net_total: null,
     return_total: null,
     inv_is_posted: "N",
-    tax_amount: null,
     tax_amount: null,
     discount_amount: null,
 

@@ -17,11 +17,10 @@ import {
   getCtrlCode
 } from "./InvoiceGenerationHandaler";
 import "./InvoiceGeneration.scss";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
-import AlgaehReport from "../../Wrapper/printReports.js";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvoiceGeneration extends Component {

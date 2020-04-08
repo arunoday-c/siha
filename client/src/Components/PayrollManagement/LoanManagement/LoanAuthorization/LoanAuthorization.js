@@ -14,7 +14,6 @@ import Enumerable from "linq";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LoanAuthorization extends Component {
   constructor(props) {
