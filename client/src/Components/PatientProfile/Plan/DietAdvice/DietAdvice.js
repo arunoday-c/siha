@@ -86,13 +86,13 @@ class DietAdvice extends Component {
           />
 
           <div className="col-2 actions" style={{ paddingTop: "3.5vh" }}>
-            <a
+            <button
               // href="javascript"
               className="btn btn-primary btn-circle active"
               onClick={addDiet.bind(this, this)}
             >
               <i className="fas fa-plus" />
-            </a>
+            </button>
           </div>
         </div>
 
@@ -154,8 +154,8 @@ class DietAdvice extends Component {
                       this.props.dietmaster === undefined
                         ? []
                         : this.props.dietmaster.filter(
-                            f => f.hims_d_diet_master_id === row.diet_id
-                          );
+                          f => f.hims_d_diet_master_id === row.diet_id
+                        );
 
                     return (
                       <span>

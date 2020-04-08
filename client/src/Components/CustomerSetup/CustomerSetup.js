@@ -794,7 +794,7 @@ class CustomerSetup extends Component {
               <h3 className="caption-subject">Customer Master</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 className="btn btn-primary btn-circle active"
                 onClick={() => {
                   this.setState({
@@ -804,7 +804,7 @@ class CustomerSetup extends Component {
                 }}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
             </div>
           </div>
 

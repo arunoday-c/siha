@@ -222,7 +222,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeEducation();
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -250,7 +250,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeEducation();
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
   updateEmployeeWorkExperience(data) {
@@ -277,7 +277,7 @@ class SelfPersonalDetails extends Component {
           this.getEmployeeWorkExp();
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -387,7 +387,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -406,7 +406,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -460,7 +460,7 @@ class SelfPersonalDetails extends Component {
               this.getEmployeeWorkExp();
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -694,7 +694,7 @@ class SelfPersonalDetails extends Component {
               });
             }
           },
-          onFailure: err => {}
+          onFailure: err => { }
         });
       }
     });
@@ -753,7 +753,7 @@ class SelfPersonalDetails extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => { }
     });
   }
 
@@ -838,7 +838,7 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Basic Details</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
@@ -851,7 +851,7 @@ class SelfPersonalDetails extends Component {
                         this.state.editBasic ? "fas fa-times" : "fas fa-pen"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.editBasic ? (
@@ -1187,7 +1187,7 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Family Details</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
@@ -1200,7 +1200,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addFamily ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addFamily ? (
@@ -1342,16 +1342,16 @@ class SelfPersonalDetails extends Component {
                                 {row.dependent_type === "SP"
                                   ? "Spouse"
                                   : row.dependent_type === "FT"
-                                  ? "Father"
-                                  : row.dependent_type === "MT"
-                                  ? "Mother"
-                                  : row.dependent_type === "GU"
-                                  ? "Guardian"
-                                  : row.dependent_type === "SO"
-                                  ? "Son"
-                                  : row.dependent_type === "DG"
-                                  ? "Daughter"
-                                  : "------"}
+                                    ? "Father"
+                                    : row.dependent_type === "MT"
+                                      ? "Mother"
+                                      : row.dependent_type === "GU"
+                                        ? "Guardian"
+                                        : row.dependent_type === "SO"
+                                          ? "Son"
+                                          : row.dependent_type === "DG"
+                                            ? "Daughter"
+                                            : "------"}
                               </span>
                             );
                           },
@@ -1477,7 +1477,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeDependentDetails.bind(
                           this
                         ),
@@ -1499,7 +1499,7 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Identification Details</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
@@ -1512,7 +1512,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addIdDetails ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
 
@@ -1784,7 +1784,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteIdDetails.bind(this),
                         onDone: this.updateIdDetails.bind(this)
                       }}
@@ -1805,7 +1805,7 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Work Experience</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     onClick={this.showEditCntr.bind(
                       this,
                       "addWorkExp",
@@ -1818,7 +1818,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addWorkExp ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addWorkExp ? (
@@ -2147,7 +2147,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmpWrkExp.bind(this),
                         onDone: this.updateEmployeeWorkExperience.bind(this)
                       }}
@@ -2168,7 +2168,7 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Education Details</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     onClick={this.showEditCntr.bind(this, "addEdu", empDetails)}
                     className="btn btn-other btn-circle"
                   >
@@ -2177,7 +2177,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addEdu ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addEdu ? (
@@ -2355,8 +2355,8 @@ class SelfPersonalDetails extends Component {
                                 {row.qualitfication_type === "FT"
                                   ? "Full Time"
                                   : row.qualitfication_type === "PT"
-                                  ? "Part Time"
-                                  : null}
+                                    ? "Part Time"
+                                    : null}
                               </span>
                             );
                           },
@@ -2453,7 +2453,7 @@ class SelfPersonalDetails extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteEmployeeEdu.bind(this),
                         onDone: this.updateEmployeeEdu.bind(this)
                       }}

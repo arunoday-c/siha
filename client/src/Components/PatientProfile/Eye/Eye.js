@@ -139,7 +139,7 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Refraction</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "Refraction")}
@@ -149,7 +149,7 @@ export default class Eye extends Component {
                       onClose={this.showModal.bind(this, "Refraction")}
                       HeaderCaption="Refraction"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -169,7 +169,7 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Cyclo</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "Cyclo")}
@@ -179,7 +179,7 @@ export default class Eye extends Component {
                       onClose={this.showModal.bind(this, "Cyclo")}
                       HeaderCaption="Cyclo"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -199,7 +199,7 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">PMT</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "PMT")}
@@ -209,7 +209,7 @@ export default class Eye extends Component {
                       onClose={this.showModal.bind(this, "PMT")}
                       HeaderCaption="PMT"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -229,7 +229,7 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Add Vision</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "AddVision")}
@@ -239,7 +239,7 @@ export default class Eye extends Component {
                       onClose={this.showModal.bind(this, "AddVision")}
                       HeaderCaption="Add Vision"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -261,7 +261,7 @@ export default class Eye extends Component {
                   </h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "AddIOP")}
@@ -271,7 +271,7 @@ export default class Eye extends Component {
                       onClose={this.showModal.bind(this, "AddIOP")}
                       HeaderCaption="Intraocular Pressure (IOP)"
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -291,7 +291,7 @@ export default class Eye extends Component {
                   <h3 className="caption-subject">Glass Prescription</h3>
                 </div>
                 <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
+                  <button className="btn btn-primary btn-circle active">
                     <i
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "GlassPres")}
@@ -302,7 +302,7 @@ export default class Eye extends Component {
                       HeaderCaption="Glass Prescription"
                       PrescriptionData={this.state.PrescriptionData}
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">

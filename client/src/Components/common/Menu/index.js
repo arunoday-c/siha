@@ -92,10 +92,10 @@ function NavBars(props) {
             <i className="fas fa-angle-double-left  fa-lg" />
           </div>
         ) : (
-          <div className="sideMenuBars" onClick={showMenuClick}>
-            <i className="fas fa-bars fa-lg" />
-          </div>
-        )}
+            <div className="sideMenuBars" onClick={showMenuClick}>
+              <i className="fas fa-bars fa-lg" />
+            </div>
+          )}
 
         <div className="navbar-brand appLogoCntr">
           <p className="appLogoHIMSOnly" />
@@ -114,7 +114,7 @@ function NavBars(props) {
             <span>{userToken.hospital_name}</span>
           </div>
         </div>
-        <a
+        <button
           style={{
             marginRight: 0
           }}
@@ -123,19 +123,19 @@ function NavBars(props) {
           onClick={showNotification}
         >
           <i className="fas fa-bell fa-lg" />
-        </a>
+        </button>
         <div className="dropdown navTopbar-dropdown">
           <i className="fas fa-angle-down fa-lg" />
           <div
             className="dropdown-menu animated fadeIn faster"
             aria-labelledby="dropdownMenuButton"
           >
-            <a className="dropdown-item" onClick={languageChange} lang="en">
+            <button className="dropdown-item" onClick={languageChange} lang="en">
               {userLanguage === "en" ? <span> &#10004;</span> : null}
               &nbsp; English
-            </a>
+            </button>
             {userToken.other_lang_short !== undefined ? (
-              <a
+              <button
                 className="dropdown-item"
                 onClick={languageChange}
                 lang={userToken.other_lang_short}
@@ -144,16 +144,16 @@ function NavBars(props) {
                   <span> &#10004;</span>
                 ) : null}
                 &nbsp; {userToken.other_lang}
-              </a>
+              </button>
             ) : null}
             <div className="dropdown-divider" />
-            <a className="dropdown-item" onClick={onPasswordChange}>
+            <button className="dropdown-item" onClick={onPasswordChange}>
               <i className="fas fa-key" /> Change Password
-            </a>
+            </button>
             <div className="dropdown-divider" />
-            <a className="dropdown-item" onClick={onLogoutClick}>
+            <button className="dropdown-item" onClick={onLogoutClick}>
               <i className="fas fa-sign-out-alt" /> Logout
-            </a>
+            </button>
           </div>
         </div>
       </nav>

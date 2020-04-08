@@ -473,13 +473,13 @@ class ItemMaster extends Component {
                     />
 
                     <div className="col actions" style={{ paddingLeft: 0 }}>
-                      <a
+                      <button
                         onClick={AddUom.bind(this, this)}
                         style={{ marginTop: 19 }}
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
 

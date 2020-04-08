@@ -706,7 +706,7 @@ class VendorSetup extends Component {
               <h3 className="caption-subject">Vendors List</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 className="btn btn-primary btn-circle active"
                 onClick={() => {
                   this.setState({
@@ -716,7 +716,7 @@ class VendorSetup extends Component {
                 }}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
             </div>
           </div>
 

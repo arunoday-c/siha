@@ -112,13 +112,13 @@ class InsuranceSetup extends Component {
               <h3 className="caption-subject">Insurance Provider List</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               <InsuranceAdd
                 HeaderCaption={
                   <AlgaehLabel
@@ -184,8 +184,8 @@ class InsuranceSetup extends Component {
                         return row.insurance_type === "I"
                           ? "Insurance Company"
                           : row.insurance_type === "T"
-                          ? "TPA"
-                          : "Corporate Client";
+                            ? "TPA"
+                            : "Corporate Client";
                       }
                     },
                     // {
