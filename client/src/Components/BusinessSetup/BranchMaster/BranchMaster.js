@@ -895,7 +895,7 @@ export default class BranchMaster extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Map Main & Sub Department</h3>
+                  <h3 className="caption-subject">Dept. & Sub Dept. Mapping</h3>
                 </div>
               </div>
 
