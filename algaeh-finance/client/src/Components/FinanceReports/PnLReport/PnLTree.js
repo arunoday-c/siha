@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Row, Col } from "antd";
-import ReactToPrint from "react-to-print";
+// import ReactToPrint from "react-to-print";
 import { PlotUI } from "../FinanceStandardReports/plotui";
 
 export default function ProfitTree({ style, layout, data }) {

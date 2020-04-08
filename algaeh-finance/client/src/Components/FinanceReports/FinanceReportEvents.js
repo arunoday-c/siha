@@ -71,6 +71,8 @@ export function downloadExcel(input) {
       input["url"] = "getProfitAndLossMonthWise";
       result = getBalanceSheet(input);
       break;
+    default:
+      break;
   }
   return result;
 }
