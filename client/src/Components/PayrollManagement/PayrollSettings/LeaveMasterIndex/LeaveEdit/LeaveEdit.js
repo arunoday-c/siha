@@ -226,8 +226,10 @@ class LeaveEdit extends Component {
           holiday_reimbursement: this.isItReallyChecked(holiday_reimbursement),
           exit_permit_required: this.isItReallyChecked(exit_permit_required),
           proportionate_leave: this.isItReallyChecked(proportionate_leave),
-          document_mandatory: this.isItReallyChecked(document_mandatory)
+          document_mandatory: this.isItReallyChecked(document_mandatory),
+          reset_leave: this.state.reset_leave
         };
+
 
         algaehApiCall({
           uri: "/leave/updateLeaveMaster",
