@@ -1,12 +1,11 @@
 import React, { memo, useEffect, useState } from "react";
-import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
-import { newAlgaehApi } from "../../../hooks";
+import { AlgaehTable } from "algaeh-react-components";
 
 function PnLCostCenter({ data, layout }) {
   const [incomeExpenceData, setincomeExpence] = useState([]);
   const [totals, setTotals] = useState({});
   const [columns, setColumn] = useState([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const { cost_centers, expense, income, totals } = data;

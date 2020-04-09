@@ -372,10 +372,10 @@ const deleteServices = ($this, row) => {
     row.service_type_id === 5
       ? "LAB"
       : row.service_type_id === 11
-      ? "RAD"
-      : row.service_type_id === 2
-      ? "PRO"
-      : null;
+        ? "RAD"
+        : row.service_type_id === 2
+          ? "PRO"
+          : null;
 
   const get_selected_row = _.find(
     preserviceInput,
@@ -580,7 +580,7 @@ const SaveOrdersServices = ($this, e) => {
     date_of_birth: $this.props.date_of_birth,
     gender: $this.props.gender,
   };
-  debugger;
+
   algaehApiCall({
     uri: "/orderAndPreApproval/insertOrderedServices",
     data: inputObj,

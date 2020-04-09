@@ -108,12 +108,12 @@ class FollowUp extends Component {
             value={this.state.followup_date}
           />
           <div className="actions" style={{ paddingTop: "3.5vh" }}>
-            <a
+            <button
               className="btn btn-primary btn-circle active"
               onClick={addFollowUp.bind(this, this)}
             >
               <i className="fas fa-plus" />
-            </a>
+            </button>
           </div>
         </div>
       </div>

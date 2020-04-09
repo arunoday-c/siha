@@ -2616,6 +2616,7 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
+    console.log("generateAccountingEntry", req.flag)
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -2668,7 +2669,9 @@ export default {
                   E.sub_department_id from hims_f_salary s 
                   inner join hims_d_employee E on E.hims_d_employee_id = S.employee_id 
                   where hims_f_salary_id in (?);
-                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, ED.head_id, ED.child_id,\
+                  select hims_f_salary_id, curDate() payment_date,SE.amount as debit_amount, 
+                  CASE WHEN E.employee_category='A' THEN ED.head_id else ED.direct_head_id END as head_id,
+                  CASE WHEN E.employee_category='A' THEN ED.child_id else ED.direct_child_id END as child_id,
                   'DR' as payment_type, 0 as credit_amount, S.hospital_id, E.sub_department_id from hims_f_salary s 
                   left join hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
                   inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -4394,7 +4397,7 @@ function UpdateProjectWisePayroll(options) {
 
         if (parseFloat(total_complete_hours) > 0) {
           cost =
-            parseFloat(net_salary_amt[0].net_salary) /
+            parseFloat(net_salary_amt[0].gross_salary) /
             parseFloat(total_complete_hours);
         } else {
           cost = 0;

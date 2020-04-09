@@ -250,7 +250,7 @@ class LoanRequest extends Component {
             type: "warning",
           });
         } else {
-          debugger;
+
           algaehApiCall({
             uri: "/selfService/addEmployeeAdvance",
             module: "hrManagement",
@@ -583,8 +583,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                              "------"
-                            )}
+                                      "------"
+                                    )}
                           </span>
                         );
                       },
@@ -630,8 +630,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                          <span className="badge badge-success">Closed</span>
-                        );
+                            <span className="badge badge-success">Closed</span>
+                          );
                       },
                     },
 
@@ -724,9 +724,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
-                    onDelete: () => {},
-                    onDone: () => {},
+                    onEdit: () => { },
+                    onDelete: () => { },
+                    onDone: () => { },
                   }}
                 />
               </div>
@@ -805,8 +805,8 @@ class LoanRequest extends Component {
                                 Cancelled
                               </span>
                             ) : (
-                              "------"
-                            )}
+                                    "------"
+                                  )}
                           </span>
                         );
                       },
@@ -855,9 +855,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                                row.deducting_month +
-                                "-" +
-                                row.deducting_year,
+                              row.deducting_month +
+                              "-" +
+                              row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
@@ -1156,7 +1156,7 @@ class LoanRequest extends Component {
                         onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
+                      //disabled={this.state.Request_enable}
                       >
                         Request Loan
                       </button>
@@ -1257,7 +1257,7 @@ class LoanRequest extends Component {
                         onClick={this.applyAdvance.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
+                      //disabled={this.state.Request_enable}
                       >
                         Request Advance
                       </button>

@@ -23,7 +23,6 @@ export default function EyeModalEvent() {
 
     SaveGlassPrescription: ($this) => {
 
-      debugger
       let inputObj = {
         patient_id: Window.global["current_patient"],
         visit_id: Window.global["visit_id"],

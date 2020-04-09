@@ -57,11 +57,11 @@ export default class ActivityFeed extends Component {
     sendData =
       type === "AttendanceRegularization"
         ? {
-            pageDisplay: type,
-            regularize: data
-          }
+          pageDisplay: type,
+          regularize: data
+        }
         : type === "absent"
-        ? {
+          ? {
             pageDisplay: "AttendanceRegularization",
             regularize: {
               login_date: data.absent_date,
@@ -69,7 +69,7 @@ export default class ActivityFeed extends Component {
               absent_id: data.hims_f_absent_id
             }
           }
-        : {
+          : {
             pageDisplay: type,
             leave: {
               from_date: data.absent_date,
@@ -113,7 +113,7 @@ export default class ActivityFeed extends Component {
                         </div>
                         <div className="text">
                           Request to
-                          <a
+                          <button
                             onClick={this.skipTab.bind(
                               this,
                               "AttendanceRegularization",
@@ -121,7 +121,7 @@ export default class ActivityFeed extends Component {
                             )}
                           >
                             Regularize Attendance
-                          </a>
+                          </button>
                           for
                           <span className="reqDate">
                             {moment(data.attendance_date).format("DD MMM YYYY")}
@@ -139,11 +139,11 @@ export default class ActivityFeed extends Component {
                         </div>
                         <div className="text">
                           Request to
-                          <a onClick={this.skipTab.bind(this, "absent", data)}>
+                          <button onClick={this.skipTab.bind(this, "absent", data)}>
                             Regularize Attendance
-                          </a>
+                          </button>
                           or
-                          <a
+                          <button
                             onClick={this.skipTab.bind(
                               this,
                               "ApplyLeave",
@@ -151,7 +151,7 @@ export default class ActivityFeed extends Component {
                             )}
                           >
                             Apply Leave Attendance
-                          </a>
+                          </button>
                           for
                           <span className="reqDate">
                             {moment(data.absent_date).format("DD MMM YYYY")}
@@ -162,11 +162,11 @@ export default class ActivityFeed extends Component {
                   ))}
                 </React.Fragment>
               ) : (
-                <div className="noActivityData">
-                  <h1>Relax! You don't have any activity</h1>
-                  <i className="fas fa-tasks" />
-                </div>
-              )}
+                  <div className="noActivityData">
+                    <h1>Relax! You don't have any activity</h1>
+                    <i className="fas fa-tasks" />
+                  </div>
+                )}
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 // import { Row, Col } from "antd";
 import "./antTableCustomStyle.scss";
 
-import { AlgaehTable, AlgaehButton } from "algaeh-react-components";
+import { AlgaehTable } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
@@ -17,7 +17,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
   useEffect(
-    function() {
+    function () {
       loadReport();
     },
     [type, dates]

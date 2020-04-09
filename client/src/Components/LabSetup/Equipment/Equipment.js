@@ -89,13 +89,13 @@ class Equipment extends Component {
                   <h3 className="caption-subject">Lists of Machine</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-primary active"
                     style={{ lineHeight: "22px" }}
                     onClick={this.ShowModel.bind(this, {})}
                   >
                     Machine Analyte Mapping
-                </a>
+                  </button>
                 </div>
               </div>
 

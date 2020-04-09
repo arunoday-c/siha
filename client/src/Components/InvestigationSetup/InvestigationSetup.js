@@ -220,13 +220,13 @@ class InvestigationSetup extends Component {
               <h3 className="caption-subject">Investigation Lists</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               {this.state.isOpen ? (
                 <NewInvestigation
                   key={"unique"}
@@ -329,9 +329,9 @@ class InvestigationSetup extends Component {
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                                f =>
-                                  f.hims_d_test_category_id === row.category_id
-                              );
+                              f =>
+                                f.hims_d_test_category_id === row.category_id
+                            );
 
                         return (
                           <span>
@@ -354,9 +354,9 @@ class InvestigationSetup extends Component {
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                                f =>
-                                  f.hims_d_lab_specimen_id === row.specimen_id
-                              );
+                              f =>
+                                f.hims_d_lab_specimen_id === row.specimen_id
+                            );
 
                         return (
                           <span>

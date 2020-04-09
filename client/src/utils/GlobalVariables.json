@@ -5280,5 +5280,15 @@
       "name": "Cancelled",
       "value": "5"
     }
+  ],
+  "EMP_CATEGORY": [
+    {
+      "name": "Admin",
+      "value": "A"
+    },
+    {
+      "name": "Project",
+      "value": "P"
+    }
   ]
 }

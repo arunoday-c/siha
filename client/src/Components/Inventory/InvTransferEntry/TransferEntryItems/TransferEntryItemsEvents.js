@@ -673,7 +673,7 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.batchno
       : $this.state.batchno;
 
-  debugger
+
   let expiry_date =
     e !== undefined
       ? e.selected === true

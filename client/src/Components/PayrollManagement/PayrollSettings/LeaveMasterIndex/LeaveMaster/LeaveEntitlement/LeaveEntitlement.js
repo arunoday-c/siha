@@ -2,7 +2,7 @@ import React from "react";
 import "./leave_entitlement.scss";
 import {
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 
@@ -18,36 +18,35 @@ function LeaveEntitlement(props) {
               div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "Leave Code",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "leave_code",
                 value: myParent.state.leave_code,
                 events: {
-                  onChange: e => myParent.textHandler(e)
+                  onChange: (e) => myParent.textHandler(e),
                 },
                 others: {
-                  disabled: myParent.state.type !== undefined
-                }
+                  disabled: myParent.state.type !== undefined,
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-4  form-group" }}
               label={{
                 forceLabel: "Description",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "leave_description",
                 value: myParent.state.leave_description,
                 events: {
-                  onChange: e => myParent.textHandler(e)
-                }
+                  onChange: (e) => myParent.textHandler(e),
+                },
               }}
             />
-
             <AlagehAutoComplete
               div={{ className: "col-2 form-group" }}
               label={{ forceLabel: "Leave Type", isImp: true }}
@@ -58,17 +57,16 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_TYPE
+                  data: GlobalVariables.LEAVE_TYPE,
                 },
-                onChange: value => myParent.dropDownHandler(value)
+                onChange: (value) => myParent.dropDownHandler(value),
               }}
             />
-
             <AlagehAutoComplete
               div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "Calculation Type",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "calculation_type",
@@ -77,14 +75,14 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_CALC_TYPE
+                  data: GlobalVariables.LEAVE_CALC_TYPE,
                 },
-                onChange: value => myParent.dropDownHandler(value),
+                onChange: (value) => myParent.dropDownHandler(value),
                 onClear: () => {
                   myParent.setState({
-                    calculation_type: null
+                    calculation_type: null,
                   });
-                }
+                },
               }}
             />
             <AlagehAutoComplete
@@ -97,9 +95,9 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_MODE
+                  data: GlobalVariables.LEAVE_MODE,
                 },
-                onChange: value => myParent.dropDownHandler(value)
+                onChange: (value) => myParent.dropDownHandler(value),
               }}
             />
             <AlagehAutoComplete
@@ -112,12 +110,11 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_FREQUENCY
+                  data: GlobalVariables.LEAVE_FREQUENCY,
                 },
-                onChange: value => myParent.dropDownHandler(value)
+                onChange: (value) => myParent.dropDownHandler(value),
               }}
             />
-
             <AlagehAutoComplete
               div={{ className: "col-2 form-group" }}
               label={{ forceLabel: "Leave Category", isImp: true }}
@@ -128,9 +125,24 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_CTGRY
+                  data: GlobalVariables.LEAVE_CTGRY,
                 },
-                onChange: value => myParent.dropDownHandler(value)
+                onChange: (value) => myParent.dropDownHandler(value),
+              }}
+            />{" "}
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Leave Reset (Year)", isImp: true }}
+              selector={{
+                name: "leave_reset",
+                // value: myParent.state.leave_category,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  // data: GlobalVariables.LEAVE_CTGRY
+                },
+                // onChange: value => myParent.dropDownHandler(value)
               }}
             />
           </div>
@@ -149,7 +161,7 @@ function LeaveEntitlement(props) {
                       myParent.state.leave_encash === "Y" ||
                       myParent.state.leave_encash === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -162,7 +174,7 @@ function LeaveEntitlement(props) {
                 forceLabel: "Encashment Percentage",
                 isImp:
                   myParent.state.leave_encash === "Y" ||
-                  myParent.state.leave_encash === true
+                  myParent.state.leave_encash === true,
               }}
               textBox={{
                 className: "txt-fld",
@@ -171,13 +183,13 @@ function LeaveEntitlement(props) {
                 name: "encashment_percentage",
                 value: myParent.state.encashment_percentage,
                 events: {
-                  onChange: e => myParent.textHandler(e)
+                  onChange: (e) => myParent.textHandler(e),
                 },
                 others: {
                   disabled:
                     !myParent.state.leave_encash ||
-                    myParent.state.leave_encash === "N"
-                }
+                    myParent.state.leave_encash === "N",
+                },
               }}
             />
             <div className="col-5  form-group">
@@ -191,7 +203,7 @@ function LeaveEntitlement(props) {
                       myParent.state.leave_carry_forward === "Y" ||
                       myParent.state.leave_carry_forward === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -203,7 +215,7 @@ function LeaveEntitlement(props) {
                 forceLabel: "Carry Forward Percentage",
                 isImp:
                   myParent.state.leave_carry_forward === "Y" ||
-                  myParent.state.leave_carry_forward === true
+                  myParent.state.leave_carry_forward === true,
               }}
               textBox={{
                 className: "txt-fld",
@@ -212,13 +224,13 @@ function LeaveEntitlement(props) {
                 name: "carry_forward_percentage",
                 value: myParent.state.carry_forward_percentage,
                 events: {
-                  onChange: e => myParent.textHandler(e)
+                  onChange: (e) => myParent.textHandler(e),
                 },
                 others: {
                   disabled:
                     !myParent.state.leave_carry_forward ||
-                    myParent.state.leave_carry_forward === "N"
-                }
+                    myParent.state.leave_carry_forward === "N",
+                },
               }}
             />
             <div className="col-5  form-group">
@@ -232,7 +244,7 @@ function LeaveEntitlement(props) {
                       myParent.state.religion_required === "Y" ||
                       myParent.state.religion_required === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -244,7 +256,7 @@ function LeaveEntitlement(props) {
                 forceLabel: "Select Religion",
                 isImp:
                   myParent.state.religion_required === "Y" ||
-                  myParent.state.religion_required === true
+                  myParent.state.religion_required === true,
               }}
               selector={{
                 name: "religion_id",
@@ -253,19 +265,19 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "religion_name",
                   valueField: "hims_d_religion_id",
-                  data: myParent.state.religions
+                  data: myParent.state.religions,
                 },
-                onChange: value => myParent.dropDownHandler(value),
+                onChange: (value) => myParent.dropDownHandler(value),
                 onClear: () => {
                   myParent.setState({
-                    religion_id: null
+                    religion_id: null,
                   });
                 },
                 others: {
                   disabled:
                     !myParent.state.religion_required ||
-                    myParent.state.religion_required === "N"
-                }
+                    myParent.state.religion_required === "N",
+                },
               }}
             />
           </div>
@@ -283,7 +295,7 @@ function LeaveEntitlement(props) {
                       myParent.state.include_holiday === "Y" ||
                       myParent.state.include_holiday === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -300,7 +312,7 @@ function LeaveEntitlement(props) {
                       myParent.state.include_weekoff === "Y" ||
                       myParent.state.include_weekoff === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -318,7 +330,7 @@ function LeaveEntitlement(props) {
                       myParent.state.document_mandatory === "Y" ||
                       myParent.state.document_mandatory === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -336,7 +348,7 @@ function LeaveEntitlement(props) {
                       myParent.state.exit_permit_required === "Y" ||
                       myParent.state.exit_permit_required === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -354,7 +366,7 @@ function LeaveEntitlement(props) {
                       myParent.state.holiday_reimbursement === "Y" ||
                       myParent.state.holiday_reimbursement === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -372,7 +384,7 @@ function LeaveEntitlement(props) {
                       myParent.state.yearly_booking === "Y" ||
                       myParent.state.yearly_booking === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -389,7 +401,7 @@ function LeaveEntitlement(props) {
                       myParent.state.proportionate_leave === "Y" ||
                       myParent.state.proportionate_leave === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>
@@ -406,7 +418,7 @@ function LeaveEntitlement(props) {
                       myParent.state.avail_if_no_balance === "Y" ||
                       myParent.state.avail_if_no_balance === true
                     }
-                    onChange={e => myParent.changeChecks(e)}
+                    onChange={(e) => myParent.changeChecks(e)}
                   />
                   <span>Yes</span>
                 </label>

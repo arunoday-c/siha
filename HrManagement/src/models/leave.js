@@ -4084,6 +4084,11 @@ export default {
     const utilities = new algaehUtilities();
     let input = req.body;
 
+    let reset_leave = 1;
+
+    if (input.reset_leave > 1) {
+      reset_leave = input.reset_leave;
+    }
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -4091,8 +4096,8 @@ export default {
           include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
           encashment_percentage,leave_carry_forward,carry_forward_percentage,\
           religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
-          proportionate_leave,document_mandatory,avail_if_no_balance,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          proportionate_leave,document_mandatory,avail_if_no_balance,reset_leave,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.leave_code,
           input.leave_description,
@@ -4101,7 +4106,6 @@ export default {
           input.include_weekoff,
           input.include_holiday,
           input.leave_mode,
-
           input.leave_accrual,
           input.leave_encash,
           input.leave_type,
@@ -4115,6 +4119,7 @@ export default {
           input.proportionate_leave,
           input.document_mandatory,
           input.avail_if_no_balance,
+          reset_leave,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,

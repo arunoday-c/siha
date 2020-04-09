@@ -113,7 +113,7 @@ class LeaveEdit extends Component {
       data: { leave_id: this.state.hims_d_leave_id },
       onSuccess: res => {
         if (res.data.success) {
-          debugger
+
           const leaveRules = res.data.records
           const from_value = parseFloat(leaveRules[leaveRules.length - 1].to_value) + 1
           this.setState({

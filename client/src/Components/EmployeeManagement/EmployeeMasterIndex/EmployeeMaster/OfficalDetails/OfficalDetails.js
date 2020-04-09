@@ -11,7 +11,7 @@ import {
 import variableJson from "../../../../../utils/GlobalVariables.json";
 import {
   texthandle,
-  datehandle,  
+  datehandle,
   otEntitleHandaler,
   employeeStatusHandler,
   dateFormater,
@@ -442,9 +442,40 @@ class OfficalDetails extends Component {
                   />
                 ) : null}
                 {this.state.HRMS_Active === true ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory form-group" }}
+                    label={{
+                      forceLabel: "Employee Category",
+                      isImp: this.state.HRMS_Active
+                    }}
+                    selector={{
+                      name: "employee_category",
+                      className: "select-fld",
+                      value: this.state.employee_category,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: variableJson.EMP_CATEGORY
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          employee_category: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          employee_category: null
+                        });
+                      }
+                    }}
+                  />
+                ) : null}
+                {this.state.HRMS_Active === true ? (
                   <React.Fragment>
                     <div
-                      className="col-4 customCheckbox"
+                      className="col-3 customCheckbox"
                       style={{ border: "none" }}
                     >
                       <label

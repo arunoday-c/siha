@@ -67,6 +67,7 @@ class EarningsDeductions extends Component {
       li_child_id: null,
       li_head_id: null,
       selected_account: null,
+      indirect_selected_account: null,
       selected_li_account: null
       // selected_collections: []
     };
@@ -802,7 +803,7 @@ class EarningsDeductions extends Component {
                         <AlgaehTreeSearch
                           div={{ className: "col-6 form-group" }}
                           label={{
-                            forceLabel: "G/L Account",
+                            forceLabel: "G/L Indirect Account",
                             isImp: true,
                             align: "ltr"
                           }}
@@ -829,6 +830,39 @@ class EarningsDeductions extends Component {
                               }
                             },
                             value: this.state.selected_account
+                          }}
+                        />
+
+                        <AlgaehTreeSearch
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "G/L Direct Account",
+                            isImp: true,
+                            align: "ltr"
+                          }}
+                          tree={{
+                            treeDefaultExpandAll: true,
+                            onChange: value => {
+
+                              this.setState({
+                                indirect_selected_account: value
+                              })
+
+                            },
+                            data: this.state.finance_account || [],
+                            textField: "label",
+                            valueField: node => {
+                              if (node["leafnode"] === "Y") {
+                                return (
+                                  node["head_id"] +
+                                  "-" +
+                                  node["finance_account_child_id"]
+                                );
+                              } else {
+                                return node["finance_account_head_id"];
+                              }
+                            },
+                            value: this.state.indirect_selected_account
                           }}
                         />
 
