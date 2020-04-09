@@ -8013,7 +8013,7 @@ function projectedleaveCalc(input, _mysql) {
   }
 }
 
-function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
+function yearlyLeaveProcess(inputs, req, mysql) {
   console.log("INSIDE YEARLY PROCESS");
   return new Promise((resolve, reject) => {
     let input = inputs;
@@ -8053,10 +8053,11 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
       _mysql
         .executeQuery({
           query: `select hims_d_employee_id, employee_code,full_name  as employee_name,religion_id,
-            employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining) as no_days_til_eoy,
+            employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining)+1 as no_days_til_eoy,
+            coalesce (?- year(date_of_joining),0) as working_year,
             hospital_id,employee_type,sex from hims_d_employee where employee_status <>'I'  
             and hospital_id=? and  record_status='A'  ${employee};          
-            select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,LD.employee_type,
+            select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,L.reset_leave,LD.employee_type,
             LD.gender,LD.eligible_days,L.proportionate_leave from hims_d_leave  L 
             inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id 
             and L.record_status='A' ${leave};
@@ -8069,6 +8070,7 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
             on ML.leave_id=L.hims_d_leave_id
             where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
           values: [
+            input.year,
             input.year,
             input.hospital_id,
             input.year,
@@ -8128,7 +8130,17 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
                         parseFloat(AllEmployees[i]["no_days_til_eoy"])
                     );
                   } else {
-                    m["eligible_days"] = m.eligible_days;
+                    // m["eligible_days"] = m.eligible_days;
+
+                    let mod =
+                      parseInt(AllEmployees[i]["working_year"]) %
+                      parseInt(m.reset_leave);
+
+                    if (mod == 0) {
+                      m["eligible_days"] = m.eligible_days;
+                    } else {
+                      m["eligible_days"] = 0;
+                    }
                   }
                   return m;
                 });
@@ -8378,7 +8390,7 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
   });
 }
 
-function yearlyLeaveProcess(inputs, req, mysql) {
+function yearlyLeaveProcess__2020_april_7(inputs, req, mysql) {
   console.log("INSIDE YEARLY PROCESS");
   return new Promise((resolve, reject) => {
     let input = inputs;
