@@ -4802,7 +4802,7 @@ export default {
           query:
             "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
         leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
-        religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,avail_if_no_balance=?,\
+        religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,avail_if_no_balance=?,reset_leave=?\
         updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
           values: [
             input.leave_description,
@@ -4825,6 +4825,7 @@ export default {
             input.proportionate_leave,
             input.document_mandatory,
             input.avail_if_no_balance,
+            input.reset_leave,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_leave_id,
