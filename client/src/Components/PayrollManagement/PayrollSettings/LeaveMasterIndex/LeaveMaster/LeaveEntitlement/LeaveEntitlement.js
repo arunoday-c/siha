@@ -134,15 +134,15 @@ function LeaveEntitlement(props) {
               div={{ className: "col-2 form-group" }}
               label={{ forceLabel: "Leave Reset (Year)", isImp: true }}
               selector={{
-                name: "leave_reset",
-                // value: myParent.state.leave_category,
+                name: "reset_leave",
+                value: myParent.state.reset_leave,
                 className: "select-fld",
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  // data: GlobalVariables.LEAVE_CTGRY
+                  data: GlobalVariables.RESET_LEAVE
                 },
-                // onChange: value => myParent.dropDownHandler(value)
+                onChange: value => myParent.dropDownHandler(value)
               }}
             />
           </div>

@@ -22,7 +22,8 @@ class LeaveMaster extends Component {
       leaveRules: [],
       encashment_percentage: 0,
       carry_forward_percentage: 0,
-      from_value: 0
+      from_value: 0,
+      // reset_leave: "1"
     };
   }
 
@@ -139,7 +140,8 @@ class LeaveMaster extends Component {
         document_mandatory: this.state.document_mandatory ? "Y" : "N",
         leaveEncash: this.state.leaveEncash,
         leaveRules: this.state.leaveRules,
-        leaveDetails: this.state.leaveDetails
+        leaveDetails: this.state.leaveDetails,
+        reset_leave: this.state.reset_leave
       };
 
       algaehApiCall({
