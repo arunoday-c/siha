@@ -12,6 +12,8 @@ import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InvItemSetupEvent from "./InventoryItemMasterEvent";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import InvItemLocationReorder from "./InvItemLocationReorder";
+import { MainContext } from "algaeh-react-components/context";
 
 class InventoryItemMaster extends Component {
   constructor(props) {
@@ -19,11 +21,17 @@ class InventoryItemMaster extends Component {
     this.state = {
       isOpen: false,
       itemPop: {},
-      addNew: true
+      addNew: true,
+      isReQtyOpen: false,
     };
   }
 
+
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+
     this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
       module: "inventory",
@@ -64,6 +72,21 @@ class InventoryItemMaster extends Component {
       }
     });
 
+    this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      data: {
+        git_location: "N",
+        location_status: "A",
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      method: "GET",
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "inventorylocations"
+      }
+    });
+
     InvItemSetupEvent().getItems(this, this);
   }
 
@@ -88,6 +111,10 @@ class InventoryItemMaster extends Component {
         }
       }
     );
+  }
+
+  CloseReQtyModel(e) {
+    this.setState({ isReQtyOpen: !this.state.isReQtyOpen });
   }
 
   render() {
@@ -154,6 +181,15 @@ class InventoryItemMaster extends Component {
                 itemPop={this.state.itemPop}
                 addNew={this.state.addNew}
               />
+
+              <InvItemLocationReorder
+                HeaderCaption="Reorder Location Wise"
+                open={this.state.isReQtyOpen}
+                item_description={this.state.item_description}
+                item_id={this.state.item_id}
+                reorder_locations={this.state.reorder_locations}
+                onClose={this.CloseReQtyModel.bind(this)}
+              />
             </div>
           </div>
           <div className="portlet-body">
@@ -176,11 +212,20 @@ class InventoryItemMaster extends Component {
                                 row
                               )}
                             />
+
+                            <i
+                              className="fas fa-plus"
+                              onClick={InvItemSetupEvent().OpenReQtyLocation.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 55,
+                        maxWidth: 90,
                         style: {
                           textAlign: "center"
                         },
@@ -369,7 +414,8 @@ function mapStateToProps(state) {
     invitemcategory: state.invitemcategory,
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
-    inventoryitemservices: state.inventoryitemservices
+    inventoryitemservices: state.inventoryitemservices,
+    inventorylocations: state.inventorylocations
   };
 }
 
@@ -380,7 +426,8 @@ function mapDispatchToProps(dispatch) {
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getLocation: AlgaehActions
     },
     dispatch
   );

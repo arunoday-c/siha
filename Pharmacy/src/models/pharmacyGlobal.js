@@ -347,7 +347,7 @@ export default {
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let intValues = [];
+      let intValues = [req.query.pharmacy_location_id];
       let strAppend = "";
       if (req.query.item_id != null) {
         strAppend += " and item_id=?";
@@ -357,14 +357,17 @@ export default {
         strAppend += " and pharmacy_location_id=?";
         intValues.push(req.query.pharmacy_location_id);
       }
+
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_description,IM.stocking_uom_id, coalesce(IM.reorder_qty,0) as reorder_qty ,hims_m_item_location_id, item_id, pharmacy_location_id,\
-             item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
+            "SELECT IM.item_description,IM.stocking_uom_id,  coalesce(PLR.reorder_qty, IM.reorder_qty,0) as reorder_qty ,\
+            hims_m_item_location_id, IL.item_id, pharmacy_location_id,\
+            item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
             last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom,\
-            CASE WHEN sum(qtyhand)<=IM.reorder_qty THEN 'R'   else 'NR' END as reorder from \
+            CASE WHEN sum(qtyhand)<=coalesce(PLR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder from \
             hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+            left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id and location_id=? \
             where qtyhand>0" +
             strAppend +
             "group by item_id order by date(expirydt)",
