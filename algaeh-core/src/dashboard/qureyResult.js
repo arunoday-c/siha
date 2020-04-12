@@ -1,4 +1,4 @@
-"use strict";
+
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 
