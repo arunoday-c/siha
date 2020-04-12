@@ -34,6 +34,7 @@ class ProjectPayroll extends Component {
       employee_name: null,
       total_cost: 0,
       lbl_total: "Total Employees",
+      decimal_places: 0
     };
     this.baseState = this.state;
   }
@@ -53,6 +54,7 @@ class ProjectPayroll extends Component {
     const userToken = this.context.userToken;
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
+      decimal_places: userToken.decimal_places
     });
     if (
       this.props.organizations === undefined ||
@@ -105,8 +107,8 @@ class ProjectPayroll extends Component {
       this.props.projects === undefined
         ? []
         : this.props.projects.filter(
-            (f) => f.hims_d_project_id === this.state.project_id
-          );
+          (f) => f.hims_d_project_id === this.state.project_id
+        );
 
     return (
       <div className="projectPayrollScreen">
@@ -367,8 +369,8 @@ class ProjectPayroll extends Component {
                           ),
                           displayTemplate: (row) => {
                             return (
-                              parseFloat(row.project_cost) -
-                              parseFloat(row.ot_amount)
+                              (parseFloat(row.project_cost) -
+                                parseFloat(row.ot_amount)).toFixed(this.state.decimal_places)
                             );
                           },
                           others: {
