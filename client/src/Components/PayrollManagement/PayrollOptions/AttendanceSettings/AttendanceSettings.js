@@ -1027,8 +1027,7 @@ export default class AttendanceSettings extends Component {
                           },
                         }}
                       />
-                    </div>
-                    <div className="row">
+                      {/*                  
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
@@ -1083,7 +1082,7 @@ export default class AttendanceSettings extends Component {
                             type: "number",
                           },
                         }}
-                      />
+                      /> */}
 
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
