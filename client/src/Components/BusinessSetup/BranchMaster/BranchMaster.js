@@ -683,9 +683,29 @@ export default class BranchMaster extends Component {
         ...item,
         checked: status,
         subDepts: subDpartments,
+        indeterminate:false
       };
     });
-    this.setState({ allDepartments: checkedDeparts, checkAll: status });
+
+    this.setState({ allDepartments: checkedDeparts, checkAll: status,checkAllIntermediate:false });
+  }
+  clearAll(e){
+    const clearDeparts = this.state.allDepartments.map((item) => {
+      const subDpartments = item.subDepts.map((sItems) => {
+        return {
+          ...sItems,
+          checked: false,
+          
+        };
+      });
+      return {
+        ...item,
+        checked: false,
+        indeterminate:false,
+        subDepts: subDpartments,
+      };
+    });
+      this.setState({allDepartments: clearDeparts,checkAll: false, checkAllIntermediate:false})
   }
 
   render() {
@@ -1067,6 +1087,7 @@ export default class BranchMaster extends Component {
                       type="button"
                       className="btn btn-default"
                       style={{ marginTop: 19, marginRight: 10, float: "right" }}
+                      onClick={this.clearAll.bind(this)}
                     >
                       Clear
                     </button>
