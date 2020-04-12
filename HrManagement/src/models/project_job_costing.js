@@ -25,14 +25,14 @@ export default {
             hims_d_project P where DP.project_id=P.hims_d_project_id " +
             _strQuery +
             " order by hims_m_division_project_id desc;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -57,15 +57,15 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -82,14 +82,14 @@ export default {
         .executeQuery({
           query:
             "DELETE FROM hims_m_division_project WHERE hims_m_division_project_id = ?",
-          values: [input.hims_m_division_project_id]
+          values: [input.hims_m_division_project_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -175,11 +175,11 @@ export default {
             input.hospital_id,
             input.hospital_id,
             fromDate,
-            toDate
+            toDate,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           allEmployees = result[0];
           allHolidays = result[1];
@@ -191,7 +191,7 @@ export default {
           for (let i = 0; i < allEmployees.length; i++) {
             let holidays = new LINQ(allHolidays)
               .Where(
-                w =>
+                (w) =>
                   ((w.holiday == "Y" && w.holiday_type == "RE") ||
                     (w.holiday == "Y" &&
                       w.holiday_type == "RS" &&
@@ -199,7 +199,7 @@ export default {
                     (w.weekoff == "Y" && w.holiday == "N")) &&
                   w.holiday_date > allEmployees[i]["date_of_joining"]
               )
-              .Select(s => {
+              .Select((s) => {
                 return {
                   hims_d_holiday_id: s.hims_d_holiday_id,
                   holiday_date: s.holiday_date,
@@ -207,16 +207,16 @@ export default {
                   weekoff: s.weekoff,
                   holiday: s.holiday,
                   holiday_type: s.holiday_type,
-                  religion_id: s.religion_id
+                  religion_id: s.religion_id,
                 };
               })
               .ToArray();
 
             let leaves = new LINQ(allLeaves)
               .Where(
-                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
+                (w) => w.employee_id == allEmployees[i]["hims_d_employee_id"]
               )
-              .Select(s => {
+              .Select((s) => {
                 return {
                   hims_f_leave_application_id: s.hims_f_leave_application_id,
                   employee_id: s.employee_id,
@@ -227,16 +227,16 @@ export default {
                   to_date: s.to_date,
                   from_leave_session: s.from_leave_session,
                   to_leave_session: s.to_leave_session,
-                  status: s.status
+                  status: s.status,
                 };
               })
               .ToArray();
 
             let empProject = new LINQ(allProjects)
               .Where(
-                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
+                (w) => w.employee_id == allEmployees[i]["hims_d_employee_id"]
               )
-              .Select(s => {
+              .Select((s) => {
                 return {
                   hims_f_project_roster_id: s.hims_f_project_roster_id,
                   employee_id: s.employee_id,
@@ -246,7 +246,7 @@ export default {
                   project_code: s.project_code,
                   abbreviation: s.abbreviation,
                   start_date: s.start_date,
-                  end_date: s.end_date
+                  end_date: s.end_date,
                 };
               })
               .ToArray();
@@ -271,11 +271,11 @@ export default {
                       if (k == 0 && k == curentLeave.length - 1) {
                         let temp = new LINQ([leaves[m]])
                           .Where(
-                            w =>
+                            (w) =>
                               w.employee_id ==
                               allEmployees[i]["hims_d_employee_id"]
                           )
-                          .Select(s => {
+                          .Select((s) => {
                             return {
                               hims_f_leave_application_id:
                                 s.hims_f_leave_application_id,
@@ -285,7 +285,7 @@ export default {
                               leave_type: s.leave_type,
                               from_leave_session: s.from_leave_session,
                               to_leave_session: s.to_leave_session,
-                              status: s.status
+                              status: s.status,
                             };
                           })
                           .ToArray();
@@ -294,11 +294,11 @@ export default {
                       } else {
                         let temp = new LINQ([leaves[m]])
                           .Where(
-                            w =>
+                            (w) =>
                               w.employee_id ==
                               allEmployees[i]["hims_d_employee_id"]
                           )
-                          .Select(s => {
+                          .Select((s) => {
                             return {
                               hims_f_leave_application_id:
                                 s.hims_f_leave_application_id,
@@ -307,7 +307,7 @@ export default {
                               leave_description: s.leave_description,
                               leave_type: s.leave_type,
                               from_leave_session: s.from_leave_session,
-                              status: s.status
+                              status: s.status,
                             };
                           })
                           .ToArray();
@@ -317,11 +317,11 @@ export default {
                     } else if (k == curentLeave.length - 1) {
                       let temp = new LINQ([leaves[m]])
                         .Where(
-                          w =>
+                          (w) =>
                             w.employee_id ==
                             allEmployees[i]["hims_d_employee_id"]
                         )
-                        .Select(s => {
+                        .Select((s) => {
                           return {
                             hims_f_leave_application_id:
                               s.hims_f_leave_application_id,
@@ -330,7 +330,7 @@ export default {
                             leave_description: s.leave_description,
                             leave_type: s.leave_type,
                             to_leave_session: s.to_leave_session,
-                            status: s.status
+                            status: s.status,
                           };
                         })
                         .ToArray();
@@ -339,11 +339,11 @@ export default {
                     } else {
                       let temp = new LINQ([leaves[m]])
                         .Where(
-                          w =>
+                          (w) =>
                             w.employee_id ==
                             allEmployees[i]["hims_d_employee_id"]
                         )
-                        .Select(s => {
+                        .Select((s) => {
                           return {
                             hims_f_leave_application_id:
                               s.hims_f_leave_application_id,
@@ -352,7 +352,7 @@ export default {
                             leave_description: s.leave_description,
                             leave_type: s.leave_type,
 
-                            status: s.status
+                            status: s.status,
                           };
                         })
                         .ToArray();
@@ -367,14 +367,14 @@ export default {
               ...allEmployees[i],
               employeeLeaves,
               holidays,
-              empProject
+              empProject,
             });
           }
 
           req.records = outputArray;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           utilities.logger().log("error: ", e);
           _mysql.releaseConnection();
           next(e);
@@ -382,7 +382,7 @@ export default {
     } else {
       req.records = {
         invalid_input: true,
-        message: "Select Branch &  Department"
+        message: "Select Branch &  Department",
       };
       next();
       return;
@@ -465,11 +465,11 @@ export default {
             input.toDate,
             input.fromDate,
             input.toDate,
-            input.hospital_id
+            input.hospital_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           if (result[0].length > 0) {
@@ -485,8 +485,8 @@ export default {
             let total_non_rosted = 0;
 
             const allEmployees = _.chain(result[0])
-              .groupBy(g => g.employee_id)
-              .map(emp => {
+              .groupBy((g) => g.employee_id)
+              .map((emp) => {
                 // utilities.logger().log("emp: ", emp);
 
                 //if employee doesnt have sigle roster
@@ -494,8 +494,8 @@ export default {
                   const employ = emp[0];
                   emp = [];
 
-                  allDates.forEach(dat => {
-                    const ProjAssgned = emp.find(e => {
+                  allDates.forEach((dat) => {
+                    const ProjAssgned = emp.find((e) => {
                       return e.attendance_date == dat;
                     });
 
@@ -513,13 +513,13 @@ export default {
                         abbreviation: null,
                         designation: employ.designation,
                         exit_date: employ.exit_date,
-                        hims_f_project_roster_id: null
+                        hims_f_project_roster_id: null,
                       });
                     }
                   });
                 } else {
-                  allDates.forEach(dat => {
-                    const ProjAssgned = emp.find(e => {
+                  allDates.forEach((dat) => {
+                    const ProjAssgned = emp.find((e) => {
                       return e.attendance_date == dat;
                     });
 
@@ -537,13 +537,13 @@ export default {
                         abbreviation: null,
                         designation: emp[0].designation,
                         exit_date: emp[0].exit_date,
-                        hims_f_project_roster_id: null
+                        hims_f_project_roster_id: null,
                       });
                     }
                   });
                 }
 
-                const rosterAssigned = _.find(emp, f => f.project_id == null);
+                const rosterAssigned = _.find(emp, (f) => f.project_id == null);
 
                 if (rosterAssigned == undefined) {
                   total_rosetd = total_rosetd + 1;
@@ -556,7 +556,7 @@ export default {
 
             //----------------------------------------------------
 
-            allEmployees.forEach(employee => {
+            allEmployees.forEach((employee) => {
               const outputArray = [];
               let empHolidayweekoff = getEmployeeWeekOffsHolidays(
                 input.from_date,
@@ -566,8 +566,8 @@ export default {
               );
 
               const empLeave = new LINQ(allLeaves)
-                .Where(w => w.employee_id == employee[0].employee_id)
-                .Select(s => s)
+                .Where((w) => w.employee_id == employee[0].employee_id)
+                .Select((s) => s)
                 .ToArray();
 
               employee.forEach((row, i) => {
@@ -575,11 +575,11 @@ export default {
                 if (empLeave.length > 0) {
                   leave = new LINQ(empLeave)
                     .Where(
-                      w =>
+                      (w) =>
                         w.from_date <= row["attendance_date"] &&
                         w.to_date >= row["attendance_date"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         holiday_included: s.holiday_included,
                         weekoff_included: s.weekoff_included,
@@ -592,18 +592,18 @@ export default {
                         employee_code: row.employee_code,
                         attendance_date: row["attendance_date"],
                         status: s.status,
-                        designation: row.designation
+                        designation: row.designation,
                       };
                     })
                     .FirstOrDefault(null);
                 }
 
                 const holiday_or_weekOff = new LINQ(empHolidayweekoff)
-                  .Where(w => w.holiday_date == row["attendance_date"])
-                  .Select(s => {
+                  .Where((w) => w.holiday_date == row["attendance_date"])
+                  .Select((s) => {
                     return {
                       holiday: s.holiday,
-                      weekoff: s.weekoff
+                      weekoff: s.weekoff,
                     };
                   })
                   .FirstOrDefault(null);
@@ -627,7 +627,7 @@ export default {
                     project_desc: row.project_desc,
                     abbreviation: row.abbreviation,
                     attendance_date: leave.attendance_date,
-                    status: leave.status
+                    status: leave.status,
                   });
                 } else if (holiday_or_weekOff != null) {
                   if (holiday_or_weekOff.weekoff == "Y") {
@@ -638,7 +638,7 @@ export default {
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
 
-                      status: "WO"
+                      status: "WO",
                     });
                   } else if (holiday_or_weekOff.holiday == "Y") {
                     outputArray.push({
@@ -648,7 +648,7 @@ export default {
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
 
-                      status: "HO"
+                      status: "HO",
                     });
                   } else {
                     outputArray.push({
@@ -657,7 +657,7 @@ export default {
                       project_desc: row.project_desc,
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
-                      status: row.project_id > 0 ? "PA" : "N"
+                      status: row.project_id > 0 ? "PA" : "N",
                     });
                   }
                 } else {
@@ -667,11 +667,11 @@ export default {
                     project_desc: row.project_desc,
                     abbreviation: row.abbreviation,
                     attendance_date: row["attendance_date"],
-                    status: row.project_id > 0 ? "PA" : "N"
+                    status: row.project_id > 0 ? "PA" : "N",
                   });
                 }
               });
-              const projectList = _.sortBy(outputArray, s =>
+              const projectList = _.sortBy(outputArray, (s) =>
                 parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
               );
 
@@ -685,7 +685,7 @@ export default {
                 designation: employee[0].designation,
                 exit_date: employee[0].exit_date,
 
-                projects: projectList
+                projects: projectList,
               });
             });
             //----------------------------------------------------
@@ -694,19 +694,19 @@ export default {
               datesArray: allDates,
               roster: final_roster,
               total_rosted: total_rosetd,
-              total_non_rosted: total_non_rosted
+              total_non_rosted: total_non_rosted,
             };
             next();
           } else {
             req.records = {
               invalid_input: true,
-              message: "No Employee Exist"
+              message: "No Employee Exist",
             };
             next();
             return;
           }
         })
-        .catch(e => {
+        .catch((e) => {
           utilities.logger().log("error: ", e);
           _mysql.releaseConnection();
           next(e);
@@ -714,7 +714,7 @@ export default {
     } else {
       req.records = {
         invalid_input: true,
-        message: "Select Branch & Department"
+        message: "Select Branch & Department",
       };
       next();
       return;
@@ -730,21 +730,21 @@ export default {
         .executeQuery({
           query:
             "delete from hims_f_project_roster where hims_f_project_roster_id = ?",
-          values: [input.hims_f_project_roster_id]
+          values: [input.hims_f_project_roster_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please send valid input"
+        message: "Please send valid input",
       };
       next();
     }
@@ -782,9 +782,9 @@ export default {
           query:
             "select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
         religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?",
-          values: [input.from_date, input.to_date, input.hospital_id]
+          values: [input.from_date, input.to_date, input.hospital_id],
         })
-        .then(holidayResult => {
+        .then((holidayResult) => {
           let _days = [];
           if (input.employees.length > 0) {
             _days = getDays(
@@ -800,7 +800,7 @@ export default {
               employee,
               holidayResult
             );
-            _days.map(date => {
+            _days.map((date) => {
               if (
                 moment(date).format("YYYYMMDD") >=
                   moment(employee["date_of_joining"]).format("YYYYMMDD") &&
@@ -808,7 +808,7 @@ export default {
                   moment(employee["exit_date"]).format("YYYYMMDD") <
                     moment(date).format("YYYYMMDD"))
               ) {
-                const week_off_Data = _.find(empHoliday, f => {
+                const week_off_Data = _.find(empHoliday, (f) => {
                   return (
                     moment(f.holiday_date).format("YYYYMMDD") ==
                     moment(date).format("YYYYMMDD")
@@ -819,7 +819,7 @@ export default {
                   week_off_Data.weekoff == "N" ||
                   week_off_Data.holiday == "N"
                 ) {
-                  const _leave = _.find(employee["employeeLeaves"], l => {
+                  const _leave = _.find(employee["employeeLeaves"], (l) => {
                     return (
                       moment(l["leaveDate"]).format("YYYYMMDD") ==
                       moment(date).format("YYYYMMDD")
@@ -836,7 +836,7 @@ export default {
                       _leave != null
                         ? _leave.hims_f_leave_application_id
                         : null,
-                      input.hospital_id
+                      input.hospital_id,
                     ]
                   );
                 }
@@ -846,14 +846,14 @@ export default {
           if (insertData != "") {
             _mysql
               .executeQuery({
-                query: insertData
+                query: insertData,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -862,7 +862,7 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -888,13 +888,13 @@ export default {
 
         const insertArray = [];
 
-        input.roster.forEach(item => {
-          allDates.forEach(dat => {
+        input.roster.forEach((item) => {
+          allDates.forEach((dat) => {
             insertArray.push({
               employee_id: item,
               attendance_date: dat,
               project_id: input["project_id"],
-              hospital_id: input["hospital_id"]
+              hospital_id: input["hospital_id"],
             });
           });
         });
@@ -906,14 +906,14 @@ export default {
               ON DUPLICATE KEY UPDATE project_id= values(project_id); ",
             values: insertArray,
             bulkInsertOrUpdate: true,
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -922,7 +922,7 @@ export default {
 
         req.records = {
           invalid_input: true,
-          message: "Please Provide valid From & to dates"
+          message: "Please Provide valid From & to dates",
         };
 
         next();
@@ -949,9 +949,9 @@ export default {
               "select hims_d_employee_id,date_of_joining from hims_d_employee where hims_d_employee_id in (?); ",
             values: input.roster,
             bulkInsertOrUpdate: true,
-            printQuery: false
+            printQuery: false,
           })
-          .then(employee => {
+          .then((employee) => {
             const allDates = getDaysArray2(
               new Date(input.from_date),
               new Date(input.to_date)
@@ -959,14 +959,14 @@ export default {
 
             const insertArray = [];
 
-            employee.forEach(item => {
+            employee.forEach((item) => {
               if (item.date_of_joining <= input.from_date) {
-                allDates.forEach(dat => {
+                allDates.forEach((dat) => {
                   insertArray.push({
                     employee_id: item.hims_d_employee_id,
                     attendance_date: dat,
                     project_id: input["project_id"],
-                    hospital_id: input["hospital_id"]
+                    hospital_id: input["hospital_id"],
                   });
                 });
               } else {
@@ -975,12 +975,12 @@ export default {
                   new Date(input.to_date)
                 );
 
-                custmDates.forEach(dat => {
+                custmDates.forEach((dat) => {
                   insertArray.push({
                     employee_id: item.hims_d_employee_id,
                     attendance_date: dat,
                     project_id: input["project_id"],
-                    hospital_id: input["hospital_id"]
+                    hospital_id: input["hospital_id"],
                   });
                 });
               }
@@ -993,19 +993,19 @@ export default {
               ON DUPLICATE KEY UPDATE project_id= values(project_id); ",
                 values: insertArray,
                 bulkInsertOrUpdate: true,
-                printQuery: false
+                printQuery: false,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -1014,7 +1014,7 @@ export default {
 
         req.records = {
           invalid_input: true,
-          message: "Please Provide valid From & to dates"
+          message: "Please Provide valid From & to dates",
         };
 
         next();
@@ -1043,16 +1043,16 @@ export default {
           input.hims_f_leave_application_id,
           input.hospital_id,
           input.project_id,
-          input.hims_f_leave_application_id
+          input.hims_f_leave_application_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1094,12 +1094,12 @@ export default {
           (select ER.*,ERD.component_type from  hims_f_salary_earnings ER \
           inner join hims_d_earning_deduction ERD on ER.earnings_id=ERD.hims_d_earning_deduction_id \
           and ERD.component_type='OV') as SE on SAL.hims_f_salary_id=SE.salary_header_id \
-          where component_type='OV' and PWP.hospital_id=? \
+          where PWP.hospital_id=? \
           and PWP.year=? and PWP.month=?  ${employee} ${project} group by ${groupBy} ;`,
           values: [input.hospital_id, input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           // req.records = result;
           // next();
@@ -1119,19 +1119,19 @@ export default {
             let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
             outputArray.push({
               ...result[i],
-              complete_hours: complete_hours + "." + mins
+              complete_hours: complete_hours + "." + mins,
             });
           }
 
-          total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
+          total_cost = new LINQ(result).Sum((s) => parseFloat(s.project_cost));
 
           //ST---time calculation
 
-          total_worked_hours = new LINQ(result).Sum(s =>
+          total_worked_hours = new LINQ(result).Sum((s) =>
             parseInt(s.worked_hours)
           );
 
-          let worked_minutes = new LINQ(result).Sum(s =>
+          let worked_minutes = new LINQ(result).Sum((s) =>
             parseInt(s.worked_minutes)
           );
 
@@ -1142,7 +1142,7 @@ export default {
             project_wise_payroll: outputArray,
             total_worked_hours: total_worked_hours + "." + minutes,
             noEmployees: result.length,
-            total_cost: total_cost
+            total_cost: total_cost,
           };
           next();
           // } else {
@@ -1151,14 +1151,14 @@ export default {
           //   next();
           // }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please send valid input"
+        message: "Please send valid input",
       };
       next();
       return;
@@ -1178,23 +1178,23 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please send valid input"
+        message: "Please send valid input",
       };
       next();
       return;
@@ -1219,23 +1219,23 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please send valid input"
+        message: "Please send valid input",
       };
       next();
       return;
@@ -1255,14 +1255,14 @@ export default {
       .executeQuery({
         query: `SELECT hims_d_activity_id,description FROM hims_d_activity where record_status='A' ${activity_id};`,
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1282,14 +1282,14 @@ export default {
       .executeQuery({
         query: `select hims_d_sub_activity_id,activity_id,description from hims_d_sub_activity where \
         record_status='A' ${activity_id};`,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1311,12 +1311,12 @@ export default {
             input.description,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_activity_id
+            input.hims_d_activity_id,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           if (result.affectedRows > 0) {
             req.records = result;
@@ -1324,19 +1324,19 @@ export default {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid id"
+              message: "please provide valid id",
             };
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
 
       next();
@@ -1360,12 +1360,12 @@ export default {
             input.description,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_sub_activity_id
+            input.hims_d_sub_activity_id,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           if (result.affectedRows > 0) {
             req.records = result;
@@ -1373,19 +1373,19 @@ export default {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid id"
+              message: "please provide valid id",
             };
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
 
       next();
@@ -1405,14 +1405,14 @@ export default {
         hims_f_project_roster PR left join hims_d_project P on 
         PR.project_id=P.hims_d_project_id where PR.hospital_id=?  group by project_id;`,
           values: [input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -1434,21 +1434,21 @@ export default {
           where hims_d_employee_id  in(SELECT distinct employee_id FROM  hims_f_project_roster
           where project_id=? and hospital_id=?) group by E.employee_designation_id;`,
           values: [input.project_id, input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       next(new Error("Please provide valid input"));
     }
-  }
+  },
 };
 
 //created by irfan: to generate dates leave

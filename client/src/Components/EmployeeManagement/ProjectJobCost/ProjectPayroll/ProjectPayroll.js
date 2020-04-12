@@ -7,7 +7,7 @@ import "./ProjectPayroll.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 
 import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -33,7 +33,7 @@ class ProjectPayroll extends Component {
       employee_id: null,
       employee_name: null,
       total_cost: 0,
-      lbl_total: "Total Employees"
+      lbl_total: "Total Employees",
     };
     this.baseState = this.state;
   }
@@ -52,7 +52,7 @@ class ProjectPayroll extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.organizations === undefined ||
@@ -63,8 +63,8 @@ class ProjectPayroll extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -79,8 +79,8 @@ class ProjectPayroll extends Component {
 
         redux: {
           type: "EMPLY_GET_DATA",
-          mappingName: "all_employees"
-        }
+          mappingName: "all_employees",
+        },
       });
     }
 
@@ -92,8 +92,8 @@ class ProjectPayroll extends Component {
         date: { pjoject_status: "A" },
         redux: {
           type: "PROJECTS_GET_DATA",
-          mappingName: "projects"
-        }
+          mappingName: "projects",
+        },
       });
     }
   }
@@ -105,7 +105,7 @@ class ProjectPayroll extends Component {
       this.props.projects === undefined
         ? []
         : this.props.projects.filter(
-            f => f.hims_d_project_id === this.state.project_id
+            (f) => f.hims_d_project_id === this.state.project_id
           );
 
     return (
@@ -115,7 +115,7 @@ class ProjectPayroll extends Component {
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Year",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "year",
@@ -124,15 +124,15 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: allYears
+                data: allYears,
               },
               onChange: this.eventHandaler.bind(this),
 
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
                 });
-              }
+              },
             }}
           />
 
@@ -140,7 +140,7 @@ class ProjectPayroll extends Component {
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Month",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               sort: "off",
@@ -150,14 +150,14 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.MONTHS
+                data: GlobalVariables.MONTHS,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
                 });
-              }
+              },
             }}
           />
 
@@ -165,7 +165,7 @@ class ProjectPayroll extends Component {
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Filter by Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -174,14 +174,14 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -189,7 +189,7 @@ class ProjectPayroll extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "project_id",
@@ -198,14 +198,14 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "project_desc",
                 valueField: "hims_d_project_id",
-                data: this.props.projects
+                data: this.props.projects,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  project_id: null
+                  project_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -303,7 +303,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Project Name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "employee_code",
@@ -311,7 +311,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Code" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "full_name",
@@ -319,7 +319,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "department_name",
@@ -327,7 +327,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Department Name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "sub_department_name",
@@ -335,7 +335,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Sub Depart. Name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "designation",
@@ -343,7 +343,7 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Designation " }}
                             />
-                          )
+                          ),
                         },
 
                         {
@@ -357,15 +357,15 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "project_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               parseFloat(row.project_cost) -
                               parseFloat(row.ot_amount)
@@ -375,8 +375,8 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "ot_work",
@@ -389,8 +389,8 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "ot_amount",
@@ -401,8 +401,8 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "complete_hours",
@@ -415,8 +415,8 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "project_cost",
@@ -430,9 +430,9 @@ class ProjectPayroll extends Component {
                             maxWidth: 150,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        }
+                            style: { textAlign: "center" },
+                          },
+                        },
                       ]}
                       keyId="projectPayrollGrid"
                       dataSource={{ data: this.state.project_wise_payroll }}
@@ -457,7 +457,7 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: this.state.lbl_total
+                        forceLabel: this.state.lbl_total,
                       }}
                     />
                     <h6>{this.state.noEmployees} Nos</h6>
@@ -465,7 +465,7 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Total Worked Hr"
+                        forceLabel: "Total Worked Hr",
                       }}
                     />
                     <h6>{this.state.total_worked_hours} Hr</h6>
@@ -473,7 +473,7 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Project Total Cost"
+                        forceLabel: "Project Total Cost",
                       }}
                     />
 
@@ -493,7 +493,7 @@ function mapStateToProps(state) {
   return {
     organizations: state.organizations,
     all_employees: state.all_employees,
-    projects: state.projects
+    projects: state.projects,
   };
 }
 
@@ -502,7 +502,7 @@ function mapDispatchToProps(dispatch) {
     {
       getOrganizations: AlgaehActions,
       getEmployees: AlgaehActions,
-      getProjects: AlgaehActions
+      getProjects: AlgaehActions,
     },
     dispatch
   );
