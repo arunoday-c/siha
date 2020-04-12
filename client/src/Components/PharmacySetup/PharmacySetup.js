@@ -13,7 +13,7 @@ import Location from "./Location/Location";
 import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
 import LocationPermission from "./LocationPermission/LocationPermission";
-import ReorderQtyMasterPharmacy from "./ReorderQtyMasterPharmacy/ReorderQtyMasterPharmacy";
+// import ReorderQtyMasterPharmacy from "./ReorderQtyMasterPharmacy/ReorderQtyMasterPharmacy";
 // import PharmacyOptions from "./PharmacyOptions/PharmacyOptions";
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -183,7 +183,7 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 className={"nav-item tab-button "}
                 algaehtabs={"ReorderQtyMasterPharmacy"}
                 onClick={this.openTab.bind(this)}
@@ -195,7 +195,7 @@ class PharmacySetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
@@ -203,7 +203,10 @@ class PharmacySetup extends Component {
           {/*  {<this.state.pageDisplay />} */}
           {/* this.state.pageDisplay === "PharmacyOptions" ? (
             <PharmacyOptions />
-          ) : */}
+          ) : 
+          : this.state.pageDisplay === "ReorderQtyMasterPharmacy" ? (
+            <ReorderQtyMasterPharmacy />
+          )*/}
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
@@ -220,8 +223,6 @@ class PharmacySetup extends Component {
             <ItemStorage />
           ) : this.state.pageDisplay === "LocationPermission" ? (
             <LocationPermission />
-          ) : this.state.pageDisplay === "ReorderQtyMasterPharmacy" ? (
-            <ReorderQtyMasterPharmacy />
           ) : null}
         </div>
       </div>
