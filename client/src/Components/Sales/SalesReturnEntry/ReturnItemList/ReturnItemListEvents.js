@@ -1,7 +1,6 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 const deleteSalesReturnDetail = ($this, context, row) => {
