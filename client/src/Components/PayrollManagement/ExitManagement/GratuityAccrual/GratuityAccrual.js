@@ -5,7 +5,7 @@ import "./GratuityAccrual.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -14,7 +14,7 @@ import {
   texthandle,
   LoadGratuityAccrual,
   employeeSearch,
-  ClearData
+  ClearData,
 } from "./GratuityAccrualEvent";
 import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
@@ -29,7 +29,7 @@ export default class GratuityAccrual extends Component {
       employee_name: null,
       gratuity_details: [],
       total_gratuity_amount: null,
-      hospital_id: null
+      hospital_id: null,
     };
     this.getHospitals();
   }
@@ -39,21 +39,21 @@ export default class GratuityAccrual extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
   }
 
   getHospitals() {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            hospitals: res.data.records
+            hospitals: res.data.records,
           });
         }
-      }
+      },
     });
   }
   render() {
@@ -63,10 +63,10 @@ export default class GratuityAccrual extends Component {
         <div className="col-12" data-validate="loadGratuityAccrual">
           <div className="row inner-top-search">
             <AlagehAutoComplete
-              div={{ className: "col-3 form-group mandatory" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Select a Branch",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -75,17 +75,17 @@ export default class GratuityAccrual extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.state.hospitals
+                  data: this.state.hospitals,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    hospital_id: null,
                   });
                 },
                 others: {
-                  disabled: this.state.lockEarnings
-                }
+                  disabled: this.state.lockEarnings,
+                },
               }}
             />
 
@@ -101,7 +101,7 @@ export default class GratuityAccrual extends Component {
               div={{ className: "col-1 mandatory form-group" }}
               label={{
                 forceLabel: "Year",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "year",
@@ -110,14 +110,14 @@ export default class GratuityAccrual extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: allYears
+                  data: allYears,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    year: null
+                    year: null,
                   });
-                }
+                },
               }}
             />
 
@@ -125,7 +125,7 @@ export default class GratuityAccrual extends Component {
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Month",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 sort: "off",
@@ -135,18 +135,25 @@ export default class GratuityAccrual extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.MONTHS
+                  data: GlobalVariables.MONTHS,
                 },
                 onChange: texthandle.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    month: null
+                    month: null,
                   });
-                }
+                },
               }}
             />
 
-            <div className="col-3">
+            <div className="col-2">
+              <button
+                className="btn btn-default"
+                style={{ marginTop: 19, marginRight: 10 }}
+                onClick={ClearData.bind(this, this)}
+              >
+                Clear
+              </button>
               <button
                 className="btn btn-primary"
                 style={{ marginTop: 19 }}
@@ -178,7 +185,7 @@ export default class GratuityAccrual extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "full_name",
@@ -186,7 +193,7 @@ export default class GratuityAccrual extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "gratuity_amount",
@@ -196,9 +203,9 @@ export default class GratuityAccrual extends Component {
                           />
                         ),
                         others: {
-                          filterable: false
-                        }
-                      }
+                          filterable: false,
+                        },
+                      },
                     ]}
                     keyId=""
                     filter={true}
@@ -218,7 +225,7 @@ export default class GratuityAccrual extends Component {
                 <div className="col-12">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Gratuity Amount"
+                      forceLabel: "Total Gratuity Amount",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.total_gratuity_amount)}</h6>
@@ -231,20 +238,20 @@ export default class GratuityAccrual extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{ forceLabel: "Print", returnText: true }}
                 />
               </button>
+              {/* <button
+                type="button"
+                className="btn btn-default"
+             
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button> */}
             </div>
           </div>
         </div>
