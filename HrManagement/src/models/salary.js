@@ -4683,6 +4683,7 @@ function InsertGratuityProvision(options) {
 
                       // console.log("gratuity_data", gratuity_data)
                       // console.log("_computatedAmoutSum", _computatedAmoutSum)
+                      _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
                         gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
@@ -4691,7 +4692,7 @@ function InsertGratuityProvision(options) {
                       }
 
                       // console.log("_employee[k].gratuity_encash", _employee[k].gratuity_encash)
-                      gratuity_amount = parseFloat(gratuity_amount) - parseFloat(_employee[k].gratuity_encash)
+
 
                       strQry += mysql.format(
                         "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
