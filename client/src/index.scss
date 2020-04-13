@@ -1816,12 +1816,18 @@ td {
       select {
         border: 1px solid #8c8c8c !important;
         width: 7vh !important;
+        height: 25px;
         -webkit-appearance: none;
       }
       input {
         padding: 2px !important;
       }
       flex: none !important;
+      font-size: 0.8rem;
+      text-align: center;
+      .-pageInfo {
+        margin: 3px 5px;
+      }
     }
 
     @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
@@ -1832,7 +1838,7 @@ td {
     .-next,
     .-previous {
       flex: none !important;
-      width: 70px;
+      min-width: 65px;
     }
   }
   i.fa-pen,
