@@ -16,6 +16,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { MainContext } from "algaeh-react-components/context";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -35,11 +36,35 @@ class FinalSettlement extends Component {
       net_deductions: 0,
       net_amount: 0,
       isEnable: true,
-      flag: undefined
+      flag: undefined,
+      hospital_id: null
     };
     this.getEarningsDeductions();
+    this.getHospitals();
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+  }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records
+          });
+        }
+      }
+    });
+  }
   changeChecks(e) {
     this.setState({
       [e.target.name]: e.target.checked
@@ -281,6 +306,11 @@ class FinalSettlement extends Component {
           deduction_name: value.selected.earning_deduction_description
         });
         break;
+      case "hospital_id":
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
       default:
         this.setState({
           [value.name]: value.value
@@ -465,11 +495,23 @@ class FinalSettlement extends Component {
   }
 
   employeeSearch() {
+    if (this.state.hospital_id === null || this.state.hospital_id === undefined) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning"
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return
+    }
+
+    let input_data = " hospital_id=" + this.state.hospital_id;
+
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
       searchName: "exit_employees",
+      inputs: input_data,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
@@ -494,6 +536,33 @@ class FinalSettlement extends Component {
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search" style={{ paddingBottom: 5 }}>
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Select a Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              },
+              others: {
+                disabled: this.state.lockEarnings
+              }
+            }}
+          />
+
           <div className="col-2 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
@@ -536,27 +605,6 @@ class FinalSettlement extends Component {
             </div>
           </div> */}
 
-          <div className="col form-group">
-            {/* <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-default"
-            >
-              CLEAR
-            </button>
-            <button
-              onClick={this.loadFinalSettlement.bind(this)}
-              style={{ marginTop: 19, marginLeft: 5 }}
-              className="btn btn-primary"
-            >
-              Load
-            </button> */}
-            {/* {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null} */}
-            <h3 style={{ paddingTop: "19px" }}>
-              <font color="green">{this.state.flag}</font>
-            </h3>
-          </div>
-
           <div className="col">
             <label className="style_Label ">Employee Code</label>
             <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
@@ -574,6 +622,11 @@ class FinalSettlement extends Component {
                 ? FsData.sub_department_name
                 : "-------"}
             </h6>
+          </div>
+          <div className="col form-group">
+            <h3 style={{ paddingTop: "19px" }}>
+              <font color="green">{this.state.flag}</font>
+            </h3>
           </div>
         </div>
         <div className="row">

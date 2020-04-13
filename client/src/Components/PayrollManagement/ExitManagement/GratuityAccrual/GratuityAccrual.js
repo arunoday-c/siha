@@ -17,6 +17,7 @@ import {
   ClearData
 } from "./GratuityAccrualEvent";
 import { MainContext } from "algaeh-react-components/context";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 export default class GratuityAccrual extends Component {
   constructor(props) {
@@ -27,8 +28,10 @@ export default class GratuityAccrual extends Component {
       hims_d_employee_id: null,
       employee_name: null,
       gratuity_details: [],
-      total_gratuity_amount: null
+      total_gratuity_amount: null,
+      hospital_id: null
     };
+    this.getHospitals();
   }
 
   static contextType = MainContext;
@@ -39,12 +42,53 @@ export default class GratuityAccrual extends Component {
       hospital_id: userToken.hims_d_hospital_id
     })
   }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records
+          });
+        }
+      }
+    });
+  }
   render() {
     let allYears = getYears();
     return (
       <div className="row GratuityAccrualScreen">
         <div className="col-12" data-validate="loadGratuityAccrual">
           <div className="row inner-top-search">
+            <AlagehAutoComplete
+              div={{ className: "col-3 form-group mandatory" }}
+              label={{
+                forceLabel: "Select a Branch",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.state.hospitals
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+
             <div className="col-3 globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={employeeSearch.bind(this, this)}>

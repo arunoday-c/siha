@@ -70,7 +70,8 @@ export default function FilterComponent(props) {
             valueField: "hims_d_hospital_id",
             data: hospitals
           },
-          onChange: handlers.dropDownHandler
+          onChange: handlers.dropDownHandler,
+          onClear: handlers.dropDownClear,
         }}
         showLoading={true}
       />
@@ -182,8 +183,8 @@ export default function FilterComponent(props) {
           {!inputs.loading ? (
             <span>Load</span>
           ) : (
-            <i className="fas fa-spinner fa-spin" />
-          )}
+              <i className="fas fa-spinner fa-spin" />
+            )}
         </button>
         <button
           onClick={handlers.clearState}

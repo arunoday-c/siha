@@ -19,6 +19,16 @@ const texthandle = ($this, e) => {
 };
 
 const employeeSearch = $this => {
+
+  if ($this.state.hospital_id === null || $this.state.hospital_id === undefined) {
+    swalMessage({
+      title: "Please Select Branch",
+      type: "warning"
+    });
+    document.querySelector("[name='hospital_id']").focus();
+    return
+  }
+
   let input_data = " hospital_id=" + $this.state.hospital_id;
   AlgaehSearch({
     searchGrid: {
