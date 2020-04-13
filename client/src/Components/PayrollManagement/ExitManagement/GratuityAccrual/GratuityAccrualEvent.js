@@ -1,8 +1,7 @@
 import Enumerable from "linq";
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie
+  algaehApiCall
 } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -20,7 +19,7 @@ const texthandle = ($this, e) => {
 };
 
 const employeeSearch = $this => {
-  let input_data = " hospital_id=" + getCookie("HospitalId");
+  let input_data = " hospital_id=" + $this.state.hospital_id;
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee
@@ -51,7 +50,7 @@ const LoadGratuityAccrual = $this => {
       let inputObj = {
         year: $this.state.year,
         month: $this.state.month,
-        hospital_id: getCookie("HospitalId")
+        hospital_id: $this.state.hospital_id
       };
 
       if ($this.state.hims_d_employee_id !== null) {

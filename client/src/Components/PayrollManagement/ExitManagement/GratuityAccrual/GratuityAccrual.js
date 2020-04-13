@@ -16,6 +16,7 @@ import {
   employeeSearch,
   ClearData
 } from "./GratuityAccrualEvent";
+import { MainContext } from "algaeh-react-components/context";
 
 export default class GratuityAccrual extends Component {
   constructor(props) {
@@ -30,6 +31,14 @@ export default class GratuityAccrual extends Component {
     };
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+  }
   render() {
     let allYears = getYears();
     return (
