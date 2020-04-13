@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import "./RulesDetails.scss";
-import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
+import { AlagehFormGroup, AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
 import { changeChecks } from "./RulesDetailsEvent.js";
 
 class RulesDetails extends PureComponent {
@@ -173,6 +173,25 @@ class RulesDetails extends PureComponent {
                     </span>
                   </label>
                 </div>
+
+                <AlagehFormGroup
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Gratuity Encash Amount",
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "gratuity_encash",
+                    value: this.state.gratuity_encash,
+                    decimal: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    events: {
+                      onChange: changeChecks.bind(this, this)
+                    }
+                  }}
+                />
                 {/* <AlagehFormGroup
                   div={{ className: "col-2 form-group" }}
                   label={{

@@ -4459,7 +4459,7 @@ function InsertGratuityProvision(options) {
           query:
             "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
             ((datediff(date(?),date(date_of_joining)))+1)/365 endOfServiceYears, employee_code, exit_date,\
-            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth \
+            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth, gratuity_encash \
             from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
             select * from hims_d_end_of_service_options;",
           values: [inputParam.salary_end_date, inputParam.employee_id],
@@ -4682,12 +4682,16 @@ function InsertGratuityProvision(options) {
                       );
 
                       // console.log("gratuity_data", gratuity_data)
+                      // console.log("_computatedAmoutSum", _computatedAmoutSum)
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
                         gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
                       } else {
                         gratuity_amount = _computatedAmoutSum
                       }
+
+                      // console.log("_employee[k].gratuity_encash", _employee[k].gratuity_encash)
+                      gratuity_amount = parseFloat(gratuity_amount) - parseFloat(_employee[k].gratuity_encash)
 
                       strQry += mysql.format(
                         "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
