@@ -350,7 +350,7 @@ export default {
       let intValues = [req.query.pharmacy_location_id];
       let strAppend = "";
       if (req.query.item_id != null) {
-        strAppend += " and item_id=?";
+        strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
       }
       if (req.query.pharmacy_location_id != null) {
