@@ -18,6 +18,7 @@ import {
 } from "./SalesReturnEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReturnItemList from "./ReturnItemList/ReturnItemList";
+import { MainContext } from "algaeh-react-components/context";
 
 class SalesReturnEntry extends Component {
     constructor(props) {
@@ -50,7 +51,8 @@ class SalesReturnEntry extends Component {
             location_id: null,
 
             saveEnable: true,
-            postEnable: true
+            postEnable: true,
+            decimal_places: 0
         };
     }
 
@@ -59,14 +61,13 @@ class SalesReturnEntry extends Component {
     //     this.setState(IOputs);
     // }
 
-    // componentDidMount() {
-    //     if (
-    //         this.props.purchase_return_number !== undefined &&
-    //         this.props.purchase_return_number.length !== 0
-    //     ) {
-    //         getCtrlCode(this, this.props.purchase_return_number);
-    //     }
-    // }
+    static contextType = MainContext;
+    componentDidMount() {
+        const userToken = this.context.userToken;
+        this.setState({
+            decimal_places: userToken.decimal_places
+        });
+    }
 
     render() {
         const class_finder = this.state.dataFinder === true
