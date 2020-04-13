@@ -379,8 +379,7 @@ let algaehSearchConfig = (searchName, req) => {
           left join   hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id\
           left join hims_d_department D on SD.department_id = D.hims_d_department_id\
           left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
-          WHERE E.record_status = 'A' and E.hospital_id=" +
-          hospitalId,
+          WHERE E.record_status = 'A' ",
         orderBy: "hims_d_employee_id desc"
       },
       {

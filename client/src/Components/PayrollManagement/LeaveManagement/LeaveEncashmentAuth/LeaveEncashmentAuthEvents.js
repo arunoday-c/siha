@@ -18,10 +18,19 @@ const texthandler = ($this, e) => {
 };
 
 const employeeSearch = $this => {
-  let str = null;
-  if ($this.state.hospital_id !== null) {
-    str = "hospital_id = " + $this.state.hospital_id;
+  if (
+    $this.state.hospital_id === null ||
+    $this.state.hospital_id === undefined
+  ) {
+    swalMessage({
+      title: "Please Select Branch",
+      type: "warning"
+    });
+    document.querySelector("[name='hospital_id']").focus();
+    return
   }
+
+  let str = " hospital_id=" + $this.state.hospital_id;
 
   if ($this.state.sub_department_id !== null) {
     if (str === null) {
@@ -33,9 +42,6 @@ const employeeSearch = $this => {
       str !== null
         ? " and sub_department_id = " + $this.state.sub_department_id
         : "sub_department_id = " + $this.state.sub_department_id;
-  }
-  if (str === null) {
-    str = "1=1";
   }
 
   AlgaehSearch({

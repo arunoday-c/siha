@@ -142,16 +142,26 @@ export default function ManualAttendanceEvents() {
     },
 
     employeeSearch: $this => {
+      if ($this.state.hospital_id === null || $this.state.hospital_id === undefined) {
+        swalMessage({
+          title: "Please Select Branch",
+          type: "warning"
+        });
+        document.querySelector("[name='hospital_id']").focus();
+        return
+      }
+      let input_data = $this.state.hospital_id !== null ? " hospital_id=" + $this.state.hospital_id : "1=1";
+      if ($this.state.employee_group_id !== null) {
+        input_data += "employee_group_id = " + $this.state.employee_group_id
+      }
+
       AlgaehSearch({
         searchGrid: {
           columns: spotlightSearch.Employee_details.employee
         },
         searchName: "employee",
         uri: "/gloabelSearch/get",
-        inputs:
-          $this.state.employee_group_id !== null
-            ? "employee_group_id = " + $this.state.employee_group_id
-            : "1=1",
+        inputs: input_data,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },

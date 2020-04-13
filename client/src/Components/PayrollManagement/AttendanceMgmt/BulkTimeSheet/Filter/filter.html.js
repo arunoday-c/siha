@@ -130,6 +130,18 @@ export default function Filter(props) {
   }, [atStartType, month, selYear, startDt, endDt]);
 
   function employeeSearch() {
+    if (
+      hospitalID === null ||
+      hospitalID === undefined
+    ) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning"
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return
+    }
+
     let input_data = " hospital_id=" + hospitalID;
     AlgaehSearch({
       searchGrid: {

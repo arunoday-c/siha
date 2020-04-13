@@ -20,11 +20,13 @@ const texthandle = ($this, e) => {
 };
 
 const employeeSearch = $this => {
+  let input_data = " hospital_id=" + getCookie("HospitalId");
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee
     },
     searchName: "employee",
+    inputs: input_data,
     uri: "/gloabelSearch/get",
 
     onContainsChange: (text, serchBy, callBack) => {
