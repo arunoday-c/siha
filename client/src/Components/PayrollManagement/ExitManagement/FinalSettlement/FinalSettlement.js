@@ -542,7 +542,15 @@ class FinalSettlement extends Component {
 
     return (
       <div className="FinalSettlementScreen">
-        <div className="row  inner-top-search" style={{ paddingBottom: 5 }}>
+        <div
+          className="row  inner-top-search"
+          style={{
+            position: "fixed",
+            top: "85px",
+            zIndex: "9",
+            width: "100vw",
+          }}
+        >
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
@@ -636,7 +644,7 @@ class FinalSettlement extends Component {
             </h3>
           </div>
         </div>
-        <div className="row">
+        <div className="row" style={{ marginTop: 120 }}>
           {/* <div className="col-12">
             <div
               className="portlet portlet-bordered margin-bottom-15"
