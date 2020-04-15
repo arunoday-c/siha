@@ -1,5 +1,9 @@
 import React, { Component } from "react";
-import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import {
+  AlagehFormGroup,
+  AlgaehLabel,
+  AlagehAutoComplete,
+} from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./EOSGratuity.scss";
@@ -15,35 +19,59 @@ class EOSGratuity extends Component {
       loading: false,
       eos: [],
       data: {
-        componentList: []
+        componentList: [],
       },
       previous_gratuity_amount: 0,
       saveDisabled: true,
       gratuity_done: false,
-      gratuity_status: "PRO"
+      gratuity_status: "PRO",
+      branches: [],
+      hospital_id: undefined,
     };
   }
-
+  componentDidMount() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: (response) => {
+        const { data } = response;
+        const { records, success, message } = data;
+        if (success === true) this.setState({ branches: records });
+        else {
+          swalMessage({
+            title: message,
+            type: "error",
+          });
+        }
+      },
+      onCatch: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   changeChecks(e) {
     if (e.target.checked) {
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
     } else if (!e.target.checked) {
       this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   }
@@ -51,7 +79,7 @@ class EOSGratuity extends Component {
   clearState() {
     this.setState({
       data: {
-        componentList: []
+        componentList: [],
       },
       previous_gratuity_amount: 0,
       employee_name: null,
@@ -60,27 +88,27 @@ class EOSGratuity extends Component {
       payable_amount: null,
       remarks: "",
       saveDisabled: true,
-      gratuity_done: false
+      gratuity_done: false,
     });
   }
 
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "exit_employees",
-      inputs: "gratuity_applicable = 'Y'",
+      inputs: `gratuity_applicable = 'Y' and hospital_id=${this.state.hospital_id}`,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id
+          hims_d_employee_id: row.hims_d_employee_id,
         });
-      }
+      },
     });
   }
 
@@ -96,7 +124,7 @@ class EOSGratuity extends Component {
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
       gratuity_status: this.state.gratuity_status,
-      remarks: this.state.remarks
+      remarks: this.state.remarks,
     };
 
     algaehApiCall({
@@ -104,24 +132,24 @@ class EOSGratuity extends Component {
       method: "POST",
       module: "hrManagement",
       data: send_data,
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Added Successfully",
-            type: "success"
+            type: "success",
           });
           // this.clearState();
           this.setState({
-            saveDisabled: true
+            saveDisabled: true,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -132,11 +160,11 @@ class EOSGratuity extends Component {
     ) {
       swalMessage({
         title: "Please Select an Employee",
-        type: "warning"
+        type: "warning",
       });
     } else {
       this.setState({
-        loading: true
+        loading: true,
       });
 
       algaehApiCall({
@@ -144,39 +172,41 @@ class EOSGratuity extends Component {
         method: "GET",
         module: "hrManagement",
         data: {
-          hims_d_employee_id: this.state.hims_d_employee_id
+          hims_d_employee_id: this.state.hims_d_employee_id,
         },
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             if (res.data.result.endofServexit) {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.computed_amount,
+                calculated_gratutity_amount: res.data.result.gratuity_amount,
+                computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
                 saveDisabled: true,
-                gratuity_done: true
+                gratuity_done: true,
               });
             } else {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.computed_amount,
+                calculated_gratutity_amount: res.data.result.gratuity_amount,
+                computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
-                saveDisabled: false
+                saveDisabled: false,
               });
             }
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.response.data.message || err.message,
-            type: "error"
+            type: "error",
           });
           this.setState({
-            loading: false
+            loading: false,
           });
-        }
+        },
       });
     }
   }
@@ -186,6 +216,28 @@ class EOSGratuity extends Component {
     return (
       <div className="EOSGratuityScreen">
         <div className="row  inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
+            label={{
+              forceLabel: "Select Branch",
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.branches,
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: undefined,
+                });
+              },
+            }}
+          />
           {/* <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by EOS/Gratuity No.", isImp: false }}
@@ -380,8 +432,11 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.endOfServiceYears
+                              ? EosData.endOfServiceYears
+                              : 0}
+                            {/* {EosData.endOfServiceYears
                               ? parseFloat(EosData.endOfServiceYears).toFixed(3)
-                              : 0}{" "}
+                              : 0}{" "} */}
                             yrs
                           </h6>
                         </div>
@@ -468,8 +523,10 @@ class EOSGratuity extends Component {
                       Opening Gratuity Amount
                     </label>
                     <h6>
-                      {this.state.previous_gratuity_amount
-                        ? GetAmountFormart(this.state.previous_gratuity_amount)
+                      {this.state.calculated_gratutity_amount
+                        ? GetAmountFormart(
+                            this.state.calculated_gratutity_amount
+                          )
                         : GetAmountFormart(0)}
                     </h6>
                   </div>
@@ -494,10 +551,8 @@ class EOSGratuity extends Component {
                   <div className="col-3">
                     <label className="style_Label ">Computed Amount</label>
                     <h6 style={{ fontSize: "2em" }}>
-                      {this.state.calculated_gratutity_amount
-                        ? GetAmountFormart(
-                            this.state.calculated_gratutity_amount
-                          )
+                      {this.state.computed_amount
+                        ? GetAmountFormart(this.state.computed_amount)
                         : GetAmountFormart(0)}
                     </h6>
                   </div>
@@ -505,22 +560,22 @@ class EOSGratuity extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Payable Amount",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       decimal: {
-                        allowNegative: false
+                        allowNegative: false,
                       },
                       className: "txt-fld",
                       name: "payable_amount",
                       value: this.state.payable_amount,
                       events: {
-                        onChange: this.textHandler.bind(this)
+                        onChange: this.textHandler.bind(this),
                       },
                       others: {
-                        disabled: this.state.gratuity_done
+                        disabled: this.state.gratuity_done,
                         // type: "number"
-                      }
+                      },
                     }}
                   />
                   <div className="col">
@@ -576,7 +631,7 @@ class EOSGratuity extends Component {
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Delete"
+                    forceLabel: "Delete",
                     //   returnText: true
                   }}
                 />
@@ -584,7 +639,7 @@ class EOSGratuity extends Component {
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Print"
+                    forceLabel: "Print",
                     //   returnText: true
                   }}
                 />
