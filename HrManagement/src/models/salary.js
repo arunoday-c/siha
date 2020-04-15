@@ -4732,14 +4732,14 @@ function InsertGratuityProvision(options) {
                       // console.log("gratuity_data", gratuity_data)
                       // console.log("_computatedAmoutSum", _computatedAmoutSum)
                       // console.log("_employee[k].gratuity_encash", _employee[k].gratuity_encash)
-                      _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
+                      
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
                         gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
                       } else {
                         gratuity_amount = _computatedAmoutSum
                       }
-
+                      _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
 
 
 
