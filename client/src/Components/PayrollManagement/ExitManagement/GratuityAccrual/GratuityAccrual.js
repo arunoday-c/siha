@@ -186,6 +186,9 @@ export default class GratuityAccrual extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
+                        others: {
+                          maxWidth: 150,
+                        },
                       },
                       {
                         fieldName: "full_name",
@@ -204,6 +207,7 @@ export default class GratuityAccrual extends Component {
                         ),
                         others: {
                           filterable: false,
+                          maxWidth: 150,
                         },
                       },
                     ]}
@@ -235,7 +239,7 @@ export default class GratuityAccrual extends Component {
           </div>
         </div>
 
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
               <button type="button" className="btn btn-other">
@@ -243,7 +247,7 @@ export default class GratuityAccrual extends Component {
                   label={{ forceLabel: "Print", returnText: true }}
                 />
               </button>
-              {/* <button
+              <button
                 type="button"
                 className="btn btn-default"
              
@@ -251,10 +255,10 @@ export default class GratuityAccrual extends Component {
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
-              </button> */}
+              </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

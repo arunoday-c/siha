@@ -221,7 +221,7 @@ class EOSGratuity extends Component {
       <div className="EOSGratuityScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Select Branch",
             }}
@@ -272,7 +272,7 @@ class EOSGratuity extends Component {
             }}
           /> */}
 
-          <div className="col-2 globalSearchCntr">
+          <div className="col-3 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
               {this.state.employee_name ? this.state.employee_name : "------"}
@@ -334,20 +334,10 @@ class EOSGratuity extends Component {
               )}
             </button>
           </div>
-
-          <div className="col form-group">
-            {this.state.gratuity_done === true ? (
-              <h3 style={{ paddingTop: "19px" }}>
-                <font color="green">Gratuity Done</font>
-              </h3>
-            ) : (
-              ""
-            )}
-          </div>
         </div>
 
         <div className="row">
-          <div className="col-12">
+          <div className="col-7">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="col-12" style={{ marginTop: 7 }}>
@@ -357,7 +347,7 @@ class EOSGratuity extends Component {
                         Employee Information
                       </label>
                       <div className="row">
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Employee Code</label>
                           <h6>
                             {EosData.employee_code
@@ -366,14 +356,14 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-8 form-group">
                           <label className="style_Label ">Employee Name</label>
                           <h6>
                             {EosData.full_name ? EosData.full_name : "------"}
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Date of Birth</label>
                           <h6>
                             {EosData.date_of_birth
@@ -384,12 +374,12 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Gender</label>
                           <h6>{EosData.sex ? EosData.sex : "------"}</h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Sub Department</label>
                           <h6>
                             {EosData.sub_department_name
@@ -398,7 +388,7 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">
                             Date of Joining
                           </label>
@@ -410,7 +400,7 @@ class EOSGratuity extends Component {
                               : "------"}
                           </h6>
                         </div>
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Date of Resign</label>
                           <h6>
                             {EosData.date_of_resignation
@@ -421,7 +411,7 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Date of Exit</label>
                           <h6>
                             {EosData.exit_date
@@ -430,7 +420,7 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">
                             Year of Service
                           </label>
@@ -444,7 +434,7 @@ class EOSGratuity extends Component {
                             yrs
                           </h6>
                         </div>
-                        <div className="col-3">
+                        <div className="col-4 form-group">
                           <label className="style_Label ">Eligiable Days</label>
                           <h6>
                             {" "}
@@ -471,7 +461,7 @@ class EOSGratuity extends Component {
                         </ul> */}
                         {EosData.componentList.map((data, index) => (
                           <div
-                            className="col-4"
+                            className="col-12"
                             key={data.hims_d_employee_earnings_id}
                           >
                             <label className="style_Label ">
@@ -501,7 +491,7 @@ class EOSGratuity extends Component {
             </div>
           </div>
 
-          <div className="col-12">
+          <div className="col-5">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
@@ -524,7 +514,7 @@ class EOSGratuity extends Component {
                     }}
                   /> */}
 
-                  <div className="col-3">
+                  {/*  <div className="col-4 form-group">
                     <label className="style_Label ">
                       Opening Gratuity Amount
                     </label>
@@ -535,7 +525,7 @@ class EOSGratuity extends Component {
                           )
                         : GetAmountFormart(0)}
                     </h6>
-                  </div>
+                  </div> */}
 
                   {/* <AlagehFormGroup
                     div={{ className: "col form-group" }}
@@ -554,7 +544,7 @@ class EOSGratuity extends Component {
                     }}
                   /> */}
 
-                  <div className="col-3">
+                  <div className="col-8">
                     <label className="style_Label ">Computed Amount</label>
                     <h6 style={{ fontSize: "2em" }}>
                       {this.state.computed_amount
@@ -562,8 +552,24 @@ class EOSGratuity extends Component {
                         : GetAmountFormart(0)}
                     </h6>
                   </div>
+                  <div className="col form-group">
+                    <label className="style_Label ">Payment Status</label>
+                    {this.state.gratuity_done === true ? (
+                      <p>
+                        {" "}
+                        <span className="badge badge-success">
+                          Already send for payment
+                        </span>
+                      </p>
+                    ) : (
+                      <p>
+                        {" "}
+                        <span>------</span>
+                      </p>
+                    )}
+                  </div>
                   <AlagehFormGroup
-                    div={{ className: "col form-group" }}
+                    div={{ className: "col-7 form-group" }}
                     label={{
                       forceLabel: "Payable Amount",
                       isImp: false,
@@ -584,7 +590,7 @@ class EOSGratuity extends Component {
                       },
                     }}
                   />
-                  <div className="col">
+                  <div className="col-5">
                     <div className="customCheckbox" style={{ marginTop: 24 }}>
                       <label className="checkbox inline">
                         <input
@@ -604,6 +610,7 @@ class EOSGratuity extends Component {
                       value={this.state.remarks}
                       onChange={this.textHandler.bind(this)}
                       className="textArea"
+                      disabled={this.state.gratuity_done}
                     />
                   </div>
                 </div>
@@ -621,10 +628,12 @@ class EOSGratuity extends Component {
                 onClick={this.saveEos.bind(this)}
                 disabled={this.state.saveDisabled}
               >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Send for payment", returnText: true }}
+                />
               </button>
 
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-default"
                 onClick={this.clearState.bind(this)}
@@ -632,7 +641,7 @@ class EOSGratuity extends Component {
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
-              </button>
+              </button> */}
 
               {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
