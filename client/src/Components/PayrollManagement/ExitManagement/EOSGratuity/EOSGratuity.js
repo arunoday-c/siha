@@ -11,6 +11,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 // import { parse } from "url";
+import { MainContext } from "algaeh-react-components/context";
 
 class EOSGratuity extends Component {
   constructor(props) {
@@ -29,7 +30,10 @@ class EOSGratuity extends Component {
       hospital_id: undefined,
     };
   }
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({ hospital_id: userToken.hims_d_hospital_id });
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
@@ -471,7 +475,9 @@ class EOSGratuity extends Component {
                             key={data.hims_d_employee_earnings_id}
                           >
                             <label className="style_Label ">
-                              {data.short_desc}
+                              {data.short_desc === null
+                                ? data.earning_deduction_description
+                                : data.short_desc}
                             </label>
                             <h6>{GetAmountFormart(data.amount)}</h6>
                           </div>
@@ -628,7 +634,7 @@ class EOSGratuity extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-other">
+              {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Delete",
@@ -643,7 +649,7 @@ class EOSGratuity extends Component {
                     //   returnText: true
                   }}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

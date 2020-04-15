@@ -269,7 +269,7 @@ export default {
               })
               .then((earnings) => {
                 _mysql.releaseConnection();
-                let _computatedAmout = [];
+                let _computatedAmout = 0;
                 const _sumOfTotalEarningComponents = _.sumBy(earnings, (s) => {
                   return s.amount;
                 });
@@ -280,16 +280,17 @@ export default {
                   //     return (items.amount * 12) / 365;
                   //   })
                   //   .value();
-                  _computatedAmout = (_sumOfTotalEarningComponents * 12) / 365;
+                  gratuity = (_sumOfTotalEarningComponents * 12) / 365;
                 } else if (_optionsDetals.end_of_service_calculation == "FI") {
                   // _computatedAmout = _.chain(earnings)
                   //   .map((items) => {
                   //     return items.amount / 30; // _optionsDetals.end_of_service_days;
                   //   })
                   //   .value();
-                  _computatedAmout = _sumOfTotalEarningComponents / 30;
+                  gratuity = _sumOfTotalEarningComponents / 30;
                 }
-                gratuity = _eligibleDays * _computatedAmout;
+
+                _computatedAmout = _eligibleDays * gratuity;
                 // console.log("_computatedAmout", _computatedAmout);
                 // const _computatedAmoutSum =
                 //   _computatedAmout.reduce((a, b) => {
@@ -297,11 +298,10 @@ export default {
                 //   }, 0) * _eligibleDays;
 
                 req.records = {
-                  yearRoundOff: _optionsDetals["round_off_nearest_year"],
                   computed_amount: _computatedAmout, //_computatedAmoutSum,
                   paybale_amout: _computatedAmout, //_computatedAmoutSum,
                   ..._employee,
-                  componentList: earnings,
+                  componentList: earnings, //earnings,
                   totalEarningComponents: _sumOfTotalEarningComponents,
                   eligible_day: _eligibleDays,
                   endofServexit: endofServexit,
