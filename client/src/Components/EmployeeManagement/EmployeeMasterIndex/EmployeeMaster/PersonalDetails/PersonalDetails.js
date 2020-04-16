@@ -176,10 +176,10 @@ class PersonalDetails extends Component {
                         others: {
                           tabIndex: "1",
                           placeholder: this.state.employee_code_placeHolder,
-                          disabled:
-                            this.state.hims_d_employee_id === null
-                              ? false
-                              : true
+                          // disabled:
+                          //   this.state.hims_d_employee_id === null
+                          //     ? false
+                          //     : true
                         }
                       }}
                     />
