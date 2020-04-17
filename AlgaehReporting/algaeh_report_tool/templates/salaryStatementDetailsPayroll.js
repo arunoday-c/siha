@@ -56,8 +56,8 @@ const executePDF = function executePDFMethod(options) {
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-        S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.total_paid_days,S.net_salary,  case when S.salary_paid then 'Paid' else 'Unpaid' end as payment_status,
-case when S.salary_processed then 'Finalized' else 'Not Finalized' end as processed_status,\
+        S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.total_paid_days,S.net_salary,  case when S.salary_paid='Y' then 'Paid' else 'Unpaid' end as payment_status,
+case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as processed_status,\
         case S.loan_due_amount when '0.000' then '-' else S.loan_due_amount end as loan_due_amount, S.total_earnings,S.total_deductions,S.salary_paid_date,\
         S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
         coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
