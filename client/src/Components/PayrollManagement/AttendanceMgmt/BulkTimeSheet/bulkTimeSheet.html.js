@@ -4,14 +4,14 @@ import "./bulkTimeSheet.html.scss";
 import Filter from "./Filter/filter.html";
 import {
   // AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
   // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import {
   downloadExcel,
   processDetails,
-  getProjects
+  getProjects,
 } from "./bulkTimeSheet.events";
 import EditAttendencePerDay from "./EditAttendencePerDay";
 
@@ -31,7 +31,7 @@ function BulkTimeSheet(props) {
     hims_f_project_roster_id: null,
     showPopup: false,
     projects: [],
-    employee_name: null
+    employee_name: null,
   };
   const [project_state, setProjectState] = useState(base_state);
   const [selectedTD, setSelectedTD] = useState({});
@@ -44,24 +44,24 @@ function BulkTimeSheet(props) {
       hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
       hims_f_project_roster_id: e.hims_f_project_roster_id,
       showPopup: true,
-      employee_name: employee_name
+      employee_name: employee_name,
     };
 
     if (project_state.projects.length === 0) {
       getProjects()
-        .then(result => {
+        .then((result) => {
           setProjectState({
             ...projectObj,
-            projects: result
+            projects: result,
           });
         })
-        .catch(error => {
+        .catch((error) => {
           setProjectState(base_state);
         });
     } else {
-      setProjectState(state => ({
+      setProjectState((state) => ({
         ...state,
-        ...projectObj
+        ...projectObj,
       }));
     }
   }
@@ -73,12 +73,12 @@ function BulkTimeSheet(props) {
   return (
     <div id="bulkManualTimeSheet">
       <Filter
-        downloadExcel={data => {
+        downloadExcel={(data) => {
           downloadExcel(data, () => {
             setProcess(false);
           });
         }}
-        uploadExcel={result => {
+        uploadExcel={(result) => {
           const {
             allDates,
             data,
@@ -90,7 +90,7 @@ function BulkTimeSheet(props) {
             project_id,
             sub_department_id,
             to_date,
-            year
+            year,
           } = result;
           setDates(allDates);
           setFilter({
@@ -102,17 +102,17 @@ function BulkTimeSheet(props) {
             project_id,
             sub_department_id,
             to_date,
-            year
+            year,
           });
           setData(data);
           setProcess(false);
           setErrorHtml("");
         }}
-        uploadErrors={message => {
+        uploadErrors={(message) => {
           setMessage(message);
           setProcess(true);
         }}
-        preview={result => {
+        preview={(result) => {
           const {
             allDates,
             data,
@@ -124,7 +124,7 @@ function BulkTimeSheet(props) {
             project_id,
             sub_department_id,
             to_date,
-            year
+            year,
           } = result;
           setDates(allDates);
           setFilter({
@@ -136,7 +136,7 @@ function BulkTimeSheet(props) {
             project_id,
             sub_department_id,
             to_date,
-            year
+            year,
           });
           setData(data);
           setProcess(false);
@@ -150,7 +150,7 @@ function BulkTimeSheet(props) {
       <EditAttendencePerDay
         project_state={project_state}
         setProjectState={setProjectState}
-        onClose={e => {
+        onClose={(e) => {
           if (e !== undefined) {
             const { project_id, worked_hours, abbreviation } = e;
             const { rowID, cellID } = selectedTD;
@@ -169,7 +169,7 @@ function BulkTimeSheet(props) {
             worked_hours: null,
             attendance_date: null,
             showPopup: false,
-            hims_f_daily_time_sheet_id: null
+            hims_f_daily_time_sheet_id: null,
             // projects: []
           });
         }}
@@ -192,49 +192,49 @@ function BulkTimeSheet(props) {
                   <ol dangerouslySetInnerHTML={{ __html: message }} />
                 </div>
               ) : (
-                  <div className="bulkTimeScroll">
-                    <table id="bulkTimeSheetPreview">
-                      <thead>
-                        <tr>
-                          <th className="fixed freeze">Emp Name & Code</th>
-                          {dates.map((item, index) => (
-                            <th key={item} className="fixed freeze_vertical">
-                              <span>
-                                {moment(item, "YYYY-MM-DD").format("ddd")}
-                              </span>
-                              <br />
-                              <span>
-                                {moment(item, "YYYY-MM-DD").format("DD/MMM")}
-                              </span>
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.map((item, index) => (
-                          <tr key={item.employee_id}>
-                            <td className="fixed freeze">
-                              <span>{item.employee_name}</span>
-                              <small>{item.employee_code}</small>
-                            </td>
-                            {item.roster.map((itm, indx) => {
-                              return (
-                                <TableCells
-                                  itm={{ ...itm, project_id: item.project_id }}
-                                  indx={indx}
-                                  key={`${item.employee_id}_${itm.attendance_date}`}
-                                  employee_name={item.employee_name}
-                                  editingProjectRoster={editingProjectRoster}
-                                  setSelectedTD={selectedITD}
-                                />
-                              );
-                            })}
-                          </tr>
+                <div className="bulkTimeScroll">
+                  <table id="bulkTimeSheetPreview">
+                    <thead>
+                      <tr>
+                        <th className="fixed freeze">Emp Name & Code</th>
+                        {dates.map((item, index) => (
+                          <th key={item} className="fixed freeze_vertical">
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("ddd")}
+                            </span>
+                            <br />
+                            <span>
+                              {moment(item, "YYYY-MM-DD").format("DD/MMM")}
+                            </span>
+                          </th>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((item, index) => (
+                        <tr key={item.employee_id}>
+                          <td className="fixed freeze">
+                            <span>{item.employee_name}</span>
+                            <small>{item.employee_code}</small>
+                          </td>
+                          {item.roster.map((itm, indx) => {
+                            return (
+                              <TableCells
+                                itm={{ ...itm, project_id: item.project_id }}
+                                indx={indx}
+                                key={`${item.employee_id}_${itm.attendance_date}`}
+                                employee_name={item.employee_name}
+                                editingProjectRoster={editingProjectRoster}
+                                setSelectedTD={selectedITD}
+                              />
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -268,11 +268,14 @@ function BulkTimeSheet(props) {
                 setLoadingProcess(true);
                 processDetails(
                   filter,
-                  errorMessage => {
+                  (errorMessage) => {
                     setProcess(true);
                     setLoadingProcess(false);
 
-                    if (errorMessage.response !== undefined) {
+                    if (
+                      errorMessage.response !== undefined &&
+                      typeof errorMessage.response.data.message === "string"
+                    ) {
                       const hasLi = errorMessage.response.data.message.includes(
                         "<li>"
                       );
@@ -281,17 +284,22 @@ function BulkTimeSheet(props) {
                       } else {
                         swalMessage({
                           type: "error",
-                          title: errorMessage
+                          title: errorMessage,
                         });
                       }
+                    } else {
+                      swalMessage({
+                        type: "error",
+                        title: errorMessage.response.data.message.sqlMessage,
+                      });
                     }
                   },
-                  result => {
+                  (result) => {
                     setLoadingProcess(false);
                     setProcess(true);
                     swalMessage({
                       type: "success",
-                      title: "Posted Successfully"
+                      title: "Posted Successfully",
                     });
                   }
                 );
@@ -302,8 +310,8 @@ function BulkTimeSheet(props) {
                   label={{ forceLabel: "Process", returnText: true }}
                 />
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -314,32 +322,27 @@ function BulkTimeSheet(props) {
 export default BulkTimeSheet;
 
 function TableCells(props) {
-  const {
-    itm,
-    editingProjectRoster,
-    setSelectedTD,
-    employee_name
-  } = props;
+  const { itm, editingProjectRoster, setSelectedTD, employee_name } = props;
   const [editable, setEditable] = useState({});
   const { status, worked_hours, abbreviation, attendance_date } = itm;
   useEffect(() => {
     const editableTD =
       status !== "N"
         ? {
-          style: { cursor: "pointer" },
-          onDoubleClick: e => {
-            const element = e.target.offsetParent;
-            const rowID = element.parentElement.sectionRowIndex;
-            const cellID = element.cellIndex;
+            style: { cursor: "pointer" },
+            onDoubleClick: (e) => {
+              const element = e.target.offsetParent;
+              const rowID = element.parentElement.sectionRowIndex;
+              const cellID = element.cellIndex;
 
-            setSelectedTD({
-              attendance_date: attendance_date,
-              cellID,
-              rowID
-            });
-            editingProjectRoster(itm, employee_name);
+              setSelectedTD({
+                attendance_date: attendance_date,
+                cellID,
+                rowID,
+              });
+              editingProjectRoster(itm, employee_name);
+            },
           }
-        }
         : {};
     setEditable(editableTD);
   }, []);
