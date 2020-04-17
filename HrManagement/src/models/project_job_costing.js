@@ -938,7 +938,7 @@ export default {
     const utilities = new algaehUtilities();
     try {
       let input = req.body;
-      console.log("input", input);
+
       if (
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0

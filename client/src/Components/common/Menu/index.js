@@ -78,6 +78,7 @@ function NavBars(props) {
       },
     });
   }
+  const { product_type } = userToken;
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
@@ -98,7 +99,7 @@ function NavBars(props) {
         )}
 
         <div className="navbar-brand appLogoCntr">
-          <p className="appLogoOnly">HRMS</p>
+          <p className="appLogoOnly">{product_type}</p>
         </div>
         <h5 className="topNavbar-title mr-auto">
           <BreadCrum
