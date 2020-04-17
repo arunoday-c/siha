@@ -288,6 +288,7 @@ export default function (props) {
                       type="checkbox"
                       name="choose-all"
                       checked={checkAllEmployees}
+                      disabled={isEditing === undefined ? false : true}
                       onChange={(e) => {
                         setCheckAllEmployees(e.target.checked);
                         if (e.target.checked) {

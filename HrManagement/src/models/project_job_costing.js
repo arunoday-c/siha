@@ -938,7 +938,7 @@ export default {
     const utilities = new algaehUtilities();
     try {
       let input = req.body;
-
+      console.log("input", input);
       if (
         moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
         moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
@@ -947,8 +947,8 @@ export default {
           .executeQuery({
             query:
               "select hims_d_employee_id,date_of_joining from hims_d_employee where hims_d_employee_id in (?); ",
-            values: input.roster,
-            bulkInsertOrUpdate: true,
+            values: [input.roster],
+            // bulkInsertOrUpdate: true,
             printQuery: false,
           })
           .then((employee) => {
