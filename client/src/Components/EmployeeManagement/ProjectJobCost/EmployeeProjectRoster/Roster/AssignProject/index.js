@@ -4,7 +4,7 @@ import moment from "moment";
 import AlgaehModalPopUp from "../../../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../../../Wrapper/algaehButton";
 import { ProjectRosterContext } from "../index";
@@ -12,16 +12,16 @@ import { ProjectRosterContext } from "../index";
 import "../../project_assign.scss";
 import {
   algaehApiCall,
-  swalMessage
+  swalMessage,
 } from "../../../../../../utils/algaehApiCall";
-export default function(props) {
+export default function (props) {
   const {
     showPopup,
     onClose,
     loadingProjects,
     projects,
     isEditing,
-    onRefreshTable
+    onRefreshTable,
   } = props;
   const { getProjectRosterState } = useContext(ProjectRosterContext);
   const {
@@ -30,7 +30,7 @@ export default function(props) {
     filterTrue,
     toDate,
     fromDate,
-    inputs
+    inputs,
   } = getProjectRosterState();
   const [from_date, setFromDate] = useState("");
   const [to_date, setToDate] = useState("");
@@ -62,7 +62,7 @@ export default function(props) {
       from_date,
       to_date,
       hospital_id,
-      isEditing
+      isEditing,
     } = data;
 
     return new Promise((resolve, reject) => {
@@ -94,28 +94,28 @@ export default function(props) {
             to_date: to_date,
             project_id: projectID,
             roster: rosters,
-            hospital_id: hospital_id
+            hospital_id: hospital_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             const { success, records } = res.data;
             if (success) {
               swalMessage({
                 title: "Records updated successfully",
-                type: "success"
+                type: "success",
               });
               onRefreshTable();
               resolve();
             } else if (!success) {
               swalMessage({
                 title: records.message,
-                type: "warning"
+                type: "warning",
               });
               reject();
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             reject(err);
-          }
+          },
         });
       } catch (e) {
         reject(e);
@@ -131,7 +131,7 @@ export default function(props) {
       events={{
         onClose: () => {
           onClose();
-        }
+        },
       }}
     >
       <div className="popupInner" data-validate="LvEdtGrd">
@@ -141,19 +141,19 @@ export default function(props) {
               div={{ className: "col-3 mandatory" }}
               label={{
                 forceLabel: "Project Starts Date",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date",
                 others: {
-                  tabIndex: "1"
-                }
+                  tabIndex: "1",
+                },
               }}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   setFromDate(moment(selDate).format("YYYY-MM-DD"));
-                }
+                },
               }}
               maxDate={toDate}
               minDate={fromDate}
@@ -163,19 +163,19 @@ export default function(props) {
               div={{ className: "col-3 mandatory" }}
               label={{
                 forceLabel: "Project End Date",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "to_date",
                 others: {
-                  tabIndex: "2"
-                }
+                  tabIndex: "2",
+                },
               }}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   setToDate(moment(selDate).format("YYYY-MM-DD"));
-                }
+                },
               }}
               //maxDate={toDate}
               minDate={fromDate}
@@ -199,16 +199,16 @@ export default function(props) {
                     name: "searchProjects",
                     value: searchProject,
                     events: {
-                      onChange: e => {
+                      onChange: (e) => {
                         setSearchProject(e.target.value);
-                      }
+                      },
                     },
                     option: {
-                      type: "text"
+                      type: "text",
                     },
                     others: {
-                      placeholder: "Search projects"
-                    }
+                      placeholder: "Search projects",
+                    },
                   }}
                 />
               </div>
@@ -216,7 +216,7 @@ export default function(props) {
                 <p>Please wait loading Project's</p>
               ) : (
                 <ul className="projectList">
-                  {projects.map(data => {
+                  {projects.map((data) => {
                     if (
                       data.project_desc
                         .toLowerCase()
@@ -236,7 +236,7 @@ export default function(props) {
                               ? true
                               : false
                           }
-                          onChange={e => {
+                          onChange={(e) => {
                             setSelectedProjectID(data.project_id);
                           }}
                           type="radio"
@@ -244,7 +244,7 @@ export default function(props) {
                         <label
                           htmlFor={data.project_id}
                           style={{
-                            width: "80%"
+                            width: "80%",
                           }}
                         >
                           <span>{data.project_desc}</span>
@@ -266,18 +266,18 @@ export default function(props) {
                     name: "searchEmployees",
                     value: searchEmployee,
                     events: {
-                      onChange: e => {
+                      onChange: (e) => {
                         setSearchEmployee(e.target.value);
-                      }
+                      },
                     },
                     option: {
-                      type: "text"
+                      type: "text",
                     },
                     others: {
-                      placeholder: "Search employee by code only"
+                      placeholder: "Search employee by code only",
 
                       //disabled: this.state.allChecked
-                    }
+                    },
                   }}
                 />
               </div>
@@ -288,10 +288,11 @@ export default function(props) {
                       type="checkbox"
                       name="choose-all"
                       checked={checkAllEmployees}
-                      onChange={e => {
+                      disabled={isEditing === undefined ? false : true}
+                      onChange={(e) => {
                         setCheckAllEmployees(e.target.checked);
                         if (e.target.checked) {
-                          const checkedall = employeeShow.map(employee => {
+                          const checkedall = employeeShow.map((employee) => {
                             return employee.hims_d_employee_id;
                           });
                           setSelectedEmployees(checkedall);
@@ -304,7 +305,7 @@ export default function(props) {
                   <p>Employee Codes & Names</p>
                 </li>
                 {isEditing === undefined ? (
-                  employeeShow.map(data => {
+                  employeeShow.map((data) => {
                     if (
                       data.employee_code
                         .toLowerCase()
@@ -322,7 +323,7 @@ export default function(props) {
                             checked={selectedEmployees.includes(
                               data.hims_d_employee_id
                             )}
-                            onChange={e => {
+                            onChange={(e) => {
                               setChangeState(!changeState);
                               let existingEmployees = selectedEmployees;
                               if (e.target.checked) {
@@ -330,7 +331,7 @@ export default function(props) {
                               } else {
                                 existingEmployees = _.filter(
                                   existingEmployees,
-                                  f => f !== data.hims_d_employee_id
+                                  (f) => f !== data.hims_d_employee_id
                                 );
                               }
 
@@ -400,7 +401,7 @@ export default function(props) {
                     from_date: from_dt,
                     to_date: to_dt,
                     hospital_id: inputs.hospital_id,
-                    isEditing
+                    isEditing,
                   })
                     .then(() => {
                       setLoadingProcess(false);
@@ -411,13 +412,13 @@ export default function(props) {
                       setToDate("");
                       onClose();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       setLoadingProcess(false);
                     });
                 }}
                 label={{
                   forceLabel: "PROCESS",
-                  returnText: true
+                  returnText: true,
                 }}
               />
 
