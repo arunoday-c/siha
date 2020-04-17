@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import {
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
@@ -18,7 +15,7 @@ import {
   getRequisitionDetails,
   generateMaterialTransPhar,
   AcknowledgeTransferEntry,
-  ReturnCheckboxEvent
+  ReturnCheckboxEvent,
 } from "./TransferEntryEvents";
 import "./TransferEntry.scss";
 import "../../../styles/site.scss";
@@ -35,7 +32,7 @@ class TransferEntry extends Component {
 
     this.state = {
       from_location_id: null,
-      decimal_places: null
+      decimal_places: null,
     };
   }
 
@@ -49,7 +46,7 @@ class TransferEntry extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      decimal_places: userToken.decimal_places
+      decimal_places: userToken.decimal_places,
     });
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
@@ -58,8 +55,8 @@ class TransferEntry extends Component {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "itemlist"
-      }
+        mappingName: "itemlist",
+      },
     });
 
     this.props.getLocation({
@@ -69,8 +66,8 @@ class TransferEntry extends Component {
       method: "GET",
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
-      }
+        mappingName: "locations",
+      },
     });
 
     this.props.getLocation({
@@ -80,8 +77,8 @@ class TransferEntry extends Component {
       method: "GET",
       redux: {
         type: "GIT_LOCATIOS_GET_DATA",
-        mappingName: "git_locations"
-      }
+        mappingName: "git_locations",
+      },
     });
 
     this.props.getUserLocationPermission({
@@ -91,13 +88,13 @@ class TransferEntry extends Component {
       data: {
         location_status: "A",
         hospital_id: userToken.hims_d_hospital_id,
-        git_location: "N"
+        git_location: "N",
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
-        mappingName: "userwiselocations"
+        mappingName: "userwiselocations",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     if (
@@ -117,7 +114,7 @@ class TransferEntry extends Component {
     ) {
       let locObj = {
         from_location_id: this.props.from_location_id,
-        to_location_id: this.props.to_location_id
+        to_location_id: this.props.to_location_id,
       };
 
       getCtrlCode(this, this.props.transfer_number, locObj, "Auth");
@@ -129,15 +126,15 @@ class TransferEntry extends Component {
       this.props.locations === undefined
         ? []
         : this.props.locations.filter(
-          f => f.hims_d_pharmacy_location_id === this.state.to_location_id
-        );
+            (f) => f.hims_d_pharmacy_location_id === this.state.to_location_id
+          );
 
     let from_location_name =
       this.props.locations === undefined
         ? []
         : this.props.locations.filter(
-          f => f.hims_d_pharmacy_location_id === this.state.from_location_id
-        );
+            (f) => f.hims_d_pharmacy_location_id === this.state.from_location_id
+          );
 
     return (
       <React.Fragment>
@@ -155,18 +152,18 @@ class TransferEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Material Transfer", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
@@ -177,27 +174,27 @@ class TransferEntry extends Component {
               value: this.state.transfer_number,
               selectValue: "transfer_number",
               events: {
-                onChange: getCtrlCode.bind(this, this)
+                onChange: getCtrlCode.bind(this, this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "TransferEntry.TransEntry"
+                fieldName: "TransferEntry.TransEntry",
               },
-              searchName: "TransferEntry"
+              searchName: "TransferEntry",
             }}
             userArea={
               <div className="row">
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Transfer Date"
+                      forceLabel: "Transfer Date",
                     }}
                   />
                   <h6>
                     {this.state.transfer_date
                       ? moment(this.state.transfer_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -206,17 +203,17 @@ class TransferEntry extends Component {
             printArea={
               this.state.transfer_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateMaterialTransPhar(this.state);
-                        }
-                      }
-                    }
-                  ]
-                }
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateMaterialTransPhar(this.state);
+                          },
+                        },
+                      },
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -233,7 +230,7 @@ class TransferEntry extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "From Location"
+                        forceLabel: "From Location",
                       }}
                     />
 
@@ -247,69 +244,69 @@ class TransferEntry extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <div className="col-4">
-                      <div className="row">
-                        <div className="col">
-                          <label>Transfer Type</label>
-                          <div
-                            className="customCheckbox"
-                            style={{ borderBottom: 0 }}
+                  <div className="col-4">
+                    <div className="row">
+                      <div className="col">
+                        <label>Transfer Type</label>
+                        <div
+                          className="customCheckbox"
+                          style={{ borderBottom: 0 }}
+                        >
+                          <label
+                            className="checkbox"
+                            style={{ color: "#212529" }}
                           >
-                            <label
-                              className="checkbox"
-                              style={{ color: "#212529" }}
-                            >
-                              <input
-                                type="checkbox"
-                                name="direct_transfer"
-                                checked={
-                                  this.state.direct_transfer === "Y"
-                                    ? true
-                                    : false
-                                }
-                                onChange={checkBoxEvent.bind(this, this)}
-                                disabled={this.state.dataExists}
-                              />
-                              <span>Direct Transfer</span>
-                            </label>
-                          </div>
+                            <input
+                              type="checkbox"
+                              name="direct_transfer"
+                              checked={
+                                this.state.direct_transfer === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={checkBoxEvent.bind(this, this)}
+                              disabled={this.state.dataExists}
+                            />
+                            <span>Direct Transfer</span>
+                          </label>
                         </div>
-                        <AlagehAutoComplete
-                          div={{ className: "col-7" }}
-                          label={{ forceLabel: "From Location" }}
-                          selector={{
-                            name: "from_location_id",
-                            className: "select-fld",
-                            value: this.state.from_location_id,
-                            dataSource: {
-                              textField: "location_description",
-                              valueField: "hims_d_pharmacy_location_id",
-                              data: this.props.userwiselocations
-                            },
-                            onChange: LocationchangeTexts.bind(
-                              this,
-                              this,
-                              "From"
-                            ),
-                            others: {
-                              disabled: this.state.dataExists
-                            },
-                            onClear: () => {
-                              this.setState({
-                                from_location_id: null,
-                                from_location_type: null
-                              });
-                            }
-                          }}
-                        />
                       </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-7" }}
+                        label={{ forceLabel: "From Location" }}
+                        selector={{
+                          name: "from_location_id",
+                          className: "select-fld",
+                          value: this.state.from_location_id,
+                          dataSource: {
+                            textField: "location_description",
+                            valueField: "hims_d_pharmacy_location_id",
+                            data: this.props.userwiselocations,
+                          },
+                          onChange: LocationchangeTexts.bind(
+                            this,
+                            this,
+                            "From"
+                          ),
+                          others: {
+                            disabled: this.state.dataExists,
+                          },
+                          onClear: () => {
+                            this.setState({
+                              from_location_id: null,
+                              from_location_type: null,
+                            });
+                          },
+                        }}
+                      />
                     </div>
-                  )}
+                  </div>
+                )}
 
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "From Location Type"
+                      forceLabel: "From Location Type",
                     }}
                   />
                   <h6>
@@ -317,8 +314,8 @@ class TransferEntry extends Component {
                       ? this.state.from_location_type === "WH"
                         ? "Warehouse"
                         : this.state.from_location_type === "MS"
-                          ? "Main Store"
-                          : "Sub Store"
+                        ? "Main Store"
+                        : "Sub Store"
                       : "From Location Type"}
                   </h6>
                 </div>
@@ -333,7 +330,7 @@ class TransferEntry extends Component {
                         <h6 onClick={RequisitionSearch.bind(this, this)}>
                           {this.state.material_requisition_number
                             ? this.state.material_requisition_number
-                            : "Search Employee"}
+                            : "Search Requisition Number"}
                           <i className="fas fa-search fa-lg"></i>
                         </h6>
                       </div>
@@ -365,7 +362,7 @@ class TransferEntry extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "To Location"
+                            forceLabel: "To Location",
                           }}
                         />
 
@@ -381,7 +378,7 @@ class TransferEntry extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "To Location Type"
+                            forceLabel: "To Location Type",
                           }}
                         />
                         <h6>
@@ -389,78 +386,78 @@ class TransferEntry extends Component {
                             ? this.state.to_location_type === "WH"
                               ? "Warehouse"
                               : this.state.to_location_type === "MS"
-                                ? "Main Store"
-                                : "Sub Store"
+                              ? "Main Store"
+                              : "Sub Store"
                             : "To Location Type"}
                         </h6>
                       </div>
                     </div>
                   ) : (
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          label={{ forceLabel: "To Location" }}
-                          selector={{
-                            name: "to_location_id",
-                            className: "select-fld",
-                            value: this.state.to_location_id,
-                            dataSource: {
-                              textField: "location_description",
-                              valueField: "hims_d_pharmacy_location_id",
-                              data: this.props.locations
-                            },
-                            onChange: LocationchangeTexts.bind(this, this, "To"),
-                            others: {
-                              disabled: this.state.dataExists
-                            },
-                            onClear: () => {
-                              this.setState({
-                                to_location_id: null,
-                                to_location_type: null
-                              });
-                            }
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{ forceLabel: "To Location" }}
+                        selector={{
+                          name: "to_location_id",
+                          className: "select-fld",
+                          value: this.state.to_location_id,
+                          dataSource: {
+                            textField: "location_description",
+                            valueField: "hims_d_pharmacy_location_id",
+                            data: this.props.locations,
+                          },
+                          onChange: LocationchangeTexts.bind(this, this, "To"),
+                          others: {
+                            disabled: this.state.dataExists,
+                          },
+                          onClear: () => {
+                            this.setState({
+                              to_location_id: null,
+                              to_location_type: null,
+                            });
+                          },
+                        }}
+                      />
+
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "To Location Type",
                           }}
                         />
-
-                        <div className="col">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "To Location Type"
-                            }}
-                          />
-                          <h6>
-                            {this.state.to_location_type
-                              ? this.state.to_location_type === "WH"
-                                ? "Warehouse"
-                                : this.state.to_location_type === "MS"
-                                  ? "Main Store"
-                                  : "Sub Store"
-                              : "To Location Type"}
-                          </h6>
-                        </div>
-
-                        <div
-                          className="col customCheckbox"
-                          style={{ borderBottom: 0, marginTop: 15 }}
-                        >
-                          <label
-                            className="checkbox"
-                            style={{ color: "#212529" }}
-                          >
-                            <input
-                              type="checkbox"
-                              name="return_type"
-                              checked={
-                                this.state.return_type === "Y" ? true : false
-                              }
-                              onChange={ReturnCheckboxEvent.bind(this, this)}
-                              disabled={this.state.dataExists}
-                            />
-                            <span>Return Item</span>
-                          </label>
-                        </div>
+                        <h6>
+                          {this.state.to_location_type
+                            ? this.state.to_location_type === "WH"
+                              ? "Warehouse"
+                              : this.state.to_location_type === "MS"
+                              ? "Main Store"
+                              : "Sub Store"
+                            : "To Location Type"}
+                        </h6>
                       </div>
-                    )}
+
+                      <div
+                        className="col customCheckbox"
+                        style={{ borderBottom: 0, marginTop: 15 }}
+                      >
+                        <label
+                          className="checkbox"
+                          style={{ color: "#212529" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="return_type"
+                            checked={
+                              this.state.return_type === "Y" ? true : false
+                            }
+                            onChange={ReturnCheckboxEvent.bind(this, this)}
+                            disabled={this.state.dataExists}
+                          />
+                          <span>Return Item</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -470,9 +467,9 @@ class TransferEntry extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               <TransferEntryItems TransferIOputs={this.state} />
@@ -544,7 +541,7 @@ function mapStateToProps(state) {
     itemlist: state.itemlist,
     locations: state.locations,
     requisitionentry: state.requisitionentry,
-    userwiselocations: state.userwiselocations
+    userwiselocations: state.userwiselocations,
   };
 }
 
@@ -555,7 +552,7 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getRequisitionEntry: AlgaehActions,
       getTransferEntry: AlgaehActions,
-      getUserLocationPermission: AlgaehActions
+      getUserLocationPermission: AlgaehActions,
     },
     dispatch
   );

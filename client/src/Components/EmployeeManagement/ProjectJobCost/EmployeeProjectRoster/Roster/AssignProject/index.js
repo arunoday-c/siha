@@ -360,8 +360,8 @@ export default function (props) {
                     </span>
                     <p>
                       <label htmlFor={isEditing.employee_code}>
-                        <b>{isEditing.employee_name}</b>
                         <small>{isEditing.employee_code}</small>
+                        <b>{isEditing.employee_name}</b>
                       </label>
                     </p>
                   </li>

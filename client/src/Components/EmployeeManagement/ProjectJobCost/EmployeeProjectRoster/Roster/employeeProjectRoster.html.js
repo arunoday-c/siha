@@ -9,7 +9,7 @@ import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import {
   getEmployeesForProjectRoster,
   getProjects,
-  createReport
+  createReport,
 } from "./employeeProjectRoster.event";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
@@ -24,7 +24,7 @@ export default function EmpProjectRoster(props) {
     total_non_rosted,
     // fromDate,
     // toDate,
-    inputs
+    inputs,
   } = getProjectRosterState();
   const [showPopup, setShowPopup] = useState(false);
   const [projects, setProjects] = useState([]);
@@ -40,11 +40,11 @@ export default function EmpProjectRoster(props) {
 
     setLoadingProjects(true);
     getProjects(inputs.hospital_id)
-      .then(result => {
+      .then((result) => {
         setLoadingProjects(false);
         setProjects(result);
       })
-      .catch(error => {
+      .catch((error) => {
         setProjects([]);
         setLoadingProjects(false);
       });
@@ -52,11 +52,11 @@ export default function EmpProjectRoster(props) {
   return (
     <div className="EmployeeProjectRoster">
       <EmployeeFilter
-        loadFunc={inputs => {
+        loadFunc={(inputs) => {
           AlgaehLoader({ show: true });
           setFilterStatus("0");
           getEmployeesForProjectRoster(inputs)
-            .then(result => {
+            .then((result) => {
               const { records, fromDate, toDate } = result;
 
               setProjectRosterState({
@@ -68,18 +68,18 @@ export default function EmpProjectRoster(props) {
                 fromDate: fromDate,
                 toDate: toDate,
                 filterTrue: false,
-                filterEmployees: []
+                filterEmployees: [],
               });
               AlgaehLoader({ show: false });
             })
-            .catch(error => {
+            .catch((error) => {
               AlgaehLoader({ show: false });
               swalMessage({ title: error, type: "info" });
               setProjectRosterState({
                 employees: [],
                 dates: [],
                 filterTrue: false,
-                filterEmployees: []
+                filterEmployees: [],
               });
             });
         }}
@@ -100,7 +100,7 @@ export default function EmpProjectRoster(props) {
                 <span
                   style={{
                     background: "rgb(255, 230, 234)",
-                    color: "rgb(228, 34, 69)"
+                    color: "rgb(228, 34, 69)",
                   }}
                   className="legends"
                 >
@@ -121,45 +121,45 @@ export default function EmpProjectRoster(props) {
               </div>
               <select
                 style={{ marginLeft: 10 }}
-                onChange={e => {
+                onChange={(e) => {
                   let selected = e.target.value;
                   setFilterStatus(selected);
                   if (selected === "0") {
                     setProjectRosterState({
                       filterEmployees: [],
                       filterTrue: false,
-                      selectedFilter: selected
+                      selectedFilter: selected,
                     });
                   } else {
-                    const emp = employees.map(employee => {
+                    const emp = employees.map((employee) => {
                       let allProjects = employee.projects;
 
-                      const projs = employee.projects.filter(f => {
+                      const projs = employee.projects.filter((f) => {
                         return f.status === "N";
                       });
                       if (selected === "1") {
                         if (projs.length === 0) {
                           return {
                             ...employee,
-                            projects: allProjects
+                            projects: allProjects,
                           };
                         }
                       } else {
                         if (projs.length > 0) {
                           return {
                             ...employee,
-                            projects: allProjects
+                            projects: allProjects,
                           };
                         }
                       }
                     });
-                    const allEmployees = emp.filter(f => {
+                    const allEmployees = emp.filter((f) => {
                       return f !== undefined;
                     });
                     setProjectRosterState({
                       selectedFilter: selected,
                       filterTrue: true,
-                      filterEmployees: allEmployees
+                      filterEmployees: allEmployees,
                     });
                   }
                 }}
@@ -178,16 +178,16 @@ export default function EmpProjectRoster(props) {
               onRefreshTable={() => {
                 AlgaehLoader({ show: true });
                 getEmployeesForProjectRoster(inputs)
-                  .then(result => {
+                  .then((result) => {
                     const { records } = result;
                     setProjectRosterState({
                       total_rosted: records.total_rosted,
                       total_non_rosted: records.total_non_rosted,
-                      employees: records.roster
+                      employees: records.roster,
                     });
                     AlgaehLoader({ show: false });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     setProjectRosterState({ employees: [], dates: [] });
                     AlgaehLoader({ show: false });
                   });
@@ -205,8 +205,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                      <Table ref={tableRef} editing={editingProjectRoster} />
-                    )}
+                    <Table ref={tableRef} editing={editingProjectRoster} />
+                  )}
                 </div>
               </div>
             </div>
@@ -218,18 +218,18 @@ export default function EmpProjectRoster(props) {
           <div className="col-lg-12">
             <button
               className="btn btn-primary"
-              onClick={e => {
+              onClick={(e) => {
                 setIsEditing(undefined);
                 setShowPopup(true);
 
                 if (projects.length === 0) {
                   setLoadingProjects(true);
                   getProjects(inputs.hospital_id)
-                    .then(result => {
+                    .then((result) => {
                       setLoadingProjects(false);
                       setProjects(result);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       setProjects([]);
                       setLoadingProjects(false);
                     });
@@ -253,7 +253,7 @@ export default function EmpProjectRoster(props) {
                   elements[i].nextElementSibling.remove();
                   elements[i].remove();
                 }
-                createReport(newTable.outerHTML).catch(error => {
+                createReport(newTable.outerHTML).catch((error) => {
                   console.error(error);
                 });
               }}
