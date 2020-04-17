@@ -64,7 +64,6 @@ header {
   color: $color-white;
 }
 .appLogoCntr {
-  width: 115px;
   border-left: 1px solid darken($primary-color, 10%);
   padding-left: 3px;
   margin-right: 4px;
@@ -72,10 +71,10 @@ header {
   .appLogoOnly {
     background: url(../../../assets/svg/algaeh_small_icon.svg) no-repeat center
       left;
-    background-size: 45%;
-    width: 100%;
+    background-size: contain;
+    width: auto;
     margin: 0;
-    padding: 5px 0 0 50px;
+    padding: 6px 0 0 50px;
     height: 40px;
     font-size: 1.5rem;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
