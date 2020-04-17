@@ -25,10 +25,12 @@ const onEditHandler = ($this, row) => {
     edit_data.indirect_selected_account = row.direct_child_id !== null ? row.direct_head_id + "-" + row.direct_child_id : null;
     edit_data.selected_li_account = row.li_child_id !== null ? row.li_head_id + "-" + row.li_child_id : null;
 
-    if (row.component_category === "A") {
-        getFinanceHeaders($this, 1)
-    } else {
-        getFinanceHeaders($this, 5)
+    if ($this.FIN_Active === true) {
+        if (row.component_category === "A") {
+            getFinanceHeaders($this, 1)
+        } else {
+            getFinanceHeaders($this, 5)
+        }
     }
     $this.setState({
         ...$this.state,
