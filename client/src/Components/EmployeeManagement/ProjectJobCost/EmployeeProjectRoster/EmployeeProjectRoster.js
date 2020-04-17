@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./EmployeeProjectRoster.scss";
 import {
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import ProjectAssign from "./ProjectAssign";
 import ProjectEmpAssign from "./ProjectEmpAssign";
@@ -33,7 +33,7 @@ class EmployeeProjectRoster extends Component {
       sub_department_id: null,
       designation_id: null,
       department_id: null,
-      allDepartments: []
+      allDepartments: [],
     };
     // this.getAllDepartments();
     // this.getDesignations();
@@ -43,7 +43,7 @@ class EmployeeProjectRoster extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     this.getBranchDetails();
     this.getHospitals();
@@ -56,21 +56,21 @@ class EmployeeProjectRoster extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        sub_department_id: sub_department_id
+        sub_department_id: sub_department_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            designations: res.data.records
+            designations: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -84,7 +84,7 @@ class EmployeeProjectRoster extends Component {
       hims_d_employee_id: null,
       emp_name: null,
       designation_id: null,
-      designations: []
+      designations: [],
     });
   }
 
@@ -93,26 +93,26 @@ class EmployeeProjectRoster extends Component {
       uri: "/projectjobcosting/getDivisionProject",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            projects: res.data.records
+            projects: res.data.records,
           });
         }
       },
 
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   closeProjectAssign() {
     this.setState({
-      openProjectAssign: false
+      openProjectAssign: false,
     });
     this.getEmployeesForProjectRoster();
   }
@@ -125,7 +125,7 @@ class EmployeeProjectRoster extends Component {
         this.setState({
           sendRow: row,
           openProjectAssign: true,
-          sendDate: e.currentTarget.getAttribute("date")
+          sendDate: e.currentTarget.getAttribute("date"),
         });
       }
     } else return;
@@ -133,7 +133,7 @@ class EmployeeProjectRoster extends Component {
 
   showAnother = () => {
     this.setState({
-      openAnother: true
+      openAnother: true,
     });
   };
 
@@ -141,61 +141,61 @@ class EmployeeProjectRoster extends Component {
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            hospitals: res.data.records
+            hospitals: res.data.records,
           });
         }
       },
 
-      onFailure: err => { }
+      onFailure: (err) => {},
     });
   }
 
   copyProject(data) {
     this.setState({
-      copyData: data
+      copyData: data,
     });
     swalMessage({
       title: "Project Copied.",
-      type: "success"
+      type: "success",
     });
   }
 
   pasteProject(data) {
     this.state.copyData === null
       ? swalMessage({
-        title: "Please copy the Project first",
-        type: "warning"
-      })
+          title: "Please copy the Project first",
+          type: "warning",
+        })
       : algaehApiCall({
-        uri: "/projectjobcosting/pasteProjectRoster",
-        method: "POST",
-        module: "hrManagement",
-        data: {
-          employee_id: data.id,
-          attendance_date: data.date,
-          shift_id: this.state.copyData.shift_id,
-          project_id: this.state.copyData.project_id,
-          hospital_id: this.state.hospital_id
-        },
-        onSuccess: res => {
-          if (res.data.success) {
+          uri: "/projectjobcosting/pasteProjectRoster",
+          method: "POST",
+          module: "hrManagement",
+          data: {
+            employee_id: data.id,
+            attendance_date: data.date,
+            shift_id: this.state.copyData.shift_id,
+            project_id: this.state.copyData.project_id,
+            hospital_id: this.state.hospital_id,
+          },
+          onSuccess: (res) => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Pasted Successfully . . ",
+                type: "success",
+              });
+              this.getEmployeesForProjectRoster();
+            }
+          },
+          onFailure: (err) => {
             swalMessage({
-              title: "Pasted Successfully . . ",
-              type: "success"
+              title: err.message,
+              type: "error",
             });
-            this.getEmployeesForProjectRoster();
-          }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
-      });
+          },
+        });
   }
 
   deleteProject(data) {
@@ -206,36 +206,36 @@ class EmployeeProjectRoster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/projectjobcosting/deleteProjectRoster",
           method: "DELETE",
           module: "hrManagement",
           data: {
-            hims_f_project_roster_id: data.hims_f_project_roster_id
+            hims_f_project_roster_id: data.hims_f_project_roster_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Deleted Successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getEmployeesForProjectRoster();
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -246,7 +246,7 @@ class EmployeeProjectRoster extends Component {
       case "month":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.getStartandMonthEnd();
@@ -257,7 +257,7 @@ class EmployeeProjectRoster extends Component {
       case "year":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
           },
           () => {
             this.getStartandMonthEnd();
@@ -268,22 +268,22 @@ class EmployeeProjectRoster extends Component {
       case "sub_department_id":
         this.getDesignations(value.value);
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
       case "department_id":
         const department = this.state.allDepartments.filter(
-          dept => dept.hims_d_department_id === value.value
+          (dept) => dept.hims_d_department_id === value.value
         );
         console.log(department);
         this.setState({
           [value.name]: value.value,
-          sub_depts: department[0].subDepts
+          sub_depts: department[0].subDepts,
         });
         break;
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -293,7 +293,7 @@ class EmployeeProjectRoster extends Component {
     if (this.state.copyData === null) {
       swalMessage({
         title: "Please copy the shift first",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let sendData = {
@@ -302,7 +302,7 @@ class EmployeeProjectRoster extends Component {
         attendance_date: data.date,
         hospital_id: data.hospital_id,
         weekoff: data.weekoff,
-        holiday: data.holiday
+        holiday: data.holiday,
       };
 
       algaehApiCall({
@@ -310,21 +310,21 @@ class EmployeeProjectRoster extends Component {
         method: "POST",
         module: "hrManagement",
         data: sendData,
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Pasted Successfully . . ",
-              type: "success"
+              type: "success",
             });
             this.getEmployeesForProjectRoster();
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -333,19 +333,15 @@ class EmployeeProjectRoster extends Component {
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-    var currDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    var lastDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    var currDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    var lastDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       let holiday = Enumerable.from(holidays)
         .where(
-          w =>
+          (w) =>
             moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
         )
         .firstOrDefault();
@@ -354,7 +350,7 @@ class EmployeeProjectRoster extends Component {
       if (leaves !== undefined && leaves.length > 0) {
         leave = Enumerable.from(leaves)
           .where(
-            w =>
+            (w) =>
               moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
           )
           .firstOrDefault();
@@ -364,7 +360,7 @@ class EmployeeProjectRoster extends Component {
       if (projects !== undefined && projects.length > 0) {
         project = Enumerable.from(projects)
           .where(
-            w =>
+            (w) =>
               moment(w.attendance_date).format("YYYYMMDD") ===
               now.format("YYYYMMDD")
           )
@@ -399,112 +395,112 @@ class EmployeeProjectRoster extends Component {
             </span>
           </td>
         ) : // holiday !== undefined && holiday.weekoff === "Y" ? (
-          //   <td className="week_off_cell" key={now}>
-          //     {/* {holiday.holiday_description} */}
-          //     WO
-          //   </td>
-          // ) : holiday !== undefined && holiday.holiday === "Y" ? (
-          //   <td className="holiday_cell" key={now}>
-          //     {/* {holiday.holiday_description} */}
-          //     HO
-          //   </td>
-          // ) :
-          project !== undefined && project !== null ? (
-            <td
-              // onClick={this.showModal.bind(this, id)}
-              key={now}
-              className="time_cell editAction"
-              employee_id={row.hims_d_employee_id}
-              date={now.format("YYYY-MM-DD")}
-            >
-              <i className="fas fa-ellipsis-v" />
-              <ul>
-                <li onClick={this.copyProject.bind(this, project)}>Copy</li>
-                <li
-                  onClick={this.pasteProject.bind(this, {
-                    id: row.hims_d_employee_id,
-                    date: now.format("YYYY-MM-DD")
-                  })}
-                >
-                  Paste
-              </li>
-                <li onClick={this.deleteProject.bind(this, project)}>
-                  Delete Project
-              </li>
-              </ul>
-              <span>{project.abbreviation}</span>
-            </td>
-          ) : // HOLIDAY / WEEKOFF FROM MASTER
-            holiday !== undefined ? (
-              <td
-                className={
-                  holiday.weekoff === "Y"
-                    ? "editAction week_off_cell"
-                    : holiday.holiday === "Y"
-                      ? "editAction holiday_cell"
-                      : null
-                }
-                key={now}
+        //   <td className="week_off_cell" key={now}>
+        //     {/* {holiday.holiday_description} */}
+        //     WO
+        //   </td>
+        // ) : holiday !== undefined && holiday.holiday === "Y" ? (
+        //   <td className="holiday_cell" key={now}>
+        //     {/* {holiday.holiday_description} */}
+        //     HO
+        //   </td>
+        // ) :
+        project !== undefined && project !== null ? (
+          <td
+            // onClick={this.showModal.bind(this, id)}
+            key={now}
+            className="time_cell editAction"
+            employee_id={row.hims_d_employee_id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li onClick={this.copyProject.bind(this, project)}>Copy</li>
+              <li
+                onClick={this.pasteProject.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD"),
+                })}
               >
-                <span>
-                  {holiday.weekoff === "Y"
-                    ? "WO"
-                    : holiday.holiday === "Y"
-                      ? "HO"
-                      : holiday.holiday_description}
-                </span>
+                Paste
+              </li>
+              <li onClick={this.deleteProject.bind(this, project)}>
+                Delete Project
+              </li>
+            </ul>
+            <span>{project.abbreviation}</span>
+          </td>
+        ) : // HOLIDAY / WEEKOFF FROM MASTER
+        holiday !== undefined ? (
+          <td
+            className={
+              holiday.weekoff === "Y"
+                ? "editAction week_off_cell"
+                : holiday.holiday === "Y"
+                ? "editAction holiday_cell"
+                : null
+            }
+            key={now}
+          >
+            <span>
+              {holiday.weekoff === "Y"
+                ? "WO"
+                : holiday.holiday === "Y"
+                ? "HO"
+                : holiday.holiday_description}
+            </span>
 
-                <i className="fas fa-ellipsis-v" />
-                <ul>
-                  <li
-                    onClick={this.pasteWeekoffShift.bind(this, {
-                      id: row.hims_d_employee_id,
-                      date: now.format("YYYY-MM-DD"),
-                      project_id: row.project_id,
-                      holiday: holiday.holiday,
-                      weekoff: holiday.weekoff
-                    })}
-                    style={{
-                      zIndex: 9999
-                    }}
-                  >
-                    Paste As Week Off
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+                onClick={this.pasteWeekoffShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD"),
+                  project_id: row.project_id,
+                  holiday: holiday.holiday,
+                  weekoff: holiday.weekoff,
+                })}
+                style={{
+                  zIndex: 9999,
+                }}
+              >
+                Paste As Week Off
               </li>
-                  <li
-                    // onClick={this.pasteShift.bind(this, {
-                    //   id: row.hims_d_employee_id,
-                    //   date: now.format("YYYY-MM-DD"),
-                    //   sub_id: row.sub_department_id
-                    // })}
-                    style={{
-                      zIndex: 9999
-                    }}
-                  >
-                    Paste As Normal
+              <li
+                // onClick={this.pasteShift.bind(this, {
+                //   id: row.hims_d_employee_id,
+                //   date: now.format("YYYY-MM-DD"),
+                //   sub_id: row.sub_department_id
+                // })}
+                style={{
+                  zIndex: 9999,
+                }}
+              >
+                Paste As Normal
               </li>
-                </ul>
-              </td>
-            ) : (
-                <td
-                  onClick={this.showModal.bind(this, row)}
-                  key={now}
-                  className="time_cell editAction"
-                  employee_id={row.hims_d_employee_id}
-                  date={now.format("YYYY-MM-DD")}
-                >
-                  <i className="fas fa-ellipsis-v" />
-                  <ul>
-                    <li
-                      onClick={this.pasteProject.bind(this, {
-                        id: row.hims_d_employee_id,
-                        date: now.format("YYYY-MM-DD")
-                      })}
-                    >
-                      Paste
+            </ul>
+          </td>
+        ) : (
+          <td
+            onClick={this.showModal.bind(this, row)}
+            key={now}
+            className="time_cell editAction"
+            employee_id={row.hims_d_employee_id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+                onClick={this.pasteProject.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD"),
+                })}
+              >
+                Paste
               </li>
-                  </ul>
-                </td>
-              );
+            </ul>
+          </td>
+        );
 
       Emp_Dates.push(data);
       now.add(1, "days");
@@ -516,12 +512,8 @@ class EmployeeProjectRoster extends Component {
     var dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-    var currDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    var lastDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    var currDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    var lastDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     var now = moment(currDate).clone();
 
@@ -549,7 +541,7 @@ class EmployeeProjectRoster extends Component {
     }
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_project",
       uri: "/gloabelSearch/get",
@@ -557,7 +549,7 @@ class EmployeeProjectRoster extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         let arr = this.state.employees;
         arr.push(row);
         this.getDesignations(row.sub_department_id);
@@ -567,9 +559,9 @@ class EmployeeProjectRoster extends Component {
           emp_name: row.full_name,
           sub_department_id: row.sub_department_id,
           designation_id: row.employee_designation_id,
-          employees: arr
+          employees: arr,
         });
-      }
+      },
     });
   }
 
@@ -579,22 +571,22 @@ class EmployeeProjectRoster extends Component {
       uri: "/branchMaster/getBranchWiseDepartments",
       method: "GET",
       data: {
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       },
       module: "masterSettings",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            allDepartments: res.data.records
+            allDepartments: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -603,17 +595,17 @@ class EmployeeProjectRoster extends Component {
       uri: "branchMaster/getBranchWiseDepartments",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ allDepartments: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -623,59 +615,47 @@ class EmployeeProjectRoster extends Component {
       method: "GET",
       module: "masterSettings",
       data: { department_id: department_id },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            sub_depts: res.data.records
+            sub_depts: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   monthFormatorString(yearAndMonth) {
-    const _start = moment(yearAndMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    const _end = moment(yearAndMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    const _start = moment(yearAndMonth).startOf("month").format("MMM DD YYYY");
+    const _end = moment(yearAndMonth).endOf("month").format("MMM DD YYYY");
 
     return _start + " - " + _end;
   }
 
   getStartandMonthEnd() {
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
-    let startDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    let endDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    let startDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    let endDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     this.setState({
-      formatingString: startDate + " - " + endDate
+      formatingString: startDate + " - " + endDate,
     });
   }
 
   getEmployeesForProjectRoster() {
     this.setState({
-      loading: true
+      loading: true,
     });
 
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-    var fromDate = moment(yearMonth)
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    var toDate = moment(yearMonth)
-      .endOf("month")
-      .format("YYYY-MM-DD");
+    var fromDate = moment(yearMonth).startOf("month").format("YYYY-MM-DD");
+    var toDate = moment(yearMonth).endOf("month").format("YYYY-MM-DD");
 
     algaehApiCall({
       uri: "/projectjobcosting/getEmployeesForProjectRoster",
@@ -688,33 +668,33 @@ class EmployeeProjectRoster extends Component {
         department_id: this.state.department_id,
         fromDate: fromDate,
         toDate: toDate,
-        designation_id: this.state.designation_id
+        designation_id: this.state.designation_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             employees: res.data.records,
-            loading: false
+            loading: false,
           });
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            loading: false
+            loading: false,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
         this.setState({
-          loading: false
+          loading: false,
         });
-      }
+      },
     });
   }
 
@@ -728,7 +708,7 @@ class EmployeeProjectRoster extends Component {
               from_date: this.state.sendDate,
               to_date: this.state.sendDate,
               projects: this.state.projects,
-              hospital_id: this.state.hospital_id
+              hospital_id: this.state.hospital_id,
             }}
             sendRow={this.state.sendRow}
             open={this.state.openProjectAssign}
@@ -745,12 +725,12 @@ class EmployeeProjectRoster extends Component {
           data={{
             projects: this.state.projects,
             employees: this.state.employees,
-            hospital_id: this.state.hospital_id
+            hospital_id: this.state.hospital_id,
           }}
           open={this.state.openAnother}
           onClose={() =>
             this.setState({
-              openAnother: false
+              openAnother: false,
             })
           }
         />
@@ -760,7 +740,7 @@ class EmployeeProjectRoster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Year",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "year",
@@ -769,21 +749,21 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: allYears
+                data: allYears,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
               forceLabel: "Month",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               sort: "off",
@@ -793,21 +773,21 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: MONTHS
+                data: MONTHS,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -816,9 +796,9 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.state.hospitals
+                data: this.state.hospitals,
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
             }}
             showLoading={true}
           />
@@ -833,7 +813,7 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "department_name",
                 valueField: "hims_d_department_id",
-                data: this.state.allDepartments
+                data: this.state.allDepartments,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
@@ -842,9 +822,9 @@ class EmployeeProjectRoster extends Component {
                   sub_department_id: null,
                   designation_id: null,
                   designations: [],
-                  sub_depts: []
+                  sub_depts: [],
                 });
-              }
+              },
             }}
           />
 
@@ -858,16 +838,16 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "sub_department_name",
                 valueField: "hims_d_sub_department_id",
-                data: this.state.sub_depts
+                data: this.state.sub_depts,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
                   sub_department_id: null,
                   designation_id: null,
-                  designations: []
+                  designations: [],
                 });
-              }
+              },
             }}
           />
 
@@ -881,14 +861,14 @@ class EmployeeProjectRoster extends Component {
               dataSource: {
                 textField: "designation",
                 valueField: "hims_d_designation_id",
-                data: this.state.designations
+                data: this.state.designations,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  designation_id: null
+                  designation_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -898,7 +878,7 @@ class EmployeeProjectRoster extends Component {
               style={{
                 border: " 1px solid #ced4d9",
                 borderRadius: 5,
-                marginLeft: 0
+                marginLeft: 0,
               }}
             >
               <div className="col">
@@ -914,7 +894,7 @@ class EmployeeProjectRoster extends Component {
                   style={{
                     paddingTop: 17,
                     paddingLeft: 3,
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   onClick={this.employeeSearch.bind(this)}
                 />
@@ -937,8 +917,8 @@ class EmployeeProjectRoster extends Component {
               {!this.state.loading ? (
                 <span>Load</span>
               ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -962,7 +942,7 @@ class EmployeeProjectRoster extends Component {
                   <span
                     style={{
                       background: "rgb(255, 230, 234)",
-                      color: "rgb(228, 34, 69)"
+                      color: "rgb(228, 34, 69)",
                     }}
                     className="legends"
                   >
@@ -1013,7 +993,8 @@ class EmployeeProjectRoster extends Component {
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (
-                        <table className="rosterTableStyle">
+                      <div className="bulkProjectRosterScroll">
+                        <table id="bulkRosterPreview">
                           <thead id="tHdRstr">
                             <tr>
                               {/* <th>Employee Code</th> */}
@@ -1055,9 +1036,9 @@ class EmployeeProjectRoster extends Component {
                               </tr>
                             ))}
                           </tbody>
-                          {/* </div> */}
                         </table>
-                      )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

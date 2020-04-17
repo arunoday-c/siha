@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./project_assign.scss";
 import {
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -14,7 +14,7 @@ class ProjectAssign extends Component {
     this.state = {
       projectList: [],
       projects: [],
-      employee: {}
+      employee: {},
     };
   }
 
@@ -25,20 +25,20 @@ class ProjectAssign extends Component {
   componentDidMount() {
     this.setState({
       employee: this.props.sendRow,
-      ...this.props.data
+      ...this.props.data,
     });
   }
 
   SearchHandler(e) {
     let ProjectSearch = e.target.value.toLowerCase(),
-      projects = this.state.projects.filter(el => {
+      projects = this.state.projects.filter((el) => {
         let searchValue = el.project_desc.toLowerCase();
         return searchValue.indexOf(ProjectSearch) !== -1;
       });
 
     this.setState({
       projectList: projects,
-      searchprojects: e.target.value
+      searchprojects: e.target.value,
     });
   }
 
@@ -49,12 +49,12 @@ class ProjectAssign extends Component {
     ) {
       swalMessage({
         title: "Please Select a project to assign",
-        type: "warning"
+        type: "warning",
       });
     } else if (!this.state.employee.hasOwnProperty("employee_code")) {
       swalMessage({
         title: "Please select atleast one employee to asssign project",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       moment(this.state.from_date).format("YYYYMMDD") >
@@ -62,7 +62,7 @@ class ProjectAssign extends Component {
     ) {
       swalMessage({
         title: "Please select a proper Date Range",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let sendData = {
@@ -70,7 +70,7 @@ class ProjectAssign extends Component {
         to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
         project_id: this.state.hims_d_project_id,
         employees: [this.state.employee],
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
       };
 
       // console.log(JSON.stringify(sendData));
@@ -80,21 +80,21 @@ class ProjectAssign extends Component {
         method: "POST",
         data: sendData,
         module: "hrManagement",
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Record Added Successfully",
-              type: "success"
+              type: "success",
             });
             document.getElementById("clsProjAsgn").click();
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
 
       // console.log("SEND DATA:", JSON.stringify(sendData));
@@ -113,7 +113,7 @@ class ProjectAssign extends Component {
         openPopup={this.props.open}
         title="Project Assign"
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
         className="col-lg-12 ShiftAssign"
       >
@@ -124,21 +124,21 @@ class ProjectAssign extends Component {
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Project Starts Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
                   others: {
-                    tabIndex: "1"
-                  }
+                    tabIndex: "1",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      from_date: selDate
+                      from_date: selDate,
                     });
-                  }
+                  },
                 }}
                 maxDate={new Date()}
                 value={this.state.from_date}
@@ -147,21 +147,21 @@ class ProjectAssign extends Component {
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Project End Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
                   others: {
-                    tabIndex: "2"
-                  }
+                    tabIndex: "2",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      to_date: selDate
+                      to_date: selDate,
                     });
-                  }
+                  },
                 }}
                 minDate={this.state.from_date}
                 value={this.state.to_date}
@@ -179,15 +179,15 @@ class ProjectAssign extends Component {
                       name: "searchProjects",
                       value: this.state.searchprojects,
                       events: {
-                        onChange: this.SearchHandler.bind(this)
+                        onChange: this.SearchHandler.bind(this),
                       },
                       option: {
-                        type: "text"
+                        type: "text",
                       },
                       others: {
                         placeholder: "Search projects",
-                        tabIndex: "4"
-                      }
+                        tabIndex: "4",
+                      },
                     }}
                   />
                 </div>
@@ -215,7 +215,7 @@ class ProjectAssign extends Component {
                         <label
                           htmlFor={data.project_id}
                           style={{
-                            width: "80%"
+                            width: "80%",
                           }}
                         >
                           <span>{data.project_desc}</span>
@@ -255,8 +255,10 @@ class ProjectAssign extends Component {
                   </li>
                   <li>
                     <p>
-                      <b>{employee.employee_name}</b>789
-                      <small>{employee.employee_code}</small>
+                      <label htmlFor={data.employee_code}>
+                        <small>{data.employee_code}</small>
+                        <b>{data.employee_name}</b>
+                      </label>
                     </p>
                   </li>
                 </ul>
