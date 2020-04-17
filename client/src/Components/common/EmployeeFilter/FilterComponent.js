@@ -14,15 +14,36 @@ export default function FilterComponent(props) {
     empGroups,
     subDepts,
     designations,
-    handlers
+    handlers,
   } = useContext(FilterContext);
   return (
     <div className="row inner-top-search FilterCompnentDiv">
+      {" "}
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group mandatory" }}
+        label={{
+          forceLabel: "Branch",
+          isImp: true,
+        }}
+        selector={{
+          name: "hospital_id",
+          className: "select-fld",
+          value: inputs.hospital_id,
+          dataSource: {
+            textField: "hospital_name",
+            valueField: "hims_d_hospital_id",
+            data: hospitals,
+          },
+          onChange: handlers.dropDownHandler,
+          onClear: handlers.dropDownClear,
+        }}
+        showLoading={true}
+      />
       <AlagehAutoComplete
         div={{ className: "col-1 mandatory" }}
         label={{
           forceLabel: "Year",
-          isImp: true
+          isImp: true,
         }}
         selector={{
           name: "year",
@@ -31,16 +52,16 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: allYears
+            data: allYears,
           },
-          onChange: handlers.dropDownHandler
+          onChange: handlers.dropDownHandler,
         }}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 mandatory" }}
         label={{
           forceLabel: "Month",
-          isImp: true
+          isImp: true,
         }}
         selector={{
           sort: "off",
@@ -50,30 +71,10 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: MONTHS
-          },
-          onChange: handlers.dropDownHandler
-        }}
-      />
-      <AlagehAutoComplete
-        div={{ className: "col-2 form-group mandatory" }}
-        label={{
-          forceLabel: "Branch",
-          isImp: true
-        }}
-        selector={{
-          name: "hospital_id",
-          className: "select-fld",
-          value: inputs.hospital_id,
-          dataSource: {
-            textField: "hospital_name",
-            valueField: "hims_d_hospital_id",
-            data: hospitals
+            data: MONTHS,
           },
           onChange: handlers.dropDownHandler,
-          onClear: handlers.dropDownClear,
         }}
-        showLoading={true}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
@@ -85,14 +86,14 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "group_description",
             valueField: "hims_d_employee_group_id",
-            data: empGroups
+            data: empGroups,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
             handlers.clearInputState({
-              group_id: ""
+              group_id: "",
             });
-          }
+          },
         }}
       />
       <AlagehAutoComplete
@@ -105,7 +106,7 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "department_name",
             valueField: "hims_d_department_id",
-            data: allDepartments
+            data: allDepartments,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
@@ -114,12 +115,11 @@ export default function FilterComponent(props) {
               sub_department_id: null,
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
-
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
         label={{ forceLabel: "Sub Deptartment" }}
@@ -130,7 +130,7 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "sub_department_name",
             valueField: "hims_d_sub_department_id",
-            data: subDepts
+            data: subDepts,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
@@ -138,12 +138,11 @@ export default function FilterComponent(props) {
               sub_department_id: null,
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
-
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
         label={{ forceLabel: "Designation" }}
@@ -154,19 +153,18 @@ export default function FilterComponent(props) {
           dataSource: {
             textField: "designation",
             valueField: "hims_d_designation_id",
-            data: designations
+            data: designations,
           },
           onChange: handlers.dropDownHandler,
           onClear: () => {
             handlers.clearState({
               designation_id: null,
               emp_name: null,
-              hims_d_employee_id: null
+              hims_d_employee_id: null,
             });
-          }
+          },
         }}
       />
-
       <div className="col globalSearchCntr">
         <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
         <h6 onClick={handlers.employeeSearch}>
@@ -183,8 +181,8 @@ export default function FilterComponent(props) {
           {!inputs.loading ? (
             <span>Load</span>
           ) : (
-              <i className="fas fa-spinner fa-spin" />
-            )}
+            <i className="fas fa-spinner fa-spin" />
+          )}
         </button>
         <button
           onClick={handlers.clearState}
