@@ -4458,7 +4458,7 @@ function InsertGratuityProvision(options) {
         .executeQuery({
           query:
             "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
-            ((datediff(date(?),date(date_of_joining)))+1)/365 endOfServiceYears, employee_code, exit_date,\
+            (datediff(date(?),date(date_of_joining)))/365 endOfServiceYears, employee_code, exit_date,\
             full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth, gratuity_encash \
             from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
             select * from hims_d_end_of_service_options;",
@@ -4716,13 +4716,19 @@ function InsertGratuityProvision(options) {
                         // });
                         gratuity = _sumOfTotalEarningComponents / 30;
                       }
+                      gratuity = utilities.decimalPoints(
+                        gratuity,
+                        decimal_places
+                      );
 
-                      // console.log("_computatedAmout", _computatedAmout)
+                      // console.log("_eligibleDays", _eligibleDays)
+                      // console.log("gratuity", gratuity)
                       // let _computatedAmoutSum =
                       //   _computatedAmout.reduce((a, b) => {
                       //     return a + b;
                       //   }, 0) * _eligibleDays;
-                      let _computatedAmoutSum = _eligibleDays * gratuity;
+
+                      let _computatedAmoutSum = parseFloat(_eligibleDays) * parseFloat(gratuity);
 
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
@@ -4732,16 +4738,20 @@ function InsertGratuityProvision(options) {
                       // console.log("gratuity_data", gratuity_data)
                       // console.log("_computatedAmoutSum", _computatedAmoutSum)
                       // console.log("_employee[k].gratuity_encash", _employee[k].gratuity_encash)
-                      
+
+
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
-                        gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
+                        gratuity_amount = parseFloat(_computatedAmoutSum) - (parseFloat(gratuity_data[0].acc_gratuity) + parseFloat(_employee[k].gratuity_encash))
                       } else {
                         gratuity_amount = _computatedAmoutSum
                       }
                       _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
 
-
+                      gratuity_amount = utilities.decimalPoints(
+                        gratuity_amount,
+                        decimal_places
+                      );
 
                       strQry += mysql.format(
                         "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
