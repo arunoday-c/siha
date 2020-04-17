@@ -26,6 +26,7 @@ export default function EmpProjectRoster(props) {
     // toDate,
     inputs,
   } = getProjectRosterState();
+  const [showAssaign, setShowAssign] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
@@ -58,7 +59,7 @@ export default function EmpProjectRoster(props) {
           getEmployeesForProjectRoster(inputs)
             .then((result) => {
               const { records, fromDate, toDate } = result;
-
+              setShowAssign(true);
               setProjectRosterState({
                 total_rosted: records.total_rosted,
                 total_non_rosted: records.total_non_rosted,
@@ -73,6 +74,7 @@ export default function EmpProjectRoster(props) {
               AlgaehLoader({ show: false });
             })
             .catch((error) => {
+              setShowAssign(false);
               AlgaehLoader({ show: false });
               swalMessage({ title: error, type: "info" });
               setProjectRosterState({
@@ -218,6 +220,7 @@ export default function EmpProjectRoster(props) {
           <div className="col-lg-12">
             <button
               className="btn btn-primary"
+              disabled={!showAssaign}
               onClick={(e) => {
                 setIsEditing(undefined);
                 setShowPopup(true);
@@ -241,7 +244,7 @@ export default function EmpProjectRoster(props) {
             {/* <button type="button" className="btn btn-default">
               Download as Excel
             </button> */}
-            <button
+            {/* <button
               type="button"
               className="btn btn-default"
               onClick={() => {
@@ -259,7 +262,7 @@ export default function EmpProjectRoster(props) {
               }}
             >
               Download as PDF
-            </button>
+            </button> */}
             {/* <ReactPrint
               trigger={() => (
                 <button type="button" className="btn btn-default">
