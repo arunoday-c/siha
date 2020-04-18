@@ -179,18 +179,18 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,EE.formula,allocate,\
-              EE.calculation_method,ED.calculation_type,ED.component_frequency,ED.overtime_applicable,\
+                  "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,ED.formula,allocate,\
+              ED.calculation_method,ED.calculation_type,ED.component_frequency,ED.overtime_applicable,\
               ED.annual_salary_comp,ED.limit_applicable, ED.limit_amount from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
               on EE.earnings_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
               where ED.component_frequency='M' and ED.component_category='E' and EE.employee_id in (?);\
-            select hims_d_employee_deductions_id,employee_id,deductions_id,amount,EMP_D.formula,\
-              allocate,EMP_D.calculation_method,ED.calculation_type,ED.component_frequency, ED.limit_applicable, ED.limit_amount from \
+            select hims_d_employee_deductions_id,employee_id,deductions_id,amount,ED.formula,\
+              allocate,ED.calculation_method,ED.calculation_type,ED.component_frequency, ED.limit_applicable, ED.limit_amount from \
               hims_d_employee_deductions EMP_D inner join hims_d_earning_deduction ED\
               on EMP_D.deductions_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
               where ED.component_frequency='M'  and ED.component_category='D' and EMP_D.employee_id in(?);\
             select  hims_d_employee_contributions_id,employee_id,contributions_id,amount,\
-              EC.formula,EC.allocate,EC.calculation_method,ED.calculation_type,ED.component_frequency, ED.limit_applicable, ED.limit_amount\
+              ED.formula,ED.allocate,ED.calculation_method,ED.calculation_type,ED.component_frequency, ED.limit_applicable, ED.limit_amount\
               from hims_d_employee_contributions EC inner join hims_d_earning_deduction ED\
               on EC.contributions_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
               where ED.component_frequency='M'  and ED.component_category='C' and EC.employee_id in (?);\
