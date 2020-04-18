@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-// import extend from "extend";
+import extend from "extend";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
@@ -147,10 +147,16 @@ const AddEarnComponent = ($this, e) => {
       let formulaCal = $this.state.earn_formula;
       if ($this.state.earn_calculation_method === "FO") {
 
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
         var notExists = [];
         const x = formulaCal.match(/[a-zA-Z]+/g);
         notExists = x.map(function (item) {
-          const rtn = earningComponents.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
           if (rtn === undefined) {
             return item;
           } else {
@@ -245,9 +251,15 @@ const AddDeductionComponent = ($this, e) => {
       let formulaCal = $this.state.deduct_formula;
       if ($this.state.deduct_calculation_method === "FO") {
         var notExists = [];
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
         const x = formulaCal.match(/[a-zA-Z]+/g);
         notExists = x.map(function (item) {
-          const rtn = $this.state.earningComponents.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
           if (rtn === undefined) {
             return item;
           } else {
@@ -354,10 +366,17 @@ const AddContributionComponent = ($this, e) => {
 
       let formulaCal = $this.state.contribut_formula;
       if ($this.state.contribut_calculation_method === "FO") {
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
         var notExists = [];
         const x = formulaCal.match(/[a-zA-Z]+/g);
         notExists = x.map(function (item) {
-          const rtn = $this.state.earningComponents.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
           if (rtn === undefined) {
             return item;
           } else {
