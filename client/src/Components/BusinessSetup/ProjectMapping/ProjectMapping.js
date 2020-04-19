@@ -8,7 +8,7 @@ import "./ProjectMapping.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
@@ -22,7 +22,7 @@ class ProjectMapping extends Component {
     this.state = {
       division_project: [],
       division_id: "",
-      project_id: ""
+      project_id: "",
     };
 
     ProjectMappingEvents().getDivisionProjectFunction(this);
@@ -38,23 +38,23 @@ class ProjectMapping extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
-    if (this.props.projects === undefined || this.props.projects.length === 0) {
-      this.props.getProjects({
-        uri: "/hrsettings/getProjects",
-        module: "hrManagement",
-        method: "GET",
-        date: { pjoject_status: "A" },
-        redux: {
-          type: "ORGS_GET_DATA",
-          mappingName: "projects"
-        }
-      });
-    }
+    //if (this.props.projects === undefined || this.props.projects.length === 0) {
+    this.props.getProjects({
+      uri: "/hrsettings/getProjects",
+      module: "hrManagement",
+      method: "GET",
+      date: { pjoject_status: "A" },
+      redux: {
+        type: "ORGS_GET_DATA",
+        mappingName: "projects",
+      },
+    });
+    // }
   }
 
   eventHandaler(e) {
@@ -66,7 +66,7 @@ class ProjectMapping extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         ProjectMappingEvents().addDivisionProjectEvent(this);
-      }
+      },
     });
   }
   deleteDivisionProject(data) {
@@ -81,7 +81,7 @@ class ProjectMapping extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Select a Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "division_id",
@@ -90,21 +90,21 @@ class ProjectMapping extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  division_id: null
+                  division_id: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-3 form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "project_id",
@@ -113,14 +113,14 @@ class ProjectMapping extends Component {
               dataSource: {
                 textField: "project_desc",
                 valueField: "hims_d_project_id",
-                data: this.props.projects
+                data: this.props.projects,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  project_id: null
+                  project_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -154,7 +154,7 @@ class ProjectMapping extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span
                                 onClick={this.deleteDivisionProject.bind(
@@ -168,8 +168,8 @@ class ProjectMapping extends Component {
                           },
                           others: {
                             maxWidth: 50,
-                            filterable: false
-                          }
+                            filterable: false,
+                          },
                         },
                         {
                           fieldName: "division_id",
@@ -178,12 +178,12 @@ class ProjectMapping extends Component {
                               label={{ forceLabel: "Branch Name" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.organizations === undefined
                                 ? []
                                 : this.props.organizations.filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_d_hospital_id === row.division_id
                                   );
 
@@ -196,8 +196,8 @@ class ProjectMapping extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 250
-                          }
+                            maxWidth: 250,
+                          },
                         },
                         {
                           fieldName: "project_id",
@@ -206,12 +206,13 @@ class ProjectMapping extends Component {
                               label={{ forceLabel: "Project Name" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.projects === undefined
                                 ? []
                                 : this.props.projects.filter(
-                                    f => f.hims_d_project_id === row.project_id
+                                    (f) =>
+                                      f.hims_d_project_id === row.project_id
                                   );
 
                             return (
@@ -221,14 +222,14 @@ class ProjectMapping extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "start_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Start Date" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.start_date).format(
@@ -238,15 +239,15 @@ class ProjectMapping extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "end_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "End Date" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.end_date).format(
@@ -256,23 +257,23 @@ class ProjectMapping extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "d_p_status",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.d_p_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
                           others: {
-                            maxWidth: 100
-                          }
-                        }
+                            maxWidth: 100,
+                          },
+                        },
                       ]}
                       keyId="hims_m_division_project_id"
                       filter={true}
@@ -293,7 +294,7 @@ class ProjectMapping extends Component {
 function mapStateToProps(state) {
   return {
     projects: state.projects,
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
@@ -301,7 +302,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getProjects: AlgaehActions,
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );
