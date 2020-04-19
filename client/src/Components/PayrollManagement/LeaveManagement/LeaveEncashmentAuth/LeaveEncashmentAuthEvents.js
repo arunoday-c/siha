@@ -195,12 +195,12 @@ const AuthorizeLEaveEncash = ($this, data) => {
   });
 };
 
-const getLeaveLevels = $this => {
+const getLeaveLevels = ($this, leave_encash_level) => {
   algaehApiCall({
     uri: "/encashmentprocess/getLeaveEncashLevels",
     module: "hrManagement",
     method: "GET",
-    data: { leave_encash_level: $this.state.leave_encash_level },
+    data: { leave_encash_level: leave_encash_level },
     onSuccess: res => {
       if (res.data.success) {
         let auth_level =

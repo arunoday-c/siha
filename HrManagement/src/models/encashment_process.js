@@ -128,6 +128,7 @@ export default {
   getLeaveEncashLevels: (req, res, next) => {
     try {
       // let userPrivilege = req.userIdentity.leave_authorize_privilege;
+      console.log("req.query.leave_encash_level", req.query.leave_encash_level)
       let userPrivilege = req.query.leave_encash_level;
       console.log("userPrivilege", userPrivilege);
       let auth_levels = [];
