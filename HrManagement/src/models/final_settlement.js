@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
-import moment from "moment"
+import moment from "moment";
 
 export default {
   finalSettlement: (req, res, next) => {
@@ -22,13 +22,19 @@ export default {
               Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
               left join hims_d_title T on T.his_d_title_id = E.title_id \
               where E.hims_d_employee_id=?",
-          values: [_input.employee_id, _input.employee_id]
+          values: [_input.employee_id, _input.employee_id],
         })
-        .then(headerresult => {
+        .then((headerresult) => {
           const _header = headerresult[0];
           const _employee = headerresult[1];
           utilities.logger().log("_header: ", _header);
           if (_header.length == 0) {
+            // const previusMonthYear = moment()
+            //   .add(-1, "months")
+            //   .format("MM-YYYY")
+            //   .split("-");
+            // const prevMonth = previusMonthYear[0];
+            // const prevYear = previusMonthYear[1];
             _mysql
               .executeQuery({
                 query:
@@ -39,9 +45,9 @@ export default {
                   and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
                   select gratuity_in_final_settle from hims_d_end_of_service_options;\
                   select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
-                  and salary_settled='N' and salary_paid='N' group by employee_id; \
+                  and salary_settled='N' and salary_paid='N' group by hims_f_salary_id; \
                   SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
-                  where employee_id =? and authorized='APR' group by employee_id; \
+                  where employee_id =? and authorized='APR' group by hims_f_leave_encash_header_id; \
                   select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
                   E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
                   E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
@@ -53,10 +59,10 @@ export default {
                   _input.employee_id,
                   _input.employee_id,
                   _input.employee_id,
-                  _input.employee_id
-                ]
+                  _input.employee_id,
+                ],
               })
-              .then(result => {
+              .then((result) => {
                 const _loanList = result[0];
                 const _options = result[1];
                 utilities.logger().log("_options Y: ", _options);
@@ -77,13 +83,16 @@ export default {
                 endOfServiceDicession({
                   result: _options[0],
                   employee_id: _input.employee_id,
-                  mysql: _mysql
+                  mysql: _mysql,
                 })
-                  .then(data => {
+                  .then((data) => {
                     utilities.logger().log("data Y: ", data);
-                    const _total_loan_amount = _loanList.length > 0 ? _.chain(_loanList).sumBy(
-                      s => parseFloat(s.pending_loan)
-                    ) : 0;
+                    const _total_loan_amount =
+                      _loanList.length > 0
+                        ? _.chain(_loanList).sumBy((s) =>
+                            parseFloat(s.pending_loan)
+                          )
+                        : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
                     if (data !== null && data.length > 0) {
@@ -106,16 +115,16 @@ export default {
                       hims_f_end_of_service_id: _hims_f_end_of_service_id,
                       gratuity_amount: _gratuity,
                       total_salary: _total_salary_amount,
-                      total_leave_encash_amount: _total_leave_encash
+                      total_leave_encash_amount: _total_leave_encash,
                     };
                     next();
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.releaseConnection();
                     next(e);
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -136,32 +145,32 @@ export default {
                 values: [
                   _header[0]["hims_f_final_settlement_header_id"],
                   _header[0]["hims_f_final_settlement_header_id"],
-                  _header[0]["hims_f_final_settlement_header_id"]
-                ]
+                  _header[0]["hims_f_final_settlement_header_id"],
+                ],
               })
-              .then(details => {
+              .then((details) => {
                 _mysql.releaseConnection();
                 req.records = {
                   flag: "Settled",
                   data: {
                     ..._.first(_header, 0),
-                    ..._.first(_employee, 0)
+                    ..._.first(_employee, 0),
                   },
                   isEnable: false,
                   loans: details[0],
                   earningList: details[1],
-                  deductingList: details[2]
+                  deductingList: details[2],
                 };
 
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -179,13 +188,13 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["FINAL_SETTLEMENT"],
-          table_name: "hims_f_hrpayroll_numgen"
+          table_name: "hims_f_hrpayroll_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
 
           _mysql
@@ -229,12 +238,13 @@ export default {
                   ? req.userIdentity.algaeh_d_app_user_id
                   : null,
                 _input.cancelled === "Y" ? new Date() : null,
-                req.userIdentity.hospital_id
-              ]
+                req.userIdentity.hospital_id,
+              ],
             })
-            .then(header_result => {
-              req.body.final_settlement = generatedNumbers.FINAL_SETTLEMENT
-              req.body.hims_f_final_settlement_header_id = header_result.insertId
+            .then((header_result) => {
+              req.body.final_settlement = generatedNumbers.FINAL_SETTLEMENT;
+              req.body.hims_f_final_settlement_header_id =
+                header_result.insertId;
 
               let query = "";
               for (let i = 0; i < _input.loans.length; i++) {
@@ -244,7 +254,7 @@ export default {
                   [
                     header_result.insertId,
                     _input.loans[i].hims_f_loan_application_id,
-                    _input.loans[i].pending_loan
+                    _input.loans[i].pending_loan,
                   ]
                 );
 
@@ -260,7 +270,7 @@ export default {
                   [
                     header_result.insertId,
                     _input.earnings[e].earnings_id,
-                    _input.earnings[e].amount
+                    _input.earnings[e].amount,
                   ]
                 );
               }
@@ -271,7 +281,7 @@ export default {
                   [
                     header_result.insertId,
                     _input.deductions[d].deductions_id,
-                    _input.deductions[d].amount
+                    _input.deductions[d].amount,
                   ]
                 );
               }
@@ -303,9 +313,9 @@ export default {
 
               _mysql
                 .executeQuery({
-                  query: query
+                  query: query,
                 })
-                .then(rest => {
+                .then((rest) => {
                   req.records = rest;
                   next();
                   // _mysql.commitTransaction((error, resu) => {
@@ -319,20 +329,20 @@ export default {
                   //   }
                   // });
                 })
-                .catch(e => {
+                .catch((e) => {
                   console.log("REsult", e);
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -346,14 +356,13 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-
       let inputParam = req.body;
       _mysql
         .executeQueryWithTransaction({
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
-        .then(org_data => {
+        .then((org_data) => {
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
@@ -364,11 +373,19 @@ export default {
                   "select account, head_id, child_id from finance_accounts_maping \
               where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'GRAT_PYBL', 'FIN_STL_PYBL');",
               })
-              .then(result => {
-                const salary_pay_acc = result.find(f => f.account === "SAL_PYBLS");
-                const lv_salary_pay_acc = result.find(f => f.account === "LV_SAL_PYBL");
-                const gratuity_pay_acc = result.find(f => f.account === "GRAT_PYBL");
-                const final_settle_pay_acc = result.find(f => f.account === "FIN_STL_PYBL");
+              .then((result) => {
+                const salary_pay_acc = result.find(
+                  (f) => f.account === "SAL_PYBLS"
+                );
+                const lv_salary_pay_acc = result.find(
+                  (f) => f.account === "LV_SAL_PYBL"
+                );
+                const gratuity_pay_acc = result.find(
+                  (f) => f.account === "GRAT_PYBL"
+                );
+                const final_settle_pay_acc = result.find(
+                  (f) => f.account === "FIN_STL_PYBL"
+                );
 
                 _mysql
                   .executeQueryWithTransaction({
@@ -402,40 +419,44 @@ export default {
                       inputParam.hims_f_final_settlement_header_id,
                       inputParam.hims_f_final_settlement_header_id,
                       inputParam.hims_f_final_settlement_header_id,
-                      inputParam.hims_f_final_settlement_header_id
+                      inputParam.hims_f_final_settlement_header_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(headerResult => {
+                  .then((headerResult) => {
                     const final_settlement_data = headerResult[0];
                     _mysql
                       .executeQueryWithTransaction({
-                        query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        query:
+                          "INSERT INTO finance_day_end_header (transaction_date, amount, \
                     voucher_type, document_id, document_number, from_screen, \
                     narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                         values: [
                           new Date(),
                           final_settlement_data[0].total_amount,
                           "payment",
-                          final_settlement_data[0].hims_f_final_settlement_header_id,
+                          final_settlement_data[0]
+                            .hims_f_final_settlement_header_id,
                           final_settlement_data[0].final_settlement_number,
                           inputParam.ScreenCode,
-                          "Final Settlement Process for " + final_settlement_data[0].employee_code
-                          + "/" + final_settlement_data[0].full_name,
+                          "Final Settlement Process for " +
+                            final_settlement_data[0].employee_code +
+                            "/" +
+                            final_settlement_data[0].full_name,
                           new Date(),
-                          req.userIdentity.algaeh_d_app_user_id
+                          req.userIdentity.algaeh_d_app_user_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(day_end_header => {
-                        const insertSubDetail = []
+                      .then((day_end_header) => {
+                        const insertSubDetail = [];
                         //Earning, Deduction and loan and Salary Payable Laibility Account
                         insertSubDetail.push(
                           ...headerResult[1], //Earnings
                           ...headerResult[2], //Deductions
                           ...headerResult[3], //Loan
                           {
-                            //Salary Payable Laibility Account                        
+                            //Salary Payable Laibility Account
                             payment_date: new Date(),
                             head_id: salary_pay_acc.head_id,
                             child_id: salary_pay_acc.child_id,
@@ -443,10 +464,14 @@ export default {
                             payment_type: "DR",
                             credit_amount: 0,
                             hospital_id: final_settlement_data[0].hospital_id,
-                            sub_department_id: final_settlement_data[0].sub_department_id
-                          })
+                            sub_department_id:
+                              final_settlement_data[0].sub_department_id,
+                          }
+                        );
 
-                        if (parseFloat(final_settlement_data[0].total_eos) > 0) {
+                        if (
+                          parseFloat(final_settlement_data[0].total_eos) > 0
+                        ) {
                           //Gratuity
                           insertSubDetail.push({
                             payment_date: new Date(),
@@ -456,24 +481,33 @@ export default {
                             payment_type: "DR",
                             credit_amount: 0,
                             hospital_id: final_settlement_data[0].hospital_id,
-                            sub_department_id: final_settlement_data[0].sub_department_id
+                            sub_department_id:
+                              final_settlement_data[0].sub_department_id,
                           });
                         }
-                        if (parseFloat(final_settlement_data[0].total_leave_encash) > 0) {
+                        if (
+                          parseFloat(
+                            final_settlement_data[0].total_leave_encash
+                          ) > 0
+                        ) {
                           //Encashment
                           insertSubDetail.push({
                             payment_date: new Date(),
                             head_id: lv_salary_pay_acc.head_id,
                             child_id: lv_salary_pay_acc.child_id,
-                            debit_amount: final_settlement_data[0].total_leave_encash,
+                            debit_amount:
+                              final_settlement_data[0].total_leave_encash,
                             payment_type: "DR",
                             credit_amount: 0,
                             hospital_id: final_settlement_data[0].hospital_id,
-                            sub_department_id: final_settlement_data[0].sub_department_id
+                            sub_department_id:
+                              final_settlement_data[0].sub_department_id,
                           });
                         }
 
-                        if (parseFloat(final_settlement_data[0].total_amount) > 0) {
+                        if (
+                          parseFloat(final_settlement_data[0].total_amount) > 0
+                        ) {
                           //Final Settlement account
                           insertSubDetail.push({
                             payment_date: new Date(),
@@ -481,12 +515,13 @@ export default {
                             child_id: final_settle_pay_acc.child_id,
                             debit_amount: 0,
                             payment_type: "CR",
-                            credit_amount: final_settlement_data[0].total_amount,
+                            credit_amount:
+                              final_settlement_data[0].total_amount,
                             hospital_id: final_settlement_data[0].hospital_id,
-                            sub_department_id: final_settlement_data[0].sub_department_id
+                            sub_department_id:
+                              final_settlement_data[0].sub_department_id,
                           });
                         }
-
 
                         const IncludeValuess = [
                           "payment_date",
@@ -496,7 +531,7 @@ export default {
                           "payment_type",
                           "credit_amount",
                           "hospital_id",
-                          "sub_department_id"
+                          "sub_department_id",
                         ];
 
                         const month = moment().format("M");
@@ -512,37 +547,36 @@ export default {
                             extraValues: {
                               day_end_header_id: day_end_header.insertId,
                               year: year,
-                              month: month
+                              month: month,
                             },
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(subResult => {
+                          .then((subResult) => {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               // req.records = subResult;
                               next();
                             });
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
-
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -555,18 +589,17 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
     }
-  }
+  },
 };
 function endOfServiceDicession(options) {
   const _mysql = options.mysql;
@@ -586,12 +619,12 @@ function endOfServiceDicession(options) {
               "select hims_f_end_of_service_id,end_of_service_number,calculated_gratutity_amount,payable_amount\
              from hims_f_end_of_service where employee_id=? and gratuity_status != 'PAI'",
             values: [options.employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(endofServiceResult => {
+          .then((endofServiceResult) => {
             resolve(endofServiceResult);
           })
-          .catch(e => {
+          .catch((e) => {
             reject(e);
           });
       } else {
