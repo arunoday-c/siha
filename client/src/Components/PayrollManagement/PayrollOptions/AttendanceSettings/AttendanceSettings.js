@@ -964,7 +964,7 @@ export default class AttendanceSettings extends Component {
                       Ramzan Time off (Change every year)
                     </label>
                     <div className="row">
-                      <div className="col">
+                      <div className="col-12">
                         <label>Ramzan Timing Required</label>
                         <div className="customRadio">
                           <label className="radio inline">
@@ -992,7 +992,7 @@ export default class AttendanceSettings extends Component {
                       </div>
 
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Start Date",
                           isImp: false,
@@ -1010,7 +1010,7 @@ export default class AttendanceSettings extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "End Date",
                           isImp: false,
@@ -1085,7 +1085,7 @@ export default class AttendanceSettings extends Component {
                       /> */}
 
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Number of working hr/day",
                           isImp: false,
@@ -1102,6 +1102,33 @@ export default class AttendanceSettings extends Component {
                           },
                         }}
                       />
+
+                      <div className="col-4">
+                        <label>Elgible Category</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Y"
+                              name="ramazanTimingActive"
+                              // checked={this.state.external_finance === "Y"}
+                              // onChange={this.textHandler.bind(this)}
+                            />
+                            <span>All Employees</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="N"
+                              name="ramazanTimingActive"
+                              // checked={this.state.external_finance === "N"}
+                              // onChange={this.textHandler.bind(this)}
+                            />
+                            <span>Only Muslims</span>
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="row">
