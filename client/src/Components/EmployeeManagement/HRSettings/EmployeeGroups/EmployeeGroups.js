@@ -442,32 +442,44 @@ class EmployeeGroups extends Component {
                         },
                       },
                       {
-                        fieldName: "",
+                        fieldName: "XYZ",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Ramzan Timing" }}
                           />
                         ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span> {GetAmountFormart(row.airfare_amount)}</span>
+                          );
+                        },
                         editorTemplate: (row) => {
                           return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "group_description",
-                                value: "",
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  ),
-                                },
-                                others: {
-                                  errormessage: "Description - cannot be blank",
-                                  required: true,
-                                },
-                              }}
-                            />
+                            <div className="col">
+                              <div className="customRadio">
+                                <label className="radio inline">
+                                  <input
+                                    type="radio"
+                                    value="Y"
+                                    name="ramazanTimingActive"
+                                    // checked={this.state.external_finance === "Y"}
+                                    // onChange={this.textHandler.bind(this)}
+                                  />
+                                  <span>No</span>
+                                </label>
+
+                                <label className="radio inline">
+                                  <input
+                                    type="radio"
+                                    value="N"
+                                    name="ramazanTimingActive"
+                                    // checked={this.state.external_finance === "N"}
+                                    // onChange={this.textHandler.bind(this)}
+                                  />
+                                  <span>No</span>
+                                </label>
+                              </div>
+                            </div>
                           );
                         },
                       },
