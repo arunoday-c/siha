@@ -18,15 +18,15 @@ export default {
       from finance_options F
       left join hims_d_project P on F.default_cost_center_id=P.hims_d_project_id 
       left join  hims_d_hospital H on H.hims_d_hospital_id=F.default_branch_id  limit 1; `,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -39,9 +39,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT cost_center_type ,third_party_payroll FROM finance_options limit 1; "
+          "SELECT cost_center_type ,third_party_payroll FROM finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (
           result.length == 1 &&
           result[0]["cost_center_type"] == "P" &&
@@ -51,9 +51,9 @@ export default {
             .executeQuery({
               query:
                 "select finance_cost_center_id from finance_cost_center where hospital_id=?; ",
-              values: [input.hospital_id]
+              values: [input.hospital_id],
             })
-            .then(results => {
+            .then((results) => {
               // _mysql.releaseConnection();
               // req.records = results;
               // next();
@@ -61,7 +61,7 @@ export default {
                 _mysql.releaseConnection();
                 req.records = {
                   invalid_input: true,
-                  message: "Cost Center is already defined for this branch"
+                  message: "Cost Center is already defined for this branch",
                 };
                 next();
               } else {
@@ -77,22 +77,22 @@ export default {
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ],
-                    printQuery: false
+                    printQuery: false,
                   })
-                  .then(subdetail => {
+                  .then((subdetail) => {
                     _mysql.releaseConnection();
                     req.records = subdetail;
                     next();
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.releaseConnection();
                     next(e);
                   });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -109,16 +109,16 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ],
-              printQuery: false
+              printQuery: false,
             })
-            .then(subdetail => {
+            .then((subdetail) => {
               _mysql.releaseConnection();
               req.records = subdetail;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -126,12 +126,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Please Define cost center type"
+            message: "Please Define cost center type",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -145,9 +145,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT finance_options_id,cost_center_required  from finance_options limit 1; "
+          "SELECT finance_options_id,cost_center_required  from finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
           _mysql
             .executeQuery({
@@ -160,16 +160,16 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ],
-              printQuery: false
+              printQuery: false,
             })
-            .then(groupRes => {
+            .then((groupRes) => {
               _mysql.releaseConnection();
               req.records = groupRes;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -177,12 +177,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Cost center is disabled"
+            message: "Cost center is disabled",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -196,9 +196,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
           _mysql
             .executeQuery({
@@ -212,16 +212,16 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ],
-              printQuery: false
+              printQuery: false,
             })
-            .then(groupRes => {
+            .then((groupRes) => {
               _mysql.releaseConnection();
               req.records = groupRes;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -229,12 +229,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Cost center is disabled"
+            message: "Cost center is disabled",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -247,9 +247,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
           let str = "";
 
@@ -261,14 +261,14 @@ export default {
               query: `SELECT finance_cost_center_group_id, group_code, group_name\
               from finance_cost_center_group ${str};`,
 
-              printQuery: false
+              printQuery: false,
             })
-            .then(groupRes => {
+            .then((groupRes) => {
               _mysql.releaseConnection();
               req.records = groupRes;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -276,12 +276,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Cost center is disabled"
+            message: "Cost center is disabled",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -293,9 +293,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT finance_options_id,cost_center_required from finance_options limit 1; "
+          "SELECT finance_options_id,cost_center_required from finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1 && result[0]["cost_center_required"] == "Y") {
           let str = "";
 
@@ -307,14 +307,14 @@ export default {
               query: `SELECT finance_cost_center_id, cost_center_code, group_id, cost_center_name\
                 from finance_cost_center  ${str};`,
 
-              printQuery: false
+              printQuery: false,
             })
-            .then(groupRes => {
+            .then((groupRes) => {
               _mysql.releaseConnection();
               req.records = groupRes;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -322,12 +322,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Cost center is disabled"
+            message: "Cost center is disabled",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -339,9 +339,9 @@ export default {
     const input = req.query;
     _mysql
       .executeQuery({
-        query: "SELECT cost_center_type  FROM finance_options limit 1; "
+        query: "SELECT cost_center_type  FROM finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1) {
           let strQuery = "";
 
@@ -368,37 +368,37 @@ export default {
           _mysql
             .executeQuery({
               query: strQuery,
-              printQuery: true
+              printQuery: true,
             })
-            .then(results => {
+            .then((results) => {
               _mysql.releaseConnection();
 
               let cost = _.chain(results)
-                .groupBy(g => g.cost_center_id)
+                .groupBy((g) => g.cost_center_id)
                 .value();
               const output = [];
 
               for (let c in cost) {
                 const branches = [];
-                results.forEach(item => {
+                results.forEach((item) => {
                   if (item.cost_center_id == c) {
                     branches.push({
                       hospital_name: item.hospital_name,
-                      hims_d_hospital_id: item.hims_d_hospital_id
+                      hims_d_hospital_id: item.hims_d_hospital_id,
                     });
                   }
                 });
                 output.push({
                   cost_center_id: cost[c][0]["cost_center_id"],
                   cost_center: cost[c][0]["cost_center"],
-                  branches: branches
+                  branches: branches,
                 });
               }
 
               req.records = output;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -406,12 +406,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Please Define cost center type"
+            message: "Please Define cost center type",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -432,11 +432,11 @@ export default {
           input.cost_center_id,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.finance_cost_center_id
+          input.finance_cost_center_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         if (result.affectedRows > 0) {
           req.records = result;
@@ -444,12 +444,12 @@ export default {
         } else {
           req.records = {
             invalid_input: true,
-            message: "Invalid input"
+            message: "Invalid input",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -476,17 +476,17 @@ export default {
           input.end_date,
           input.auth_level,
           input.auth1_limit,
-          input.auth1_limit_amount
+          input.auth1_limit_amount,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -498,9 +498,9 @@ export default {
     const input = req.query;
     _mysql
       .executeQuery({
-        query: "SELECT cost_center_type  FROM finance_options limit 1; "
+        query: "SELECT cost_center_type  FROM finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result.length == 1) {
           let strQuery = "";
 
@@ -527,37 +527,37 @@ export default {
           _mysql
             .executeQuery({
               query: strQuery,
-              printQuery: true
+              printQuery: true,
             })
-            .then(results => {
+            .then((results) => {
               _mysql.releaseConnection();
 
               let branch = _.chain(results)
-                .groupBy(g => g.hims_d_hospital_id)
+                .groupBy((g) => g.hims_d_hospital_id)
                 .value();
               const output = [];
 
               for (let b in branch) {
                 const cost_centers = [];
-                results.forEach(item => {
+                results.forEach((item) => {
                   if (item.hims_d_hospital_id == b) {
                     cost_centers.push({
                       cost_center: item.cost_center,
-                      cost_center_id: item.cost_center_id
+                      cost_center_id: item.cost_center_id,
                     });
                   }
                 });
                 output.push({
                   hospital_name: branch[b][0]["hospital_name"],
                   hims_d_hospital_id: branch[b][0]["hims_d_hospital_id"],
-                  cost_centers: cost_centers
+                  cost_centers: cost_centers,
                 });
               }
 
               req.records = output;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -565,12 +565,12 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "Please Define cost center type"
+            message: "Please Define cost center type",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -586,9 +586,9 @@ export default {
         query: `
           select start_month,end_month from finance_options limit 1;  `,
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         let start_month = result[0]["start_month"];
@@ -627,31 +627,21 @@ export default {
                 .endOf("year")
                 .format("YYYY-MM-DD");
             } else {
-              from_date = moment()
-                .startOf("year")
-                .format("YYYY-MM-DD");
+              from_date = moment().startOf("year").format("YYYY-MM-DD");
 
-              to_date = moment()
-                .endOf("year")
-                .format("YYYY-MM-DD");
+              to_date = moment().endOf("year").format("YYYY-MM-DD");
             }
 
             break;
 
           case "TM":
-            from_date = moment()
-              .startOf("month")
-              .format("YYYY-MM-DD");
+            from_date = moment().startOf("month").format("YYYY-MM-DD");
 
-            to_date = moment()
-              .endOf("month")
-              .format("YYYY-MM-DD");
+            to_date = moment().endOf("month").format("YYYY-MM-DD");
             break;
 
           case "TMTD":
-            from_date = moment()
-              .startOf("month")
-              .format("YYYY-MM-DD");
+            from_date = moment().startOf("month").format("YYYY-MM-DD");
 
             to_date = moment().format("YYYY-MM-DD");
             break;
@@ -689,20 +679,18 @@ export default {
 
               to_date = moment().format("YYYY-MM-DD");
             } else {
-              from_date = moment()
-                .startOf("year")
-                .format("YYYY-MM-DD");
+              from_date = moment().startOf("year").format("YYYY-MM-DD");
 
               to_date = moment().format("YYYY-MM-DD");
             }
         }
         req.records = {
           from_date: from_date,
-          to_date: to_date
+          to_date: to_date,
         };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -717,25 +705,25 @@ export default {
 
     _mysql
       .executeQuery({
-        query: `SELECT C.finance_account_head_id,P.account_code ,C.u_group_parent FROM tms_finance.finance_account_head C ,tms_finance.finance_account_head P  where 
-        C.u_group_parent= P.u_group_code and  C.account_level=?
-        and C.account_code is null order by C.u_group_code limit 1; `,
+        query: `SELECT C.finance_account_head_id,P.account_code ,C.group_parent FROM finance_account_head C ,finance_account_head P  where 
+        C.group_parent= P.group_code and  C.account_level=?
+        and C.account_code is null order by C.group_code limit 1; `,
         values: [input.account_level],
-        printQuery: true
+        printQuery: true,
       })
-      .then(resul => {
+      .then((resul) => {
         if (resul.length > 0) {
           _mysql
             .executeQueryWithTransaction({
               query: `select finance_account_head_id,account_code,account_name,\
               account_level,hierarchy_path, concat(account_code,'.',(\
               select max( CAST(SUBSTRING_INDEX(account_code, '.', -1) AS UNSIGNED)  )+1\
-              FROM tms_finance.finance_account_head where account_parent=?)) as new_code\
-              FROM tms_finance.finance_account_head where account_code=? for update; `,
+              FROM finance_account_head where account_parent=?)) as new_code\
+              FROM finance_account_head where account_code=? for update; `,
               values: [resul[0]["account_code"], resul[0]["account_code"]],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               // _mysql.releaseConnection();
               let data = result[0];
 
@@ -749,17 +737,17 @@ export default {
 
               _mysql
                 .executeQueryWithTransaction({
-                  query: `update  tms_finance.finance_account_head set account_code =?,account_parent=?
-                  where finance_account_head_id=?`,
+                  query: `update  finance_account_head set account_code =?,account_parent=?
+                  where  finance_account_head_id=?`,
                   values: [
                     account_code,
                     data["account_code"],
-                    resul[0]["finance_account_head_id"]
+                    resul[0]["finance_account_head_id"],
                   ],
 
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(resultd => {
+                .then((resultd) => {
                   // outArray += ` update  tms_finance.finance_account_head set account_code =${account_code},account_parent=${data["account_code"]}
                   // where finance_account_head_id=${resul[i]["finance_account_head_id"]} ;`;
 
@@ -769,12 +757,12 @@ export default {
                     next();
                   });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -782,14 +770,14 @@ export default {
           _mysql.releaseConnection();
 
           req.records = {
-            message: "nothing to generate"
+            message: "nothing to generate",
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };
