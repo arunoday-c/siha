@@ -19,6 +19,7 @@ class EmployeeGroups extends Component {
     super(props);
     this.state = {
       employee_groups: [],
+      ramzan_timing: "N",
     };
 
     this.getEmployeeGroups();
@@ -119,6 +120,7 @@ class EmployeeGroups extends Component {
   }
 
   updateEmployeeGroups(data) {
+    debugger;
     algaehApiCall({
       uri: "/hrsettings/updateEmployeeGroup",
       module: "hrManagement",
@@ -130,6 +132,7 @@ class EmployeeGroups extends Component {
         airfare_eligibility: data.airfare_eligibility,
         airfare_amount: data.airfare_amount,
         record_status: "A",
+        ramzan_timing: data.ramzan_timing,
       },
       onSuccess: (response) => {
         if (response.data.success) {
@@ -163,6 +166,7 @@ class EmployeeGroups extends Component {
             monthly_accrual_days: this.state.monthly_accrual_days,
             airfare_eligibility: this.state.airfare_eligibility,
             airfare_amount: this.state.airfare_amount,
+            ramzan_timing: this.state.ramzan_timing,
           },
           onSuccess: (res) => {
             if (res.data.success) {
@@ -184,7 +188,24 @@ class EmployeeGroups extends Component {
       },
     });
   }
+  onChangeRaidoButton(e) {
+    const isChecked = e.target.checked;
 
+    this.setState({ ramzan_timing: isChecked === true ? "Y" : "N" });
+  }
+  onUpdateRamzanTiming(row, e) {
+    const typex = e.target.value;
+
+    const isChecked = e.target.checked;
+    const ceckStatus =
+      typex === "No" && isChecked === true
+        ? "N"
+        : typex === "Yes" && isChecked === true
+        ? "Y"
+        : "N";
+
+    row.ramzan_timing = ceckStatus;
+  }
   render() {
     return (
       <div className="employee_groups">
@@ -270,6 +291,10 @@ class EmployeeGroups extends Component {
                   type="radio"
                   value="Y"
                   name="ramazanTimingActive"
+                  defaultChecked={
+                    this.state.ramzan_timing === "Y" ? true : false
+                  }
+                  onChange={this.onChangeRaidoButton.bind(this)}
                   // checked={this.state.external_finance === "Y"}
                   // onChange={this.textHandler.bind(this)}
                 />
@@ -281,6 +306,10 @@ class EmployeeGroups extends Component {
                   type="radio"
                   value="N"
                   name="ramazanTimingActive"
+                  defaultChecked={
+                    !this.state.ramzan_timing === "N" ? true : false
+                  }
+                  onChange={this.onChangeRaidoButton.bind(this)}
                   // checked={this.state.external_finance === "N"}
                   // onChange={this.textHandler.bind(this)}
                 />
@@ -442,7 +471,7 @@ class EmployeeGroups extends Component {
                         },
                       },
                       {
-                        fieldName: "XYZ",
+                        fieldName: "ramzan_timing",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Ramzan Timing" }}
@@ -450,7 +479,9 @@ class EmployeeGroups extends Component {
                         ),
                         displayTemplate: (row) => {
                           return (
-                            <span> {GetAmountFormart(row.airfare_amount)}</span>
+                            <span>
+                              {row.ramzan_timing === "Y" ? "Yes" : "No"}
+                            </span>
                           );
                         },
                         editorTemplate: (row) => {
@@ -460,21 +491,31 @@ class EmployeeGroups extends Component {
                                 <label className="radio inline">
                                   <input
                                     type="radio"
-                                    value="Y"
-                                    name="ramazanTimingActive"
-                                    // checked={this.state.external_finance === "Y"}
-                                    // onChange={this.textHandler.bind(this)}
+                                    name={"rad_" + row.hims_d_employee_group_id}
+                                    defaultChecked={
+                                      row.ramzan_timing === "Y" ? true : false
+                                    }
+                                    onChange={this.onUpdateRamzanTiming.bind(
+                                      this,
+                                      row
+                                    )}
+                                    value="Yes"
                                   />
-                                  <span>No</span>
+                                  <span>Yes</span>
                                 </label>
 
                                 <label className="radio inline">
                                   <input
                                     type="radio"
-                                    value="N"
-                                    name="ramazanTimingActive"
-                                    // checked={this.state.external_finance === "N"}
-                                    // onChange={this.textHandler.bind(this)}
+                                    name={"rad_" + row.hims_d_employee_group_id}
+                                    defaultChecked={
+                                      row.ramzan_timing === "N" ? true : false
+                                    }
+                                    onChange={this.onUpdateRamzanTiming.bind(
+                                      this,
+                                      row
+                                    )}
+                                    value="No"
                                   />
                                   <span>No</span>
                                 </label>

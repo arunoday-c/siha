@@ -14,9 +14,9 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
-import { Checkbox } from "algaeh-react-components";
-// /branchMaster/getBranchMaster
 
+import { Checkbox, Upload, message } from "algaeh-react-components";
+// /branchMaster/getBranchMaster
 export default class BranchMaster extends Component {
   constructor(props) {
     super(props);
@@ -309,34 +309,49 @@ export default class BranchMaster extends Component {
             onSuccess: (res) => {
               if (res.data.success) {
                 let data = res.data.records;
-               const newArray = this.state.allDepartments.map(item=>{
-              const hasDepartment =  data.find(f=>f.hims_d_department_id === item.hims_d_department_id);
-                if(hasDepartment !== undefined){
-                  const allSubDepLength = item.subDepts.length;
-                  const subDepLength = hasDepartment.subDepts.length;
-                  if(allSubDepLength=== subDepLength){
-                    item.indeterminate =false;
-                    item.checked =true;
-                  }else{
-                    item.checked =false;
-                  }
-                  item.subDepts=  item.subDepts.map(sub=>{
-                        const isChecked = hasDepartment.subDepts.find(f=>f.hims_d_sub_department_id === sub.hims_d_sub_department_id);
+                const newArray = this.state.allDepartments
+                  .map((item) => {
+                    const hasDepartment = data.find(
+                      (f) =>
+                        f.hims_d_department_id === item.hims_d_department_id
+                    );
+                    if (hasDepartment !== undefined) {
+                      const allSubDepLength = item.subDepts.length;
+                      const subDepLength = hasDepartment.subDepts.length;
+                      if (allSubDepLength === subDepLength) {
+                        item.indeterminate = false;
+                        item.checked = true;
+                      } else {
+                        item.checked = false;
+                      }
+                      item.subDepts = item.subDepts.map((sub) => {
+                        const isChecked = hasDepartment.subDepts.find(
+                          (f) =>
+                            f.hims_d_sub_department_id ===
+                            sub.hims_d_sub_department_id
+                        );
                         return {
                           ...sub,
-                          checked :isChecked === undefined?false:true  
-                        }
-                  });
-                  const anyUnched= item.subDepts.find(f=>f.checked ===false);
-                  return  {...item,indeterminate:anyUnched===undefined?false:true};
-                }
-               }).filter(f=>f !== null);
-               const anyUnchecked = newArray.find(f=>f.checked === false);
-               this.setState({
-                    allDepartments: newArray,
-                   checkAll:anyUnchecked === undefined?true:false,
-                   checkAllIntermediate:anyUnchecked === undefined?false:true
-                  });
+                          checked: isChecked === undefined ? false : true,
+                        };
+                      });
+                      const anyUnched = item.subDepts.find(
+                        (f) => f.checked === false
+                      );
+                      return {
+                        ...item,
+                        indeterminate: anyUnched === undefined ? false : true,
+                      };
+                    }
+                  })
+                  .filter((f) => f !== null);
+                const anyUnchecked = newArray.find((f) => f.checked === false);
+                this.setState({
+                  allDepartments: newArray,
+                  checkAll: anyUnchecked === undefined ? true : false,
+                  checkAllIntermediate:
+                    anyUnchecked === undefined ? false : true,
+                });
                 // if (data.length > 0) {
                 //   let allDepartments = this.state.allDepartments;
                 //   data.forEach((item) => {
@@ -407,7 +422,7 @@ export default class BranchMaster extends Component {
     const _status = e.target.checked;
     const index = this.state.allDepartments.indexOf(data);
     data.checked = _status;
-    data.indeterminate = false ;
+    data.indeterminate = false;
     data.subDepts = data.subDepts.map((item) => {
       return {
         ...item,
@@ -416,14 +431,14 @@ export default class BranchMaster extends Component {
     });
 
     this.state.allDepartments[index] = data;
-    const unCheckExist = this.state.allDepartments.find(f=>f.checked === false);
+    const unCheckExist = this.state.allDepartments.find(
+      (f) => f.checked === false
+    );
     this.setState({
       allDepartments: this.state.allDepartments,
-      checkAll: unCheckExist===undefined?true:false,
-      checkAllIntermediate: unCheckExist=== undefined?false:true,
+      checkAll: unCheckExist === undefined ? true : false,
+      checkAllIntermediate: unCheckExist === undefined ? false : true,
     });
-
-
 
     //   let val = parseInt(e.target.value, 10);
 
@@ -456,26 +471,33 @@ export default class BranchMaster extends Component {
     const _status = e.target.checked;
     const { data, sub } = item;
     const allDept = this.state.allDepartments;
-    const filterData =  allDept.find(
+    const filterData = allDept.find(
       (f) => f.hims_d_department_id === data.hims_d_department_id
     );
     const mainStateIndex = allDept.indexOf[filterData];
     sub.checked = _status;
-    const subData = data.subDepts.find(f=>f.hims_d_sub_department_id === sub.hims_d_sub_department_id);
+    const subData = data.subDepts.find(
+      (f) => f.hims_d_sub_department_id === sub.hims_d_sub_department_id
+    );
     const subIndex = data.subDepts.indexOf(subData);
     data.subDepts[subIndex] = sub;
-    const hasUnchecked = data.subDepts.filter(f=>f.checked === false);
-    data.checked =hasUnchecked.length===0?true:false;
-    data.indeterminate = hasUnchecked.length===0?false:
-    hasUnchecked.length=== data.subDepts.length?false: true;
-    this.state.allDepartments[mainStateIndex] =data;
-    const hasUncheckedState = this.state.allDepartments.find(f=>f.checked ===false);
+    const hasUnchecked = data.subDepts.filter((f) => f.checked === false);
+    data.checked = hasUnchecked.length === 0 ? true : false;
+    data.indeterminate =
+      hasUnchecked.length === 0
+        ? false
+        : hasUnchecked.length === data.subDepts.length
+        ? false
+        : true;
+    this.state.allDepartments[mainStateIndex] = data;
+    const hasUncheckedState = this.state.allDepartments.find(
+      (f) => f.checked === false
+    );
     this.setState({
-        allDepartments: this.state.allDepartments,
-        checkAll:hasUncheckedState === undefined? true : false,
-        checkAllIntermediate: hasUncheckedState === undefined?false:true
-      });
-
+      allDepartments: this.state.allDepartments,
+      checkAll: hasUncheckedState === undefined ? true : false,
+      checkAllIntermediate: hasUncheckedState === undefined ? false : true,
+    });
 
     // const index = data.subDepts.indexOf(sub);
     // sub.checked = _status;
@@ -592,7 +614,6 @@ export default class BranchMaster extends Component {
         module: "masterSettings",
         data: inputObj,
         onSuccess: (res) => {
-          console.log(inputObj);
           if (res.data.success) {
             swalMessage({
               title: `Assigned Successfully To ${this.state.selectedBranchName} Branch `,
@@ -683,29 +704,36 @@ export default class BranchMaster extends Component {
         ...item,
         checked: status,
         subDepts: subDpartments,
-        indeterminate:false
+        indeterminate: false,
       };
     });
 
-    this.setState({ allDepartments: checkedDeparts, checkAll: status,checkAllIntermediate:false });
+    this.setState({
+      allDepartments: checkedDeparts,
+      checkAll: status,
+      checkAllIntermediate: false,
+    });
   }
-  clearAll(e){
+  clearAll(e) {
     const clearDeparts = this.state.allDepartments.map((item) => {
       const subDpartments = item.subDepts.map((sItems) => {
         return {
           ...sItems,
           checked: false,
-          
         };
       });
       return {
         ...item,
         checked: false,
-        indeterminate:false,
+        indeterminate: false,
         subDepts: subDpartments,
       };
     });
-      this.setState({allDepartments: clearDeparts,checkAll: false, checkAllIntermediate:false})
+    this.setState({
+      allDepartments: clearDeparts,
+      checkAll: false,
+      checkAllIntermediate: false,
+    });
   }
 
   render() {
@@ -723,155 +751,337 @@ export default class BranchMaster extends Component {
           this.state.filterdDepartmentArray.length === 0
         ? this.state.allDepartments
         : this.state.filterdDepartmentArray;
+    const uploadButton = (
+      <div>
+        {this.state.loading ? (
+          <i className="fas fa-spin" />
+        ) : (
+          <i className="fas fa-plus" />
+        )}
+        <div className="ant-upload-text">Organisation Logo</div>
+      </div>
+    );
     return (
       <div className="BranchMaster">
         <div className="row">
           <div className="col-3">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Branch Code",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "hospital_code",
-                      value: this.state.hospital_code,
-                      events: { onChange: this.changeTexts.bind(this) },
-                      option: {
-                        type: "text",
-                      },
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group mandatory" }}
-                    label={{
-                      forceLabel: "Branch Name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "hospital_name",
-                      value: this.state.hospital_name,
-                      events: { onChange: this.changeTexts.bind(this) },
-                      option: {
-                        type: "text",
-                      },
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col-6 form-group mandatory" }}
-                    label={{ forceLabel: "Default Country", isImp: true }}
-                    selector={{
-                      name: "default_country",
-                      value: this.state.default_country,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "country_name",
-                        valueField: "hims_d_country_id",
-                        data: this.state.countryMaster,
-                      },
-                      onChange: this.dropDownHandler.bind(this),
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col-6 form-group mandatory" }}
-                    label={{ forceLabel: "Default Nationality", isImp: true }}
-                    selector={{
-                      name: "default_nationality",
-                      className: "select-fld",
-                      value: this.state.default_nationality,
-                      dataSource: {
-                        textField: "nationality",
-                        valueField: "hims_d_nationality_id",
-                        data: this.state.nationalityMaster,
-                      },
-                      onChange: this.dropDownHandler.bind(this),
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col-6 form-group mandatory" }}
-                    label={{ forceLabel: "Default Currency", isImp: true }}
-                    selector={{
-                      name: "default_currency",
-                      value: this.state.default_currency,
+            {/* <div className="row">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">Organisation</h3>
+                  </div>
+                  <div className="actions">
+                    <div className="ui input">
+                      <input
+                        type="text"
+                        name="organization_name"
+                        defaultValue={this.state.organization_name}
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-4">
+                      <Upload
+                        name="org_image"
+                        listType="picture-card"
+                        showUploadList={false}
+                      >
+                        {this.state.org_image ? (
+                          <img
+                            src={this.state.org_image}
+                            alt="avatar"
+                            style={{ width: "100%" }}
+                          />
+                        ) : (
+                          uploadButton
+                        )}
+                      </Upload>
+                    </div>
+                    <div className="col-8">
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Business Reg. No.",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "business_registration_number",
+                          value: this.state.business_registration_number,
+                          events: { onChange: this.changeTexts.bind(this) },
+                          option: {
+                            disabled: true,
+                            type: "text",
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Tax Number",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "tax_number",
+                          value: this.state.tax_number,
+                          events: { onChange: this.changeTexts.bind(this) },
+                          option: {
+                            disabled: true,
+                            type: "text",
+                          },
+                        }}
+                      />
+                    </div>
 
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "currency_description",
-                        valueField: "hims_d_currency_id",
-                        data: this.state.currencyMaster,
-                      },
-                      onChange: this.dropDownHandler.bind(this),
-                    }}
-                  />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Product Type", isImp: true }}
+                      selector={{
+                        name: "product_type",
+                        value: this.state.product_type,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: [],
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Fiscal Period", isImp: true }}
+                      selector={{
+                        name: "fiscal_period",
+                        value: this.state.fiscal_period,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: [],
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Fiscal Quarters", isImp: true }}
+                      selector={{
+                        name: "fiscal_quarters",
+                        value: this.state.fiscal_quarters,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: [],
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-6 form-group mandatory" }}
-                    label={{ forceLabel: "Emp. ID Required", isImp: true }}
-                    selector={{
-                      name: "requied_emp_id",
-                      value: this.state.requied_emp_id,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: FORMAT_YESNO,
-                      },
-                      onChange: this.dropDownHandler.bind(this),
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      forceLabel: "Full Address",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "hospital_address",
-                      value: this.state.hospital_address,
-                      option: {
-                        //type: "email"
-                      },
-                      events: {
-                        onChange: this.changeTexts.bind(this),
-                      },
-                      others: {
-                        placeholder:
-                          "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
-                      },
-                    }}
-                  />
-                  <div className="col-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ float: "right" }}
-                      onClick={this.addBranches.bind(this)}
-                    >
-                      {this.state.editBranch === true
-                        ? "Update"
-                        : "Add to List"}
-                    </button>
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Default Country", isImp: true }}
+                      selector={{
+                        name: "default_country",
+                        value: this.state.default_country,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "country_name",
+                          valueField: "hims_d_country_id",
+                          data: this.state.countryMaster,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Default Nationality", isImp: true }}
+                      selector={{
+                        name: "default_nationality",
+                        className: "select-fld",
+                        value: this.state.default_nationality,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.state.nationalityMaster,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
 
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginRight: 10, float: "right" }}
-                      onClick={this.clearState.bind(this)}
-                    >
-                      Clear
-                    </button>
+                    <div className="col-6">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={this.addBranches.bind(this)}
+                      >
+                        Update
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 10 }}
+                        onClick={this.clearState.bind(this)}
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> */}
+            <div className="row">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-body">
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Branch Code",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "hospital_code",
+                        value: this.state.hospital_code,
+                        events: { onChange: this.changeTexts.bind(this) },
+                        option: {
+                          type: "text",
+                        },
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Branch Name",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "hospital_name",
+                        value: this.state.hospital_name,
+                        events: { onChange: this.changeTexts.bind(this) },
+                        option: {
+                          type: "text",
+                        },
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Default Country", isImp: true }}
+                      selector={{
+                        name: "default_country",
+                        value: this.state.default_country,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "country_name",
+                          valueField: "hims_d_country_id",
+                          data: this.state.countryMaster,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Default Nationality", isImp: true }}
+                      selector={{
+                        name: "default_nationality",
+                        className: "select-fld",
+                        value: this.state.default_nationality,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.state.nationalityMaster,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Default Currency", isImp: true }}
+                      selector={{
+                        name: "default_currency",
+                        value: this.state.default_currency,
+
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "currency_description",
+                          valueField: "hims_d_currency_id",
+                          data: this.state.currencyMaster,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-6 form-group mandatory" }}
+                      label={{ forceLabel: "Emp. ID Required", isImp: true }}
+                      selector={{
+                        name: "requied_emp_id",
+                        value: this.state.requied_emp_id,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: FORMAT_YESNO,
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        forceLabel: "Full Address",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "hospital_address",
+                        value: this.state.hospital_address,
+                        option: {
+                          //type: "email"
+                        },
+                        events: {
+                          onChange: this.changeTexts.bind(this),
+                        },
+                        others: {
+                          placeholder:
+                            "Eg:- Unit-301-A, 3rd Floor, Lady Curzon Road, Bangalore - 560001",
+                        },
+                      }}
+                    />
+                    <div className="col-12">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ float: "right" }}
+                        onClick={this.addBranches.bind(this)}
+                      >
+                        {this.state.editBranch === true
+                          ? "Update"
+                          : "Add to List"}
+                      </button>
+
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 10, float: "right" }}
+                        onClick={this.clearState.bind(this)}
+                      >
+                        Clear
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
