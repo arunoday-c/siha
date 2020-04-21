@@ -5335,6 +5335,448 @@ export default {
         _mysql
           .executeQuery({
             query:
+              "select standard_working_hours,attendance_type,salary_pay_before_end_date,payroll_payment_date, \
+              ramzan_timing_req, ramzan_start_date, ramzan_end_date, ramzan_working_hr_per_day, ramzan_eligible_category\
+               from hims_d_hrms_options limit 1;",
+          })
+          .then((opts) => {
+            const options = opts[0];
+
+            if (
+              options.attendance_type == "DM" ||
+              options.attendance_type == "DMP"
+            ) {
+              const STDWH = options["standard_working_hours"].split(".")[0];
+              const STDWM = options["standard_working_hours"].split(".")[1];
+              const total_minutes = parseInt(STDWH * 60) + parseInt(STDWM);
+              //half day work hour
+              const HALF_HR = parseInt(
+                parseInt(total_minutes / 2) / parseInt(60)
+              );
+              const HALF_MIN = parseInt(total_minutes / 2) % parseInt(60);
+
+              let start_year,
+                end_year,
+                start_month,
+                end_month,
+                start_day,
+                end_day,
+                from_date,
+                to_date = "";
+              const { month, year } = input;
+              //ST-from date and to date calculation
+              //is cutoff
+              if (
+                options.salary_pay_before_end_date == "Y" &&
+                options.payroll_payment_date > 0
+              ) {
+                if (month == 1) {
+                  start_year = parseInt(year) - 1;
+                  end_year = year;
+                  start_month = 12;
+                  end_month = 1;
+                } else {
+                  start_year = year;
+                  end_year = year;
+                  start_month = parseInt(month) - 1;
+                  end_month = month;
+                }
+
+                start_day = parseInt(options.payroll_payment_date) + 1;
+                end_day = options.payroll_payment_date;
+              } else {
+                start_year = year;
+                end_year = year;
+                start_month = month;
+                end_month = month;
+                start_day = 1;
+                end_day = moment(year + "-" + month + "-01", "YYYY-MM-DD")
+                  .endOf("month")
+                  .format("D");
+              }
+              const valid_from_date = moment(
+                `${start_year}-${start_month}-${start_day}`,
+                "YYYY-M-D"
+              ).format("YYYY-MM-DD");
+
+              const valid_to_date = moment(
+                `${end_year}-${end_month}-${end_day}`,
+                "YYYY-M-D"
+              ).format("YYYY-MM-DD");
+              //END-fromdate and todate calculation
+
+              const input_from_date = moment(
+                input.from_date,
+                "YYYY-MM-DD"
+              ).format("YYYY-MM-DD");
+              const input_to_date = moment(input.to_date, "YYYY-MM-DD").format(
+                "YYYY-MM-DD"
+              );
+
+              let is_ramzan,
+                RMZ_HR,
+                RMZ_MIN,
+                RMZ_HF_WH,
+                RMZ_HF_MIN = null;
+              //RAMZAN working Hour
+              if (
+                options["ramzan_timing_req"] == "Y" &&
+                ((input_from_date <= options["ramzan_start_date"] &&
+                  options["ramzan_start_date"] <= input_to_date) ||
+                  (input_from_date <= options["ramzan_end_date"] &&
+                    options["ramzan_end_date"] <= input_to_date) ||
+                  (options["ramzan_start_date"] <= input_from_date &&
+                    input_from_date <= options["ramzan_end_date"]))
+              ) {
+                is_ramzan = "Y";
+
+                RMZ_HR = options["ramzan_working_hr_per_day"].split(".")[0];
+                RMZ_MIN = options["ramzan_working_hr_per_day"].split(".")[1];
+                const RMZ_total_minutes =
+                  parseInt(RMZ_HR * 60) + parseInt(RMZ_MIN);
+                //half day work hour
+                RMZ_HF_WH = parseInt(
+                  parseInt(RMZ_total_minutes / 2) / parseInt(60)
+                );
+                RMZ_HF_MIN = parseInt(RMZ_total_minutes / 2) % parseInt(60);
+              }
+
+              if (
+                valid_from_date <= input_from_date &&
+                valid_to_date >= input_from_date &&
+                input_to_date >= valid_from_date &&
+                input_to_date <= valid_to_date
+              ) {
+                from_date = input_from_date;
+                to_date = input_to_date;
+
+                let deptStr = "";
+                let strQry = "";
+
+                if (input.department_id > 0 && !input.sub_department_id > 0) {
+                  deptStr =
+                    " left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id ";
+                  strQry += " and SD.department_id=" + input.department_id;
+                }
+
+                if (input.sub_department_id > 0) {
+                  strQry +=
+                    " and E.sub_department_id=" + input.sub_department_id;
+                }
+
+                if (input.employee_group_id > 0) {
+                  strQry +=
+                    " and E.employee_group_id=" + input.employee_group_id;
+                }
+
+                if (input.employee_id > 0) {
+                  strQry += " and E.hims_d_employee_id=" + input.employee_id;
+                }
+
+                let previewStr = `select  hims_f_daily_time_sheet_id,E.employee_code,E.full_name, employee_id,attendance_date,
+                                status,worked_hours from hims_d_employee E
+                                inner join hims_f_daily_time_sheet  T on E.hims_d_employee_id=T.employee_id 
+                                and T.attendance_date between date('${from_date}') and date('${to_date}') ${deptStr}
+                                where E.hospital_id= ${input.branch_id} and E.suspend_salary <>'Y' and                           
+                                E.record_status='A' and E.employee_status<>'I' and (E.exit_date is null or E.exit_date >date('${from_date}') )                              
+                                ${strQry}    ; `;
+
+                const allDates = getDaysArray(
+                  new Date(from_date),
+                  new Date(to_date)
+                );
+
+                const allDatesMonthYear = getDaysMonthArray(
+                  new Date(from_date),
+                  new Date(to_date)
+                );
+
+                if (options.attendance_type == "DM") {
+                  _mysql
+                    .executeQuery({
+                      query: `select E.hims_d_employee_id ,E.employee_code,E.exit_date , E.sub_department_id, E.religion_id, E.date_of_joining,
+                             case when   '${options["ramzan_eligible_category"]}'='ALL'  and G.ramzan_timing='Y' then 'Y' when E.religion_id=1 and G.ramzan_timing='Y' then 'Y'
+                            else 'N' end as ramzan_enployee
+                            from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
+                            S.year=? and S.month=?
+                            left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
+                            where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
+                            E.date_of_joining <= date(?) and
+                            (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
+                            and ( S.salary_processed is null or  S.salary_processed='N') ${strQry};                
+                            
+                            select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+                            case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, L.leave_category,
+                            L.leave_description,from_date,to_leave_session,to_date,holiday_included,
+                            weekoff_included,total_applied_days from hims_f_leave_application LA 
+                            inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
+                            inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                            where E.hospital_id=? and LA.status='APR' ${strQry} and  
+                            (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
+                            date(?) between  from_date and to_date) ;
+                            
+                            select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
+                            holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
+                            date(holiday_date) between date(?) and date(?);   `,
+                      values: [
+                        input.year,
+                        parseInt(input.month),
+                        input.branch_id,
+                        to_date,
+                        from_date,
+                        input.branch_id,
+                        from_date,
+                        to_date,
+                        from_date,
+                        to_date,
+                        from_date,
+                        input.branch_id,
+                        from_date,
+                        to_date,
+                      ],
+                      printQuery: false,
+                    })
+                    .then((result) => {
+                      if (result[0].length > 0) {
+                        const allEmployees = result[0];
+                        const allLeaves = result[1];
+                        const allHolidays = result[2];
+
+                        const attResult = bulkTimesheetDataMatch({
+                          allEmployees,
+                          allLeaves,
+                          allHolidays,
+                          from_date,
+                          to_date,
+                          allDates: allDatesMonthYear,
+                          is_ramzan,
+                          RMZ_HR,
+                          RMZ_MIN,
+                          RMZ_HF_WH,
+                          RMZ_HF_MIN,
+                          ramzan_start_date: options["ramzan_start_date"],
+                          ramzan_end_date: options["ramzan_end_date"],
+                        });
+
+                        mergeTimesheetData({
+                          _mysql: _mysql,
+                          attResult: attResult,
+                          rawData: input.data,
+                          attendance_type: options.attendance_type,
+                          STDWH,
+                          STDWM,
+                          HALF_HR,
+                          HALF_MIN,
+                          hospital_id: input.branch_id,
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
+                          previewStr: previewStr,
+                          allDates: allDates,
+                        })
+                          .then((finalResult) => {
+                            req.records = {
+                              hospital_id: input.branch_id,
+                              from_date: from_date,
+                              to_date: to_date,
+                              allDates: allDates,
+                              employee_id: input.employee_id,
+                              department_id: input.department_id,
+                              sub_department_id: input.sub_department_id,
+                              year: input.year,
+                              month: input.month,
+                              data: finalResult,
+                            };
+                            next();
+                          })
+                          .catch((e) => {
+                            _mysql.releaseConnection();
+                            req.records = e;
+                            next();
+                          });
+                      } else {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          message: "Salary Already Processed ",
+                          invalid_input: true,
+                        };
+                        next();
+                      }
+                    })
+                    .catch((e) => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                } else if (options.attendance_type == "DMP") {
+                  _mysql
+                    .executeQuery({
+                      query: `select E.hims_d_employee_id ,E.employee_code,E.exit_date ,E.sub_department_id, E.full_name,E.religion_id, 
+                      case when   '${options["ramzan_eligible_category"]}'='ALL'  and G.ramzan_timing='Y' then 'Y' when E.religion_id=1 and G.ramzan_timing='Y' then 'Y'
+                            else 'N' end as ramzan_enployee,
+                          E.date_of_joining,PR.project_id,PR.attendance_date,P.project_desc
+                          from hims_d_employee E  ${deptStr} 
+                          left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
+                          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
+                          S.year=? and S.month=? left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                          and  PR.attendance_date between date(?) and date(?) 
+                          left join  hims_d_project P on P.hims_d_project_id=PR.project_id
+                          where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
+                          E.date_of_joining <= date(?) and
+                          (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
+                          and ( S.salary_processed is null or  S.salary_processed='N') ${strQry};                
+                          
+                          select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+                          case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, L.leave_category,
+                          L.leave_description,from_date,to_leave_session,to_date,holiday_included,
+                          weekoff_included,total_applied_days from hims_f_leave_application LA 
+                          inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
+                          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                          where E.hospital_id=? and LA.status='APR' ${strQry} and  
+                          (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
+                          date(?) between  from_date and to_date) ;
+                          
+                          select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
+                          holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
+                          date(holiday_date) between date(?) and date(?);  `,
+                      values: [
+                        input.year,
+                        parseInt(input.month),
+                        from_date,
+                        to_date,
+                        input.branch_id,
+                        to_date,
+                        from_date,
+
+                        input.branch_id,
+                        from_date,
+                        to_date,
+                        from_date,
+                        to_date,
+                        from_date,
+
+                        input.branch_id,
+                        from_date,
+                        to_date,
+                      ],
+                      printQuery: true,
+                    })
+                    .then((result) => {
+                      if (result[0].length > 0) {
+                        const allEmployees = result[0];
+                        const allLeaves = result[1];
+                        const allHolidays = result[2];
+
+                        const attResult = bulkTimesheetRosterDataMatch({
+                          allEmployees,
+                          allLeaves,
+                          allHolidays,
+                          from_date,
+                          to_date,
+                          allDates: allDatesMonthYear,
+                          is_ramzan,
+                          RMZ_HR,
+                          RMZ_MIN,
+                          RMZ_HF_WH,
+                          RMZ_HF_MIN,
+                          ramzan_start_date: options["ramzan_start_date"],
+                          ramzan_end_date: options["ramzan_end_date"],
+                        });
+
+                        mergeTimesheetData({
+                          _mysql: _mysql,
+                          attResult: attResult,
+                          rawData: input.data,
+                          attendance_type: options.attendance_type,
+                          STDWH,
+                          STDWM,
+                          HALF_HR,
+                          HALF_MIN,
+
+                          hospital_id: input.branch_id,
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
+                          previewStr: previewStr,
+                          allDates: allDates,
+                        })
+                          .then((finalResult) => {
+                            req.records = {
+                              hospital_id: input.branch_id,
+                              from_date: from_date,
+                              to_date: to_date,
+                              allDates: allDates,
+                              employee_id: input.employee_id,
+                              department_id: input.department_id,
+                              sub_department_id: input.sub_department_id,
+                              year: input.year,
+                              month: input.month,
+                              data: finalResult,
+                            };
+                            next();
+                          })
+                          .catch((e) => {
+                            _mysql.releaseConnection();
+                            req.records = e;
+                            next();
+                          });
+                      } else {
+                        _mysql.releaseConnection();
+                        req.records = {
+                          message: "Salary Already Processed ",
+                          invalid_input: true,
+                        };
+                        next();
+                      }
+                    })
+                    .catch((e) => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                }
+              } else {
+                _mysql.releaseConnection();
+                req.records = {
+                  message: "Please upload valid file",
+                  invalid_input: true,
+                };
+                next();
+              }
+            } else {
+              _mysql.releaseConnection();
+              req.records = {
+                message: "You dont have access privilege for this feature",
+                invalid_input: true,
+              };
+              next();
+            }
+          });
+      } else {
+        req.records = {
+          message: "Please upload valid file",
+          invalid_input: true,
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  //created by irfan: before doing RAMZAN functionality
+  uploadBulkManualTimeSheet_bkp_21_april_2020: (req, res, next) => {
+    const utilities = new algaehUtilities();
+
+    try {
+      // const rawData = req.body.data;
+      const input = req.body;
+      if (
+        (input.branch_id > 0 &&
+          input.year > 0 &&
+          input.month > 0 &&
+          input.from_date != undefined &&
+          input.to_date != undefined,
+        input.year > 0 && input.month > 0)
+      ) {
+        const _mysql = new algaehMysql();
+        _mysql
+          .executeQuery({
+            query:
               "select standard_working_hours,attendance_type,salary_pay_before_end_date,payroll_payment_date from hims_d_hrms_options limit 1;",
           })
           .then((opts) => {
@@ -7022,8 +7464,8 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             worked_hours: num[0] + "." + num[1],
             hours: num[0],
             minutes: num[1],
-            actual_hours: actual_hours,
-            actual_minutes: actual_mins,
+            actual_hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : actual_hours,
+            actual_minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : actual_mins,
             employee_id: day.employee_id,
             attendance_date: day.attendance_date,
             status: day.status,
@@ -7676,6 +8118,13 @@ function bulkTimesheetDataMatch(input) {
       from_date,
       to_date,
       allDates,
+      is_ramzan,
+      RMZ_HR,
+      RMZ_MIN,
+      RMZ_HF_WH,
+      RMZ_HF_MIN,
+      ramzan_start_date,
+      ramzan_end_date,
     } = input;
 
     const outputArray = [];
@@ -7683,7 +8132,6 @@ function bulkTimesheetDataMatch(input) {
     allEmployees.map((emp) => {
       const empHolidayweekoff = getEmployeeWeekOffsandHolidays(
         from_date,
-
         emp,
         allHolidays
       );
@@ -7716,6 +8164,7 @@ function bulkTimesheetDataMatch(input) {
             ) {
               leaveFound.leave_type =
                 leaveFound.leave_type == "PL" ? "HPL" : "HUL";
+              is_ramzan, RMZ_HR, RMZ_MIN, RMZ_HF_WH, RMZ_HF_MIN;
             } else if (leaveFound.from_date != leaveFound.to_date) {
               if (
                 leaveFound.from_date == dat.attendance_date &&
@@ -7765,7 +8214,22 @@ function bulkTimesheetDataMatch(input) {
             holiday_or_weekOff.weekoff == "Y" &&
             leave.weekoff_included == "Y")
         ) {
+          let ramzan_half_leav = {};
+
+          if (
+            is_ramzan == "Y" &&
+            emp.ramzan_enployee == "Y" &&
+            ramzan_start_date <= dat.attendance_date &&
+            dat.attendance_date <= ramzan_end_date
+          ) {
+            if (leave.status == "HPL" || leave.status == "HUL") {
+              ramzan_half_leav["RMZ_HR"] = RMZ_HF_WH;
+              ramzan_half_leav["RMZ_MIN"] = RMZ_HF_MIN;
+            }
+          }
+
           emp["data"].push({
+            ...ramzan_half_leav,
             status: leave.status,
             attendance_date: dat.attendance_date,
             leave_category: leave.leave_category,
@@ -7795,14 +8259,32 @@ function bulkTimesheetDataMatch(input) {
             });
           }
         } else {
-          emp["data"].push({
-            status: "PR",
-            attendance_date: dat.attendance_date,
-            employee_id: emp.hims_d_employee_id,
-            sub_department_id: emp.sub_department_id,
-            month: dat.month,
-            year: dat.year,
-          });
+          if (
+            is_ramzan == "Y" &&
+            emp.ramzan_enployee == "Y" &&
+            ramzan_start_date <= dat.attendance_date &&
+            dat.attendance_date <= ramzan_end_date
+          ) {
+            emp["data"].push({
+              status: "PR",
+              attendance_date: dat.attendance_date,
+              employee_id: emp.hims_d_employee_id,
+              sub_department_id: emp.sub_department_id,
+              month: dat.month,
+              year: dat.year,
+              RMZ_HR: RMZ_HR,
+              RMZ_MIN: RMZ_MIN,
+            });
+          } else {
+            emp["data"].push({
+              status: "PR",
+              attendance_date: dat.attendance_date,
+              employee_id: emp.hims_d_employee_id,
+              sub_department_id: emp.sub_department_id,
+              month: dat.month,
+              year: dat.year,
+            });
+          }
         }
 
         //-------------------------------------------
@@ -7833,6 +8315,13 @@ function bulkTimesheetRosterDataMatch(input) {
       from_date,
       to_date,
       allDates,
+      is_ramzan,
+      RMZ_HR,
+      RMZ_MIN,
+      RMZ_HF_WH,
+      RMZ_HF_MIN,
+      ramzan_start_date,
+      ramzan_end_date,
     } = input;
 
     const final_roster = [];
@@ -7929,7 +8418,21 @@ function bulkTimesheetRosterDataMatch(input) {
                 holiday_or_weekOff.weekoff == "Y" &&
                 leave.weekoff_included == "Y")
             ) {
+              let ramzan_half_leav = {};
+
+              if (
+                is_ramzan == "Y" &&
+                emp[0].ramzan_enployee == "Y" &&
+                ramzan_start_date <= dat.attendance_date &&
+                dat.attendance_date <= ramzan_end_date
+              ) {
+                if (leave.status == "HPL" || leave.status == "HUL") {
+                  ramzan_half_leav["RMZ_HR"] = RMZ_HF_WH;
+                  ramzan_half_leav["RMZ_MIN"] = RMZ_HF_MIN;
+                }
+              }
               outputArray.push({
+                ...ramzan_half_leav,
                 status: leave.status,
                 leave_category: leave.leave_category,
                 attendance_date: dat.attendance_date,
@@ -7962,15 +8465,34 @@ function bulkTimesheetRosterDataMatch(input) {
                 });
               }
             } else {
-              outputArray.push({
-                status: "PR",
-                attendance_date: dat.attendance_date,
-                project_id: ProjAssgned.project_id,
-                employee_id: emp[0].hims_d_employee_id,
-                sub_department_id: emp[0].sub_department_id,
-                month: dat.month,
-                year: dat.year,
-              });
+              if (
+                is_ramzan == "Y" &&
+                emp[0].ramzan_enployee == "Y" &&
+                ramzan_start_date <= dat.attendance_date &&
+                dat.attendance_date <= ramzan_end_date
+              ) {
+                outputArray.push({
+                  status: "PR",
+                  attendance_date: dat.attendance_date,
+                  project_id: ProjAssgned.project_id,
+                  employee_id: emp[0].hims_d_employee_id,
+                  sub_department_id: emp[0].sub_department_id,
+                  month: dat.month,
+                  year: dat.year,
+                  RMZ_HR: RMZ_HR,
+                  RMZ_MIN: RMZ_MIN,
+                });
+              } else {
+                outputArray.push({
+                  status: "PR",
+                  attendance_date: dat.attendance_date,
+                  project_id: ProjAssgned.project_id,
+                  employee_id: emp[0].hims_d_employee_id,
+                  sub_department_id: emp[0].sub_department_id,
+                  month: dat.month,
+                  year: dat.year,
+                });
+              }
             }
           } else {
             outputArray.push({
@@ -8064,8 +8586,8 @@ function mergeTimesheetData(input) {
                   worked_hours: 0,
                   hours: 0,
                   minutes: 0,
-                  actual_hours: STDWH,
-                  actual_minutes: STDWM,
+                  actual_hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : STDWH,
+                  actual_minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : STDWM,
                   employee_id: day.employee_id,
                   attendance_date: day.attendance_date,
                   status: day["worked_status"],
@@ -8090,11 +8612,14 @@ function mergeTimesheetData(input) {
             case "PR":
               if (day["worked_status"] == day["status"]) {
                 insertArray.push({
-                  worked_hours: STDWH + "." + STDWM,
-                  hours: STDWH,
-                  minutes: STDWM,
-                  actual_hours: STDWH,
-                  actual_minutes: STDWM,
+                  worked_hours:
+                    day["RMZ_HR"] > 0
+                      ? day["RMZ_HR"] + "." + day["RMZ_MIN"]
+                      : STDWH + "." + STDWM,
+                  hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : STDWH,
+                  minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : STDWM,
+                  actual_hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : STDWH,
+                  actual_minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : STDWM,
                   employee_id: day.employee_id,
                   attendance_date: day.attendance_date,
                   status: day["worked_status"],
@@ -8207,11 +8732,14 @@ function mergeTimesheetData(input) {
             case "HPL":
               if (day["worked_status"] == day["status"]) {
                 insertArray.push({
-                  worked_hours: HALF_HR + "." + HALF_MIN,
-                  hours: HALF_HR,
-                  minutes: HALF_MIN,
-                  actual_hours: HALF_HR,
-                  actual_minutes: HALF_MIN,
+                  worked_hours:
+                    day["RMZ_HR"] > 0
+                      ? day["RMZ_HR"] + "." + day["RMZ_MIN"]
+                      : HALF_HR + "." + HALF_MIN,
+                  hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : HALF_HR,
+                  minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : HALF_MIN,
+                  actual_hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : HALF_HR,
+                  actual_minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : HALF_MIN,
                   employee_id: day.employee_id,
                   attendance_date: day.attendance_date,
                   status: day["worked_status"],
