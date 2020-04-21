@@ -8086,7 +8086,7 @@ function yearlyLeaveProcess(inputs, req, mysql) {
             parseInt(input.year) - 1,
             input.hospital_id,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           const AllEmployees = result[0];

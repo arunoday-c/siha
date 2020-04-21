@@ -1,5 +1,5 @@
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
       const moment = options.moment;
@@ -8,7 +8,7 @@ const executePDF = function executePDFMethod(options) {
       const params = options.args.reportParams;
       let input = {};
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
       console.log("INPUT:", input);
@@ -21,7 +21,7 @@ const executePDF = function executePDFMethod(options) {
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount from
+          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount,GP.acc_gratuity from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -34,20 +34,20 @@ const executePDF = function executePDFMethod(options) {
           left join hims_f_gratuity_provision GP on S.employee_id = GP.employee_id and GP.year=S.year and GP.month=S.month
           where S.employee_id in(?) and S.year=? and S.month=? ;`,
           values: [input.employee_id, input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           const outputArray = [];
           if (result.length > 0) {
             const employees = _.chain(result)
-              .groupBy(g => g.hims_f_salary_id)
-              .map(m => m)
+              .groupBy((g) => g.hims_f_salary_id)
+              .map((m) => m)
               .value();
 
-            employees.forEach(employe => {
+            employees.forEach((employe) => {
               const emp_earnings = [];
-              employe.forEach(m => {
-                const exist = emp_earnings.find(val => {
+              employe.forEach((m) => {
+                const exist = emp_earnings.find((val) => {
                   return val.earning_id == m.earning_id;
                 });
 
@@ -55,14 +55,14 @@ const executePDF = function executePDFMethod(options) {
                   emp_earnings.push({
                     earning_id: m.earning_id,
                     earning_description: m.earning_description,
-                    earning_amount: m.earning_amount
+                    earning_amount: m.earning_amount,
                   });
                 }
               });
 
               const emp_deductions = [];
-              employe.forEach(m => {
-                const exist = emp_deductions.find(val => {
+              employe.forEach((m) => {
+                const exist = emp_deductions.find((val) => {
                   return val.deduction_id == m.deduction_id;
                 });
 
@@ -70,7 +70,7 @@ const executePDF = function executePDFMethod(options) {
                   emp_deductions.push({
                     deduction_id: m.deduction_id,
                     deduction_description: m.deduction_description,
-                    deduction_amount: m.deduction_amount
+                    deduction_amount: m.deduction_amount,
                   });
                 }
               });
@@ -133,20 +133,21 @@ const executePDF = function executePDFMethod(options) {
                 total_paid_days: employe[0].total_paid_days,
                 pending_unpaid_leave: employe[0].pending_unpaid_leave,
                 loan_due_amount: employe[0].loan_due_amount,
-                gratuity_amount: employe[0].gratuity_amount
+                gratuity_amount: employe[0].gratuity_amount,
+                acc_gratuity: employe[0].acc_gratuity,
               });
             });
 
             resolve({
-              result: outputArray
+              result: outputArray,
             });
           } else {
             resolve({
-              result: result
+              result: result,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

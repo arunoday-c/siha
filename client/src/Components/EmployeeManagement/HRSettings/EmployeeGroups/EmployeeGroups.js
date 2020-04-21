@@ -4,12 +4,12 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   AlgaehValidation,
-  GetAmountFormart
+  GetAmountFormart,
 } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
@@ -18,7 +18,8 @@ class EmployeeGroups extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      employee_groups: []
+      employee_groups: [],
+      ramzan_timing: "N",
     };
 
     this.getEmployeeGroups();
@@ -29,27 +30,27 @@ class EmployeeGroups extends Component {
       uri: "/hrsettings/getEmployeeGroups",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employee_groups: res.data.records
+            employee_groups: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -58,7 +59,7 @@ class EmployeeGroups extends Component {
       group_description: "",
       monthly_accrual_days: "",
       airfare_eligibility: "",
-      airfare_amount: ""
+      airfare_amount: "",
     });
   }
 
@@ -77,8 +78,8 @@ class EmployeeGroups extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/hrsettings/updateEmployeeGroup",
@@ -89,30 +90,30 @@ class EmployeeGroups extends Component {
             monthly_accrual_days: data.monthly_accrual_days,
             airfare_eligibility: data.airfare_eligibility,
             airfare_amount: data.airfare_amount,
-            record_status: "I"
+            record_status: "I",
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getEmployeeGroups();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -129,24 +130,25 @@ class EmployeeGroups extends Component {
         monthly_accrual_days: data.monthly_accrual_days,
         airfare_eligibility: data.airfare_eligibility,
         airfare_amount: data.airfare_amount,
-        record_status: "A"
+        record_status: "A",
+        ramzan_timing: data.ramzan_timing,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getEmployeeGroups();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -162,29 +164,53 @@ class EmployeeGroups extends Component {
             group_description: this.state.group_description,
             monthly_accrual_days: this.state.monthly_accrual_days,
             airfare_eligibility: this.state.airfare_eligibility,
-            airfare_amount: this.state.airfare_amount
+            airfare_amount: this.state.airfare_amount,
+            ramzan_timing: this.state.ramzan_timing,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearState();
               this.getEmployeeGroups();
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
+  onChangeRaidoButton(e) {
+    const isChecked = e.target.checked;
+    const typex = e.target.value;
+    const ceckStatus =
+      typex === "N" && isChecked === true
+        ? "N"
+        : typex === "Y" && isChecked === true
+        ? "Y"
+        : "N";
+    this.setState({ ramzan_timing: ceckStatus });
+  }
+  onUpdateRamzanTiming(row, e) {
+    const typex = e.target.value;
 
+    const isChecked = e.target.checked;
+    const ceckStatus =
+      typex === "No" && isChecked === true
+        ? "N"
+        : typex === "Yes" && isChecked === true
+        ? "Y"
+        : "N";
+
+    row.ramzan_timing = ceckStatus;
+  }
   render() {
     return (
       <div className="employee_groups">
@@ -193,22 +219,22 @@ class EmployeeGroups extends Component {
             div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Group Description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "group_description",
               value: this.state.group_description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Monthly Accrual Days",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -216,11 +242,11 @@ class EmployeeGroups extends Component {
               name: "monthly_accrual_days",
               value: this.state.monthly_accrual_days,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "number"
-              }
+                type: "number",
+              },
             }}
           />
 
@@ -228,7 +254,7 @@ class EmployeeGroups extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Airfare Eligibility",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "airfare_eligibility",
@@ -237,9 +263,9 @@ class EmployeeGroups extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.AIRFARE_ELEGIBILITY
+                data: GlobalVariables.AIRFARE_ELEGIBILITY,
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
             }}
           />
 
@@ -247,20 +273,55 @@ class EmployeeGroups extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Airfare Amount",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "airfare_amount",
               value: this.state.airfare_amount,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                type: "number"
-              }
+                type: "number",
+              },
             }}
           />
+
+          <div className="col">
+            <label>Ramzan Timing Required</label>
+            <div className="customRadio">
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  value="Y"
+                  name="ramazanTimingActive"
+                  defaultChecked={
+                    this.state.ramzan_timing === "Y" ? true : false
+                  }
+                  onChange={this.onChangeRaidoButton.bind(this)}
+                  // checked={this.state.external_finance === "Y"}
+                  // onChange={this.textHandler.bind(this)}
+                />
+                <span>Yes</span>
+              </label>
+
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  value="N"
+                  name="ramazanTimingActive"
+                  defaultChecked={
+                    !this.state.ramzan_timing === "N" ? true : false
+                  }
+                  onChange={this.onChangeRaidoButton.bind(this)}
+                  // checked={this.state.external_finance === "N"}
+                  // onChange={this.textHandler.bind(this)}
+                />
+                <span>No</span>
+              </label>
+            </div>
+          </div>
 
           <div className="col form-group">
             <button
@@ -293,7 +354,7 @@ class EmployeeGroups extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -305,16 +366,16 @@ class EmployeeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "monthly_accrual_days",
@@ -323,7 +384,7 @@ class EmployeeGroups extends Component {
                             label={{ forceLabel: "Monthly Accural Days" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -335,16 +396,16 @@ class EmployeeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "airfare_eligibility",
@@ -353,7 +414,7 @@ class EmployeeGroups extends Component {
                             label={{ forceLabel: "Airfare Eligibility" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -364,17 +425,20 @@ class EmployeeGroups extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.AIRFARE_ELEGIBILITY
+                                  data: GlobalVariables.AIRFARE_ELEGIBILITY,
                                 },
                                 others: {
                                   errormessage: "Field cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "airfare_amount",
@@ -383,12 +447,12 @@ class EmployeeGroups extends Component {
                             label={{ forceLabel: "Airfare Amount" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span> {GetAmountFormart(row.airfare_amount)}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -400,21 +464,75 @@ class EmployeeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
+                      {
+                        fieldName: "ramzan_timing",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Ramzan Timing" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.ramzan_timing === "Y" ? "Yes" : "No"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <div className="col">
+                              <div className="customRadio">
+                                <label className="radio inline">
+                                  <input
+                                    type="radio"
+                                    name={"rad_" + row.hims_d_employee_group_id}
+                                    defaultChecked={
+                                      row.ramzan_timing === "Y" ? true : false
+                                    }
+                                    onChange={this.onUpdateRamzanTiming.bind(
+                                      this,
+                                      row
+                                    )}
+                                    value="Yes"
+                                  />
+                                  <span>Yes</span>
+                                </label>
+
+                                <label className="radio inline">
+                                  <input
+                                    type="radio"
+                                    name={"rad_" + row.hims_d_employee_group_id}
+                                    defaultChecked={
+                                      row.ramzan_timing === "N" ? true : false
+                                    }
+                                    onChange={this.onUpdateRamzanTiming.bind(
+                                      this,
+                                      row
+                                    )}
+                                    value="No"
+                                  />
+                                  <span>No</span>
+                                </label>
+                              </div>
+                            </div>
+                          );
+                        },
+                      },
                     ]}
                     keyId="hims_d_employee_group_id"
                     dataSource={{
-                      data: this.state.employee_groups
+                      data: this.state.employee_groups,
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
@@ -422,7 +540,7 @@ class EmployeeGroups extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteEmployeeGroups.bind(this),
-                      onDone: this.updateEmployeeGroups.bind(this)
+                      onDone: this.updateEmployeeGroups.bind(this),
                     }}
                   />
                 </div>

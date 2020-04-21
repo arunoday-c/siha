@@ -34,6 +34,7 @@ class LoanRequest extends Component {
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       request_type: "LO",
       hospital_id: "",
+      decimal_places: 0
     };
     this.loanSocket = Socket;
     this.getLoanMaster();
@@ -44,7 +45,7 @@ class LoanRequest extends Component {
     const userToken = this.context.userToken;
     let data = this.props.empData !== null ? this.props.empData : {};
     this.setState(
-      { ...data, hospital_id: userToken.hims_d_hospital_id },
+      { ...data, hospital_id: userToken.hims_d_hospital_id, decimal_places: userToken.decimal_places, },
       () => {
         this.getEmployeeLoans();
         this.getEmployeeAdvances();
@@ -259,7 +260,9 @@ class LoanRequest extends Component {
         if (e.target.value <= this.state.loan_limit) {
           this.setState({
             [e.target.name]: e.target.value,
-            installment_amount: e.target.value / this.state.loan_tenure,
+            installment_amount: (
+              parseFloat(e.target.value) / parseFloat(this.state.loan_tenure)
+            ).toFixed(this.state.decimal_places),
           });
         } else {
           swalMessage({
@@ -329,7 +332,9 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: this.state.loan_amount / value.value,
+          installment_amount: (parseFloat(this.state.loan_amount) / parseFloat(value.value)).toFixed(
+            this.state.decimal_places
+          )
         });
         break;
 
@@ -608,7 +613,7 @@ class LoanRequest extends Component {
                         onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        // disabled={this.state.Request_enable}
+                      // disabled={this.state.Request_enable}
                       >
                         Request Loan
                       </button>
@@ -706,7 +711,7 @@ class LoanRequest extends Component {
                         onClick={this.applyAdvance.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        // disabled={this.state.Request_enable}
+                      // disabled={this.state.Request_enable}
                       >
                         Request Advance
                       </button>
@@ -753,8 +758,8 @@ class LoanRequest extends Component {
                                   Issued
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                        "------"
+                                      )}
                             </span>
                           );
                         },
@@ -804,8 +809,8 @@ class LoanRequest extends Component {
                           return row.pending_tenure !== 0 ? (
                             <span>{row.pending_tenure} Month</span>
                           ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                              <span className="badge badge-success">Closed</span>
+                            );
                         },
                       },
 
@@ -902,9 +907,9 @@ class LoanRequest extends Component {
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
-                      onDelete: () => {},
-                      onDone: () => {},
+                      onEdit: () => { },
+                      onDelete: () => { },
+                      onDone: () => { },
                     }}
                   />
                 </div>
@@ -981,8 +986,8 @@ class LoanRequest extends Component {
                                   Cancelled
                                 </span>
                               ) : (
-                                "------"
-                              )}
+                                      "------"
+                                    )}
                             </span>
                           );
                         },
@@ -1035,9 +1040,9 @@ class LoanRequest extends Component {
                             <span>
                               {moment(
                                 "01-" +
-                                  row.deducting_month +
-                                  "-" +
-                                  row.deducting_year,
+                                row.deducting_month +
+                                "-" +
+                                row.deducting_year,
                                 "DD-MM-YYYY"
                               ).format("MMMM - YYYY")}
                             </span>

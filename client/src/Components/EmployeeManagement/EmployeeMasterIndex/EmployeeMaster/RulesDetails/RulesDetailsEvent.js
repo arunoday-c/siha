@@ -1,6 +1,6 @@
 const changeChecks = ($this, e) => {
   let name = e.target.name;
-  
+
   switch (e.target.name) {
     case "leave_salary_process":
       $this.setState(
@@ -86,11 +86,22 @@ const changeChecks = ($this, e) => {
         }
       );
       break;
+    case "gratuity_encash":
+      $this.setState({
+        [name]: e.target.value
+      },
+        () => {
+          $this.props.EmpMasterIOputs.updateEmployeeTabs({
+            [name]: e.target.value
+          });
+        });
+      break;
 
     default:
       this.setState({
         [name]: "Y"
       });
+      break;
   }
 };
 

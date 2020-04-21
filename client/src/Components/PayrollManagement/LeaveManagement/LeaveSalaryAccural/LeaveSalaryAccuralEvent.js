@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -16,6 +16,7 @@ const texthandle = ($this, e) => {
 };
 
 const employeeSearch = $this => {
+
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee

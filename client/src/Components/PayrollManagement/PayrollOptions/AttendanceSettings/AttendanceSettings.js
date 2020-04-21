@@ -31,6 +31,11 @@ export default class AttendanceSettings extends Component {
       authorization_plan: "R",
       hims_d_hrms_options_id: null,
       ot_calculation: "P",
+      ramzan_timing_req: "N",
+      ramzan_start_date: undefined,
+      ramzan_end_date: undefined,
+      ramzan_working_hr_per_day: 0,
+      ramzan_eligible_category: "MUSLIMS",
     };
     this.getOptions();
     this.getEarnings();
@@ -203,7 +208,44 @@ export default class AttendanceSettings extends Component {
         break;
     }
   }
-
+  onRamzantimingChange(e) {
+    const isChecked = e.target.checked;
+    const typeX = e.target.value;
+    const value =
+      typeX === "N" && isChecked === true
+        ? "N"
+        : typeX === "Y" && isChecked === true
+        ? "Y"
+        : "N";
+    let others = {};
+    if (value === "N") {
+      others = {
+        ramzan_start_date: undefined,
+        ramzan_end_date: undefined,
+        ramzan_working_hr_per_day: 0,
+        ramzan_eligible_category: "MUSLIMS",
+      };
+    }
+    this.setState({ ramzan_timing_req: value, ...others });
+  }
+  onRamzantimingChangeHandler(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({
+      [name]: value,
+    });
+  }
+  onRamzantimingCategoryChange(e) {
+    const isChecked = e.target.checked;
+    const typeX = e.target.value;
+    const value =
+      typeX === "MUSLIMS" && isChecked === true
+        ? "MUSLIMS"
+        : typeX === "ALL" && isChecked === true
+        ? "ALL"
+        : "MUSLIMS";
+    this.setState({ ramzan_eligible_category: value });
+  }
   render() {
     let allDays = getDays();
 
@@ -964,16 +1006,20 @@ export default class AttendanceSettings extends Component {
                       Ramzan Time off (Change every year)
                     </label>
                     <div className="row">
-                      <div className="col">
+                      <div className="col-12">
                         <label>Ramzan Timing Required</label>
                         <div className="customRadio">
                           <label className="radio inline">
                             <input
                               type="radio"
                               value="Y"
-                              name="ramazanTimingActive"
-                              // checked={this.state.external_finance === "Y"}
-                              // onChange={this.textHandler.bind(this)}
+                              name="ramzan_timing_req"
+                              checked={
+                                this.state.ramzan_timing_req === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingChange.bind(this)}
                             />
                             <span>Yes</span>
                           </label>
@@ -982,9 +1028,13 @@ export default class AttendanceSettings extends Component {
                             <input
                               type="radio"
                               value="N"
-                              name="ramazanTimingActive"
-                              // checked={this.state.external_finance === "N"}
-                              // onChange={this.textHandler.bind(this)}
+                              name="ramzan_timing_req"
+                              checked={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingChange.bind(this)}
                             />
                             <span>No</span>
                           </label>
@@ -992,117 +1042,130 @@ export default class AttendanceSettings extends Component {
                       </div>
 
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Start Date",
                           isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "standard_intime",
-                          value: this.state.standard_intime,
+                          name: "ramzan_start_date",
+                          value: this.state.ramzan_start_date,
                           events: {
-                            onChange: this.textHandler.bind(this),
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
                           },
                           others: {
                             type: "date",
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
                           },
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "End Date",
                           isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "standard_intime",
-                          value: this.state.standard_intime,
+                          name: "ramzan_end_date",
+                          value: this.state.ramzan_end_date,
+
                           events: {
-                            onChange: this.textHandler.bind(this),
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
                           },
                           others: {
                             type: "date",
-                          },
-                        }}
-                      />
-                    </div>
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          forceLabel: "In-Time",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "standard_intime",
-                          value: this.state.standard_intime,
-                          events: {
-                            onChange: this.textHandler.bind(this),
-                          },
-                          others: {
-                            type: "time",
-                          },
-                        }}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          forceLabel: "Out-Time",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "standard_outime",
-                          value: this.state.standard_outime,
-                          events: {
-                            onChange: this.textHandler.bind(this),
-                          },
-                          others: {
-                            type: "time",
+                            min: this.state.ramzan_start_date,
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
                           },
                         }}
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          forceLabel: "Number of break hr/day",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "standard_break_hours",
-                          value: this.state.standard_break_hours,
-                          events: {
-                            onChange: this.textHandler.bind(this),
-                          },
-                          others: {
-                            type: "number",
-                          },
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
+                        div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Number of working hr/day",
                           isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "standard_working_hours",
-                          value: this.state.standard_working_hours,
+                          name: "ramzan_working_hr_per_day",
+                          value: this.state.ramzan_working_hr_per_day,
                           events: {
-                            onChange: this.textHandler.bind(this),
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
                           },
                           others: {
                             type: "number",
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
                           },
                         }}
                       />
+
+                      <div className="col-4">
+                        <label>Elgible Category</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="ALL"
+                              name="ramzan_eligible_category"
+                              disabled={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              defaultChecked={
+                                this.state.ramzan_eligible_category === "ALL"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingCategoryChange.bind(
+                                this
+                              )}
+                            />
+                            <span>All Employees</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="MUSLIMS"
+                              name="ramzan_eligible_category"
+                              disabled={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              defaultChecked={
+                                this.state.ramzan_eligible_category ===
+                                "MUSLIMS"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingCategoryChange.bind(
+                                this
+                              )}
+                            />
+                            <span>Only Muslims</span>
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="row">

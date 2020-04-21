@@ -331,16 +331,29 @@ export default function ManualAttendanceEvents() {
     },
 
     employeeSearch: $this => {
+      if (
+        $this.state.hospital_id === null ||
+        $this.state.hospital_id === undefined
+      ) {
+        swalMessage({
+          title: "Please Select Branch",
+          type: "warning"
+        });
+        document.querySelector("[name='hospital_id']").focus();
+        return
+      }
+
+      let input_data = " hospital_id=" + $this.state.hospital_id;
+      if ($this.state.sub_department_id !== null) {
+        input_data += "sub_department_id=" + $this.state.sub_department_id
+      }
       AlgaehSearch({
         searchGrid: {
           columns: spotlightSearch.Employee_details.employee
         },
         searchName: "employee",
         uri: "/gloabelSearch/get",
-        inputs:
-          $this.state.sub_department_id !== null
-            ? "sub_department_id = " + $this.state.sub_department_id
-            : "1=1",
+        inputs: input_data,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },

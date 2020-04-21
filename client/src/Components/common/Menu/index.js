@@ -17,7 +17,7 @@ function NavBars(props) {
     setUserMenu,
     setUserToken,
     setSelectedMenuItem,
-    userMenu
+    userMenu,
   } = useContext(MainContext);
   const history = useHistory();
   const location = useLocation();
@@ -29,10 +29,10 @@ function NavBars(props) {
 
   useEffect(() => {
     if (Object.keys(userToken).length === 0) {
-      getItem("menu").then(result => {
+      getItem("menu").then((result) => {
         setUserMenu(result);
       });
-      getItem("token").then(result => {
+      getItem("token").then((result) => {
         if (result === null) {
           history.push("/");
           return;
@@ -41,7 +41,7 @@ function NavBars(props) {
         setUserToken(details);
       });
     }
-    getItem("userSelectedMenu").then(item => {
+    getItem("userSelectedMenu").then((item) => {
       if (item === null) return;
       setSelectedMenuItem(item);
       setSelectedMenu(() => {
@@ -51,11 +51,11 @@ function NavBars(props) {
   }, []);
 
   function showMenuClick() {
-    setShowMenu(result => !result);
+    setShowMenu((result) => !result);
   }
 
   function showNotification() {
-    setOpenNotif(state => !state);
+    setOpenNotif((state) => !state);
   }
 
   function languageChange(e) {
@@ -75,9 +75,10 @@ function NavBars(props) {
       method: "GET",
       onSuccess: () => {
         history.push("/");
-      }
+      },
     });
   }
+  const { product_type } = userToken;
   return (
     <>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark mainTheme">
@@ -92,13 +93,13 @@ function NavBars(props) {
             <i className="fas fa-angle-double-left  fa-lg" />
           </div>
         ) : (
-            <div className="sideMenuBars" onClick={showMenuClick}>
-              <i className="fas fa-bars fa-lg" />
-            </div>
-          )}
+          <div className="sideMenuBars" onClick={showMenuClick}>
+            <i className="fas fa-bars fa-lg" />
+          </div>
+        )}
 
         <div className="navbar-brand appLogoCntr">
-          <p className="appLogoHIMSOnly" />
+          <p className="appLogoOnly">{product_type}</p>
         </div>
         <h5 className="topNavbar-title mr-auto">
           <BreadCrum
@@ -116,7 +117,7 @@ function NavBars(props) {
         </div>
         <button
           style={{
-            marginRight: 0
+            marginRight: 0,
           }}
           className="dropdown navTopbar-dropdown"
           // disabled={this.state.openPanel}
@@ -130,7 +131,11 @@ function NavBars(props) {
             className="dropdown-menu animated fadeIn faster"
             aria-labelledby="dropdownMenuButton"
           >
-            <button className="dropdown-item" onClick={languageChange} lang="en">
+            <button
+              className="dropdown-item"
+              onClick={languageChange}
+              lang="en"
+            >
               {userLanguage === "en" ? <span> &#10004;</span> : null}
               &nbsp; English
             </button>

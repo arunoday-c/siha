@@ -1825,7 +1825,7 @@ function InsertGratuityProvision(options) {
           query:
             "select date_of_joining, hims_d_employee_id, date_of_resignation, employee_status, employe_exit_type, \
             datediff(date(?),date(date_of_joining))/365 endOfServiceYears, employee_code, exit_date,\
-            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth \
+            full_name, arabic_name, sex, employee_type, employee_designation_id, date_of_birth, gratuity_encash \
             from hims_d_employee where gratuity_applicable = 'Y' and hims_d_employee_id in(?);\
             select * from hims_d_end_of_service_options;",
           values: [salary_end_date, inputParam.employee_id],
@@ -1905,6 +1905,7 @@ function InsertGratuityProvision(options) {
                         _optionsDetals.eligible_days5;
                     }
                   } else if (_optionsDetals.end_of_service_type == "H") {
+                    // console.log("_employee[k].endOfServiceYears", _employee[k].endOfServiceYears)
                     let by =
                       _employee[k].endOfServiceYears -
                       _optionsDetals.from_service_range1;
@@ -1917,50 +1918,89 @@ function InsertGratuityProvision(options) {
                         _employee[k].endOfServiceYears -
                         _optionsDetals.from_service_range2;
                       if (by > 0) {
+                        // ted =
+                        //   (ted +
+                        //     (_optionsDetals.from_service_range2 -
+                        //       _optionsDetals.from_service_range1)) *
+                        //   by;
                         ted =
-                          (ted +
-                            (_optionsDetals.from_service_range2 -
-                              _optionsDetals.from_service_range1)) *
-                          by;
+                          ted +
+                          _optionsDetals.from_service_range2 *
+                          _optionsDetals.eligible_days2;
+
                         by =
                           _employee[k].endOfServiceYears -
                           _optionsDetals.from_service_range3;
                         if (by > 0) {
+                          // ted =
+                          //   (ted +
+                          //     (_optionsDetals.from_service_range3 -
+                          //       _optionsDetals.from_service_range2)) *
+                          //   by;
                           ted =
-                            (ted +
-                              (_optionsDetals.from_service_range3 -
-                                _optionsDetals.from_service_range2)) *
-                            by;
+                            ted +
+                            _optionsDetals.from_service_range3 *
+                            _optionsDetals.eligible_days3;
+
                           by =
                             _employee[k].endOfServiceYears -
                             _optionsDetals.from_service_range3;
                           if (by > 0) {
+                            // ted =
+                            //   (ted +
+                            //     (_optionsDetals.from_service_range4 -
+                            //       _optionsDetals.from_service_range3)) *
+                            //   by;
                             ted =
-                              (ted +
-                                (_optionsDetals.from_service_range4 -
-                                  _optionsDetals.from_service_range3)) *
-                              by;
+                              ted +
+                              _optionsDetals.from_service_range4 *
+                              _optionsDetals.eligible_days4;
+
                             by =
                               _employee[k].endOfServiceYears -
                               _optionsDetals.from_service_range4;
                             if (by > 0) {
+                              // ted =
+                              //   (ted +
+                              //     (_optionsDetals.from_service_range5 -
+                              //       _optionsDetals.from_service_range4)) *
+                              //   by;
                               ted =
-                                (ted +
-                                  (_optionsDetals.from_service_range5 -
-                                    _optionsDetals.from_service_range4)) *
-                                by;
-                            } else {
-                              _eligibleDays =
-                                ted + by * _optionsDetals.eligible_days4;
+                                ted +
+                                _optionsDetals.from_service_range5 *
+                                _optionsDetals.eligible_days5;
                             }
+                            // else {
+                            //   _eligibleDays =
+                            //     ted + by * _optionsDetals.eligible_days4;
+                            // }
                           } else {
+                            let daysAvilable =
+                              _employee[k].endOfServiceYears -
+                              _optionsDetals.from_service_range3;
+
                             _eligibleDays =
-                              ted + by * _optionsDetals.eligible_days3;
+                              ted + daysAvilable * _optionsDetals.eligible_days4;
+                            // _eligibleDays =
+                            //   ted + by * _optionsDetals.eligible_days3;
                           }
+                        } else {
+                          let daysAvilable =
+                            _employee[k].endOfServiceYears -
+                            _optionsDetals.from_service_range2;
+
+                          _eligibleDays =
+                            ted + daysAvilable * _optionsDetals.eligible_days3;
                         }
                       } else {
+                        // _eligibleDays =
+                        //   ted + by * _optionsDetals.eligible_days2;
+                        let daysAvilable =
+                          _employee[k].endOfServiceYears -
+                          _optionsDetals.from_service_range1;
+
                         _eligibleDays =
-                          ted + by * _optionsDetals.eligible_days2;
+                          ted + daysAvilable * _optionsDetals.eligible_days2;
                       }
                     } else {
                       ted =
@@ -2019,46 +2059,75 @@ function InsertGratuityProvision(options) {
                       let earnings = result_data[0];
                       let gratuity_data = result_data[1];
 
-                      let _computatedAmout = [];
+                      const _sumOfTotalEarningComponents = _.sumBy(earnings, (s) => {
+                        return s.amount;
+                      });
+
+                      // console.log("earnings", earnings)
+                      let gratuity = 0;
+                      // console.log("_eligibleDays", _eligibleDays)
                       if (_optionsDetals.end_of_service_calculation == "AN") {
-                        _computatedAmout = _.chain(earnings).map(items => {
-                          return (items.amount * 12) / 365;
-                        });
+                        // _computatedAmout = _.chain(earnings).map(items => {
+                        //   return (items.amount * 12) / 365;
+                        // });
+                        gratuity = (_sumOfTotalEarningComponents * 12) / 365;
                       } else if (
                         _optionsDetals.end_of_service_calculation == "FI"
                       ) {
-                        _computatedAmout = _.chain(earnings).map(items => {
-                          return (
-                            items.amount / _optionsDetals.end_of_service_days
-                          );
-                        });
+                        // _computatedAmout = _.chain(earnings).map(items => {
+                        //   return (
+                        //     items.amount / _optionsDetals.end_of_service_days
+                        //   );
+                        // });
+                        gratuity = _sumOfTotalEarningComponents / 30;
                       }
+                      gratuity = utilities.decimalPoints(
+                        gratuity,
+                        decimal_places
+                      );
 
-                      let _computatedAmoutSum =
-                        _computatedAmout.reduce((a, b) => {
-                          return a + b;
-                        }, 0) * _eligibleDays;
+                      // console.log("_eligibleDays", _eligibleDays)
+                      // console.log("gratuity", gratuity)
+                      // let _computatedAmoutSum =
+                      //   _computatedAmout.reduce((a, b) => {
+                      //     return a + b;
+                      //   }, 0) * _eligibleDays;
+
+                      let _computatedAmoutSum = parseFloat(_eligibleDays) * parseFloat(gratuity);
 
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
                         decimal_places
                       );
 
-                      console.log("gratuity_data", gratuity_data)
+                      // console.log("gratuity_data", gratuity_data)
+                      // console.log("_computatedAmoutSum", _computatedAmoutSum)
+                      // console.log("_employee[k].gratuity_encash", _employee[k].gratuity_encash)
+
+
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
-                        gratuity_amount = parseFloat(_computatedAmoutSum) - parseFloat(gratuity_data[0].acc_gratuity)
+                        gratuity_amount = parseFloat(_computatedAmoutSum) - (parseFloat(gratuity_data[0].acc_gratuity) + parseFloat(_employee[k].gratuity_encash))
                       } else {
                         gratuity_amount = _computatedAmoutSum
                       }
+                      _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
+
+                      gratuity_amount = utilities.decimalPoints(
+                        gratuity_amount,
+                        decimal_places
+                      );
 
                       strQry += mysql.format(
-                        "INSERT IGNORE INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
-                      `month`,`gratuity_amount`, `acc_gratuity`) VALUE(?,?,?,?,?);",
+                        "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
+                      `month`,`gratuity_amount`, `acc_gratuity`) VALUE(?,?,?,?,?) \
+                      ON DUPLICATE KEY UPDATE `gratuity_amount`=?,`acc_gratuity`=?;",
                         [
                           _employee[k].hims_d_employee_id,
                           inputParam.year,
                           inputParam.month,
+                          gratuity_amount,
+                          _computatedAmoutSum,
                           gratuity_amount,
                           _computatedAmoutSum
                         ]

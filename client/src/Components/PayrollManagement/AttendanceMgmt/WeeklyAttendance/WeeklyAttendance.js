@@ -481,15 +481,29 @@ export default class WeeklyAttendance extends Component {
   }
 
   employeeSearch() {
+    if (
+      this.state.hospital_id === null ||
+      this.state.hospital_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning"
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return
+    }
+
+    let input_data = " hospital_id=" + this.state.hospital_id;
+
+    input_data = input_data + this.state.sub_department_id !== null &&
+      this.state.sub_department_id !== undefined
+      ? "sub_department_id = " + this.state.sub_department_id
+      : "sub_department_id > 0"
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      inputs:
-        this.state.sub_department_id !== null &&
-          this.state.sub_department_id !== undefined
-          ? "sub_department_id = " + this.state.sub_department_id
-          : "sub_department_id > 0",
+      inputs: input_data,
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {

@@ -11,14 +11,14 @@ export default {
       .executeQuery({
         query: "select * from hims_d_hrms_options",
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -39,7 +39,7 @@ export default {
             standard_working_hours=?, standard_break_hours=?, biometric_database=?, biometric_server_name=?, \
             biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, \
             biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, ot_calculation = ?, external_finance=?, \
-            updated_date=?, updated_by=? where hims_d_hrms_options_id=?",
+            updated_date=?, updated_by=?,ramzan_timing_req=?,ramzan_start_date=?,ramzan_end_date=?,ramzan_working_hr_per_day=?,ramzan_eligible_category=? where hims_d_hrms_options_id=?",
         values: [
           input.attendance_starts,
           input.at_st_date,
@@ -78,17 +78,22 @@ export default {
           input.external_finance,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_hrms_options_id
+          input.ramzan_timing_req,
+          input.ramzan_start_date,
+          input.ramzan_end_date,
+          input.ramzan_working_hr_per_day,
+          input.ramzan_eligible_category,
+          input.hims_d_hrms_options_id,
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -101,9 +106,9 @@ export default {
       .executeQuery({
         query: "select * from hims_d_end_of_service_options;",
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         const utilities = new algaehUtilities();
 
         utilities.logger().log("result: ", result);
@@ -160,18 +165,18 @@ export default {
                         hims_d_earning_deduction where hims_d_earning_deduction_id  in (?)",
               values: [componentArray],
 
-              printQuery: true
+              printQuery: true,
             })
-            .then(earning_comp => {
+            .then((earning_comp) => {
               _mysql.releaseConnection();
               req.records = {
                 ...result[0],
                 earning_comp,
-                service_days
+                service_days,
               };
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -179,14 +184,14 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_input: true,
-            message: "no data found"
+            message: "no data found",
           };
 
           next();
           return;
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -247,17 +252,17 @@ export default {
           input.gratuity_provision,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.hims_d_end_of_service_options_id
+          input.hims_d_end_of_service_options_id,
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -317,17 +322,17 @@ export default {
           input.limited_years,
           input.gratuity_provision,
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -339,9 +344,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_d_earning_deduction_id,earning_deduction_description,earning_deduction_code,short_desc FROM hims_d_earning_deduction where component_category='E' and miscellaneous_component='N' and record_status='A';"
+            "SELECT hims_d_earning_deduction_id,earning_deduction_description,earning_deduction_code,short_desc FROM hims_d_earning_deduction where component_category='E' and miscellaneous_component='N' and record_status='A';",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
@@ -360,9 +365,9 @@ export default {
           query:
             "SELECT hims_d_hrms_options_id, basic_earning_component, airfare_factor, annual_leave_process_separately, \
             airfare_percentage, annual_leave_calculation FROM hims_d_hrms_options;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
@@ -392,17 +397,17 @@ export default {
           input.airfare_percentage,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_hrms_options_id
+          input.hims_d_hrms_options_id,
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -425,17 +430,17 @@ export default {
           input.airfare_percentage,
           input.annual_leave_calculation,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -453,8 +458,8 @@ export default {
       review_auth_level, yearly_working_days, advance_deduction, overtime_type, overtime_payment, \
       overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime,  standard_working_hours, standard_break_hours, biometric_database, biometric_server_name, biometric_port_no, biometric_database_name, \
       biometric_database_login, biometric_database_password, biometric_swipe_id, manual_timesheet_entry, \
-      authorization_plan, ot_calculation, external_finance, created_date, created_by) \
-      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      authorization_plan, ot_calculation, external_finance, created_date, created_by,ramzan_timing_req,ramzan_start_date,ramzan_end_date,ramzan_working_hr_per_day,ramzan_eligible_category) \
+      values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.attendance_starts,
           input.at_st_date,
@@ -492,19 +497,24 @@ export default {
           input.ot_calculation,
           input.external_finance,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
+          input.ramzan_timing_req,
+          input.ramzan_start_date,
+          input.ramzan_end_date,
+          input.ramzan_working_hr_per_day,
+          input.ramzan_eligible_category,
         ],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };

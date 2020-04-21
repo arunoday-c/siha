@@ -44,7 +44,7 @@ class LoanRequest extends Component {
       deducting_month: moment().add(1, "months").format("M"), //parseInt(, 10) + 1
       // request_type: "LO"
       start_month: moment().add(1, "months").format("M"),
-      decimal_places: hospital.decimal_places,
+      decimal_places: 0
     };
     this.getLoanMaster();
   }
@@ -77,6 +77,7 @@ class LoanRequest extends Component {
     let request_type = this.props.type;
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
+      decimal_places: userToken.decimal_places,
       request_type,
     });
   }
@@ -365,11 +366,12 @@ class LoanRequest extends Component {
     switch (e.target.name) {
       case "loan_amount":
         if (e.target.value <= this.state.loan_limit) {
+
           this.setState({
             [e.target.name]: e.target.value,
 
             installment_amount: (
-              e.target.value / this.state.loan_tenure
+              parseFloat(e.target.value) / parseFloat(this.state.loan_tenure)
             ).toFixed(this.state.decimal_places),
           });
         } else {
@@ -439,9 +441,9 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: (this.state.loan_amount / value.value).toFixed(
+          installment_amount: (parseFloat(this.state.loan_amount) / parseFloat(value.value)).toFixed(
             this.state.decimal_places
-          ),
+          )
         });
         break;
 

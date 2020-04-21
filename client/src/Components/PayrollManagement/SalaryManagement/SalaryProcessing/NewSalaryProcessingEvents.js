@@ -1,5 +1,9 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie,
+} from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -14,7 +18,7 @@ const SalaryProcess = ($this, inputs, from) => {
       AlgaehLoader({ show: true });
 
       $this.setState(
-        prevState => {
+        (prevState) => {
           return { inputs: !inputs ? prevState.inputs : inputs };
         },
         () => {
@@ -22,7 +26,7 @@ const SalaryProcess = ($this, inputs, from) => {
           let inputObj = {
             year: inputs.year,
             month: inputs.month,
-            hospital_id: inputs.hospital_id
+            hospital_id: inputs.hospital_id,
           };
           if (inputs.hims_d_employee_id !== null) {
             inputObj.employee_id = inputs.hims_d_employee_id;
@@ -44,7 +48,7 @@ const SalaryProcess = ($this, inputs, from) => {
             module: "hrManagement",
             data: inputObj,
             method: "GET",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 if (response.data.result.length > 0) {
                   let data = response.data.result[0];
@@ -52,7 +56,7 @@ const SalaryProcess = ($this, inputs, from) => {
                   let strMessage =
                     "Salary already finalized for selected criteria.";
                   let not_process = Enumerable.from(data.salaryprocess_header)
-                    .where(w => w.salary_processed === "N")
+                    .where((w) => w.salary_processed === "N")
                     .toArray();
                   if (not_process.length > 0) {
                     finalizeBtn = false;
@@ -61,58 +65,56 @@ const SalaryProcess = ($this, inputs, from) => {
                   $this.setState({
                     salaryprocess_header: data.salaryprocess_header,
                     salaryprocess_detail: data.salaryprocess_detail,
-                    finalizeBtn: finalizeBtn
+                    finalizeBtn: finalizeBtn,
                   });
                   AlgaehLoader({ show: false });
 
                   if (from === "load") {
                     swalMessage({
                       title: strMessage,
-                      type: "success"
+                      type: "success",
                     });
                   }
                 } else {
                   $this.setState({
                     salaryprocess_header: [],
                     salaryprocess_detail: [],
-                    finalizeBtn: true
+                    finalizeBtn: true,
                   });
                   AlgaehLoader({ show: false });
                   swalMessage({
                     title: "Attendance not processed for selected criteria.",
-                    type: "warning"
+                    type: "warning",
                   });
                 }
               } else {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: response.data.result.message,
-                  type: "warning"
+                  type: "warning",
                 });
-
               }
-
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               $this.setState({
                 salaryprocess_header: [],
                 salaryprocess_detail: [],
-                finalizeBtn: true
+                finalizeBtn: true,
               });
               swalMessage({
                 title: error.message || error.response.data.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       );
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     year: moment().year(),
     month: moment(new Date()).format("M"),
@@ -140,11 +142,17 @@ const ClearData = $this => {
     loan_payable_amount: null,
     loan_due_amount: null,
     net_salary: null,
-    salary_dates: null
+    salary_dates: null,
   });
 };
 
-const FinalizeSalary = $this => {
+const FinalizeSalary = ($this) => {
+  const { salaryprocess_header } = $this.state;
+  const sortedList = salaryprocess_header.filter((f) => f.checked === true);
+  if (sortedList.length === 0) {
+    swalMessage({ title: "Please select atleast one item", type: "error" });
+    return;
+  }
   swal({
     title: "You want to finalize the salary?",
     text:
@@ -154,34 +162,33 @@ const FinalizeSalary = $this => {
     confirmButtonText: "Finalize",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "Cancel"
-  }).then(willFinalize => {
+    cancelButtonText: "Cancel",
+  }).then((willFinalize) => {
     if (willFinalize.value) {
       AlgaehLoader({ show: true });
-      const { salaryprocess_header } = $this.state;
 
-      const salary_header_id = salaryprocess_header.map(o => {
+      const salary_header_id = sortedList.map((o) => {
         return o.hims_f_salary_id;
       });
 
-      const employee_id = salaryprocess_header.map(o => {
+      const employee_id = sortedList.map((o) => {
         return o.employee_id;
       });
-      const net_salary = salaryprocess_header.map(o => {
+      const net_salary = sortedList.map((o) => {
         return {
           net_salary: o.net_salary,
           gross_salary: o.gross_salary,
           total_paid_days: o.total_paid_days,
-          employee_id: o.employee_id
+          employee_id: o.employee_id,
         };
       });
 
-      const _leave_salary_acc = _.filter(salaryprocess_header, f => {
+      const _leave_salary_acc = _.filter(sortedList, (f) => {
         return f.leave_salary_accrual_amount > 0;
       });
 
       let salary_date =
-        $this.state.inputs.year + "-" + + $this.state.inputs.month + "-01";
+        $this.state.inputs.year + "-" + +$this.state.inputs.month + "-01";
       let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");
@@ -209,8 +216,9 @@ const FinalizeSalary = $this => {
         hospital_id: $this.state.inputs.hospital_id,
         net_salary: net_salary,
         _leave_salary_acc: _leave_salary_acc,
-        annual_leave_calculation: $this.state.hrms_options.annual_leave_calculation,
-        ScreenCode: getCookie("ScreenCode")
+        annual_leave_calculation:
+          $this.state.hrms_options.annual_leave_calculation,
+        ScreenCode: getCookie("ScreenCode"),
       };
 
       algaehApiCall({
@@ -218,32 +226,33 @@ const FinalizeSalary = $this => {
         module: "hrManagement",
         data: inputObj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             SalaryProcess($this, null, "finalize");
+            $this.allChecked.indeterminate = false;
             $this.setState({
-              finalizeBtn: true
+              finalizeBtn: true,
             });
             AlgaehLoader({ show: false });
             swalMessage({
               title: "Finalized Successfully.",
-              type: "success"
+              type: "success",
             });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               title: response.data.result,
-              type: "error"
+              type: "error",
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message || error.response.data.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   });
@@ -253,19 +262,19 @@ const openSalaryComponents = ($this, row) => {
   const salaryprocess_Earning = Enumerable.from(
     $this.state.salaryprocess_detail[0]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Deduction = Enumerable.from(
     $this.state.salaryprocess_detail[1]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Contribute = Enumerable.from(
     $this.state.salaryprocess_detail[2]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   $this.setState({
@@ -290,32 +299,32 @@ const openSalaryComponents = ($this, row) => {
     unpaid_leave: row.unpaid_leave,
     display_present_days: row.display_present_days,
     total_paid_days: row.total_paid_days,
-    dis_employee_name: row.full_name
+    dis_employee_name: row.full_name,
   });
 };
 
 const closeSalaryComponents = ($this, e) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
   });
 };
 
-const getOptions = $this => {
+const getOptions = ($this) => {
   algaehApiCall({
     uri: "/payrollOptions/getHrmsOptions",
     method: "GET",
     module: "hrManagement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({ hrms_options: res.data.result[0] });
       }
     },
-    onFailure: err => {
+    onFailure: (err) => {
       swalMessage({
         title: err.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -325,5 +334,5 @@ export {
   ClearData,
   openSalaryComponents,
   closeSalaryComponents,
-  getOptions
+  getOptions,
 };

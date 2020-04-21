@@ -1,3 +1,5 @@
+import { algaehApiCall } from "../../utils/algaehApiCall";
+
 export default function ItemSetupEvent() {
   return {
     getItems: $this => {
@@ -18,6 +20,27 @@ export default function ItemSetupEvent() {
         itemPop: row,
         addNew: false
       });
+    },
+    OpenReQtyLocation: ($this, row) => {
+
+      algaehApiCall({
+        uri: "/pharmacy/getLocationReorder",
+        method: "GET",
+        module: "pharmacy",
+        data: { item_id: row.hims_d_item_master_id },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            $this.setState({
+              isReQtyOpen: !$this.state.isReQtyOpen,
+              item_description: row.item_description,
+              item_id: row.hims_d_item_master_id,
+              reorder_locations: response.data.records
+            });
+          }
+
+        }
+      });
+
     }
   };
 }

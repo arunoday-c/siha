@@ -102,7 +102,8 @@ export default {
       employeeImage: undefined,
       reporting_to_id: null,
       entitled_daily_ot: "N",
-      employee_category: null
+      employee_category: null,
+      gratuity_encash: 0
     };
     return output;
   }

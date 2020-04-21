@@ -18,7 +18,7 @@ export default class DateHandler extends PureComponent {
     this.state = {
       language: "en",
       value: momentDate,
-      hasSecurity: false
+      hasSecurity: false,
     };
   }
 
@@ -28,7 +28,7 @@ export default class DateHandler extends PureComponent {
     let lang = getCookie("Language");
     this.setState({
       language: lang === null ? lang : "en",
-      value: momentDate ? (momentDate.isValid() ? momentDate._d : null) : null
+      value: momentDate ? (momentDate.isValid() ? momentDate._d : null) : null,
     });
   }
 
@@ -53,13 +53,13 @@ export default class DateHandler extends PureComponent {
         screen_element_code: _security.screen_element_code,
         hasSecurity: () => {
           hasSecurity = true;
-        }
+        },
       });
     }
     return hasSecurity;
   }
 
-  onDayChange = e => {
+  onDayChange = (e) => {
     if (this.props.singleOutput === undefined) {
       if (
         this.props.events !== undefined &&
@@ -85,13 +85,13 @@ export default class DateHandler extends PureComponent {
             : config.formators.date;
         this.props.events.onChange({
           value: moment(e.target.value, configType)._d,
-          name: e.target.name
+          name: e.target.name,
         });
       }
     }
   };
 
-  dateValidation = e => {
+  dateValidation = (e) => {
     const { name, value } = e.target;
     const { dontAllow } = this.props;
     let test, title;
@@ -106,18 +106,18 @@ export default class DateHandler extends PureComponent {
     if (test) {
       swalMessage({
         title,
-        type: "error"
+        type: "error",
       });
       this.setState(
         {
-          value: null
+          value: null,
         },
         () => this.props.events.onChange(this.state.value, name)
       );
     }
   };
 
-  onBlur = e => {
+  onBlur = (e) => {
     if (this.props.events !== undefined) {
       const configType =
         this.props.type !== undefined && this.props.type === "time"
@@ -142,7 +142,7 @@ export default class DateHandler extends PureComponent {
               this.props.type !== undefined && this.props.type === "time"
                 ? config.formators.time
                 : config.formators.date
-            )
+            ),
           }
         : {};
     const maxDate =
@@ -152,7 +152,7 @@ export default class DateHandler extends PureComponent {
               this.props.type !== undefined && this.props.type === "time"
                 ? config.formators.time
                 : config.formators.date
-            )
+            ),
           }
         : {};
     const value =
@@ -176,7 +176,7 @@ export default class DateHandler extends PureComponent {
           ? { algaeh_required: this.props.label.isImp.toString() }
           : {}
         : {};
-    console.log("_required: ", _required);
+
     const _isHijri = this.props.textBox.hijri !== undefined ? true : false;
     const _type = this.props.type !== undefined ? this.props.type : "date";
     return (

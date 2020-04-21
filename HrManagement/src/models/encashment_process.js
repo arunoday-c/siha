@@ -21,23 +21,23 @@ export default {
         values: [
           _EncashDetails.employee_id,
           _EncashDetails.year,
-          _EncashDetails.leave_id
-        ]
+          _EncashDetails.leave_id,
+        ],
         // printQuery: true
       })
-      .then(monthlyLeaves => {
+      .then((monthlyLeaves) => {
         _mysql.releaseConnection();
 
-        req.records = monthlyLeaves.map(data => {
+        req.records = monthlyLeaves.map((data) => {
           return {
             ...data,
-            total_amount: data.leave_amount
+            total_amount: data.leave_amount,
           };
         });
 
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -54,9 +54,9 @@ export default {
         query:
           "select * from hims_f_leave_encash_header where employee_id=? and year=? ;",
         values: [_EncashDetails.employee_id, _EncashDetails.year],
-        printQuery: true
+        printQuery: true,
       })
-      .then(leave_Encash => {
+      .then((leave_Encash) => {
         if (leave_Encash.length > 0) {
           let Leave_Encash_Header = leave_Encash;
 
@@ -67,22 +67,22 @@ export default {
                 leavems.leave_description from hims_f_leave_encash_detail, hims_d_leave leavems where  \
                 leavems.hims_d_leave_id = hims_f_leave_encash_detail.leave_id and leave_encash_header_id=?;",
               values: [leave_Encash[0].hims_f_leave_encash_header_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = [
                   {
                     Exists: true,
                     Leave_Encash_Header: Leave_Encash_Header,
-                    Leave_Encash_Detail: result
-                  }
+                    Leave_Encash_Detail: result,
+                  },
                 ];
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -98,28 +98,28 @@ export default {
                 `year`=2019 and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
                 ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
                 empEarn.employee_id=ML.employee_id group by leave_id ;",
-              values: [_EncashDetails.employee_id, _EncashDetails.year]
+              values: [_EncashDetails.employee_id, _EncashDetails.year],
               // printQuery: true
             })
-            .then(monthlyLeaves => {
+            .then((monthlyLeaves) => {
               _mysql.releaseConnection();
 
-              req.records = monthlyLeaves.map(data => {
+              req.records = monthlyLeaves.map((data) => {
                 return {
                   ...data,
-                  total_amount: data.leave_amount
+                  total_amount: data.leave_amount,
                 };
               });
 
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -128,6 +128,7 @@ export default {
   getLeaveEncashLevels: (req, res, next) => {
     try {
       // let userPrivilege = req.userIdentity.leave_authorize_privilege;
+      console.log("req.query.leave_encash_level", req.query.leave_encash_level);
       let userPrivilege = req.query.leave_encash_level;
       console.log("userPrivilege", userPrivilege);
       let auth_levels = [];
@@ -159,9 +160,9 @@ export default {
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
         numgen_codes: ["LEAVE_ENCASH"],
-        table_name: "hims_f_hrpayroll_numgen"
+        table_name: "hims_f_hrpayroll_numgen",
       })
-      .then(generatedNumbers => {
+      .then((generatedNumbers) => {
         encashment_number = generatedNumbers.LEAVE_ENCASH;
         let encashDetail = inputParam.encashDetail;
         let strQuery = "";
@@ -191,11 +192,11 @@ export default {
               inputParam.authorized1,
               inputParam.authorized2,
               inputParam.authorized,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             let inserted_encash = result[0];
             _mysql
               .executeQuery({
@@ -206,15 +207,15 @@ export default {
                   "close_balance",
                   "leave_days",
                   "leave_amount",
-                  "total_amount"
+                  "total_amount",
                 ],
                 extraValues: {
-                  leave_encash_header_id: inserted_encash.insertId
+                  leave_encash_header_id: inserted_encash.insertId,
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(resultContribute => {
+              .then((resultContribute) => {
                 let result = { encashment_number: encashment_number };
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -222,19 +223,19 @@ export default {
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -243,16 +244,19 @@ export default {
 
   InsertLeaveEncashment: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let inputParam = { ...req.body };
+    let inputParam = req.body;
     let encashment_number = "";
-
+    const hospitalId =
+      inputParam.hospital_id === undefined
+        ? req.userIdentity.hospital_id
+        : inputParam.hospital_id;
     _mysql
       .generateRunningNumber({
         user_id: req.userIdentity.algaeh_d_app_user_id,
         numgen_codes: ["LEAVE_ENCASH"],
-        table_name: "hims_f_hrpayroll_numgen"
+        table_name: "hims_f_hrpayroll_numgen",
       })
-      .then(generatedNumbers => {
+      .then((generatedNumbers) => {
         encashment_number = generatedNumbers.LEAVE_ENCASH;
 
         _mysql
@@ -274,24 +278,25 @@ export default {
               inputParam.airfare_amount,
               inputParam.airfare_months,
               inputParam.total_amount,
-              req.userIdentity.hospital_id
+              hospitalId,
+              //  req.userIdentity.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = { encashment_number: encashment_number };
               next();
             });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -318,15 +323,15 @@ export default {
           "select hims_f_leave_encash_header_id,encashment_number, employee_id, encashment_date, year, total_amount,\
           emp.employee_code, emp.full_name, authorized, D.designation, L.leave_description, EH.leave_days \
           from hims_f_leave_encash_header EH \
-          inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id \
+          inner join hims_d_employee emp on EH.employee_id = emp.hims_d_employee_id  and EH.hospital_id= emp.hospital_id \
           inner join hims_d_designation D on D.hims_d_designation_id = emp.employee_designation_id \
           inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
           where EH.hospital_id = ? and date(encashment_date) between date(?) and date(?) and authorized=?" +
           _stringData,
         values: _.valuesIn(inputParam),
-        printQuery: true
+        printQuery: true,
       })
-      .then(leave_Encash => {
+      .then((leave_Encash) => {
         _mysql.releaseConnection();
         req.records = leave_Encash;
         next();
@@ -369,7 +374,7 @@ export default {
         //   });
         // }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -425,14 +430,14 @@ export default {
       .executeQuery({
         query: strQuery,
         values: values,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -459,23 +464,23 @@ export default {
           _EncashDetails.leave_days,
           _EncashDetails.leave_days,
           _EncashDetails.employee_id,
-          _EncashDetails.year
+          _EncashDetails.year,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(monthlyLeaves => {
+      .then((monthlyLeaves) => {
         _mysql.releaseConnection();
 
-        req.records = monthlyLeaves.map(data => {
+        req.records = monthlyLeaves.map((data) => {
           return {
             ...data,
-            total_amount: data.leave_amount
+            total_amount: data.leave_amount,
           };
         });
 
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -492,18 +497,18 @@ export default {
           "select EH.*, L.leave_description from hims_f_leave_encash_header EH \
           inner join hims_d_leave L on EH.leave_id = L.hims_d_leave_id \
           where employee_id = ? ;",
-        values: [inputParam.employee_id]
+        values: [inputParam.employee_id],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };

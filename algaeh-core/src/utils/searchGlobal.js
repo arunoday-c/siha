@@ -379,8 +379,7 @@ let algaehSearchConfig = (searchName, req) => {
           left join   hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id\
           left join hims_d_department D on SD.department_id = D.hims_d_department_id\
           left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
-          WHERE E.record_status = 'A' and E.hospital_id=" +
-          hospitalId,
+          WHERE E.record_status = 'A' ",
         orderBy: "hims_d_employee_id desc"
       },
       {
@@ -398,8 +397,7 @@ let algaehSearchConfig = (searchName, req) => {
                    contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
                     hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A' and employee_status in('R','T','E') and hospital_id=" +
-          hospitalId,
+                     where record_status='A' and employee_status in('R','T','E') ",
         orderBy: "hims_d_employee_id desc"
       },
       {

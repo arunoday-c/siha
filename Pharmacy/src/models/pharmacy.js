@@ -1463,4 +1463,97 @@ export default {
       next(e);
     }
   },
+  addLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_phar_location_reorder` (`location_id`, `item_id`, `reorder_qty`, \
+            `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?,?,?,?,?,?,?)",
+          values: [
+            input.location_id,
+            input.item_id,
+            input.reorder_qty,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+
+      let strQuery = req.query.location_id != null ? ` and location_id = '${req.query.location_id}' ` : ""
+
+      _mysql
+        .executeQuery({
+          query:
+            "select * from `hims_d_phar_location_reorder` where item_id=? " + strQuery,
+          values: [req.query.item_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_phar_location_reorder` SET `reorder_qty`=?, `updated_date`=?, `updated_by`=? \
+                WHERE `hims_d_phar_location_reorder_id`=? ;",
+          values: [
+            input.reorder_qty,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_phar_location_reorder_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

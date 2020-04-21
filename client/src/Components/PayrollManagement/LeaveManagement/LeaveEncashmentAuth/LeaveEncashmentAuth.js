@@ -67,6 +67,7 @@ class LeaveEncashmentAuth extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
+          getLeaveLevels(this, res.data.result[0].leave_encash_level);
           this.setState({
             leave_encash_level: res.data.result[0].leave_encash_level
           });
@@ -154,7 +155,7 @@ class LeaveEncashmentAuth extends Component {
       });
     }
 
-    getLeaveLevels(this, this);
+
   }
   dropDownHandler(value) {
     this.setState({
