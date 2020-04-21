@@ -120,7 +120,6 @@ class EmployeeGroups extends Component {
   }
 
   updateEmployeeGroups(data) {
-    debugger;
     algaehApiCall({
       uri: "/hrsettings/updateEmployeeGroup",
       module: "hrManagement",
@@ -190,8 +189,14 @@ class EmployeeGroups extends Component {
   }
   onChangeRaidoButton(e) {
     const isChecked = e.target.checked;
-
-    this.setState({ ramzan_timing: isChecked === true ? "Y" : "N" });
+    const typex = e.target.value;
+    const ceckStatus =
+      typex === "N" && isChecked === true
+        ? "N"
+        : typex === "Y" && isChecked === true
+        ? "Y"
+        : "N";
+    this.setState({ ramzan_timing: ceckStatus });
   }
   onUpdateRamzanTiming(row, e) {
     const typex = e.target.value;
