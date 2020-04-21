@@ -2616,7 +2616,7 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
-    console.log("generateAccountingEntry", req.flag)
+    //console.log("generateAccountingEntry", req.flag)
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
