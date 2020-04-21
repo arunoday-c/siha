@@ -37,21 +37,21 @@ export default {
             `year` = ? and `month` = ? and S.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
-          printQuery: true
+          printQuery: true,
         })
-        .then(salary_process => {
+        .then((salary_process) => {
           _mysql.releaseConnection();
 
-          req.records = salary_process.map(data => {
+          req.records = salary_process.map((data) => {
             return {
               ...data,
-              select_to_pay: "N"
+              select_to_pay: "N",
             };
           });
 
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -63,7 +63,7 @@ export default {
   SaveSalaryPayment: (req, res, next) => {
     try {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
 
@@ -72,11 +72,11 @@ export default {
         const inputParam = JSON.parse(buffer);
         req.body = inputParam;
 
-        const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
+        const _salaryHeader_id = _.map(inputParam.salary_payment, (o) => {
           return o.hims_f_salary_id;
         });
 
-        let _allEmployees = _.map(inputParam.salary_payment, o => {
+        let _allEmployees = _.map(inputParam.salary_payment, (o) => {
           return o.employee_id;
         });
 
@@ -88,11 +88,11 @@ export default {
             values: [
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              _salaryHeader_id
+              _salaryHeader_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(salary_process => {
+          .then((salary_process) => {
             //Miscellaneous Earning Deduction
             _mysql
               .executeQuery({
@@ -104,15 +104,15 @@ export default {
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam.year,
                   inputParam.month,
-                  _allEmployees
+                  _allEmployees,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(miscellaneous_earning_deduction => {
+              .then((miscellaneous_earning_deduction) => {
                 req.connection = {
                   connection: _mysql.connection,
                   isTransactionConnection: _mysql.isTransactionConnection,
-                  pool: _mysql.pool
+                  pool: _mysql.pool,
                 };
                 //Employee Payments Advance
                 _mysql
@@ -125,11 +125,11 @@ export default {
                       req.userIdentity.algaeh_d_app_user_id,
                       inputParam.year,
                       inputParam.month,
-                      _allEmployees
+                      _allEmployees,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(employee_payments_advance => {
+                  .then((employee_payments_advance) => {
                     //Loan Due
                     _mysql
                       .executeQuery({
@@ -137,10 +137,10 @@ export default {
                           "select loan_application_id,loan_due_amount,balance_amount from hims_f_salary_loans where \
                     salary_header_id in (?)",
                         values: [_salaryHeader_id],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(salary_loans => {
-                        let loan_application_ids = _.map(salary_loans, o => {
+                      .then((salary_loans) => {
+                        let loan_application_ids = _.map(salary_loans, (o) => {
                           return o.loan_application_id;
                         });
 
@@ -150,9 +150,9 @@ export default {
                               query:
                                 "select hims_f_loan_application_id,loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
                               values: [loan_application_ids],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(loan_application => {
+                            .then((loan_application) => {
                               for (
                                 let i = 0;
                                 i < loan_application.length;
@@ -173,8 +173,13 @@ export default {
                                   pending_loan =
                                     pending_loan -
                                     loan_application[i].installment_amount;
-                                  pending_tenure =
-                                    loan_application[i].pending_tenure;
+                                  if (loan_application[i].pending_tenure > 0) {
+                                    pending_tenure =
+                                      loan_application[i].pending_tenure - 1;
+                                  } else {
+                                    pending_tenure =
+                                      loan_application[i].pending_tenure;
+                                  }
                                 }
 
                                 if (pending_loan == 0) {
@@ -194,23 +199,23 @@ export default {
                                       new Date(),
                                       req.userIdentity.algaeh_d_app_user_id,
                                       loan_application[i]
-                                        .hims_f_loan_application_id
+                                        .hims_f_loan_application_id,
                                     ],
-                                    printQuery: true
+                                    printQuery: true,
                                   })
-                                  .then(update_loan_application => {
+                                  .then((update_loan_application) => {
                                     // _mysql.commitTransaction(() => {
                                     //   _mysql.releaseConnection();
                                     req.records = update_loan_application;
                                     next();
                                     // });
                                   })
-                                  .catch(e => {
+                                  .catch((e) => {
                                     next(e);
                                   });
                               }
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -223,25 +228,25 @@ export default {
                           // });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -270,9 +275,9 @@ export default {
           and E.company_bank_id=? and E.mode_of_payment='WPS' and  S.year=? and S.month=?; \
           select default_nationality from hims_d_hospital;`,
           values: [input.company_bank_id, input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(salary_details => {
+        .then((salary_details) => {
           let total_earnings = 0;
           let total_deductions = 0;
           let total_contributions = 0;
@@ -283,21 +288,21 @@ export default {
           const utilities = new algaehUtilities();
 
           if (salary.length > 0) {
-            total_earnings = new LINQ(salary).Sum(s =>
+            total_earnings = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_earnings)
             );
-            total_deductions = new LINQ(salary).Sum(s =>
+            total_deductions = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_deductions)
             );
-            total_contributions = new LINQ(salary).Sum(s =>
+            total_contributions = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_contributions)
             );
-            total_net_salary = new LINQ(salary).Sum(s =>
+            total_net_salary = new LINQ(salary).Sum((s) =>
               parseFloat(s.net_salary)
             );
 
             let salary_header_ids = new LINQ(salary)
-              .Select(s => s.hims_f_salary_id)
+              .Select((s) => s.hims_f_salary_id)
               .ToArray();
 
             _mysql
@@ -315,9 +320,9 @@ export default {
                   salary_header_ids +
                   ");select basic_earning_component from hims_d_hrms_options; \
                   select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV'",
-                printQuery: true
+                printQuery: true,
               })
-              .then(results => {
+              .then((results) => {
                 _mysql.releaseConnection();
                 let earnings = results[0];
                 let deductions = results[1];
@@ -381,49 +386,49 @@ export default {
                   if (parseFloat(complete_ot) > 0) {
                     extra_income = new LINQ(earnings)
                       .Where(
-                        w => w.earnings_id == ovettime_earning_deduction_id
+                        (w) => w.earnings_id == ovettime_earning_deduction_id
                       )
-                      .Select(s => parseFloat(s.amount))
+                      .Select((s) => parseFloat(s.amount))
                       .FirstOrDefault(0);
                   }
 
                   let employee_earning = new LINQ(earnings)
                     .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                      (w) => w.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
                         earnings_id: s.earnings_id,
                         amount: s.amount,
-                        nationality_id: s.nationality_id
+                        nationality_id: s.nationality_id,
                       };
                     })
                     .ToArray();
 
                   let employee_deduction = new LINQ(deductions)
                     .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                      (w) => w.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_f_salary_deductions_id:
                           s.hims_f_salary_deductions_id,
                         deductions_id: s.deductions_id,
                         amount: s.amount,
-                        nationality_id: s.nationality_id
+                        nationality_id: s.nationality_id,
                       };
                     })
                     .ToArray();
 
                   total_basic += new LINQ(employee_earning)
-                    .Where(w => w.earnings_id == basic_id)
-                    .Select(s => parseFloat(s.amount))
+                    .Where((w) => w.earnings_id == basic_id)
+                    .Select((s) => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
                   let basic_salary = new LINQ(employee_earning)
-                    .Where(w => w.earnings_id == basic_id)
-                    .Select(s => parseFloat(s.amount))
+                    .Where((w) => w.earnings_id == basic_id)
+                    .Select((s) => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
                   let emp_id_type = "P";
@@ -432,8 +437,8 @@ export default {
                   }
 
                   let social_security_deductions = new LINQ(employee_deduction)
-                    .Where(w => w.nationality_id == default_nationality)
-                    .Select(s => parseFloat(s.amount))
+                    .Where((w) => w.nationality_id == default_nationality)
+                    .Select((s) => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
                   outputArray.push({
@@ -446,7 +451,7 @@ export default {
                     emp_id_type: emp_id_type,
                     salary_freq: "M",
                     social_security_deductions: social_security_deductions,
-                    notes_comments: ""
+                    notes_comments: "",
                   });
                 }
 
@@ -456,11 +461,11 @@ export default {
                   total_earnings: total_earnings,
                   total_deductions: total_deductions,
                   total_contributions: total_contributions,
-                  total_net_salary: total_net_salary
+                  total_net_salary: total_net_salary,
                 };
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -470,14 +475,14 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please Provide valid input "
+        message: "Please Provide valid input ",
       };
       next();
       return;
@@ -496,14 +501,14 @@ export default {
             left join hims_f_salary S on S.employee_id = MED.employee_id and S.month =MED.month and S.year =MED.year \
             where MED.employee_id=?",
           values: [inputParam.employee_id], //inputParam.year, inputParam.month,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -520,14 +525,14 @@ export default {
           query:
             "delete from hims_f_miscellaneous_earning_deduction where hims_f_miscellaneous_earning_deduction_id = ?;",
           values: [inputParam.hims_f_miscellaneous_earning_deduction_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -542,16 +547,16 @@ export default {
       if (req.flag != 1) {
         let inputParam = req.body;
 
-        const _salaryHeader_id = _.map(inputParam.salary_payment, o => {
+        const _salaryHeader_id = _.map(inputParam.salary_payment, (o) => {
           return o.hims_f_salary_id;
         });
 
         _mysql
           .executeQueryWithTransaction({
             query:
-              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
           })
-          .then(org_data => {
+          .then((org_data) => {
             if (
               org_data[0]["product_type"] == "HIMS_ERP" ||
               org_data[0]["product_type"] == "FINANCE_ERP"
@@ -560,15 +565,15 @@ export default {
                 .generateRunningNumber({
                   user_id: req.userIdentity.algaeh_d_app_user_id,
                   numgen_codes: ["PAYMENT"],
-                  table_name: "finance_numgen"
+                  table_name: "finance_numgen",
                 })
-                .then(generatedNumbers => {
+                .then((generatedNumbers) => {
                   _mysql
                     .executeQueryWithTransaction({
                       query:
-                        "select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');"
+                        "select head_id, child_id from finance_accounts_maping where account in ('SAL_PYBLS');",
                     })
-                    .then(result => {
+                    .then((result) => {
                       // const salary_pay_acc = result[1].find(f => f.account === "SAL_PYBLS");
                       const salary_pay_acc = result[0];
 
@@ -583,9 +588,9 @@ export default {
                   inner join hims_d_bank B on B.hims_d_bank_id = E.company_bank_id 
                   where hims_f_salary_id in (?) group by E.company_bank_id;`,
                           values: [_salaryHeader_id, _salaryHeader_id],
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(headerResult => {
+                        .then((headerResult) => {
                           const laibility_amount = headerResult[0][0];
                           const bank_booking = headerResult[1];
 
@@ -606,11 +611,11 @@ export default {
                                   laibility_amount.narration +
                                   laibility_amount.salary_payable,
                                 new Date(),
-                                req.userIdentity.algaeh_d_app_user_id
+                                req.userIdentity.algaeh_d_app_user_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(day_end_header => {
+                            .then((day_end_header) => {
                               const insertSubDetail = [];
 
                               //Salary Payable Laibility Account
@@ -621,10 +626,10 @@ export default {
                                 debit_amount: laibility_amount.salary_payable,
                                 payment_type: "DR",
                                 credit_amount: 0,
-                                hospital_id: laibility_amount.hospital_id
+                                hospital_id: laibility_amount.hospital_id,
                               });
 
-                              bank_booking.forEach(per_salary => {
+                              bank_booking.forEach((per_salary) => {
                                 //Booking salary To the bank
                                 insertSubDetail.push({
                                   payment_date: new Date(),
@@ -633,7 +638,7 @@ export default {
                                   debit_amount: 0,
                                   payment_type: "CR",
                                   credit_amount: per_salary.salary_payable,
-                                  hospital_id: per_salary.hospital_id
+                                  hospital_id: per_salary.hospital_id,
                                 });
                               });
 
@@ -644,7 +649,7 @@ export default {
                                 "debit_amount",
                                 "payment_type",
                                 "credit_amount",
-                                "hospital_id"
+                                "hospital_id",
                               ];
 
                               const month = moment().format("M");
@@ -660,42 +665,42 @@ export default {
                                   extraValues: {
                                     day_end_header_id: day_end_header.insertId,
                                     year: year,
-                                    month: month
+                                    month: month,
                                   },
-                                  printQuery: true
+                                  printQuery: true,
                                 })
-                                .then(subResult => {
+                                .then((subResult) => {
                                   _mysql.commitTransaction(() => {
                                     _mysql.releaseConnection();
                                     // req.records = subResult;
                                     next();
                                   });
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.rollBackTransaction(() => {
                                     next(error);
                                   });
                                 });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -708,7 +713,7 @@ export default {
               });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -724,5 +729,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
