@@ -8,7 +8,7 @@ export default function Hr({
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
   moment,
-  allYears
+  allYears,
 }) {
   return {
     name: "HR report",
@@ -30,13 +30,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -48,20 +48,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -72,12 +72,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -88,28 +88,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -120,8 +120,8 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -134,8 +134,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
-            }
+              data: EMPLOYEE_STATUS,
+            },
           },
           {
             className: "col-2 form-group",
@@ -148,10 +148,10 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_TYPE
-            }
-          }
-        ]
+              data: EMPLOYEE_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Age Wise",
@@ -169,13 +169,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -187,20 +187,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -213,8 +213,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: COMPARISON
-            }
+              data: COMPARISON,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -227,8 +227,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -239,12 +239,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -255,28 +255,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -287,10 +287,10 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Gender Wise",
@@ -308,13 +308,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -326,20 +326,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -352,8 +352,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMP_FORMAT_GENDER
-            }
+              data: EMP_FORMAT_GENDER,
+            },
           },
           {
             className: "col-2 form-group",
@@ -364,12 +364,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -380,28 +380,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -412,10 +412,10 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Nationality Wise",
@@ -433,13 +433,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -451,20 +451,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -474,13 +474,13 @@ export default function Hr({
             isImp: false,
             label: "nationality",
             link: {
-              uri: "/masters/get/nationality"
+              uri: "/masters/get/nationality",
             },
             dataSource: {
               textField: "nationality",
               valueField: "hims_d_nationality_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -491,12 +491,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -507,28 +507,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -539,10 +539,10 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Country & Wise",
@@ -560,13 +560,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -578,20 +578,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -601,13 +601,13 @@ export default function Hr({
             isImp: false,
             label: "country",
             link: {
-              uri: "/masters/get/country"
+              uri: "/masters/get/country",
             },
             dataSource: {
               textField: "country_name",
               valueField: "hims_d_country_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -618,12 +618,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -634,28 +634,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -666,10 +666,10 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Religion Wise",
@@ -687,13 +687,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -705,20 +705,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -728,13 +728,13 @@ export default function Hr({
             isImp: false,
             label: "Religion",
             link: {
-              uri: "/masters/get/relegion"
+              uri: "/masters/get/relegion",
             },
             dataSource: {
               textField: "religion_name",
               valueField: "hims_d_religion_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -745,12 +745,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -761,28 +761,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -793,10 +793,10 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - Designation Wise",
@@ -814,13 +814,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -832,20 +832,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -856,13 +856,13 @@ export default function Hr({
             label: "designation",
             link: {
               uri: "/hrsettings/getDesignations",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "designation",
               valueField: "hims_d_designation_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -873,12 +873,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -889,28 +889,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 ",
@@ -921,10 +921,92 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
+              data: undefined,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Employee - Status Wise",
+        reportName: "statusWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        componentCode: "RPT_HR_EMP_STAT",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      department_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id",
+            },
+          },
+
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "employee_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Status",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EMPLOYEE_STATUS,
+            },
+          },
+        ],
       },
       {
         subitem: "Employee - New Joinee Month Wise",
@@ -942,13 +1024,13 @@ export default function Hr({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -960,20 +1042,20 @@ export default function Hr({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -986,8 +1068,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: DATE_OF_JOIN
-            }
+              data: DATE_OF_JOIN,
+            },
           },
           {
             className: "col-2 form-group",
@@ -999,8 +1081,8 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
           },
           {
             className: "col-2 form-group",
@@ -1013,11 +1095,11 @@ export default function Hr({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group",
@@ -1028,12 +1110,12 @@ export default function Hr({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -1044,28 +1126,28 @@ export default function Hr({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1076,11 +1158,11 @@ export default function Hr({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
-      }
-    ]
+              data: undefined,
+            },
+          },
+        ],
+      },
+    ],
   };
 }
