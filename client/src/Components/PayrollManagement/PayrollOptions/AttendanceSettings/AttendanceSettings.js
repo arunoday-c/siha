@@ -556,7 +556,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Attendence Starts", isImp: true }}
                   selector={{
@@ -633,7 +633,7 @@ export default class AttendanceSettings extends Component {
                       });
                     },
                   }}
-                />
+                /> */}
                 <div className="col">
                   <label>OT Calculation</label>
                   <div className="customRadio">

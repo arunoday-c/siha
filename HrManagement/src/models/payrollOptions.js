@@ -31,7 +31,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "update hims_d_hrms_options set attendance_starts=?, at_st_date=?, at_end_date=?, salary_process_date=?, \
+          "update hims_d_hrms_options set salary_process_date=?, \
             salary_pay_before_end_date=?, payroll_payment_date=?, salary_calendar=?, salary_calendar_fixed_days=?, \
             attendance_type=?, fetch_punch_data_reporting=?, leave_level=?, loan_level=?, leave_encash_level=?, \
             review_auth_level=?, yearly_working_days=?, advance_deduction=?, overtime_type=?, overtime_payment=?, \
@@ -41,9 +41,6 @@ export default {
             biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, ot_calculation = ?, external_finance=?, \
             updated_date=?, updated_by=?,ramzan_timing_req=?,ramzan_start_date=?,ramzan_end_date=?,ramzan_working_hr_per_day=?,ramzan_eligible_category=? where hims_d_hrms_options_id=?",
         values: [
-          input.attendance_starts,
-          input.at_st_date,
-          input.at_end_date,
           input.salary_process_date,
           input.salary_pay_before_end_date,
           input.payroll_payment_date,
