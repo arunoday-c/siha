@@ -1869,7 +1869,8 @@ export default {
           ") \
           else ROUND((airfare_amount/airfare_eligibility), " +
           decimal_places +
-          ") end as airfare_amount,\
+          ") end as ROUND((airfare_amount/airfare_eligibility), " +
+          decimal_places + ") \
           ROUND(sum((EE.amount *12)/365)* EG.monthly_accrual_days, " +
           decimal_places +
           ") as leave_salary \
@@ -1891,7 +1892,8 @@ export default {
           ") \
           else ROUND((airfare_amount/airfare_eligibility), " +
           decimal_places +
-          ") end as airfare_amount,\
+          ") end as ROUND((airfare_amount/airfare_eligibility), " +
+          decimal_places + ") \
           ROUND(sum(EE.amount /30)* EG.monthly_accrual_days, " +
           decimal_places +
           ") as leave_salary\
