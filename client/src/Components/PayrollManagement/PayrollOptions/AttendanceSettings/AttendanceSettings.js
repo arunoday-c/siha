@@ -85,26 +85,26 @@ export default class AttendanceSettings extends Component {
   }
 
   validateData = () => {
-    const { attendance_starts, at_end_date, at_st_date } = this.state;
-    if (attendance_starts === "PM") {
-      if (!at_end_date || !at_st_date) {
-        swalMessage({
-          title: "Please enter valid Start and End date for Attendence",
-          type: "error",
-        });
-        return false;
-      } else {
-        return true;
-      }
-    } else if (!attendance_starts) {
-      swalMessage({
-        title: "Please select attendence start",
-        type: "error",
-      });
-      return false;
-    } else {
-      return true;
-    }
+    // const { attendance_starts, at_end_date, at_st_date } = this.state;
+    // if (attendance_starts === "PM") {
+    //   if (!at_end_date || !at_st_date) {
+    //     swalMessage({
+    //       title: "Please enter valid Start and End date for Attendence",
+    //       type: "error",
+    //     });
+    //     return false;
+    //   } else {
+    //     return true;
+    //   }
+    // } else if (!attendance_starts) {
+    //   swalMessage({
+    //     title: "Please select attendence start",
+    //     type: "error",
+    //   });
+    //   return false;
+    // } else {
+    return true;
+    // }
   };
 
   saveOptions() {
