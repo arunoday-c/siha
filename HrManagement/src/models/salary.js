@@ -1867,10 +1867,9 @@ export default {
           CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), " +
           decimal_places +
           ") \
-          else ROUND((airfare_amount/airfare_eligibility), " +
+          else ROUND((airfare_amount/CAST(CAST(airfare_eligibility AS CHAR) AS SIGNED)), " +
           decimal_places +
-          ") end as ROUND((airfare_amount/airfare_eligibility), " +
-          decimal_places + ") \
+          ") end as airfare_amount,\
           ROUND(sum((EE.amount *12)/365)* EG.monthly_accrual_days, " +
           decimal_places +
           ") as leave_salary \
@@ -1890,10 +1889,9 @@ export default {
           CASE when airfare_process = 'N' then 0 when airfare_factor = 'PB' then ROUND(((amount / 100)*airfare_percentage), " +
           decimal_places +
           ") \
-          else ROUND((airfare_amount/airfare_eligibility), " +
+          else ROUND((airfare_amount/CAST(CAST(airfare_eligibility AS CHAR) AS SIGNED)), " +
           decimal_places +
-          ") end as ROUND((airfare_amount/airfare_eligibility), " +
-          decimal_places + ") \
+          ") end as airfare_amount,\
           ROUND(sum(EE.amount /30)* EG.monthly_accrual_days, " +
           decimal_places +
           ") as leave_salary\
@@ -1906,7 +1904,7 @@ export default {
         .executeQuery({
           query: strQuery,
           values: [inputParam.employee_id],
-          // printQuery: true
+          printQuery: true
         })
         .then(leave_accrual_data => {
           req.connection = {
@@ -2618,7 +2616,7 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
-    //console.log("generateAccountingEntry", req.flag)
+    console.log("generateAccountingEntry", req.flag)
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
