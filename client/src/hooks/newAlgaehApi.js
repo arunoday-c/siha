@@ -4,7 +4,7 @@ import { getItem } from "algaeh-react-components/storage";
 import axios from "axios";
 import config from "../utils/config.json";
 
-function createUrl(inputs) {
+export function createUrl(inputs) {
   const { protocol, hostname } = window.location;
   const { baseUrl, routersAndPorts } = config;
   const { uri, module: moduleName } = inputs;
@@ -22,23 +22,34 @@ function createUrl(inputs) {
   }
   return url;
 }
-
-export default async function newAlgaehApi(
-  inputs = { uri: "", method: "", module: "", data: {} }
-) {
+export async function generateHeaders() {
   const token = await getItem("token");
   const headers = {
     "x-api-key": token,
     "x-client-ip": getNewLocalIp(),
     "x-app-user-identity": getCookie("keyResources"),
-    "x-branch": getCookie("HospitalId")
+    "x-branch": getCookie("HospitalId"),
   };
+  return headers;
+}
+
+export default async function newAlgaehApi(
+  inputs = { uri: "", method: "", module: "", data: {} }
+) {
+  // const token = await getItem("token");
+  // const headers = {
+  //   "x-api-key": token,
+  //   "x-client-ip": getNewLocalIp(),
+  //   "x-app-user-identity": getCookie("keyResources"),
+  //   "x-branch": getCookie("HospitalId")
+  // };
+  const headers = await generateHeaders();
   try {
     let response;
     let responseObj = {
       url: createUrl(inputs),
       method: inputs.method,
-      headers
+      headers,
     };
     if (inputs.method === "GET" || !inputs.method) {
       responseObj.params = inputs.data;
