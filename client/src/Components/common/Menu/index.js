@@ -99,7 +99,9 @@ function NavBars(props) {
         )}
 
         <div className="navbar-brand appLogoCntr">
-          <p className="appLogoOnly">{product_type}</p>
+          <p className="appLogoOnly">
+            {product_type !== undefined ? product_type.replace("_", " ") : ""}
+          </p>
         </div>
         <h5 className="topNavbar-title mr-auto">
           <BreadCrum

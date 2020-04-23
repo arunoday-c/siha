@@ -25,7 +25,7 @@ export default class NewMonthlyAttendance extends Component {
 
       formatingString: "",
       attendance_type: null,
-      currMt: {}
+      currMt: {},
     };
     this.getHrmsOptions();
   }
@@ -35,28 +35,28 @@ export default class NewMonthlyAttendance extends Component {
       uri: "/payrollOptions/getHrmsOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            attendance_type: res.data.result[0].attendance_type
+            attendance_type: res.data.result[0].attendance_type,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   loadAttendance(inputs) {
     this.setState(
-      prevState => {
+      (prevState) => {
         return {
           displayLoader: true,
-          inputs: !inputs ? prevState.inputs : inputs
+          inputs: !inputs ? prevState.inputs : inputs,
         };
       },
       () => {
@@ -75,10 +75,11 @@ export default class NewMonthlyAttendance extends Component {
             department_id: inputs.department_id,
             hims_d_employee_id: inputs.hims_d_employee_id,
             designation_id: inputs.designation_id,
-            group_id: inputs.group_id
+            group_id: inputs.group_id,
+            employee_group_id: inputs.group_id,
           },
           module: "hrManagement",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.setState({
                 data: res.data.records.attendance,
@@ -86,20 +87,20 @@ export default class NewMonthlyAttendance extends Component {
                   res.data.records.from_date,
                   res.data.records.to_date
                 ),
-                displayLoader: false
+                displayLoader: false,
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
 
             this.setState({
-              displayLoader: true
+              displayLoader: true,
             });
-          }
+          },
         });
       }
     );
@@ -113,7 +114,7 @@ export default class NewMonthlyAttendance extends Component {
 
   monthSelectionHandler(e) {
     this.setState({
-      yearAndMonth: moment(e).startOf("month")._d
+      yearAndMonth: moment(e).startOf("month")._d,
     });
   }
 
@@ -124,8 +125,8 @@ export default class NewMonthlyAttendance extends Component {
     this.setState({
       [_getType]: {
         ...this.state[_getType],
-        [e]: null
-      }
+        [e]: null,
+      },
     });
   }
 
@@ -153,40 +154,40 @@ export default class NewMonthlyAttendance extends Component {
         sub_department_id:
           this.state.inputs.sub_department_id !== null
             ? this.state.inputs.sub_department_id
-            : undefined
+            : undefined,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           that.setState({
             loader: false,
-            data: response.data.result
+            data: response.data.result,
           });
         } else if (!response.data.success) {
           swalMessage({
             title: response.data.result.message,
-            type: "error"
+            type: "error",
           });
           that.setState({
-            loader: false
+            loader: false,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         that.setState({
-          loader: false
+          loader: false,
         });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   showEditModal(data) {
     this.setState({
       openMonthlyEdit: true,
-      currMt: data
+      currMt: data,
     });
   }
 
@@ -198,40 +199,40 @@ export default class NewMonthlyAttendance extends Component {
         hospital_id: data.hospital_id,
         year: data.year,
         month: data.month,
-        employee_id: data.employee_id
+        employee_id: data.employee_id,
       },
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            monthly_detail: res.data.result
+            monthly_detail: res.data.result,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
 
     this.setState({
       openMonthlyDetail: true,
-      currEmp: data.employee_name
+      currEmp: data.employee_name,
     });
   }
 
   closeMonthlyDetail() {
     this.setState({
-      openMonthlyDetail: false
+      openMonthlyDetail: false,
     });
     this.loadAttendance();
   }
 
   closeMonthlyEdit() {
     this.setState({
-      openMonthlyEdit: false
+      openMonthlyEdit: false,
     });
     this.loadAttendance();
   }
@@ -252,7 +253,7 @@ export default class NewMonthlyAttendance extends Component {
           data={this.state.currMt}
         />
 
-        <EmployeeFilter loadFunc={inputs => this.loadAttendance(inputs)} />
+        <EmployeeFilter loadFunc={(inputs) => this.loadAttendance(inputs)} />
 
         <div className="row">
           <div className="col">
@@ -278,7 +279,7 @@ export default class NewMonthlyAttendance extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Actions" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <React.Fragment>
                               <i
@@ -295,8 +296,8 @@ export default class NewMonthlyAttendance extends Component {
                         others: {
                           maxWidth: 105,
                           filterable: false,
-                          fixed: "left"
-                        }
+                          fixed: "left",
+                        },
                       },
                       {
                         fieldName: "employee_name",
@@ -309,8 +310,8 @@ export default class NewMonthlyAttendance extends Component {
                         others: {
                           capitalize: true,
                           maxWidth: 200,
-                          fixed: "left"
-                        }
+                          fixed: "left",
+                        },
                       },
                       {
                         fieldName: "employee_code",
@@ -318,13 +319,13 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "total_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Total Days" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "total_work_days",
@@ -332,25 +333,25 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Total Work Days" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "display_present_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Present Days" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "absent_days",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "paid_leave",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "unpaid_leave",
@@ -358,7 +359,7 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Unpaid Leaves" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "pending_unpaid_leave",
@@ -367,7 +368,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Pending Unpaid Leaves" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.pending_unpaid_leave
@@ -375,7 +376,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : 0}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "total_paid_days",
@@ -383,7 +384,7 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Total Paid Days" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "total_holidays",
@@ -391,7 +392,7 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Total Holidays" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "total_weekoff_days",
@@ -399,7 +400,7 @@ export default class NewMonthlyAttendance extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Total Week Off Days" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "total_working_hours",
@@ -408,7 +409,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Working Hours" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.total_working_hours
@@ -416,7 +417,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "total_hours",
@@ -425,7 +426,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Total Worked Hours" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.total_hours
@@ -433,14 +434,14 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "ot_work_hours",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.ot_work_hours
@@ -448,7 +449,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "shortage_hours",
@@ -457,7 +458,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Shortage Hours" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.shortage_hours
@@ -465,14 +466,14 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "ot_weekoff_hours",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.ot_weekoff_hours
@@ -480,14 +481,14 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "ot_holiday_hours",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.ot_holiday_hours
@@ -495,7 +496,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "prev_month_shortage_hr",
@@ -504,7 +505,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Shortage" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.prev_month_shortage_hr
@@ -512,7 +513,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "prev_month_ot_hr",
@@ -521,7 +522,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month OT" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.prev_month_ot_hr
@@ -529,7 +530,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "prev_month_week_off_ot",
@@ -538,7 +539,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Weekoff OT" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.prev_month_week_off_ot
@@ -546,7 +547,7 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "prev_month_holiday_ot",
@@ -555,7 +556,7 @@ export default class NewMonthlyAttendance extends Component {
                             label={{ forceLabel: "Previous Month Holiday OT" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.prev_month_holiday_ot
@@ -563,11 +564,11 @@ export default class NewMonthlyAttendance extends Component {
                                 : "00:00 Hrs"}
                             </span>
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     dataSource={{
-                      data: this.state.data
+                      data: this.state.data,
                     }}
                     filter={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
