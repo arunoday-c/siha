@@ -16,13 +16,13 @@
                         <th>Leave Type</th>
                         <th>Requested Days</th>
                         <th>Encash Amt.</th>
-                        <th>Payment Status</th>
+                        <th>Paid</th>
                     </tr>
                 </thead>
                 <tbody>{{#hasElement detail}}
-                    <tr class="numberFld numberFldTotalBottom">
+                    <tr class="numberFld numberFldTotal">
                         <td colspan="8"></td>
-                        <td class="numberFld numberFldTotal">{{sum_encash_amt}}</td>
+                        <td class="numberFld">{{sum_encash_amt}}</td>
                         <td></td>
                     </tr>
 
@@ -36,7 +36,7 @@
                         <td>{{group_description}}</td>
                         <td>{{leave_description}}</td>
                         <td>{{leave_days}}</td>
-                        <td>{{total_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
                         <td>{{paid}}</td>
                     </tr>
                     {{/each }}

@@ -527,7 +527,9 @@ export default function ManualAttendanceEvents() {
             },
             {
               fieldName: "balance_leave_days",
-              label: <AlgaehLabel label={{ forceLabel: "Leave Days" }} />,
+              label: (
+                <AlgaehLabel label={{ forceLabel: "Initial Annual Leave" }} />
+              ),
               editorTemplate: (row) => {
                 return (
                   <AlagehFormGroup
