@@ -1963,6 +1963,28 @@
       "value": "CAN"
     }
   ],
+  "LEAVE_ENCASH_STATUS": [
+    {
+      "name": "Approved",
+      "value": "APR"
+    },
+    {
+      "name": "Pending",
+      "value": "PEN"
+    },
+    {
+      "name": "Processed",
+      "value": "PRO"
+    },
+    {
+      "name": "Rejected",
+      "value": "REJ"
+    },
+    {
+      "name": "Cancelled",
+      "value": "CAN"
+    }
+  ],
   "LEAVE_EDIT": [
     {
       "name": "Edit",
