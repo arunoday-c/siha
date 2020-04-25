@@ -119,9 +119,12 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select encash.hims_f_leave_encash_header_id, encash.encashment_number as request_number, encash.employee_id, \
-          encash.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_leave_encash_header encash, \
-          hims_d_employee emp where encash.authorized = 'APR' and encash.employee_id = emp.hims_d_employee_id" +
+            "select EH.hims_f_leave_encash_header_id, EH.encashment_number as request_number, EH.employee_id, \
+            EH.total_amount as payment_amount, EMP.employee_code,EMP.full_name, L.leave_category \
+            from hims_f_leave_encash_header EH \
+            inner join hims_d_employee EMP on EMP.hims_d_employee_id = EH.employee_id \
+            inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
+            where EH.authorized = 'APR' " +
             _stringData,
           values: _.valuesIn(_encashLeaveDetails),
           printQuery: true,
@@ -398,6 +401,9 @@ export default {
                     next(error);
                   });
               } else if (inputParam.payment_type == "EN") {
+
+
+
                 _mysql
                   .executeQuery({
                     query:
@@ -411,14 +417,32 @@ export default {
                     ],
                   })
                   .then((EncashResult) => {
+                    let strAnual_Qry = ""
+                    if (inputParam.leave_category === "A") {
+
+                      strAnual_Qry += _mysql.mysqlQueryFormat(
+                        "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance, \
+                        (LH.balance_leave_days - H.leave_days) as balance_leave_days, (LH.balance_leave_salary_amount - H.leave_amount) as balance_leave_salary_amount, \
+                        M.hims_f_employee_monthly_leave_id, LH.hims_f_employee_leave_salary_header_id from hims_f_leave_encash_header H \
+                        inner join hims_f_employee_monthly_leave M on M.employee_id=H.employee_id \
+                        and M.`year`=H.`year`and M.leave_id = H.leave_id\
+                        inner join hims_f_employee_leave_salary_header LH on LH.employee_id=H.employee_id \
+                        where H.hims_f_leave_encash_header_id=?;",
+                        [inputParam.employee_leave_encash_id]
+                      );
+
+                    } else {
+                      strAnual_Qry += _mysql.mysqlQueryFormat(
+                        "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance, \
+                        M.hims_f_employee_monthly_leave_id from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
+                        where M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                        M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
+                        [inputParam.employee_leave_encash_id]
+                      );
+                    }
                     _mysql
                       .executeQuery({
-                        query:
-                          "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance \
-                    from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
-                    where M.employee_id=H.employee_id and M.`year`=H.`year`and \
-                    M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
-                        values: [inputParam.employee_leave_encash_id],
+                        query: strAnual_Qry,
                         printQuery: true,
                       })
                       .then((leave_encash_header) => {
@@ -429,38 +453,85 @@ export default {
                           };
                           next();
                         }
-                        for (let i = 0; i < leave_encash_header.length; i++) {
+                        if (inputParam.leave_category === "A") {
+
                           strQuery += _mysql.mysqlQueryFormat(
                             "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                            where employee_id=? and `year`=? and leave_id=?;",
+                          where hims_f_employee_monthly_leave_id=?; \
+                          UPDATE hims_f_employee_leave_salary_header SET balance_leave_days = ?, \
+                          balance_leave_salary_amount = ? where hims_f_employee_leave_salary_header_id=?",
                             [
-                              leave_encash_header[i].close_balance,
-                              leave_encash_header[i].employee_id,
-                              leave_encash_header[i].year,
-                              leave_encash_header[i].leave_id,
+                              leave_encash_header[0].close_balance,
+                              leave_encash_header[0].hims_f_employee_monthly_leave_id,
+                              leave_encash_header[0].balance_leave_days,
+                              parseFloat(leave_encash_header[0].balance_leave_salary_amount) > 0 ? leave_encash_header[0].balance_leave_salary_amount : 0,
+                              leave_encash_header[0].hims_f_employee_leave_salary_header_id
                             ]
                           );
-                          if (i === leave_encash_header.length - 1) {
-                            _mysql
-                              .executeQuery({
-                                query: strQuery,
-                                printQuery: true,
-                              })
-                              .then((monthly_leave) => {
-                                let result = {
-                                  payment_application_code: payment_application_code,
-                                };
-                                // _mysql.commitTransaction(() => {
-                                //   _mysql.releaseConnection();
-                                req.records = result;
-                                next();
-                                // });
-                              })
-                              .catch((error) => {
-                                next(error);
-                              });
-                          }
+
+                        } else {
+
+                          strQuery += _mysql.mysqlQueryFormat(
+                            "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                          where hims_f_employee_monthly_leave_id=?;",
+                            [
+                              leave_encash_header[0].close_balance,
+                              leave_encash_header[0].hims_f_employee_monthly_leave_id
+                            ]
+                          );
                         }
+                        _mysql
+                          .executeQuery({
+                            query: strQuery,
+                            printQuery: true,
+                          })
+                          .then((monthly_leave) => {
+                            let result = {
+                              payment_application_code: payment_application_code,
+                            };
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            req.records = result;
+                            next();
+                            // });
+                          })
+                          .catch((error) => {
+                            next(error);
+                          });
+
+
+                        // for (let i = 0; i < leave_encash_header.length; i++) {
+                        //   strQuery += _mysql.mysqlQueryFormat(
+                        //     "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                        //     where employee_id=? and `year`=? and leave_id=?;",
+                        //     [
+                        //       leave_encash_header[i].close_balance,
+                        //       leave_encash_header[i].employee_id,
+                        //       leave_encash_header[i].year,
+                        //       leave_encash_header[i].leave_id,
+                        //     ]
+                        //   );
+                        //   if (i === leave_encash_header.length - 1) {
+                        //     _mysql
+                        //       .executeQuery({
+                        //         query: strQuery,
+                        //         printQuery: true,
+                        //       })
+                        //       .then((monthly_leave) => {
+                        //         let result = {
+                        //           payment_application_code: payment_application_code,
+                        //         };
+                        //         // _mysql.commitTransaction(() => {
+                        //         //   _mysql.releaseConnection();
+                        //         req.records = result;
+                        //         next();
+                        //         // });
+                        //       })
+                        //       .catch((error) => {
+                        //         next(error);
+                        //       });
+                        //   }
+                        // }
                       })
                       .catch((error) => {
                         next(error);
@@ -881,20 +952,39 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR'\
+                  "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR', `posted`='N'\
                 where hims_f_leave_encash_header_id=?",
                 values: [inputParam.employee_leave_encash_id],
                 printQuery: true,
               })
               .then((EncashResult) => {
+                let strAnual_Qry = ""
+                if (inputParam.leave_category === "A") {
+
+                  strAnual_Qry += _mysql.mysqlQueryFormat(
+                    "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance + H.leave_days) as close_balance, \
+                        (LH.balance_leave_days + H.leave_days) as balance_leave_days, (LH.balance_leave_salary_amount + H.leave_amount) as balance_leave_salary_amount, \
+                        M.hims_f_employee_monthly_leave_id, LH.hims_f_employee_leave_salary_header_id from hims_f_leave_encash_header H \
+                        inner join hims_f_employee_monthly_leave M on M.employee_id=H.employee_id \
+                        and M.`year`=H.`year`and M.leave_id = H.leave_id\
+                        inner join hims_f_employee_leave_salary_header LH on LH.employee_id=H.employee_id \
+                        where H.hims_f_leave_encash_header_id=?;",
+                    [inputParam.employee_leave_encash_id]
+                  );
+
+                } else {
+                  strAnual_Qry += _mysql.mysqlQueryFormat(
+                    "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance + H.leave_days) as close_balance, \
+                        M.hims_f_employee_monthly_leave_id from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
+                        where M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                        M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
+                    [inputParam.employee_leave_encash_id]
+                  );
+                }
+
                 _mysql
                   .executeQuery({
-                    query:
-                      "select H.employee_id, H.`year`, D.leave_id,D.leave_days,(M.close_balance + D.leave_days) as close_balance \
-                from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
-                where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
-                M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
-                    values: [inputParam.employee_leave_encash_id],
+                    query: strAnual_Qry
                   })
                   .then((leave_encash_header) => {
                     let strQuery = "";
@@ -903,57 +993,100 @@ export default {
                       next();
                     }
 
-                    for (let i = 0; i < leave_encash_header.length; i++) {
+                    if (inputParam.leave_category === "A") {
+
                       strQuery += _mysql.mysqlQueryFormat(
                         "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                      where employee_id=? and `year`=? and leave_id=?;",
+                      where hims_f_employee_monthly_leave_id=?; \
+                      UPDATE hims_f_employee_leave_salary_header SET balance_leave_days = ?, \
+                      balance_leave_salary_amount = ? where hims_f_employee_leave_salary_header_id=?",
                         [
-                          leave_encash_header[i].close_balance,
-                          leave_encash_header[i].employee_id,
-                          leave_encash_header[i].year,
-                          leave_encash_header[i].leave_id,
+                          leave_encash_header[0].close_balance,
+                          leave_encash_header[0].hims_f_employee_monthly_leave_id,
+                          leave_encash_header[0].balance_leave_days,
+                          parseFloat(leave_encash_header[0].balance_leave_salary_amount) > 0 ? leave_encash_header[0].balance_leave_salary_amount : 0,
+                          leave_encash_header[0].hims_f_employee_leave_salary_header_id
                         ]
                       );
-                      if (i === leave_encash_header.length - 1) {
-                        _mysql
-                          .executeQuery({
-                            query: strQuery,
-                            printQuery: true,
-                          })
-                          .then((monthly_leave) => {
-                            // _mysql.commitTransaction(() => {
-                            //   _mysql.releaseConnection();
-                            req.records = monthly_leave;
-                            next();
-                            // });
-                          })
-                          .catch((error) => {
-                            next(error);
-                          });
-                      }
-                      // _mysql
-                      //   .executeQuery({
-                      //     query:
-                      //       "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                      // where employee_id=? and `year`=? and leave_id=?;",
-                      //     values: [
-                      //       leave_encash_header[i].close_balance,
-                      //       leave_encash_header[i].employee_id,
-                      //       leave_encash_header[i].year,
-                      //       leave_encash_header[i].leave_id
-                      //     ]
-                      //   })
-                      //   .then(monthly_leave => {
-                      //     _mysql.commitTransaction(() => {
-                      //       _mysql.releaseConnection();
-                      //       req.records = monthly_leave;
-                      //       next();
-                      //     });
-                      //   })
-                      //   .catch(error => {
-                      //     next(error);
-                      //   });
+
+                    } else {
+
+                      strQuery += _mysql.mysqlQueryFormat(
+                        "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                      where hims_f_employee_monthly_leave_id=?;",
+                        [
+                          leave_encash_header[0].close_balance,
+                          leave_encash_header[0].hims_f_employee_monthly_leave_id
+                        ]
+                      );
                     }
+                    _mysql
+                      .executeQuery({
+                        query: strQuery,
+                        printQuery: true,
+                      })
+                      .then((monthly_leave) => {
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        req.records = monthly_leave;
+                        next();
+                        // });
+                      })
+                      .catch((error) => {
+                        next(error);
+                      });
+
+                    // for (let i = 0; i < leave_encash_header.length; i++) {
+                    //   strQuery += _mysql.mysqlQueryFormat(
+                    //     "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                    //   where employee_id=? and `year`=? and leave_id=?;",
+                    //     [
+                    //       leave_encash_header[i].close_balance,
+                    //       leave_encash_header[i].employee_id,
+                    //       leave_encash_header[i].year,
+                    //       leave_encash_header[i].leave_id,
+                    //     ]
+                    //   );
+                    //   if (i === leave_encash_header.length - 1) {
+                    //     _mysql
+                    //       .executeQuery({
+                    //         query: strQuery,
+                    //         printQuery: true,
+                    //       })
+                    //       .then((monthly_leave) => {
+                    //         // _mysql.commitTransaction(() => {
+                    //         //   _mysql.releaseConnection();
+                    //         req.records = monthly_leave;
+                    //         next();
+                    //         // });
+                    //       })
+                    //       .catch((error) => {
+                    //         next(error);
+                    //       });
+                    //   }
+                    //   // _mysql
+                    //   //   .executeQuery({
+                    //   //     query:
+                    //   //       "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                    //   // where employee_id=? and `year`=? and leave_id=?;",
+                    //   //     values: [
+                    //   //       leave_encash_header[i].close_balance,
+                    //   //       leave_encash_header[i].employee_id,
+                    //   //       leave_encash_header[i].year,
+                    //   //       leave_encash_header[i].leave_id
+                    //   //     ]
+                    //   //   })
+                    //   //   .then(monthly_leave => {
+                    //   //     _mysql.commitTransaction(() => {
+                    //   //       _mysql.releaseConnection();
+                    //   //       req.records = monthly_leave;
+                    //   //       next();
+                    //   //     });
+                    //   //   })
+                    //   //   .catch(error => {
+                    //   //     next(error);
+                    //   //   });
+                    // }
                   })
                   .catch((error) => {
                     next(error);
@@ -1265,6 +1398,14 @@ export default {
       let _stringData = "";
       inputValues.push(input.hospital_id);
       inputValues.push(input.payment_type);
+
+      let strAppend = ""
+      let strField = ""
+      if (input.payment_type === "EN") {
+        strField = ", L.leave_category"
+        strAppend = " inner join hims_f_leave_encash_header EH on EH.hims_f_leave_encash_header_id = EP.employee_leave_encash_id \
+        inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id "
+      }
       if (input.employee_id != null) {
         _stringData += " and employee_id=? ";
         inputValues.push(input.employee_id);
@@ -1273,11 +1414,12 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_employee_payments_id,employee_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
+            "select hims_f_employee_payments_id, EP.employee_id, employee_advance_id,employee_loan_id,employee_leave_encash_id,\
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
-          payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
-          head_id, child_id, emp.employee_code, emp.full_name,earnings_id from hims_f_employee_payments EP, hims_d_employee emp where \
-          EP.employee_id = emp.hims_d_employee_id and emp.hospital_id=? and payment_type=?" +
+          payment_type, payment_amount, EP.payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
+          head_id, child_id, emp.employee_code, emp.full_name,earnings_id" + strField + " from hims_f_employee_payments EP \
+          inner join hims_d_employee emp on EP.employee_id = emp.hims_d_employee_id " + strAppend +
+            "where emp.hospital_id=? and payment_type=?" +
             _stringData,
           values: inputValues,
           printQuery: true,
