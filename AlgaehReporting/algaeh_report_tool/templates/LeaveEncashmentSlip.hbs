@@ -1,0 +1,49 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+{{#each result}}
+
+<body style="width: 100%; height: 100%;">
+    <div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td><label class="textEnLft">Employee Name:</label><span class="valueText">{{full_name}}</span></td>
+                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{designation}}</span></td>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+                </tr>
+
+
+
+            </table>
+
+        </section>
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Requested Date:</label><span
+                            class="valueText">{{encashment_date}}</span>
+                    </td>
+                    <td><label class="textEnLft">Request No:</label><span class="valueText">{{encashment_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Request Status:</label><span class="valueText">{{authorized}}</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Requested Leave Type:</label><span
+                            class="valueText">{{leave_description}}</span>
+                    </td>
+                    <td><label class="textEnLft">Requested For:</label><span class="valueText">{{leave_days}}days</span>
+                    </td>
+                    <td><label class="textEnLft">Encashment Amount</label><span
+                            class="valueText">{{total_amount}}</span>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <p style="text-align: center">This is a system generated payslip on {{currentDateTime 'date'}}. </p>
+    </div>
+</body>
+{{/each }}
