@@ -72,8 +72,13 @@ export default (db) => {
       const { image_id, logo_type } = req.query;
       ImageModel.findOne({ image_id, logo_type })
         .then((result) => {
+          const data = result.image.split(","); //[0].split(":")[1];
+          const type = data[0].split(";")[0].split(":")[1];
           res.status(200);
-          res.pipe(result.image);
+          res.setHeader("content-type", type);
+          let bufferStream = new stream.PassThrough();
+          bufferStream.end(data[1], "base64");
+          bufferStream.pipe(res);
         })
         .catch((error) => {
           res.status(400).json({
