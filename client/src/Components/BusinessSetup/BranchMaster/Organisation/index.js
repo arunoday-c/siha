@@ -8,11 +8,11 @@ import {
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
 import { MainContext } from "algaeh-react-components/context";
-import { logoUrl } from "../imagesSettings";
+import { logoUrl, LoadLogo } from "../imagesSettings";
 export function Organization(props) {
   const [organisation, setOrganisation] = useState({});
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-
+  const [org_image, setOrgImage] = useState(undefined);
   const [loadingOrgImage, setLoadingOrgImage] = useState(false);
   const { countryMaster } = props;
   const { userToken } = useContext(MainContext);
@@ -28,6 +28,12 @@ export function Organization(props) {
 
         if (success === true) {
           setOrganisation(records);
+          setOrgImage(
+            LoadLogo({
+              image_id: records.hims_d_organization_id,
+              logo_type: "ORG",
+            })
+          );
         } else {
           AlgaehMessagePop({
             display: message,
@@ -45,9 +51,7 @@ export function Organization(props) {
   const {
     hims_d_organization_id,
     organization_name,
-    org_image,
     business_registration_number,
-    loading,
     tax_number,
     product_type,
     fiscal_period,
@@ -96,10 +100,31 @@ export function Organization(props) {
         });
       });
   }
-
+  function getBase64(img, callback) {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => callback(reader.result));
+    reader.readAsDataURL(img);
+  }
+  function onImageHandleChange(info) {
+    if (info.file.status === "uploading") {
+      setLoadingOrgImage(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        setOrgImage(imageUrl);
+        setLoadingOrgImage(false);
+      });
+    }
+  }
   const uploadButton = (
     <div>
-      {loading ? <i className="fas fa-spin" /> : <i className="fas fa-plus" />}
+      {loadingOrgImage ? (
+        <i className="fas fa-spinner fa-spin" />
+      ) : (
+        <i className="fas fa-plus" />
+      )}
       <div className="ant-upload-text">Organisation Logo</div>
     </div>
   );
@@ -129,14 +154,36 @@ export function Organization(props) {
               name="org_image"
               listType="picture-card"
               showUploadList={false}
+              onChange={onImageHandleChange}
               data={{ image_id: hims_d_organization_id, logo_type: "ORG" }}
               action={logoUrl({ uri: "/Document/saveLogo" })}
               accept=".png,.jpeg,.jpg,.gif"
             >
+              {/* <img
+                src={
+                  org_image
+                    ? org_image
+                    : `${loadLogo({
+                        image_id: hims_d_organization_id,
+                        logo_type: "ORG",
+                      })}`
+                }
+                alt=""
+                style={{ width: "100%" }}
+              />
+              {uploadButton} */}
               {org_image ? (
                 <img src={org_image} alt="avatar" style={{ width: "100%" }} />
               ) : (
-                uploadButton
+                <>
+                  <LoadLogo
+                    input={{
+                      image_id: hims_d_organization_id,
+                      logo_type: "ORG",
+                    }}
+                  />
+                  {uploadButton}
+                </>
               )}
             </Upload>
           </div>
