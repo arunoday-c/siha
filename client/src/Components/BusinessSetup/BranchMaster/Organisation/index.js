@@ -135,21 +135,11 @@ export function Organization(props) {
         <div className="caption">
           <h3 className="caption-subject">Organization</h3>
         </div>
-        <div className="actions">
-          <div className="ui input">
-            <input
-              type="text"
-              disabled={disabledEdits}
-              name="organization_name"
-              defaultValue={organization_name}
-              onChange={onChangeHandler}
-            ></input>
-          </div>
-        </div>
+        <div className="actions"></div>
       </div>
       <div className="portlet-body">
         <div className="row">
-          <div className="col-4">
+          <div className="col-3">
             <Upload
               name="org_image"
               listType="picture-card"
@@ -158,6 +148,7 @@ export function Organization(props) {
               data={{ image_id: hims_d_organization_id, logo_type: "ORG" }}
               action={logoUrl({ uri: "/Document/saveLogo" })}
               accept=".png,.jpeg,.jpg,.gif"
+              className="orgImageUpload"
             >
               {/* <img
                 src={
@@ -186,148 +177,180 @@ export function Organization(props) {
                 </>
               )}
             </Upload>
-          </div>
-          <div className="col-8">
-            <AlgaehFormGroup
-              div={{
-                className: "col-12 form-group mandatory",
-              }}
-              label={{
-                forceLabel: "Business Reg.. No.",
-                isImp: true,
-              }}
-              textBox={{
-                name: "business_registration_number",
-                type: "text",
-                className: "txt-fld",
-                placeholder: "Business Registration Number",
-                value: business_registration_number,
-                onChange: onChangeHandler,
-              }}
-            />
-            <AlgaehFormGroup
-              div={{
-                className: "col-12 form-group mandatory",
-              }}
-              label={{
-                forceLabel: "Tax No.",
-                isImp: true,
-              }}
-              textBox={{
-                name: "tax_number",
-                type: "text",
-                className: "txt-fld",
-                placeholder: "Tax Number",
-                value: tax_number,
-                onChange: onChangeHandler,
-              }}
-            />
-          </div>
-          <AlgaehAutoComplete
-            div={{ className: "col-6 form-group mandatory" }}
-            label={{ forceLabel: "Product Type", isImp: true }}
-            selector={{
-              name: "product_type",
-              dataSource: {
-                data: [
-                  {
-                    value: "HIMS_ERP",
-                    name: "Finance,HRMS,Pharmacy and Inventory",
+          </div>{" "}
+          <div className="col-9">
+            {" "}
+            <div className="row">
+              <AlgaehFormGroup
+                div={{
+                  className: "col-7 form-group mandatory",
+                }}
+                label={{
+                  forceLabel: "Business Reg. Name",
+                  isImp: true,
+                }}
+                textBox={{
+                  name: "organization_name",
+                  type: "text",
+                  className: "txt-fld",
+                  placeholder: "Business Reg. Name",
+                  value: organization_name,
+                  onChange: onChangeHandler,
+                  disabled: disabledEdits,
+                }}
+              />
+              {/* <div className="col-12">
+            {" "}
+            <div className="ui input">
+              <input
+                type="text"
+                disabled={disabledEdits}
+                name="organization_name"
+                defaultValue={organization_name}
+                onChange={onChangeHandler}
+              ></input>
+            </div>
+          </div> */}
+              <AlgaehFormGroup
+                div={{
+                  className: "col-3 form-group mandatory",
+                }}
+                label={{
+                  forceLabel: "Business Reg.. No.",
+                  isImp: true,
+                }}
+                textBox={{
+                  name: "business_registration_number",
+                  type: "text",
+                  className: "txt-fld",
+                  placeholder: "Business Registration Number",
+                  value: business_registration_number,
+                  onChange: onChangeHandler,
+                }}
+              />
+              <AlgaehFormGroup
+                div={{
+                  className: "col-2 form-group mandatory",
+                }}
+                label={{
+                  forceLabel: "Tax No.",
+                  isImp: true,
+                }}
+                textBox={{
+                  name: "tax_number",
+                  type: "text",
+                  className: "txt-fld",
+                  placeholder: "Tax Number",
+                  value: tax_number,
+                  onChange: onChangeHandler,
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{ forceLabel: "Product Type", isImp: true }}
+                selector={{
+                  name: "product_type",
+                  dataSource: {
+                    data: [
+                      {
+                        value: "HIMS_ERP",
+                        name: "Finance,HRMS,Pharmacy and Inventory",
+                      },
+                      { value: "HRMS", name: "HR & Payroll" },
+                      { value: "HRMS_ERP", name: "HR & Payroll and Finance" },
+                      {
+                        value: "FINANCE_ERP",
+                        name: "Finance,HR & Payroll,Inventory and Pharmacy",
+                      },
+                      {
+                        value: "HIMS_CLINICAL",
+                        name: "No Finanace & HR & Payroll",
+                      },
+                      { value: "ONLY_LAB", name: "Only Lab and Radiology" },
+                      { value: "ONLY_PHARMACY", name: "Only Pharmacy" },
+                    ],
+                    valueField: "value",
+                    textField: "name",
                   },
-                  { value: "HRMS", name: "HR & Payroll" },
-                  { value: "HRMS_ERP", name: "HR & Payroll and Finance" },
-                  {
-                    value: "FINANCE_ERP",
-                    name: "Finance,HR & Payroll,Inventory and Pharmacy",
+                  value: product_type,
+                  others: {
+                    disabled: userToken.user_type === "SU" ? false : true,
                   },
-                  {
-                    value: "HIMS_CLINICAL",
-                    name: "No Finanace & HR & Payroll",
+
+                  onChange: onChangeHandler,
+
+                  onClear: onClearHandler,
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{ forceLabel: "Fiscal Period", isImp: true }}
+                selector={{
+                  name: "fiscal_period",
+                  dataSource: {
+                    data: [
+                      { name: "12", value: "12" },
+                      { name: "13", value: "13" },
+                    ],
+                    valueField: "value",
+                    textField: "name",
                   },
-                  { value: "ONLY_LAB", name: "Only Lab and Radiology" },
-                  { value: "ONLY_PHARMACY", name: "Only Pharmacy" },
-                ],
-                valueField: "value",
-                textField: "name",
-              },
-              value: product_type,
-              others: {
-                disabled: userToken.user_type === "SU" ? false : true,
-              },
+                  value: fiscal_period,
+                  onChange: onChangeHandler,
 
-              onChange: onChangeHandler,
+                  onClear: onClearHandler,
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{ forceLabel: "Fiscal Quarters", isImp: true }}
+                selector={{
+                  name: "fiscal_quarters",
+                  dataSource: {
+                    data: [
+                      { name: "1", value: "1" },
+                      { name: "2", value: "2" },
+                      { name: "3", value: "3" },
+                      { name: "4", value: "4" },
+                    ],
+                    valueField: "value",
+                    textField: "name",
+                  },
+                  value: fiscal_quarters,
+                  onChange: onChangeHandler,
 
-              onClear: onClearHandler,
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{ className: "col-6 form-group mandatory" }}
-            label={{ forceLabel: "Fiscal Period", isImp: true }}
-            selector={{
-              name: "fiscal_period",
-              dataSource: {
-                data: [
-                  { name: "12", value: "12" },
-                  { name: "13", value: "13" },
-                ],
-                valueField: "value",
-                textField: "name",
-              },
-              value: fiscal_period,
-              onChange: onChangeHandler,
+                  onClear: onClearHandler,
+                }}
+              />
+              <AlgaehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{ forceLabel: "Default Country", isImp: true }}
+                selector={{
+                  name: "country_id",
+                  dataSource: {
+                    data: countryMaster,
+                    valueField: "hims_d_country_id",
+                    textField: "country_name",
+                  },
+                  value: String(country_id),
 
-              onClear: onClearHandler,
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{ className: "col-6 form-group mandatory" }}
-            label={{ forceLabel: "Fiscal Quarters", isImp: true }}
-            selector={{
-              name: "fiscal_quarters",
-              dataSource: {
-                data: [
-                  { name: "1", value: "1" },
-                  { name: "2", value: "2" },
-                  { name: "3", value: "3" },
-                  { name: "4", value: "4" },
-                ],
-                valueField: "value",
-                textField: "name",
-              },
-              value: fiscal_quarters,
-              onChange: onChangeHandler,
+                  onChange: onChangeHandler,
 
-              onClear: onClearHandler,
-            }}
-          />
-          <AlgaehAutoComplete
-            div={{ className: "col-6 form-group mandatory" }}
-            label={{ forceLabel: "Default Country", isImp: true }}
-            selector={{
-              name: "country_id",
-              dataSource: {
-                data: countryMaster,
-                valueField: "hims_d_country_id",
-                textField: "country_name",
-              },
-              value: String(country_id),
-
-              onChange: onChangeHandler,
-
-              onClear: onClearHandler,
-            }}
-          />
-
-          <div className="col-12">
-            <AlgaehButton
-              className="btn btn-primary"
-              style={{ float: "right" }}
-              disabled={disabledEdits}
-              onClick={onClickUpdate}
-              loading={loadingUpdate}
-            >
-              Update
-            </AlgaehButton>
+                  onClear: onClearHandler,
+                }}
+              />{" "}
+              <div className="col">
+                <AlgaehButton
+                  className="btn btn-primary"
+                  style={{ float: "right", marginTop: 20 }}
+                  disabled={disabledEdits}
+                  onClick={onClickUpdate}
+                  loading={loadingUpdate}
+                >
+                  Update
+                </AlgaehButton>
+              </div>
+            </div>{" "}
           </div>
         </div>
       </div>

@@ -157,4 +157,11 @@
       }
     }
   }
+  .orgImageUpload {
+    .ant-upload-select-picture-card {
+      width: 100% !important;
+      height: 112px !important;
+      margin-top: 7px;
+    }
+  }
 }
