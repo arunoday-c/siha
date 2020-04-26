@@ -12,16 +12,16 @@ import {
   swalMessage,
   getCookie,
   // getLocalIP,
-  collectIP
+  collectIP,
 } from "../../utils/algaehApiCall.js";
 import {
   getTokenDetals,
   checkUser,
-  OnSubmitUser
+  OnSubmitUser,
 } from "../../actions/Login/Loginactions.js";
 import {
   // AlgaehCloseContainer,
-  encrypter
+  encrypter,
 } from "../../utils/GlobalFunctions";
 import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
@@ -40,7 +40,7 @@ function Login(props) {
     full_name: "",
     arabic_name: "",
     happyBirthDay: "",
-    loading: true
+    loading: true,
   });
   const [userImage, setUserImage] = useState("");
   const [remberMe, setRememberMe] = useState(
@@ -69,14 +69,14 @@ function Login(props) {
     setCookie("Language", "en", 30);
     (() => {
       getTokenDetals({
-        loading: enabled => {
-          setLogin(data => {
+        loading: (enabled) => {
+          setLogin((data) => {
             return { ...data, loading: enabled };
           });
         },
-        setHospitals: list => {
+        setHospitals: (list) => {
           setLogin({ ...login, loading: false, hospitalList: list });
-        }
+        },
       });
       if (login.username !== null && login.username !== "") {
         checkUserActive();
@@ -95,19 +95,19 @@ function Login(props) {
       inputPlaceholder: "Re-enter password",
       inputAttributes: {
         autocapitalize: "off",
-        autocorrect: "off"
-      }
+        autocorrect: "off",
+      },
     }).then(({ value }) => {
       if (value !== undefined && value !== "") {
         const { username, item_id } = login;
-        collectIP().then(identity => {
+        collectIP().then((identity) => {
           setLoginLoad(true);
           const dataSent = encrypter(
             JSON.stringify({
               username: username,
               password: value,
               item_id: item_id,
-              identity: identity
+              identity: identity,
             })
           );
 
@@ -116,29 +116,29 @@ function Login(props) {
             data: { post: dataSent },
             notoken: true,
             method: "POST",
-            onSuccess: response => {
+            onSuccess: (response) => {
               const { success, records, message } = response.data;
               if (success === true) {
-                const redirect = redPage => {
+                const redirect = (redPage) => {
                   setLoginLoad(false);
                   setCookie("ScreenName", redPage);
                   history.push(`/${redPage}`);
                 };
                 setItem("token", records.token).then(() => {
                   getActiveModulesForUser()
-                    .then(userMenu => {
+                    .then((userMenu) => {
                       setSelectedMenu(userMenu, records.page_to_redirect).then(
                         () => {
                           getUserPrefrencesDetails({
-                            user_id: records.keyData.user_id
+                            user_id: records.keyData.user_id,
                           })
-                            .then(userPreference => {
+                            .then((userPreference) => {
                               setUserPreferencesData(userPreference);
                               setItem("userPreferences", userPreference);
                               getPreferences(
                                 { userPreferences: userPreference },
                                 "landing_page"
-                              ).then(result => {
+                              ).then((result) => {
                                 let redPage =
                                   records.page_to_redirect === null
                                     ? "NoDashboard"
@@ -148,7 +148,7 @@ function Login(props) {
                                       );
                                 if (result !== undefined) {
                                   const resource = result["preference"].find(
-                                    f => f.controlName === "page"
+                                    (f) => f.controlName === "page"
                                   );
                                   if (resource !== undefined)
                                     redPage = resource.controlValue;
@@ -172,11 +172,11 @@ function Login(props) {
                         }
                       );
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       setLoginLoad(false);
                       swalMessage({
                         type: "error",
-                        title: error
+                        title: error,
                       });
                       logout();
                     });
@@ -185,10 +185,10 @@ function Login(props) {
                 swalMessage({ type: "warning", title: message });
               }
             },
-            onCatch: e => {
+            onCatch: (e) => {
               setLoginLoad(false);
               swalMessage({ type: "error", title: e });
-            }
+            },
           });
         });
       } else {
@@ -198,7 +198,7 @@ function Login(props) {
   }
   function setSelectedMenu(records, page_to_redirect) {
     records = records || [];
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (page_to_redirect === null) {
         resolve();
       } else {
@@ -206,7 +206,7 @@ function Login(props) {
         for (let i = 0; i < records.length; i++) {
           const { ScreenList } = records[i];
           const selected = ScreenList.find(
-            f =>
+            (f) =>
               String(f.page_to_redirect).toLowerCase() ===
               String(page_to_redirect).toLowerCase()
           );
@@ -226,7 +226,7 @@ function Login(props) {
       algaehApiCall({
         uri: "/algaehMasters/getRoleBaseActiveModules",
         method: "GET",
-        onSuccess: dataResponse => {
+        onSuccess: (dataResponse) => {
           const { success, records, elements } = dataResponse.data;
           if (success) {
             setItem("menu", records);
@@ -236,9 +236,9 @@ function Login(props) {
             reject(new Error(dataResponse.data.message));
           }
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     });
   }
@@ -254,13 +254,13 @@ function Login(props) {
           method: "POST",
           data: input,
           module: "documentManagement",
-          onSuccess: response => {
+          onSuccess: (response) => {
             const { data } = response;
             resolve(data.records);
           },
-          onCatch: error => {
+          onCatch: (error) => {
             reject(error);
-          }
+          },
         });
       } catch (e) {
         reject(e);
@@ -275,18 +275,18 @@ function Login(props) {
       onSuccess: () => {
         clearItem();
         clearAll();
-      }
+      },
     });
   }
   function checkUserActive() {
     setLoginLoad(true);
     checkUser({ userId: login.username })
-      .then(result => {
-        setLogin(data => {
+      .then((result) => {
+        setLogin((data) => {
           return {
             username: login.username,
             item_id: result.hospital_id,
-            ...result
+            ...result,
           };
         });
         const hostName = window.location.hostname;
@@ -303,7 +303,7 @@ function Login(props) {
         setLoginLoad(false);
         if (passwordRef.current !== undefined) passwordRef.current.focus();
       })
-      .catch(error => {
+      .catch((error) => {
         setLoginLoad(false);
         setShowPassword(false);
         const { message } = error.response.data;
@@ -313,24 +313,24 @@ function Login(props) {
   function submitLogin() {
     setLoginLoad(true);
     OnSubmitUser(login)
-      .then(records => {
+      .then((records) => {
         setItem("token", records.token).then(() => {
           getActiveModulesForUser()
-            .then(userMenu => {
+            .then((userMenu) => {
               setSelectedMenu(userMenu, records.page_to_redirect).then(() => {
-                const redirect = redPage => {
+                const redirect = (redPage) => {
                   setLoginLoad(false);
                   setCookie("ScreenName", redPage);
                   history.push(`/${redPage}`);
                 };
                 getUserPrefrencesDetails({ user_id: records.keyData.user_id })
-                  .then(userPreference => {
+                  .then((userPreference) => {
                     setItem("userPreferences", userPreference);
                     setUserPreferencesData(userPreference);
                     getPreferences(
                       { userPreferences: userPreference },
                       "landing_page"
-                    ).then(result => {
+                    ).then((result) => {
                       let redPage =
                         records.page_to_redirect === null
                           ? "NoDashboard"
@@ -338,7 +338,7 @@ function Login(props) {
 
                       if (result !== undefined) {
                         const resource = result["preference"].find(
-                          f => f.controlName === "page"
+                          (f) => f.controlName === "page"
                         );
                         if (resource !== undefined)
                           redPage = resource.controlValue;
@@ -346,7 +346,7 @@ function Login(props) {
                       redirect(redPage);
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     const redPage =
                       records.page_to_redirect === null
                         ? "NoDashboard"
@@ -355,14 +355,14 @@ function Login(props) {
                   });
               });
             })
-            .catch(error => {
+            .catch((error) => {
               setLoginLoad(false);
               swalMessage({ type: "error", title: error });
               logout();
             });
         });
       })
-      .catch(error => {
+      .catch((error) => {
         setLoginLoad(false);
         if (typeof error === "string" && error.includes("Machine")) {
           popUpMessage(error);
@@ -403,7 +403,7 @@ function Login(props) {
         spinning={loginLoad}
         tip="Please wait verifying user"
       >
-        <div className="container margintop15">
+        <div className="container">
           <div className="row-eq-height">
             {login.loading ? (
               <div className="connectingServerDiv">
@@ -471,20 +471,20 @@ function Login(props) {
                                 name: "password",
                                 value: login.password,
                                 events: {
-                                  onChange: e => {
+                                  onChange: (e) => {
                                     setLogin({
                                       ...login,
-                                      password: e.target.value
+                                      password: e.target.value,
                                     });
-                                  }
+                                  },
                                 },
                                 others: {
                                   type: "password",
                                   tabIndex: "3",
                                   placeholder: "Enter Password",
                                   ref: passwordRef,
-                                  onKeyDown: onHitEnterPassword
-                                }
+                                  onKeyDown: onHitEnterPassword,
+                                },
                               }}
                             />
 
@@ -530,6 +530,7 @@ function Login(props) {
                           {" "}
                           <div className="col-12">
                             <div className="companyLogo" />
+                            <p className="appName">Management System</p>
                           </div>
                           <div className="col-12 usernameSec">
                             <div className="row">
@@ -540,19 +541,19 @@ function Login(props) {
                                   name: "username",
                                   value: login.username,
                                   events: {
-                                    onChange: e => {
+                                    onChange: (e) => {
                                       setLogin({
                                         ...login,
-                                        username: e.target.value
+                                        username: e.target.value,
                                       });
-                                    }
+                                    },
                                   },
                                   others: {
                                     tabIndex: "1",
                                     placeholder: "Enter Username",
                                     ref: userRef,
-                                    onKeyDown: onHitEnter
-                                  }
+                                    onKeyDown: onHitEnter,
+                                  },
                                 }}
                               />
                               <br />
