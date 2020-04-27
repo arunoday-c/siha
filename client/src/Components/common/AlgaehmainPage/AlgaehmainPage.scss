@@ -43,8 +43,7 @@ header {
     rgba(0, 186, 190, 1) 0%,
     rgba(228, 171, 89, 1) 100%
   );
-
-  position: absolute;
+  position: relative;
   z-index: 9;
   &:hover {
     background: lighten($primary-color, 10%);
