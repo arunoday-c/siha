@@ -10,7 +10,6 @@ import hbs from "handlebars";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 // import chrome from "algaeh-keys";
-import axios from "axios";
 import writtenForm from "written-number";
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
@@ -276,11 +275,18 @@ hbs.registerHelper("imageUrl", function (
 hbs.registerHelper("logoUrl", function (logo_type, reqHead) {
   const image =
     logo_type === "ORG" ? reqHead.organization_id : reqHead.hims_d_hospital_id;
-  const fullPath = path.join(
+  let logo = `${image}_${logo_type}.png`;
+  let fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates/images/",
-    `${image}_${logo_type}.png`
+    logo
   );
+  if (!fs.existsSync(fullPath)) {
+    fullPath = path.join(
+      process.cwd(),
+      "algaeh_report_tool/templates/images/clientLogo.png"
+    );
+  }
   const _extention = path.extname(fullPath).replace(".", "");
   const img = fs.readFileSync(fullPath, "base64");
   return "data:image/" + _extention + ";base64," + img;
