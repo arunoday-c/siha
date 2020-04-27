@@ -147,7 +147,7 @@ export function Organization(props) {
               onChange={onImageHandleChange}
               data={{ image_id: hims_d_organization_id, logo_type: "ORG" }}
               action={logoUrl({ uri: "/Document/saveLogo" })}
-              accept=".png,.jpeg,.jpg,.gif"
+              accept=".png"
               className="orgImageUpload"
             >
               {/* <img

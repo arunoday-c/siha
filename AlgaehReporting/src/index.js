@@ -24,7 +24,7 @@ const {
   merdgeTosingleReport,
   getExcelReport,
   getRawReport,
-  printReportRaw
+  printReportRaw,
 } = reportGen;
 
 process.env.MYSQL_KEYS = JSON.stringify(keys);
@@ -33,7 +33,7 @@ app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: "200kb"
+    limit: "200kb",
   })
 );
 // app.use(
@@ -46,10 +46,10 @@ app.use(compression());
 //   app.set("view cache", true);
 // }
 process.setMaxListeners(0);
-process.on("warning", warning => {
+process.on("warning", (warning) => {
   new utliites().logger().log("warning-Reports", warning, "warn");
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   new utliites().logger().log("uncaughtException-Reports", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
@@ -115,7 +115,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
     (_jsonParam.outputFileType == "EXCEL" ? "xlsx" : _jsonParam.outputFileType);
   exec(
     "java -jar " + _path + "/pentaho_reporting.jar " + argumentString,
-    function(err, stdout, stderr) {
+    function (err, stdout, stderr) {
       if (err) {
         console.log(err);
         res.writeHead(400, { "Content-Type": "text/plain" });
@@ -124,7 +124,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
       console.log(stdout);
       const _outFile = path.join(_path, "Output", _outputFile);
 
-      fs.exists(_outFile, exists => {
+      fs.exists(_outFile, (exists) => {
         if (exists) {
           res.writeHead(200, {
             "Content-type":
@@ -133,7 +133,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
                 ? "vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 : _jsonParam.outputFileType),
             // "content-type": "application/xml", //vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Content-Disposition": "attachment; filename=" + _outputFile
+            "Content-Disposition": "attachment; filename=" + _outputFile,
           });
           fs.createReadStream(_outFile).pipe(res);
         } else {

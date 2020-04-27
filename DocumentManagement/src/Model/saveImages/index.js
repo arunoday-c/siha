@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import stream from "stream";
 import fs from "fs";
+import path from "path";
 import formidable from "formidable";
 import base64Img from "base64-img";
 const Schema = mongoose.Schema;
@@ -17,6 +18,13 @@ const ImageModel = mongoose.model("algaeh_organization_logos", ImageSchema);
 export default (db) => {
   return {
     saveLogo: (req, res, next) => {
+      const logoPath = path.join(
+        process.cwd(),
+        "../",
+        "AlgaehReporting",
+        "algaeh_report_tool/templates",
+        "images"
+      );
       let form = new formidable.IncomingForm();
       form.parse(req, function (err, fields, files) {
         if (err) {
@@ -31,8 +39,16 @@ export default (db) => {
         }
         const { image_id, logo_type } = fields;
         const { org_image } = files;
-        const { path } = org_image;
+        const { path, name } = org_image;
+        const fileToCopy = `${logoPath}/${image_id}_${logo_type}.${
+          name.split(".")[1]
+        }`;
         const out = base64Img.base64Sync(path);
+        if (fs.existsSync(fileToCopy)) {
+          fs.unlinkSync(fileToCopy);
+        }
+
+        fs.copyFileSync(path, fileToCopy);
         fs.unlinkSync(path);
         ImageModel.findOneAndUpdate(
           {
@@ -68,7 +84,7 @@ export default (db) => {
           });
       });
     },
-    getLogo: (req, res, next) => {
+    getLogo: (req, res) => {
       const { image_id, logo_type } = req.query;
       ImageModel.findOne({ image_id, logo_type })
         .then((result) => {
@@ -76,9 +92,12 @@ export default (db) => {
           const type = data[0].split(";")[0].split(":")[1];
           res.status(200);
           res.setHeader("content-type", type);
-          let bufferStream = new stream.PassThrough();
-          bufferStream.end(data[1], "base64");
-          bufferStream.pipe(res);
+          var img = Buffer.from(
+            result.image.replace(/^data:image\/(png|jpeg|jpg);base64,/, ""),
+            "base64"
+          );
+          res.setHeader("Content-Length", img.length);
+          res.end(img);
         })
         .catch((error) => {
           res.status(400).json({
