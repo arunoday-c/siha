@@ -1,5 +1,5 @@
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -7,7 +7,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -57,12 +57,15 @@ const executePDF = function executePDFMethod(options) {
           	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
 					where AM.record_status='A' and AM.year= ? and AM.month=? ${is_local} ${str} `,
           values: [input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
-          resolve({ result: result });
+        .then((result) => {
+          resolve({
+            result: result,
+            no_employees: result.length,
+          });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {
