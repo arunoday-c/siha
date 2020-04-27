@@ -44,9 +44,9 @@ startServer () {
 
   # # # # HIS Modules #
   #  startServer "./FrontDesk" "front_desk_server" 
-  #  startServer "./Billing" "billing_server" 
-  #  startServer "./MRD" "mrd_server" 
-  #  startServer "./Insurance" "insurance_server" 
+   startServer "./Billing" "billing_server" 
+   startServer "./MRD" "mrd_server" 
+   startServer "./Insurance" "insurance_server" 
 
   # # # # # Lab Modules
   #  startServer "./Laboratory" "lab_server" 
