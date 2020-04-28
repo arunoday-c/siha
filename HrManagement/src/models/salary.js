@@ -3827,7 +3827,7 @@ function getEarningComponents(options) {
 
                 //Slab
                 if (_LeaveRule[i].calculation_type == "SL") {
-                  if (_LeaveRule[i].value_type == "RA") {
+                  // if (_LeaveRule[i].value_type == "RA") {
                     let leave_rule_days = _LeaveRule[i].total_days;
 
                     if (leaves_till_date < leave_rule_days) {
@@ -3891,7 +3891,7 @@ function getEarningComponents(options) {
                     previous_leave = previous_leave - leave_rule_days;
 
 
-                  }
+                  // }
                 }
               }
               if (
