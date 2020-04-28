@@ -1565,7 +1565,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
+          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, GP.acc_gratuity,\
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
           E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
           strQry +
@@ -1709,11 +1709,11 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_gratuity_provision set month=?,gratuity_amount=? \
+          "UPDATE hims_f_gratuity_provision set month=?,acc_gratuity=? \
           WHERE hims_f_gratuity_provision_id = ?",
         values: [
           input.month,
-          input.gratuity_amount,
+          input.acc_gratuity,
           input.hims_f_gratuity_provision_id,
         ],
         printQuery: true,

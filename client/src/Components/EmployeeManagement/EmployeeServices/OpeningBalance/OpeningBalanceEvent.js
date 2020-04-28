@@ -460,7 +460,7 @@ export default function ManualAttendanceEvents() {
               },
             },
             {
-              fieldName: "gratuity_amount",
+              fieldName: "acc_gratuity",
               label: <AlgaehLabel label={{ forceLabel: "Gratuity Amount" }} />,
               others: {
                 filterable: false,
@@ -476,8 +476,8 @@ export default function ManualAttendanceEvents() {
                       },
                       dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
-                      name: "gratuity_amount",
-                      value: row.gratuity_amount,
+                      name: "acc_gratuity",
+                      value: row.acc_gratuity,
                       events: {
                         onChange: changeGridEditors.bind($this, $this, row),
                       },
@@ -828,29 +828,29 @@ function getLeaveMasterData($this) {
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
-                  <Input
-                    value={row[item.hims_d_leave_id]}
-                    name={item.hims_d_leave_id}
-                    row={row}
-                  />
+                    <Input
+                      value={row[item.hims_d_leave_id]}
+                      name={item.hims_d_leave_id}
+                      row={row}
+                    />
 
-                  // <AlagehFormGroup
-                  //   div={{ className: "col" }}
-                  //   textBox={{
-                  //     number: {
-                  //       allowNegative: false,
-                  //       thousandSeparator: ","
-                  //     },
-                  //     dontAllowKeys: ["-", "e"],
-                  //     className: "txt-fld",
-                  //     name: item.hims_d_leave_id,
-                  //     value: row[item.hims_d_leave_id],
-                  //     events: {
-                  //       onChange: changeGridEditors.bind($this, $this, row)
-                  //     }
-                  //   }}
-                  // />
-                );
+                    // <AlagehFormGroup
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     number: {
+                    //       allowNegative: false,
+                    //       thousandSeparator: ","
+                    //     },
+                    //     dontAllowKeys: ["-", "e"],
+                    //     className: "txt-fld",
+                    //     name: item.hims_d_leave_id,
+                    //     value: row[item.hims_d_leave_id],
+                    //     events: {
+                    //       onChange: changeGridEditors.bind($this, $this, row)
+                    //     }
+                    //   }}
+                    // />
+                  );
               },
               others: {
                 filterable: false,

@@ -4524,12 +4524,13 @@ function InsertGratuityProvision(options) {
           }
           const _optionsDetals = _options[0];
           if (_optionsDetals.gratuity_provision == 1) {
-            let _eligibleDays = 0;
+
 
             let strQry = "";
-            let promiseAll = [];
+            // let promiseAll = [];
 
             for (let k = 0; k < _employee.length; k++) {
+              let _eligibleDays = 0;
               // promiseAll.push(
               new Promise((resolve, reject) => {
                 try {
