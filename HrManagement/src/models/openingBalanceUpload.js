@@ -11,7 +11,11 @@ export default {
     const utilities = new algaehUtilities();
 
     try {
-      const rawdata = req.body;
+      const rawdata = req.body.map(item => {
+        return {
+          ...item, acc_gratuity: item.gratuity_amount
+        }
+      });
 
       const input = rawdata
         .filter(item => {
@@ -37,18 +41,19 @@ export default {
           "employee_id",
           "year",
           "month",
-          "gratuity_amount"
+          "gratuity_amount",
+          "acc_gratuity"
         ];
 
         _mysql
           .executeQuery({
             query:
               " INSERT INTO hims_f_gratuity_provision (??) VALUES ?  ON DUPLICATE KEY UPDATE \
-              gratuity_amount=values(gratuity_amount);",
+              gratuity_amount=values(gratuity_amount), acc_gratuity=values(acc_gratuity);",
             values: rawdata,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
-            printQuery: false
+            printQuery: true
           })
           .then(finalResult => {
             _mysql.releaseConnection();

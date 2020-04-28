@@ -1629,12 +1629,13 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount)\
-          VALUE(?,?,?,?)",
+          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount, acc_gratuity)\
+          VALUE(?,?,?,?,?)",
         values: [
           input.employee_id,
           input.year,
           input.month,
+          input.gratuity_amount,
           input.gratuity_amount,
         ],
         printQuery: true,
