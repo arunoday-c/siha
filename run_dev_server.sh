@@ -36,17 +36,17 @@ startServer () {
   startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
   startServer "./DocumentManagement" "document_server" 
-  startServer "./AlgaehReporting" "report_server"
+  # startServer "./AlgaehReporting" "report_server"
   startServer "./Sockets" "sockets"
 
   # # # # HRMS Modules #
-  startServer "./HrManagement" "hr_server"
+  # startServer "./HrManagement" "hr_server"
 
   # # # # HIS Modules #
   #  startServer "./FrontDesk" "front_desk_server" 
-   startServer "./Billing" "billing_server" 
-   startServer "./MRD" "mrd_server" 
-   startServer "./Insurance" "insurance_server" 
+  #  startServer "./Billing" "billing_server" 
+  #  startServer "./MRD" "mrd_server" 
+  #  startServer "./Insurance" "insurance_server" 
 
   # # # # # Lab Modules
   #  startServer "./Laboratory" "lab_server" 

@@ -1,5 +1,5 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
   font-size: 12px;
 }
 
@@ -22,14 +22,15 @@ body {
 }
 
 .print-body section:after {
-  content: '';
+  content: "";
   display: table;
   clear: both;
   margin-bottom: 20px;
 }
 
 .print-body .tableForLabel,
-.tableTotal {
+.tableTotal,
+.tableForLabelSignature {
   width: 100%;
   border-collapse: collapse;
 }
@@ -166,7 +167,7 @@ body {
   font-size: 11px;
   padding: 0;
   margin: 3px 0 0;
-  font-family: 'Calibri', sans-serif;
+  font-family: "Calibri", sans-serif;
 }
 
 .print-body .tableForData td {
@@ -222,7 +223,7 @@ body {
   float: right;
   width: 25%;
   font-size: 12px;
-  font-family: 'Calibri', sans-serif;
+  font-family: "Calibri", sans-serif;
 }
 .textEnLft {
   text-align: left;
@@ -278,12 +279,12 @@ body {
 }
 .tableTotal td:first-child {
   text-align: left;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .tableTotal td:last-child {
   text-align: right;
-  font-family: 'Calibri', sans-serif;
+  font-family: "Calibri", sans-serif;
 }
 
 .tableTotal .bold {
@@ -291,7 +292,7 @@ body {
   background: #f2f2f2;
 }
 .appSlipFormat {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 .appSlipFormat .patient_name {
   font-size: 1rem;
@@ -364,7 +365,7 @@ body {
   font-size: 11px;
   padding: 0;
   margin: 3px 0 0;
-  font-family: 'Calibri', sans-serif;
+  font-family: "Calibri", sans-serif;
 }
 
 .print-body .tableHeaderForData td {
@@ -475,16 +476,16 @@ body {
   text-align: left;
 }
 
-.analyteResult [data-value='N'] sup {
+.analyteResult [data-value="N"] sup {
   display: none;
 }
-.analyteResult [data-value='L'],
-.analyteResult [data-value='H'] {
+.analyteResult [data-value="L"],
+.analyteResult [data-value="H"] {
   color: rgb(255, 153, 0);
 }
 
-.analyteResult [data-value='CL'],
-.analyteResult [data-value='CH'] {
+.analyteResult [data-value="CL"],
+.analyteResult [data-value="CH"] {
   color: red;
 }
 .textTruncate {
@@ -547,4 +548,27 @@ body {
 .tableForPharmacy td:last-child {
   text-align: right;
   width: 15%;
+}
+
+.print-body .tableForLabelSignature tbody {
+  margin: 0;
+  padding: 0;
+}
+.print-body .tableForLabelSignature td {
+  padding: 3px 10px;
+  margin: 0;
+  font-size: 11px;
+}
+.print-body .tableForLabelSignature td .signArea {
+  /* border: 1px dotted #eee; */
+  display: block;
+  height: 80px;
+  width: 100%;
+}
+.print-body .tableForLabelSignature td span {
+  font-weight: bold;
+  display: block;
+  border-top: 1px solid #ccc;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
