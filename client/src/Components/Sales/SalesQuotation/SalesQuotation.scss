@@ -3,6 +3,11 @@
     max-height: 34.8vh !important;
   }
 }
+#SaleQuotationServiceGrid {
+  .ReactTable {
+    max-height: 58.8vh !important;
+  }
+}
 .textAreaLeft {
   text-align: left;
   margin-bottom: 50px;
@@ -14,7 +19,55 @@
   }
 }
 
-.disableFinder{
-	opacity: 0.4;
-	pointer-events: none;
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.ViewTC {
+  background: #fffef4;
+  height: 28.5vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e4e0b6;
+  border-radius: 5px;
+  counter-reset: li;
+  list-style: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  li {
+    padding: 4px 0 4px 10px;
+    margin: 0;
+    border-bottom: 1px dashed #e4e0b6;
+    width: 100%;
+    font-size: 0.9rem;
+    vertical-align: top;
+    list-style: none;
+    font-weight: 500;
+    span {
+      display: inline-block;
+      width: calc(90% - 10px);
+      border-right: 1px solid #e4e0b6;
+      vertical-align: top;
+    }
+    i {
+      display: inline-block;
+      padding: 5px;
+      margin-left: 5px;
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+    &:before {
+      content: counter(li);
+      counter-increment: li;
+      vertical-align: top;
+      padding-right: 10px;
+    }
+    &:nth-child(odd) {
+      background: rgb(253, 251, 235);
+    }
   }
+}

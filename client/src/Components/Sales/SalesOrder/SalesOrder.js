@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -28,7 +28,7 @@ import {
   datehandle,
   AuthorizeOrderEntry,
   CancelSalesServiceOrder,
-  getCostCenters
+  getCostCenters,
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
@@ -80,7 +80,7 @@ class SalesOrder extends Component {
       grid_edit: false,
       cancelDisable: false,
       organizations: [],
-      cost_projects: []
+      cost_projects: [],
     };
     getSalesOptions(this, this);
   }
@@ -90,15 +90,15 @@ class SalesOrder extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      decimal_place: userToken.decimal_places
+      decimal_place: userToken.decimal_places,
       // hospital_id: userToken.hims_d_hospital_id
     });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
@@ -109,8 +109,8 @@ class SalesOrder extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "itemlist"
-        }
+          mappingName: "itemlist",
+        },
       });
     }
 
@@ -125,8 +125,8 @@ class SalesOrder extends Component {
         method: "GET",
         redux: {
           type: "CUSTOMER_GET_DATA",
-          mappingName: "customer_data"
-        }
+          mappingName: "customer_data",
+        },
       });
     }
 
@@ -171,18 +171,18 @@ class SalesOrder extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Sales Order", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -193,27 +193,27 @@ class SalesOrder extends Component {
             value: this.state.sales_order_number,
             selectValue: "sales_order_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Sales.SalesOrder"
+              fieldName: "Sales.SalesOrder",
             },
-            searchName: "SalesOrder"
+            searchName: "SalesOrder",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "SO Date"
+                    forceLabel: "SO Date",
                   }}
                 />
                 <h6>
                   {this.state.sales_order_date
                     ? moment(this.state.sales_order_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -222,7 +222,7 @@ class SalesOrder extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Order Status"
+                      forceLabel: "Order Status",
                     }}
                   />
                   <h6>
@@ -231,29 +231,29 @@ class SalesOrder extends Component {
                     ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" &&
                       this.state.is_completed === "N" ? (
-                          <span className="badge badge-success">
-                            Authorized / Dispatch Pending
+                      <span className="badge badge-success">
+                        Authorized / Dispatch Pending
                       </span>
-                        ) : this.state.authorize1 === "Y" &&
-                          this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">
-                              Authorized 2 Pending
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Authorized 2 Pending
                       </span>
-                          ) : this.state.authorize1 === "N" &&
-                            this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">Pending</span>
-                            ) : this.state.is_completed === "Y" &&
-                              this.state.invoice_generated === "N" ? (
-                                <span className="badge badge-danger">
-                                  Invoice Generation Pending
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">Pending</span>
+                    ) : this.state.is_completed === "Y" &&
+                      this.state.invoice_generated === "N" ? (
+                      <span className="badge badge-danger">
+                        Invoice Generation Pending
                       </span>
-                              ) : this.state.invoice_generated === "Y" ? (
-                                <span className="badge badge-success">
-                                  Invoice Generated
+                    ) : this.state.invoice_generated === "Y" ? (
+                      <span className="badge badge-success">
+                        Invoice Generated
                       </span>
-                              ) : (
-                                  <span className="badge badge-danger">Pending</span>
-                                )}
+                    ) : (
+                      <span className="badge badge-danger">Pending</span>
+                    )}
                   </h6>
                 </div>
               ) : null}
@@ -262,17 +262,17 @@ class SalesOrder extends Component {
           printArea={
             this.state.sales_order_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Sales Order Report",
-                    events: {
-                      onClick: () => {
-                        generateSalesOrderReport(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Sales Order Report",
+                      events: {
+                        onClick: () => {
+                          generateSalesOrderReport(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -342,18 +342,18 @@ class SalesOrder extends Component {
                     dataSource: {
                       textField: "customer_name",
                       valueField: "hims_d_customer_id",
-                      data: this.props.customer_data
+                      data: this.props.customer_data,
                     },
                     onChange: customerTexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        customer_id: null
+                        customer_id: null,
                       });
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.selectedData
-                    }
+                      disabled: this.state.selectedData,
+                    },
                   }}
                 />
                 <AlagehAutoComplete
@@ -367,17 +367,17 @@ class SalesOrder extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: this.state.selectedData
+                      disabled: this.state.selectedData,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        payment_terms: null
+                        payment_terms: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -399,25 +399,25 @@ class SalesOrder extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: texthandle.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
               </div>
               <div className="row">
                 <AlgaehDateHandler
@@ -425,12 +425,12 @@ class SalesOrder extends Component {
                   label={{ forceLabel: "Delivery Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
-                    name: "delivery_date"
+                    name: "delivery_date",
                   }}
                   minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this)
+                    onBlur: dateValidate.bind(this, this),
                   }}
                   disabled={this.state.dataExists}
                   value={this.state.delivery_date}
@@ -440,18 +440,18 @@ class SalesOrder extends Component {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Ref No.",
-                    isImp: false
+                    isImp: false,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "reference_number",
                     value: this.state.reference_number,
                     events: {
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists
-                    }
+                      disabled: this.state.dataExists,
+                    },
                   }}
                 />
 
@@ -459,7 +459,7 @@ class SalesOrder extends Component {
                   div={{ className: "col-2 form-group mandatory" }}
                   label={{
                     forceLabel: "Select Project",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "project_id",
@@ -468,19 +468,19 @@ class SalesOrder extends Component {
                     dataSource: {
                       textField: "cost_center",
                       valueField: "cost_center_id",
-                      data: this.state.cost_projects
+                      data: this.state.cost_projects,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      disabled: this.state.dataExists
+                      disabled: this.state.dataExists,
                     },
                     onClear: () => {
                       this.setState({
                         project_id: null,
                         hospital_id: null,
-                        organizations: []
+                        organizations: [],
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -488,7 +488,7 @@ class SalesOrder extends Component {
                   div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Select Branch",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "hospital_id",
@@ -497,35 +497,35 @@ class SalesOrder extends Component {
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",
-                      data: this.state.organizations
+                      data: this.state.organizations,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      disabled: this.state.dataExists
+                      disabled: this.state.dataExists,
                     },
                     onClear: () => {
                       this.setState({
-                        hospital_id: null
+                        hospital_id: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Customer PO No.",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "customer_po_no",
                     value: this.state.customer_po_no,
                     events: {
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists
-                    }
+                      disabled: this.state.dataExists,
+                    },
                   }}
                 />
               </div>
@@ -536,85 +536,88 @@ class SalesOrder extends Component {
             <MyContext.Provider
               value={{
                 state: this.state,
-                updateState: obj => {
+                updateState: (obj) => {
                   this.setState({ ...obj });
-                }
+                },
               }}
             >
               {this.state.sales_order_mode === "S" ? (
                 <SalesOrdListService SALESIOputs={this.state} />
               ) : (
-                  <SalesOrdListItems
-                    SALESIOputs={this.state}
-                    sales_order_number={this.props.sales_order_number}
-                  />
-                )}
+                <SalesOrdListItems
+                  SALESIOputs={this.state}
+                  sales_order_number={this.props.sales_order_number}
+                />
+              )}
             </MyContext.Provider>
           </div>
         </div>
 
         <div className="row">
-          <div className="col-3"></div>
-          <div className="col-9" style={{ textAlign: "right" }}>
+          <div className="col-12">
             <div className="row">
-              <div className="col">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Sub Total"
-                  }}
-                />
-                <h6>{GetAmountFormart(this.state.sub_total)}</h6>
-              </div>
-              <div className="col">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Discount Amount"
-                  }}
-                />
-                <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
-              </div>
-              <div className="col">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Net Total"
-                  }}
-                />
-                <h6>{GetAmountFormart(this.state.net_total)}</h6>
-              </div>
-              <div className="col">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Tax"
-                  }}
-                />
-                <h6>{GetAmountFormart(this.state.total_tax)}</h6>
-              </div>
-              <div className="col">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Net Total"
-                  }}
-                />
-                <h6>{GetAmountFormart(this.state.net_payable)}</h6>
+              <div className="col-6">
+                <div className="row">
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Sub Total",
+                      }}
+                    />
+                    <h6>{GetAmountFormart(this.state.sub_total)}</h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Discount Amount",
+                      }}
+                    />
+                    <h6>{GetAmountFormart(this.state.discount_amount)}</h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Net Total",
+                      }}
+                    />
+                    <h6>{GetAmountFormart(this.state.net_total)}</h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Tax",
+                      }}
+                    />
+                    <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                  </div>
+                  <div className="col-4">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Net Payable",
+                      }}
+                    />
+                    <h6>{GetAmountFormart(this.state.net_payable)}</h6>
+                  </div>
+                </div>
               </div>
               <AlagehFormGroup
-                div={{ className: "col-3 textAreaLeft" }}
+                div={{ className: "col-6 textAreaLeft" }}
                 label={{
                   forceLabel: "Narration",
-                  isImp: false
+                  isImp: false,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "narration",
                   value: this.state.narration,
                   events: {
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   },
                   others: {
                     disabled: this.state.dataExists,
                     multiline: true,
-                    rows: "4"
-                  }
+                    rows: "3",
+                  },
                 }}
               />
             </div>
@@ -632,7 +635,7 @@ class SalesOrder extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save Order",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -672,8 +675,8 @@ class SalesOrder extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorize2 === "Y"
-                            ? true
-                            : false
+                          ? true
+                          : false
                       }
                       onClick={AuthorizeOrderEntry.bind(
                         this,
@@ -689,9 +692,9 @@ class SalesOrder extends Component {
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
                               : this.state.sales_order_auth_level === "2"
-                                ? "Authorize 2"
-                                : "Authorize 1",
-                          returnText: true
+                              ? "Authorize 2"
+                              : "Authorize 1",
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -710,7 +713,7 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     itemuom: state.itemuom,
-    customer_data: state.customer_data
+    customer_data: state.customer_data,
     // cost_projects: state.cost_projects
   };
 }
@@ -720,7 +723,7 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getItemUOM: AlgaehActions,
-      getCustomerMaster: AlgaehActions
+      getCustomerMaster: AlgaehActions,
       // getDivisionProject: AlgaehActions
     },
     dispatch

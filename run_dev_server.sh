@@ -59,8 +59,8 @@ startServer () {
   #  startServer "./Procurement" "procurement_server"
 
   # # # # Inventory Modules # 
-  #  startServer "./Inventory" "inventory_server" 
-  #  startServer "./Sales" "sales"  
+   startServer "./Inventory" "inventory_server" 
+   startServer "./Sales" "sales"  
 
   # Finance Modules # 
   #  startServer "./algaeh-finance" "finance"  
