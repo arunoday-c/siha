@@ -166,7 +166,7 @@ const getBillDetails = $this => {
     data: { bill_number: $this.state.bill_number },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)

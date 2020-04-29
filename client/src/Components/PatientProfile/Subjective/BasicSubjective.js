@@ -743,12 +743,12 @@ class BasicSubjective extends Component {
                       <h3 className="caption-subject">Diagnosis</h3>
                     </div>
                     <div className="actions">
-                      <a
+                      <button
                         className="btn btn-primary btn-circle active"
                         onClick={this.IcdsSearch.bind(this, "Final")}
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -848,13 +848,13 @@ class BasicSubjective extends Component {
                     </div>
 
                     <div className="actions">
-                      <a
+                      <button
                         className="btn btn-primary btn-circle active"
                         onClick={this.showMedication.bind(this)}
                       >
                         <i className="fas fa-plus" />
                         {/* <i className="fas fa-retweet" /> */}
-                      </a>
+                      </button>
                     </div>
                   </div>
 

@@ -65,8 +65,9 @@
         color: #ccc;
     }
 </style>
-
+ 
 <body>
+   
     <table class="reportHeaderCntr">
         {{!-- <tr>
             <th>
@@ -78,11 +79,15 @@
                 </div>
 
             </th>
-        </tr> --}}
+        </tr> data:image/png;base64,{{logoUrl "1" "ORG"}}--}}
 
         <tr>
-            <th rowspan="4" class="hospitalLogo"><img src="{{imageSource 'images/clientLogo.png'}}" /></th>
+            <th rowspan="4" class="hospitalLogo">
+               <img src="{{logoUrl 'ORG' identity }}"  />
+             
+                </th>
             <th>
+                
                 <h4>{{{report_name_for_header}}}</h4>
             </th>
         </tr>
@@ -106,4 +111,5 @@
 
 
     </table>
+   
 </body>

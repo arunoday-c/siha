@@ -36,7 +36,7 @@ export default class Notifications extends Component {
   componentDidMount() {
     // use fat arrow functions as callbacks to inherit "this"
     const check = Array.isArray(this.context.userMenu);
-    debugger;
+
     console.log(this.context.socket);
     if (this.context.socket.connected) {
       this.socket.emit("authentication", {
@@ -98,7 +98,7 @@ export default class Notifications extends Component {
   }
 
   addToNotiList = text => {
-    debugger;
+
     const { notiList } = this.state;
     notiList.push(text);
     this.setState(
@@ -143,10 +143,10 @@ export default class Notifications extends Component {
                 </Segment>
               ))
             ) : (
-              <Segment style={{ textAlign: "center" }}>
-                No notifications
+                <Segment style={{ textAlign: "center" }}>
+                  No notifications
               </Segment>
-            )}
+              )}
             {/*<Segment>No notifications to show</Segment>*/}
           </Segment.Group>
         </Segment.Group>

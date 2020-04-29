@@ -3,16 +3,16 @@
 <body>
     <div class="print-body">
 
-        {{!-- <section>
+        <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    <td><label class="textEnLft">Total Employees</label>:<span class="valueText">{{no_employees}}</span>
                     </td>
                 </tr>
             </table>
-    
 
-        </section> --}}
+
+        </section>
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -25,26 +25,33 @@
                         <th>Designation</th>
                         <th>Date of Joining</th>
                         <th>Nationality</th>
-                        <th>Religion</th>
+                        <th excelwidth="10">Religion</th>
                         <th>Emp. Type</th>
                         <th>Emp. Status</th>
-
                     </tr>
+
                 </thead>
                 <tbody>
+                    <tr>
+                        <td colspan="10"></td>
+                        <td colspan="1"><span class="textFloatRight">Total No.
+                                Employees: <b>{{no_employees}}</b></span></td>
+
+                    </tr>
                     {{#hasElement result}}
 
                     {{#each result}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
-                            <span class="textFloatRight">No
-                                Employees: <b>{{dep_no_employee}}</b></span>
+                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}
+
                         </td>
+                        <td colspan="1" class="tableSubHdg"><span class="textFloatRight">No
+                                Employees: <b>{{dep_no_employee}}</b></span></td>
                     </tr>
                     {{#each sub_dept}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
-                                class="textFloatRight">No
+                        <td colspan="10" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}}</td>
+                        <td colspan="1" class="tableSubHdg2"><span class="textFloatRight">No
                                 Employees: <b>{{sub_no_employee}}</b></span></td>
                     </tr>
                     {{#each employees}}

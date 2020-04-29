@@ -38,13 +38,13 @@ export default function LisConfigList() {
                 <h3 className="caption-subject">Lists of Machine</h3>
               </div>
               <div className="actions">
-                <a
+                <button
                   className="btn btn-primary active"
                   style={{ lineHeight: "22px" }}
                   onClick={ShowModel}
                 >
                   Add New Machine
-                </a>
+                </button>
               </div>
             </div>
 

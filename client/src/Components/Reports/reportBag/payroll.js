@@ -5,7 +5,7 @@ export default function Payroll({
   MONTHS,
   LEAVE_STATUS,
   algaehApiCall,
-  moment
+  moment,
 }) {
   return {
     name: "Payroll Reports",
@@ -31,8 +31,8 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -48,11 +48,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -62,14 +62,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -79,12 +79,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -95,12 +95,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -111,20 +111,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -135,8 +135,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -148,10 +148,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Leave Reports",
@@ -169,13 +169,13 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -187,32 +187,32 @@ export default function Payroll({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
             type: "date",
             name: "from_date",
-            isImp: true
+            isImp: true,
           },
           {
             className: "col-2 form-group mandatory",
             type: "date",
             name: "to_date",
-            isImp: true
+            isImp: true,
           },
           {
             className: "col-2 form-group",
@@ -222,12 +222,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -238,28 +238,28 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
                 reportState.setState({
                   [currentEvent.name]: currentEvent.value,
                   department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
+                  sub_department_id_list: currentEvent.selected.subDepts,
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -270,8 +270,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -281,13 +281,13 @@ export default function Payroll({
             // isImp: true,
             link: {
               uri: "/selfService/getLeaveMaster",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "leave_description",
               valueField: "hims_d_leave_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -297,11 +297,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LEAVE_STATUS
+              data: LEAVE_STATUS,
             },
             events: {
-              onChange: (reportState, currentValue) => { }
-            }
+              onChange: (reportState, currentValue) => {},
+            },
           },
           {
             className: "col-2 form-group",
@@ -313,10 +313,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Leave Accrual",
@@ -368,14 +368,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -385,12 +385,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -401,12 +401,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -417,20 +417,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -441,8 +441,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -454,10 +454,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Gratuity Provision",
@@ -478,8 +478,8 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -495,11 +495,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -509,14 +509,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -526,12 +526,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -542,12 +542,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -558,20 +558,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -582,8 +582,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -595,10 +595,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       // {
       //   subitem: "Absent Report",
@@ -713,14 +713,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -729,8 +729,8 @@ export default function Payroll({
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -739,8 +739,8 @@ export default function Payroll({
             isImp: true,
             others: {
               maxDate: new Date(),
-              minDate: null
-            }
+              minDate: null,
+            },
           },
           {
             className: "col-2 form-group",
@@ -750,12 +750,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -766,12 +766,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -782,20 +782,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -806,8 +806,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -819,10 +819,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
@@ -843,8 +843,8 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -860,11 +860,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -874,14 +874,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -892,12 +892,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -908,12 +908,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -924,20 +924,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -948,8 +948,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -961,10 +961,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Salary Statement Detail",
@@ -984,8 +984,8 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -1001,11 +1001,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1015,14 +1015,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1033,12 +1033,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -1049,12 +1049,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1065,20 +1065,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1089,8 +1089,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -1102,10 +1102,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
@@ -1126,8 +1126,8 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -1143,11 +1143,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1157,14 +1157,14 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -1174,12 +1174,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -1190,12 +1190,12 @@ export default function Payroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1206,20 +1206,20 @@ export default function Payroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1230,8 +1230,8 @@ export default function Payroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -1243,10 +1243,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Earnings & Deductions Report",
@@ -1264,21 +1264,21 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1292,15 +1292,15 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
+              data: allYears,
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1313,18 +1313,18 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
+              sort: "off",
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
 
           {
@@ -1341,17 +1341,17 @@ export default function Payroll({
               data: [
                 {
                   edType: "Earnings",
-                  edTypeValue: "E"
+                  edTypeValue: "E",
                 },
                 {
                   edType: "Deductions",
-                  edTypeValue: "D"
+                  edTypeValue: "D",
                 },
                 {
                   edType: "Bonus",
-                  edTypeValue: "B"
-                }
-              ]
+                  edTypeValue: "B",
+                },
+              ],
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -1363,14 +1363,14 @@ export default function Payroll({
                     method: "GET",
                     data: {
                       component_category: "E",
-                      miscellaneous_component: "Y"
+                      miscellaneous_component: "Y",
                     },
 
-                    onSuccess: result => {
+                    onSuccess: (result) => {
                       reportState.setState({
-                        earning_deductions_id_list: result.data.records
+                        earning_deductions_id_list: result.data.records,
                       });
-                    }
+                    },
                   });
                 } else if (currentEvent.value === "D") {
                   algaehApiCall({
@@ -1379,24 +1379,24 @@ export default function Payroll({
                     method: "GET",
                     data: {
                       component_category: "D",
-                      miscellaneous_component: "Y"
+                      miscellaneous_component: "Y",
                     },
 
-                    onSuccess: result => {
+                    onSuccess: (result) => {
                       reportState.setState({
-                        earning_deductions_id_list: result.data.records
+                        earning_deductions_id_list: result.data.records,
                       });
-                    }
+                    },
                   });
                 }
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  earning_deductions_id_list: []
+                  earning_deductions_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1406,19 +1406,19 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              valueField: "hims_d_employee_group_id",
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
 
           {
@@ -1430,15 +1430,15 @@ export default function Payroll({
             dataSource: {
               textField: "earning_deduction_description",
               valueField: "hims_d_earning_deduction_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1450,10 +1450,10 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Leave Encashment Reports",
@@ -1470,13 +1470,13 @@ export default function Payroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
+              data: undefined,
             },
 
             events: {
@@ -1488,20 +1488,20 @@ export default function Payroll({
                   method: "GET",
                   data: { hospital_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      department_id_list: result.data.records
+                      department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  department_id_list: []
+                  department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1515,15 +1515,15 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
+              data: allYears,
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -1536,18 +1536,18 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
+              sort: "off",
             },
             events: {
               onClear: (reportState, currentName) => {
                 reportState.setState({
-                  [currentName]: undefined
+                  [currentName]: undefined,
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -1557,12 +1557,12 @@ export default function Payroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -1572,13 +1572,13 @@ export default function Payroll({
             // isImp: true,
             link: {
               uri: "/selfService/getLeaveMaster",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "leave_description",
               valueField: "hims_d_leave_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -1590,11 +1590,11 @@ export default function Payroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
-      }
-    ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+      },
+    ],
   };
 }

@@ -1,7 +1,6 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
 const deleteSalesReturnDetail = ($this, context, row) => {
@@ -84,21 +83,20 @@ const onchangegridcol = ($this, context, row, e) => {
     return;
   }
   row[name] = value;
-  sales_return_detail[_index] = row;
-  $this.setState({
-    sales_return_detail: sales_return_detail
-  });
-  if (context !== undefined) {
-    context.updateState({
-      sales_return_detail: sales_return_detail
-    });
-  }
+  // sales_return_detail[_index] = row;
+  // $this.setState({
+  //   sales_return_detail: sales_return_detail
+  // });
+  // if (context !== undefined) {
+  //   context.updateState({
+  //     sales_return_detail: sales_return_detail
+  //   });
+  // }
   onchhangegriddiscount($this, context, row, e);
 
 };
 
 const onchhangegriddiscount = ($this, context, row, e) => {
-
   let extended_cost = 0;
 
   let tax_amount = 0;
@@ -109,38 +107,37 @@ const onchhangegriddiscount = ($this, context, row, e) => {
     parseFloat(row.return_qty) * parseFloat(row.unit_cost);
 
 
-  tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
-
-  row["extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
-  row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-  row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
+  tax_amount = ((extended_cost * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
 
 
-  row["net_extended_cost"] = GetAmountFormart(extended_cost, {
-    appendSymbol: false
-  });
+  row["extended_cost"] = extended_cost.toFixed($this.state.decimal_places)
+  row["tax_amount"] = ((extended_cost * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
+  row["total_amount"] = (parseFloat(tax_amount) + parseFloat(extended_cost)).toFixed($this.state.decimal_places);
+
+
+  row["net_extended_cost"] = extended_cost.toFixed($this.state.decimal_places)
+
   sales_return_detail[_index] = row;
 
   $this.setState({
     sales_return_detail: sales_return_detail
+  }, () => {
+    calculateHeadervalues($this, context);
   });
   if (context !== undefined) {
     context.updateState({
       sales_return_detail: sales_return_detail
     });
   }
-  calculateHeadervalues($this, context, row);
+
 
 };
 
-const calculateHeadervalues = ($this, context, row) => {
+const calculateHeadervalues = ($this, context) => {
 
   let sales_return_detail = $this.state.sales_return_detail;
-  let _index = sales_return_detail.indexOf(row);
-  sales_return_detail[_index] = row;
+  // let _index = sales_return_detail.indexOf(row);
+  // sales_return_detail[_index] = row;
 
   let sub_total = Enumerable.from(sales_return_detail).sum(s =>
     parseFloat(s.extended_cost)
@@ -164,7 +161,7 @@ const calculateHeadervalues = ($this, context, row) => {
   );
 
   $this.setState({
-    sales_return_detail: sales_return_detail,
+    // sales_return_detail: sales_return_detail,
     sub_total: sub_total,
     discount_amount: discount_amount,
     net_total: net_total,
@@ -174,7 +171,7 @@ const calculateHeadervalues = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
-      sales_return_detail: sales_return_detail,
+      // sales_return_detail: sales_return_detail,
       sub_total: sub_total,
       discount_amount: discount_amount,
       net_total: net_total,

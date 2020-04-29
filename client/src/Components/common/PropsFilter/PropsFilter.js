@@ -120,14 +120,21 @@ export default function EmployeeFilter(props) {
   }
 
   function employeeSearch(e) {
-    let input_data = "";
+    if (inputs.hospital_id === null || inputs.hospital_id === undefined) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning"
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return
+    }
+
+    let input_data = " hospital_id=" + inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
       input_data += " sub_department_id=" + inputs.sub_department_id;
       if (inputs.designation_id !== null) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
-    } else {
-      input_data = "1=1";
     }
     AlgaehSearch({
       searchGrid: {

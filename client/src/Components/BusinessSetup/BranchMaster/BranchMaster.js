@@ -14,8 +14,10 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
-// /branchMaster/getBranchMaster
 
+import { Checkbox, Upload, message } from "algaeh-react-components";
+// /branchMaster/getBranchMaster
+import Organization from "./Organisation";
 export default class BranchMaster extends Component {
   constructor(props) {
     super(props);
@@ -26,9 +28,11 @@ export default class BranchMaster extends Component {
       editBranch: false,
       filterArray: [],
       searchText: "",
-      searchSubBranchText:"",
-      filterdDepartmentArray:[],
-      checkAll:false
+      searchSubBranchText: "",
+      filterdDepartmentArray: [],
+      checkAll: false,
+      checkAllIntermediate: undefined,
+      selectedBranchName: "",
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -280,6 +284,7 @@ export default class BranchMaster extends Component {
     if (e.hims_d_hospital_id > 0) {
       this.setState({
         hospital_id: e.hims_d_hospital_id,
+        selectedBranchName: e.hospital_name,
       });
     }
 
@@ -305,45 +310,90 @@ export default class BranchMaster extends Component {
             onSuccess: (res) => {
               if (res.data.success) {
                 let data = res.data.records;
-                if (data.length > 0) {
-                  let allDepartments = this.state.allDepartments;
-                  data.map((item) => {
-                    let find_dep = _.find(
-                      allDepartments,
-                      (m) =>
-                        m.hims_d_department_id === item.hims_d_department_id
+                const newArray = this.state.allDepartments
+                  .map((item) => {
+                    const hasDepartment = data.find(
+                      (f) =>
+                        f.hims_d_department_id === item.hims_d_department_id
                     );
-                    const index = allDepartments.indexOf(find_dep);
-
-                    allDepartments[index] = {
-                      ...allDepartments[index],
-                      checked: true,
-                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id,
-                    };
-
-                    item.subDepts.map((sub) => {
-                      let find_sub = _.find(
-                        allDepartments[index]["subDepts"],
-                        (s) =>
-                          s.hims_d_sub_department_id ===
-                          sub.hims_d_sub_department_id
+                    if (hasDepartment !== undefined) {
+                      const allSubDepLength = item.subDepts.length;
+                      const subDepLength = hasDepartment.subDepts.length;
+                      if (allSubDepLength === subDepLength) {
+                        item.indeterminate = false;
+                        item.checked = true;
+                      } else {
+                        item.checked = false;
+                      }
+                      item.subDepts = item.subDepts.map((sub) => {
+                        const isChecked = hasDepartment.subDepts.find(
+                          (f) =>
+                            f.hims_d_sub_department_id ===
+                            sub.hims_d_sub_department_id
+                        );
+                        return {
+                          ...sub,
+                          checked: isChecked === undefined ? false : true,
+                        };
+                      });
+                      const anyUnched = item.subDepts.find(
+                        (f) => f.checked === false
                       );
-                      const indexS = allDepartments[index]["subDepts"].indexOf(
-                        find_sub
-                      );
-                      allDepartments[index]["subDepts"][indexS] = {
-                        ...allDepartments[index]["subDepts"][indexS],
-                        checked: true,
-                        hims_m_branch_dept_map_id:
-                          sub.hims_m_branch_dept_map_id,
+                      return {
+                        ...item,
+                        indeterminate: anyUnched === undefined ? false : true,
                       };
-                    });
-                  });
+                    }
+                  })
+                  .filter((f) => f !== null);
+                const anyUnchecked = newArray.find((f) => f.checked === false);
+                this.setState({
+                  allDepartments: newArray,
+                  checkAll: anyUnchecked === undefined ? true : false,
+                  checkAllIntermediate:
+                    anyUnchecked === undefined ? false : true,
+                });
+                // if (data.length > 0) {
+                //   let allDepartments = this.state.allDepartments;
+                //   data.forEach((item) => {
+                //     let find_dep = _.find(
+                //       allDepartments,
+                //       (m) =>
+                //         m.hims_d_department_id === item.hims_d_department_id
+                //     );
+                //     const index = allDepartments.indexOf(find_dep);
 
-                  this.setState({
-                    allDepartments: allDepartments,
-                  });
-                }
+                //     allDepartments[index] = {
+                //       ...allDepartments[index],
+                //       checked: true,
+                //       hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id,
+                //     };
+
+                //     item.subDepts.forEach((sub) => {
+                //       let find_sub = _.find(
+                //         allDepartments[index]["subDepts"],
+                //         (s) =>
+                //           s.hims_d_sub_department_id ===
+                //           sub.hims_d_sub_department_id
+                //       );
+                //       const indexS = allDepartments[index]["subDepts"].indexOf(
+                //         find_sub
+                //       );
+                //       allDepartments[index]["subDepts"][indexS] = {
+                //         ...allDepartments[index]["subDepts"][indexS],
+                //         checked: true,
+                //         hims_m_branch_dept_map_id:
+                //           sub.hims_m_branch_dept_map_id,
+                //       };
+                //     });
+                //   });
+                //        const isCheckAll = allDepartments.filter(f=>f.checked === true).length;
+                //   this.setState({
+                //     allDepartments: allDepartments,
+                //     checkAll: isCheckAll===allDepartments.length?true:false,
+                //     indeterminate:isCheckAll < allDepartments.length ?true:false
+                //   });
+                // }
               }
             },
             onFailure: (err) => {
@@ -370,72 +420,125 @@ export default class BranchMaster extends Component {
   }
 
   changeDepartments(data, e) {
-    // console.log("data",data);
     const _status = e.target.checked;
-    const index=  this.state.allDepartments.indexOf(data);
-    data.checked=_status;
-    data.subDepts =  data.subDepts.map(item=>{
+    const index = this.state.allDepartments.indexOf(data);
+    data.checked = _status;
+    data.indeterminate = false;
+    data.subDepts = data.subDepts.map((item) => {
       return {
         ...item,
-        checked:_status
-      }
+        checked: _status,
+      };
     });
+
     this.state.allDepartments[index] = data;
-    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
-    const allDepts = this.state.allDepartments.length;
-    
-this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ===allDepts?true:false });
+    const unCheckExist = this.state.allDepartments.find(
+      (f) => f.checked === false
+    );
+    this.setState({
+      allDepartments: this.state.allDepartments,
+      checkAll: unCheckExist === undefined ? true : false,
+      checkAllIntermediate: unCheckExist === undefined ? false : true,
+    });
 
-  //   let val = parseInt(e.target.value, 10);
-   
-  //   let Departments = this.state.allDepartments;
+    //   let val = parseInt(e.target.value, 10);
 
-  //   const subdepartments = data.subDepts.map((item) => {
-  //     return {
-  //       ...item,
-  //       checked: _status //? true : false,
-  //     };
-  //   });
+    //   let Departments = this.state.allDepartments;
 
-  //   let newDepats = _.map(Departments, (f) => {
-  //     let _sList = f.subDepts;
-  //     let _checked = { checked: f.checked ? true : false };
-  //     if (f.hims_d_department_id === val) {
-  //       _sList = subdepartments;
-  //       _checked = { checked: _status ? true : false };
-  //     }
-  //     return {
-  //       ...f,
-  //       ..._checked,
-  //       subDepts: _sList,
-  //     };
-  //   });
-  //  this.setState({ allDepartments: newDepats });
+    //   const subdepartments = data.subDepts.map((item) => {
+    //     return {
+    //       ...item,
+    //       checked: _status //? true : false,
+    //     };
+    //   });
+
+    //   let newDepats = _.map(Departments, (f) => {
+    //     let _sList = f.subDepts;
+    //     let _checked = { checked: f.checked ? true : false };
+    //     if (f.hims_d_department_id === val) {
+    //       _sList = subdepartments;
+    //       _checked = { checked: _status ? true : false };
+    //     }
+    //     return {
+    //       ...f,
+    //       ..._checked,
+    //       subDepts: _sList,
+    //     };
+    //   });
+    //  this.setState({ allDepartments: newDepats });
   }
 
   changeSubdepartment(item, e) {
     const _status = e.target.checked;
-    const {data,sub} =item;
-    const mainStateIndex = this.state.allDepartments.indexOf[data];
-    const index = data.subDepts.indexOf(sub);
+    const { data, sub } = item;
+    const allDept = this.state.allDepartments;
+    const filterData = allDept.find(
+      (f) => f.hims_d_department_id === data.hims_d_department_id
+    );
+    const mainStateIndex = allDept.indexOf[filterData];
     sub.checked = _status;
-    data.subDepts[index] = sub;
-    const checkedStatus= data.subDepts.filter(f=>f.checked===true).length;
-    const deptLength =data.subDepts.length;
-    if(checkedStatus===deptLength){
-      data.checked =true;
-    }else{
-      data.checked =false;
-    }
-    this.state.allDepartments[mainStateIndex] =data;
-    const selectedDept = this.state.allDepartments.filter(f=>f.checked === true).length;
-    const allDepts = this.state.allDepartments.length;
-
+    const subData = data.subDepts.find(
+      (f) => f.hims_d_sub_department_id === sub.hims_d_sub_department_id
+    );
+    const subIndex = data.subDepts.indexOf(subData);
+    data.subDepts[subIndex] = sub;
+    const hasUnchecked = data.subDepts.filter((f) => f.checked === false);
+    data.checked = hasUnchecked.length === 0 ? true : false;
+    data.indeterminate =
+      hasUnchecked.length === 0
+        ? false
+        : hasUnchecked.length === data.subDepts.length
+        ? false
+        : true;
+    this.state.allDepartments[mainStateIndex] = data;
+    const hasUncheckedState = this.state.allDepartments.find(
+      (f) => f.checked === false
+    );
     this.setState({
       allDepartments: this.state.allDepartments,
-      checkAll:selectedDept === allDepts?true:false
-    })
-   
+      checkAll: hasUncheckedState === undefined ? true : false,
+      checkAllIntermediate: hasUncheckedState === undefined ? false : true,
+    });
+
+    // const index = data.subDepts.indexOf(sub);
+    // sub.checked = _status;
+    // data.subDepts[index] = sub;
+    // const checkedStatus = data.subDepts.filter((f) => f.checked === true)
+    //   .length;
+    // const deptLength = data.subDepts.length;
+
+    // if (checkedStatus === deptLength) {
+    //   data.checked = true;
+    // } else if (checkedStatus === 0) {
+    //   data.indeterminate = false;
+    // } else {
+    //   data.indeterminate = true;
+    //   data.checked = false;
+    // }
+
+    // this.state.allDepartments[mainStateIndex] = data;
+    // const selectedDept = this.state.allDepartments.filter(
+    //   (f) => f.checked === true
+    // ).length;
+    // const allDepts = this.state.allDepartments.length;
+    // let inter = this.state.allDepartments.filter(
+    //   (f) => f.indeterminate === true
+    // ).length;
+
+    // let indeterminate = false;
+    // if (inter > 0) {
+    //   indeterminate = true;
+    // } else if (inter === 0 && selectedDept > 0) {
+    //   indeterminate = true;
+    // } else if (allDepts === selectedDept) {
+    //   indeterminate = false;
+    // }
+    // this.setState({
+    //   allDepartments: this.state.allDepartments,
+    //   checkAll: selectedDept === allDepts ? true : false,
+    //   checkAllIntermediate: indeterminate,
+    // });
+
     // let val = parseInt(e.target.value, 10);
 
     // let Departments = this.state.allDepartments;
@@ -514,7 +617,7 @@ this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ==
         onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
-              title: "Assigned Successfully.",
+              title: `Assigned Successfully To ${this.state.selectedBranchName} Branch `,
               type: "success",
             });
 
@@ -565,53 +668,74 @@ this.setState({allDepartments:this.state.allDepartments,checkAll:selectedDept ==
   filterSubDepartment(e) {
     const value = e.target.value.toLowerCase();
     if (value === "") {
-      this.setState({ filterdDepartmentArray: [], searchSubBranchText: e.target.value });
+      this.setState({
+        filterdDepartmentArray: [],
+        searchSubBranchText: e.target.value,
+      });
     }
-    const filterd = this.state.allDepartments.map(item =>
-      {const subDpartments=  item.subDepts.filter(
-        (f) =>
-          f.sub_department_name.toLowerCase().includes(value) 
-          
-      );
-    if(subDpartments.length>0 ){
-      return {
-        ...item,
-        subDepts:subDpartments
-      }
-    }
-  } ).filter(f=>f !== undefined);
-    
-
-    this.setState({ filterdDepartmentArray: filterd, searchSubBranchText: e.target.value });
-
-    
-  
-}
-selectAll(e){
-  const status = e.target.checked;
-  const checkedDeparts =    this.state.allDepartments.map((item) =>
-        {
-          const subDpartments=  item.subDepts.map(sItems=>{
-            return {
-              ...sItems,
-              checked:status,
-              
-            }
-          });
+    const filterd = this.state.allDepartments
+      .map((item) => {
+        const subDpartments = item.subDepts.filter((f) =>
+          f.sub_department_name.toLowerCase().includes(value)
+        );
+        if (subDpartments.length > 0) {
           return {
             ...item,
-            checked:status,
-            subDepts:subDpartments
-          }
-         
+            subDepts: subDpartments,
+          };
+        }
+      })
+      .filter((f) => f !== undefined);
 
-          });
-  this.setState({allDepartments:checkedDeparts,checkAll:status})
-    
-        
+    this.setState({
+      filterdDepartmentArray: filterd,
+      searchSubBranchText: e.target.value,
+    });
+  }
+  selectAll(e) {
+    const status = e.target.checked;
+    const checkedDeparts = this.state.allDepartments.map((item) => {
+      const subDpartments = item.subDepts.map((sItems) => {
+        return {
+          ...sItems,
+          checked: status,
+        };
+      });
+      return {
+        ...item,
+        checked: status,
+        subDepts: subDpartments,
+        indeterminate: false,
+      };
+    });
 
-
-}
+    this.setState({
+      allDepartments: checkedDeparts,
+      checkAll: status,
+      checkAllIntermediate: false,
+    });
+  }
+  clearAll(e) {
+    const clearDeparts = this.state.allDepartments.map((item) => {
+      const subDpartments = item.subDepts.map((sItems) => {
+        return {
+          ...sItems,
+          checked: false,
+        };
+      });
+      return {
+        ...item,
+        checked: false,
+        indeterminate: false,
+        subDepts: subDpartments,
+      };
+    });
+    this.setState({
+      allDepartments: clearDeparts,
+      checkAll: false,
+      checkAllIntermediate: false,
+    });
+  }
 
   render() {
     const branchList =
@@ -621,16 +745,32 @@ selectAll(e){
         ? this.state.allBranches
         : this.state.filterArray;
     const departments =
-        this.state.searchSubBranchText !== "" && this.state.filterdDepartmentArray.length === 0
-          ? this.state.filterdDepartmentArray
-          : this.state.searchSubBranchText === "" && this.state.filterdDepartmentArray.length === 0
-          ? this.state.allDepartments
-          : this.state.filterdDepartmentArray;
+      this.state.searchSubBranchText !== "" &&
+      this.state.filterdDepartmentArray.length === 0
+        ? this.state.filterdDepartmentArray
+        : this.state.searchSubBranchText === "" &&
+          this.state.filterdDepartmentArray.length === 0
+        ? this.state.allDepartments
+        : this.state.filterdDepartmentArray;
+
     return (
       <div className="BranchMaster">
         <div className="row">
+          {" "}
+          <div className="col-12">
+            <Organization countryMaster={this.state.countryMaster} />
+          </div>
+        </div>
+        <div className="row">
           <div className="col-3">
             <div className="portlet portlet-bordered margin-bottom-15">
+              {" "}
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Add/Edit Branch</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
               <div className="portlet-body">
                 <div className="row">
                   <AlagehFormGroup
@@ -774,7 +914,6 @@ selectAll(e){
               </div>
             </div>
           </div>
-
           <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -850,24 +989,37 @@ selectAll(e){
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Map Dept. to Branch</h3>
+                  <h3 className="caption-subject">Dept. & Sub Dept. Mapping</h3>
                 </div>
               </div>
 
               {/* ----------sssstart------------ */}
               <div className="portlet-body departmentBranchMapList">
+                <p>
+                  Selected Branch: <b>{this.state.selectedBranchName}</b>
+                </p>
+                <hr></hr>
                 <div className="row">
                   <div className="col-5 customCheckbox">
-                    <label className="checkbox inline">
-                      <input
+                    {/* <label className="checkbox inline"> */}
+
+                    {/* <input
                         type="checkbox"
                         value=""
                         name=""
                         checked={this.state.checkAll}
                         onChange={this.selectAll.bind(this)}
-                      />
-                      <span>Select All</span>
-                    </label>
+                      /> */}
+                    {/* <span>Select All</span> */}
+                    {/* </label> */}
+                    <Checkbox
+                      className="selectAllCheck"
+                      checked={this.state.checkAll}
+                      onChange={this.selectAll.bind(this)}
+                      indeterminate={this.state.checkAllIntermediate}
+                    >
+                      Select All
+                    </Checkbox>
                   </div>
                   <AlagehFormGroup
                     div={{
@@ -887,11 +1039,24 @@ selectAll(e){
                   <div className="col-12">
                     <ul className="deptUl">
                       {departments.map((data, index) => {
-                        
                         return (
                           <li key={data.hims_d_department_id}>
-                            <span>
-                              <input
+                            {" "}
+                            <Checkbox
+                              className="depCheck"
+                              indeterminate={data.indeterminate}
+                              checked={
+                                data.checked === undefined
+                                  ? false
+                                  : data.checked
+                              }
+                              onChange={this.changeDepartments.bind(this, data)}
+                            >
+                              {data.department_name}
+                            </Checkbox>
+                            {/* <span> */}
+                            {/* <input
+                              indeterminate ={data.indeterminate}
                               id={"dept_"+ data.hims_d_department_id}
                                 type="checkbox"
                                 onChange={this.changeDepartments.bind(
@@ -905,10 +1070,9 @@ selectAll(e){
                                     : data.checked
                                 }
                                 value={data.hims_d_department_id}
-                              />
-                            </span>
-                            <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label>
-
+                              /> */}
+                            {/* </span> */}
+                            {/* <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"dept_"+ data.hims_d_department_id}>{data.department_name}</label> */}
                             <ul className="subDeptUl">
                               {data.subDepts.map((sub, index) => {
                                 return (
@@ -918,9 +1082,11 @@ selectAll(e){
                                         type="checkbox"
                                         onChange={this.changeSubdepartment.bind(
                                           this,
-                                          {data,sub}
+                                          { data, sub }
                                         )}
-                                        id={"sub_"+sub.hims_d_sub_department_id}
+                                        id={
+                                          "sub_" + sub.hims_d_sub_department_id
+                                        }
                                         name="subDepartments"
                                         checked={
                                           sub.checked === undefined
@@ -930,14 +1096,19 @@ selectAll(e){
                                         value={sub.hims_d_sub_department_id}
                                       />
                                     </span>
-                                    <label style={{paddingTop: "4%",cursor:"pointer"}} htmlFor={"sub_"+sub.hims_d_sub_department_id}>{sub.sub_department_name}</label>
+                                    <label
+                                      htmlFor={
+                                        "sub_" + sub.hims_d_sub_department_id
+                                      }
+                                    >
+                                      {sub.sub_department_name}
+                                    </label>
                                   </li>
                                 );
                               })}
                             </ul>
                           </li>
                         );
-                            
                       })}
                     </ul>
                   </div>
@@ -948,6 +1119,9 @@ selectAll(e){
                       className="btn btn-primary"
                       style={{ marginTop: 19, float: "right" }}
                       onClick={this.assignDepartments.bind(this)}
+                      disabled={
+                        this.state.selectedBranchName === "" ? true : false
+                      }
                     >
                       Map to Branch
                     </button>
@@ -955,6 +1129,7 @@ selectAll(e){
                       type="button"
                       className="btn btn-default"
                       style={{ marginTop: 19, marginRight: 10, float: "right" }}
+                      onClick={this.clearAll.bind(this)}
                     >
                       Clear
                     </button>

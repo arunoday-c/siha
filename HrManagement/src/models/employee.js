@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => {},
+          printQuery: (query) => { },
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -157,9 +157,9 @@ export default {
             date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
-            employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, \
-            created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
+            gratuity_encash,created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -209,6 +209,8 @@ export default {
               input.reporting_to_id,
               input.employee_designation_id,
               input.entitled_daily_ot,
+              input.employee_category,
+              input.gratuity_encash,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -285,7 +287,7 @@ export default {
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
           reporting_to_id=?,sub_department_id=?,employee_designation_id=?, entitled_daily_ot= ? , \
-          employee_bank_id=?,services_id=?, employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
+          employee_bank_id=?,services_id=?, employee_status=?,inactive_date=?, employee_category=?, gratuity_encash=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
@@ -355,6 +357,8 @@ export default {
               input.services_id,
               input.employee_status,
               input.inactive_date,
+              input.employee_category,
+              input.gratuity_encash,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.hims_d_employee_id,
@@ -1561,7 +1565,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
+          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, GP.acc_gratuity,\
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
           E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
           strQry +
@@ -1625,12 +1629,13 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount)\
-          VALUE(?,?,?,?)",
+          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount, acc_gratuity)\
+          VALUE(?,?,?,?,?)",
         values: [
           input.employee_id,
           input.year,
           input.month,
+          input.gratuity_amount,
           input.gratuity_amount,
         ],
         printQuery: true,
@@ -1705,11 +1710,11 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_gratuity_provision set month=?,gratuity_amount=? \
+          "UPDATE hims_f_gratuity_provision set month=?,acc_gratuity=? \
           WHERE hims_f_gratuity_provision_id = ?",
         values: [
           input.month,
-          input.gratuity_amount,
+          input.acc_gratuity,
           input.hims_f_gratuity_provision_id,
         ],
         printQuery: true,

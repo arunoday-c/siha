@@ -11,7 +11,7 @@ import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
 
 import LocationPermission from "./LocationPermission/LocationPermission";
-import ReorderQtyMasterInventory from "./ReorderQtyMasterInventory/ReorderQtyMasterInventory";
+// import ReorderQtyMasterInventory from "./ReorderQtyMasterInventory/ReorderQtyMasterInventory";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -140,7 +140,7 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 className={"nav-item tab-button "}
                 algaehtabs={"ReorderQtyMasterInventory"}
                 onClick={this.openTab.bind(this)}
@@ -152,13 +152,16 @@ class InventorySetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
         {/* this.state.pageDisplay === "InventoryOptions" ? (
             <InventoryOptions />
-          ) : */}
+          ) : 
+          : this.state.pageDisplay === "ReorderQtyMasterInventory" ? (
+            <ReorderQtyMasterInventory />
+          ) */}
         <div className="inventorySetupSection">
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
@@ -170,8 +173,6 @@ class InventorySetup extends Component {
             <Location />
           ) : this.state.pageDisplay === "LocationPermission" ? (
             <LocationPermission />
-          ) : this.state.pageDisplay === "ReorderQtyMasterInventory" ? (
-            <ReorderQtyMasterInventory />
           ) : null}
         </div>
       </div>

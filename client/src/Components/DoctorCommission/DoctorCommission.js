@@ -291,12 +291,12 @@ class DoctorCommission extends Component {
                   <h3 className="caption-subject">Bill Lists</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-primary btn-circle active"
                     onClick={CalculateCommission.bind(this, this)}
                   >
                     <i className="fas fa-calculator" />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -336,10 +336,10 @@ class DoctorCommission extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.servtype_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.servtype_id
+                                );
 
                             return (
                               <span>
@@ -360,8 +360,8 @@ class DoctorCommission extends Component {
                               this.props.services === undefined
                                 ? []
                                 : this.props.services.filter(
-                                    f => f.hims_d_services_id === row.service_id
-                                  );
+                                  f => f.hims_d_services_id === row.service_id
+                                );
 
                             return (
                               <span>
@@ -494,7 +494,7 @@ class DoctorCommission extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         //   onDelete: deleteServices.bind(this, this),
-                        onEdit: row => {}
+                        onEdit: row => { }
                         // onDone: this.updateBillDetail.bind(this)
                       }}
                     />

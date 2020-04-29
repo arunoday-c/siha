@@ -406,14 +406,14 @@ class InvItemMaster extends Component {
                     />
 
                     <div className="col-1 actions" style={{ paddingLeft: 0 }}>
-                      <a
+                      <button
                         onClick={AddUom.bind(this, this)}
                         style={{ marginTop: 19 }}
                         // href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
                   <div className="row" style={{ marginBottom: "10px" }}>

@@ -4084,6 +4084,11 @@ export default {
     const utilities = new algaehUtilities();
     let input = req.body;
 
+    let reset_leave = 1;
+
+    if (input.reset_leave > 1) {
+      reset_leave = input.reset_leave;
+    }
     _mysql
       .executeQueryWithTransaction({
         query:
@@ -4091,8 +4096,8 @@ export default {
           include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
           encashment_percentage,leave_carry_forward,carry_forward_percentage,\
           religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
-          proportionate_leave,document_mandatory,avail_if_no_balance,created_by,created_date,updated_by,updated_date)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          proportionate_leave,document_mandatory,avail_if_no_balance,reset_leave,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.leave_code,
           input.leave_description,
@@ -4101,7 +4106,6 @@ export default {
           input.include_weekoff,
           input.include_holiday,
           input.leave_mode,
-
           input.leave_accrual,
           input.leave_encash,
           input.leave_type,
@@ -4115,6 +4119,7 @@ export default {
           input.proportionate_leave,
           input.document_mandatory,
           input.avail_if_no_balance,
+          reset_leave,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
@@ -4797,7 +4802,7 @@ export default {
           query:
             "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
         leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
-        religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,avail_if_no_balance=?,\
+        religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,avail_if_no_balance=?,reset_leave=?\
         updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
           values: [
             input.leave_description,
@@ -4820,6 +4825,7 @@ export default {
             input.proportionate_leave,
             input.document_mandatory,
             input.avail_if_no_balance,
+            input.reset_leave,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_leave_id,
@@ -8013,7 +8019,7 @@ function projectedleaveCalc(input, _mysql) {
   }
 }
 
-function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
+function yearlyLeaveProcess(inputs, req, mysql) {
   console.log("INSIDE YEARLY PROCESS");
   return new Promise((resolve, reject) => {
     let input = inputs;
@@ -8053,10 +8059,11 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
       _mysql
         .executeQuery({
           query: `select hims_d_employee_id, employee_code,full_name  as employee_name,religion_id,
-            employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining) as no_days_til_eoy,
+            employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining)+1 as no_days_til_eoy,
+            coalesce (?- year(date_of_joining),0) as working_year,
             hospital_id,employee_type,sex from hims_d_employee where employee_status <>'I'  
             and hospital_id=? and  record_status='A'  ${employee};          
-            select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,LD.employee_type,
+            select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,L.reset_leave,LD.employee_type,
             LD.gender,LD.eligible_days,L.proportionate_leave from hims_d_leave  L 
             inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id 
             and L.record_status='A' ${leave};
@@ -8070,6 +8077,7 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
             where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
           values: [
             input.year,
+            input.year,
             input.hospital_id,
             input.year,
             input.hospital_id,
@@ -8078,7 +8086,7 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
             parseInt(input.year) - 1,
             input.hospital_id,
           ],
-          printQuery: false,
+          printQuery: true,
         })
         .then((result) => {
           const AllEmployees = result[0];
@@ -8128,7 +8136,17 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
                         parseFloat(AllEmployees[i]["no_days_til_eoy"])
                     );
                   } else {
-                    m["eligible_days"] = m.eligible_days;
+                    // m["eligible_days"] = m.eligible_days;
+
+                    let mod =
+                      parseInt(AllEmployees[i]["working_year"]) %
+                      parseInt(m.reset_leave);
+
+                    if (mod == 0) {
+                      m["eligible_days"] = m.eligible_days;
+                    } else {
+                      m["eligible_days"] = 0;
+                    }
                   }
                   return m;
                 });
@@ -8378,7 +8396,7 @@ function yearlyLeaveProcessBackp_2020_april_7(inputs, req, mysql) {
   });
 }
 
-function yearlyLeaveProcess(inputs, req, mysql) {
+function yearlyLeaveProcess__2020_april_7(inputs, req, mysql) {
   console.log("INSIDE YEARLY PROCESS");
   return new Promise((resolve, reject) => {
     let input = inputs;

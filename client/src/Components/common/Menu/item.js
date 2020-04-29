@@ -5,7 +5,6 @@ import { setItem } from "algaeh-react-components/storage";
 import { setCookie } from "../../../utils/algaehApiCall";
 import { Drawer } from "algaeh-react-components";
 function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
-
   const { userMenu, userLanguage, setSelectedMenuItem } = useContext(
     MainContext
   );
@@ -37,8 +36,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-        item.redirect_url !== "" &&
-        item.redirect_url !== null
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -116,7 +115,7 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                   <div className="col-2" style={{ marginTop: "2px" }}>
                     <i className={item.icons} />
                   </div>
-                  <div className="col-8 ">
+                  <div className="col-8 moduleNameText">
                     {userLanguage === "en"
                       ? item.module_name
                       : item.other_language}
@@ -125,8 +124,8 @@ function MenuItems({ showMenu, onVisibityChange, openModule, openScreen }) {
                     {moduleSelect === item.module_name || searchText !== "" ? (
                       <i className="fas fa-angle-up" />
                     ) : (
-                        <i className="fas fa-angle-down" />
-                      )}
+                      <i className="fas fa-angle-down" />
+                    )}
                   </div>
                 </div>
                 {moduleSelect === item.module_name || searchText !== "" ? (

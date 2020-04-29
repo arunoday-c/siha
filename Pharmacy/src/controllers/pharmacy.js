@@ -35,7 +35,10 @@ const {
   getPharmacyUsers,
   getPharmacyOptions,
   addPharmacyOptions,
-  updatePharmacyOptions
+  updatePharmacyOptions,
+  addLocationReorder,
+  getLocationReorder,
+  updateLocationReorder
 } = pharmacyModels;
 const { addServices, updateServicesOthrs } = serviceModels;
 
@@ -289,6 +292,27 @@ export default () => {
   });
 
   api.put("/updatePharmacyOptions", updatePharmacyOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addLocationReorder", addLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get("/getLocationReorder", getLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateLocationReorder", updateLocationReorder, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records

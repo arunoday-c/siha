@@ -1,5 +1,6 @@
 @import "../../styles/algaehCssVariables.scss";
 $borderRadius: 10px;
+
 .algaehLogo {
   background: url(../../assets/svg/ALGAEH_LOGO.svg) no-repeat center #fff;
   height: 65px;
@@ -7,7 +8,7 @@ $borderRadius: 10px;
   width: 150px;
   position: absolute;
   left: 0;
-  top: -43px;
+  top: 0;
   border-radius: 0 0 10px 0;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
 }
@@ -18,7 +19,7 @@ $borderRadius: 10px;
   width: 150px;
   position: absolute;
   right: 0;
-  top: -43px;
+  top: 0;
   border-radius: 0 0 0 10px;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.4);
 }
@@ -112,12 +113,20 @@ $borderRadius: 10px;
   .loginFormContainer {
     margin: 15vh auto 0;
     width: 320px;
+
     .companyLogo {
       background: url(../../assets/svg/algaeh_product_logo.svg) no-repeat center;
-      height: 120px;
+      height: 60px;
       background-size: 100%;
       width: 100%;
-      margin-bottom: 10px;
+      background-size: contain;
+    }
+    .appName {
+      font-size: 1.6rem;
+      color: $color-white;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 0 1px 1px rgba($color-black, 0.5);
     }
   }
   .frgtPass {

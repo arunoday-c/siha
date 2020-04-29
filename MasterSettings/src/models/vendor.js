@@ -32,16 +32,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -58,14 +58,15 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select finance_account_head_id from finance_account_head where account_code='2.2.2';",
         })
-        .then(result => {
+        .then((result) => {
           if (
-            result[0]["product_type"] == "HIMS_ERP" ||
-            result[0]["product_type"] == "FINANCE_ERP"
+            result[0][0]["product_type"] == "HIMS_ERP" ||
+            result[0][0]["product_type"] == "FINANCE_ERP"
           ) {
-            const head_id = 38;
+            const head_id = result[1][0]["finance_account_head_id"];
 
             _mysql
               .executeQueryWithTransaction({
@@ -79,11 +80,11 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: false
+                printQuery: false,
               })
-              .then(childRes => {
+              .then((childRes) => {
                 _mysql
                   .executeQuery({
                     query:
@@ -117,24 +118,24 @@ export default {
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       head_id,
-                      childRes.insertId
+                      childRes.insertId,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(vendorRes => {
+                  .then((vendorRes) => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = vendorRes;
                       next();
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -168,22 +169,22 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -227,16 +228,16 @@ export default {
             inputParam.vat_number,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_d_vendor_id
+            inputParam.hims_d_vendor_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -273,14 +274,14 @@ export default {
             _strAppend +
             " order by hims_d_vendor_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -301,16 +302,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_vendor_id
+            inputParam.hims_d_vendor_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -318,5 +319,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

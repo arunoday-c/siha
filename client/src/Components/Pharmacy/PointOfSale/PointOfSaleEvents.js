@@ -22,29 +22,29 @@ const changeTexts = ($this, ctrl, e) => {
     case "pos_customer_type":
       value === "OT"
         ? $this.setState({
-            [name]: value,
-            mode_of_pay: "1",
-            OTItemAddDis: false
-          })
+          [name]: value,
+          mode_of_pay: "1",
+          OTItemAddDis: false
+        })
         : $this.setState({
-            [name]: value,
-            mode_of_pay: "",
-            OTItemAddDis: false
-          });
+          [name]: value,
+          mode_of_pay: "",
+          OTItemAddDis: false
+        });
       break;
 
     case "mode_of_pay":
       value === "1"
         ? $this.setState({
-            [name]: value,
-            insurance_yesno: "N",
-            insured: "N"
-          })
+          [name]: value,
+          insurance_yesno: "N",
+          insured: "N"
+        })
         : $this.setState({
-            [name]: value,
-            insurance_yesno: "Y",
-            insured: "Y"
-          });
+          [name]: value,
+          insurance_yesno: "Y",
+          insured: "Y"
+        });
       break;
 
     default:
@@ -497,7 +497,7 @@ const SavePosEnrty = $this => {
       f => f.hims_d_pharmacy_location_id === $this.state.location_id
     );
     posdata.location_type = location_details.location_type;
-    // debugger
+
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -543,7 +543,7 @@ const SavePosEnrty = $this => {
             );
           }
           Promise.all(_arrayImages).then(result => {
-            // debugger
+
             const pos_number =
               $this.state.hims_f_pharmacy_pos_header_id !== null
                 ? $this.state.pos_number
@@ -633,7 +633,7 @@ const PostPosEntry = $this => {
           $this.state.transaction_id =
             $this.state.hims_f_pharmacy_pos_header_id;
           $this.state.transaction_date = $this.state.pos_date;
-          debugger;
+
           let location_details = $this.props.poslocations.find(
             f => f.hims_d_pharmacy_location_id === $this.state.location_id
           );
@@ -656,7 +656,7 @@ const PostPosEntry = $this => {
             $this.state.pharmacy_stock_detail[i].net_total =
               $this.state.pharmacy_stock_detail[i].net_extended_cost;
           }
-          debugger;
+
           let callUri =
             $this.state.hims_f_pharmacy_pos_header_id !== null
               ? "/posEntry/postPosEntry"

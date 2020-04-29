@@ -348,7 +348,8 @@ const getPaymentDetails = ($this, row) => {
       dis_leave_amount: 0,
       airfare_months: 0,
       dis_salary_amount: 0,
-      dis_total_amount: 0
+      dis_total_amount: 0,
+      leave_category: row.leave_category
     });
   } else if (row.payment_type === "GR") {
     $this.setState({

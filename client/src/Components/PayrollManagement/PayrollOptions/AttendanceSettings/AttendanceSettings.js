@@ -5,7 +5,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import {
   AUTH_LEVEL2,
@@ -19,7 +19,7 @@ import {
   BIOMETRIC_DBS,
   SWIPE_CARD_TYPE,
   MANUAL_TIME_TYPE,
-  ATTN_START_TYPE
+  ATTN_START_TYPE,
 } from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
@@ -30,7 +30,12 @@ export default class AttendanceSettings extends Component {
       earnings: [],
       authorization_plan: "R",
       hims_d_hrms_options_id: null,
-      ot_calculation: "P"
+      ot_calculation: "P",
+      ramzan_timing_req: "N",
+      ramzan_start_date: undefined,
+      ramzan_end_date: undefined,
+      ramzan_working_hr_per_day: 0,
+      ramzan_eligible_category: "MUSLIMS",
     };
     this.getOptions();
     this.getEarnings();
@@ -42,21 +47,21 @@ export default class AttendanceSettings extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        component_category: "E"
+        component_category: "E",
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            earnings: res.data.records
+            earnings: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -65,41 +70,41 @@ export default class AttendanceSettings extends Component {
       uri: "/payrollOptions/getHrmsOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState(res.data.result[0]);
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   validateData = () => {
-    const { attendance_starts, at_end_date, at_st_date } = this.state;
-    if (attendance_starts === "PM") {
-      if (!at_end_date || !at_st_date) {
-        swalMessage({
-          title: "Please enter valid Start and End date for Attendence",
-          type: "error"
-        });
-        return false;
-      } else {
-        return true;
-      }
-    } else if (!attendance_starts) {
-      swalMessage({
-        title: "Please select attendence start",
-        type: "error"
-      });
-      return false;
-    } else {
-      return true;
-    }
+    // const { attendance_starts, at_end_date, at_st_date } = this.state;
+    // if (attendance_starts === "PM") {
+    //   if (!at_end_date || !at_st_date) {
+    //     swalMessage({
+    //       title: "Please enter valid Start and End date for Attendence",
+    //       type: "error",
+    //     });
+    //     return false;
+    //   } else {
+    //     return true;
+    //   }
+    // } else if (!attendance_starts) {
+    //   swalMessage({
+    //     title: "Please select attendence start",
+    //     type: "error",
+    //   });
+    //   return false;
+    // } else {
+    return true;
+    // }
   };
 
   saveOptions() {
@@ -111,21 +116,21 @@ export default class AttendanceSettings extends Component {
           method: "POST",
           module: "hrManagement",
           data: this.state,
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Saved Successfully",
-                type: "success"
+                type: "success",
               });
               this.getOptions();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       } else {
         algaehApiCall({
@@ -133,21 +138,21 @@ export default class AttendanceSettings extends Component {
           method: "PUT",
           module: "hrManagement",
           data: this.state,
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Saved Successfully",
-                type: "success"
+                type: "success",
               });
               // this.getOptions();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     }
@@ -155,7 +160,7 @@ export default class AttendanceSettings extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -164,7 +169,7 @@ export default class AttendanceSettings extends Component {
       this.setState({
         [option.name]: option.value,
         at_st_date: null,
-        at_end_date: null
+        at_end_date: null,
       });
     } else {
       this.dropDownHandler(option);
@@ -177,10 +182,10 @@ export default class AttendanceSettings extends Component {
         e.target.value === "P"
           ? this.setState({
               [e.target.name]: e.target.value,
-              salary_calendar_fixed_days: null
+              salary_calendar_fixed_days: null,
             })
           : this.setState({
-              [e.target.name]: e.target.value
+              [e.target.name]: e.target.value,
             });
         break;
 
@@ -188,22 +193,59 @@ export default class AttendanceSettings extends Component {
         e.target.value === "FI"
           ? this.setState({
               [e.target.name]: e.target.value,
-              airfare_percentage: null
+              airfare_percentage: null,
             })
           : this.setState({
-              [e.target.name]: e.target.value
+              [e.target.name]: e.target.value,
             });
 
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
         break;
     }
   }
-
+  onRamzantimingChange(e) {
+    const isChecked = e.target.checked;
+    const typeX = e.target.value;
+    const value =
+      typeX === "N" && isChecked === true
+        ? "N"
+        : typeX === "Y" && isChecked === true
+        ? "Y"
+        : "N";
+    let others = {};
+    if (value === "N") {
+      others = {
+        ramzan_start_date: undefined,
+        ramzan_end_date: undefined,
+        ramzan_working_hr_per_day: 0,
+        ramzan_eligible_category: "MUSLIMS",
+      };
+    }
+    this.setState({ ramzan_timing_req: value, ...others });
+  }
+  onRamzantimingChangeHandler(e) {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState({
+      [name]: value,
+    });
+  }
+  onRamzantimingCategoryChange(e) {
+    const isChecked = e.target.checked;
+    const typeX = e.target.value;
+    const value =
+      typeX === "MUSLIMS" && isChecked === true
+        ? "MUSLIMS"
+        : typeX === "ALL" && isChecked === true
+        ? "ALL"
+        : "MUSLIMS";
+    this.setState({ ramzan_eligible_category: value });
+  }
   render() {
     let allDays = getDays();
 
@@ -273,14 +315,14 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: allDays
+                      data: allDays,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        payroll_payment_date: null
+                        payroll_payment_date: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -323,14 +365,14 @@ export default class AttendanceSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: allDays
+                        data: allDays,
                       },
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          salary_calendar_fixed_days: null
+                          salary_calendar_fixed_days: null,
                         });
-                      }
+                      },
                     }}
                   />
                 ) : null}
@@ -345,14 +387,14 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "earning_deduction_description",
                       valueField: "hims_d_earning_deduction_id",
-                      data: this.state.earnings
+                      data: this.state.earnings,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        basic_earning_component: null
+                        basic_earning_component: null,
                       });
-                    }
+                    },
                   }}
                 />
               </div>
@@ -388,7 +430,7 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Leave Authorization level",
-                    isImp: false
+                    isImp: false,
                   }}
                   selector={{
                     name: "leave_level",
@@ -397,21 +439,21 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL3
+                      data: AUTH_LEVEL3,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        leave_level: null
+                        leave_level: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Loan Authorization level",
-                    isImp: false
+                    isImp: false,
                   }}
                   selector={{
                     name: "loan_level",
@@ -420,21 +462,21 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL2
+                      data: AUTH_LEVEL2,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        loan_level: null
+                        loan_level: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Review Authorization level",
-                    isImp: false
+                    isImp: false,
                   }}
                   selector={{
                     name: "review_auth_level",
@@ -443,14 +485,14 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL3
+                      data: AUTH_LEVEL3,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        review_auth_level: null
+                        review_auth_level: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
@@ -463,14 +505,14 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL2
+                      data: AUTH_LEVEL2,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        leave_encash_level: null
+                        leave_encash_level: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -484,14 +526,14 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: ADV_DEDUCTION
+                      data: ADV_DEDUCTION,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        advance_deduction: null
+                        advance_deduction: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -499,22 +541,22 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Yearly Working Days",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "yearly_working_days",
                     value: this.state.yearly_working_days,
                     events: {
-                      onChange: this.textHandler.bind(this)
+                      onChange: this.textHandler.bind(this),
                     },
                     others: {
-                      type: "number"
-                    }
+                      type: "number",
+                    },
                   }}
                 />
 
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Attendence Starts", isImp: true }}
                   selector={{
@@ -524,16 +566,16 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: ATTN_START_TYPE
+                      data: ATTN_START_TYPE,
                     },
                     onChange: this.attnDropdownHandler.bind(this),
                     onClear: () => {
                       this.setState({
                         attendance_starts: null,
                         at_st_date: null,
-                        at_end_date: null
+                        at_end_date: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -541,27 +583,27 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Attn. Start Date",
-                    isImp: this.state.attendance_starts === "PM"
+                    isImp: this.state.attendance_starts === "PM",
                   }}
                   selector={{
                     sort: "off",
                     name: "at_st_date",
                     value: this.state.at_st_date,
                     others: {
-                      disabled: this.state.attendance_starts !== "PM"
+                      disabled: this.state.attendance_starts !== "PM",
                     },
                     className: "select-fld",
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: allDays
+                      data: allDays,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        at_st_date: null
+                        at_st_date: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -569,29 +611,29 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Attn. End Date",
-                    isImp: this.state.attendance_starts === "PM"
+                    isImp: this.state.attendance_starts === "PM",
                   }}
                   selector={{
                     sort: "off",
                     name: "at_end_date",
                     value: this.state.at_end_date,
                     others: {
-                      disabled: this.state.attendance_starts !== "PM"
+                      disabled: this.state.attendance_starts !== "PM",
                     },
                     className: "select-fld",
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: allDays
+                      data: allDays,
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        at_end_date: null
+                        at_end_date: null,
                       });
-                    }
+                    },
                   }}
-                />
+                /> */}
                 <div className="col">
                   <label>OT Calculation</label>
                   <div className="customRadio">
@@ -702,7 +744,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col-4 form-group" }}
                       label={{
                         forceLabel: "Type of Attendance",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "attendance_type",
@@ -711,14 +753,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: ATTENDANCE_TYPE
+                          data: ATTENDANCE_TYPE,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            attendance_type: null
+                            attendance_type: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -756,7 +798,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col-4 form-group" }}
                       label={{
                         forceLabel: "Manual Timesheet Entry",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "manual_timesheet_entry",
@@ -765,14 +807,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: MANUAL_TIME_TYPE
+                          data: MANUAL_TIME_TYPE,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            manual_timesheet_entry: null
+                            manual_timesheet_entry: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -780,7 +822,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col-3 form-group" }}
                       label={{
                         forceLabel: "Overtime Type",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "overtime_type",
@@ -789,14 +831,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: OT_TYPE
+                          data: OT_TYPE,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            overtime_type: null
+                            overtime_type: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -804,7 +846,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col form-group" }}
                       label={{
                         forceLabel: "Overtime Calculation",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "overtime_calculation",
@@ -813,14 +855,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: OT_CALC
+                          data: OT_CALC,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            overtime_calculation: null
+                            overtime_calculation: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -828,7 +870,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col form-group" }}
                       label={{
                         forceLabel: "Overtime Payment",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "overtime_payment",
@@ -837,14 +879,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: OT_PAYMENTS
+                          data: OT_PAYMENTS,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            overtime_payment: null
+                            overtime_payment: null,
                           });
-                        }
+                        },
                       }}
                     />
 
@@ -852,7 +894,7 @@ export default class AttendanceSettings extends Component {
                       div={{ className: "col form-group" }}
                       label={{
                         forceLabel: "Hourly OT Calc Type",
-                        isImp: false
+                        isImp: false,
                       }}
                       selector={{
                         name: "overtime_hourly_calculation",
@@ -861,14 +903,14 @@ export default class AttendanceSettings extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: OT_HOUR_CALC
+                          data: OT_HOUR_CALC,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            overtime_hourly_calculation: null
+                            overtime_hourly_calculation: null,
                           });
-                        }
+                        },
                       }}
                     />
                   </div>
@@ -884,36 +926,36 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-3 form-group" }}
                         label={{
                           forceLabel: "In-Time",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "standard_intime",
                           value: this.state.standard_intime,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "time"
-                          }
+                            type: "time",
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
                           forceLabel: "Out-Time",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "standard_outime",
                           value: this.state.standard_outime,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "time"
-                          }
+                            type: "time",
+                          },
                         }}
                       />
 
@@ -921,18 +963,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-3 form-group" }}
                         label={{
                           forceLabel: "Number of break hr/day",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "standard_break_hours",
                           value: this.state.standard_break_hours,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "number"
-                          }
+                            type: "number",
+                          },
                         }}
                       />
 
@@ -940,20 +982,190 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-3 form-group" }}
                         label={{
                           forceLabel: "Number of working hr/day",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "standard_working_hours",
                           value: this.state.standard_working_hours,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "number"
-                          }
+                            type: "number",
+                          },
                         }}
                       />
+                    </div>
+                  </div>
+                  <div
+                    className="col-12 algaehLabelFormGroup margin-top-15"
+                    style={{ marginBottom: 25 }}
+                  >
+                    <label className="algaehLabelGroup">
+                      Ramzan Time off (Change every year)
+                    </label>
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Ramzan Timing Required</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Y"
+                              name="ramzan_timing_req"
+                              checked={
+                                this.state.ramzan_timing_req === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingChange.bind(this)}
+                            />
+                            <span>Yes</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="N"
+                              name="ramzan_timing_req"
+                              checked={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingChange.bind(this)}
+                            />
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Start Date",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ramzan_start_date",
+                          value: this.state.ramzan_start_date,
+                          events: {
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
+                          },
+                          others: {
+                            type: "date",
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "End Date",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ramzan_end_date",
+                          value: this.state.ramzan_end_date,
+
+                          events: {
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
+                          },
+                          others: {
+                            type: "date",
+                            min: this.state.ramzan_start_date,
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Number of working hr/day",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ramzan_working_hr_per_day",
+                          value: this.state.ramzan_working_hr_per_day,
+                          events: {
+                            onChange: this.onRamzantimingChangeHandler.bind(
+                              this
+                            ),
+                          },
+                          others: {
+                            type: "number",
+                            disabled:
+                              this.state.ramzan_timing_req === "N"
+                                ? true
+                                : false,
+                          },
+                        }}
+                      />
+
+                      <div className="col-4">
+                        <label>Elgible Category</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="ALL"
+                              name="ramzan_eligible_category"
+                              disabled={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              defaultChecked={
+                                this.state.ramzan_eligible_category === "ALL"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingCategoryChange.bind(
+                                this
+                              )}
+                            />
+                            <span>All Employees</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="MUSLIMS"
+                              name="ramzan_eligible_category"
+                              disabled={
+                                this.state.ramzan_timing_req === "N"
+                                  ? true
+                                  : false
+                              }
+                              defaultChecked={
+                                this.state.ramzan_eligible_category ===
+                                "MUSLIMS"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.onRamzantimingCategoryChange.bind(
+                                this
+                              )}
+                            />
+                            <span>Only Muslims</span>
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div className="row">
@@ -979,14 +1191,14 @@ export default class AttendanceSettings extends Component {
                             fieldName: "Column_1",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Column 1" }} />
-                            )
+                            ),
                           },
                           {
                             fieldName: "Column_2",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Column 2" }} />
-                            )
-                          }
+                            ),
+                          },
                         ]}
                         keyId=""
                         dataSource={{ data: [] }}
@@ -1017,14 +1229,14 @@ export default class AttendanceSettings extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: BIOMETRIC_DBS
+                            data: BIOMETRIC_DBS,
                           },
                           onChange: this.dropDownHandler.bind(this),
                           onClear: () => {
                             this.setState({
-                              biometric_database: null
+                              biometric_database: null,
                             });
-                          }
+                          },
                         }}
                       />
 
@@ -1032,18 +1244,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Server Name",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "biometric_server_name",
                           value: this.state.biometric_server_name,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
 
@@ -1051,18 +1263,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Port Number",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "biometric_port_no",
                           value: this.state.biometric_port_no,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "number"
-                          }
+                            type: "number",
+                          },
                         }}
                       />
 
@@ -1070,18 +1282,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Login ID",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "biometric_database_login",
                           value: this.state.biometric_database_login,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
 
@@ -1089,18 +1301,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Password",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "biometric_database_password",
                           value: this.state.biometric_database_password,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "password"
-                          }
+                            type: "password",
+                          },
                         }}
                       />
 
@@ -1108,18 +1320,18 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Database",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "biometric_database_name",
                           value: this.state.biometric_database_name,
                           events: {
-                            onChange: this.textHandler.bind(this)
+                            onChange: this.textHandler.bind(this),
                           },
                           others: {
-                            type: "text"
-                          }
+                            type: "text",
+                          },
                         }}
                       />
 
@@ -1133,14 +1345,14 @@ export default class AttendanceSettings extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: SWIPE_CARD_TYPE
+                            data: SWIPE_CARD_TYPE,
                           },
                           onChange: this.dropDownHandler.bind(this),
                           onClear: () => {
                             this.setState({
-                              biometric_swipe_id: null
+                              biometric_swipe_id: null,
                             });
-                          }
+                          },
                         }}
                       />
                     </div>

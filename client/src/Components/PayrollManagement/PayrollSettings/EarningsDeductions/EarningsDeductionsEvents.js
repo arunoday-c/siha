@@ -22,12 +22,15 @@ const onEditHandler = ($this, row) => {
 
 
     edit_data.selected_account = row.child_id !== null ? row.head_id + "-" + row.child_id : null;
+    edit_data.indirect_selected_account = row.direct_child_id !== null ? row.direct_head_id + "-" + row.direct_child_id : null;
     edit_data.selected_li_account = row.li_child_id !== null ? row.li_head_id + "-" + row.li_child_id : null;
 
-    if (row.component_category === "A") {
-        getFinanceHeaders($this, 1)
-    } else {
-        getFinanceHeaders($this, 5)
+    if ($this.FIN_Active === true) {
+        if (row.component_category === "A") {
+            getFinanceHeaders($this, 1)
+        } else {
+            getFinanceHeaders($this, 5)
+        }
     }
     $this.setState({
         ...$this.state,
@@ -225,6 +228,7 @@ const clearState = ($this) => {
         li_child_id: null,
         li_head_id: null,
         selected_account: null,
+        indirect_selected_account: null,
         selected_li_account: null
     });
 }
@@ -288,11 +292,21 @@ const addEarningsDeductions = ($this) => {
             if ($this.FIN_Active) {
                 if ($this.state.selected_account === null || $this.state.selected_account === undefined) {
                     swalMessage({
-                        title: "Please Select G/L Account",
+                        title: "Please Select G/L Indirect Account",
                         type: "warning"
                     });
                     return
                 }
+
+                if ($this.state.indirect_selected_account === null || $this.state.indirect_selected_account === undefined) {
+                    swalMessage({
+                        title: "Please Select G/L Direct Account",
+                        type: "warning"
+                    });
+                    return
+                }
+
+
 
                 if ($this.state.component_category === "C" &&
                     ($this.state.selected_li_account === null || $this.state.selected_li_account === undefined)) {
@@ -308,6 +322,9 @@ const addEarningsDeductions = ($this) => {
 
             let li_selected_account = $this.state.selected_li_account !== null ?
                 $this.state.selected_li_account.split("-") : []
+
+            let in_selected_account = $this.state.indirect_selected_account !== null ?
+                $this.state.indirect_selected_account.split("-") : []
             let inputObj = {
                 miscellaneous_component: $this.state.miscellaneous_component
                     ? "Y"
@@ -345,11 +362,11 @@ const addEarningsDeductions = ($this) => {
                     $this.state.annual_salary_comp === true ? "Y" : "N",
                 child_id: gl_selected_account.length > 0 ? gl_selected_account[1] : undefined,
                 head_id: gl_selected_account.length > 0 ? gl_selected_account[0] : undefined,
+                direct_child_id: in_selected_account.length > 0 ? in_selected_account[1] : undefined,
+                direct_head_id: in_selected_account.length > 0 ? in_selected_account[0] : undefined,
                 li_child_id: li_selected_account.length > 0 ? li_selected_account[1] : undefined,
-                li_head_id: li_selected_account.length > 0 ? li_selected_account[0] : undefined
+                li_head_id: li_selected_account.length > 0 ? li_selected_account[0] : undefined,
             }
-
-
 
             if ($this.state.hims_d_earning_deduction_id === null) {
                 algaehApiCall({

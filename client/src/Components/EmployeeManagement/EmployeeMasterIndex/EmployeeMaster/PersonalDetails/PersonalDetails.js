@@ -63,7 +63,7 @@ class PersonalDetails extends Component {
     const userToken = this.context.userToken;
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+        userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
 
@@ -788,8 +788,8 @@ class PersonalDetails extends Component {
                               ? false
                               : this.state.employee_code === null ||
                                 this.state.employee_code === ""
-                              ? false
-                              : true
+                                ? false
+                                : true
                           }
                           textAltMessage="Employee Image"
                           serviceParameters={{

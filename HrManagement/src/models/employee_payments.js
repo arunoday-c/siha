@@ -30,20 +30,20 @@ export default {
             and loan.loan_dispatch_from = 'EMP' and loan.employee_id = emp.hims_d_employee_id " +
             _stringData,
           values: _.valuesIn(_loanDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "LN"
+              payment_type: "LN",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -74,20 +74,20 @@ export default {
           hims_d_employee emp where adv.advance_status = 'APR' and adv.employee_id = emp.hims_d_employee_id " +
             _stringData,
           values: _.valuesIn(_advDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "AD"
+              payment_type: "AD",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -119,25 +119,28 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select encash.hims_f_leave_encash_header_id, encash.encashment_number as request_number, encash.employee_id, \
-          encash.total_amount as payment_amount, emp.employee_code,emp.full_name from hims_f_leave_encash_header encash, \
-          hims_d_employee emp where encash.authorized = 'APR' and encash.employee_id = emp.hims_d_employee_id" +
+            "select EH.hims_f_leave_encash_header_id, EH.encashment_number as request_number, EH.employee_id, \
+            EH.total_amount as payment_amount, EMP.employee_code,EMP.full_name, L.leave_category \
+            from hims_f_leave_encash_header EH \
+            inner join hims_d_employee EMP on EMP.hims_d_employee_id = EH.employee_id \
+            inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id \
+            where EH.authorized = 'APR' " +
             _stringData,
           values: _.valuesIn(_encashLeaveDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "EN"
+              payment_type: "EN",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -170,20 +173,20 @@ export default {
           hims_d_employee emp where GR.settled = 'N' and GR.employee_id = emp.hims_d_employee_id" +
             _stringData,
           values: _.valuesIn(_FSDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "GR"
+              payment_type: "GR",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -216,20 +219,20 @@ export default {
           hims_d_employee emp where FS.final_settlement_status = 'AUT' and FS.employee_id = emp.hims_d_employee_id" +
             _stringData,
           values: _.valuesIn(_FSDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "FS"
+              payment_type: "FS",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -263,20 +266,20 @@ export default {
           hims_d_employee emp where LS.status = 'PEN' and LS.employee_id = emp.hims_d_employee_id" +
             _stringData,
           values: _.valuesIn(_FSDetails),
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
-          req.records = result.map(data => {
+          req.records = result.map((data) => {
             return {
               ...data,
-              payment_type: "LS"
+              payment_type: "LS",
             };
           });
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -295,9 +298,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["EMPLOYEE_PAYMENT"],
-          table_name: "hims_f_hrpayroll_numgen"
+          table_name: "hims_f_hrpayroll_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           payment_application_code = generatedNumbers.EMPLOYEE_PAYMENT;
           _mysql
             .executeQuery({
@@ -332,16 +335,16 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id
-              ]
+                req.userIdentity.hospital_id,
+              ],
             })
-            .then(result => {
-              req.body.payment_application_code = payment_application_code
-              req.body.hims_f_employee_payments_id = result.insertId
+            .then((result) => {
+              req.body.payment_application_code = payment_application_code;
+              req.body.hims_f_employee_payments_id = result.insertId;
               req.connection = {
                 connection: _mysql.connection,
                 isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
+                pool: _mysql.pool,
               };
               // utilities.logger().log("payment_type: ", inputParam.payment_type);
               if (inputParam.payment_type == "AD") {
@@ -354,14 +357,14 @@ export default {
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       inputParam.employee_advance_id,
-                      inputParam.earnings_id
+                      inputParam.earnings_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(AdvanceResult => {
-                    req.body.advance_acc = AdvanceResult[1]
+                  .then((AdvanceResult) => {
+                    req.body.advance_acc = AdvanceResult[1];
                     let result = {
-                      payment_application_code: payment_application_code
+                      payment_application_code: payment_application_code,
                     };
                     // _mysql.commitTransaction(() => {
                     //   _mysql.releaseConnection();
@@ -369,7 +372,7 @@ export default {
                     next();
                     // });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               } else if (inputParam.payment_type == "LN") {
@@ -381,12 +384,12 @@ export default {
                     values: [
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      inputParam.employee_loan_id
-                    ]
+                      inputParam.employee_loan_id,
+                    ],
                   })
-                  .then(LoanResult => {
+                  .then((LoanResult) => {
                     let result = {
-                      payment_application_code: payment_application_code
+                      payment_application_code: payment_application_code,
                     };
                     // _mysql.commitTransaction(() => {
                     //   _mysql.releaseConnection();
@@ -394,73 +397,147 @@ export default {
                     next();
                     // });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               } else if (inputParam.payment_type == "EN") {
+
+
+
                 _mysql
                   .executeQuery({
                     query:
-                      "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO'\
+                      "UPDATE `hims_f_leave_encash_header` SET `authorized`='PRO',`payment_date`=?, `posted`='Y', posted_by=?, posted_date=? \
                           where hims_f_leave_encash_header_id=?",
-                    values: [inputParam.employee_leave_encash_id]
+                    values: [
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      inputParam.employee_leave_encash_id,
+                    ],
                   })
-                  .then(EncashResult => {
+                  .then((EncashResult) => {
+                    let strAnual_Qry = ""
+                    if (inputParam.leave_category === "A") {
+
+                      strAnual_Qry += _mysql.mysqlQueryFormat(
+                        "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance, \
+                        (LH.balance_leave_days - H.leave_days) as balance_leave_days, (LH.balance_leave_salary_amount - H.leave_amount) as balance_leave_salary_amount, \
+                        M.hims_f_employee_monthly_leave_id, LH.hims_f_employee_leave_salary_header_id from hims_f_leave_encash_header H \
+                        inner join hims_f_employee_monthly_leave M on M.employee_id=H.employee_id \
+                        and M.`year`=H.`year`and M.leave_id = H.leave_id\
+                        inner join hims_f_employee_leave_salary_header LH on LH.employee_id=H.employee_id \
+                        where H.hims_f_leave_encash_header_id=?;",
+                        [inputParam.employee_leave_encash_id]
+                      );
+
+                    } else {
+                      strAnual_Qry += _mysql.mysqlQueryFormat(
+                        "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance, \
+                        M.hims_f_employee_monthly_leave_id from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
+                        where M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                        M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
+                        [inputParam.employee_leave_encash_id]
+                      );
+                    }
                     _mysql
                       .executeQuery({
-                        query:
-                          "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance-H.leave_days) as close_balance \
-                    from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
-                    where M.employee_id=H.employee_id and M.`year`=H.`year`and \
-                    M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
-                        values: [inputParam.employee_leave_encash_id],
-                        printQuery: true
+                        query: strAnual_Qry,
+                        printQuery: true,
                       })
-                      .then(leave_encash_header => {
-                        let strQuery = ""
+                      .then((leave_encash_header) => {
+                        let strQuery = "";
                         if (leave_encash_header.length === 0) {
-                          req.records = { payment_application_code: payment_application_code };
+                          req.records = {
+                            payment_application_code: payment_application_code,
+                          };
                           next();
                         }
-                        for (let i = 0; i < leave_encash_header.length; i++) {
+                        if (inputParam.leave_category === "A") {
 
                           strQuery += _mysql.mysqlQueryFormat(
                             "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                            where employee_id=? and `year`=? and leave_id=?;",
+                          where hims_f_employee_monthly_leave_id=?; \
+                          UPDATE hims_f_employee_leave_salary_header SET balance_leave_days = ?, \
+                          balance_leave_salary_amount = ? where hims_f_employee_leave_salary_header_id=?",
                             [
-                              leave_encash_header[i].close_balance,
-                              leave_encash_header[i].employee_id,
-                              leave_encash_header[i].year,
-                              leave_encash_header[i].leave_id
+                              leave_encash_header[0].close_balance,
+                              leave_encash_header[0].hims_f_employee_monthly_leave_id,
+                              leave_encash_header[0].balance_leave_days,
+                              parseFloat(leave_encash_header[0].balance_leave_salary_amount) > 0 ? leave_encash_header[0].balance_leave_salary_amount : 0,
+                              leave_encash_header[0].hims_f_employee_leave_salary_header_id
                             ]
                           );
-                          if (i === leave_encash_header.length - 1) {
-                            _mysql
-                              .executeQuery({
-                                query: strQuery,
-                                printQuery: true
-                              })
-                              .then(monthly_leave => {
-                                let result = {
-                                  payment_application_code: payment_application_code
-                                };
-                                // _mysql.commitTransaction(() => {
-                                //   _mysql.releaseConnection();
-                                req.records = result;
-                                next();
-                                // });
-                              })
-                              .catch(error => {
-                                next(error);
-                              });
-                          }
+
+                        } else {
+
+                          strQuery += _mysql.mysqlQueryFormat(
+                            "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                          where hims_f_employee_monthly_leave_id=?;",
+                            [
+                              leave_encash_header[0].close_balance,
+                              leave_encash_header[0].hims_f_employee_monthly_leave_id
+                            ]
+                          );
                         }
+                        _mysql
+                          .executeQuery({
+                            query: strQuery,
+                            printQuery: true,
+                          })
+                          .then((monthly_leave) => {
+                            let result = {
+                              payment_application_code: payment_application_code,
+                            };
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            req.records = result;
+                            next();
+                            // });
+                          })
+                          .catch((error) => {
+                            next(error);
+                          });
+
+
+                        // for (let i = 0; i < leave_encash_header.length; i++) {
+                        //   strQuery += _mysql.mysqlQueryFormat(
+                        //     "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                        //     where employee_id=? and `year`=? and leave_id=?;",
+                        //     [
+                        //       leave_encash_header[i].close_balance,
+                        //       leave_encash_header[i].employee_id,
+                        //       leave_encash_header[i].year,
+                        //       leave_encash_header[i].leave_id,
+                        //     ]
+                        //   );
+                        //   if (i === leave_encash_header.length - 1) {
+                        //     _mysql
+                        //       .executeQuery({
+                        //         query: strQuery,
+                        //         printQuery: true,
+                        //       })
+                        //       .then((monthly_leave) => {
+                        //         let result = {
+                        //           payment_application_code: payment_application_code,
+                        //         };
+                        //         // _mysql.commitTransaction(() => {
+                        //         //   _mysql.releaseConnection();
+                        //         req.records = result;
+                        //         next();
+                        //         // });
+                        //       })
+                        //       .catch((error) => {
+                        //         next(error);
+                        //       });
+                        //   }
+                        // }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         next(error);
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               } else if (inputParam.payment_type == "GR") {
@@ -472,12 +549,12 @@ export default {
                     values: [
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      inputParam.employee_end_of_service_id
-                    ]
+                      inputParam.employee_end_of_service_id,
+                    ],
                   })
-                  .then(GratuityResult => {
+                  .then((GratuityResult) => {
                     let result = {
-                      payment_application_code: payment_application_code
+                      payment_application_code: payment_application_code,
                     };
                     // _mysql.commitTransaction(() => {
                     //   _mysql.releaseConnection();
@@ -485,7 +562,7 @@ export default {
                     next();
                     // });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               } else if (inputParam.payment_type == "FS") {
@@ -497,12 +574,12 @@ export default {
                     values: [
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      inputParam.employee_final_settlement_id
-                    ]
+                      inputParam.employee_final_settlement_id,
+                    ],
                   })
-                  .then(FinalSettleResult => {
+                  .then((FinalSettleResult) => {
                     let result = {
-                      payment_application_code: payment_application_code
+                      payment_application_code: payment_application_code,
                     };
                     // _mysql.commitTransaction(() => {
                     //   _mysql.releaseConnection();
@@ -510,7 +587,7 @@ export default {
                     next();
                     // });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               } else if (inputParam.payment_type == "LS") {
@@ -526,17 +603,17 @@ export default {
                       inputParam.employee_leave_settlement_id,
                       inputParam.employee_leave_settlement_id,
                       inputParam.employee_id,
-                      inputParam.employee_leave_settlement_id
-                    ]
+                      inputParam.employee_leave_settlement_id,
+                    ],
                   })
-                  .then(LeaveSettleResult => {
+                  .then((LeaveSettleResult) => {
                     // LeaveSettleResult
 
                     let leave_salary = LeaveSettleResult[1][0];
                     let leave_salary_header = LeaveSettleResult[2][0];
                     let leave_salary_detail = LeaveSettleResult[3];
 
-                    let salary_header_id = _.map(leave_salary_detail, o => {
+                    let salary_header_id = _.map(leave_salary_detail, (o) => {
                       return o.salary_header_id;
                     });
 
@@ -558,7 +635,6 @@ export default {
                     // console.log("start_year", start_year)
                     // console.log("end_year", end_year)
                     if (parseInt(start_year) == parseInt(end_year)) {
-
                       balance_leave_days =
                         parseFloat(leave_salary_header.balance_leave_days) -
                         parseFloat(leave_salary.leave_period);
@@ -615,13 +691,13 @@ export default {
                               "YYYY-MM-DD"
                             ),
                             inputParam.employee_id,
-                            salary_header_id
+                            salary_header_id,
                           ],
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(LeaveSettleResult => {
+                        .then((LeaveSettleResult) => {
                           let result = {
-                            payment_application_code: payment_application_code
+                            payment_application_code: payment_application_code,
                           };
                           // _mysql.commitTransaction(() => {
                           //   _mysql.releaseConnection();
@@ -629,7 +705,7 @@ export default {
                           next();
                           // });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           next(error);
                         });
                     } else if (parseInt(start_year) != parseInt(end_year)) {
@@ -771,11 +847,11 @@ export default {
                         .executeQuery({
                           query: strQuery,
                           values: values,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(LeaveSettleResult => {
+                        .then((LeaveSettleResult) => {
                           let result = {
-                            payment_application_code: payment_application_code
+                            payment_application_code: payment_application_code,
                           };
                           // _mysql.commitTransaction(() => {
                           //   _mysql.releaseConnection();
@@ -783,21 +859,21 @@ export default {
                           next();
                           // });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           next(error);
                         });
                     }
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           next(error);
         });
     } catch (e) {
@@ -819,16 +895,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_f_employee_payments_id
+            inputParam.hims_f_employee_payments_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
-          req.body.payment_cancel = "Y"
+        .then((result) => {
+          req.body.payment_cancel = "Y";
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           // console.log("inputParam.payment_type", inputParam.payment_type)
           // console.log("inputParam.earnings_id", inputParam.earnings_id)
@@ -842,11 +918,11 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam.employee_advance_id,
-                  inputParam.earnings_id
-                ]
+                  inputParam.earnings_id,
+                ],
               })
-              .then(AdvanceResult => {
-                req.body.advance_acc = AdvanceResult[1]
+              .then((AdvanceResult) => {
+                req.body.advance_acc = AdvanceResult[1];
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = AdvanceResult;
@@ -862,10 +938,10 @@ export default {
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_loan_id
-                ]
+                  inputParam.employee_loan_id,
+                ],
               })
-              .then(LoanResult => {
+              .then((LoanResult) => {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = LoanResult;
@@ -876,86 +952,147 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR'\
+                  "UPDATE `hims_f_leave_encash_header` SET `authorized`='APR', `posted`='N'\
                 where hims_f_leave_encash_header_id=?",
                 values: [inputParam.employee_leave_encash_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(EncashResult => {
+              .then((EncashResult) => {
+                let strAnual_Qry = ""
+                if (inputParam.leave_category === "A") {
+
+                  strAnual_Qry += _mysql.mysqlQueryFormat(
+                    "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance + H.leave_days) as close_balance, \
+                        (LH.balance_leave_days + H.leave_days) as balance_leave_days, (LH.balance_leave_salary_amount + H.leave_amount) as balance_leave_salary_amount, \
+                        M.hims_f_employee_monthly_leave_id, LH.hims_f_employee_leave_salary_header_id from hims_f_leave_encash_header H \
+                        inner join hims_f_employee_monthly_leave M on M.employee_id=H.employee_id \
+                        and M.`year`=H.`year`and M.leave_id = H.leave_id\
+                        inner join hims_f_employee_leave_salary_header LH on LH.employee_id=H.employee_id \
+                        where H.hims_f_leave_encash_header_id=?;",
+                    [inputParam.employee_leave_encash_id]
+                  );
+
+                } else {
+                  strAnual_Qry += _mysql.mysqlQueryFormat(
+                    "select H.employee_id, H.`year`, H.leave_id,H.leave_days,(M.close_balance + H.leave_days) as close_balance, \
+                        M.hims_f_employee_monthly_leave_id from hims_f_leave_encash_header H,hims_f_employee_monthly_leave M\
+                        where M.employee_id=H.employee_id and M.`year`=H.`year`and \
+                        M.leave_id = H.leave_id and H.hims_f_leave_encash_header_id=?;",
+                    [inputParam.employee_leave_encash_id]
+                  );
+                }
+
                 _mysql
                   .executeQuery({
-                    query:
-                      "select H.employee_id, H.`year`, D.leave_id,D.leave_days,(M.close_balance + D.leave_days) as close_balance \
-                from hims_f_leave_encash_header H,hims_f_leave_encash_detail D,hims_f_employee_monthly_leave M\
-                where H.hims_f_leave_encash_header_id =D.leave_encash_header_id and M.employee_id=H.employee_id and M.`year`=H.`year`and \
-                M.leave_id = D.leave_id and H.hims_f_leave_encash_header_id=?;",
-                    values: [inputParam.employee_leave_encash_id],
-
+                    query: strAnual_Qry
                   })
-                  .then(leave_encash_header => {
-                    let strQuery = ""
+                  .then((leave_encash_header) => {
+                    let strQuery = "";
                     if (leave_encash_header.length === 0) {
                       req.records = leave_encash_header;
                       next();
                     }
 
-                    for (let i = 0; i < leave_encash_header.length; i++) {
+                    if (inputParam.leave_category === "A") {
+
                       strQuery += _mysql.mysqlQueryFormat(
                         "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                      where employee_id=? and `year`=? and leave_id=?;",
+                      where hims_f_employee_monthly_leave_id=?; \
+                      UPDATE hims_f_employee_leave_salary_header SET balance_leave_days = ?, \
+                      balance_leave_salary_amount = ? where hims_f_employee_leave_salary_header_id=?",
                         [
-                          leave_encash_header[i].close_balance,
-                          leave_encash_header[i].employee_id,
-                          leave_encash_header[i].year,
-                          leave_encash_header[i].leave_id
+                          leave_encash_header[0].close_balance,
+                          leave_encash_header[0].hims_f_employee_monthly_leave_id,
+                          leave_encash_header[0].balance_leave_days,
+                          parseFloat(leave_encash_header[0].balance_leave_salary_amount) > 0 ? leave_encash_header[0].balance_leave_salary_amount : 0,
+                          leave_encash_header[0].hims_f_employee_leave_salary_header_id
                         ]
                       );
-                      if (i === leave_encash_header.length - 1) {
-                        _mysql
-                          .executeQuery({
-                            query: strQuery,
-                            printQuery: true
-                          })
-                          .then(monthly_leave => {
-                            // _mysql.commitTransaction(() => {
-                            //   _mysql.releaseConnection();
-                            req.records = monthly_leave;
-                            next();
-                            // });
-                          })
-                          .catch(error => {
-                            next(error);
-                          });
-                      }
-                      // _mysql
-                      //   .executeQuery({
-                      //     query:
-                      //       "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
-                      // where employee_id=? and `year`=? and leave_id=?;",
-                      //     values: [
-                      //       leave_encash_header[i].close_balance,
-                      //       leave_encash_header[i].employee_id,
-                      //       leave_encash_header[i].year,
-                      //       leave_encash_header[i].leave_id
-                      //     ]
-                      //   })
-                      //   .then(monthly_leave => {
-                      //     _mysql.commitTransaction(() => {
-                      //       _mysql.releaseConnection();
-                      //       req.records = monthly_leave;
-                      //       next();
-                      //     });
-                      //   })
-                      //   .catch(error => {
-                      //     next(error);
-                      //   });
+
+                    } else {
+
+                      strQuery += _mysql.mysqlQueryFormat(
+                        "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                      where hims_f_employee_monthly_leave_id=?;",
+                        [
+                          leave_encash_header[0].close_balance,
+                          leave_encash_header[0].hims_f_employee_monthly_leave_id
+                        ]
+                      );
                     }
+                    _mysql
+                      .executeQuery({
+                        query: strQuery,
+                        printQuery: true,
+                      })
+                      .then((monthly_leave) => {
+                        // _mysql.commitTransaction(() => {
+                        //   _mysql.releaseConnection();
+                        req.records = monthly_leave;
+                        next();
+                        // });
+                      })
+                      .catch((error) => {
+                        next(error);
+                      });
+
+                    // for (let i = 0; i < leave_encash_header.length; i++) {
+                    //   strQuery += _mysql.mysqlQueryFormat(
+                    //     "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                    //   where employee_id=? and `year`=? and leave_id=?;",
+                    //     [
+                    //       leave_encash_header[i].close_balance,
+                    //       leave_encash_header[i].employee_id,
+                    //       leave_encash_header[i].year,
+                    //       leave_encash_header[i].leave_id,
+                    //     ]
+                    //   );
+                    //   if (i === leave_encash_header.length - 1) {
+                    //     _mysql
+                    //       .executeQuery({
+                    //         query: strQuery,
+                    //         printQuery: true,
+                    //       })
+                    //       .then((monthly_leave) => {
+                    //         // _mysql.commitTransaction(() => {
+                    //         //   _mysql.releaseConnection();
+                    //         req.records = monthly_leave;
+                    //         next();
+                    //         // });
+                    //       })
+                    //       .catch((error) => {
+                    //         next(error);
+                    //       });
+                    //   }
+                    //   // _mysql
+                    //   //   .executeQuery({
+                    //   //     query:
+                    //   //       "UPDATE `hims_f_employee_monthly_leave` SET `close_balance`=?\
+                    //   // where employee_id=? and `year`=? and leave_id=?;",
+                    //   //     values: [
+                    //   //       leave_encash_header[i].close_balance,
+                    //   //       leave_encash_header[i].employee_id,
+                    //   //       leave_encash_header[i].year,
+                    //   //       leave_encash_header[i].leave_id
+                    //   //     ]
+                    //   //   })
+                    //   //   .then(monthly_leave => {
+                    //   //     _mysql.commitTransaction(() => {
+                    //   //       _mysql.releaseConnection();
+                    //   //       req.records = monthly_leave;
+                    //   //       next();
+                    //   //     });
+                    //   //   })
+                    //   //   .catch(error => {
+                    //   //     next(error);
+                    //   //   });
+                    // }
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     next(error);
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 next(error);
               });
           } else if (inputParam.payment_type == "GR") {
@@ -967,17 +1104,17 @@ export default {
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_end_of_service_id
-                ]
+                  inputParam.employee_end_of_service_id,
+                ],
               })
-              .then(GratuityResult => {
+              .then((GratuityResult) => {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = GratuityResult;
                 next();
                 // });
               })
-              .catch(error => {
+              .catch((error) => {
                 next(error);
               });
           } else if (inputParam.payment_type == "FS") {
@@ -989,17 +1126,17 @@ export default {
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.employee_final_settlement_id
-                ]
+                  inputParam.employee_final_settlement_id,
+                ],
               })
-              .then(FinalSettleResult => {
+              .then((FinalSettleResult) => {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = FinalSettleResult;
                 next();
                 // });
               })
-              .catch(error => {
+              .catch((error) => {
                 next(error);
               });
           } else if (inputParam.payment_type == "LS") {
@@ -1015,16 +1152,16 @@ export default {
                   inputParam.employee_leave_settlement_id,
                   inputParam.employee_leave_settlement_id,
                   inputParam.employee_id,
-                  inputParam.employee_leave_settlement_id
+                  inputParam.employee_leave_settlement_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(LeaveSettleResult => {
+              .then((LeaveSettleResult) => {
                 let leave_salary = LeaveSettleResult[1][0];
                 let leave_salary_header = LeaveSettleResult[2][0];
                 let leave_salary_detail = LeaveSettleResult[3][0];
 
-                let salary_header_id = _.map(leave_salary_detail, o => {
+                let salary_header_id = _.map(leave_salary_detail, (o) => {
                   return o.salary_header_id;
                 });
 
@@ -1093,18 +1230,18 @@ export default {
                         airfare_months,
                         inputParam.employee_id,
                         inputParam.employee_id,
-                        salary_header_id
+                        salary_header_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(LeaveSettleResult => {
+                    .then((LeaveSettleResult) => {
                       // _mysql.commitTransaction(() => {
                       //   _mysql.releaseConnection();
                       req.records = LeaveSettleResult;
                       next();
                       // });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       next(error);
                     });
                 } else if (start_year != end_year) {
@@ -1225,26 +1362,26 @@ export default {
                   _mysql
                     .executeQuery({
                       query: strQuery,
-                      values: values
+                      values: values,
                     })
-                    .then(LeaveSettleResult => {
+                    .then((LeaveSettleResult) => {
                       // _mysql.commitTransaction(() => {
                       //   _mysql.releaseConnection();
                       req.records = LeaveSettleResult;
                       next();
                       // });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       next(error);
                     });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 next(error);
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -1261,6 +1398,14 @@ export default {
       let _stringData = "";
       inputValues.push(input.hospital_id);
       inputValues.push(input.payment_type);
+
+      let strAppend = ""
+      let strField = ""
+      if (input.payment_type === "EN") {
+        strField = ", L.leave_category"
+        strAppend = " inner join hims_f_leave_encash_header EH on EH.hims_f_leave_encash_header_id = EP.employee_leave_encash_id \
+        inner join hims_d_leave L on L.hims_d_leave_id = EH.leave_id "
+      }
       if (input.employee_id != null) {
         _stringData += " and employee_id=? ";
         inputValues.push(input.employee_id);
@@ -1269,21 +1414,22 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_employee_payments_id,employee_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
+            "select hims_f_employee_payments_id, EP.employee_id, employee_advance_id,employee_loan_id,employee_leave_encash_id,\
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
-          payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
-          head_id, child_id, emp.employee_code, emp.full_name,earnings_id from hims_f_employee_payments EP, hims_d_employee emp where \
-          EP.employee_id = emp.hims_d_employee_id and emp.hospital_id=? and payment_type=?" +
+          payment_type, payment_amount, EP.payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
+          head_id, child_id, emp.employee_code, emp.full_name,earnings_id" + strField + " from hims_f_employee_payments EP \
+          inner join hims_d_employee emp on EP.employee_id = emp.hims_d_employee_id " + strAppend +
+            "where emp.hospital_id=? and payment_type=?" +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -1316,14 +1462,14 @@ export default {
             on E.hims_d_employee_id=LS.employee_id where E.leave_salary_process = 'Y' and E.hospital_id=? " +
             strQry,
           values: [input.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -1350,16 +1496,16 @@ export default {
             input.balance_leave_salary_amount,
             input.balance_airticket_amount,
             input.airfare_months,
-            input.hims_f_employee_leave_salary_header_id
+            input.hims_f_employee_leave_salary_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -1368,13 +1514,12 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
-
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
       // console.log("generateAccountingEntry")
       let inputParam = req.body;
-      let str_bank_qry = "select 1"
+      let str_bank_qry = "select 1";
       if (inputParam.bank_id !== null) {
         str_bank_qry = _mysql.mysqlQueryFormat(
           "select head_id, child_id from hims_d_bank where hims_d_bank_id=?;",
@@ -1385,9 +1530,9 @@ export default {
         .executeQueryWithTransaction({
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(org_data => {
+        .then((org_data) => {
           if (
             org_data[0]["product_type"] == "HIMS_ERP" ||
             org_data[0]["product_type"] == "FINANCE_ERP"
@@ -1396,21 +1541,32 @@ export default {
               .executeQueryWithTransaction({
                 query:
                   "select account, head_id, child_id from finance_accounts_maping \
-              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL','FIN_STL_PYBL');" + str_bank_qry,
-                printQuery: true
+              where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL','FIN_STL_PYBL');" +
+                  str_bank_qry,
+                printQuery: true,
               })
-              .then(result => {
-                const salary_pay_acc = result[0].find(f => f.account === "SAL_PYBLS");
-                const lv_salary_pay_acc = result[0].find(f => f.account === "LV_SAL_PYBL");
-                const airfair_pay_acc = result[0].find(f => f.account === "AIRFR_PYBL");
-                const gratuity_pay_acc = result[0].find(f => f.account === "GRAT_PYBL");
-                const fs_pay_acc = result[0].find(f => f.account === "FIN_STL_PYBL");
+              .then((result) => {
+                const salary_pay_acc = result[0].find(
+                  (f) => f.account === "SAL_PYBLS"
+                );
+                const lv_salary_pay_acc = result[0].find(
+                  (f) => f.account === "LV_SAL_PYBL"
+                );
+                const airfair_pay_acc = result[0].find(
+                  (f) => f.account === "AIRFR_PYBL"
+                );
+                const gratuity_pay_acc = result[0].find(
+                  (f) => f.account === "GRAT_PYBL"
+                );
+                const fs_pay_acc = result[0].find(
+                  (f) => f.account === "FIN_STL_PYBL"
+                );
 
                 // const org_data = result[0]
-                const bank_acc = result[1][0]
+                const bank_acc = result[1][0];
 
                 // inputParam.payment_mode,
-                let strQuery = ""
+                let strQuery = "";
                 if (inputParam.payment_type === "AD") {
                   strQuery += _mysql.mysqlQueryFormat(
                     "select advance_amount as pay_amount, employee_code, full_name,E.hospital_id, E.sub_department_id\
@@ -1467,26 +1623,41 @@ export default {
                 _mysql
                   .executeQueryWithTransaction({
                     query: strQuery,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(headerResult => {
-                    let _header_narattion = ""
+                  .then((headerResult) => {
+                    let _header_narattion = "";
 
                     if (inputParam.payment_type === "AD") {
-                      _header_narattion = "Advance Payment For " + headerResult[0].employee_code + "/" +
+                      _header_narattion =
+                        "Advance Payment For " +
+                        headerResult[0].employee_code +
+                        "/" +
                         headerResult[0].full_name;
-                      headerResult[0].head_id = inputParam.advance_acc[0].head_id
-                      headerResult[0].child_id = inputParam.advance_acc[0].child_id
-
+                      headerResult[0].head_id =
+                        inputParam.advance_acc[0].head_id;
+                      headerResult[0].child_id =
+                        inputParam.advance_acc[0].child_id;
                     } else if (inputParam.payment_type === "LN") {
-                      _header_narattion = "Loan Payment " + headerResult[0].loan_description + " For " +
-                        headerResult[0].employee_code + "/" + headerResult[0].full_name;
+                      _header_narattion =
+                        "Loan Payment " +
+                        headerResult[0].loan_description +
+                        " For " +
+                        headerResult[0].employee_code +
+                        "/" +
+                        headerResult[0].full_name;
                     } else if (inputParam.payment_type === "LS") {
-                      _header_narattion = "Leave Salary Payment For" + headerResult[0].employee_code
-                        + "/" + headerResult[0].full_name;
+                      _header_narattion =
+                        "Leave Salary Payment For" +
+                        headerResult[0].employee_code +
+                        "/" +
+                        headerResult[0].full_name;
                     } else if (inputParam.payment_type === "GR") {
-                      _header_narattion = "Gratuity Payment For" + headerResult[0].employee_code
-                        + "/" + headerResult[0].full_name;
+                      _header_narattion =
+                        "Gratuity Payment For" +
+                        headerResult[0].employee_code +
+                        "/" +
+                        headerResult[0].full_name;
                     } else if (inputParam.payment_type === "EN") {
                       // console.log("headerResult[0].leave_category", headerResult[0].leave_category)
                       if (headerResult[0].leave_category !== "A") {
@@ -1495,19 +1666,26 @@ export default {
                           _mysql.releaseConnection();
                           next();
                         });
-                        return
+                        return;
                       }
                       // console.log("commit")
-                      _header_narattion = "Encashment For" + headerResult[0].employee_code
-                        + "/" + headerResult[0].full_name;
+                      _header_narattion =
+                        "Encashment For" +
+                        headerResult[0].employee_code +
+                        "/" +
+                        headerResult[0].full_name;
                     } else if (inputParam.payment_type === "FS") {
-                      _header_narattion = "Final Settlement For" + headerResult[0].employee_code
-                        + "/" + headerResult[0].full_name;
+                      _header_narattion =
+                        "Final Settlement For" +
+                        headerResult[0].employee_code +
+                        "/" +
+                        headerResult[0].full_name;
                     }
 
                     _mysql
                       .executeQueryWithTransaction({
-                        query: "INSERT INTO finance_day_end_header (transaction_date, amount, \
+                        query:
+                          "INSERT INTO finance_day_end_header (transaction_date, amount, \
                     voucher_type, document_id, document_number, from_screen, \
                     narration, entered_date, entered_by) VALUES (?,?,?,?,?,?,?,?,?)",
                         values: [
@@ -1515,22 +1693,23 @@ export default {
                           inputParam.payment_amount,
                           "payment",
                           inputParam.hims_f_employee_payments_id,
-                          inputParam.payment_cancel === "Y" ? "C-" + inputParam.payment_application_code
+                          inputParam.payment_cancel === "Y"
+                            ? "C-" + inputParam.payment_application_code
                             : inputParam.payment_application_code,
                           inputParam.ScreenCode,
                           _header_narattion,
                           new Date(),
-                          req.userIdentity.algaeh_d_app_user_id
+                          req.userIdentity.algaeh_d_app_user_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(day_end_header => {
-                        const insertSubDetail = []
+                      .then((day_end_header) => {
+                        const insertSubDetail = [];
 
                         // console.log("payment_cancel", inputParam.payment_cancel)
 
                         if (inputParam.payment_mode === "CS") {
-                          //Cash in Hand Entry                      
+                          //Cash in Hand Entry
                           if (inputParam.payment_cancel === "Y") {
                             insertSubDetail.push({
                               payment_date: new Date(),
@@ -1540,7 +1719,8 @@ export default {
                               payment_type: "DR",
                               credit_amount: 0,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           } else {
                             insertSubDetail.push({
@@ -1551,7 +1731,8 @@ export default {
                               payment_type: "CR",
                               credit_amount: headerResult[0].pay_amount,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           }
                         } else if (inputParam.payment_mode === "CH") {
@@ -1565,7 +1746,8 @@ export default {
                               payment_type: "DR",
                               credit_amount: 0,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           } else {
                             insertSubDetail.push({
@@ -1576,7 +1758,8 @@ export default {
                               payment_type: "CR",
                               credit_amount: headerResult[0].pay_amount,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           }
                         }
@@ -1594,7 +1777,8 @@ export default {
                                 payment_type: "CR",
                                 credit_amount: headerResult[0].leave_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
 
@@ -1608,11 +1792,14 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: headerResult[0].salary_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
 
-                            if (parseFloat(headerResult[0].airfare_amount) > 0) {
+                            if (
+                              parseFloat(headerResult[0].airfare_amount) > 0
+                            ) {
                               //Airfare
                               insertSubDetail.push({
                                 payment_date: new Date(),
@@ -1622,7 +1809,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: headerResult[0].airfare_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           } else {
@@ -1636,7 +1824,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
 
@@ -1650,11 +1839,14 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
 
-                            if (parseFloat(headerResult[0].airfare_amount) > 0) {
+                            if (
+                              parseFloat(headerResult[0].airfare_amount) > 0
+                            ) {
                               //Airfare
                               insertSubDetail.push({
                                 payment_date: new Date(),
@@ -1664,7 +1856,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           }
@@ -1681,7 +1874,8 @@ export default {
                                 payment_type: "CR",
                                 credit_amount: headerResult[0].pay_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           } else {
@@ -1695,7 +1889,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           }
@@ -1712,7 +1907,8 @@ export default {
                                 payment_type: "CR",
                                 credit_amount: headerResult[0].pay_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           } else {
@@ -1726,7 +1922,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           }
@@ -1743,7 +1940,8 @@ export default {
                                 payment_type: "CR",
                                 credit_amount: headerResult[0].pay_amount,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           } else {
@@ -1757,7 +1955,8 @@ export default {
                                 payment_type: "DR",
                                 credit_amount: 0,
                                 hospital_id: headerResult[0].hospital_id,
-                                sub_department_id: headerResult[0].sub_department_id
+                                sub_department_id:
+                                  headerResult[0].sub_department_id,
                               });
                             }
                           }
@@ -1772,7 +1971,8 @@ export default {
                               payment_type: "CR",
                               credit_amount: headerResult[0].pay_amount,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           } else {
                             insertSubDetail.push({
@@ -1783,7 +1983,8 @@ export default {
                               payment_type: "DR",
                               credit_amount: 0,
                               hospital_id: headerResult[0].hospital_id,
-                              sub_department_id: headerResult[0].sub_department_id
+                              sub_department_id:
+                                headerResult[0].sub_department_id,
                             });
                           }
                         }
@@ -1795,7 +1996,7 @@ export default {
                           "payment_type",
                           "credit_amount",
                           "hospital_id",
-                          "sub_department_id"
+                          "sub_department_id",
                         ];
 
                         const month = moment().format("M");
@@ -1811,37 +2012,36 @@ export default {
                             extraValues: {
                               day_end_header_id: day_end_header.insertId,
                               year: year,
-                              month: month
+                              month: month,
                             },
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(subResult => {
+                          .then((subResult) => {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               // req.records = subResult;
                               next();
                             });
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
-
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -1854,7 +2054,7 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });

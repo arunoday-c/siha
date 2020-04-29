@@ -222,7 +222,7 @@ export default function DashBoardEvents() {
         data: { hospital_id: $this.state.hospital_id },
 
         onSuccess: response => {
-          debugger;
+
           if (response.data.success) {
             const { records } = response.data;
             let labels = [];

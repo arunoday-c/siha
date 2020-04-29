@@ -3,19 +3,24 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./FinalSettlement.scss";
-import { algaehApiCall, swalMessage, getCookie } from "../../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie,
+} from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import {
   AlgaehValidation,
-  GetAmountFormart
+  GetAmountFormart,
 } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { MainContext } from "algaeh-react-components/context";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -26,7 +31,7 @@ class FinalSettlement extends Component {
       deductingList: [],
       earningList: [],
       data: {
-        loans: []
+        loans: [],
       },
       disableSave: true,
       total_earnings: 0,
@@ -35,14 +40,38 @@ class FinalSettlement extends Component {
       net_deductions: 0,
       net_amount: 0,
       isEnable: true,
-      flag: undefined
+      flag: undefined,
+      hospital_id: null,
     };
     this.getEarningsDeductions();
+    this.getHospitals();
   }
 
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
+  }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records,
+          });
+        }
+      },
+    });
+  }
   changeChecks(e) {
     this.setState({
-      [e.target.name]: e.target.checked
+      [e.target.name]: e.target.checked,
     });
   }
 
@@ -60,11 +89,11 @@ class FinalSettlement extends Component {
     ) {
       swalMessage({
         title: "Please Select an Employee",
-        type: "warning"
+        type: "warning",
       });
     } else {
       this.setState({
-        loading: true
+        loading: true,
       });
       AlgaehLoader({ show: true });
       algaehApiCall({
@@ -72,18 +101,17 @@ class FinalSettlement extends Component {
         method: "GET",
         module: "hrManagement",
         data: {
-          employee_id: this.state.hims_d_employee_id
+          employee_id: this.state.hims_d_employee_id,
         },
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             if (
               res.data.result.flag !== undefined &&
               res.data.result.flag === "Settled"
             ) {
-
               this.setState(
                 {
-                  ...res.data.result
+                  ...res.data.result,
                 },
                 () => {
                   this.setNetEarnings();
@@ -97,7 +125,7 @@ class FinalSettlement extends Component {
                 {
                   data: res.data.result,
                   disableSave: false,
-                  loading: false
+                  loading: false,
                 },
                 () => {
                   this.setNetEarnings();
@@ -108,23 +136,25 @@ class FinalSettlement extends Component {
             AlgaehLoader({ show: false });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err,
-            type: "error"
+            type: "error",
           });
           this.setState({
-            loading: false
+            loading: false,
           });
-        }
+        },
       });
     }
   }
 
   setNetAmount() {
-    let net_amount = parseFloat(this.state.net_earnings) - parseFloat(this.state.net_deductions);
+    let net_amount =
+      parseFloat(this.state.net_earnings) -
+      parseFloat(this.state.net_deductions);
     this.setState({
-      net_amount: net_amount
+      net_amount: net_amount,
     });
   }
 
@@ -137,7 +167,7 @@ class FinalSettlement extends Component {
 
     this.setState(
       {
-        net_earnings: net_earnings
+        net_earnings: net_earnings,
       },
       () => {
         this.setNetAmount();
@@ -146,13 +176,13 @@ class FinalSettlement extends Component {
   }
 
   setNetDeductions() {
-
     let net_deduction =
-      parseFloat(this.state.data.total_deductions) + parseFloat(this.state.data.total_loan_amount);
+      parseFloat(this.state.data.total_deductions) +
+      parseFloat(this.state.data.total_loan_amount);
 
     this.setState(
       {
-        net_deductions: net_deduction
+        net_deductions: net_deduction,
       },
       () => {
         this.setNetAmount();
@@ -161,13 +191,13 @@ class FinalSettlement extends Component {
   }
 
   setTotalEarnings() {
-    let total_earnings = Enumerable.from(this.state.earningList).sum(s =>
+    let total_earnings = Enumerable.from(this.state.earningList).sum((s) =>
       parseInt(s.amount, 10)
     );
 
     this.setState(
       {
-        total_earnings: total_earnings ? total_earnings : 0
+        total_earnings: total_earnings ? total_earnings : 0,
       },
       () => {
         this.setNetEarnings();
@@ -176,13 +206,13 @@ class FinalSettlement extends Component {
   }
 
   setTotalDeductions() {
-    let total_deductions = Enumerable.from(this.state.deductingList).sum(s =>
+    let total_deductions = Enumerable.from(this.state.deductingList).sum((s) =>
       parseInt(s.amount, 10)
     );
 
     this.setState(
       {
-        total_deductions: total_deductions ? total_deductions : 0
+        total_deductions: total_deductions ? total_deductions : 0,
       },
       () => {
         this.setNetDeductions();
@@ -213,7 +243,7 @@ class FinalSettlement extends Component {
       loans: data.loans,
       earnings: this.state.earningList,
       deductions: this.state.deductingList,
-      ScreenCode: getCookie("ScreenCode")
+      ScreenCode: getCookie("ScreenCode"),
     };
 
     //  console.log("Send Data:", JSON.stringify(send_data));
@@ -223,24 +253,24 @@ class FinalSettlement extends Component {
       method: "POST",
       module: "hrManagement",
       data: send_data,
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Final Settlement Recorded",
-            type: "success"
+            type: "success",
           });
           this.setState({
-            disableSave: true
+            disableSave: true,
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -253,7 +283,7 @@ class FinalSettlement extends Component {
       deductingList: [],
       earningList: [],
       data: {
-        loans: []
+        loans: [],
       },
       disableSave: true,
       total_earnings: 0,
@@ -262,8 +292,7 @@ class FinalSettlement extends Component {
       net_deductions: 0,
       net_amount: 0,
       isEnable: true,
-      flag: undefined
-
+      flag: undefined,
     });
   }
 
@@ -272,18 +301,23 @@ class FinalSettlement extends Component {
       case "earnings_id":
         this.setState({
           [value.name]: value.value,
-          earning_name: value.selected.earning_deduction_description
+          earning_name: value.selected.earning_deduction_description,
         });
         break;
       case "deductions_id":
         this.setState({
           [value.name]: value.value,
-          deduction_name: value.selected.earning_deduction_description
+          deduction_name: value.selected.earning_deduction_description,
+        });
+        break;
+      case "hospital_id":
+        this.setState({
+          [value.name]: value.value,
         });
         break;
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -291,7 +325,7 @@ class FinalSettlement extends Component {
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -305,12 +339,12 @@ class FinalSettlement extends Component {
         earnings.push({
           amount: this.state.earning_amount,
           earnings_id: this.state.earnings_id,
-          earning_name: this.state.earning_name
+          earning_name: this.state.earning_name,
         });
 
         this.setState(
           {
-            earningList: earnings
+            earningList: earnings,
           },
           () => {
             this.setTotalEarnings();
@@ -319,9 +353,9 @@ class FinalSettlement extends Component {
 
         this.setState({
           earning_amount: null,
-          earnings_id: null
+          earnings_id: null,
         });
-      }
+      },
     });
   }
 
@@ -332,7 +366,7 @@ class FinalSettlement extends Component {
 
     this.setState(
       {
-        deductingList: deductions
+        deductingList: deductions,
       },
       () => {
         this.setTotalDeductions();
@@ -347,7 +381,7 @@ class FinalSettlement extends Component {
 
     this.setState(
       {
-        earningList: earnings
+        earningList: earnings,
       },
       () => {
         this.setTotalEarnings();
@@ -363,14 +397,14 @@ class FinalSettlement extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.earningList.pop(row);
 
         this.setState(
           {
-            earningList: this.state.earningList
+            earningList: this.state.earningList,
           },
           () => {
             this.setTotalEarnings();
@@ -388,14 +422,14 @@ class FinalSettlement extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.deductingList.pop(row);
 
         this.setState(
           {
-            deductingList: this.state.deductingList
+            deductingList: this.state.deductingList,
           },
           () => {
             this.setTotalDeductions();
@@ -415,12 +449,12 @@ class FinalSettlement extends Component {
         deduction.push({
           amount: this.state.deduction_amount,
           deductions_id: this.state.deductions_id,
-          deduction_name: this.state.deduction_name
+          deduction_name: this.state.deduction_name,
         });
 
         this.setState(
           {
-            deductingList: deduction
+            deductingList: deduction,
           },
           () => {
             this.setTotalDeductions();
@@ -429,9 +463,9 @@ class FinalSettlement extends Component {
 
         this.setState({
           deduction_amount: null,
-          deductions_id: null
+          deductions_id: null,
         });
-      }
+      },
     });
   }
 
@@ -440,51 +474,66 @@ class FinalSettlement extends Component {
       uri: "/payrollsettings/getEarningDeduction",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           let earnings = Enumerable.from(res.data.records)
-            .where(w => w.component_category === "E")
+            .where((w) => w.component_category === "E")
             .toArray();
           let deductions = Enumerable.from(res.data.records)
-            .where(w => w.component_category === "D")
+            .where((w) => w.component_category === "D")
             .toArray();
 
           this.setState({
             earnings: earnings,
-            deductions: deductions
+            deductions: deductions,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   employeeSearch() {
+    if (
+      this.state.hospital_id === null ||
+      this.state.hospital_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning",
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return;
+    }
+
+    let input_data = " hospital_id=" + this.state.hospital_id;
+
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "exit_employees",
+      inputs: input_data,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
           },
           () => {
-            this.loadFinalSettlement(this)
+            this.loadFinalSettlement(this);
           }
         );
-      }
+      },
     });
   }
 
@@ -493,7 +542,42 @@ class FinalSettlement extends Component {
 
     return (
       <div className="FinalSettlementScreen">
-        <div className="row  inner-top-search" style={{ paddingBottom: 5 }}>
+        <div
+          className="row  inner-top-search"
+          style={{
+            position: "fixed",
+            top: "85px",
+            zIndex: "9",
+            width: "100vw",
+          }}
+        >
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Select a Branch",
+              isImp: true,
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals,
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null,
+                });
+              },
+              others: {
+                disabled: this.state.lockEarnings,
+              },
+            }}
+          />
+
           <div className="col-2 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={this.employeeSearch.bind(this)}>
@@ -536,27 +620,6 @@ class FinalSettlement extends Component {
             </div>
           </div> */}
 
-          <div className="col form-group">
-            {/* <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-default"
-            >
-              CLEAR
-            </button>
-            <button
-              onClick={this.loadFinalSettlement.bind(this)}
-              style={{ marginTop: 19, marginLeft: 5 }}
-              className="btn btn-primary"
-            >
-              Load
-            </button> */}
-            {/* {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null} */}
-            <h3 style={{ paddingTop: "19px" }}>
-              <font color="green">{this.state.flag}</font>
-            </h3>
-          </div>
-
           <div className="col">
             <label className="style_Label ">Employee Code</label>
             <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
@@ -575,8 +638,13 @@ class FinalSettlement extends Component {
                 : "-------"}
             </h6>
           </div>
+          <div className="col form-group">
+            <h3 style={{ paddingTop: "19px" }}>
+              <font color="green">{this.state.flag}</font>
+            </h3>
+          </div>
         </div>
-        <div className="row">
+        <div className="row" style={{ marginTop: 120 }}>
           {/* <div className="col-12">
             <div
               className="portlet portlet-bordered margin-bottom-15"
@@ -610,7 +678,7 @@ class FinalSettlement extends Component {
                             div={{ className: "col form-group" }}
                             label={{
                               forceLabel: "Select Earning Type",
-                              isImp: true
+                              isImp: true,
                             }}
                             selector={{
                               name: "earnings_id",
@@ -619,28 +687,28 @@ class FinalSettlement extends Component {
                               dataSource: {
                                 textField: "earning_deduction_description",
                                 valueField: "hims_d_earning_deduction_id",
-                                data: this.state.earnings
+                                data: this.state.earnings,
                               },
-                              onChange: this.dropDownHandler.bind(this)
+                              onChange: this.dropDownHandler.bind(this),
                             }}
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col form-group" }}
+                            div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Amount",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "earning_amount",
                               value: this.state.earning_amount,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
 
@@ -668,7 +736,7 @@ class FinalSettlement extends Component {
                                   label={{ forceLabel: "Earning Type" }}
                                 />
                               ),
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehAutoComplete
                                     selector={{
@@ -680,23 +748,23 @@ class FinalSettlement extends Component {
                                           "earning_deduction_description",
                                         valueField:
                                           "hims_d_earning_deduction_id",
-                                        data: this.state.earnings
+                                        data: this.state.earnings,
                                       },
                                       onChange: this.changeGridEditors.bind(
                                         this,
                                         row
-                                      )
+                                      ),
                                     }}
                                   />
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "amount",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Amount" }} />
                               ),
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehFormGroup
                                     textBox={{
@@ -707,37 +775,36 @@ class FinalSettlement extends Component {
                                         onChange: this.changeGridEditors.bind(
                                           this,
                                           row
-                                        )
+                                        ),
                                       },
                                       others: {
-                                        type: "number"
-                                      }
+                                        type: "number",
+                                      },
                                     }}
                                   />
                                 );
                               },
                               others: {
-                                maxWidth: 100
-                              }
-                            }
+                                maxWidth: 100,
+                              },
+                            },
                           ]}
                           keyId="earnings_id"
                           dataSource={{
-                            data: this.state.earningList
+                            data: this.state.earningList,
                           }}
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
+                            onEdit: () => {},
                             onDelete: this.deleteEarnings.bind(this),
-                            onDone: this.updateEarnings.bind(this)
+                            onDone: this.updateEarnings.bind(this),
                           }}
                         />
                       </div>
                       <div className="col">
                         <label className="style_Label ">Total Earnings</label>
                         <h6>
-
                           {FsData.total_salary
                             ? GetAmountFormart(this.state.total_earnings)
                             : GetAmountFormart(0)}
@@ -768,7 +835,7 @@ class FinalSettlement extends Component {
                             div={{ className: "col form-group" }}
                             label={{
                               forceLabel: "Select Deduction Type",
-                              isImp: true
+                              isImp: true,
                             }}
                             selector={{
                               name: "deductions_id",
@@ -777,28 +844,28 @@ class FinalSettlement extends Component {
                               dataSource: {
                                 textField: "earning_deduction_description",
                                 valueField: "hims_d_earning_deduction_id",
-                                data: this.state.deductions
+                                data: this.state.deductions,
                               },
-                              onChange: this.dropDownHandler.bind(this)
+                              onChange: this.dropDownHandler.bind(this),
                             }}
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col form-group" }}
+                            div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Amount",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "deduction_amount",
                               value: this.state.deduction_amount,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
 
@@ -826,7 +893,7 @@ class FinalSettlement extends Component {
                                   label={{ forceLabel: "Deduction Type" }}
                                 />
                               ),
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehAutoComplete
                                     selector={{
@@ -838,16 +905,16 @@ class FinalSettlement extends Component {
                                           "earning_deduction_description",
                                         valueField:
                                           "hims_d_earning_deduction_id",
-                                        data: this.state.deductions
+                                        data: this.state.deductions,
                                       },
                                       onChange: this.changeGridEditors.bind(
                                         this,
                                         row
-                                      )
+                                      ),
                                     }}
                                   />
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "amount",
@@ -855,7 +922,7 @@ class FinalSettlement extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Amount" }} />
                               ),
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehFormGroup
                                     textBox={{
@@ -866,30 +933,30 @@ class FinalSettlement extends Component {
                                         onChange: this.changeGridEditors.bind(
                                           this,
                                           row
-                                        )
+                                        ),
                                       },
                                       others: {
-                                        type: "number"
-                                      }
+                                        type: "number",
+                                      },
                                     }}
                                   />
                                 );
                               },
                               others: {
-                                maxWidth: 100
-                              }
-                            }
+                                maxWidth: 100,
+                              },
+                            },
                           ]}
                           keyId="deductions_id"
                           dataSource={{
-                            data: this.state.deductingList
+                            data: this.state.deductingList,
                           }}
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
+                            onEdit: () => {},
                             onDelete: this.deleteDeductions.bind(this),
-                            onDone: this.updateDeductions.bind(this)
+                            onDone: this.updateDeductions.bind(this),
                           }}
                         />
                       </div>
@@ -897,7 +964,6 @@ class FinalSettlement extends Component {
                       <div className="col">
                         <label className="style_Label ">Total Deductions</label>
                         <h6>
-
                           {FsData.total_salary
                             ? GetAmountFormart(this.state.total_deductions)
                             : GetAmountFormart(0)}
@@ -938,7 +1004,7 @@ class FinalSettlement extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Loan Type" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "pending_loan",
@@ -947,29 +1013,28 @@ class FinalSettlement extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Pending Amount" }}
                                 />
-                              )
+                              ),
                               // others: {
                               //   maxWidth: 100
                               // }
-                            }
+                            },
                           ]}
                           keyId="deduction_id"
                           dataSource={{
-                            data: this.state.data.loans
+                            data: this.state.data.loans,
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
-                            onDelete: () => { },
-                            onDone: () => { }
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {},
                           }}
                         />
                       </div>
                       <div className="col">
                         <label className="style_Label ">Total Loan</label>
                         <h6>
-
                           {FsData.total_loan_amount
                             ? GetAmountFormart(FsData.total_loan_amount)
                             : GetAmountFormart(0)}
@@ -989,7 +1054,6 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Total Salary</label>
                     <h6>
-
                       {FsData.total_salary
                         ? GetAmountFormart(FsData.total_salary)
                         : GetAmountFormart(0)}
@@ -999,7 +1063,6 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Gratuity Amount</label>
                     <h6>
-
                       {FsData.gratuity_amount
                         ? GetAmountFormart(FsData.gratuity_amount)
                         : GetAmountFormart(0)}
@@ -1009,7 +1072,6 @@ class FinalSettlement extends Component {
                   <div className="col-12">
                     <label className="style_Label ">Leave Encashment</label>
                     <h6>
-
                       {FsData.total_leave_encash_amount
                         ? GetAmountFormart(FsData.total_leave_encash_amount)
                         : GetAmountFormart(0)}
@@ -1116,7 +1178,7 @@ class FinalSettlement extends Component {
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Print"
+                    forceLabel: "Print",
                     //   returnText: true
                   }}
                 />

@@ -12,6 +12,7 @@ import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getItems, EditItemMaster } from "./ItemSetupEvent";
 import ItemSetupEvent from "./ItemSetupEvent";
+import ItemLocationReorder from "./ItemLocationReorder";
 import { MainContext } from "algaeh-react-components/context";
 
 class ItemSetup extends Component {
@@ -19,6 +20,7 @@ class ItemSetup extends Component {
     super(props);
     this.state = {
       isOpen: false,
+      isReQtyOpen: false,
       itemPop: {},
       addNew: true,
       decimal_places: 0
@@ -32,6 +34,21 @@ class ItemSetup extends Component {
     this.setState({
       decimal_places: userToken.decimal_places
     })
+
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        git_location: "N",
+        location_status: "A",
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "locations"
+      }
+    });
     this.props.getItemCategory({
       uri: "/pharmacy/getItemCategory",
       module: "pharmacy",
@@ -130,6 +147,10 @@ class ItemSetup extends Component {
     );
   }
 
+  CloseReQtyModel(e) {
+    this.setState({ isReQtyOpen: !this.state.isReQtyOpen });
+  }
+
   render() {
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
@@ -173,13 +194,13 @@ class ItemSetup extends Component {
               <h3 className="caption-subject">Item List</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               <ItemMaster
                 HeaderCaption={
                   <AlgaehLabel
@@ -193,6 +214,15 @@ class ItemSetup extends Component {
                 onClose={this.CloseModel.bind(this)}
                 itemPop={this.state.itemPop}
                 addNew={this.state.addNew}
+              />
+
+              <ItemLocationReorder
+                HeaderCaption="Reorder Location Wise"
+                open={this.state.isReQtyOpen}
+                item_description={this.state.item_description}
+                item_id={this.state.item_id}
+                reorder_locations={this.state.reorder_locations}
+                onClose={this.CloseReQtyModel.bind(this)}
               />
             </div>
           </div>
@@ -216,11 +246,20 @@ class ItemSetup extends Component {
                                 row
                               )}
                             />
+
+                            <i
+                              className="fas fa-plus"
+                              onClick={ItemSetupEvent().OpenReQtyLocation.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 55,
+                        maxWidth: 90,
                         style: {
                           textAlign: "center"
                         },
@@ -426,7 +465,8 @@ function mapStateToProps(state) {
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
     itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    itemservices: state.itemservices,
+    locations: state.locations
   };
 }
 
@@ -440,7 +480,8 @@ function mapDispatchToProps(dispatch) {
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getLocation: AlgaehActions
     },
     dispatch
   );

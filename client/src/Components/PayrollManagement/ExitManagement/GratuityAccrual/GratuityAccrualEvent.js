@@ -1,8 +1,7 @@
 import Enumerable from "linq";
 import {
   swalMessage,
-  algaehApiCall,
-  getCookie
+  algaehApiCall
 } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -20,11 +19,23 @@ const texthandle = ($this, e) => {
 };
 
 const employeeSearch = $this => {
+
+  if ($this.state.hospital_id === null || $this.state.hospital_id === undefined) {
+    swalMessage({
+      title: "Please Select Branch",
+      type: "warning"
+    });
+    document.querySelector("[name='hospital_id']").focus();
+    return
+  }
+
+  let input_data = " hospital_id=" + $this.state.hospital_id;
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.Employee_details.employee
     },
     searchName: "employee",
+    inputs: input_data,
     uri: "/gloabelSearch/get",
 
     onContainsChange: (text, serchBy, callBack) => {
@@ -49,7 +60,7 @@ const LoadGratuityAccrual = $this => {
       let inputObj = {
         year: $this.state.year,
         month: $this.state.month,
-        hospital_id: getCookie("HospitalId")
+        hospital_id: $this.state.hospital_id
       };
 
       if ($this.state.hims_d_employee_id !== null) {

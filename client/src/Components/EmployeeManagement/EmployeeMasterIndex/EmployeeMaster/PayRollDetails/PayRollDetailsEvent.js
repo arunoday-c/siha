@@ -1,5 +1,5 @@
 import Enumerable from "linq";
-// import extend from "extend";
+import extend from "extend";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
@@ -144,18 +144,27 @@ const AddEarnComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.earn_formula;
       if ($this.state.earn_calculation_method === "FO") {
-        earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
+        var notExists = [];
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-        if (component_exist === 0) {
+        }).filter(f => f !== null);
+
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
@@ -239,20 +248,26 @@ const AddDeductionComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.deduct_formula;
       if ($this.state.deduct_calculation_method === "FO") {
-        $this.state.earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+        var notExists = [];
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
+        }).filter(f => f !== null);
 
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-
-        if (component_exist === 0) {
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
@@ -349,18 +364,27 @@ const AddContributionComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.contribut_formula;
       if ($this.state.contribut_calculation_method === "FO") {
-        $this.state.earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
+        var notExists = [];
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-        if (component_exist === 0) {
+        }).filter(f => f !== null);
+
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",

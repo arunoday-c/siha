@@ -27,7 +27,10 @@ const {
   getItemMasterWithSalesPrice,
   getInventoryOptions,
   addInventoryOptions,
-  updateInventoryOptions
+  updateInventoryOptions,
+  addInvLocationReorder,
+  getInvLocationReorder,
+  updateInvLocationReorder
 } = invModels;
 
 const { addServices, updateServicesOthrs } = serviceModels;
@@ -230,6 +233,28 @@ export default () => {
   });
 
   api.put("/updateInventoryOptions", updateInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+
+  api.post("/addInvLocationReorder", addInvLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get("/getInvLocationReorder", getInvLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateInvLocationReorder", updateInvLocationReorder, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records

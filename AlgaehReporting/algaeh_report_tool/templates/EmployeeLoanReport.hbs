@@ -20,16 +20,17 @@
                         <th>Instalment Amt</th>
                         <th>Pending Tenure</th>
                         <th>Due Amt</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>{{#hasElement details}}
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="" colspan="8"></td>
-                        <td class="numberFld" colspan="">{{total_loan_amount}}</td>
-                        <td class="numberFld" colspan="">{{total_approved_amount}}</td>
-                        <td class="numberFld" colspan="">{{total_installment_amount}}</td>
-                        <td class="" colspan=""></td>
-                        <td class="numberFld" colspan="">{{total_pending_loan}}</td>
+                        <td class="numberFld" >{{total_loan_amount}}</td>
+                        <td class="numberFld" >{{total_approved_amount}}</td>
+                        <td class="numberFld" >{{total_installment_amount}}</td>
+                        <td class="" ></td>
+                        <td class="numberFld" >{{total_pending_loan}}</td>
                     </tr>
                     {{#each details}}
                     <tr>
@@ -46,6 +47,7 @@
                         <td class="numberFld numberFldTotal">{{installment_amount}}</td>
                         <td>{{pending_tenure}}</td>
                         <td class="numberFld">{{pending_loan}}</td>
+                        <td class="numberFld">{{payment_status}}</td>
                     </tr>
                     {{/each }}
                     {{else}}

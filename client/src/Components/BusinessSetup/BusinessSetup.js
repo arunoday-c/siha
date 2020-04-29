@@ -21,7 +21,7 @@ class BusinessSetup extends Component {
     this.state = {
       pageDisplay: "BranchMaster",
       HIMS_Active: false,
-      screens_data: []
+      screens_data: [],
     };
   }
   static contextType = MainContext;
@@ -38,24 +38,24 @@ class BusinessSetup extends Component {
         title: (
           <AlgaehLabel
             label={{
-              fieldName: "departments"
+              fieldName: "departments",
             }}
           />
         ),
         children: <DeptMaster />,
-        componentCode: "BUSS_DEPT"
+        componentCode: "BUSS_DEPT",
       },
       {
         title: (
           <AlgaehLabel
             label={{
-              fieldName: "branch"
+              fieldName: "branch",
             }}
           />
         ),
         children: <BranchMaster />,
-        componentCode: "BUSS_BRNH"
-      }
+        componentCode: "BUSS_BRNH",
+      },
     ];
 
     if (active) {
@@ -64,34 +64,34 @@ class BusinessSetup extends Component {
           title: (
             <AlgaehLabel
               label={{
-                fieldName: "shift"
+                fieldName: "shift",
               }}
             />
           ),
           children: <Shift />,
-          componentCode: "BUSS_SHIFT"
+          componentCode: "BUSS_SHIFT",
         },
         {
           title: (
             <AlgaehLabel
               label={{
-                fieldName: "users_shift"
+                fieldName: "users_shift",
               }}
             />
           ),
           children: <UserShiftMapping />,
-          componentCode: "BUSS_USERSHIFT"
+          componentCode: "BUSS_USERSHIFT",
         },
         {
           title: (
             <AlgaehLabel
               label={{
-                fieldName: "counter"
+                fieldName: "counter",
               }}
             />
           ),
           children: <Counter />,
-          componentCode: "BUSS_COUNTER"
+          componentCode: "BUSS_COUNTER",
         }
       );
     }
@@ -100,61 +100,61 @@ class BusinessSetup extends Component {
         title: (
           <AlgaehLabel
             label={{
-              fieldName: "currency"
+              fieldName: "currency",
             }}
           />
         ),
         children: <Currency />,
-        componentCode: "BUSS_CURR"
+        componentCode: "BUSS_CURR",
       },
       {
         title: (
           <AlgaehLabel
             label={{
-              fieldName: "bank_master"
+              fieldName: "bank_master",
             }}
           />
         ),
         children: <BankMaster />,
-        componentCode: "BUSS_BANK"
+        componentCode: "BUSS_BANK",
       },
       {
         title: (
           <AlgaehLabel
             label={{
-              fieldName: "company_account"
+              fieldName: "company_account",
             }}
           />
         ),
         children: <CompanyAccount />,
-        componentCode: "BUSS_COMPANY"
+        componentCode: "BUSS_COMPANY",
       },
       {
         title: (
           <AlgaehLabel
             label={{
-              forceLabel: "Project Mapping"
-            }}
-          />
-        ),
-        children: <ProjectMapping />,
-        componentCode: "BUSS_PRJ_MAP"
-      },
-      {
-        title: (
-          <AlgaehLabel
-            label={{
-              forceLabel: "Project Master"
+              forceLabel: "Project Master",
             }}
           />
         ),
         children: <ProjectMaster />,
-        componentCode: "BUSS_PRJ_MTR"
+        componentCode: "BUSS_PRJ_MTR",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Project Mapping",
+            }}
+          />
+        ),
+        children: <ProjectMapping />,
+        componentCode: "BUSS_PRJ_MAP",
       }
     );
     this.setState({
       HIMS_Active: active,
-      screens_data: screens_data
+      screens_data: screens_data,
     });
   }
 
@@ -166,7 +166,7 @@ class BusinessSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 

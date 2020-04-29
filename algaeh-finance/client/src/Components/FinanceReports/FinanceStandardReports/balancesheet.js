@@ -5,11 +5,7 @@ import ReactToPrint from "react-to-print";
 import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
 import { handleFile } from "../FinanceReportEvents";
-import {
-  AlgaehDateHandler,
-  AlgaehButton,
-  AlgaehMessagePop
-} from "algaeh-react-components";
+import {  AlgaehMessagePop} from "algaeh-react-components";
 
 export default function BalanceSheet({ style, footer, layout, dates }) {
   const createPrintObject = useRef(undefined);

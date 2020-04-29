@@ -152,7 +152,7 @@ export default function Mapping(props) {
               }
             }
           ].forEach(selected => {
-            debugger;
+
             const output = result.find(f => f.account === selected.item);
             if (output !== undefined && typeof selected.fun === "function") {
               selected.fun(output["head_id"] + "-" + output["child_id"]);
@@ -190,7 +190,7 @@ export default function Mapping(props) {
             <div className="portlet-body">
               <AlgaehValidator
                 onSubmit={() => {
-                  debugger;
+
 
                   updateFinanceAccountsMaping([
                     // breakGenerate(opControl, "OP_CON"),

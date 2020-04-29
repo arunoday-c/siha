@@ -1963,6 +1963,28 @@
       "value": "CAN"
     }
   ],
+  "LEAVE_ENCASH_STATUS": [
+    {
+      "name": "Approved",
+      "value": "APR"
+    },
+    {
+      "name": "Pending",
+      "value": "PEN"
+    },
+    {
+      "name": "Processed",
+      "value": "PRO"
+    },
+    {
+      "name": "Rejected",
+      "value": "REJ"
+    },
+    {
+      "name": "Cancelled",
+      "value": "CAN"
+    }
+  ],
   "LEAVE_EDIT": [
     {
       "name": "Edit",
@@ -5279,6 +5301,30 @@
     {
       "name": "Cancelled",
       "value": "5"
+    }
+  ],
+  "EMP_CATEGORY": [
+    {
+      "name": "Admin",
+      "value": "A"
+    },
+    {
+      "name": "Project",
+      "value": "P"
+    }
+  ],
+  "RESET_LEAVE": [
+    {
+      "name": "1",
+      "value": "1"
+    },
+    {
+      "name": "2",
+      "value": "2"
+    },
+    {
+      "name": "3",
+      "value": "3"
     }
   ]
 }

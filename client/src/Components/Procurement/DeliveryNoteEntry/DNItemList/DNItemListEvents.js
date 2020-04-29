@@ -550,7 +550,7 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  debugger
+
 
   let item_details = extend({}, $this.state.item_details);
 

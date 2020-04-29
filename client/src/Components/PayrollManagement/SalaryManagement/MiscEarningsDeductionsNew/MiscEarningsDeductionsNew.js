@@ -163,7 +163,14 @@ export default class MiscEarningsDeductionsNew extends Component {
   }
 
   getEmployeesForMiscED() {
-    if (this.state.year.length === 0 && this.state.month.length === 0) {
+    debugger
+    if (this.state.hospital_id === null || this.state.hospital_id === undefined) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning"
+      });
+      document.querySelector("[name='hospital_id']").focus();
+    } else if (this.state.year.length === 0 && this.state.month.length === 0) {
       swalMessage({
         title: "Please Select Month and Year",
         type: "warning"

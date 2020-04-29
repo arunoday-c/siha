@@ -8,16 +8,17 @@ export default {
     const _input = req.query;
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
+    const { decimal_places } = req.userIdentity;
 
     _mysql
       .executeQuery({
         query:
           "select employee_id from hims_f_end_of_service EOS where employee_id = ? ;",
-        values: [_input.hims_d_employee_id]
+        values: [_input.hims_d_employee_id],
       })
-      .then(end_of_service => {
+      .then((end_of_service) => {
         let endofServexit = false;
-        utilities.logger().log("end_of_service: ", end_of_service);
+        // utilities.logger().log("end_of_service: ", end_of_service);
 
         if (end_of_service.length > 0) {
           endofServexit = true;
@@ -36,13 +37,13 @@ export default {
             on T.his_d_title_id = E.title_id \
             where hims_d_employee_id in(?) and employee_status not in('A','I');select * from hims_d_end_of_service_options;",
             values: [_input.hims_d_employee_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             const _result = result[0];
             const _options = result[1];
 
-            utilities.logger().log("_result: ", _result);
+            // utilities.logger().log("_result: ", _result);
 
             if (_result.length == 0) {
               _mysql.releaseConnection();
@@ -71,43 +72,50 @@ export default {
             const _employee = _result[0];
             const _optionsDetals = _options[0];
             let _eligibleDays = 0;
+            const isRoundOffRequired = _optionsDetals["round_off_nearest_year"];
+            if (isRoundOffRequired === "Y") {
+              _employee.endOfServiceYears = parseFloat(
+                _employee.endOfServiceYears
+              ).toFixed(decimal_places);
+            }
+
             if (_optionsDetals.end_of_service_type == "S") {
               if (
                 _employee.endOfServiceYears >= 0 &&
                 _employee.endOfServiceYears <=
-                _optionsDetals.from_service_range1
+                  _optionsDetals.from_service_range1
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days1;
               } else if (
                 _employee.endOfServiceYears >=
-                _optionsDetals.from_service_range1 &&
+                  _optionsDetals.from_service_range1 &&
                 _employee.endOfServiceYears <=
-                _optionsDetals.from_service_range2
+                  _optionsDetals.from_service_range2
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days2;
               } else if (
                 _employee.endOfServiceYears >=
-                _optionsDetals.from_service_range2 &&
+                  _optionsDetals.from_service_range2 &&
                 _employee.endOfServiceYears <=
-                _optionsDetals.from_service_range3
+                  _optionsDetals.from_service_range3
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days3;
               } else if (
                 _employee.endOfServiceYears >=
-                _optionsDetals.from_service_range3 &&
+                  _optionsDetals.from_service_range3 &&
                 _employee.endOfServiceYears <=
-                _optionsDetals.from_service_range4
+                  _optionsDetals.from_service_range4
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days4;
               } else if (
                 _employee.endOfServiceYears >=
-                _optionsDetals.from_service_range4 &&
+                  _optionsDetals.from_service_range4 &&
                 _employee.endOfServiceYears <=
-                _optionsDetals.from_service_range5
+                  _optionsDetals.from_service_range5
               ) {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days5;
@@ -131,48 +139,88 @@ export default {
                   _employee.endOfServiceYears -
                   _optionsDetals.from_service_range2;
                 if (by > 0) {
+                  // ted =
+                  //   (ted +
+                  //     (_optionsDetals.from_service_range2 -
+                  //       _optionsDetals.from_service_range1)) *
+                  //   by;
                   ted =
-                    (ted +
-                      (_optionsDetals.from_service_range2 -
-                        _optionsDetals.from_service_range1)) *
-                    by;
+                    ted +
+                    _optionsDetals.from_service_range2 *
+                      _optionsDetals.eligible_days2;
+
                   by =
                     _employee.endOfServiceYears -
                     _optionsDetals.from_service_range3;
                   if (by > 0) {
                     ted =
-                      (ted +
-                        (_optionsDetals.from_service_range3 -
-                          _optionsDetals.from_service_range2)) *
-                      by;
+                      ted +
+                      _optionsDetals.from_service_range3 *
+                        _optionsDetals.eligible_days3;
+
+                    // ted =
+                    //   (ted +
+                    //     (_optionsDetals.from_service_range3 -
+                    //       _optionsDetals.from_service_range2)) *
+                    //   by;
                     by =
                       _employee.endOfServiceYears -
                       _optionsDetals.from_service_range3;
                     if (by > 0) {
                       ted =
-                        (ted +
-                          (_optionsDetals.from_service_range4 -
-                            _optionsDetals.from_service_range3)) *
-                        by;
+                        ted +
+                        _optionsDetals.from_service_range4 *
+                          _optionsDetals.eligible_days4;
+                      // ted =
+                      //   (ted +
+                      //     (_optionsDetals.from_service_range4 -
+                      //       _optionsDetals.from_service_range3)) *
+                      //   by;
+
                       by =
                         _employee.endOfServiceYears -
                         _optionsDetals.from_service_range4;
                       if (by > 0) {
+                        // ted =
+                        //   (ted +
+                        //     (_optionsDetals.from_service_range5 -
+                        //       _optionsDetals.from_service_range4)) *
+                        //   by;
                         ted =
-                          (ted +
-                            (_optionsDetals.from_service_range5 -
-                              _optionsDetals.from_service_range4)) *
-                          by;
-                      } else {
-                        _eligibleDays =
-                          ted + by * _optionsDetals.eligible_days4;
+                          ted +
+                          _optionsDetals.from_service_range5 *
+                            _optionsDetals.eligible_days5;
                       }
+                      // else {
+                      //   // _eligibleDays = ted
+                      //   // _eligibleDays =
+                      //   //   ted + by * _optionsDetals.eligible_days4;
+                      // }
                     } else {
-                      _eligibleDays = ted + by * _optionsDetals.eligible_days3;
+                      let daysAvilable =
+                        _employee.endOfServiceYears -
+                        _optionsDetals.from_service_range3;
+
+                      _eligibleDays =
+                        ted + daysAvilable * _optionsDetals.eligible_days4;
+                      // _eligibleDays = ted + by * _optionsDetals.eligible_days3;
                     }
+                  } else {
+                    let daysAvilable =
+                      _employee.endOfServiceYears -
+                      _optionsDetals.from_service_range2;
+
+                    _eligibleDays =
+                      ted + daysAvilable * _optionsDetals.eligible_days3;
                   }
                 } else {
-                  _eligibleDays = ted + by * _optionsDetals.eligible_days2;
+                  // _eligibleDays = ted + by * _optionsDetals.eligible_days2;
+                  let daysAvilable =
+                    _employee.endOfServiceYears -
+                    _optionsDetals.from_service_range1;
+
+                  _eligibleDays =
+                    ted + daysAvilable * _optionsDetals.eligible_days2;
                 }
               } else {
                 ted =
@@ -217,49 +265,61 @@ export default {
                   ED.hims_d_earning_deduction_id = EE.earnings_id \
                   and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
                 values: [_input.hims_d_employee_id, _componentsList_total],
-                printQuery: true
+                printQuery: true,
               })
-              .then(earnings => {
+              .then((earnings) => {
                 _mysql.releaseConnection();
-                let _computatedAmout = [];
-                if (_optionsDetals.end_of_service_calculation == "AN") {
-                  _computatedAmout = _.chain(earnings).map(items => {
-                    return (items.amount * 12) / 365;
-                  });
-                } else if (_optionsDetals.end_of_service_calculation == "FI") {
-                  _computatedAmout = _.chain(earnings).map(items => {
-                    return items.amount / _optionsDetals.end_of_service_days;
-                  });
-                }
-                const _sumOfTotalEarningComponents = _.sumBy(earnings, s => {
+                let _computatedAmout = 0;
+                const _sumOfTotalEarningComponents = _.sumBy(earnings, (s) => {
                   return s.amount;
                 });
-                const _computatedAmoutSum =
-                  _computatedAmout.reduce((a, b) => {
-                    return a + b;
-                  }, 0) * _eligibleDays;
+                let gratuity = 0;
+                if (_optionsDetals.end_of_service_calculation == "AN") {
+                  // _computatedAmout = _.chain(earnings)
+                  //   .map((items) => {
+                  //     return (items.amount * 12) / 365;
+                  //   })
+                  //   .value();
+                  gratuity = (_sumOfTotalEarningComponents * 12) / 365;
+                } else if (_optionsDetals.end_of_service_calculation == "FI") {
+                  // _computatedAmout = _.chain(earnings)
+                  //   .map((items) => {
+                  //     return items.amount / 30; // _optionsDetals.end_of_service_days;
+                  //   })
+                  //   .value();
+                  gratuity = _sumOfTotalEarningComponents / 30;
+                }
+
+                _computatedAmout = _eligibleDays * gratuity;
+                // console.log("_computatedAmout", _computatedAmout);
+                // const _computatedAmoutSum =
+                //   _computatedAmout.reduce((a, b) => {
+                //     return a + b;
+                //   }, 0) * _eligibleDays;
+
                 req.records = {
-                  computed_amount: _computatedAmoutSum,
-                  paybale_amout: _computatedAmoutSum,
+                  computed_amount: _computatedAmout, //_computatedAmoutSum,
+                  paybale_amout: _computatedAmout, //_computatedAmoutSum,
                   ..._employee,
-                  componentList: earnings,
+                  componentList: earnings, //earnings,
                   totalEarningComponents: _sumOfTotalEarningComponents,
                   eligible_day: _eligibleDays,
-                  endofServexit: endofServexit
+                  endofServexit: endofServexit,
+                  gratuity_amount: gratuity,
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -272,14 +332,14 @@ export default {
       .executeQuery({
         query:
           "select employee_id from hims_f_end_of_service EOS where employee_id = ? ;",
-        values: [_input.employee_id]
+        values: [_input.employee_id],
       })
-      .then(end_of_service => {
+      .then((end_of_service) => {
         utilities.logger().log("end_of_service: ", end_of_service.length);
         if (end_of_service.length > 0) {
           _mysql.releaseConnection();
           req.records = {
-            message: "End of Service/Gratuity already processed."
+            message: "End of Service/Gratuity already processed.",
           };
           req.flag = 1;
           next();
@@ -288,9 +348,9 @@ export default {
             .generateRunningNumber({
               user_id: req.userIdentity.algaeh_d_app_user_id,
               numgen_codes: ["END_OF_SERVICE_NO"],
-              table_name: "hims_f_hrpayroll_numgen"
+              table_name: "hims_f_hrpayroll_numgen",
             })
-            .then(generatedNumbers => {
+            .then((generatedNumbers) => {
               // if (result.length == 0) {
               //   _mysql.rollBackTransaction(() => {
               //     next(
@@ -331,10 +391,10 @@ export default {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    req.userIdentity.hospital_id
-                  ]
+                    req.userIdentity.hospital_id,
+                  ],
                 })
-                .then(insertResult => {
+                .then((insertResult) => {
                   _mysql.commitTransaction((error, resu) => {
                     if (error) {
                       _mysql.rollBackTransaction(() => {
@@ -343,26 +403,27 @@ export default {
                     } else {
                       req.records = {
                         ...insertResult,
-                        end_of_service_number: generatedNumbers.END_OF_SERVICE_NO
+                        end_of_service_number:
+                          generatedNumbers.END_OF_SERVICE_NO,
                       };
                       next();
                     }
                   });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };
