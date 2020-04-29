@@ -4,7 +4,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
@@ -21,7 +21,7 @@ function LeaveRules(props) {
                 div={{ className: "col-2" }}
                 label={{
                   forceLabel: "Earnings Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "rule_earning_id",
@@ -30,21 +30,21 @@ function LeaveRules(props) {
                   dataSource: {
                     textField: "earning_deduction_description",
                     valueField: "hims_d_earning_deduction_id",
-                    data: myParent.state.earning_deductions
+                    data: myParent.state.earning_deductions,
                   },
-                  onChange: value => myParent.dropDownHandler(value),
+                  onChange: (value) => myParent.dropDownHandler(value),
                   onClear: () => {
                     myParent.setState({
-                      rule_earning_id: null
+                      rule_earning_id: null,
                     });
-                  }
+                  },
                 }}
               />
               <AlagehAutoComplete
                 div={{ className: "col-2" }}
                 label={{
                   forceLabel: "Pay Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "paytype",
@@ -53,14 +53,14 @@ function LeaveRules(props) {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.LEAVE_PAY_TYPE
+                    data: GlobalVariables.LEAVE_PAY_TYPE,
                   },
-                  onChange: value => myParent.dropDownHandler(value),
+                  onChange: (value) => myParent.dropDownHandler(value),
                   onClear: () => {
                     myParent.setState({
-                      paytype: null
+                      paytype: null,
                     });
-                  }
+                  },
                 }}
               />
 
@@ -83,18 +83,18 @@ function LeaveRules(props) {
                     {
                       fieldName: "calculation_type",
                       label: "Calculation Type",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.calculation_type === "CO"
                               ? "Component"
                               : row.calculation_type === "SL"
-                                ? "Slab"
-                                : null}
+                              ? "Slab"
+                              : null}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           // <AlagehAutoComplete
                           //   selector={{
@@ -116,21 +116,21 @@ function LeaveRules(props) {
                             {row.calculation_type === "CO"
                               ? "Component"
                               : row.calculation_type === "SL"
-                                ? "Slab"
-                                : null}
+                              ? "Slab"
+                              : null}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "earning_id",
                       label: "Earning Type",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let x = Enumerable.from(
                           myParent.state.earning_deductions
                         )
                           .where(
-                            w =>
+                            (w) =>
                               w.hims_d_earning_deduction_id === row.earning_id
                           )
                           .firstOrDefault();
@@ -143,7 +143,7 @@ function LeaveRules(props) {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -153,40 +153,40 @@ function LeaveRules(props) {
                               dataSource: {
                                 textField: "earning_deduction_description",
                                 valueField: "hims_d_earning_deduction_id",
-                                data: myParent.state.earning_deductions
+                                data: myParent.state.earning_deductions,
                               },
                               onChange: myParent.changeGridEditors.bind(
                                 myParent,
                                 row
-                              )
+                              ),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "paytype",
                       label: "Pay Type",
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.paytype === "NO"
                               ? "None"
                               : row.paytype === "FD"
-                                ? "Full Day (1)"
-                                : row.paytype === "HD"
-                                  ? "Half Day (1/2)"
-                                  : row.paytype === "UN"
-                                    ? "Unpaid"
-                                    : row.paytype === "QD"
-                                      ? "Quarter (1/4)"
-                                      : row.paytype === "TQ"
-                                        ? "Three Quarter Day (3/4)"
-                                        : null}
+                              ? "Full Day (1)"
+                              : row.paytype === "HD"
+                              ? "Half Day (1/2)"
+                              : row.paytype === "UN"
+                              ? "Unpaid"
+                              : row.paytype === "QD"
+                              ? "Quarter (1/4)"
+                              : row.paytype === "TQ"
+                              ? "Three Quarter Day (3/4)"
+                              : null}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -196,28 +196,28 @@ function LeaveRules(props) {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.LEAVE_PAY_TYPE
+                                data: GlobalVariables.LEAVE_PAY_TYPE,
                               },
                               onChange: myParent.changeGridEditors.bind(
                                 myParent,
                                 row
-                              )
+                              ),
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_leave_rule_id"
                   dataSource={{
-                    data: myParent.state.leaveRules
+                    data: myParent.state.leaveRules,
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => { },
+                    onEdit: () => {},
                     onDelete: myParent.deleteLeaveRule.bind(myParent),
-                    onDone: myParent.updateLeaveRule.bind(myParent)
+                    onDone: myParent.updateLeaveRule.bind(myParent),
                   }}
                 />
               </div>
@@ -230,7 +230,7 @@ function LeaveRules(props) {
                 div={{ className: "col-2" }}
                 label={{
                   forceLabel: "Pay Type",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "paytype",
@@ -239,14 +239,14 @@ function LeaveRules(props) {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: GlobalVariables.LEAVE_PAY_TYPE
+                    data: GlobalVariables.LEAVE_PAY_TYPE,
                   },
-                  onChange: value => myParent.dropDownHandler(value),
+                  onChange: (value) => myParent.dropDownHandler(value),
                   onClear: () => {
                     myParent.setState({
-                      paytype: null
+                      paytype: null,
                     });
-                  }
+                  },
                 }}
               />
 
@@ -254,19 +254,19 @@ function LeaveRules(props) {
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "From Value",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_value",
                   value: myParent.state.from_value,
                   events: {
-                    onChange: e => myParent.textHandler(e)
+                    onChange: (e) => myParent.textHandler(e),
                   },
                   others: {
                     type: "number",
-                    disabled: true
-                  }
+                    // disabled: true,
+                  },
                 }}
               />
 
@@ -274,36 +274,36 @@ function LeaveRules(props) {
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "To Value",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_value",
                   value: myParent.state.to_value,
                   events: {
-                    onChange: e => myParent.textHandler(e)
+                    onChange: (e) => myParent.textHandler(e),
                   },
                   others: {
-                    type: "number"
-                  }
+                    type: "number",
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Total Days",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "total_days",
                   value: myParent.state.total_days,
                   events: {
-                    onChange: e => myParent.textHandler(e)
+                    onChange: (e) => myParent.textHandler(e),
                   },
                   others: {
-                    type: "number"
-                  }
+                    type: "number",
+                  },
                 }}
               />
 
@@ -356,18 +356,18 @@ function LeaveRules(props) {
                           label={{ forceLabel: "Calculation Type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.calculation_type === "CO"
                               ? "Component"
                               : row.calculation_type === "SL"
-                                ? "Slab"
-                                : null}
+                              ? "Slab"
+                              : null}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           // <AlagehAutoComplete
                           //   selector={{
@@ -389,35 +389,35 @@ function LeaveRules(props) {
                             {row.calculation_type === "CO"
                               ? "Component"
                               : row.calculation_type === "SL"
-                                ? "Slab"
-                                : null}
+                              ? "Slab"
+                              : null}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "paytype",
                       label: <AlgaehLabel label={{ forceLabel: "Pay Type" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.paytype === "NO"
                               ? "None"
                               : row.paytype === "FD"
-                                ? "Full Day (1)"
-                                : row.paytype === "HD"
-                                  ? "Half Day (1/2)"
-                                  : row.paytype === "UN"
-                                    ? "Unpaid"
-                                    : row.paytype === "QD"
-                                      ? "Quarter (1/4)"
-                                      : row.paytype === "TQ"
-                                        ? "Three Quarter Day (3/4)"
-                                        : null}
+                              ? "Full Day (1)"
+                              : row.paytype === "HD"
+                              ? "Half Day (1/2)"
+                              : row.paytype === "UN"
+                              ? "Unpaid"
+                              : row.paytype === "QD"
+                              ? "Quarter (1/4)"
+                              : row.paytype === "TQ"
+                              ? "Three Quarter Day (3/4)"
+                              : null}
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             selector={{
@@ -427,16 +427,16 @@ function LeaveRules(props) {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.LEAVE_PAY_TYPE
+                                data: GlobalVariables.LEAVE_PAY_TYPE,
                               },
                               onChange: myParent.changeGridEditors.bind(
                                 myParent,
                                 row
-                              )
+                              ),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "from_value",
@@ -467,7 +467,7 @@ function LeaveRules(props) {
                     {
                       fieldName: "to_value",
                       label: <AlgaehLabel label={{ forceLabel: "To Value" }} />,
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             textBox={{
@@ -478,15 +478,15 @@ function LeaveRules(props) {
                                 onChange: myParent.changeGridEditors.bind(
                                   myParent,
                                   row
-                                )
+                                ),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     // {
                     //   fieldName: "value_type",
@@ -530,7 +530,7 @@ function LeaveRules(props) {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Total Days" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             textBox={{
@@ -541,27 +541,27 @@ function LeaveRules(props) {
                                 onChange: myParent.changeGridEditors.bind(
                                   myParent,
                                   row
-                                )
+                                ),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="hims_d_leave_rule_id"
                   dataSource={{
-                    data: myParent.state.leaveRules
+                    data: myParent.state.leaveRules,
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => { },
+                    onEdit: () => {},
                     onDelete: myParent.deleteLeaveRule.bind(myParent),
-                    onDone: myParent.updateLeaveRule.bind(myParent)
+                    onDone: myParent.updateLeaveRule.bind(myParent),
                   }}
                 />
               </div>
