@@ -1493,23 +1493,24 @@ export default {
 
   //created by irfan: to show leave application to authorize
   getLeaveApllication: (req, res, next) => {
+    let input = req.query;
     let employee = "";
     let range = "";
 
-    if (req.query.employee_id > 0) {
-      employee = ` and LA.employee_id=${req.query.employee_id} `;
+    if (input.employee_id > 0) {
+      employee = ` and LA.employee_id=${input.employee_id} `;
     }
 
     if (
-      req.query.from_date != "null" &&
-      req.query.from_date != "" &&
-      req.query.from_date != null &&
-      req.query.to_date != "null" &&
-      req.query.to_date != "" &&
-      req.query.to_date != null
+      input.from_date != "null" &&
+      input.from_date != "" &&
+      input.from_date != null &&
+      input.to_date != "null" &&
+      input.to_date != "" &&
+      input.to_date != null
     ) {
       range = ` and date(application_date)
-        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+        between date('${input.from_date}') and date('${input.to_date}') `;
     }
 
     const _mysql = new algaehMysql();
@@ -1523,53 +1524,63 @@ export default {
           let auth_level = "";
 
           if (options[0]["authorization_plan"] == "A") {
-            if (req.query.auth_level == "1") {
+            if (input.auth_level == "1") {
               auth_level =
                 " and authorized1='N'  and AUS.leave_level1=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "2") {
+            } else if (input.auth_level == "2") {
               auth_level =
                 " and authorized1='Y' and authorized2='N'  and AUS.leave_level2=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "3") {
+            } else if (input.auth_level == "3") {
               auth_level =
                 " and authorized1='Y' and authorized2='Y' and authorized3='N' and AUS.leave_level3=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "4") {
+            } else if (input.auth_level == "4") {
               auth_level =
                 " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
-            } else if (req.query.auth_level == "5") {
+            } else if (input.auth_level == "5") {
               auth_level =
                 " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
             }
           } else {
-            if (req.query.auth_level == "1") {
-              auth_level =
-                " and authorized1='N' AND E.reporting_to_id=" +
-                req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "2") {
-              auth_level = " and authorized1='Y' and authorized2='N' ";
-            } else if (req.query.auth_level == "3") {
-              auth_level =
-                " and authorized1='Y' and authorized2='Y' and authorized3='N' ";
-            } else if (req.query.auth_level == "4") {
-              auth_level =
-                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
-            } else if (req.query.auth_level == "5") {
-              auth_level =
-                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+            switch (input.auth_level) {
+              case "1":
+                if (req.userIdentity.leave_authorize_privilege > 1) {
+                  auth_level = " and authorized1='N'  ";
+                } else {
+                  auth_level =
+                    " and authorized1='N' AND E.reporting_to_id=" +
+                    req.userIdentity.employee_id;
+                }
+                break;
+              case "2":
+                auth_level = " and authorized1='Y' and authorized2='N' ";
+                break;
+              case "3":
+                auth_level =
+                  " and authorized1='Y' and authorized2='Y' and authorized3='N' ";
+                break;
+              case "4":
+                auth_level =
+                  " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+                break;
+              case "5":
+                auth_level =
+                  " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+                break;
             }
           }
 
           let leave_status = "";
 
-          if (req.query.leave_status == "APR") {
+          if (input.leave_status == "APR") {
             auth_level = "";
             leave_status = "  status='APR' ";
-          } else if (req.query.leave_status == "REJ") {
+          } else if (input.leave_status == "REJ") {
             auth_level = "";
             leave_status = "  status='REJ' ";
-          } else if (req.query.leave_status == "CAN") {
+          } else if (input.leave_status == "CAN") {
             auth_level = "";
             leave_status = "  status='CAN' ";
           } else {
@@ -1601,7 +1612,7 @@ export default {
                   range +
                   "" +
                   employee,
-                values: [req.query.hospital_id],
+                values: [input.hospital_id],
 
                 printQuery: true,
               })
