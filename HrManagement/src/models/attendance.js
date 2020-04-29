@@ -9062,6 +9062,18 @@ function processBulkAtt_Normal(data) {
           moment(month_start, "YYYY-MM-DD"),
           "days"
         ) + 1;
+
+      let year, month, prev_year, prev_month;
+
+      year = input.year;
+      month = parseInt(input.month);
+      if (month == 1) {
+        prev_year = parseInt(year) - 1;
+        prev_month = 12;
+      } else {
+        prev_year = year;
+        prev_month = parseInt(month) - 1;
+      }
       _mysql
         .executeQuery({
           query: ` 
@@ -9396,35 +9408,61 @@ function processBulkAtt_Normal(data) {
         DA.hospital_id=?  and DA.year=? and DA.month=? ${strQry.replace(
           /employee_id/gi,
           "DA.employee_id"
-        )}   group by employee_id;    ${projectQry}       `,
+        )}   group by employee_id;  
+        select employee_id, sum(updaid_leave_duration) as updaid_leave_duration from hims_f_pending_leave 
+where month=? and year=? group by employee_id;  ${projectQry}       `,
                           values: [
                             input.year,
                             input.month,
                             input.hospital_id,
                             input.year,
                             input.month,
+
+                            prev_month,
+                            prev_year,
                           ],
                           printQuery: false,
                         })
                         .then((results) => {
-                          let DilayResult, projectWisePayroll;
+                          let DilayResult, pending_unpaid, projectWisePayroll;
 
+                          // if (options.attendance_type == "DMP") {
+                          //   DilayResult = results[0];
+                          //   projectWisePayroll = results[1];
+                          // } else {
+                          //   DilayResult = results;
+                          // }
+                          DilayResult = results[0];
+                          pending_unpaid = results[1];
                           if (options.attendance_type == "DMP") {
-                            DilayResult = results[0];
-                            projectWisePayroll = results[1];
-                          } else {
-                            DilayResult = results;
+                            projectWisePayroll = results[2];
                           }
 
+                          let pending_len = pending_unpaid.length;
                           let attResult = [];
 
                           for (let i = 0; i < DilayResult.length; i++) {
+                            let pending_unpaid_leave = 0;
+
+                            if (pending_len > 0) {
+                              let emp_leave = pending_unpaid.find((f) => {
+                                return (
+                                  DilayResult[i]["employee_id"] == f.employee_id
+                                );
+                              });
+
+                              if (emp_leave) {
+                                pending_unpaid_leave =
+                                  emp_leave.updaid_leave_duration;
+                              }
+                            }
                             if (options["salary_calendar"] == "F") {
                               const t_paid_days =
                                 options["salary_calendar_fixed_days"] -
                                 parseFloat(DilayResult[i]["absent_days"]) -
                                 parseFloat(DilayResult[i]["unpaid_leave"]) -
-                                parseFloat(DilayResult[i]["anual_leave"]);
+                                parseFloat(DilayResult[i]["anual_leave"]) -
+                                parseFloat(pending_unpaid_leave);
 
                               DilayResult[i]["total_work_days"] =
                                 options["salary_calendar_fixed_days"];
@@ -9439,7 +9477,9 @@ function processBulkAtt_Normal(data) {
                                     : t_paid_days,
                                 total_leave:
                                   parseFloat(DilayResult[i]["paid_leave"]) +
-                                  parseFloat(DilayResult[i]["unpaid_leave"]),
+                                  parseFloat(DilayResult[i]["unpaid_leave"]) +
+                                  parseFloat(pending_unpaid_leave),
+                                pending_unpaid_leave: pending_unpaid_leave,
                                 created_date: new Date(),
                                 created_by: user_id,
                                 updated_date: new Date(),
@@ -9455,10 +9495,13 @@ function processBulkAtt_Normal(data) {
                                     DilayResult[i]["total_weekoff_days"]
                                   ) +
                                   parseFloat(DilayResult[i]["total_holidays"]) -
-                                  parseFloat(DilayResult[i]["anual_leave"]),
+                                  parseFloat(DilayResult[i]["anual_leave"]) -
+                                  parseFloat(pending_unpaid_leave),
                                 total_leave:
                                   parseFloat(DilayResult[i]["paid_leave"]) +
-                                  parseFloat(DilayResult[i]["unpaid_leave"]),
+                                  parseFloat(DilayResult[i]["unpaid_leave"]) +
+                                  parseFloat(pending_unpaid_leave),
+                                pending_unpaid_leave: pending_unpaid_leave,
                                 created_date: new Date(),
                                 created_by: user_id,
                                 updated_date: new Date(),
@@ -9490,6 +9533,7 @@ function processBulkAtt_Normal(data) {
                             "ot_work_hours",
                             "ot_weekoff_hours",
                             "ot_holiday_hours",
+                            "pending_unpaid_leave",
                             "created_date",
                             "created_by",
                             "updated_date",
@@ -9508,7 +9552,7 @@ function processBulkAtt_Normal(data) {
                   paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
                   total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
                   ,ot_work_hours=values(ot_work_hours),ot_weekoff_hours=values(ot_weekoff_hours),ot_holiday_hours=values(ot_holiday_hours),\
-                  updated_by=values(updated_by),updated_date=values(updated_date);",
+                  pending_unpaid_leave =values(pending_unpaid_leave)  ,   updated_by=values(updated_by),updated_date=values(updated_date);",
                               values: attResult,
                               includeValues: insurtColumns,
                               bulkInsertOrUpdate: true,
