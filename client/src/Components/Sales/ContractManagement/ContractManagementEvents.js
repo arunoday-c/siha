@@ -275,7 +275,8 @@ const AddSerices = $this => {
     services_id: $this.state.services_id,
     service_name: $this.state.service_name,
     service_frequency: $this.state.service_frequency,
-    service_price: $this.state.service_price
+    service_price: $this.state.service_price,
+    comments: $this.state.comments
   };
   let contract_services = $this.state.contract_services;
 
@@ -287,7 +288,8 @@ const AddSerices = $this => {
     service_frequency: null,
     service_price: 0,
     saveEnable: false,
-    addItemButton: true
+    addItemButton: true,
+    comments: ""
   });
 };
 

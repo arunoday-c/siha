@@ -37,7 +37,8 @@ class SalesListService extends Component {
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0,
-            service_frequency: null
+            service_frequency: null,
+            comments: ""
         };
     }
 
@@ -48,6 +49,15 @@ class SalesListService extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.SALESIOputs);
+    }
+
+    textAreaEvent(e) {
+        let name = e.name || e.target.name;
+        let value = e.value || e.target.value;
+
+        this.setState({
+            [name]: value
+        });
     }
 
     render() {
@@ -200,7 +210,7 @@ class SalesListService extends Component {
                                         />
 
 
-                                       
+
                                         <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
@@ -212,6 +222,21 @@ class SalesListService extends Component {
                                                     ? this.state.tax_percentage
                                                     : "-----------"}
                                             </h6>
+                                        </div>
+                                        <div className="col">
+                                            <AlgaehLabel
+                                                label={{
+                                                    forceLabel: "Comments"
+                                                }}
+                                            />
+
+                                            <textarea
+                                                value={this.state.comments}
+                                                name="comments"
+                                                onChange={this.textAreaEvent.bind(this)}
+                                            >
+                                                {this.state.comments}
+                                            </textarea>
                                         </div>
                                         <div className="col-6 subFooter-btn">
                                             <button
@@ -456,6 +481,20 @@ class SalesListService extends Component {
                                                             />
                                                         ),
                                                         disabled: true
+                                                    },
+                                                    {
+                                                        fieldName: "comments",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{
+                                                                    forceLabel: "Comments"
+                                                                }}
+                                                            />
+                                                        ),
+                                                        disabled: true,
+                                                        others: {
+                                                            minWidth: 200
+                                                        }
                                                     }
                                                 ]}
                                                 keyId="service_type_id"

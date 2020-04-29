@@ -43,7 +43,8 @@ class SalesOrdListService extends Component {
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0,
-            service_frequency: null
+            service_frequency: null,
+            comments: ""
         };
     }
 
@@ -101,6 +102,15 @@ class SalesOrdListService extends Component {
 
     UNSAFE_componentWillReceiveProps(nextProps) {
         this.setState(nextProps.SALESIOputs);
+    }
+
+    textAreaEvent(e) {
+        let name = e.name || e.target.name;
+        let value = e.value || e.target.value;
+
+        this.setState({
+            [name]: value
+        });
     }
 
     render() {
@@ -266,6 +276,22 @@ class SalesOrdListService extends Component {
                                                 }
                                             }}
                                         />
+
+                                        <div className="col-12">
+                                            <AlgaehLabel
+                                                label={{
+                                                    forceLabel: "Comments"
+                                                }}
+                                            />
+
+                                            <textarea
+                                                value={this.state.comments}
+                                                name="comments"
+                                                onChange={this.textAreaEvent.bind(this)}
+                                            >
+                                                {this.state.comments}
+                                            </textarea>
+                                        </div>
 
                                         <div className="col-12 subFooter-btn">
                                             <button
@@ -501,6 +527,20 @@ class SalesOrdListService extends Component {
                                                             />
                                                         ),
                                                         disabled: true
+                                                    },
+                                                    {
+                                                        fieldName: "comments",
+                                                        label: (
+                                                            <AlgaehLabel
+                                                                label={{
+                                                                    forceLabel: "Comments"
+                                                                }}
+                                                            />
+                                                        ),
+                                                        disabled: true,
+                                                        others: {
+                                                            minWidth: 200
+                                                        }
                                                     }
                                                 ]}
                                                 keyId="service_type_id"

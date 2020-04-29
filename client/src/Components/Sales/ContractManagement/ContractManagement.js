@@ -73,7 +73,8 @@ class ContractManagement extends Component {
       employee_name: null,
       incharge_employee_id: null,
       notification_days1: null,
-      notification_days2: null
+      notification_days2: null,
+      comments: ""
     };
   }
 
@@ -474,6 +475,22 @@ class ContractManagement extends Component {
                     }}
                   />
                   <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Comments"
+                      }}
+                    />
+
+                    <textarea
+                      value={this.state.comments}
+                      name="comments"
+                      onChange={texthandle.bind(this, this)}
+                    >
+                      {this.state.comments}
+                    </textarea>
+                  </div>
+
+                  <div className="col">
                     <button
                       className="btn btn-primary"
                       onClick={AddSerices.bind(this, this)}
@@ -514,6 +531,9 @@ class ContractManagement extends Component {
                                 />
                               </span>
                             );
+                          },
+                          others: {
+                            minWidth: 50
                           }
                         },
                         {
@@ -525,7 +545,7 @@ class ContractManagement extends Component {
                           ),
                           disabled: true,
                           others: {
-                            minWidth: 200
+                            minWidth: 150
                           }
                         },
 
@@ -559,6 +579,20 @@ class ContractManagement extends Component {
                           disabled: true,
                           others: {
                             minWidth: 90
+                          }
+                        },
+                        {
+                          fieldName: "comments",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Comments"
+                              }}
+                            />
+                          ),
+                          disabled: true,
+                          others: {
+                            minWidth: 200
                           }
                         }
                       ]}
