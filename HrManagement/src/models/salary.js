@@ -289,7 +289,8 @@ export default {
                         empResult[i]["total_paid_days"] =
                           empResult[i]["total_days"] -
                           empResult[i]["absent_days"] -
-                          empResult[i]["unpaid_leave"];
+                          empResult[i]["unpaid_leave"] -
+                          empResult[i]["pending_unpaid_leave"];
                       }
                       getEarningComponents({
                         earnings: _earnings,
@@ -3772,6 +3773,7 @@ function getEarningComponents(options) {
               let days =
                 parseFloat(empResult["unpaid_leave"]) +
                 parseFloat(empResult["absent_days"]) +
+                parseFloat(empResult["pending_unpaid_leave"]) +
                 leave_period;
 
               let amount = current_earning_per_day_salary * days;
