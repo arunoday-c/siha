@@ -146,8 +146,7 @@ export function addSalesOrder(req, res, next) {
                                 "net_extended_cost",
                                 "tax_percentage",
                                 "tax_amount",
-                                "total_amount",
-                                "comments"
+                                "total_amount"
                             ];
 
                             _mysql
@@ -214,7 +213,8 @@ export function addSalesOrder(req, res, next) {
                                 "net_extended_cost",
                                 "tax_percentage",
                                 "tax_amount",
-                                "total_amount"
+                                "total_amount",
+                                "comments"
                             ];
 
                             _mysql

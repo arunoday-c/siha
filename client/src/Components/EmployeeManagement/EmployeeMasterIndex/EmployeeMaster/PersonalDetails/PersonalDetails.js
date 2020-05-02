@@ -122,6 +122,18 @@ class PersonalDetails extends Component {
         }
       });
     }
+    if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
+      this.props.getIDTypes({
+        uri: "/identity/get",
+        module: "masterSettings",
+        data: { identity_status: "A" },
+        method: "GET",
+        redux: {
+          type: "IDTYPE_GET_DATA",
+          mappingName: "idtypes"
+        }
+      });
+    }
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -382,6 +394,48 @@ class PersonalDetails extends Component {
                         }
                       }}
                     />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3 col-sm-12" }}
+                      label={{
+                        forceLabel: "ID Type"
+                      }}
+                      selector={{
+                        name: "identity_type_id",
+                        className: "select-fld",
+                        value: this.state.identity_type_id,
+                        dataSource: {
+                          textField: "identity_document_name",
+                          valueField: "hims_d_identity_document_id",
+                          data: this.props.idtypes
+                        },
+                        onChange: texthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            identity_type_id: null
+                          });
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-3 col-sm-12" }}
+                      label={{
+                        forceLabel: "ID No."
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "identity_no",
+                        value: this.state.identity_no,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          placeholder: "Enter ID Number"
+                        }
+                      }}
+                    />
+
                     <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12  " }}
                       label={{
@@ -872,6 +926,7 @@ class PersonalDetails extends Component {
 
 function mapStateToProps(state) {
   return {
+    idtypes: state.idtypes,
     titles: state.titles,
     cities: state.cities,
     nationalities: state.nationalities,
@@ -888,6 +943,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
+      getIDTypes: AlgaehActions,
       getTitles: AlgaehActions,
       getCities: AlgaehActions,
       getCountries: AlgaehActions,
