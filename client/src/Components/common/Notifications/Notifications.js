@@ -13,7 +13,7 @@ export default class Notifications extends Component {
     super(props);
 
     this.state = {
-      notiList: []
+      notiList: [],
     };
     this.socket = sockets;
   }
@@ -42,78 +42,77 @@ export default class Notifications extends Component {
       this.socket.emit("authentication", {
         token: this.context.userToken,
         moduleList: check
-          ? this.context.userMenu.map(item => item.module_name.toLowerCase())
-          : []
+          ? this.context.userMenu.map((item) => item.module_name.toLowerCase())
+          : [],
       });
 
-      this.socket.on("authenticated", data => {
+      this.socket.on("authenticated", (data) => {
         console.log(data, "after auth");
         this.socket.emit("getAll");
       });
 
-      this.socket.on("receiveAll", data => {
+      this.socket.on("receiveAll", (data) => {
         console.log(data);
         if (data && Array.isArray(data)) {
-          const result = data.map(item => item.message);
+          const result = data.map((item) => item.message);
           this.setState({
-            notiList: result
+            notiList: result,
           });
         }
       });
 
-      this.socket.on("refresh_appointment", msg => {
+      this.socket.on("refresh_appointment", (msg) => {
         this.addToNotiList(msg);
       });
-      this.socket.on("patient_added", msg => {
+      this.socket.on("patient_added", (msg) => {
         this.addToNotiList(msg);
       });
-      this.socket.on("service_added", services => {
+      this.socket.on("service_added", (services) => {
         let serStr = "";
-        services.forEach(service => {
+        services.forEach((service) => {
           serStr = serStr + service;
         });
         this.addToNotiList(`The following services are ordered: ${serStr}`);
       });
 
-      this.socket.on("/success", text => {
+      this.socket.on("/success", (text) => {
         this.addToNotiList(text);
       });
 
-      this.socket.on("/leave/requested", text => {
+      this.socket.on("/leave/requested", (text) => {
         this.addToNotiList(text);
       });
 
-      this.socket.on("/leave/status", text => {
+      this.socket.on("/leave/status", (text) => {
         this.addToNotiList(text);
       });
 
-      this.socket.on("/loan/requested", text => {
+      this.socket.on("/loan/requested", (text) => {
         this.addToNotiList(text);
       });
 
-      this.socket.on("/loan/status", text => {
+      this.socket.on("/loan/status", (text) => {
         this.addToNotiList(text);
       });
     }
   }
 
-  addToNotiList = text => {
-
+  addToNotiList = (text) => {
     const { notiList } = this.state;
     notiList.push(text);
     this.setState(
       {
-        notiList
+        notiList,
       },
       () => {
-        this.socket.emit("save", {
-          message: text,
-          user_id: this.context.userToken.user_id
-        });
+        // this.socket.emit("save", {
+        //   message: text,
+        //   user_id: this.context.userToken.user_id
+        // });
         notification.open({
           message: "Notification",
           description: text,
-          duration: 6
+          duration: 6,
         });
       }
     );
@@ -130,7 +129,7 @@ export default class Notifications extends Component {
             top: "5%",
             zIndex: 1000,
             backgroundColor: "#fff",
-            width: "35%"
+            width: "35%",
           }}
           raised
         >
@@ -143,10 +142,10 @@ export default class Notifications extends Component {
                 </Segment>
               ))
             ) : (
-                <Segment style={{ textAlign: "center" }}>
-                  No notifications
+              <Segment style={{ textAlign: "center" }}>
+                No notifications
               </Segment>
-              )}
+            )}
             {/*<Segment>No notifications to show</Segment>*/}
           </Segment.Group>
         </Segment.Group>
