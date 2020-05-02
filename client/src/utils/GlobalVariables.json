@@ -5275,6 +5275,14 @@
     {
       "name": "Hourly",
       "value": "H"
+    },
+    {
+      "name": "Per Trip",
+      "value": "PT"
+    },
+    {
+      "name": "Per Person",
+      "value": "PP"
     }
   ],
   "SALES_ORDER_STATUS": [

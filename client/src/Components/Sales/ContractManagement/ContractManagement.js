@@ -12,7 +12,7 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDateHandler,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -32,7 +32,7 @@ import {
   addToTermCondition,
   deleteComment,
   getCtrlCode,
-  employeeSearch
+  employeeSearch,
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -73,7 +73,8 @@ class ContractManagement extends Component {
       employee_name: null,
       incharge_employee_id: null,
       notification_days1: null,
-      notification_days2: null
+      notification_days2: null,
+      comments: "",
     };
   }
 
@@ -82,14 +83,14 @@ class ContractManagement extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -100,8 +101,8 @@ class ContractManagement extends Component {
       method: "GET",
       redux: {
         type: "CUSTOMER_GET_DATA",
-        mappingName: "customer_data"
-      }
+        mappingName: "customer_data",
+      },
     });
 
     this.props.getTermsConditions({
@@ -110,8 +111,8 @@ class ContractManagement extends Component {
       method: "GET",
       redux: {
         type: "TERMS_COND_GET_DATA",
-        mappingName: "terms_conditions"
-      }
+        mappingName: "terms_conditions",
+      },
     });
   }
   render() {
@@ -131,18 +132,18 @@ class ContractManagement extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Contract Management", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -153,27 +154,27 @@ class ContractManagement extends Component {
             value: this.state.contract_number,
             selectValue: "contract_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Sales.ContractMang"
+              fieldName: "Sales.ContractMang",
             },
-            searchName: "ContractMang"
+            searchName: "ContractMang",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Contract Date"
+                    forceLabel: "Contract Date",
                   }}
                 />
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -182,17 +183,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Contract Report",
-                    events: {
-                      onClick: () => {
-                        generateContractReport(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Contract Report",
+                      events: {
+                        onClick: () => {
+                          generateContractReport(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -214,54 +215,54 @@ class ContractManagement extends Component {
                   dataSource: {
                     textField: "customer_name",
                     valueField: "hims_d_customer_id",
-                    data: this.props.customer_data
+                    data: this.props.customer_data,
                   },
                   onChange: texthandle.bind(this, this),
                   onClear: () => {
                     this.setState({
-                      customer_id: null
+                      customer_id: null,
                     });
                   },
                   autoComplete: "off",
                   others: {
-                    disabled: this.state.dataExists
-                  }
+                    disabled: this.state.dataExists,
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Enter Contract Code",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "contract_code",
                   events: {
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   },
                   value: this.state.contract_code,
                   others: {
-                    disabled: this.state.dataExists
-                  }
+                    disabled: this.state.dataExists,
+                  },
                 }}
               />
               <AlagehFormGroup
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Enter Quotation Ref. Number",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "quotation_ref_numb",
                   events: {
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   },
                   value: this.state.quotation_ref_numb,
                   others: {
-                    disabled: this.state.dataExists
-                  }
+                    disabled: this.state.dataExists,
+                  },
                 }}
               />
 
@@ -270,12 +271,12 @@ class ContractManagement extends Component {
                 label={{ forceLabel: "Start Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "start_date"
+                  name: "start_date",
                 }}
                 minDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this),
-                  onBlur: dateValidate.bind(this, this)
+                  onBlur: dateValidate.bind(this, this),
                 }}
                 disabled={this.state.dataExists}
                 value={this.state.start_date}
@@ -286,12 +287,12 @@ class ContractManagement extends Component {
                 label={{ forceLabel: "End Date", isImp: true }}
                 textBox={{
                   className: "txt-fld",
-                  name: "end_date"
+                  name: "end_date",
                 }}
                 minDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this),
-                  onBlur: dateValidate.bind(this, this)
+                  onBlur: dateValidate.bind(this, this),
                 }}
                 disabled={this.state.dataExists}
                 value={this.state.end_date}
@@ -319,48 +320,48 @@ class ContractManagement extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-2 form-group" }}
                     label={{
-                      forceLabel: "Notify 1st before (Days)"
+                      forceLabel: "Notify 1st before (Days)",
                     }}
                     textBox={{
                       number: {
                         allowNegative: false,
-                        thousandSeparator: ","
+                        thousandSeparator: ",",
                       },
                       className: "txt-fld",
                       name: "notification_days1",
                       value: this.state.notification_days1,
                       dontAllowKeys: ["-", "e", "."],
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         disabled: this.state.dataExists,
-                        placeholder: "30"
-                      }
+                        placeholder: "30",
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col-2 form-group" }}
                     label={{
-                      forceLabel: "Notify 2nd before (Days)"
+                      forceLabel: "Notify 2nd before (Days)",
                     }}
                     textBox={{
                       number: {
                         allowNegative: false,
-                        thousandSeparator: ","
+                        thousandSeparator: ",",
                       },
                       className: "txt-fld",
                       name: "notification_days2",
                       value: this.state.notification_days2,
                       dontAllowKeys: ["-", "e", "."],
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
                         disabled: this.state.dataExists,
-                        placeholder: "60"
-                      }
+                        placeholder: "60",
+                      },
                     }}
                   />
                 </>
@@ -369,7 +370,7 @@ class ContractManagement extends Component {
           </div>
         </div>
         <div className="row">
-          <div className="col-8">
+          <div className="col-9">
             <div
               className="portlet portlet-bordered "
               style={{ marginBottom: 60 }}
@@ -381,199 +382,246 @@ class ContractManagement extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row" data-validate="ServiceDiv">
-                  <AlgaehAutoSearch
-                    div={{ className: "col-4 form-group mandatory" }}
-                    label={{ forceLabel: "Service Name" }}
-                    title="Search Service"
-                    id="item_id_search"
-                    template={({ service_name, service_type }) => {
-                      return (
-                        <section className="resultSecStyles">
-                          <div className="row">
-                            <div className="col">
-                              <h4 className="title">
-                                {_.startCase(_.toLower(service_name))}
-                              </h4>
-                              <p className="searchMoreDetails">
-                                <span>
-                                  Service Type:
-                                  <b>{_.startCase(_.toLower(service_type))}</b>
-                                </span>
-                              </p>
-                            </div>
-                          </div>
-                        </section>
-                      );
-                    }}
-                    name="services_id"
-                    columns={spotlightSearch.Services.servicemaster}
-                    displayField="service_name"
-                    value={this.state.service_name}
-                    searchName="servicemaster"
-                    onClick={servicechangeText.bind(this, this)}
-                    ref={attReg => {
-                      this.attReg = attReg;
-                    }}
-                    onClear={() => {
-                      this.setState({
-                        service_name: "",
-                        services_id: null,
-                        service_frequency: null,
-                        service_price: 0,
-                        addItemButton: true
-                      });
-                    }}
-                    others={{
-                      disabled: this.state.dataExists
-                    }}
-                  />
+                  <div className="col-3">
+                    <div className="row">
+                      {" "}
+                      <AlgaehAutoSearch
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{ forceLabel: "Service Name" }}
+                        title="Search Service"
+                        id="item_id_search"
+                        template={({ service_name, service_type }) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col">
+                                  <h4 className="title">
+                                    {_.startCase(_.toLower(service_name))}
+                                  </h4>
+                                  <p className="searchMoreDetails">
+                                    <span>
+                                      Service Type:
+                                      <b>
+                                        {_.startCase(_.toLower(service_type))}
+                                      </b>
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name="services_id"
+                        columns={spotlightSearch.Services.servicemaster}
+                        displayField="service_name"
+                        value={this.state.service_name}
+                        searchName="servicemaster"
+                        onClick={servicechangeText.bind(this, this)}
+                        ref={(attReg) => {
+                          this.attReg = attReg;
+                        }}
+                        onClear={() => {
+                          this.setState({
+                            service_name: "",
+                            services_id: null,
+                            service_frequency: null,
+                            service_price: 0,
+                            addItemButton: true,
+                          });
+                        }}
+                        others={{
+                          disabled: this.state.dataExists,
+                        }}
+                      />
+                      <AlagehAutoComplete
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{ forceLabel: "Frequency", isImp: true }}
+                        selector={{
+                          sort: "off",
+                          name: "service_frequency",
+                          className: "select-fld",
+                          value: this.state.service_frequency,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.SERVICE_FREQUENCY,
+                          },
+                          onChange: texthandle.bind(this, this),
+                          others: {
+                            disabled: this.state.dataExitst,
+                            tabIndex: "4",
+                          },
+                          onClear: () => {
+                            this.setState({
+                              service_frequency: null,
+                            });
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Service Price",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "service_price",
+                          value: this.state.service_price,
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            tabIndex: "6",
+                          },
+                        }}
+                      />
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Comments",
+                          }}
+                        />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col form-group mandatory" }}
-                    label={{ forceLabel: "Frequency", isImp: true }}
-                    selector={{
-                      sort: "off",
-                      name: "service_frequency",
-                      className: "select-fld",
-                      value: this.state.service_frequency,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.SERVICE_FREQUENCY
-                      },
-                      onChange: texthandle.bind(this, this),
-                      others: {
-                        disabled: this.state.dataExitst,
-                        tabIndex: "4"
-                      },
-                      onClear: () => {
-                        this.setState({
-                          service_frequency: null
-                        });
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col form-group mandatory" }}
-                    label={{
-                      forceLabel: "Service Price",
-                      isImp: false
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      className: "txt-fld",
-                      name: "service_price",
-                      value: this.state.service_price,
-                      events: {
-                        onChange: texthandle.bind(this, this)
-                      },
-                      others: {
-                        tabIndex: "6"
-                      }
-                    }}
-                  />
-                  <div className="col">
-                    <button
-                      className="btn btn-primary"
-                      onClick={AddSerices.bind(this, this)}
-                      disabled={this.state.addItemButton}
-                      tabIndex="5"
-                      style={{ marginTop: 19 }}
-                    >
-                      Add Service
-                    </button>
+                        <textarea
+                          value={this.state.comments}
+                          name="comments"
+                          onChange={texthandle.bind(this, this)}
+                        >
+                          {this.state.comments}
+                        </textarea>
+                      </div>
+                      <div className="col-12">
+                        <button
+                          className="btn btn-primary"
+                          onClick={AddSerices.bind(this, this)}
+                          disabled={this.state.addItemButton}
+                          tabIndex="5"
+                          style={{ marginTop: 19 }}
+                        >
+                          Add Service
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="col-12">
-                    <AlgaehDataGrid
-                      id="SaleQuotationGrid"
-                      columns={[
-                        {
-                          fieldName: "actions",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Action" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span
-                                onClick={deleteContarctServices.bind(
-                                  this,
-                                  this,
-                                  row
-                                )}
-                              >
-                                <i
-                                  style={{
-                                    pointerEvents: this.state.dataExists
-                                      ? "none"
-                                      : "",
-                                    opacity: this.state.dataExists ? "0.1" : ""
-                                  }}
-                                  className="fas fa-trash-alt"
+                  <div className="col-9">
+                    <div className="row">
+                      {" "}
+                      <div className="col-12">
+                        <AlgaehDataGrid
+                          id="SaleQuotationGrid"
+                          columns={[
+                            {
+                              fieldName: "actions",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
+                              ),
+                              displayTemplate: (row) => {
+                                return (
+                                  <span
+                                    onClick={deleteContarctServices.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  >
+                                    <i
+                                      style={{
+                                        pointerEvents: this.state.dataExists
+                                          ? "none"
+                                          : "",
+                                        opacity: this.state.dataExists
+                                          ? "0.1"
+                                          : "",
+                                      }}
+                                      className="fas fa-trash-alt"
+                                    />
+                                  </span>
+                                );
+                              },
+                              others: {
+                                minWidth: 50,
+                              },
+                            },
+                            {
+                              fieldName: "service_name",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Service Name" }}
                                 />
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "service_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Service Name" }}
-                            />
-                          ),
-                          disabled: true,
-                          others: {
-                            minWidth: 200
-                          }
-                        },
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 150,
+                              },
+                            },
 
-                        {
-                          fieldName: "service_frequency",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Frequency" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display = GlobalVariables.SERVICE_FREQUENCY.filter(
-                              f => f.value === row.service_frequency
-                            );
+                            {
+                              fieldName: "service_frequency",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Frequency" }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                let display = GlobalVariables.SERVICE_FREQUENCY.filter(
+                                  (f) => f.value === row.service_frequency
+                                );
 
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].name
-                                  : ""}
-                              </span>
-                            );
-                          },
-                          disabled: true
-                        },
-                        {
-                          fieldName: "service_price",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Service Price" }}
-                            />
-                          ),
-                          disabled: true,
-                          others: {
-                            minWidth: 90
-                          }
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.contract_services
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                    />
+                                return (
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? display[0].name
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                              disabled: true,
+                            },
+                            {
+                              fieldName: "service_price",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Service Price" }}
+                                />
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 90,
+                              },
+                            },
+                            {
+                              fieldName: "comments",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Comments",
+                                  }}
+                                />
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 200,
+                              },
+                            },
+                          ]}
+                          keyId="service_type_id"
+                          dataSource={{
+                            data: this.state.contract_services,
+                          }}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-4">
+          <div className="col-3">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -594,26 +642,26 @@ class ContractManagement extends Component {
                       dataSource: {
                         textField: "short_name",
                         valueField: "hims_f_terms_condition_id",
-                        data: this.props.terms_conditions
+                        data: this.props.terms_conditions,
                       },
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
                           hims_f_terms_condition_id: null,
-                          selected_terms_conditions: ""
+                          selected_terms_conditions: "",
                         });
                       },
                       autoComplete: "off",
                       others: {
-                        disabled: this.state.dataExists
-                      }
+                        disabled: this.state.dataExists,
+                      },
                     }}
                   />
 
                   <div className="col-12 form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Enter T&C"
+                        forceLabel: "Enter T&C",
                       }}
                     />
 
@@ -641,24 +689,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <li key={index}>
-                                <span>{row}</span>
-                                {this.state.dataExists ? null : (
-                                  <i
-                                    className="fas fa-times"
-                                    onClick={deleteComment.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  ></i>
-                                )}
-                              </li>
-                            </React.Fragment>
-                          );
-                        })
+                            return (
+                              <React.Fragment key={index}>
+                                <li key={index}>
+                                  <span>{row}</span>
+                                  {this.state.dataExists ? null : (
+                                    <i
+                                      className="fas fa-times"
+                                      onClick={deleteComment.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    ></i>
+                                  )}
+                                </li>
+                              </React.Fragment>
+                            );
+                          })
                         : null}
                     </ol>
                   </div>
@@ -679,7 +727,7 @@ class ContractManagement extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Save Contract",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               </button>
@@ -705,7 +753,7 @@ class ContractManagement extends Component {
 function mapStateToProps(state) {
   return {
     customer_data: state.customer_data,
-    terms_conditions: state.terms_conditions
+    terms_conditions: state.terms_conditions,
   };
 }
 
@@ -713,7 +761,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getCustomerMaster: AlgaehActions,
-      getTermsConditions: AlgaehActions
+      getTermsConditions: AlgaehActions,
     },
     dispatch
   );

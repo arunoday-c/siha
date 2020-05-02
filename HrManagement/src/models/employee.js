@@ -158,8 +158,8 @@ export default {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
-            gratuity_encash,created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            gratuity_encash,identity_type_id, identity_no, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -211,6 +211,8 @@ export default {
               input.entitled_daily_ot,
               input.employee_category,
               input.gratuity_encash,
+              input.identity_type_id,
+              input.identity_no,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -275,20 +277,20 @@ export default {
           .executeQuery({
             query:
               "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?, date_of_birth=?, sex=?,\
-               primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
-               religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
-               present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
+              primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
+              religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
+              present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
               permanent_address2=?, permanent_pincode=?, permanent_city_id=?, permanent_state_id=?,\
               permanent_country_id=?, isdoctor=?, license_number=?, date_of_joining=?, appointment_type=?,\
               employee_type=?, reliving_date=?, notice_period=?, date_of_resignation=?, company_bank_id=?,\
-             employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
-          accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
-          total_contributions=?,\
-          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
-          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
-          reporting_to_id=?,sub_department_id=?,employee_designation_id=?, entitled_daily_ot= ? , \
-          employee_bank_id=?,services_id=?, employee_status=?,inactive_date=?, employee_category=?, gratuity_encash=?,updated_date=?,updated_by=?\
-          WHERE record_status='A' and  hims_d_employee_id=?",
+              employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
+              accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
+              total_contributions=?, net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,\
+              airfare_process=?,exit_date=?, exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,\
+              pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
+              employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
+              inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?, \
+              updated_date=?,updated_by=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -359,6 +361,9 @@ export default {
               input.inactive_date,
               input.employee_category,
               input.gratuity_encash,
+              input.identity_type_id,
+              input.identity_no,
+
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.hims_d_employee_id,

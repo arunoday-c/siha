@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       let input = {};
       let params = options.args.reportParams;
@@ -39,7 +39,8 @@ const executePDF = function executePDFMethod(options) {
               inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?;\
               select QS.*, S.service_name, CASE WHEN QS.service_frequency='M' THEN 'Monthly' \
               WHEN QS.service_frequency='W' THEN 'Weekly' WHEN QS.service_frequency='D' THEN 'Daily' \
-              WHEN QS.service_frequency='H' THEN 'Hourly' END as service_frequency from hims_f_sales_quotation_services QS \
+              WHEN QS.service_frequency='H' THEN 'Hourly' WHEN QS.service_frequency='PT' THEN 'Per Trip' \
+              WHEN QS.service_frequency='PP' THEN 'Per Person' END as service_frequency from hims_f_sales_quotation_services QS \
               inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
               values: [
                 headerResult[0].hims_f_sales_quotation_id,

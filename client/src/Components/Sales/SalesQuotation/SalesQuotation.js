@@ -6,7 +6,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import {
@@ -21,7 +21,7 @@ import {
   employeeSearch,
   addToTermCondition,
   deleteComment,
-  generateSalesQuotation
+  generateSalesQuotation,
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -79,7 +79,7 @@ class SalesQuotation extends Component {
       hims_f_terms_condition_id: null,
       selected_terms_conditions: "",
       comment_list: [],
-      qotation_status: "G"
+      qotation_status: "G",
     };
     getSalesOptions(this, this);
   }
@@ -90,14 +90,14 @@ class SalesQuotation extends Component {
 
     this.setState({
       decimal_place: userToken.decimal_places,
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -112,8 +112,8 @@ class SalesQuotation extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "opitemlist"
-        }
+          mappingName: "opitemlist",
+        },
       });
     }
 
@@ -128,8 +128,8 @@ class SalesQuotation extends Component {
         method: "GET",
         redux: {
           type: "CUSTOMER_GET_DATA",
-          mappingName: "customer_data"
-        }
+          mappingName: "customer_data",
+        },
       });
     }
 
@@ -139,8 +139,8 @@ class SalesQuotation extends Component {
       method: "GET",
       redux: {
         type: "TERMS_COND_GET_DATA",
-        mappingName: "terms_conditions"
-      }
+        mappingName: "terms_conditions",
+      },
     });
 
     if (
@@ -169,52 +169,52 @@ class SalesQuotation extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Sales Quotation", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
             soptlightSearch={{
               label: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "Sales Quotation Number",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
               ),
               value: this.state.sales_quotation_number,
               selectValue: "sales_quotation_number",
               events: {
-                onChange: getCtrlCode.bind(this, this)
+                onChange: getCtrlCode.bind(this, this),
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "Sales.SalesQuotation"
+                fieldName: "Sales.SalesQuotation",
               },
-              searchName: "SalesQuotation"
+              searchName: "SalesQuotation",
             }}
             userArea={
               <div className="row">
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Sales Quotation Date"
+                      forceLabel: "Sales Quotation Date",
                     }}
                   />
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -223,7 +223,7 @@ class SalesQuotation extends Component {
                   <div className="col-6">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Quotation Status"
+                        forceLabel: "Quotation Status",
                       }}
                     />
                     <h6>
@@ -236,8 +236,8 @@ class SalesQuotation extends Component {
                           Order Created
                         </span>
                       ) : (
-                            <span className="badge badge-success">Closed</span>
-                          )}
+                        <span className="badge badge-success">Closed</span>
+                      )}
                     </h6>
                   </div>
                 ) : null}
@@ -246,17 +246,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Quotation",
-                      events: {
-                        onClick: () => {
-                          generateSalesQuotation(this, this.state);
-                        }
-                      }
-                    }
-                  ]
-                }
+                    menuitems: [
+                      {
+                        label: "Print Quotation",
+                        events: {
+                          onClick: () => {
+                            generateSalesQuotation(this, this.state);
+                          },
+                        },
+                      },
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -311,18 +311,18 @@ class SalesQuotation extends Component {
                     dataSource: {
                       textField: "customer_name",
                       valueField: "hims_d_customer_id",
-                      data: this.props.customer_data
+                      data: this.props.customer_data,
                     },
                     onChange: customerTexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        customer_id: null
+                        customer_id: null,
                       });
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExists
-                    }
+                      disabled: this.state.dataExists,
+                    },
                   }}
                 />
 
@@ -342,36 +342,36 @@ class SalesQuotation extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: changeTexts.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: changeTexts.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "quote validity", isImp: true }}
                   textBox={{
                     className: "txt-fld",
-                    name: "quote_validity"
+                    name: "quote_validity",
                   }}
                   minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this)
+                    onBlur: dateValidate.bind(this, this),
                   }}
                   disabled={this.state.dataExists}
                   value={this.state.quote_validity}
@@ -382,12 +382,12 @@ class SalesQuotation extends Component {
                   label={{ forceLabel: "Delivery Date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
-                    name: "delivery_date"
+                    name: "delivery_date",
                   }}
                   minDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this)
+                    onBlur: dateValidate.bind(this, this),
                   }}
                   disabled={this.state.dataExists}
                   value={this.state.delivery_date}
@@ -396,23 +396,23 @@ class SalesQuotation extends Component {
                 <AlagehFormGroup
                   div={{ className: "col form-group" }}
                   label={{
-                    forceLabel: "Days To Follow Up"
+                    forceLabel: "Days To Follow Up",
                   }}
                   textBox={{
                     number: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     className: "txt-fld",
                     name: "no_of_days_followup",
                     value: this.state.no_of_days_followup,
                     dontAllowKeys: ["-", "e", "."],
                     events: {
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists
-                    }
+                      disabled: this.state.dataExists,
+                    },
                   }}
                 />
 
@@ -427,35 +427,35 @@ class SalesQuotation extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: this.state.dataExists
+                      disabled: this.state.dataExists,
                     },
                     onChange: changeTexts.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        payment_terms: null
+                        payment_terms: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
                     forceLabel: "Ref No.",
-                    isImp: false
+                    isImp: false,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "reference_number",
                     value: this.state.reference_number,
                     events: {
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
                     },
                     others: {
-                      disabled: this.state.dataExists
-                    }
+                      disabled: this.state.dataExists,
+                    },
                   }}
                 />
               </div>
@@ -467,9 +467,9 @@ class SalesQuotation extends Component {
               <MyContext.Provider
                 value={{
                   state: this.state,
-                  updateState: obj => {
+                  updateState: (obj) => {
                     this.setState({ ...obj });
-                  }
+                  },
                 }}
               >
                 <SalesListItems SALESIOputs={this.state} />
@@ -483,7 +483,7 @@ class SalesQuotation extends Component {
                   style={{ marginBottom: 60 }}
                 >
                   <div className="row">
-                    <div className="col-6">
+                    <div className="col-4">
                       <div className="row">
                         <AlagehAutoComplete
                           div={{ className: "col-12  form-group mandatory" }}
@@ -495,26 +495,26 @@ class SalesQuotation extends Component {
                             dataSource: {
                               textField: "short_name",
                               valueField: "hims_f_terms_condition_id",
-                              data: this.props.terms_conditions
+                              data: this.props.terms_conditions,
                             },
                             onChange: changeTexts.bind(this, this),
                             onClear: () => {
                               this.setState({
                                 hims_f_terms_condition_id: null,
-                                selected_terms_conditions: ""
+                                selected_terms_conditions: "",
                               });
                             },
                             autoComplete: "off",
                             others: {
-                              disabled: this.state.dataExists
-                            }
+                              disabled: this.state.dataExists,
+                            },
                           }}
                         />
 
                         <div className="col-12 form-group">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Enter T&C"
+                              forceLabel: "Enter T&C",
                             }}
                           />
 
@@ -537,55 +537,54 @@ class SalesQuotation extends Component {
                             </button>
                           </div>
                         )}
-
-                        <div className="col-12  form-group finalCommentsSection">
-                          <h6>View T&C</h6>
-                          <ol>
-                            {this.state.comment_list.length > 0
-                              ? this.state.comment_list.map((row, index) => {
-                                return (
-                                  <React.Fragment key={index}>
-                                    <li key={index}>
-                                      <span>{row}</span>
-                                      {this.state.dataExists ? null : (
-                                        <i
-                                          className="fas fa-times"
-                                          onClick={deleteComment.bind(
-                                            this,
-                                            this,
-                                            row
-                                          )}
-                                        ></i>
-                                      )}
-                                    </li>
-                                  </React.Fragment>
-                                );
-                              })
-                              : null}
-                          </ol>
-                        </div>
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-4">
+                      <label>Preview Terms & Conditions</label>
+                      <ol className="ViewTC">
+                        {this.state.comment_list.length > 0
+                          ? this.state.comment_list.map((row, index) => {
+                              return (
+                                <React.Fragment key={index}>
+                                  <li key={index}>
+                                    <span>{row}</span>
+                                    {this.state.dataExists ? null : (
+                                      <i
+                                        className="fas fa-times"
+                                        onClick={deleteComment.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      ></i>
+                                    )}
+                                  </li>
+                                </React.Fragment>
+                              );
+                            })
+                          : null}
+                      </ol>
+                    </div>
+                    <div className="col-4">
                       <div className="row">
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
                             forceLabel: "Narration",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "narration",
                             value: this.state.narration,
                             events: {
-                              onChange: changeTexts.bind(this, this)
+                              onChange: changeTexts.bind(this, this),
                             },
                             others: {
                               multiline: true,
                               disabled: this.state.dataExists,
-                              rows: "4"
-                            }
+                              rows: "4",
+                            },
                           }}
                         />
 
@@ -594,19 +593,19 @@ class SalesQuotation extends Component {
                             div={{ className: "col-12  form-group" }}
                             label={{
                               forceLabel: "Comments",
-                              isImp: false
+                              isImp: false,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "comments",
                               value: this.state.comments,
                               events: {
-                                onChange: changeTexts.bind(this, this)
+                                onChange: changeTexts.bind(this, this),
                               },
                               others: {
                                 multiline: true,
-                                rows: "8"
-                              }
+                                rows: "8",
+                              },
                             }}
                           />
                         ) : null}
@@ -670,7 +669,7 @@ class SalesQuotation extends Component {
                     <AlgaehLabel
                       label={{
                         forceLabel: "Save & Print",
-                        returnText: true
+                        returnText: true,
                       }}
                     />
                   </button>
@@ -714,7 +713,7 @@ function mapStateToProps(state) {
   return {
     opitemlist: state.opitemlist,
     customer_data: state.customer_data,
-    terms_conditions: state.terms_conditions
+    terms_conditions: state.terms_conditions,
   };
 }
 
@@ -724,7 +723,7 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
       getCustomerMaster: AlgaehActions,
-      getTermsConditions: AlgaehActions
+      getTermsConditions: AlgaehActions,
     },
     dispatch
   );

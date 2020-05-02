@@ -103,7 +103,9 @@ export default {
       reporting_to_id: null,
       entitled_daily_ot: "N",
       employee_category: null,
-      gratuity_encash: 0
+      gratuity_encash: 0,
+      identity_type_id: null,
+      identity_no: null
     };
     return output;
   }
