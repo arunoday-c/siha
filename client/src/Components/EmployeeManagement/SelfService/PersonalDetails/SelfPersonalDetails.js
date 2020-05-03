@@ -21,6 +21,7 @@ import {
   AlgaehValidation,
   getYearswithMinMax,
 } from "../../../../utils/GlobalFunctions";
+import BasicDetails from "./BasicEmpDetails";
 
 class SelfPersonalDetails extends Component {
   constructor(props) {
@@ -96,10 +97,11 @@ class SelfPersonalDetails extends Component {
     });
   }
 
-  showEditCntr(type, empData, e) {
+  showEditCntr(type, empData = {}, e) {
+    debugger;
     switch (type) {
       case "basicDetails":
-        this.setState({ editBasic: !this.state.editBasic, ...empData });
+        this.setState((state) => ({ editBasic: !state.editBasic, ...empData }));
         break;
 
       case "familyDetails":
@@ -662,7 +664,7 @@ class SelfPersonalDetails extends Component {
     });
   }
 
-  updateEmployeeBasicDetails() {
+  updateEmployeeBasicDetails = (input) => {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='emp-basic-div'",
@@ -672,34 +674,71 @@ class SelfPersonalDetails extends Component {
           method: "PUT",
           module: "hrManagement",
           data: {
-            full_name: this.state.full_name,
-            arabic_name: this.state.arabic_name,
-            date_of_birth: this.state.date_of_birth,
-            sex: this.state.sex,
-            present_address: this.state.present_address,
-            permanent_address: this.state.permanent_address,
-            primary_contact_no: this.state.primary_contact_no,
-            email: this.state.email,
-            hims_d_employee_id: this.state.hims_d_employee_id,
+            ...input,
           },
           onSuccess: (res) => {
             if (res.data.success) {
-              this.showEditCntr("basicDetails");
+              this.props.refreshEmp();
+              this.setState(
+                {
+                  editBasic: false,
+                },
+                () => {
+                  swalMessage({
+                    title: "Record updated successfully",
+                    type: "success",
+                  });
+                }
+              );
               document.getElementById("ep-dl").click();
               // this.setState({
               //   editBasic: false,
               // });
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success",
-              });
             }
           },
           onFailure: (err) => {},
         });
       },
     });
-  }
+  };
+  // updateEmployeeBasicDetails() {
+  //   AlgaehValidation({
+  //     alertTypeIcon: "warning",
+  //     querySelector: "data-validate='emp-basic-div'",
+  //     onSuccess: () => {
+  //       algaehApiCall({
+  //         uri: "/selfService/updateEmployeeBasicDetails",
+  //         method: "PUT",
+  //         module: "hrManagement",
+  //         data: {
+  //           full_name: this.state.full_name,
+  //           arabic_name: this.state.arabic_name,
+  //           date_of_birth: this.state.date_of_birth,
+  //           sex: this.state.sex,
+  //           present_address: this.state.present_address,
+  //           permanent_address: this.state.permanent_address,
+  //           primary_contact_no: this.state.primary_contact_no,
+  //           email: this.state.email,
+  //           hims_d_employee_id: this.state.hims_d_employee_id,
+  //         },
+  //         onSuccess: (res) => {
+  //           if (res.data.success) {
+  //             this.showEditCntr("basicDetails");
+  //             document.getElementById("ep-dl").click();
+  //             // this.setState({
+  //             //   editBasic: false,
+  //             // });
+  //             swalMessage({
+  //               title: "Record updated successfully",
+  //               type: "success",
+  //             });
+  //           }
+  //         },
+  //         onFailure: (err) => {},
+  //       });
+  //     },
+  //   });
+  // }
 
   getFamilyDetails() {
     algaehApiCall({
@@ -855,185 +894,13 @@ class SelfPersonalDetails extends Component {
                   </button>
                 </div>
               </div>
-              {this.state.editBasic ? (
-                <div
-                  className={
-                    "col-12 editFloatCntr animated  " +
-                    (this.state.editBasic ? "slideInUp" : "slideOutDown") +
-                    " faster"
-                  }
-                  data-validate="emp-basic-div"
-                >
-                  <h5>Edit Basic Details</h5>
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Full Name",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "full_name",
-                        value: this.state.full_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                        others: {
-                          tabIndex: "1",
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col arabic-txt-fld" }}
-                      label={{
-                        forceLabel: "Arabic Name",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "arabic_name",
-                        value: this.state.arabic_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                        others: {
-                          tabIndex: "2",
-                        },
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col margin-bottom-15" }}
-                      label={{
-                        forceLabel: "Date of Birth",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "date_of_birth",
-                        others: {
-                          tabIndex: "3",
-                        },
-                      }}
-                      events={{
-                        onChange: (selDate) => {
-                          this.setState({
-                            date_of_birth: selDate,
-                          });
-                        },
-                      }}
-                      value={this.state.date_of_birth}
-                      maxDate={new Date()}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Gender",
-                        isImp: true,
-                      }}
-                      selector={{
-                        name: "sex",
-                        className: "select-fld",
-                        value: this.state.sex,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.EMP_FORMAT_GENDER,
-                        },
-                        onChange: this.dropDownHandle.bind(this),
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Mobile No.",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "primary_contact_no",
-                        value: this.state.primary_contact_no,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                        others: {
-                          type: "number",
-                        },
-                      }}
-                    />
-                  </div>
 
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Email Address",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "email",
-                        value: this.state.email,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Present Address",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "present_address",
-                        value: this.state.present_address,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Permanent Address",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "permanent_address",
-                        value: this.state.permanent_address,
-                        events: {
-                          onChange: this.changeTexts.bind(this),
-                        },
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col">
-                      <button
-                        onClick={this.updateEmployeeBasicDetails.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Update
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={this.showEditCntr.bind(
-                          this,
-                          "basicDetails",
-                          empDetails
-                        )}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
+              <BasicDetails
+                show={this.state.editBasic}
+                data={this.state}
+                onSubmit={this.updateEmployeeBasicDetails}
+                onCancel={() => this.setState({ editBasic: false })}
+              />
 
               <div className="portlet-body">
                 <div className="row">
@@ -1570,7 +1437,7 @@ class SelfPersonalDetails extends Component {
                         others: {
                           tabIndex: "2",
                           placeholder: "",
-                          type: "number",
+                          type: "text",
                         },
                       }}
                     />
