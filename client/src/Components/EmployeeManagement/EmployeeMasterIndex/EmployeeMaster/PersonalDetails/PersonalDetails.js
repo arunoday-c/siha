@@ -290,7 +290,6 @@ class PersonalDetails extends Component {
                     <span>Personal Info.</span>
                   </h5>
                   <div className="row paddin-bottom-5">
-                    {" "}
                     <AlagehAutoComplete
                       div={{
                         className:
@@ -353,7 +352,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3 col-sm-12  " }}
+                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Personal Contact No.",
                         isImp: false
@@ -374,7 +373,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3 col-sm-12  " }}
+                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Work Contact No.",
                         isImp: false
@@ -396,9 +395,9 @@ class PersonalDetails extends Component {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3 col-sm-12" }}
+                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
-                        forceLabel: "ID Type"
+                        forceLabel: "Primary ID"
                       }}
                       selector={{
                         name: "identity_type_id",
@@ -419,9 +418,9 @@ class PersonalDetails extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3 col-sm-12" }}
+                      div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
-                        forceLabel: "ID No."
+                        forceLabel: "Number"
                       }}
                       textBox={{
                         className: "txt-fld",
