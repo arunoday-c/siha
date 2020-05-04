@@ -87,7 +87,10 @@ export default {
           req.query.hospital_requires === undefined ||
           req.query.hospital_requires === true
         ) {
-          if (req.query.hospital_id != null) {
+          if (req.query.select_all === "true") {
+            _strAppend +=
+              " and E.hospital_id in (" + req.query.hospital_id + ")";
+          } else if (req.query.hospital_id != null) {
             _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
           } else {
             _strAppend +=
