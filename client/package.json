@@ -58,7 +58,8 @@
     "eject": "react-scripts eject",
     "dev": "npm start",
     "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm run start-js",
-    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest"
+    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest",
+    "preinstall": "npx npm-force-resolutions"
   },
   "browserslist": {
     "production": [
@@ -72,6 +73,10 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.14.3"
+    "eslint-plugin-react": "^7.14.3",
+    "npm-force-resolutions": "0.0.3"
+  },
+  "resolutions": {
+    "moment": "2.24.0"
   }
 }
