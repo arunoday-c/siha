@@ -6,45 +6,57 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let _notice = {};
-  let department_name = null;
-  if (name === "notice_period") {
-    if (
-      $this.state.date_of_resignation === null ||
-      $this.state.date_of_resignation === ""
-    ) {
-      swalMessage({
-        type: "error",
-        title: $this.state.date_of_releaving_label + " cannot blank"
+  switch (name) {
+    case "notice_period":
+      if (
+        $this.state.date_of_resignation === null ||
+        $this.state.date_of_resignation === ""
+      ) {
+        swalMessage({
+          type: "error",
+          title: $this.state.date_of_releaving_label + " cannot blank"
+        });
+        return;
+      }
+      _notice = {
+        reliving_date: moment($this.state.date_of_resignation).add(value, "days")
+          ._d
+      };
+      break;
+    case "sub_department_id":
+      $this.setState({
+        [name]: value,
+        department_name: e.selected.department_name,
+        ..._notice
       });
-      return;
-    }
-    _notice = {
-      reliving_date: moment($this.state.date_of_resignation).add(value, "days")
-        ._d
-    };
-  }
-
-  if (name === "sub_department_id") {
-    department_name = e.selected.department_name;
-    $this.setState({
-      [name]: value,
-      department_name: department_name,
-      ..._notice
-    });
-    $this.props.EmpMasterIOputs.updateEmployeeTabs({
-      [name]: value,
-      department_name: department_name,
-      ..._notice
-    });
-  } else {
-    $this.setState({
-      [name]: value,
-      ..._notice
-    });
-    $this.props.EmpMasterIOputs.updateEmployeeTabs({
-      [name]: value,
-      ..._notice
-    });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
+        department_name: e.selected.department_name,
+        ..._notice
+      });
+      break;
+    case "employee_group_id":
+      $this.setState({
+        [name]: value,
+        monthly_accrual_days: e.selected.monthly_accrual_days,
+        ..._notice
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
+        monthly_accrual_days: e.selected.monthly_accrual_days,
+        ..._notice
+      });
+      break;
+    default:
+      $this.setState({
+        [name]: value,
+        ..._notice
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
+        ..._notice
+      });
+      break;
   }
 };
 
