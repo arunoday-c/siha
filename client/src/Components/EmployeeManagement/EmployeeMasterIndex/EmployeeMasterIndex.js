@@ -446,7 +446,18 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "employee_code",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Employee ID" }} />
+                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                      ),
+                      others: {
+                        maxWidth: 100,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
+                      fieldName: "identity_no",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "ID Number" }} />
                       ),
                       others: {
                         maxWidth: 100,
