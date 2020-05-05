@@ -21,7 +21,7 @@ const executePDF = function executePDFMethod(options) {
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount,GP.acc_gratuity from
+          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount,GP.acc_gratuity  COALESCE(LS.balance_leave_days,0) as annual_leave_days,COALESCE(LS.balance_leave_salary_amount,0) as annual_leave_salary_amount from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -135,6 +135,9 @@ const executePDF = function executePDFMethod(options) {
                 loan_due_amount: employe[0].loan_due_amount,
                 gratuity_amount: employe[0].gratuity_amount,
                 acc_gratuity: employe[0].acc_gratuity,
+                annual_leave_days: employe[0].annual_leave_days,
+                annual_leave_salary_amount:
+                  employe[0].annual_leave_salary_amount,
               });
             });
 

@@ -2,11 +2,22 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const getEmployeeDetails = $this => {
+
+  let inputObj = {}
+  if ($this.state.AllBranches === true) {
+    debugger
+    const all_branches = $this.props.organizations.map((item) => {
+      return item.hims_d_hospital_id;
+    });
+    inputObj = { select_all: true, hospital_id: all_branches, show_all_status: true }
+  } else {
+    inputObj = { hospital_id: $this.state.hospital_id, show_all_status: true }
+  }
   algaehApiCall({
     uri: "/employee/get",
     module: "hrManagement",
     method: "GET",
-    data: { hospital_id: $this.state.hospital_id, show_all_status: true },
+    data: inputObj,
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
@@ -15,6 +26,7 @@ const getEmployeeDetails = $this => {
           { Employeedetails: data, forceRender: !!$this.state.afterClose },
           () => $this.setState({ forceRender: false })
         );
+        AlgaehLoader({ show: false });
       }
     },
     onFailure: error => {
@@ -69,4 +81,19 @@ const texthandle = ($this, e) => {
   );
 };
 
-export { getEmployeeDetails, EditEmployeeMaster, texthandle };
+const selectAllBranches = ($this, e) => {
+  let name = e.name || e.target.name;
+
+
+  $this.setState(
+    {
+      [name]: e.target.checked
+    },
+    () => {
+      AlgaehLoader({ show: true });
+      getEmployeeDetails($this);
+    }
+  );
+}
+
+export { getEmployeeDetails, EditEmployeeMaster, texthandle, selectAllBranches };
