@@ -70,11 +70,22 @@
 
 
                 </tr>
+            </table>
+        </section>
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Accrued Gratuity this Month:</label><span
+                    {{!-- <td><label class="textEnLft">Accrued Gratuity this Month:</label><span
                             class="valueText">{{gratuity_amount}}</span>
+                    </td> --}}
+
+                    <td><label class="textEnLft">Balance Annual Leave:</label><span
+                            class="valueText">{{annual_leave_days}}</span>
                     </td>
-                    <td colspan="3"><label class="textEnLft">Accrued Gratuity till Date:</label><span
+                    <td><label class="textEnLft">Accrued Leave Salary:</label><span
+                            class="valueText">{{annual_leave_salary_amount}}</span>
+                    </td>
+                    <td colspan="2"><label class="textEnLft">Accrued Gratuity till Date:</label><span
                             class="valueText">{{acc_gratuity}}</span>
                     </td>
                 </tr>

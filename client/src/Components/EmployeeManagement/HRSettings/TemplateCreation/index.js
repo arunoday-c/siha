@@ -248,6 +248,7 @@ export default memo(function () {
                 "hr",
                 "source",
                 "fullsize",
+                "print",
               ],
             }}
           />

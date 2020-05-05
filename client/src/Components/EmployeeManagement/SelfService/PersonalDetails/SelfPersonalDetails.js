@@ -98,7 +98,6 @@ class SelfPersonalDetails extends Component {
   }
 
   showEditCntr(type, empData = {}, e) {
-    debugger;
     switch (type) {
       case "basicDetails":
         this.setState((state) => ({ editBasic: !state.editBasic, ...empData }));
@@ -859,7 +858,9 @@ class SelfPersonalDetails extends Component {
       },
     });
   }
-
+  updateBasicDetails(data) {
+    this.setState({ ...data });
+  }
   render() {
     let empDetails = this.props.empData ? this.props.empData : {};
 

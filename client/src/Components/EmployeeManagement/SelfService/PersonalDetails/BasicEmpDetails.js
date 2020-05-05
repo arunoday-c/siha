@@ -10,6 +10,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 export default function BasicEmpDetails({
   show = false,
   data = {},
+
   onCancel = () => {},
   onSubmit = () => {},
 }) {

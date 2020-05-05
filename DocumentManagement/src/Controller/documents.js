@@ -1,7 +1,7 @@
 import { Router } from "express";
 import docs from "../Model/documents";
 import logos from "../Model/saveImages";
-import KPI from "../Model/documents/index";
+import KPI from "../Model/docs/index";
 export default (db) => {
   const api = Router();
   const { saveDocument, getDocument, deleteDocument } = docs(db);
