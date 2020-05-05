@@ -24,7 +24,7 @@ import {
   getEmployeeDetails,
   EditEmployeeMaster,
   texthandle,
-  selectAllBranches
+  selectAllBranches,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
@@ -41,7 +41,7 @@ class EmployeeMasterIndex extends Component {
       editEmployee: false,
       forceRender: false,
       hospital_id: "",
-      AllBranches: false
+      AllBranches: false,
     };
   }
   static contextType = MainContext;
@@ -192,23 +192,25 @@ class EmployeeMasterIndex extends Component {
 
     let _Terminated = [];
     let _Inactive = [];
+    let _Suspended = [];
     if (this.state.Employeedetails !== undefined) {
-      _Active = _.filter(this.state.Employeedetails, f => {
+      _Active = _.filter(this.state.Employeedetails, (f) => {
         return f.employee_status === "A";
       });
 
-
-      _Resigned = _.filter(this.state.Employeedetails, f => {
+      _Resigned = _.filter(this.state.Employeedetails, (f) => {
         return f.employee_status === "R";
       });
-      _Terminated = _.filter(this.state.Employeedetails, f => {
+      _Terminated = _.filter(this.state.Employeedetails, (f) => {
         return f.employee_status === "T";
       });
 
-      _Inactive = _.filter(this.state.Employeedetails, f => {
+      _Inactive = _.filter(this.state.Employeedetails, (f) => {
         return f.employee_status === "I";
       });
-
+      _Suspended = _.filter(this.state.Employeedetails, (f) => {
+        return f.suspend_salary === "Y";
+      });
     }
     return (
       <div className="hims_hospitalservices">
@@ -252,7 +254,7 @@ class EmployeeMasterIndex extends Component {
                 className="btn btn-default btn-circle active"
                 style={{ marginRight: 10 }}
                 onClick={this.onClickHandler.bind(this)}
-              // Download action come here
+                // Download action come here
               >
                 <i className="fas fa-download" />
               </button>
@@ -283,40 +285,36 @@ class EmployeeMasterIndex extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              {this.state.AllBranches === false ? <AlagehAutoComplete
-                div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
-                label={{
-                  forceLabel: "Select Branch",
-                }}
-                selector={{
-                  name: "hospital_id",
-                  className: "select-fld",
-                  value: this.state.hospital_id,
-                  dataSource: {
-                    textField: "hospital_name",
-                    valueField: "hims_d_hospital_id",
-                    data: this.props.organizations,
-                  },
-                  onChange: texthandle.bind(this, this),
-                  others: {
-                    tabIndex: "2",
-                  },
-                  onClear: () => {
-                    this.setState({
-                      hospital_id: null,
-                    });
-                  },
-                }}
-              /> : null}
+              {this.state.AllBranches === false ? (
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
+                  label={{
+                    forceLabel: "Select Branch",
+                  }}
+                  selector={{
+                    name: "hospital_id",
+                    className: "select-fld",
+                    value: this.state.hospital_id,
+                    dataSource: {
+                      textField: "hospital_name",
+                      valueField: "hims_d_hospital_id",
+                      data: this.props.organizations,
+                    },
+                    onChange: texthandle.bind(this, this),
+                    others: {
+                      tabIndex: "2",
+                    },
+                    onClear: () => {
+                      this.setState({
+                        hospital_id: null,
+                      });
+                    },
+                  }}
+                />
+              ) : null}
 
-              <div className="portlet-title">
-                {/*<div className="caption">
-                        <h3 className="caption-subject">
-                          Salaried Employee Salary List for -
-                          <span>Dec 01 2018 - Dec 31 2018</span>
-                        </h3>
-                      </div>*/}
-
+              <div className="col-3">
+                <label>View All Branch</label>
                 <div className="customCheckbox">
                   <label className="checkbox inline">
                     <input
@@ -325,45 +323,50 @@ class EmployeeMasterIndex extends Component {
                       checked={this.state.AllBranches}
                       onChange={selectAllBranches.bind(this, this)}
                     />
-                    <span>Select All Branches</span>
+                    <span>Yes</span>
                   </label>
                 </div>
               </div>
-              <div className="row  margin-bottom-15 topResultCard">
-                <div className="col-12">
-                  <div className="card-group">
-                    <div className="card">
-                      <div className="card-body">
-                        <h5 className="card-title">{_Active.length}</h5>
-                        <p className="card-text">
-                          <span className="badge badge-success">Active</span>
-                        </p>
-                      </div>
+              <div className="col employeeMasterLegend">
+                <div className="card-group">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{_Active.length}</h5>
+                      <p className="card-text">
+                        <span className="badge badge-success">Active</span>
+                      </p>
                     </div>
-                    <div className="card">
-                      <div className="card-body">
-                        <h5 className="card-title">{_Inactive.length}</h5>
-                        <p className="card-text">
-                          <span className="badge badge-dark">Inactive</span>
-                        </p>
-                      </div>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{_Inactive.length}</h5>
+                      <p className="card-text">
+                        <span className="badge badge-dark">Inactive</span>
+                      </p>
                     </div>
-
-                    <div className="card">
-                      <div className="card-body">
-                        <h5 className="card-title">{_Resigned.length}</h5>
-                        <p className="card-text">
-                          <span className="badge badge-warning">Resigned</span>
-                        </p>
-                      </div>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{_Resigned.length}</h5>
+                      <p className="card-text">
+                        <span className="badge badge-warning">Resigned</span>
+                      </p>
                     </div>
-                    <div className="card">
-                      <div className="card-body">
-                        <h5 className="card-title">{_Terminated.length}</h5>
-                        <p className="card-text">
-                          <span className="badge badge-secondary">Terminated</span>
-                        </p>
-                      </div>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{_Terminated.length}</h5>
+                      <p className="card-text">
+                        <span className="badge badge-danger">Terminated</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="card-title">{_Suspended.length}</h5>
+                      <p className="card-text">
+                        <span className="badge badge-secondary">Suspended</span>
+                      </p>
                     </div>
                   </div>
                 </div>
