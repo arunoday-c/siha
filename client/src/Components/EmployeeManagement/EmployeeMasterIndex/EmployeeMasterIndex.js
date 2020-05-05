@@ -287,7 +287,7 @@ class EmployeeMasterIndex extends Component {
             <div className="row">
               {this.state.AllBranches === false ? (
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4 col-md-4 col-sm-12" }}
+                  div={{ className: "col-lg-3 col-md-3 col-sm-12" }}
                   label={{
                     forceLabel: "Select Branch",
                   }}
@@ -313,7 +313,7 @@ class EmployeeMasterIndex extends Component {
                 />
               ) : null}
 
-              <div className="col-3">
+              <div className="col-lg-2 col-md-2 col-sm-12">
                 <label>View All Branch</label>
                 <div className="customCheckbox">
                   <label className="checkbox inline">
@@ -327,7 +327,7 @@ class EmployeeMasterIndex extends Component {
                   </label>
                 </div>
               </div>
-              <div className="col employeeMasterLegend">
+              <div className="col-lg-7 col-md-7 col-sm-12 employeeMasterLegend">
                 <div className="card-group">
                   <div className="card">
                     <div className="card-body">
