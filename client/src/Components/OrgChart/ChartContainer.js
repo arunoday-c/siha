@@ -9,9 +9,9 @@ import React, {
 import PropTypes from "prop-types";
 import { selectNodeService } from "./service";
 import JSONDigger from "json-digger";
-import html2canvas from "html2canvas";
+// import html2canvas from "html2canvas";
 import {MainContext} from "algaeh-react-components/context";
-import jsPDF from "jspdf";
+// import jsPDF from "jspdf";
 import ChartNode from "./ChartNode";
 import "./ChartContainer.css";
 
@@ -251,41 +251,41 @@ const subChildren = subDepts.length>0?{children:subDepts.map(subDept=>{
       updateChartScale(newScale);
     };
 
-    const exportPDF = (canvas, exportFilename) => {
-      const canvasWidth = Math.floor(canvas.width);
-      const canvasHeight = Math.floor(canvas.height);
-      const doc =
-        canvasWidth > canvasHeight
-          ? new jsPDF({
-              orientation: "landscape",
-              unit: "px",
-              format: [canvasWidth, canvasHeight]
-            })
-          : new jsPDF({
-              orientation: "portrait",
-              unit: "px",
-              format: [canvasHeight, canvasWidth]
-            });
-      doc.addImage(canvas.toDataURL("image/jpeg", 1.0), "JPEG", 0, 0);
-      doc.save(exportFilename + ".pdf");
-    };
+    // const exportPDF = (canvas, exportFilename) => {
+    //   const canvasWidth = Math.floor(canvas.width);
+    //   const canvasHeight = Math.floor(canvas.height);
+    //   const doc =
+    //     canvasWidth > canvasHeight
+    //       ? new jsPDF({
+    //           orientation: "landscape",
+    //           unit: "px",
+    //           format: [canvasWidth, canvasHeight]
+    //         })
+    //       : new jsPDF({
+    //           orientation: "portrait",
+    //           unit: "px",
+    //           format: [canvasHeight, canvasWidth]
+    //         });
+    //   doc.addImage(canvas.toDataURL("image/jpeg", 1.0), "JPEG", 0, 0);
+    //   doc.save(exportFilename + ".pdf");
+    // };
 
-    const exportPNG = (canvas, exportFilename) => {
-      const isWebkit = "WebkitAppearance" in document.documentElement.style;
-      const isFf = !!window.sidebar;
-      const isEdge =
-        navigator.appName === "Microsoft Internet Explorer" ||
-        (navigator.appName === "Netscape" &&
-          navigator.appVersion.indexOf("Edge") > -1);
+    // const exportPNG = (canvas, exportFilename) => {
+    //   const isWebkit = "WebkitAppearance" in document.documentElement.style;
+    //   const isFf = !!window.sidebar;
+    //   const isEdge =
+    //     navigator.appName === "Microsoft Internet Explorer" ||
+    //     (navigator.appName === "Netscape" &&
+    //       navigator.appVersion.indexOf("Edge") > -1);
 
-      if ((!isWebkit && !isFf) || isEdge) {
-        window.navigator.msSaveBlob(canvas.msToBlob(), exportFilename + ".png");
-      } else {
-        setDataURL(canvas.toDataURL());
-        setDownload(exportFilename + ".png");
-        downloadButton.current.click();
-      }
-    };
+    //   if ((!isWebkit && !isFf) || isEdge) {
+    //     window.navigator.msSaveBlob(canvas.msToBlob(), exportFilename + ".png");
+    //   } else {
+    //     setDataURL(canvas.toDataURL());
+    //     setDownload(exportFilename + ".png");
+    //     downloadButton.current.click();
+    //   }
+    // };
 
     const changeHierarchy = async (draggedItemData, dropTargetId) => {
       await dsDigger.removeNode(draggedItemData.id);
@@ -294,39 +294,39 @@ const subChildren = subDepts.length>0?{children:subDepts.map(subDept=>{
     };
 
     useImperativeHandle(ref, () => ({
-      exportTo: (exportFilename, exportFileextension) => {
-        exportFilename = exportFilename || "OrgChart";
-        exportFileextension = exportFileextension || "png";
-        setExporting(true);
-        const originalScrollLeft = container.current.scrollLeft;
-        container.current.scrollLeft = 0;
-        const originalScrollTop = container.current.scrollTop;
-        container.current.scrollTop = 0;
-        html2canvas(chart.current, {
-          width: chart.current.clientWidth,
-          height: chart.current.clientHeight,
-          onclone: function(clonedDoc) {
-            clonedDoc.querySelector(".orgchart").style.background = "none";
-            clonedDoc.querySelector(".orgchart").style.transform = "";
-          }
-        }).then(
-          canvas => {
-            if (exportFileextension.toLowerCase() === "pdf") {
-              exportPDF(canvas, exportFilename);
-            } else {
-              exportPNG(canvas, exportFilename);
-            }
-            setExporting(false);
-            container.current.scrollLeft = originalScrollLeft;
-            container.current.scrollTop = originalScrollTop;
-          },
-          () => {
-            setExporting(false);
-            container.current.scrollLeft = originalScrollLeft;
-            container.current.scrollTop = originalScrollTop;
-          }
-        );
-      },
+      // exportTo: (exportFilename, exportFileextension) => {
+      //   exportFilename = exportFilename || "OrgChart";
+      //   exportFileextension = exportFileextension || "png";
+      //   setExporting(true);
+      //   const originalScrollLeft = container.current.scrollLeft;
+      //   container.current.scrollLeft = 0;
+      //   const originalScrollTop = container.current.scrollTop;
+      //   container.current.scrollTop = 0;
+      //   html2canvas(chart.current, {
+      //     width: chart.current.clientWidth,
+      //     height: chart.current.clientHeight,
+      //     onclone: function(clonedDoc) {
+      //       clonedDoc.querySelector(".orgchart").style.background = "none";
+      //       clonedDoc.querySelector(".orgchart").style.transform = "";
+      //     }
+      //   }).then(
+      //     canvas => {
+      //       if (exportFileextension.toLowerCase() === "pdf") {
+      //         exportPDF(canvas, exportFilename);
+      //       } else {
+      //         exportPNG(canvas, exportFilename);
+      //       }
+      //       setExporting(false);
+      //       container.current.scrollLeft = originalScrollLeft;
+      //       container.current.scrollTop = originalScrollTop;
+      //     },
+      //     () => {
+      //       setExporting(false);
+      //       container.current.scrollLeft = originalScrollLeft;
+      //       container.current.scrollTop = originalScrollTop;
+      //     }
+      //   );
+      // },
       expandAllNodes: () => {
         chart.current
           .querySelectorAll(
