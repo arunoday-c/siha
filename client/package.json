@@ -14,13 +14,15 @@
     "cross-env": "^5.1.4",
     "fabric": "^3.3.2",
     "html-webpack-plugin": "^3.2.0",
+    "jodit-react": "^1.0.42",
     "js2xmlparser": "^3.0.0",
     "jsbarcode": "^3.9.0",
     "linq": "^3.1.0",
     "localforage": "^1.7.3",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "node-sass": "4.12.0",
+    "node-sass": "^4.14.0",
+    "quill-better-table": "^1.2.8",
     "react": "^16.9.0",
     "react-chartjs-2": "^2.7.6",
     "react-datepicker": "^2.1.0",
@@ -29,11 +31,11 @@
     "react-dropzone": "^4.2.9",
     "react-image-cropper": "^1.3.0",
     "react-number-format": "^3.6.2",
-    "react-quill": "^1.3.1",
+    "react-quill": "^2.0.0-beta.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.1.1",
+    "react-scripts": "^3.4.1",
     "react-table": "6.10.3",
     "react-table-hoc-fixed-columns": "1.0.7",
     "react-transition-group": "^4.2.1",
@@ -56,7 +58,8 @@
     "eject": "react-scripts eject",
     "dev": "npm start",
     "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm run start-js",
-    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest"
+    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest",
+    "preinstall": "npx npm-force-resolutions"
   },
   "browserslist": {
     "production": [
@@ -70,6 +73,10 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.14.3"
+    "eslint-plugin-react": "^7.14.3",
+    "npm-force-resolutions": "0.0.3"
+  },
+  "resolutions": {
+    "moment": "2.24.0"
   }
 }

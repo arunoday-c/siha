@@ -24,7 +24,7 @@ export default class SelfService extends Component {
       regularize: {},
       leave: {},
       employee_details: {},
-      loading: false
+      loading: false,
     };
   }
 
@@ -38,51 +38,51 @@ export default class SelfService extends Component {
       uri: "/payrollOptions/getLeaveSalaryOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            basic_earning_component: res.data.result[0].basic_earning_component
+            basic_earning_component: res.data.result[0].basic_earning_component,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  getEmployeeDetails() {
+  getEmployeeDetails = () => {
     const { loading } = this.state;
     AlgaehLoader({ loading });
     algaehApiCall({
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState(
             {
-              employee_details: res.data.records[0]
+              employee_details: res.data.records[0],
+              loading: false,
             },
             () => {
-              this.setState({ loading: false });
               AlgaehLoader({ loading });
             }
           );
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         this.setState({ loading: false });
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
-  }
+  };
 
   // openTab(e) {
   //   var element = document.querySelectorAll("[algaehtabs]");
@@ -138,7 +138,7 @@ export default class SelfService extends Component {
                 serviceParameters={{
                   uniqueID: empDetails.employee_code,
                   destinationName: empDetails.employee_code,
-                  fileType: "Employees"
+                  fileType: "Employees",
                 }}
               />
             </div>
@@ -206,7 +206,7 @@ export default class SelfService extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Activity Feed"
+                    forceLabel: "Activity Feed",
                   }}
                 />
               ),
@@ -216,13 +216,13 @@ export default class SelfService extends Component {
                   empData={this.state.employee_details}
                 />
               ),
-              componentCode: "SEL_ACT_FED"
+              componentCode: "SEL_ACT_FED",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Request Leave"
+                    forceLabel: "Request Leave",
                   }}
                 />
               ),
@@ -232,13 +232,13 @@ export default class SelfService extends Component {
                   empData={this.state.employee_details}
                 />
               ),
-              componentCode: "SEL_APP_LEV"
+              componentCode: "SEL_APP_LEV",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Loan/ Advance Request"
+                    forceLabel: "Loan/ Advance Request",
                   }}
                 />
               ),
@@ -248,13 +248,13 @@ export default class SelfService extends Component {
                   basic_earning_component={this.state.basic_earning_component}
                 />
               ),
-              componentCode: "SEL_LON_ADV_REQ"
+              componentCode: "SEL_LON_ADV_REQ",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Leave Encashment Request"
+                    forceLabel: "Leave Encashment Request",
                   }}
                 />
               ),
@@ -264,13 +264,13 @@ export default class SelfService extends Component {
                   empData={this.state.employee_details}
                 />
               ),
-              componentCode: "SEL_LEV_ENC_REQ"
+              componentCode: "SEL_LEV_ENC_REQ",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Attendance Regularisation"
+                    forceLabel: "Attendance Regularisation",
                   }}
                 />
               ),
@@ -280,45 +280,48 @@ export default class SelfService extends Component {
                   empData={this.state.employee_details}
                 />
               ),
-              componentCode: "SEL_ATT_REG"
+              componentCode: "SEL_ATT_REG",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Personal Info"
+                    forceLabel: "Personal Info",
                   }}
                 />
               ),
               children: (
-                <SelfPersonalDetails empData={this.state.employee_details} />
+                <SelfPersonalDetails
+                  empData={this.state.employee_details}
+                  refreshEmp={this.getEmployeeDetails}
+                />
               ),
-              componentCode: "SEL_PER_INF"
+              componentCode: "SEL_PER_INF",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Holiday List"
+                    forceLabel: "Holiday List",
                   }}
                 />
               ),
               children: (
                 <HolidayListSelf empData={this.state.employee_details} />
               ),
-              componentCode: "SEL_HOL_LST"
+              componentCode: "SEL_HOL_LST",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Self Timesheet"
+                    forceLabel: "Self Timesheet",
                   }}
                 />
               ),
               children: <TimeSheetSelf />,
-              componentCode: "SEL_TIM_SHE"
-            }
+              componentCode: "SEL_TIM_SHE",
+            },
           ]}
           renderClass="selfServiceSection"
         />

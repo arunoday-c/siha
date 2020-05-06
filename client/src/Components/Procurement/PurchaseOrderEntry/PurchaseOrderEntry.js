@@ -31,6 +31,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
@@ -67,15 +68,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
-            .toArray();
+          .where(w => w.location_type === "WH")
+          .toArray();
 
     const class_finder =
       this.state.dataFinder === true
         ? " disableFinder"
         : this.state.ReqData === true
-        ? " disableFinder"
-        : "";
+          ? " disableFinder"
+          : "";
     return (
       <div>
         <BreadCrumb
@@ -144,17 +145,17 @@ class PurchaseOrderEntry extends Component {
                   />
                   <h6>
                     {this.state.authorize1 === "Y" &&
-                    this.state.authorize2 === "Y" ? (
-                      <span className="badge badge-success">Authorized</span>
-                    ) : this.state.authorize1 === "Y" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : this.state.authorize1 === "N" &&
-                      this.state.authorize2 === "N" ? (
-                      <span className="badge badge-danger">Pending</span>
-                    ) : (
-                      <span className="badge badge-danger">Pending</span>
-                    )}
+                      this.state.authorize2 === "Y" ? (
+                        <span className="badge badge-success">Authorized</span>
+                      ) : this.state.authorize1 === "Y" &&
+                        this.state.authorize2 === "N" ? (
+                          <span className="badge badge-danger">Pending</span>
+                        ) : this.state.authorize1 === "N" &&
+                          this.state.authorize2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : (
+                            <span className="badge badge-danger">Pending</span>
+                          )}
                   </h6>
                 </div>
               ) : null}
@@ -163,25 +164,25 @@ class PurchaseOrderEntry extends Component {
           printArea={
             this.state.purchase_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Receipt for Internal",
-                      events: {
-                        onClick: () => {
-                          generatePOReceipt(this.state);
-                        }
-                      }
-                    },
-                    {
-                      label: "Receipt for Vendor",
-                      events: {
-                        onClick: () => {
-                          generatePOReceiptNoPrice(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Receipt for Internal",
+                    events: {
+                      onClick: () => {
+                        generatePOReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  },
+                  {
+                    label: "Receipt for Vendor",
+                    events: {
+                      onClick: () => {
+                        generatePOReceiptNoPrice(this.state);
+                      }
+                    }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -403,85 +404,73 @@ class PurchaseOrderEntry extends Component {
           </MyContext.Provider>
         </div>
 
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={SavePOEnrty.bind(this, this)}
-                disabled={this.state.saveEnable}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Save Order",
-                    returnText: true
-                  }}
-                />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                disabled={this.state.ClearDisable}
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
-
-              {this.props.purchase_auth === true ? (
+        <AlgaehSecurityComponent componentCode="PUR_ORD_MAINT">
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
                 <button
                   type="button"
-                  className="btn btn-other"
-                  disabled={
-                    this.state.authBtnEnable === true
-                      ? true
-                      : this.state.authorize1 === "Y" &&
-                        this.state.authorize2 === "Y"
-                      ? true
-                      : false
-                  }
-                  onClick={AuthorizePOEntry.bind(
-                    this,
-                    this,
-                    this.state.authorize1 === "N" ? "authorize1" : "authorize2"
-                  )}
+                  className="btn btn-primary"
+                  onClick={SavePOEnrty.bind(this, this)}
+                  disabled={this.state.saveEnable}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel:
-                        this.state.authorize1 === "N"
-                          ? "Authorize 1"
-                          : this.state.po_auth_level === "2"
-                          ? "Authorize 2"
-                          : "Authorize 1",
+                      forceLabel: "Save Order",
                       returnText: true
                     }}
                   />
                 </button>
-              ) : // <button
-              //   type="button"
-              //   className="btn btn-other"
-              //   disabled={
-              //     this.state.authorize1 === "Y"
-              //       ? true
-              //       : this.state.authorizeBtn
-              //   }
-              //   onClick={AuthorizePOEntry.bind(this, this)}
-              // >
-              //   <AlgaehLabel
-              //     label={{
-              //       forceLabel: "Authorize",
-              //       returnText: true
-              //     }}
-              //   />
-              // </button>
-              null}
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+                <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH1">
+                  {this.props.purchase_auth === true ? (
+
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize1 === "Y" &&
+                            this.state.authorize2 === "Y"
+                            ? true
+                            : false
+                      }
+                      onClick={AuthorizePOEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N" ? "authorize1" : "authorize2"
+                      )}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel:
+                            this.state.authorize1 === "N"
+                              ? "Authorize 1"
+                              : this.state.po_auth_level === "2"
+                                ? "Authorize 2"
+                                : "Authorize 1",
+                          returnText: true
+                        }}
+                      />
+                    </button>
+                  ) :
+                    null}
+                </AlgaehSecurityComponent>
+              </div>
             </div>
           </div>
-        </div>
+        </AlgaehSecurityComponent>
       </div>
     );
   }

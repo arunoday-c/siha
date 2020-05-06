@@ -7,7 +7,7 @@ import {
   AlgaehDateHandler,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -22,7 +22,7 @@ export default class AuditLog extends Component {
       hospitalList: [],
       levels: null,
       employee_id: undefined,
-      auditdata: []
+      auditdata: [],
     };
   }
   static contextType = MainContext;
@@ -32,11 +32,11 @@ export default class AuditLog extends Component {
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({ hospitalList: res.data.records });
         }
-      }
+      },
     });
   }
 
@@ -46,7 +46,7 @@ export default class AuditLog extends Component {
 
   datehandle(ctrl, e) {
     this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
   }
   handleClear() {
@@ -55,33 +55,32 @@ export default class AuditLog extends Component {
       from_date: undefined,
       to_date: undefined,
       levels: null,
-      auditdata: []
+      auditdata: [],
     });
   }
 
-  dropDownHandle = e => {
-    console.log(e, "handle");
+  dropDownHandle = (e) => {
     const { name, value } = e;
     this.setState({ [name]: value });
   };
-  handleChange = evnt => {
+  handleChange = (evnt) => {
     console.log(evnt);
     this.setState({
-      levels: evnt.value
+      levels: evnt.value,
     });
   };
   auditlogData() {
     if (this.state.from_date === undefined) {
       swalMessage({
         title: "Please Select From date first",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
     if (this.state.to_date === undefined) {
       swalMessage({
         title: "Please Select to date first",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -96,7 +95,7 @@ export default class AuditLog extends Component {
       from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
       to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
       ...employee_id,
-      ...levels
+      ...levels,
     };
 
     AlgaehLoader({ show: true });
@@ -107,23 +106,23 @@ export default class AuditLog extends Component {
 
       method: "POST",
 
-      onSuccess: response => {
+      onSuccess: (response) => {
         AlgaehLoader({ show: false });
         const { success, records } = response.data;
         if (success === true) {
           this.setState({ auditdata: records });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         AlgaehLoader({ show: false });
         console.error(error);
-      }
+      },
     });
   }
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -131,13 +130,13 @@ export default class AuditLog extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         console.log("row", row);
         this.setState({
           employee_name: row.full_name,
-          employee_id: row.hims_d_employee_id
+          employee_id: row.hims_d_employee_id,
         });
-      }
+      },
     });
   }
 
@@ -149,7 +148,7 @@ export default class AuditLog extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Select Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -158,14 +157,14 @@ export default class AuditLog extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.state.hospitalList
+                data: this.state.hospitalList,
               },
               onChange: this.dropDownHandle,
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -175,7 +174,7 @@ export default class AuditLog extends Component {
             label={{ forceLabel: "From Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "from_date" }}
             events={{
-              onChange: this.datehandle.bind(this)
+              onChange: this.datehandle.bind(this),
             }}
             value={this.state.from_date}
           />
@@ -185,7 +184,7 @@ export default class AuditLog extends Component {
             label={{ forceLabel: "To Date", isImp: true }}
             textBox={{ className: "txt-fld", name: "to_date" }}
             events={{
-              onChange: this.datehandle.bind(this)
+              onChange: this.datehandle.bind(this),
             }}
             value={this.state.to_date}
           />
@@ -194,7 +193,7 @@ export default class AuditLog extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Levels",
-              isImp: false
+              isImp: false,
             }}
             selector={{
               name: "Level",
@@ -206,15 +205,15 @@ export default class AuditLog extends Component {
                 data: [
                   { name: "Warning", value: "warn" },
                   { name: "Information", value: "info" },
-                  { name: "Error", value: "error" }
-                ]
+                  { name: "Error", value: "error" },
+                ],
               },
               onChange: this.handleChange.bind(this),
               onClear: () => {
                 this.setState({
-                  value: null
+                  value: null,
                 });
-              }
+              },
             }}
           />
 
@@ -266,17 +265,19 @@ export default class AuditLog extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Date & Time" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "level",
-                          label: <AlgaehLabel label={{ forceLabel: "LEVEL" }} />
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "LEVEL" }} />
+                          ),
                         },
                         {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "FULL NAME" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "arabic_name",
@@ -284,16 +285,16 @@ export default class AuditLog extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "ARABIC NAME" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "stream",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "STREAM" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.stream === null ? "No" : row.stream;
-                          }
+                          },
                         },
                         {
                           fieldName: "role_discreption",
@@ -301,7 +302,7 @@ export default class AuditLog extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "ROLE DESCRIPTION" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "app_group_desc",
@@ -309,18 +310,18 @@ export default class AuditLog extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "APP GROUP DESC" }}
                             />
-                          )
+                          ),
                         },
 
                         {
                           fieldName: "requestMethod",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "METHOD" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "requestUrl",
-                          label: <AlgaehLabel label={{ forceLabel: "URL" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "URL" }} />,
                         },
                         {
                           fieldName: "requestClient",
@@ -329,13 +330,13 @@ export default class AuditLog extends Component {
                               label={{ forceLabel: "REQUEST CLIENT" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             if (typeof row.requestClient !== "string") {
                               return JSON.stringify(row.requestClient);
                             } else {
                               return row.requestClient;
                             }
-                          }
+                          },
                         },
 
                         {
@@ -344,36 +345,36 @@ export default class AuditLog extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "PRODUCT TYPE" }}
                             />
-                          )
+                          ),
                         },
 
                         {
                           fieldName: "host",
-                          label: <AlgaehLabel label={{ forceLabel: "HOST" }} />
+                          label: <AlgaehLabel label={{ forceLabel: "HOST" }} />,
                         },
                         {
                           fieldName: "origin",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ORIGIN" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "user-agent",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "USER AGENT" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "parameters",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "PARAMETERS" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return JSON.stringify(row.parameters);
-                          }
-                        }
+                          },
+                        },
                       ]}
-                      rowClassName={row => {
+                      rowClassName={(row) => {
                         let className = "error";
                         switch (row.level) {
                           case "error":

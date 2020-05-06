@@ -304,7 +304,7 @@ class OfficalDetails extends Component {
                   />
                   <h6>
                     {this.state.department_name === null ||
-                    this.state.department_name === undefined
+                      this.state.department_name === undefined
                       ? "------"
                       : this.state.department_name}
                   </h6>
@@ -439,6 +439,24 @@ class OfficalDetails extends Component {
                       },
                     }}
                   />
+
+                ) : null}
+
+
+                {this.state.HRMS_Active === true ? (
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Vaccation Accruval Days",
+                      }}
+                    />
+                    <h6>
+                      {this.state.monthly_accrual_days === null ||
+                        this.state.monthly_accrual_days === undefined
+                        ? "0 Days"
+                        : this.state.monthly_accrual_days + "Days"}
+                    </h6>
+                  </div>
                 ) : null}
                 {this.state.HRMS_Active === true ? (
                   <AlagehAutoComplete
@@ -600,100 +618,100 @@ class OfficalDetails extends Component {
                     />
                     <h6>
                       {this.state.inactive_date === null ||
-                      this.state.inactive_date === undefined
+                        this.state.inactive_date === undefined
                         ? "DD/MM/YYYY"
                         : dateFormater(this, this.state.inactive_date)}
                     </h6>
                   </div>
                 ) : null}
                 {this.state.employee_status !== "A" &&
-                this.state.employee_status !== "I" ? (
-                  <React.Fragment>
-                    <AlgaehDateHandler
-                      div={{ className: "col-3 mandatory form-group" }}
-                      label={{
-                        forceLabel:
-                          this.state.employee_status === "A" ||
-                          this.state.employee_status === "I"
-                            ? "Date of leaving"
-                            : this.state.employee_status === "R"
-                            ? "Date of Resignation"
-                            : this.state.employee_status === "T"
-                            ? "Date of Termination"
-                            : this.state.employee_status === "E"
-                            ? "Date of Retirement"
-                            : "",
-                        isImp:
-                          this.state.employee_status === "R" ||
-                          this.state.employee_status === "T"
-                            ? true
-                            : false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "date_of_resignation",
-                        others: {
-                          disabled:
-                            this.state.enable_active_status === "I"
+                  this.state.employee_status !== "I" ? (
+                    <React.Fragment>
+                      <AlgaehDateHandler
+                        div={{ className: "col-3 mandatory form-group" }}
+                        label={{
+                          forceLabel:
+                            this.state.employee_status === "A" ||
+                              this.state.employee_status === "I"
+                              ? "Date of leaving"
+                              : this.state.employee_status === "R"
+                                ? "Date of Resignation"
+                                : this.state.employee_status === "T"
+                                  ? "Date of Termination"
+                                  : this.state.employee_status === "E"
+                                    ? "Date of Retirement"
+                                    : "",
+                          isImp:
+                            this.state.employee_status === "R" ||
+                              this.state.employee_status === "T"
                               ? true
                               : false,
-                        },
-                      }}
-                      // maxDate={new Date()}
-                      events={{
-                        onChange: datehandle.bind(this, this),
-                      }}
-                      value={this.state.date_of_resignation}
-                    />
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "date_of_resignation",
+                          others: {
+                            disabled:
+                              this.state.enable_active_status === "I"
+                                ? true
+                                : false,
+                          },
+                        }}
+                        // maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this),
+                        }}
+                        value={this.state.date_of_resignation}
+                      />
 
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Notice Period",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        value: this.state.notice_period,
-                        className: "txt-fld",
-                        name: "notice_period",
-
-                        events: {
-                          onChange: texthandle.bind(this, this),
-                        },
-                        others: {
-                          tabIndex: "7",
-                          type: "number",
-                        },
-                      }}
-                    />
-                    <div className="col-3">
-                      <AlgaehLabel
+                      <AlagehFormGroup
+                        div={{ className: "col-2" }}
                         label={{
-                          forceLabel: "Expectec Relieving Date",
+                          forceLabel: "Notice Period",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          value: this.state.notice_period,
+                          className: "txt-fld",
+                          name: "notice_period",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            tabIndex: "7",
+                            type: "number",
+                          },
                         }}
                       />
-                      <h6>
-                        {this.state.reliving_date === null ||
-                        this.state.reliving_date === undefined
-                          ? "DD/MM/YYYY"
-                          : dateFormater(this, this.state.reliving_date)}
-                      </h6>
-                    </div>
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{ forceLabel: "Date of Exit" }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "exit_date",
-                      }}
-                      minDate={this.state.date_of_resignation}
-                      events={{
-                        onChange: datehandle.bind(this, this),
-                      }}
-                      value={this.state.exit_date}
-                    />
-                  </React.Fragment>
-                ) : null}
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Expectec Relieving Date",
+                          }}
+                        />
+                        <h6>
+                          {this.state.reliving_date === null ||
+                            this.state.reliving_date === undefined
+                            ? "DD/MM/YYYY"
+                            : dateFormater(this, this.state.reliving_date)}
+                        </h6>
+                      </div>
+                      <AlgaehDateHandler
+                        div={{ className: "col-3" }}
+                        label={{ forceLabel: "Date of Exit" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "exit_date",
+                        }}
+                        minDate={this.state.date_of_resignation}
+                        events={{
+                          onChange: datehandle.bind(this, this),
+                        }}
+                        value={this.state.exit_date}
+                      />
+                    </React.Fragment>
+                  ) : null}
               </div>
               {/* <h5>
                 <span>Accomodation Details</span>

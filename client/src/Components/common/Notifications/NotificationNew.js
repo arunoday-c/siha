@@ -18,6 +18,7 @@ const { TabPane } = Tabs;
 
 export default function Notification({ open, handlePanel }) {
   const base = Array(5).fill({ loading: true, message: "", title: "" });
+  // const base = [];
   const [list, setList] = useState(base);
   const [today, setToday] = useState(base);
   const [loading, setLoading] = useState(true);
@@ -61,6 +62,8 @@ export default function Notification({ open, handlePanel }) {
         console.log(data);
         if (data && Array.isArray(data)) {
           setList(data);
+        } else {
+          setList([]);
         }
         setLoading(false);
       });
@@ -68,6 +71,8 @@ export default function Notification({ open, handlePanel }) {
       socket.on("today", (data) => {
         if (data && Array.isArray(data)) {
           setToday(data);
+        } else {
+          setToday([]);
         }
         setLoading(false);
       });

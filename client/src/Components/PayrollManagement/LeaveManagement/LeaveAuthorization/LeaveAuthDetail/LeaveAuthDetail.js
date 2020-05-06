@@ -15,7 +15,7 @@ class LeaveAuthDetail extends Component {
       leave_his: [],
       remarks: "",
       from_normal_salary: "N",
-      loading_Process: false
+      loading_Process: false,
     };
   }
 
@@ -23,7 +23,7 @@ class LeaveAuthDetail extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      default_nationality: userToken.default_nationality
+      default_nationality: userToken.default_nationality,
     });
   }
 
@@ -38,7 +38,7 @@ class LeaveAuthDetail extends Component {
     }
     this.setState(
       {
-        data: nextProps.data
+        data: nextProps.data,
       },
       () => {
         console.log("DATA:", this.state.data.leave_category);
@@ -56,16 +56,16 @@ class LeaveAuthDetail extends Component {
       module: "hrManagement",
       data: {
         employee_id: this.state.data.employee_id,
-        status: "H"
+        status: "H",
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            leave_his: res.data.records
+            leave_his: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -98,7 +98,7 @@ class LeaveAuthDetail extends Component {
       absent_id: this.state.data.absent_id,
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
-      from_normal_salary: this.state.data.from_normal_salary
+      from_normal_salary: this.state.data.from_normal_salary,
     };
 
     algaehApiCall({
@@ -106,31 +106,49 @@ class LeaveAuthDetail extends Component {
       method: "PUT",
       data: send_data,
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
-          type === "A"
-            ? swalMessage({
-                title: "Leave Authorized Successfully",
-                type: "success"
-              })
-            : swalMessage({
-                title: "Leave Rejected Successfully",
-                type: "success"
-              });
+          if (type === "A") {
+            if (this.context.socket.connected) {
+              this.context.socket.emit(
+                "/leave/authorized",
+                send_data.employee_id,
+                send_data.from_date,
+                send_data.auth_level
+              );
+            }
+            swalMessage({
+              title: "Leave Authorized Successfully",
+              type: "success",
+            });
+          } else {
+            if (this.context.socket.connected) {
+              this.context.socket.emit(
+                "/leave/rejected",
+                send_data.employee_id,
+                send_data.from_date,
+                send_data.auth_level
+              );
+            }
+            swalMessage({
+              title: "Leave Rejected Successfully",
+              type: "success",
+            });
+          }
 
           this.setState({
-            remarks: ""
+            remarks: "",
           });
 
           document.getElementById("lvAuthLd").click();
         } else {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "error",
           });
         }
         AlgaehLoader({ show: false });
-      }
+      },
       // onCatch: err => {
       //   AlgaehLoader({ show: false });
       //   swalMessage({
@@ -145,7 +163,7 @@ class LeaveAuthDetail extends Component {
     if (this.state.remarks === "") {
       swalMessage({
         title: "Remarks is Mandatory.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -169,7 +187,7 @@ class LeaveAuthDetail extends Component {
       leave_category: this.state.data.leave_category,
       hospital_id: this.state.data.hospital_id,
       leave_from: this.state.data.leave_from,
-      is_projected_leave: this.state.data.is_projected_leave
+      is_projected_leave: this.state.data.is_projected_leave,
     };
 
     algaehApiCall({
@@ -177,39 +195,39 @@ class LeaveAuthDetail extends Component {
       method: "PUT",
       data: send_data,
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Leave Cancelled Successfully",
-            type: "success"
+            type: "success",
           });
 
           this.setState({
-            remarks: ""
+            remarks: "",
           });
 
           document.getElementById("lvAuthLd").click();
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
         AlgaehLoader({ show: false });
       },
-      onCatch: err => {
+      onCatch: (err) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -218,7 +236,7 @@ class LeaveAuthDetail extends Component {
     const _value = e.target.checked ? "Y" : "N";
     data.from_normal_salary = _value;
     this.setState({
-      data: data
+      data: data,
     });
   }
 
@@ -227,7 +245,7 @@ class LeaveAuthDetail extends Component {
       <AlgaehModalPopUp
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
       >
         <div className="popupInner LeaveAuthPopup">
@@ -238,7 +256,7 @@ class LeaveAuthDetail extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Employee Code"
+                        forceLabel: "Employee Code",
                       }}
                     />
                     <h6>{this.state.data.employee_code}</h6>
@@ -246,7 +264,7 @@ class LeaveAuthDetail extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Employee"
+                        forceLabel: "Employee",
                       }}
                     />
                     <h6>{this.state.data.employee_name}</h6>
@@ -254,7 +272,7 @@ class LeaveAuthDetail extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Designation"
+                        forceLabel: "Designation",
                       }}
                     />
                     <h6>{this.state.data.designation}</h6>
@@ -285,7 +303,7 @@ class LeaveAuthDetail extends Component {
                           <div className="col-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Leave Code"
+                                forceLabel: "Leave Code",
                               }}
                             />
                             <h6>{this.state.data.leave_application_code}</h6>
@@ -293,7 +311,7 @@ class LeaveAuthDetail extends Component {
                           <div className="col-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Leave Type"
+                                forceLabel: "Leave Type",
                               }}
                             />
                             <h6>{this.state.data.leave_description}</h6>
@@ -301,7 +319,7 @@ class LeaveAuthDetail extends Component {
                           <div className="col-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Leave From Date"
+                                forceLabel: "Leave From Date",
                               }}
                             />
                             <h6>
@@ -325,7 +343,7 @@ class LeaveAuthDetail extends Component {
                           <div className="col-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Leave To Date"
+                                forceLabel: "Leave To Date",
                               }}
                             />
                             {/* <h6>DD/MM/YYYY</h6> */}
@@ -350,7 +368,7 @@ class LeaveAuthDetail extends Component {
                           <div className="col-12">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Total Period"
+                                forceLabel: "Total Period",
                               }}
                             />
                             {/* <h6>5</h6> */}
@@ -364,7 +382,7 @@ class LeaveAuthDetail extends Component {
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Remarks",
-                                isImp: this.props.type === "C" ? true : false
+                                isImp: this.props.type === "C" ? true : false,
                               }}
                             />
                             <textarea
@@ -383,7 +401,7 @@ class LeaveAuthDetail extends Component {
                               <div
                                 className="customCheckbox"
                                 style={{
-                                  textAlign: "right"
+                                  textAlign: "right",
                                 }}
                               >
                                 <label className="checkbox inline">
@@ -480,7 +498,7 @@ class LeaveAuthDetail extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Status" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.status === "PEN" ? (
@@ -509,7 +527,7 @@ class LeaveAuthDetail extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.status === "PEN"
@@ -525,7 +543,7 @@ class LeaveAuthDetail extends Component {
                                       : "------"}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "total_applied_days",
@@ -534,7 +552,7 @@ class LeaveAuthDetail extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Applied Days" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "leave_application_code",
@@ -542,7 +560,7 @@ class LeaveAuthDetail extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Leave Code" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "application_date",
@@ -551,7 +569,7 @@ class LeaveAuthDetail extends Component {
                                   label={{ forceLabel: "Leave Requested On" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {moment(row.application_date).format(
@@ -559,7 +577,7 @@ class LeaveAuthDetail extends Component {
                                     )}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "leave_description",
@@ -567,7 +585,7 @@ class LeaveAuthDetail extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Leave Type" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "from_date",
@@ -578,13 +596,13 @@ class LeaveAuthDetail extends Component {
                                 />
                               ),
 
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {moment(row.from_date).format("DD-MM-YYYY")}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "to_date",
@@ -594,13 +612,13 @@ class LeaveAuthDetail extends Component {
                                   label={{ forceLabel: "Leave To" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {moment(row.to_date).format("DD-MM-YYYY")}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             // {
                             //   fieldName: "total_approved_days",
@@ -628,7 +646,7 @@ class LeaveAuthDetail extends Component {
                                   label={{ forceLabel: "Leave Reason" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.remarks !== null
@@ -636,8 +654,8 @@ class LeaveAuthDetail extends Component {
                                       : "Not Specified"}
                                   </span>
                                 );
-                              }
-                            }
+                              },
+                            },
                             // {
                             //   fieldName: "authorized",
 
@@ -672,14 +690,14 @@ class LeaveAuthDetail extends Component {
                           ]}
                           keyId="algaeh_d_module_id"
                           dataSource={{
-                            data: this.state.leave_his
+                            data: this.state.leave_his,
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onEdit: () => {},
                             onDelete: () => {},
-                            onDone: () => {}
+                            onDone: () => {},
                           }}
                         />
                       </div>
