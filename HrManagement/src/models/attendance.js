@@ -7503,10 +7503,10 @@ function generateExcelTimesheet(input) {
             }
           } else {
             emp["data"].push({
-              status: "N",
+              status: "AB",
               attendance_date: attendance_date,
-              [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "N",
-              color: "",
+              [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "AB",
+              color: "#9C9A99",
             });
           }
         });
@@ -7984,11 +7984,13 @@ function generateProjectRosterTimesheet(input) {
             } else {
               outputArray.push({
                 attendance_date: attendance_date,
-                status: "N",
-                [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "N",
+                status: "AB",
+                [moment(attendance_date, "YYYY-MM-DD").format(
+                  "YYYYMMDD"
+                )]: "AB",
                 project_id: null,
-                project_desc: "Not Assigned",
-                color: "#F5F5F5",
+                project_desc: "employee is resigned",
+                color: "#9C9A99",
               });
             }
           });
