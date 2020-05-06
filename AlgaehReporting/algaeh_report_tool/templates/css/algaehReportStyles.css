@@ -30,18 +30,27 @@ body {
 
 .print-body .tableForLabel,
 .tableTotal,
-.tableForLabelSignature {
+.tableForLabelSignature,
+.tableNoBorder {
   width: 100%;
   border-collapse: collapse;
 }
 
-.print-body .tableForLabel tbody {
+.print-body .tableForLabel tbody,
+.print-body .tableNoBorder tbody {
   margin: 0;
   padding: 0;
 }
 
 .print-body .tableForLabel td {
   border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.print-body .tableNoBorder td {
+  border: none;
   padding: 3px;
   margin: 0;
   font-size: 11px;
