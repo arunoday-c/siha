@@ -8984,7 +8984,7 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-        S.year=? and S.month=? where  E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
+        S.year=? and S.month=? where E.exit_date is null and E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
           /employee_id/gi,
           "TS.employee_id"
         )} group by TS.employee_id having count(*)< ?; ;`,
@@ -9015,7 +9015,8 @@ function processBulkAtt_Normal(data) {
                 query: ` 
             select hims_f_daily_time_sheet_id,TS.employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
           attendance_date,in_time,out_date,out_time,TS.year,TS.month,status,is_anual_leave,posted,hours,minutes,actual_hours,\
-          actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id,TS.project_id\
+          actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id,TS.project_id,\
+          case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance ,E.exit_date 
           from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
            left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
@@ -9024,6 +9025,8 @@ function processBulkAtt_Normal(data) {
             "TS.employee_id"
           )};`,
                 values: [
+                  month_start,
+                  month_end,
                   input.year,
                   input.month,
                   input.hospital_id,
@@ -9033,185 +9036,424 @@ function processBulkAtt_Normal(data) {
                 printQuery: false,
               })
               .then((result) => {
-                const AttenResult = result;
+                // const AttenResult = result;
                 //present month
-                if (AttenResult.length > 0) {
-                  const at_leng = AttenResult.length;
-                  for (let i = 0; i < at_leng; i++) {
-                    let shortage_time = 0;
-                    let shortage_min = 0;
-                    let ot_time = 0;
-                    let ot_min = 0;
+                if (result.length > 0) {
+                  _.chain(result)
+                    .groupBy((g) => g.employee_id)
+                    .map((AttenResult) => {
+                      const at_leng = AttenResult.length;
 
-                    let week_off_ot_hour = 0;
-                    let week_off_ot_min = 0;
-                    let holiday_ot_hour = 0;
-                    let holiday_ot_min = 0;
+                      if (AttenResult[0]["partial_attendance"] == "N") {
+                        for (let i = 0; i < at_leng; i++) {
+                          let shortage_time = 0;
+                          let shortage_min = 0;
+                          let ot_time = 0;
+                          let ot_min = 0;
 
-                    let paid_leave = 0;
-                    let unpaid_leave = 0;
-                    let anual_leave = 0;
-                    if (AttenResult[i]["status"] == "PR") {
-                      let total_minutes =
-                        parseInt(AttenResult[i]["actual_hours"] * 60) +
-                        parseInt(AttenResult[i]["actual_minutes"]);
+                          let week_off_ot_hour = 0;
+                          let week_off_ot_min = 0;
+                          let holiday_ot_hour = 0;
+                          let holiday_ot_min = 0;
 
-                      let worked_minutes =
-                        parseInt(AttenResult[i]["hours"] * 60) +
-                        parseInt(AttenResult[i]["minutes"]);
+                          let paid_leave = 0;
+                          let unpaid_leave = 0;
+                          let anual_leave = 0;
+                          if (AttenResult[i]["status"] == "PR") {
+                            let total_minutes =
+                              parseInt(AttenResult[i]["actual_hours"] * 60) +
+                              parseInt(AttenResult[i]["actual_minutes"]);
 
-                      let diff = total_minutes - worked_minutes;
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
 
-                      if (diff > 0) {
-                        //calculating shortage
-                        shortage_time = parseInt(parseInt(diff) / parseInt(60));
-                        shortage_min = parseInt(diff) % parseInt(60);
-                      } else if (diff < 0) {
-                        //calculating over time
-                        ot_time = parseInt(
-                          parseInt(Math.abs(diff)) / parseInt(60)
-                        );
-                        ot_min = parseInt(Math.abs(diff)) % parseInt(60);
-                      }
-                    } else if (
-                      AttenResult[i]["status"] == "WO" &&
-                      AttenResult[i]["worked_hours"] > 0
-                    ) {
-                      let worked_minutes =
-                        parseInt(AttenResult[i]["hours"] * 60) +
-                        parseInt(AttenResult[i]["minutes"]);
+                            let diff = total_minutes - worked_minutes;
 
-                      //calculating over time
-                      week_off_ot_hour = parseInt(
-                        parseInt(Math.abs(worked_minutes)) / parseInt(60)
-                      );
-                      week_off_ot_min =
-                        parseInt(Math.abs(worked_minutes)) % parseInt(60);
-                    } else if (
-                      AttenResult[i]["status"] == "HO" &&
-                      AttenResult[i]["worked_hours"] > 0
-                    ) {
-                      let worked_minutes =
-                        parseInt(AttenResult[i]["hours"] * 60) +
-                        parseInt(AttenResult[i]["minutes"]);
+                            if (diff > 0) {
+                              //calculating shortage
+                              shortage_time = parseInt(
+                                parseInt(diff) / parseInt(60)
+                              );
+                              shortage_min = parseInt(diff) % parseInt(60);
+                            } else if (diff < 0) {
+                              //calculating over time
+                              ot_time = parseInt(
+                                parseInt(Math.abs(diff)) / parseInt(60)
+                              );
+                              ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                            }
+                          } else if (
+                            AttenResult[i]["status"] == "WO" &&
+                            AttenResult[i]["worked_hours"] > 0
+                          ) {
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
 
-                      //calculating over time
-                      holiday_ot_hour = parseInt(
-                        parseInt(Math.abs(worked_minutes)) / parseInt(60)
-                      );
-                      holiday_ot_min =
-                        parseInt(Math.abs(worked_minutes)) % parseInt(60);
-                    } else {
-                      switch (AttenResult[i]["status"]) {
-                        case "PL":
-                          paid_leave = 1;
+                            //calculating over time
+                            week_off_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            week_off_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          } else if (
+                            AttenResult[i]["status"] == "HO" &&
+                            AttenResult[i]["worked_hours"] > 0
+                          ) {
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
 
-                          if (AttenResult[i]["is_anual_leave"] == "Y")
-                            anual_leave = 1;
-                          break;
-                        case "UL":
-                          unpaid_leave = 1;
-                          if (AttenResult[i]["is_anual_leave"] == "Y")
-                            anual_leave = 1;
-                          break;
-                        case "HPL":
-                          paid_leave = 0.5;
-                          if (AttenResult[i]["is_anual_leave"] == "Y")
-                            anual_leave = 0.5;
-                          break;
-                        case "HUL":
-                          unpaid_leave = 0.5;
-                          if (AttenResult[i]["is_anual_leave"] == "Y")
-                            anual_leave = 0.5;
-                          break;
-                      }
-                    }
+                            //calculating over time
+                            holiday_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            holiday_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          } else {
+                            switch (AttenResult[i]["status"]) {
+                              case "PL":
+                                paid_leave = 1;
 
-                    let display_present_days = 0;
-                    let present_days = 0;
-                    let absent = AttenResult[i]["status"] == "AB" ? 1 : 0;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 1;
+                                break;
+                              case "UL":
+                                unpaid_leave = 1;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 1;
+                                break;
+                              case "HPL":
+                                paid_leave = 0.5;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 0.5;
+                                break;
+                              case "HUL":
+                                unpaid_leave = 0.5;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 0.5;
+                                break;
+                            }
+                          }
 
-                    if (AttenResult[i]["status"] == "PR") {
-                      display_present_days = 1;
-                      present_days = 1;
-                    } else if (
-                      AttenResult[i]["status"] == "HPL" ||
-                      AttenResult[i]["status"] == "HUL"
-                    ) {
-                      if (AttenResult[i]["hours"] > 0) {
-                        display_present_days = 0.5;
+                          let display_present_days = 0;
+                          let present_days = 0;
+                          let absent = AttenResult[i]["status"] == "AB" ? 1 : 0;
+
+                          if (AttenResult[i]["status"] == "PR") {
+                            display_present_days = 1;
+                            present_days = 1;
+                          } else if (
+                            AttenResult[i]["status"] == "HPL" ||
+                            AttenResult[i]["status"] == "HUL"
+                          ) {
+                            if (AttenResult[i]["hours"] > 0) {
+                              display_present_days = 0.5;
+                            } else {
+                              absent = 0.5;
+                            }
+                          }
+
+                          if (
+                            week_off_ot_hour > 0 ||
+                            week_off_ot_min > 0 ||
+                            holiday_ot_hour > 0 ||
+                            holiday_ot_min > 0
+                          ) {
+                            display_present_days = 1;
+                          }
+
+                          dailyAttendance.push({
+                            employee_id: AttenResult[i]["employee_id"],
+                            project_id: AttenResult[i]["project_id"],
+                            hospital_id: AttenResult[i]["hospital_id"],
+                            sub_department_id:
+                              AttenResult[i]["sub_department_id"],
+                            attendance_date: AttenResult[i]["attendance_date"],
+                            year: input.year,
+                            month: input.month,
+                            total_days: 1,
+                            present_days: present_days,
+                            display_present_days: display_present_days,
+                            absent_days: absent,
+                            total_work_days: 1,
+                            weekoff_days:
+                              AttenResult[i]["status"] == "WO" ? 1 : 0,
+                            holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                            paid_leave: paid_leave,
+                            unpaid_leave: unpaid_leave,
+                            anual_leave: anual_leave,
+                            total_hours:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? AttenResult[i]["worked_hours"]
+                                : AttenResult[i]["actual_hours"] +
+                                  "." +
+                                  AttenResult[i]["actual_minutes"],
+                            hours:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? AttenResult[i]["hours"]
+                                : AttenResult[i]["actual_hours"],
+                            minutes:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? AttenResult[i]["minutes"]
+                                : AttenResult[i]["actual_minutes"],
+                            working_hours:
+                              AttenResult[i]["actual_hours"] +
+                              "." +
+                              AttenResult[i]["actual_minutes"],
+
+                            shortage_hours:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? shortage_time
+                                : 0,
+                            shortage_minutes:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? shortage_min
+                                : 0,
+                            ot_work_hours:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? ot_time
+                                : 0,
+                            ot_minutes:
+                              AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                ? ot_min
+                                : 0,
+
+                            ot_weekoff_hours: week_off_ot_hour,
+                            ot_weekoff_minutes: week_off_ot_min,
+                            ot_holiday_hours: holiday_ot_hour,
+                            ot_holiday_minutes: holiday_ot_min,
+                          });
+                        }
                       } else {
-                        absent = 0.5;
+                        for (let i = 0; i < at_leng; i++) {
+                          let shortage_time = 0;
+                          let shortage_min = 0;
+                          let ot_time = 0;
+                          let ot_min = 0;
+
+                          let week_off_ot_hour = 0;
+                          let week_off_ot_min = 0;
+                          let holiday_ot_hour = 0;
+                          let holiday_ot_min = 0;
+
+                          let paid_leave = 0;
+                          let unpaid_leave = 0;
+                          let anual_leave = 0;
+                          if (AttenResult[i]["status"] == "PR") {
+                            let total_minutes =
+                              parseInt(AttenResult[i]["actual_hours"] * 60) +
+                              parseInt(AttenResult[i]["actual_minutes"]);
+
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
+
+                            let diff = total_minutes - worked_minutes;
+
+                            if (diff > 0) {
+                              //calculating shortage
+                              shortage_time = parseInt(
+                                parseInt(diff) / parseInt(60)
+                              );
+                              shortage_min = parseInt(diff) % parseInt(60);
+                            } else if (diff < 0) {
+                              //calculating over time
+                              ot_time = parseInt(
+                                parseInt(Math.abs(diff)) / parseInt(60)
+                              );
+                              ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                            }
+                          } else if (
+                            AttenResult[i]["status"] == "WO" &&
+                            AttenResult[i]["worked_hours"] > 0
+                          ) {
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
+
+                            //calculating over time
+                            week_off_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            week_off_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          } else if (
+                            AttenResult[i]["status"] == "HO" &&
+                            AttenResult[i]["worked_hours"] > 0
+                          ) {
+                            let worked_minutes =
+                              parseInt(AttenResult[i]["hours"] * 60) +
+                              parseInt(AttenResult[i]["minutes"]);
+
+                            //calculating over time
+                            holiday_ot_hour = parseInt(
+                              parseInt(Math.abs(worked_minutes)) / parseInt(60)
+                            );
+                            holiday_ot_min =
+                              parseInt(Math.abs(worked_minutes)) % parseInt(60);
+                          } else {
+                            switch (AttenResult[i]["status"]) {
+                              case "PL":
+                                paid_leave = 1;
+
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 1;
+                                break;
+                              case "UL":
+                                unpaid_leave = 1;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 1;
+                                break;
+                              case "HPL":
+                                paid_leave = 0.5;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 0.5;
+                                break;
+                              case "HUL":
+                                unpaid_leave = 0.5;
+                                if (AttenResult[i]["is_anual_leave"] == "Y")
+                                  anual_leave = 0.5;
+                                break;
+                            }
+                          }
+
+                          let display_present_days = 0;
+                          let present_days = 0;
+                          let absent = AttenResult[i]["status"] == "AB" ? 1 : 0;
+
+                          if (AttenResult[i]["status"] == "PR") {
+                            display_present_days = 1;
+                            present_days = 1;
+                          } else if (
+                            AttenResult[i]["status"] == "HPL" ||
+                            AttenResult[i]["status"] == "HUL"
+                          ) {
+                            if (AttenResult[i]["hours"] > 0) {
+                              display_present_days = 0.5;
+                            } else {
+                              absent = 0.5;
+                            }
+                          }
+
+                          if (
+                            week_off_ot_hour > 0 ||
+                            week_off_ot_min > 0 ||
+                            holiday_ot_hour > 0 ||
+                            holiday_ot_min > 0
+                          ) {
+                            display_present_days = 1;
+                          }
+
+                          if (
+                            AttenResult[i]["attendance_date"] <
+                            AttenResult[0]["exit_date"]
+                          ) {
+                            dailyAttendance.push({
+                              employee_id: AttenResult[i]["employee_id"],
+                              project_id: AttenResult[i]["project_id"],
+                              hospital_id: AttenResult[i]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[i]["sub_department_id"],
+                              attendance_date:
+                                AttenResult[i]["attendance_date"],
+                              year: input.year,
+                              month: input.month,
+                              total_days: 1,
+                              present_days: present_days,
+                              display_present_days: display_present_days,
+                              absent_days: absent,
+                              total_work_days: 1,
+                              weekoff_days:
+                                AttenResult[i]["status"] == "WO" ? 1 : 0,
+                              holidays:
+                                AttenResult[i]["status"] == "HO" ? 1 : 0,
+                              paid_leave: paid_leave,
+                              unpaid_leave: unpaid_leave,
+                              anual_leave: anual_leave,
+                              total_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["worked_hours"]
+                                  : AttenResult[i]["actual_hours"] +
+                                    "." +
+                                    AttenResult[i]["actual_minutes"],
+                              hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["hours"]
+                                  : AttenResult[i]["actual_hours"],
+                              minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? AttenResult[i]["minutes"]
+                                  : AttenResult[i]["actual_minutes"],
+                              working_hours:
+                                AttenResult[i]["actual_hours"] +
+                                "." +
+                                AttenResult[i]["actual_minutes"],
+
+                              shortage_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? shortage_time
+                                  : 0,
+                              shortage_minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? shortage_min
+                                  : 0,
+                              ot_work_hours:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? ot_time
+                                  : 0,
+                              ot_minutes:
+                                AttenResult[i]["consider_ot_shrtg"] == "Y"
+                                  ? ot_min
+                                  : 0,
+
+                              ot_weekoff_hours: week_off_ot_hour,
+                              ot_weekoff_minutes: week_off_ot_min,
+                              ot_holiday_hours: holiday_ot_hour,
+                              ot_holiday_minutes: holiday_ot_min,
+                            });
+                          } else {
+                            dailyAttendance.push({
+                              employee_id: AttenResult[i]["employee_id"],
+                              project_id: AttenResult[i]["project_id"],
+                              hospital_id: AttenResult[i]["hospital_id"],
+                              sub_department_id:
+                                AttenResult[i]["sub_department_id"],
+                              attendance_date:
+                                AttenResult[i]["attendance_date"],
+                              year: input.year,
+                              month: input.month,
+                              total_days: 1,
+                              present_days: 0,
+                              display_present_days: 0,
+                              absent_days: 1,
+                              total_work_days: 1,
+                              weekoff_days: 0,
+                              holidays: 0,
+                              paid_leave: 0,
+                              unpaid_leave: 0,
+                              anual_leave: 0,
+                              total_hours: 0,
+                              hours: 0,
+                              minutes: 0,
+                              working_hours: 0,
+
+                              shortage_hours: 0,
+                              shortage_minutes: 0,
+                              ot_work_hours: 0,
+                              ot_minutes: 0,
+
+                              ot_weekoff_hours: 0,
+                              ot_weekoff_minutes: 0,
+                              ot_holiday_hours: 0,
+                              ot_holiday_minutes: 0,
+                            });
+                          }
+                        }
                       }
-                    }
-
-                    if (
-                      week_off_ot_hour > 0 ||
-                      week_off_ot_min > 0 ||
-                      holiday_ot_hour > 0 ||
-                      holiday_ot_min > 0
-                    ) {
-                      display_present_days = 1;
-                    }
-
-                    dailyAttendance.push({
-                      employee_id: AttenResult[i]["employee_id"],
-                      project_id: AttenResult[i]["project_id"],
-                      hospital_id: AttenResult[i]["hospital_id"],
-                      sub_department_id: AttenResult[i]["sub_department_id"],
-                      attendance_date: AttenResult[i]["attendance_date"],
-                      year: input.year,
-                      month: input.month,
-                      total_days: 1,
-                      present_days: present_days,
-                      display_present_days: display_present_days,
-                      absent_days: absent,
-                      total_work_days: 1,
-                      weekoff_days: AttenResult[i]["status"] == "WO" ? 1 : 0,
-                      holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
-                      paid_leave: paid_leave,
-                      unpaid_leave: unpaid_leave,
-                      anual_leave: anual_leave,
-                      total_hours:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? AttenResult[i]["worked_hours"]
-                          : AttenResult[i]["actual_hours"] +
-                            "." +
-                            AttenResult[i]["actual_minutes"],
-                      hours:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? AttenResult[i]["hours"]
-                          : AttenResult[i]["actual_hours"],
-                      minutes:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? AttenResult[i]["minutes"]
-                          : AttenResult[i]["actual_minutes"],
-                      working_hours:
-                        AttenResult[i]["actual_hours"] +
-                        "." +
-                        AttenResult[i]["actual_minutes"],
-
-                      shortage_hours:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? shortage_time
-                          : 0,
-                      shortage_minutes:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? shortage_min
-                          : 0,
-                      ot_work_hours:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y"
-                          ? ot_time
-                          : 0,
-                      ot_minutes:
-                        AttenResult[i]["consider_ot_shrtg"] == "Y" ? ot_min : 0,
-
-                      ot_weekoff_hours: week_off_ot_hour,
-                      ot_weekoff_minutes: week_off_ot_min,
-                      ot_holiday_hours: holiday_ot_hour,
-                      ot_holiday_minutes: holiday_ot_min,
-                    });
-                  }
+                    })
+                    .value();
 
                   const insurtColumns = [
                     "employee_id",
@@ -9308,7 +9550,7 @@ function processBulkAtt_Normal(data) {
         inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id  and E.suspend_salary <>'Y' 
              ${deptStr}      left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
              S.year=? and S.month=?  where ( S.salary_processed is null or  S.salary_processed='N') and  \
-        DA.hospital_id=?  and DA.year=? and DA.month=? ${strQry.replace(
+        DA.hospital_id=?  and DA.year=? and DA.month=? and (E.exit_date is null or E.exit_date >date(?) ) ${strQry.replace(
           /employee_id/gi,
           "DA.employee_id"
         )}   group by employee_id;  
@@ -9320,6 +9562,7 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                             input.hospital_id,
                             input.year,
                             input.month,
+                            month_start,
 
                             prev_month,
                             prev_year,
@@ -10927,7 +11170,8 @@ function processBulkAtt_with_cutoff(data) {
                  ${deptStr} 
                  left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
                  S.year=? and S.month=?  
-                 where ( S.salary_processed is null or  S.salary_processed='N') and DA.year=? and DA.month=? and DA.hospital_id=?  ${strQry.replace(
+                 where ( S.salary_processed is null or  S.salary_processed='N') and DA.year=? and DA.month=? 
+                 and DA.hospital_id=?    and (E.exit_date is null or E.exit_date >date(?) )${strQry.replace(
                    /employee_id/gi,
                    "DA.employee_id"
                  )}    group by employee_id;
@@ -10943,10 +11187,10 @@ function processBulkAtt_with_cutoff(data) {
                           values: [
                             year,
                             month,
-
                             year,
                             month,
                             input.hospital_id,
+                            month_start,
 
                             prev_year,
                             prev_month,
