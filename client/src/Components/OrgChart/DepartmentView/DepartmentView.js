@@ -1,241 +1,128 @@
-import React, { Component } from "react";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./DepartmentView.scss";
+ import React, { Component, useEffect, useState } from "react";
+// import "./OrgChart.scss";
+import { EmployeeView, DepartmentView } from "../index";
+// import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
-export default class DepartmentView extends Component {
-  constructor(props) {
-    super(props);
-    this.deptHeight = 0;
-    this.subHeight = 0;
-    this.state = {
-      subDepts: [],
-      toggleDept: false,
-      toggleSubDept: false
-    };
-  }
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+// import { AlgaehTabs } from "algaeh-react-components";
 
-  renderBlocks = (data, clickMethod) => {
-    let funcExist;
-    if (clickMethod && typeof clickMethod === "function") {
-      funcExist = true;
-    }
-    return (
-      <CSSTransition
-        in={data.condition}
-        appear={false}
-        classNames={{
-          enterActive: "eachChild animated slideInLeft faster",
-          enterDone: "eachChild",
-          exitActive: "eachChild animated slideOutLeft faster",
-          exitDone: "eachChild"
-        }}
-        unmountOnExit
-        timeout={500}
-        key={data.id}
-      >
-        <li
-          id="sub-child"
-          onClick={e => {
-            funcExist && clickMethod(data.id, e);
-          }}
-        >
-          <span className="childCount">{data.count}</span>
-          <span className="imgSection">
-            <i>{data.name.substring(0, 2).toUpperCase()}</i>
-          </span>
-          <span className="contentSection">
-            <h1>{data.name}</h1>
-          </span>
-        </li>
-      </CSSTransition>
-    );
-  };
+import { newAlgaehApi } from "../../../hooks";
+import {
+  Upload,
+  AlgaehFormGroup,
+  AlgaehAutoComplete,
+  AlgaehMessagePop,
+  AlgaehButton,
+} from "algaeh-react-components";
 
-  removeClassFrom = name => {
-    name.forEach(el => {
-      if (el.classList.contains("clickedLi")) {
-        el.classList.remove("clickedLi");
-      }
+import OrganizationChart from "../ChartContainer";
+
+const DragDropChart = () => {
+const[allBranches,setAllBranches]= useState([]);
+const[reqDepts,setReqDepts] = useState([]);
+
+ useEffect( function getBranchMaster() {
+  newAlgaehApi({
+      uri: "/branchMaster/getDepartmentsChart",
+      method: "GET",
+      module: "masterSettings"
+  })
+      .then(response => {
+        if (response.data.success=== true) {
+         
+            setAllBranches(response.data.records) 
+            
+          }
+        }) 
+        .catch (response => {
+          AlgaehMessagePop({
+            title: response.data.records.message,
+            type: "warning"
+        })
+         
+        })
+        .catch (error => {
+          AlgaehMessagePop({
+            title: error.message,
+            type: "error"
+        })
+         
+        })
+      
+      
+    },[])
+  
+  
+  
+
+ useEffect(function getDeptForBranch(id) {
+    
+    newAlgaehApi({
+      uri: "/branchMaster/getBranchWiseDepartments",
+      method: "GET",
+      module: "masterSettings",
+      data: {
+        hospital_id: 1
+        
+      }})
+      .then(res => {
+        if (res.data.success === true) {
+          
+            setReqDepts(res.data.records) 
+          }
+        else {
+          AlgaehMessagePop({
+            title: res.data.records.message,
+            type: "warning"
+          });
+        }
+        })
+      
+        .catch((error) => {
+          AlgaehMessagePop({
+            display: error,
+            type: "error",
+          });
     });
-  };
+  },[]);
+ 
+  
+  const ds = { allBranches}
+    // id: "n1",
+    // name: "Lao Lao",
+    // title: "general manager",
+    // children: [
+    //   { id: "n2", name: "Bo Miao", title: "department manager" },
+    //   {
+    //     id: "n3",
+    //     name: "Su Miao",
+    //     title: "department manager",
+    //     children: [
+    //       { id: "n4", name: "Tie Hua", title: "senior engineer" },
+    //       {
+    //         id: "n5",
+    //         name: "Hei Hei",
+    //         title: "senior engineer",
+    //         children: [
+    //           { id: "n6", name: "Dan Dan", title: "engineer" },
+    //           { id: "n7", name: "Xiang Xiang", title: "engineer" }
+    //         ]
+    //       },
+    //       { id: "n8", name: "Pang Pang", title: "senior engineer" }
+    //     ]
+    //   },
+    //   { id: "n9", name: "Hong Miao", title: "department manager" },
+    //   {
+    //     id: "n10",
+    //     name: "Chun Miao",
+    //     title: "department manager",
+    //     children: [{ id: "n11", name: "Yue Yue", title: "senior engineer" }]
+    //   }
+    // ]
+   
+  
 
-  onBranchClick = (id, e) => {
-    let check = e.currentTarget.classList.contains("clickedLi");
-    if (check) {
-      e.currentTarget.classList.remove("clickedLi");
-      this.setState({
-        toggleDept: false,
-        toggleSubDept: false
-      });
-    } else {
-      const els = document.querySelectorAll("#branch");
-      this.removeClassFrom(els);
-      e.currentTarget.classList.add("clickedLi");
-      this.setState(
-        {
-          toggleDept: true
-        },
-        () => this.props.api.getDeptForBranch(id)
-      );
-    }
-  };
+  return <OrganizationChart datasource={ds} draggable={true} />;
+};
 
-  onDeptClick = (dept, e) => {
-    let check = e.currentTarget.classList.contains("clickedLi");
-    if (check) {
-      e.currentTarget.classList.remove("clickedLi");
-      this.setState({
-        toggleSubDept: false
-      });
-    } else {
-      const els = document.querySelectorAll("#sub-child");
-      this.removeClassFrom(els);
-      e.currentTarget.classList.add("clickedLi");
-      this.setState({ toggleSubDept: true, subDepts: dept.subDepts });
-    }
-  };
-
-  render() {
-    const { allBranches, reqDepts } = this.props;
-    const { subDepts, toggleDept, toggleSubDept } = this.state;
-    return (
-      <div className="DepartmentOrgView">
-        <div className="row">
-          <div className="col-12">
-            {/* branch */}
-            <ul
-              className="eachShelf animated slideInLeft faster"
-            // style={{ minHeight: "85vh" }}
-            >
-              {allBranches &&
-                allBranches.map(branch => (
-                  <li
-                    id="branch"
-                    className="eachChild"
-                    key={branch.hosipital_code}
-                    onClick={e =>
-                      this.onBranchClick(branch.hims_d_hospital_id, e)
-                    }
-                  >
-                    <span className="childCount">{branch.dept_count}</span>
-                    <span className="imgSection">
-                      <i>BR</i>
-                    </span>
-                    <span className="contentSection">
-                      <p>{branch.hospital_name}</p>
-                      <small>{branch.hospital_code}</small>
-                    </span>
-                  </li>
-                ))}
-            </ul>
-
-            {/* Department */}
-            <TransitionGroup component={null}>
-              <ul
-                style={{
-                  minHeight: toggleDept ? "85vh" : "0"
-                }}
-                className="eachShelf"
-              >
-                {reqDepts.length !== 0 ? (
-                  reqDepts.map(item => (
-                    <CSSTransition
-                      in={this.state.toggleDept}
-                      appear={false}
-                      classNames={{
-                        enterActive: "eachChild animated slideInLeft faster",
-                        enterDone: "eachChild",
-                        exitActive: "eachChild animated slideOutLeft faster",
-                        exitDone: "eachChild"
-                      }}
-                      unmountOnExit
-                      timeout={500}
-                      key={item.hims_d_department_id}
-                    >
-                      <li
-                        id="sub-child"
-                        onClick={e => this.onDeptClick(item, e)}
-                      >
-                        <span className="childCount">
-                          {item.subDepts.length}
-                        </span>
-                        <span className="imgSection">
-                          <i>
-                            {item.department_name.substring(0, 2).toUpperCase()}
-                          </i>
-                        </span>
-                        <span className="contentSection">
-                          <p>{item.department_name}</p>
-                        </span>
-                      </li>
-                    </CSSTransition>
-                  ))
-                ) : (
-                    <CSSTransition
-                      in={this.state.toggleDept}
-                      appear={false}
-                      classNames={{
-                        enterActive: "eachChild animated slideInLeft faster",
-                        enterDone: "eachChild",
-                        exitActive: "eachChild animated slideOutLeft faster",
-                        exitDone: "eachChild"
-                      }}
-                      unmountOnExit
-                      timeout={500}
-                      key={1232}
-                    >
-                      <li id="sub-child">
-                        <span className="contentSection">
-                          <h1>No Departments Available under this branch</h1>
-                        </span>
-                      </li>
-                    </CSSTransition>
-                  )}
-              </ul>
-            </TransitionGroup>
-
-            {/* Sub departments */}
-            <TransitionGroup component={null}>
-              <ul
-                className="eachShelf"
-                style={{
-                  minHeight: toggleSubDept ? "85vh" : "0"
-                }}
-              >
-                {subDepts &&
-                  subDepts.map(item => (
-                    <CSSTransition
-                      in={this.state.toggleSubDept}
-                      appear={false}
-                      classNames={{
-                        enterActive: "eachChild animated slideInLeft faster",
-                        enterDone: "eachChild",
-                        exitActive: "eachChild animated slideOutLeft faster",
-                        exitDone: "eachChild"
-                      }}
-                      unmountOnExit
-                      timeout={500}
-                      key={item.hims_d_sub_department_id}
-                    >
-                      <li>
-                        <span className="imgSection">
-                          <i>
-                            {item.sub_department_name
-                              .substring(0, 2)
-                              .toUpperCase()}
-                          </i>
-                        </span>
-                        <span className="contentSection">
-                          <h1>{item.sub_department_name}</h1>
-                        </span>
-                      </li>
-                    </CSSTransition>
-                  ))}
-              </ul>
-            </TransitionGroup>
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
+export default DragDropChart;

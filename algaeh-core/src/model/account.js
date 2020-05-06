@@ -123,7 +123,7 @@ let authUser = (req, res, next) => {
      SELECT ORG.product_type, ORG.business_registration_number,ORG.tax_number,ORG.other_lang,ORG.other_lang_short,hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
    H.default_currency, H.default_slot, H.default_patient_type, H.standard_from_time, H.standard_to_time, H.hospital_name, \
    H.arabic_hospital_name, H.hospital_address, H.city_id, organization_id, H.effective_start_date, H.effective_end_date, \
-   hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
+   hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,ORG.organization_name,ORG.organization_code,\
    decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id, default_pay_type FROM \
    hims_d_hospital H, hims_d_currency CUR,hims_d_organization ORG WHERE H.record_status='A' AND \
    CUR.hims_d_currency_id=default_currency AND ORG.hims_d_organization_id = H.organization_id AND H.hims_d_hospital_id=?;",
