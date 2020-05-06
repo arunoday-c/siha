@@ -178,6 +178,7 @@ class Dental extends Component {
       onSuccess: res => {
         if (res.data.success) {
           res.data.records.billdetails[0].teeth_number = bill_dtls.teeth_number;
+          
           this.setState({
             billDetails: res.data.records.billdetails[0]
           });
@@ -302,7 +303,7 @@ class Dental extends Component {
         patient_visit_id: Window.global["visit_id"]
       },
       onSuccess: res => {
-        if (res.data.success) {
+         if (res.data.success) {
           let ins = res.data.records.length > 0 ? res.data.records[0] : null;
 
           this.setState({
@@ -705,26 +706,26 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
-              _marking["distal"] =
-                _marking["distal"] === "N"
-                  ? selectedTooth[i]["distal"]
-                  : _marking["distal"];
-              _marking["labial"] =
-                _marking["labial"] === "N"
-                  ? selectedTooth[i]["labial"]
-                  : _marking["labial"];
-              _marking["incisal"] =
-                _marking["incisal"] === "N"
-                  ? selectedTooth[i]["incisal"]
-                  : _marking["incisal"];
-              _marking["palatal"] =
-                _marking["palatal"] === "N"
-                  ? selectedTooth[i]["palatal"]
-                  : _marking["palatal"];
+              _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
               _marking["mesial"] =
                 _marking["mesial"] === "N"
                   ? selectedTooth[i]["mesial"]
                   : _marking["mesial"];
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
             }
           }
         }
@@ -751,6 +752,34 @@ class Dental extends Component {
                 className={
                   "top-surface " +
                   (_marking !== undefined
+                    ? _marking.buccal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="buccal">B</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
@@ -759,34 +788,6 @@ class Dental extends Component {
                 }
               >
                 <span surface="distal">D</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "right-surface " +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface " +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
               </div>
               <div
                 onClick={this.markTeethSurface.bind(this)}
@@ -808,14 +809,14 @@ class Dental extends Component {
                   className={
                     "middle-surface " +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.occlusal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="occlusal">O</span>
                 </div>
               )}
             </div>
@@ -852,26 +853,26 @@ class Dental extends Component {
               if (_marking === undefined) {
                 _marking = { ...selectedTooth[i] };
               } else {
-                _marking["distal"] =
-                  _marking["distal"] === "N"
-                    ? selectedTooth[i]["distal"]
-                    : _marking["distal"];
-                _marking["labial"] =
-                  _marking["labial"] === "N"
-                    ? selectedTooth[i]["labial"]
-                    : _marking["labial"];
-                _marking["incisal"] =
-                  _marking["incisal"] === "N"
-                    ? selectedTooth[i]["incisal"]
-                    : _marking["incisal"];
-                _marking["palatal"] =
-                  _marking["palatal"] === "N"
-                    ? selectedTooth[i]["palatal"]
-                    : _marking["palatal"];
-                _marking["mesial"] =
-                  _marking["mesial"] === "N"
-                    ? selectedTooth[i]["mesial"]
-                    : _marking["mesial"];
+                _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["occlusal"] =
+                _marking["occlusal"] === "N"
+                  ? selectedTooth[i]["occlusal"]
+                  : _marking["occlusal"];
               }
             }
           }
@@ -893,24 +894,11 @@ class Dental extends Component {
             >
               <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
               <div className="surface-Marking">
+              {i >= 6 ? (
                 <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "top-surface " +
-                    (_marking !== undefined
-                      ? _marking.distal === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="distal">D</span>
-                </div>
-                <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "right-surface " +
                     (_marking !== undefined
                       ? _marking.labial === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
@@ -920,20 +908,50 @@ class Dental extends Component {
                   }
                 >
                   <span surface="labial">L</span>
-                </div>
+                  </div>) : (
+                    <div
+                    onClick={this.markTeethSurface.bind(this)}
+                    className={
+                      "top-surface " +
+                      (_marking !== undefined
+                        ? _marking.buccal === "Y" &&
+                          _marking.service_id === this.state.hims_d_services_id
+                          ? " mark-active"
+                          : ""
+                        : "")
+                    }
+                  >
+                    <span surface="buccal">B</span>
+                    </div>
+
+                )} 
                 <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
-                    "bottom-surface " +
+                    "right-surface " +
                     (_marking !== undefined
-                      ? _marking.incisal === "Y" &&
+                      ? _marking.mesial === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="incisal">I</span>
+                  <span surface="mesial">M</span>
+                </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.distal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="distal">D</span>
                 </div>
                 <div
                   onClick={this.markTeethSurface.bind(this)}
@@ -949,22 +967,36 @@ class Dental extends Component {
                 >
                   <span surface="palatal">P</span>
                 </div>
-                {i >= 6 ? null : (
-                  <div
+                {i >= 6 ? (
+                <div
                     onClick={this.markTeethSurface.bind(this)}
                     className={
                       "middle-surface " +
                       (_marking !== undefined
-                        ? _marking.mesial === "Y" &&
+                        ? _marking.incisal === "Y" &&
                           _marking.service_id === this.state.hims_d_services_id
                           ? " mark-active"
                           : ""
                         : "")
                     }
                   >
-                    <span surface="mesial">M</span>
+                    <span surface="incisal">I</span>
+                  </div>) : (
+                  <div
+                    onClick={this.markTeethSurface.bind(this)}
+                    className={
+                      "middle-surface " +
+                      (_marking !== undefined
+                        ? _marking.occlusal === "Y" &&
+                          _marking.service_id === this.state.hims_d_services_id
+                          ? " mark-active"
+                          : ""
+                        : "")
+                    }
+                  >
+                    <span surface="occlusal">O</span>
                   </div>
-                )}
+                 )} 
               </div>
             </div>
           );
@@ -1044,10 +1076,41 @@ class Dental extends Component {
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
+            {i >= 12 ? (
+                <div
+                    onClick={this.markTeethSurface.bind(this)}
+                    className={
+                      "top-surface " +
+                      (_marking !== undefined
+                        ? _marking.buccal === "Y" &&
+                          _marking.service_id === this.state.hims_d_services_id
+                          ? " mark-active"
+                          : ""
+                        : "")
+                    }
+                  >
+                    <span surface="buccal">B</span>
+                  </div>) : (
+                   <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "top-surface " +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span> 
+                    </div>
+
+                )} 
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "top-surface " +
+                  "right-surface" +
                   (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1061,61 +1124,62 @@ class Dental extends Component {
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "right-surface" +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface" +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
                   "left-surface" +
                   (_marking !== undefined
-                    ? _marking.palatal === "Y" &&
+                    ? _marking.mesial === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="palatal">P</span>
+                <span surface="mesial">M</span>
               </div>
-              {i >= 12 ? (
+              
                 <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
-                    "middle-surface" +
+                    "bottom-surface" +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.palatal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="palatal">P</span>
                 </div>
-              ) : null}
+               
+                {i >= 12 ? (
+                    <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>  ) :(
+                    <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>  )}
             </div>
           </div>
         );
@@ -1149,26 +1213,36 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
-              _marking["distal"] =
-                _marking["distal"] === "N"
-                  ? selectedTooth[i]["distal"]
-                  : _marking["distal"];
+              _marking["buccal"] =
+                _marking["buccal"] === "N"
+                  ? selectedTooth[i]["buccal"]
+                  : _marking["buccal"];
               _marking["labial"] =
                 _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
+             _marking["distal"] =
+                  _marking["distal"] === "N"
+                    ? selectedTooth[i]["distal"]
+                    : _marking["distal"];
+                 _marking["mesial"] =
+                   _marking["mesial"] === "N"
+                      ? selectedTooth[i]["mesial"]
+                      : _marking["mesial"];
+                 _marking["palatal"] =
+                  _marking["palatal"] === "N"
+                       ? selectedTooth[i]["palatal"]
+                       : _marking["palatal"];
+                  _marking["occlusal"] =
+                   _marking["occlusal"] === "N"
+                         ? selectedTooth[i]["occlusal"]
+                         : _marking["occlusal"];      
               _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
-              _marking["palatal"] =
-                _marking["palatal"] === "N"
-                  ? selectedTooth[i]["palatal"]
-                  : _marking["palatal"];
-              _marking["mesial"] =
-                _marking["mesial"] === "N"
-                  ? selectedTooth[i]["mesial"]
-                  : _marking["mesial"];
+              
+             
             }
           }
         }
@@ -1195,10 +1269,41 @@ class Dental extends Component {
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
+            {i >= 12 ? (
+                <div
+                    onClick={this.markTeethSurface.bind(this)}
+                    className={
+                      "top-surface " +
+                      (_marking !== undefined
+                        ? _marking.buccal === "Y" &&
+                          _marking.service_id === this.state.hims_d_services_id
+                          ? " mark-active"
+                          : ""
+                        : "")
+                    }
+                  >
+                    <span surface="buccal">B</span>
+                  </div>) : (
+                   <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "top-surface " +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span> 
+                    </div>
+
+                )} 
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "top-surface " +
+                  "right-surface" +
                   (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1212,61 +1317,63 @@ class Dental extends Component {
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "right-surface" +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface" +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
                   "left-surface" +
                   (_marking !== undefined
-                    ? _marking.palatal === "Y" &&
+                    ? _marking.mesial === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="palatal">P</span>
+                <span surface="mesial">M</span>
               </div>
-              {i >= 12 ? (
+              
                 <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
-                    "middle-surface" +
+                    "bottom-surface" +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.palatal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="palatal">P</span>
                 </div>
-              ) : null}
+               
+                {i >= 12 ? (
+                    <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>  ) :(
+                    <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>  )}
+  
             </div>
           </div>
         );
@@ -1301,26 +1408,36 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
-              _marking["distal"] =
-                _marking["distal"] === "N"
-                  ? selectedTooth[i]["distal"]
-                  : _marking["distal"];
-              _marking["labial"] =
-                _marking["labial"] === "N"
-                  ? selectedTooth[i]["labial"]
-                  : _marking["labial"];
-              _marking["incisal"] =
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                     ? selectedTooth[i]["palatal"]
+                     : _marking["palatal"];
+                _marking["mesial"] =
+                  _marking["mesial"] === "N"
+                     ? selectedTooth[i]["mesial"]
+                     : _marking["mesial"];
+                _marking["distal"] =
+                 _marking["distal"] === "N"
+                    ? selectedTooth[i]["distal"]
+                    : _marking["distal"];
+              _marking["buccal"] =
+              _marking["buccal"] === "N"
+                ? selectedTooth[i]["buccal"]
+                : _marking["buccal"];
+                _marking["incisal"] =
                 _marking["incisal"] === "N"
                   ? selectedTooth[i]["incisal"]
                   : _marking["incisal"];
-              _marking["palatal"] =
-                _marking["palatal"] === "N"
-                  ? selectedTooth[i]["palatal"]
-                  : _marking["palatal"];
-              _marking["mesial"] =
-                _marking["mesial"] === "N"
-                  ? selectedTooth[i]["mesial"]
-                  : _marking["mesial"];
+              _marking["occlusal"] =
+               _marking["occlusal"] === "N"
+                   ? selectedTooth[i]["occlusal"]
+                   : _marking["occlusal"];  
+            
+              
+               
+                   
+           
+            
             }
           }
         }
@@ -1353,6 +1470,34 @@ class Dental extends Component {
                 className={
                   "top-surface " +
                   (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
@@ -1365,60 +1510,48 @@ class Dental extends Component {
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "right-surface" +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
                   "bottom-surface" +
                   (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
+                    ? _marking.buccal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="incisal">I</span>
+                <span surface="buccal">B</span>
               </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "left-surface" +
-                  (_marking !== undefined
-                    ? _marking.palatal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="palatal">P</span>
-              </div>
-              {counter >= 6 ? null : (
-                <div
+              
+              {counter >= 6 ? (<div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.incisal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="incisal">I</span>
                 </div>
+             
+              ) : ( <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "middle-surface" +
+                  (_marking !== undefined
+                    ? _marking.occlusal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="occlusal">O</span>
+              </div>
+                
               )}
             </div>
           </div>
@@ -1454,26 +1587,35 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
+              _marking["palatal"] =
+              _marking["palatal"] === "N"
+                   ? selectedTooth[i]["palatal"]
+                   : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                   ? selectedTooth[i]["mesial"]
+                   : _marking["mesial"];
               _marking["distal"] =
-                _marking["distal"] === "N"
+               _marking["distal"] === "N"
                   ? selectedTooth[i]["distal"]
                   : _marking["distal"];
               _marking["labial"] =
-                _marking["labial"] === "N"
+               _marking["labial"] === "N"
                   ? selectedTooth[i]["labial"]
                   : _marking["labial"];
+            _marking["buccal"] =
+            _marking["buccal"] === "N"
+              ? selectedTooth[i]["buccal"]
+              : _marking["buccal"];
               _marking["incisal"] =
-                _marking["incisal"] === "N"
-                  ? selectedTooth[i]["incisal"]
-                  : _marking["incisal"];
-              _marking["palatal"] =
-                _marking["palatal"] === "N"
-                  ? selectedTooth[i]["palatal"]
-                  : _marking["palatal"];
-              _marking["mesial"] =
-                _marking["mesial"] === "N"
-                  ? selectedTooth[i]["mesial"]
-                  : _marking["mesial"];
+              _marking["incisal"] === "N"
+                ? selectedTooth[i]["incisal"]
+                : _marking["incisal"];
+            _marking["occlusal"] =
+             _marking["occlusal"] === "N"
+                 ? selectedTooth[i]["occlusal"]
+                 : _marking["occlusal"];  
+          
             }
           }
         }
@@ -1501,52 +1643,10 @@ class Dental extends Component {
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-              <div
+            <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
                   "top-surface " +
-                  (_marking !== undefined
-                    ? _marking.distal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="distal">D</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "right-surface" +
-                  (_marking !== undefined
-                    ? _marking.labial === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="labial">L</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "bottom-surface" +
-                  (_marking !== undefined
-                    ? _marking.incisal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="incisal">I</span>
-              </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "left-surface" +
                   (_marking !== undefined
                     ? _marking.palatal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1557,21 +1657,98 @@ class Dental extends Component {
               >
                 <span surface="palatal">P</span>
               </div>
-              {counter >= 6 ? null : (
-                <div
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
+                    ? _marking.distal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="distal">D</span>
+              </div>
+              {counter >= 6 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              ):(
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.buccal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="buccal">B</span>
+              </div>
+
+              )}
+              
+              {counter >= 6 ? (
+              <div
                   onClick={this.markTeethSurface.bind(this)}
                   className={
                     "middle-surface" +
                     (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
+                      ? _marking.incisal === "Y" &&
                         _marking.service_id === this.state.hims_d_services_id
                         ? " mark-active"
                         : ""
                       : "")
                   }
                 >
-                  <span surface="mesial">M</span>
+                  <span surface="incisal">I</span>
                 </div>
+             
+              ) : ( <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "middle-surface" +
+                  (_marking !== undefined
+                    ? _marking.occlusal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="occlusal">O</span>
+              </div>
+                
               )}
             </div>
           </div>
@@ -1608,26 +1785,36 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
-              _marking["distal"] =
-                _marking["distal"] === "N"
-                  ? selectedTooth[i]["distal"]
-                  : _marking["distal"];
-              _marking["labial"] =
-                _marking["labial"] === "N"
-                  ? selectedTooth[i]["labial"]
-                  : _marking["labial"];
-              _marking["incisal"] =
-                _marking["incisal"] === "N"
-                  ? selectedTooth[i]["incisal"]
-                  : _marking["incisal"];
               _marking["palatal"] =
                 _marking["palatal"] === "N"
                   ? selectedTooth[i]["palatal"]
                   : _marking["palatal"];
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
               _marking["mesial"] =
                 _marking["mesial"] === "N"
                   ? selectedTooth[i]["mesial"]
                   : _marking["mesial"];
+               _marking["buccal"] =
+            _marking["buccal"] === "N"
+              ? selectedTooth[i]["buccal"]
+              : _marking["buccal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+               _marking["occlusal"] =
+             _marking["occlusal"] === "N"
+                 ? selectedTooth[i]["occlusal"]
+                 : _marking["occlusal"]; 
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              
+              
             }
           }
         }
@@ -1660,6 +1847,20 @@ class Dental extends Component {
                 className={
                   "top-surface" +
                   (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
@@ -1672,7 +1873,36 @@ class Dental extends Component {
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "right-surface " +
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
+              </div>
+              {i <= 21 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.buccal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="buccal">B</span>
+              </div>):(
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
                   (_marking !== undefined
                     ? _marking.labial === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1683,10 +1913,29 @@ class Dental extends Component {
               >
                 <span surface="labial">L</span>
               </div>
+
+              )}
+              
+              {i <= 21 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>
+              ) : (
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "bottom-surface " +
+                  "middle-surface " +
                   (_marking !== undefined
                     ? _marking.incisal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1697,36 +1946,7 @@ class Dental extends Component {
               >
                 <span surface="incisal">I</span>
               </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "left-surface " +
-                  (_marking !== undefined
-                    ? _marking.palatal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="palatal">P</span>
-              </div>
-              {i <= 21 ? (
-                <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "middle-surface " +
-                    (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="mesial">M</span>
-                </div>
-              ) : null}
+              )}
             </div>
           </div>
         );
@@ -1761,26 +1981,35 @@ class Dental extends Component {
             if (_marking === undefined) {
               _marking = { ...selectedTooth[i] };
             } else {
-              _marking["distal"] =
-                _marking["distal"] === "N"
-                  ? selectedTooth[i]["distal"]
-                  : _marking["distal"];
-              _marking["labial"] =
-                _marking["labial"] === "N"
-                  ? selectedTooth[i]["labial"]
-                  : _marking["labial"];
-              _marking["incisal"] =
-                _marking["incisal"] === "N"
-                  ? selectedTooth[i]["incisal"]
-                  : _marking["incisal"];
               _marking["palatal"] =
                 _marking["palatal"] === "N"
                   ? selectedTooth[i]["palatal"]
                   : _marking["palatal"];
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
               _marking["mesial"] =
                 _marking["mesial"] === "N"
                   ? selectedTooth[i]["mesial"]
                   : _marking["mesial"];
+               _marking["buccal"] =
+            _marking["buccal"] === "N"
+              ? selectedTooth[i]["buccal"]
+              : _marking["buccal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+               _marking["occlusal"] =
+             _marking["occlusal"] === "N"
+                 ? selectedTooth[i]["occlusal"]
+                 : _marking["occlusal"]; 
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              
             }
           }
         }
@@ -1808,10 +2037,24 @@ class Dental extends Component {
           >
             <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
             <div className="surface-Marking">
-              <div
+            <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
                   "top-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
                   (_marking !== undefined
                     ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1825,7 +2068,36 @@ class Dental extends Component {
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "right-surface " +
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.mesial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="mesial">M</span>
+              </div>
+              {i <= 21 ? (
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.buccal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="buccal">B</span>
+              </div>):(
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
                   (_marking !== undefined
                     ? _marking.labial === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1836,10 +2108,29 @@ class Dental extends Component {
               >
                 <span surface="labial">L</span>
               </div>
+
+              )}
+              
+              {i <= 21 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.occlusal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="occlusal">O</span>
+                </div>
+              ) : (
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "bottom-surface " +
+                  "middle-surface " +
                   (_marking !== undefined
                     ? _marking.incisal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
@@ -1850,36 +2141,7 @@ class Dental extends Component {
               >
                 <span surface="incisal">I</span>
               </div>
-              <div
-                onClick={this.markTeethSurface.bind(this)}
-                className={
-                  "left-surface " +
-                  (_marking !== undefined
-                    ? _marking.palatal === "Y" &&
-                      _marking.service_id === this.state.hims_d_services_id
-                      ? " mark-active"
-                      : ""
-                    : "")
-                }
-              >
-                <span surface="palatal">P</span>
-              </div>
-              {i <= 21 ? (
-                <div
-                  onClick={this.markTeethSurface.bind(this)}
-                  className={
-                    "middle-surface " +
-                    (_marking !== undefined
-                      ? _marking.mesial === "Y" &&
-                        _marking.service_id === this.state.hims_d_services_id
-                        ? " mark-active"
-                        : ""
-                      : "")
-                  }
-                >
-                  <span surface="mesial">M</span>
-                </div>
-              ) : null}
+              )}
             </div>
           </div>
         );
@@ -2262,6 +2524,7 @@ class Dental extends Component {
   render() {
     let billDetails = this.state.billDetails;
     let child_dental_chart = this.state.teeth_type === "D" ? "childchart" : "";
+    
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
@@ -2734,6 +2997,7 @@ class Dental extends Component {
                         name="teeth_type"
                         value="P"
                         checked={this.state.teeth_type === "P" ? true : false}
+                        // disabled={}
                         onChange={this.radioChange.bind(this)}
                       />
                       <span>Permanent</span>
@@ -2744,6 +3008,7 @@ class Dental extends Component {
                         name="teeth_type"
                         value="D"
                         checked={this.state.teeth_type === "D" ? true : false}
+                        // disabled={}
                         onChange={this.radioChange.bind(this)}
                       />
                       <span>Deciduous</span>
@@ -3090,6 +3355,9 @@ class Dental extends Component {
                             {row.mesial === "Y" ? "M " : ""}
                             {row.palatal === "Y" ? "P " : ""}
                             {row.labial === "Y" ? "L " : ""}
+                            {row.occlusal === "Y" ? "L " : ""}
+                            {row.buccal === "Y" ? "L " : ""}
+
                           </span>
                         );
                       },
@@ -3101,6 +3369,9 @@ class Dental extends Component {
                             {row.mesial === "Y" ? "M " : ""}
                             {row.palatal === "Y" ? "P " : ""}
                             {row.labial === "Y" ? "L " : ""}
+                            {row.occlusal === "Y" ? "L " : ""}
+                            {row.buccal === "Y" ? "L " : ""}
+
                           </span>
                         );
                       }
