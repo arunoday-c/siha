@@ -1,0 +1,152 @@
+<style type="text/css">
+    .reportHeaderCntr {
+
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 18px 18px;
+        font-family: Arial, sans-serif;
+        font-weight: normal;
+        font-size: 11px;
+        overflow: hidden;
+    }
+
+    .col-left {
+        float: left;
+        width: 30%;
+        text-align: left;
+    }
+
+    .col-center {
+        width: 40%;
+        text-align: center;
+        float: none;
+        margin: 0 auto;
+    }
+
+    .col-right {
+        float: right;
+        width: 25%;
+        text-align: right;
+    }
+
+    .hospitalLogo img {
+        margin: 0;
+        padding: 0;
+        border: none;
+        height: 30px;
+        width: auto;
+        text-align: center;
+    }
+
+    .reportHeaderCntr h4 {
+        margin: 3px 0;
+        padding: 0;
+        font-size: 11px;
+    }
+
+    .reportHeaderCntr p {
+        margin: 2px 0;
+        padding: 0;
+        font-size: 8px;
+    }
+
+
+    .showFilterValue {
+        width: 100%;
+    }
+
+    .showFilterValue span {
+
+        font-weight: bold;
+        display: inline-block;
+        padding: 3px 5px;
+        border-left: 1px solid #ccc;
+        text-align: left;
+    }
+
+    .showFilterValue span:first-child {
+        border-left: none;
+    }
+
+    .showFilterValue small {
+        display: block;
+        color: #ccc;
+    }
+
+    .headerFooterStyle {
+        width: 100%;
+        height: 10px;
+        float: left;
+        text-align: center;
+        border-top: 0.5rem dotted #ccc;
+        font-size: 8px;
+        margin-top: 5px;
+    }
+</style>
+
+<body>
+
+    <div class="reportHeaderCntr">
+        <div class="col-right">
+            <p><b>{{hospital_name}}</b></p>
+            <p>{{hospital_address}}</p>
+
+        </div>
+        <div class="col-left">
+            <h4>{{{report_name_for_header}}}</h4>
+            <p>Report Generated Date: {{currentDateTime 'date'}}</p>
+            <p>MOT Registration No: <span>2051054263</span></p>
+        </div>
+        <div class="col-center">
+            <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
+            <p><b>{{organisation_name}}</b></p>
+        </div>
+        <div class="headerFooterStyle">
+            <p><span>Tel: +966 13 858 7000</span> / <span>Fax: +966 13 858 1324</span> / <span>E-Mail:
+                    info@twareat.com</span></p>
+        </div>
+    </div>
+
+    {{!--  <table class="reportHeaderCntr">
+        <tr>
+            <th>
+                <div class="hospitalLogo"><img src="{{imageSource 'images/clientLogo.png'}}" /></div>
+                <div class="hospitalAddress">
+                    <h4>{{{report_name_for_header}}}</h4>
+                    <p>{{hospital_address}}</p>
+                    <p>Date: {{currentDateTime 'date'}}</p>
+                </div>
+
+            </th>
+        </tr> data:image/png;base64,{{logoUrl "1" "ORG"}}
+
+
+        <tr>
+            <th rowspan="4" width="20%">
+                <p>{{hospital_address}}</p>
+            </th>
+            <th width="60%"></th><span class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></span></th>
+            <th rowspan="4" width="20%"></th>Address</th>
+        </tr>
+        <tr>
+            <td>
+                <h4>{{{report_name_for_header}}}</h4>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Report Generated Date: {{currentDateTime 'date'}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p class="showFilterValue">{{#each filter}}
+                    <span><small>{{label}}:</small>{{labelValue}} </span>
+                    {{/each }}</p>
+            </td>
+        </tr>
+
+
+    </table>--}}
+
+</body>

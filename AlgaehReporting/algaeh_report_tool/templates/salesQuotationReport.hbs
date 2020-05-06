@@ -1,37 +1,25 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
-    <div class="print-body">
+    <div class="print-body" style="top:10px important; z-index:9">
 
         <section>
 
-            <table class="tableForLabel" cell-padding="0">
+            <div class="customDvSalesOrder">
+                <div>
+                    {{!-- <h3>Vendor Details</h3> --}}
+                    <p>Quotation No:<span class="valueText">{{sales_quotation_number}}</span></p>
+                    <p>Quotation Date:<span class="valueText">{{sales_quotation_date}}</span></p>
+                    <p>Quotation Validty Till:<span class="valueText">{{quote_validity}}</span></p>
+                </div>
+                <div>
+                    {{!-- <h3>Customer Details</h3> --}}
+                    <p>Customer Name:<span class="valueText">{{customer_name}}</span></p>
+                    <p>Sales Person Name:<span class="valueText">{{employee_name}}</span></p>
+                    <p>Delivery Date:<span class="valueText">{{delivery_date}}</span></p>
+                </div>
 
-                <tr>
-                    <td><label class="textEnLft">Quotation No</label>:<span
-                            class="valueText">{{sales_quotation_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Customer Name</label>:<span class="valueText">{{customer_name}}</span>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Quotation Date</label>:<span
-                            class="valueText">{{sales_quotation_date }}</span>
-                    </td>
-                    <td><label class="textEnLft">Sales Person</label>:<span class="valueText">{{employee_name}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Validity Date</label>:<span
-                            class="valueText">{{quote_validity }}</span>
-                    </td>
-                    <td><label class="textEnLft">Delivery Date</label>:<span class="valueText">{{delivery_date}}</span>
-                    </td>
-                </tr>
-            </table>
-
-
+            </div>
         </section>
         {{#ifCond sales_quotation_items.length '>' 0 }}
         <section>
@@ -121,7 +109,7 @@
                 </tr>
             </table>
         </section>
-
+        <div class="footerSeal"><img src="{{imageSource 'images/clientSeal.png'}}" /></div>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>
