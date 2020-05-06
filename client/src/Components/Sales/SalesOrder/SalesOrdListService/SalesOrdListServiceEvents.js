@@ -159,6 +159,7 @@ const AddSerices = ($this, context) => {
             tax_amount: tax_amount,
             total_amount: total_amount,
             service_frequency: $this.state.service_frequency,
+            comments: $this.state.comments
         };
         sales_order_services.push(ItemInput);
 
@@ -191,7 +192,8 @@ const AddSerices = ($this, context) => {
             discount_percentage: 0,
             unit_cost: 0,
             tax_percent: 0,
-            service_frequency: null
+            service_frequency: null,
+            comments: ""
         });
 
         if (context !== undefined) {

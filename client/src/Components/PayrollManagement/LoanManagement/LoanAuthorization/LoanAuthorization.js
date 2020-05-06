@@ -395,16 +395,15 @@ class LoanAuthorization extends Component {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                            <button
+                            <i
+                              className="fas fa-file-signature"
                               onClick={() => {
                                 this.setState({
                                   selRow: row,
                                   openAuth: true,
                                 });
                               }}
-                            >
-                              <i className="fas fa-file-signature" />
-                            </button>
+                            />
                           );
                         },
                         others: {

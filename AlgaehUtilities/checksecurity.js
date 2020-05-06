@@ -8,7 +8,7 @@ if (process.env.REDIS_HOST) {
   redis = new Redis(6379, "127.0.0.1");
 }
 
-redis.on("error", error => {
+redis.on("error", (error) => {
   if (error.code === "ECONNREFUSED") {
     console.log(error);
     process.exit(1);
@@ -18,7 +18,7 @@ redis.on("error", error => {
 });
 
 module.exports = {
-  getFromRedis: name => {
+  getFromRedis: (name) => {
     return new Promise((resolve, reject) => {
       try {
         redis.get(name, (error, result) => {
@@ -43,7 +43,7 @@ module.exports = {
       }
     });
   },
-  mSetToRedis: options => {
+  mSetToRedis: (options) => {
     return new Promise((resolve, reject) => {
       try {
         redis.mset(options);
@@ -66,7 +66,7 @@ module.exports = {
       }
     });
   },
-  hGetUser: name => {
+  hGetUser: (name) => {
     return new Promise((resolve, reject) => {
       try {
         redis.hgetall(`user:${name}`, (error, result) => {
@@ -81,14 +81,14 @@ module.exports = {
       }
     });
   },
-  hDelUser: key => {
+  hDelUser: (key) => {
     redis.del(`user:${key.toLowerCase()}`);
     redis.decr(`usersCount`);
   },
-  deleteFromRedis: name => {
+  deleteFromRedis: (name) => {
     redis.del(name);
   },
-  clientDecrypt: string => {
+  clientDecrypt: (string) => {
     var decipher = crypto.createDecipher("aes-256-ctr", "3BLqrRGAej");
     var dec = decipher.update(string, "hex", "utf8");
     dec += decipher.final("utf8");
@@ -139,7 +139,7 @@ module.exports = {
       }
     });
   },
-  getUserPreferences: name => {
+  getUserPreferences: (name) => {
     return new Promise((resolve, reject) => {
       try {
         redis.hgetall(`userPreferences:${name}`, (error, result) => {
@@ -164,7 +164,7 @@ module.exports = {
       }
     });
   },
-  getStreamingPermissions: name => {
+  getStreamingPermissions: (name) => {
     return new Promise((resolve, reject) => {
       try {
         redis.hgetall(
@@ -182,10 +182,10 @@ module.exports = {
       }
     });
   },
-  deleteStramingPermissions: name => {
+  deleteStramingPermissions: (name) => {
     redis.del(`streamingPermissions:${name.toLowerCase()}`);
   },
-  getCacheMasters: name => {
+  getCacheMasters: (name) => {
     return new Promise((resolve, reject) => {
       try {
         redis.get(`masters:${name.toLowerCase()}`, (error, result) => {
@@ -212,7 +212,28 @@ module.exports = {
       }
     });
   },
-  deleteCacheMaster: name => {
+  deleteCacheMaster: (name) => {
     redis.del(`masters:${name.toLowerCase()}`);
-  }
+  },
+  pinSet: (name, value) => {
+    redis.set(`${name}-pin`, value, "ex", 900);
+  },
+  pinDelete: (name) => {
+    redis.del(`${name}-pin`);
+  },
+  pinGet: (name) => {
+    return new Promise((resolve, reject) => {
+      try {
+        redis.get(`${name}-pin`, (error, output) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          resolve(output);
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  },
 };

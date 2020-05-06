@@ -58,7 +58,7 @@
     "exceljs": "^1.15.0",
     "express": "^4.16.3",
     "fs-extra": "^7.0.1",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.7.6",
     "moment": "^2.22.1",
     "puppeteer": "1.14.0",
     "regenerator": "^0.14.2",

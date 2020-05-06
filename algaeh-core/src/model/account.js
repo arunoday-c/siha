@@ -2,15 +2,17 @@ import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 const keyPath = require("algaeh-keys/keys");
 import algaehMysql from "algaeh-mysql";
+import algaehMail from "algaeh-utilities/mail-send";
+import { pinSet, pinDelete, pinGet } from "algaeh-utilities/checksecurity";
 import moment from "moment";
-let getUserNamePassWord = base64String => {
+let getUserNamePassWord = (base64String) => {
   try {
     const temp = base64String.split(" ");
     const buffer = new Buffer.from(temp[1], "base64");
     const UserNamePassword = buffer.toString().split(":");
     return {
       username: UserNamePassword[0],
-      password: UserNamePassword[1]
+      password: UserNamePassword[1],
     };
   } catch (e) {
     console.error(e);
@@ -21,7 +23,7 @@ let getUserNamePassWord = base64String => {
 let apiAuth = (req, res, next) => {
   let authModel = {
     username: "",
-    password: ""
+    password: "",
   };
 
   const _mysql = new algaehMysql({ path: keyPath });
@@ -60,16 +62,16 @@ let apiAuth = (req, res, next) => {
           AND algaeh_d_api_auth.record_status='A' AND username =? and hims_d_hospital.algaeh_api_auth_id =\
           algaeh_d_api_auth.algaeh_d_api_auth_id and hims_d_hospital.record_status='A'",
         //select * from algaeh_d_app_module;",
-        values: [inputData.password, inputData.username]
+        values: [inputData.password, inputData.username],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         if (result.length > 0) {
           req.result = {
             success: true,
             results: inputData.username, //result[0]["username"],
-            hospitalList: result
+            hospitalList: result,
             // activemoduleList: result[1]
           };
           next();
@@ -82,7 +84,7 @@ let apiAuth = (req, res, next) => {
           );
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -96,7 +98,7 @@ let apiAuth = (req, res, next) => {
 let authUser = (req, res, next) => {
   let authModel = {
     username: "",
-    password: ""
+    password: "",
   };
 
   const _mysql = new algaehMysql({ path: keyPath });
@@ -131,16 +133,16 @@ let authUser = (req, res, next) => {
           inputData.password,
           inputData.username,
           inputData.item_id,
-          inputData.item_id
+          inputData.item_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -152,7 +154,7 @@ let authUser = (req, res, next) => {
 
 let apiAuthentication = (req, res, next) => {
   let authModel = {
-    username: ""
+    username: "",
   };
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -183,14 +185,14 @@ let apiAuthentication = (req, res, next) => {
        hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
        CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?;",
         values: [inputData.username, inputData.item_id, inputData.item_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -213,16 +215,16 @@ let userCheck = (req, res, next) => {
           where UCASE(u.username)=UCASE(?) and u.record_status='A' and date(u.effective_start_date) <= date(now()) 
           and date(u.effective_end_date) >= date(now()) and e.employee_status in ('A','R') and u.locked='N' and ume.login_user='Y'; `,
         values: [userId],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         if (result.length > 0) {
           const {
             date_of_birth,
             hospital_id,
             full_name,
             arabic_name,
-            employee_code
+            employee_code,
           } = result[0];
           let happyBirthDay = "";
           const dobMonthDay = parseInt(moment(date_of_birth).format("MMDD"));
@@ -236,7 +238,7 @@ let userCheck = (req, res, next) => {
             full_name,
             arabic_name,
             happyBirthDay,
-            employee_code
+            employee_code,
           };
 
           next();
@@ -244,7 +246,7 @@ let userCheck = (req, res, next) => {
           next(new Error("User Does Not Exist OR User is Inactive"));
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -253,10 +255,114 @@ let userCheck = (req, res, next) => {
     next(e);
   }
 };
-
+const resetPassword = (req, res, next) => {
+  const { username } = req.body;
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `select e.work_email,e.full_name from algaeh_d_app_user as u inner join hims_d_employee as e
+      on u.employee_id = e.hims_d_employee_id where lcase(u.username)=lcase(?)
+      and u.locked ='N' and u.record_status='A' and e.employee_status='A' and e.record_status='A'; `,
+        values: [username],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        if (result.length > 0) {
+          const { work_email, full_name } = result[0];
+          if (work_email === null || work_email === "") {
+            next(new Error("No email id provided to send new password."));
+            return;
+          }
+          const pin = Math.floor(Math.random() * 90000) + 10000;
+          new algaehMail()
+            .to(work_email)
+            .subject("Password reset PIN")
+            .templateHbs("userPasswodReset.hbs", {
+              pin,
+              full_name,
+            })
+            .send()
+            .then((result) => {
+              const user = username.toLowerCase();
+              pinSet(user, pin);
+              console.log("Email sent : ", result);
+              next();
+            })
+            .catch((error) => {
+              console.error("Email error", error);
+              next(new Error(error));
+            });
+        } else {
+          next(new Error("No record found for this userid"));
+        }
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+const verifyPin = (req, res, next) => {
+  const { pinNo, username } = req.body;
+  pinGet(username)
+    .then((result) => {
+      if (result === pinNo) {
+        next();
+      } else {
+        next(new Error("PIN not valid."));
+      }
+    })
+    .catch((error) => {
+      next(error);
+    });
+};
+const changePasswordRequest = (req, res, next) => {
+  const { newPassword, username } = req.body;
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query: `select algaeh_d_app_user_id from algaeh_d_app_user where lcase(username) =lcase(?)
+     and locked='N' and record_status='A' and user_status='A';`,
+        values: [username],
+      })
+      .then((result) => {
+        if (result.length > 0) {
+          const { algaeh_d_app_user_id } = result[0];
+          _mysql
+            .executeQuery({
+              query: `update algaeh_d_app_password set password=md5(?) where userid=?;`,
+              values: [newPassword, algaeh_d_app_user_id],
+            })
+            .then(() => {
+              next();
+            })
+            .catch((error) => {
+              next(error);
+            });
+        } else {
+          next(new Error("There is no user to change password"));
+        }
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 export default {
   apiAuth,
+  verifyPin,
   authUser,
   apiAuthentication,
-  userCheck
+  userCheck,
+  resetPassword,
+  changePasswordRequest,
 };

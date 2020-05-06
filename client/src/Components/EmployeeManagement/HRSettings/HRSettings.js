@@ -6,12 +6,12 @@ import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 import DocumentMaster from "./DocumentMaster/DocumentMaster";
 import { AlgaehTabs } from "algaeh-react-components";
-
+import CreateTemplates from "./TemplateCreation";
 class HRSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EmployeeGroups"
+      pageDisplay: "EmployeeGroups",
     };
   }
 
@@ -23,7 +23,7 @@ class HRSettings extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -37,46 +37,56 @@ class HRSettings extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Group Master"
+                    forceLabel: "Group Master",
                   }}
                 />
               ),
               children: <EmployeeGroups />,
-              componentCode: "HR_SET_GRP_MTR"
+              componentCode: "HR_SET_GRP_MTR",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Designation Master"
+                    forceLabel: "Designation Master",
                   }}
                 />
               ),
               children: <EmployeeDesignations />,
-              componentCode: "HR_SET_DES_MTR"
+              componentCode: "HR_SET_DES_MTR",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Document Master"
+                    forceLabel: "Document Master",
                   }}
                 />
               ),
               children: <DocumentMaster />,
-              componentCode: "HR_SET_AUT_SET"
+              componentCode: "HR_SET_AUT_SET",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Authorization Setup"
+                    forceLabel: "Authorization Setup",
                   }}
                 />
               ),
               children: <AuthorizationSetup />,
-              componentCode: "HR_SET_DOC_MTR"
-            }
+              componentCode: "HR_SET_DOC_MTR",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Template Master",
+                  }}
+                />
+              ),
+              children: <CreateTemplates />,
+            },
           ]}
           renderClass="hrSettingsSection"
         />

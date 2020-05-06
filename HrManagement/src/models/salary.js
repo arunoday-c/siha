@@ -48,7 +48,7 @@ export default {
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
-            A.total_paid_days, A.total_hours, A.total_working_hours, A.ot_work_hours, \
+            A.total_paid_days,A.pending_unpaid_leave, A.total_hours, A.total_working_hours, A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours, E.employee_code, E.gross_salary, \
             S.hims_f_salary_id,S.salary_processed, AL.from_normal_salary, LA.total_applied_days \
             from hims_f_attendance_monthly as A \
@@ -87,7 +87,7 @@ export default {
               "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
-            A.total_paid_days,A.total_hours, A.total_working_hours,A.ot_work_hours, \
+            A.total_paid_days,A.pending_unpaid_leave,A.total_hours, A.total_working_hours,A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
@@ -103,9 +103,9 @@ export default {
           .executeQuery({
             query: strQuery,
             values: inputValues,
-            printQuery: true
+            printQuery: true,
           })
-          .then(empResult => {
+          .then((empResult) => {
             if (empResult.length == 0) {
               if (req.connection == null) {
                 _mysql.releaseConnection();
@@ -119,7 +119,7 @@ export default {
 
             let _salaryHeader_id = [];
             let _myemp = [];
-            empResult.map(o => {
+            empResult.map((o) => {
               _salaryHeader_id.push(o.hims_f_salary_id);
               _myemp.push(o.employee_id);
             });
@@ -242,11 +242,11 @@ export default {
                   _myemp,
                   input.year,
                   _myemp,
-                  input.year
+                  input.year,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(Salaryresults => {
+              .then((Salaryresults) => {
                 let _headerQuery = "";
 
                 let final_earning_amt_array = [];
@@ -274,11 +274,11 @@ export default {
                       let advance_due_amount = 0;
                       let current_loan_array = [];
                       //Earnigs --- satrt
-                      const _earnings = _.filter(results[0], f => {
+                      const _earnings = _.filter(results[0], (f) => {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      const _LeaveRule = _.filter(results[17], f => {
+                      const _LeaveRule = _.filter(results[17], (f) => {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
@@ -289,7 +289,8 @@ export default {
                         empResult[i]["total_paid_days"] =
                           empResult[i]["total_days"] -
                           empResult[i]["absent_days"] -
-                          empResult[i]["unpaid_leave"];
+                          empResult[i]["unpaid_leave"] -
+                          empResult[i]["pending_unpaid_leave"];
                       }
                       getEarningComponents({
                         earnings: _earnings,
@@ -300,9 +301,9 @@ export default {
                         _LeaveRule: _LeaveRule,
                         hrms_option: results[8],
                         next: next,
-                        decimal_places: req.userIdentity.decimal_places
+                        decimal_places: req.userIdentity.decimal_places,
                       })
-                        .then(earningOutput => {
+                        .then((earningOutput) => {
                           current_earning_amt_array =
                             earningOutput.current_earning_amt_array;
                           final_earning_amount =
@@ -310,7 +311,7 @@ export default {
                           leave_salary_accrual_amount =
                             earningOutput.accrual_amount;
 
-                          const _deduction = _.filter(results[1], f => {
+                          const _deduction = _.filter(results[1], (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
                           getDeductionComponents({
@@ -319,15 +320,15 @@ export default {
                             leave_salary: req.query.leave_salary,
                             hrms_option: results[8],
                             next: next,
-                            decimal_places: req.userIdentity.decimal_places
-                          }).then(deductionOutput => {
+                            decimal_places: req.userIdentity.decimal_places,
+                          }).then((deductionOutput) => {
                             current_deduction_amt_array =
                               deductionOutput.current_deduction_amt_array;
                             final_deduction_amount =
                               deductionOutput.final_deduction_amount;
 
                             //Contribution -- Start
-                            const _contrubutions = _.filter(results[2], f => {
+                            const _contrubutions = _.filter(results[2], (f) => {
                               return (
                                 f.employee_id == empResult[i]["employee_id"]
                               );
@@ -339,21 +340,21 @@ export default {
                               leave_salary: req.query.leave_salary,
                               hrms_option: results[8],
                               next: next,
-                              decimal_places: req.userIdentity.decimal_places
-                            }).then(contributionOutput => {
+                              decimal_places: req.userIdentity.decimal_places,
+                            }).then((contributionOutput) => {
                               current_contribution_amt_array =
                                 contributionOutput.current_contribution_amt_array;
                               final_contribution_amount =
                                 contributionOutput.final_contribution_amount;
 
                               //Loan Due Start
-                              const _loan = _.filter(results[3], f => {
+                              const _loan = _.filter(results[3], (f) => {
                                 return (
                                   f.employee_id == empResult[i]["employee_id"]
                                 );
                               });
                               //Loan Payable
-                              const _loanPayable = _.filter(results[6], f => {
+                              const _loanPayable = _.filter(results[6], (f) => {
                                 return (
                                   f.employee_id == empResult[i]["employee_id"]
                                 );
@@ -362,8 +363,8 @@ export default {
                                 loan: _loan,
                                 loanPayable: _loanPayable,
                                 next: next,
-                                decimal_places: req.userIdentity.decimal_places
-                              }).then(loanOutput => {
+                                decimal_places: req.userIdentity.decimal_places,
+                              }).then((loanOutput) => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
                                 total_loan_payable_amount =
@@ -373,7 +374,7 @@ export default {
                                   loanOutput.current_loan_array;
 
                                 //Advance
-                                const _advance = _.filter(results[4], f => {
+                                const _advance = _.filter(results[4], (f) => {
                                   return (
                                     f.employee_id == empResult[i]["employee_id"]
                                   );
@@ -383,8 +384,8 @@ export default {
                                   dedcomponent: results[7],
                                   next: next,
                                   decimal_places:
-                                    req.userIdentity.decimal_places
-                                }).then(advanceOutput => {
+                                    req.userIdentity.decimal_places,
+                                }).then((advanceOutput) => {
                                   advance_due_amount =
                                     advanceOutput.advance_due_amount;
 
@@ -399,7 +400,7 @@ export default {
                                   //OT
                                   const _over_time = _.filter(
                                     results[10],
-                                    f => {
+                                    (f) => {
                                       return (
                                         f.employee_id ==
                                         empResult[i]["employee_id"]
@@ -416,8 +417,8 @@ export default {
                                     leave_salary: req.query.leave_salary,
                                     next: next,
                                     decimal_places:
-                                      req.userIdentity.decimal_places
-                                  }).then(OTManagement => {
+                                      req.userIdentity.decimal_places,
+                                  }).then((OTManagement) => {
                                     final_earning_amount =
                                       final_earning_amount +
                                       OTManagement.final_earning_amount;
@@ -435,8 +436,8 @@ export default {
                                       leave_salary: req.query.leave_salary,
                                       next: next,
                                       decimal_places:
-                                        req.userIdentity.decimal_places
-                                    }).then(ShortAge => {
+                                        req.userIdentity.decimal_places,
+                                    }).then((ShortAge) => {
                                       final_deduction_amount =
                                         final_deduction_amount +
                                         ShortAge.final_deduction_amount;
@@ -447,7 +448,7 @@ export default {
                                       //Miscellaneous Earning Deduction
                                       const _miscellaneous = _.filter(
                                         results[5],
-                                        f => {
+                                        (f) => {
                                           return (
                                             f.employee_id ==
                                             empResult[i]["employee_id"]
@@ -458,8 +459,8 @@ export default {
                                         miscellaneous: _miscellaneous,
                                         next: next,
                                         decimal_places:
-                                          req.userIdentity.decimal_places
-                                      }).then(miscellaneousOutput => {
+                                          req.userIdentity.decimal_places,
+                                      }).then((miscellaneousOutput) => {
                                         current_earning_amt_array = current_earning_amt_array.concat(
                                           miscellaneousOutput.current_earn_compoment
                                         );
@@ -481,7 +482,7 @@ export default {
                                           ) === 0
                                             ? 0
                                             : empResult[i]["gross_salary"] /
-                                            empResult[i]["total_days"];
+                                              empResult[i]["total_days"];
 
                                         let _salary_number = empResult[i][
                                           "employee_code"
@@ -509,10 +510,10 @@ export default {
                                           _headerQuery += _mysql.mysqlQueryFormat(
                                             "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
-                                              unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
+                                              unpaid_leave,pending_unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
                                               shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days, salary_type, hospital_id) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                             [
                                               _salary_number,
                                               parseInt(month_number),
@@ -526,26 +527,30 @@ export default {
                                               empResult[i]["absent_days"],
                                               empResult[i]["total_work_days"],
                                               empResult[i][
-                                              "total_weekoff_days"
+                                                "total_weekoff_days"
                                               ],
                                               empResult[i]["total_holidays"],
                                               empResult[i]["total_leave"],
                                               empResult[i]["paid_leave"],
                                               empResult[i]["unpaid_leave"],
+                                              empResult[i][
+                                                "pending_unpaid_leave"
+                                              ],
+
                                               empResult[i]["total_hours"],
                                               empResult[i][
-                                              "total_working_hours"
+                                                "total_working_hours"
                                               ],
                                               empResult[i]["ot_work_hours"],
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
                                               leave_salary_accrual_amount,
                                               empResult[i][
-                                              "total_applied_days"
+                                                "total_applied_days"
                                               ],
                                               empResult[i]["shortage_hours"],
                                               empResult[i][
-                                              "display_present_days"
+                                                "display_present_days"
                                               ],
 
                                               total_loan_payable_amount,
@@ -560,7 +565,7 @@ export default {
                                               req.query.leave_salary == null
                                                 ? "NS"
                                                 : "LS",
-                                              input.hospital_id
+                                              input.hospital_id,
                                             ]
                                           );
 
@@ -589,7 +594,7 @@ export default {
                             });
                           });
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.releaseConnection();
                           next(e);
                           reject(e);
@@ -599,7 +604,7 @@ export default {
                     reject(e);
                   }
                 })
-                  .then(result => {
+                  .then((result) => {
                     if (_headerQuery == "") {
                       _mysql.releaseConnection();
                       req.records = empResult;
@@ -610,9 +615,9 @@ export default {
                     _mysql
                       .executeQueryWithTransaction({
                         query: _headerQuery,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(inserted_header => {
+                      .then((inserted_header) => {
                         let inserted_salary = [];
                         if (Array.isArray(inserted_header)) {
                           inserted_salary = inserted_header;
@@ -640,7 +645,8 @@ export default {
                                     inserted_salary[k].insertId,
                                     final_earning_amt_array[k][l].earnings_id,
                                     final_earning_amt_array[k][l].amount,
-                                    final_earning_amt_array[k][l].per_day_salary
+                                    final_earning_amt_array[k][l]
+                                      .per_day_salary,
                                   ]
                                 );
                               }
@@ -661,7 +667,7 @@ export default {
                                       .deductions_id,
                                     final_deduction_amt_array[k][m].amount,
                                     final_deduction_amt_array[k][m]
-                                      .per_day_salary
+                                      .per_day_salary,
                                   ]
                                 );
                               }
@@ -679,7 +685,7 @@ export default {
                                     inserted_salary[k].insertId,
                                     final_contribution_amt_array[k][n]
                                       .contributions_id,
-                                    final_contribution_amt_array[k][n].amount
+                                    final_contribution_amt_array[k][n].amount,
                                   ]
                                 );
                               }
@@ -698,7 +704,7 @@ export default {
                                     inserted_salary[k].insertId,
                                     final_loan_array[k][o].loan_application_id,
                                     final_loan_array[k][o].loan_due_amount,
-                                    final_loan_array[k][o].balance_amount
+                                    final_loan_array[k][o].balance_amount,
                                   ]
                                 );
                               }
@@ -708,9 +714,9 @@ export default {
                               _mysql
                                 .executeQuery({
                                   query: execute_query,
-                                  printQuery: true
+                                  printQuery: true,
                                 })
-                                .then(detailresult => {
+                                .then((detailresult) => {
                                   if (req.connection == null) {
                                     _mysql.commitTransaction(() => {
                                       _mysql.releaseConnection();
@@ -722,7 +728,7 @@ export default {
                                     resolve(salary_header_id);
                                   }
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.rollBackTransaction(() => {
                                     next(error);
                                     reject(error);
@@ -732,26 +738,26 @@ export default {
                           }
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                           reject(error);
                         });
                       });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.releaseConnection();
                     next(e);
                     reject(e);
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
                 reject(e);
               });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
             reject(error);
@@ -761,7 +767,7 @@ export default {
         next(e);
         reject(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -811,11 +817,11 @@ export default {
             where E.hims_d_employee_id = A.employee_id  and A.hospital_id = E.hospital_id and `year`=? and `month`=? and A.hospital_id=? " +
               _stringData,
             values: inputValues,
-            printQuery: true
+            printQuery: true,
           })
-          .then(attandenceResult => {
+          .then((attandenceResult) => {
             if (attandenceResult.length > 0) {
-              let _allEmployees = _.map(attandenceResult, o => {
+              let _allEmployees = _.map(attandenceResult, (o) => {
                 return o.employee_id;
               });
 
@@ -825,22 +831,22 @@ export default {
                     "select employee_id,hims_f_salary_id,salary_processed from  hims_f_salary where month=? and year=? " +
                     _strSalary,
                   values: salary_input,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(existing => {
+                .then((existing) => {
                   let _salary_processed = _.chain(existing)
-                    .filter(f => {
+                    .filter((f) => {
                       return f.salary_processed == "Y";
                     })
                     .value();
 
-                  let _salary_processed_emp = _.map(_salary_processed, o => {
+                  let _salary_processed_emp = _.map(_salary_processed, (o) => {
                     return o.employee_id;
                   });
 
                   let _salary_processed_salary_id = _.map(
                     _salary_processed,
-                    o => {
+                    (o) => {
                       return o.hims_f_salary_id;
                     }
                   );
@@ -848,7 +854,7 @@ export default {
 
                   let _itWentInside = false;
 
-                  let _salaryHeader_id = existing.map(item => {
+                  let _salaryHeader_id = existing.map((item) => {
                     return item.hims_f_salary_id;
                   });
 
@@ -856,11 +862,11 @@ export default {
                     _itWentInside = true;
 
                     _myemp = _allEmployees.filter(
-                      val => !_salary_processed_emp.includes(val)
+                      (val) => !_salary_processed_emp.includes(val)
                     );
 
                     _salaryHeader_id = _salaryHeader_id.filter(
-                      val => !_salary_processed_salary_id.includes(val)
+                      (val) => !_salary_processed_salary_id.includes(val)
                     );
 
                     let removal_index = _.findIndex(attandenceResult, function (
@@ -1009,20 +1015,20 @@ export default {
                         _myemp,
                         input.year,
                         _myemp,
-                        input.year
+                        input.year,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(Salaryresults => {
+                    .then((Salaryresults) => {
                       let _requestCollector = [];
 
-                      var empResult = _.remove(attandenceResult, n => {
-                        return _.find(_myemp, d => d == n.employee_id);
+                      var empResult = _.remove(attandenceResult, (n) => {
+                        return _.find(_myemp, (d) => d == n.employee_id);
                       });
 
                       if (empResult.length > 0) {
                         for (let i = 0; i < empResult.length; i++) {
-                          const employee_exit = _.filter(_myemp, f => {
+                          const employee_exit = _.filter(_myemp, (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
                           let results = Salaryresults;
@@ -1042,11 +1048,11 @@ export default {
                           let advance_due_amount = 0;
                           let current_loan_array = [];
                           //Earnigs --- satrt
-                          const _earnings = _.filter(results[0], f => {
+                          const _earnings = _.filter(results[0], (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
 
-                          const _LeaveRule = _.filter(results[17], f => {
+                          const _LeaveRule = _.filter(results[17], (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
 
@@ -1057,15 +1063,15 @@ export default {
                             _mysql: _mysql,
                             input: input,
                             _LeaveRule: _LeaveRule,
-                            next: next
+                            next: next,
                           })
-                            .then(earningOutput => {
+                            .then((earningOutput) => {
                               current_earning_amt_array =
                                 earningOutput.current_earning_amt_array;
                               final_earning_amount =
                                 earningOutput.final_earning_amount;
 
-                              const _deduction = _.filter(results[1], f => {
+                              const _deduction = _.filter(results[1], (f) => {
                                 return (
                                   f.employee_id == empResult[i]["employee_id"]
                                 );
@@ -1075,9 +1081,9 @@ export default {
                                 deduction: _deduction,
                                 empResult: empResult[i],
                                 leave_salary: req.query.leave_salary,
-                                next: next
+                                next: next,
                               })
-                                .then(deductionOutput => {
+                                .then((deductionOutput) => {
                                   current_deduction_amt_array =
                                     deductionOutput.current_deduction_amt_array;
                                   final_deduction_amount =
@@ -1086,7 +1092,7 @@ export default {
                                   //Contribution -- Start
                                   const _contrubutions = _.filter(
                                     results[2],
-                                    f => {
+                                    (f) => {
                                       return (
                                         f.employee_id ==
                                         empResult[i]["employee_id"]
@@ -1097,26 +1103,29 @@ export default {
                                     contribution: _contrubutions,
                                     empResult: empResult[i],
                                     leave_salary: req.query.leave_salary,
-                                    next: next
+                                    next: next,
                                   })
-                                    .then(contributionOutput => {
+                                    .then((contributionOutput) => {
                                       current_contribution_amt_array =
                                         contributionOutput.current_contribution_amt_array;
                                       final_contribution_amount =
                                         contributionOutput.final_contribution_amount;
 
                                       //Loan Due Start
-                                      const _loan = _.filter(results[3], f => {
-                                        return (
-                                          f.employee_id ==
-                                          empResult[i]["employee_id"]
-                                        );
-                                      });
+                                      const _loan = _.filter(
+                                        results[3],
+                                        (f) => {
+                                          return (
+                                            f.employee_id ==
+                                            empResult[i]["employee_id"]
+                                          );
+                                        }
+                                      );
 
                                       //Loan Payable
                                       const _loanPayable = _.filter(
                                         results[6],
-                                        f => {
+                                        (f) => {
                                           return (
                                             f.employee_id ==
                                             empResult[i]["employee_id"]
@@ -1127,9 +1136,9 @@ export default {
                                       getLoanDueandPayable({
                                         loan: _loan,
                                         loanPayable: _loanPayable,
-                                        next: next
+                                        next: next,
                                       })
-                                        .then(loanOutput => {
+                                        .then((loanOutput) => {
                                           total_loan_due_amount =
                                             loanOutput.total_loan_due_amount;
                                           total_loan_payable_amount =
@@ -1141,7 +1150,7 @@ export default {
                                           //Advance
                                           const _advance = _.filter(
                                             results[4],
-                                            f => {
+                                            (f) => {
                                               return (
                                                 f.employee_id ==
                                                 empResult[i]["employee_id"]
@@ -1152,9 +1161,9 @@ export default {
                                           getAdvanceDue({
                                             advance: _advance,
                                             dedcomponent: results[7],
-                                            next: next
+                                            next: next,
                                           })
-                                            .then(advanceOutput => {
+                                            .then((advanceOutput) => {
                                               advance_due_amount =
                                                 advanceOutput.advance_due_amount;
 
@@ -1169,7 +1178,7 @@ export default {
                                               //Miscellaneous Earning Deduction
                                               const _over_time = _.filter(
                                                 results[10],
-                                                f => {
+                                                (f) => {
                                                   return (
                                                     f.employee_id ==
                                                     empResult[i]["employee_id"]
@@ -1186,9 +1195,9 @@ export default {
                                                 over_time: _over_time,
                                                 leave_salary:
                                                   req.query.leave_salary,
-                                                next: next
+                                                next: next,
                                               })
-                                                .then(OTManagement => {
+                                                .then((OTManagement) => {
                                                   final_earning_amount =
                                                     final_earning_amount +
                                                     OTManagement.final_earning_amount;
@@ -1205,9 +1214,9 @@ export default {
                                                     hrms_option: results[8],
                                                     leave_salary:
                                                       req.query.leave_salary,
-                                                    next: next
+                                                    next: next,
                                                   })
-                                                    .then(ShortAge => {
+                                                    .then((ShortAge) => {
                                                       final_deduction_amount =
                                                         final_deduction_amount +
                                                         ShortAge.final_deduction_amount;
@@ -1219,11 +1228,11 @@ export default {
                                                       //Miscellaneous Earning Deduction
                                                       const _miscellaneous = _.filter(
                                                         results[5],
-                                                        f => {
+                                                        (f) => {
                                                           return (
                                                             f.employee_id ==
                                                             empResult[i][
-                                                            "employee_id"
+                                                              "employee_id"
                                                             ]
                                                           );
                                                         }
@@ -1231,10 +1240,12 @@ export default {
 
                                                       getMiscellaneous({
                                                         miscellaneous: _miscellaneous,
-                                                        next: next
+                                                        next: next,
                                                       })
                                                         .then(
-                                                          miscellaneousOutput => {
+                                                          (
+                                                            miscellaneousOutput
+                                                          ) => {
                                                             current_earning_amt_array = current_earning_amt_array.concat(
                                                               miscellaneousOutput.current_earn_compoment
                                                             );
@@ -1253,10 +1264,10 @@ export default {
 
                                                             let per_day_sal =
                                                               empResult[i][
-                                                              "gross_salary"
+                                                                "gross_salary"
                                                               ] /
                                                               empResult[i][
-                                                              "total_days"
+                                                                "total_days"
                                                               ];
 
                                                             let _salary_number = empResult[
@@ -1268,7 +1279,7 @@ export default {
                                                             _salary_number +=
                                                               req.query
                                                                 .leave_salary ==
-                                                                null
+                                                              null
                                                                 ? "-NS-"
                                                                 : "-LS-";
                                                             _salary_number +=
@@ -1303,61 +1314,61 @@ export default {
                                                                       year
                                                                     ),
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "employee_id"
+                                                                      "employee_id"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "sub_department_id"
+                                                                      "sub_department_id"
                                                                     ],
                                                                     new Date(),
                                                                     per_day_sal,
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_days"
+                                                                      "total_days"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "present_days"
+                                                                      "present_days"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "absent_days"
+                                                                      "absent_days"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_work_days"
+                                                                      "total_work_days"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_weekoff_days"
+                                                                      "total_weekoff_days"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_holidays"
+                                                                      "total_holidays"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_leave"
+                                                                      "total_leave"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "paid_leave"
+                                                                      "paid_leave"
                                                                     ],
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "unpaid_leave"
+                                                                      "unpaid_leave"
                                                                     ],
                                                                     total_loan_payable_amount,
                                                                     total_loan_due_amount,
@@ -1368,21 +1379,23 @@ export default {
                                                                     final_contribution_amount,
                                                                     _net_salary,
                                                                     empResult[
-                                                                    i
+                                                                      i
                                                                     ][
-                                                                    "total_paid_days"
+                                                                      "total_paid_days"
                                                                     ],
                                                                     req.query
                                                                       .leave_salary ==
-                                                                      null
+                                                                    null
                                                                       ? "NS"
-                                                                      : "LS"
+                                                                      : "LS",
                                                                   ],
-                                                                  printQuery: true
+                                                                  printQuery: true,
                                                                 }
                                                               )
                                                               .then(
-                                                                inserted_salary => {
+                                                                (
+                                                                  inserted_salary
+                                                                ) => {
                                                                   _requestCollector.push(
                                                                     inserted_salary
                                                                   );
@@ -1401,18 +1414,18 @@ export default {
                                                                       includeValues: [
                                                                         "earnings_id",
                                                                         "amount",
-                                                                        "per_day_salary"
+                                                                        "per_day_salary",
                                                                       ],
                                                                       extraValues: {
-                                                                        salary_header_id: salary_header_id
+                                                                        salary_header_id: salary_header_id,
                                                                       },
                                                                       bulkInsertOrUpdate: true,
-                                                                      printQuery: true
+                                                                      printQuery: true,
                                                                     };
                                                                   } else {
                                                                     execute_query = {
                                                                       query:
-                                                                        "select 1"
+                                                                        "select 1",
                                                                     };
                                                                   }
 
@@ -1421,7 +1434,9 @@ export default {
                                                                       execute_query
                                                                     )
                                                                     .then(
-                                                                      resultEarnings => {
+                                                                      (
+                                                                        resultEarnings
+                                                                      ) => {
                                                                         if (
                                                                           current_deduction_amt_array.length >
                                                                           0
@@ -1433,18 +1448,18 @@ export default {
                                                                             includeValues: [
                                                                               "deductions_id",
                                                                               "amount",
-                                                                              "per_day_salary"
+                                                                              "per_day_salary",
                                                                             ],
                                                                             extraValues: {
-                                                                              salary_header_id: salary_header_id
+                                                                              salary_header_id: salary_header_id,
                                                                             },
                                                                             bulkInsertOrUpdate: true,
-                                                                            printQuery: true
+                                                                            printQuery: true,
                                                                           };
                                                                         } else {
                                                                           execute_query = {
                                                                             query:
-                                                                              "select 1"
+                                                                              "select 1",
                                                                           };
                                                                         }
 
@@ -1453,7 +1468,9 @@ export default {
                                                                             execute_query
                                                                           )
                                                                           .then(
-                                                                            resultDeductions => {
+                                                                            (
+                                                                              resultDeductions
+                                                                            ) => {
                                                                               if (
                                                                                 current_contribution_amt_array.length >
                                                                                 0
@@ -1464,18 +1481,18 @@ export default {
                                                                                   values: current_contribution_amt_array,
                                                                                   includeValues: [
                                                                                     "contributions_id",
-                                                                                    "amount"
+                                                                                    "amount",
                                                                                   ],
                                                                                   extraValues: {
-                                                                                    salary_header_id: salary_header_id
+                                                                                    salary_header_id: salary_header_id,
                                                                                   },
                                                                                   bulkInsertOrUpdate: true,
-                                                                                  printQuery: true
+                                                                                  printQuery: true,
                                                                                 };
                                                                               } else {
                                                                                 execute_query = {
                                                                                   query:
-                                                                                    "select 1"
+                                                                                    "select 1",
                                                                                 };
                                                                               }
                                                                               _mysql
@@ -1483,7 +1500,9 @@ export default {
                                                                                   execute_query
                                                                                 )
                                                                                 .then(
-                                                                                  resultContribute => {
+                                                                                  (
+                                                                                    resultContribute
+                                                                                  ) => {
                                                                                     if (
                                                                                       current_loan_array.length >
                                                                                       0
@@ -1495,18 +1514,18 @@ export default {
                                                                                         includeValues: [
                                                                                           "loan_application_id",
                                                                                           "loan_due_amount",
-                                                                                          "balance_amount"
+                                                                                          "balance_amount",
                                                                                         ],
                                                                                         extraValues: {
-                                                                                          salary_header_id: salary_header_id
+                                                                                          salary_header_id: salary_header_id,
                                                                                         },
                                                                                         bulkInsertOrUpdate: true,
-                                                                                        printQuery: true
+                                                                                        printQuery: true,
                                                                                       };
                                                                                     } else {
                                                                                       execute_query = {
                                                                                         query:
-                                                                                          "select 1"
+                                                                                          "select 1",
                                                                                       };
                                                                                     }
 
@@ -1515,11 +1534,13 @@ export default {
                                                                                         execute_query
                                                                                       )
                                                                                       .then(
-                                                                                        resultLoan => {
+                                                                                        (
+                                                                                          resultLoan
+                                                                                        ) => {
                                                                                           if (
                                                                                             i ==
                                                                                             empResult.length -
-                                                                                            1
+                                                                                              1
                                                                                           ) {
                                                                                             if (
                                                                                               req.mySQl ==
@@ -1544,7 +1565,9 @@ export default {
                                                                                         }
                                                                                       )
                                                                                       .catch(
-                                                                                        error => {
+                                                                                        (
+                                                                                          error
+                                                                                        ) => {
                                                                                           _mysql.rollBackTransaction(
                                                                                             () => {
                                                                                               next(
@@ -1560,7 +1583,9 @@ export default {
                                                                                   }
                                                                                 )
                                                                                 .catch(
-                                                                                  error => {
+                                                                                  (
+                                                                                    error
+                                                                                  ) => {
                                                                                     _mysql.rollBackTransaction(
                                                                                       () => {
                                                                                         next(
@@ -1576,7 +1601,9 @@ export default {
                                                                             }
                                                                           )
                                                                           .catch(
-                                                                            error => {
+                                                                            (
+                                                                              error
+                                                                            ) => {
                                                                               _mysql.rollBackTransaction(
                                                                                 () => {
                                                                                   next(
@@ -1592,7 +1619,9 @@ export default {
                                                                       }
                                                                     )
                                                                     .catch(
-                                                                      error => {
+                                                                      (
+                                                                        error
+                                                                      ) => {
                                                                         _mysql.rollBackTransaction(
                                                                           () => {
                                                                             next(
@@ -1607,57 +1636,61 @@ export default {
                                                                     );
                                                                 }
                                                               )
-                                                              .catch(error => {
-                                                                _mysql.rollBackTransaction(
-                                                                  () => {
-                                                                    next(error);
-                                                                    reject(
-                                                                      error
-                                                                    );
-                                                                  }
-                                                                );
-                                                              });
+                                                              .catch(
+                                                                (error) => {
+                                                                  _mysql.rollBackTransaction(
+                                                                    () => {
+                                                                      next(
+                                                                        error
+                                                                      );
+                                                                      reject(
+                                                                        error
+                                                                      );
+                                                                    }
+                                                                  );
+                                                                }
+                                                              );
                                                           }
                                                         )
-                                                        .catch(e => {
+                                                        .catch((e) => {
                                                           _mysql.releaseConnection();
                                                           next(e);
                                                           reject(e);
                                                         });
                                                     })
-                                                    .catch(e => {
+                                                    .catch((e) => {
                                                       _mysql.releaseConnection();
                                                       next(e);
                                                       reject(e);
                                                     });
                                                 })
-                                                .catch(e => {
+                                                .catch((e) => {
                                                   _mysql.releaseConnection();
                                                   next(e);
                                                   reject(e);
                                                 });
                                             })
-                                            .catch(e => {
+                                            .catch((e) => {
                                               _mysql.releaseConnection();
                                               next(e);
                                               reject(e);
                                             });
                                         })
-                                        .catch(e => {
+                                        .catch((e) => {
                                           _mysql.releaseConnection();
                                           next(e);
                                           reject(e);
                                         });
                                       //Loan Due End
                                     })
-                                    .catch(e => {
+                                    .catch((e) => {
                                       _mysql.releaseConnection();
                                       next(e);
                                       reject(e);
                                     });
                                   //Contribution -- End
                                 })
-                                .catch(e => {
+                                .catch((e) => {
                                   _mysql.releaseConnection();
                                   next(e);
                                   reject(e);
@@ -1665,7 +1698,7 @@ export default {
 
                               //Deduction -- End
                             })
-                            .catch(e => {
+                            .catch((e) => {
                               _mysql.releaseConnection();
                               next(e);
                               reject(e);
@@ -1679,13 +1712,13 @@ export default {
                         resolve(empResult);
                       }
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.releaseConnection();
                       next(e);
                       reject(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                   reject(e);
@@ -1697,7 +1730,7 @@ export default {
               resolve(attandenceResult);
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
             reject(e);
@@ -1707,7 +1740,7 @@ export default {
         next(e);
         reject(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -1766,13 +1799,13 @@ export default {
             inputParam.month,
             inputParam.year,
             inputParam.month,
-            inputParam.hospital_id
+            inputParam.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(salary_process => {
+        .then((salary_process) => {
           if (salary_process.length > 0) {
-            let _salary_data = _.filter(salary_process, f => {
+            let _salary_data = _.filter(salary_process, (f) => {
               return (
                 f.from_normal_salary === "Y" ||
                 f.hims_f_employee_annual_leave_id === null
@@ -1782,7 +1815,7 @@ export default {
               inputParam.employee_id != null &&
               inputParam.salary_type !== "LS"
             ) {
-              let _annual_salary = _.filter(salary_process, f => {
+              let _annual_salary = _.filter(salary_process, (f) => {
                 return (
                   f.from_normal_salary === "N" &&
                   f.hims_f_employee_annual_leave_id !== null
@@ -1793,7 +1826,7 @@ export default {
                 req.records = {
                   invalid_input: true,
                   message:
-                    "Selected Employee applied annual leave, Please process from annual leave salary screen. "
+                    "Selected Employee applied annual leave, Please process from annual leave salary screen. ",
                 };
                 next();
                 return;
@@ -1801,12 +1834,12 @@ export default {
             }
             const _salaryHeader_id =
               inputParam.salary_type === "LS"
-                ? salary_process.map(item => {
-                  return item.hims_f_salary_id;
-                })
-                : _salary_data.map(item => {
-                  return item.hims_f_salary_id;
-                });
+                ? salary_process.map((item) => {
+                    return item.hims_f_salary_id;
+                  })
+                : _salary_data.map((item) => {
+                    return item.hims_f_salary_id;
+                  });
             salaryprocess_header =
               inputParam.salary_type === "LS" ? salary_process : _salary_data;
 
@@ -1820,19 +1853,19 @@ export default {
                 select * from hims_f_salary_contributions, hims_d_earning_deduction earnded where salary_header_id in (?) \
                 and earnded.hims_d_earning_deduction_id = hims_f_salary_contributions.contributions_id;",
                 values: [_salaryHeader_id, _salaryHeader_id, _salaryHeader_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = [
                   {
                     salaryprocess_header: salaryprocess_header,
-                    salaryprocess_detail: result
-                  }
+                    salaryprocess_detail: result,
+                  },
                 ];
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           } else {
@@ -1841,7 +1874,7 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -1904,13 +1937,13 @@ export default {
         .executeQuery({
           query: strQuery,
           values: [inputParam.employee_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(leave_accrual_data => {
+        .then((leave_accrual_data) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           let leave_accrual_detail = leave_accrual_data[0];
           let annual_leave_data = leave_accrual_data[1];
@@ -1920,23 +1953,23 @@ export default {
               .generateRunningNumber({
                 user_id: req.userIdentity.algaeh_d_app_user_id,
                 numgen_codes: ["LEAVE_ACCRUAL"],
-                table_name: "hims_f_hrpayroll_numgen"
+                table_name: "hims_f_hrpayroll_numgen",
               })
-              .then(generatedNumbers => {
+              .then((generatedNumbers) => {
                 let leave_salary_number = generatedNumbers.LEAVE_ACCRUAL;
 
                 let leave_salary_accrual_detail = leave_accrual_detail;
 
                 const total_leave_salary = _.sumBy(
                   leave_salary_accrual_detail,
-                  s => {
+                  (s) => {
                     return parseFloat(s.leave_salary);
                   }
                 );
 
                 const total_airfare_amount = _.sumBy(
                   leave_salary_accrual_detail,
-                  s => {
+                  (s) => {
                     return parseFloat(s.airfare_amount);
                   }
                 );
@@ -1957,11 +1990,11 @@ export default {
                       req.userIdentity.hospital_id,
                       moment(new Date()).format("YYYY-MM-DD"),
                       new Date(),
-                      req.userIdentity.algaeh_d_app_user_id
+                      req.userIdentity.algaeh_d_app_user_id,
                     ],
                     // printQuery: true
                   })
-                  .then(accrual_header => {
+                  .then((accrual_header) => {
                     let leave_salary_header_id = accrual_header.insertId;
 
                     let IncludeValues = [
@@ -1970,7 +2003,7 @@ export default {
                       "month",
                       "leave_days",
                       "leave_salary",
-                      "airfare_amount"
+                      "airfare_amount",
                     ];
 
                     _mysql
@@ -1980,12 +2013,12 @@ export default {
                         values: leave_salary_accrual_detail,
                         includeValues: IncludeValues,
                         extraValues: {
-                          leave_salary_header_id: leave_salary_header_id
+                          leave_salary_header_id: leave_salary_header_id,
                         },
                         bulkInsertOrUpdate: true,
                         // printQuery: true
                       })
-                      .then(leave_detail => {
+                      .then((leave_detail) => {
                         _mysql
                           .executeQuery({
                             query:
@@ -1994,19 +2027,19 @@ export default {
                             values: [
                               new Date(),
                               req.userIdentity.algaeh_d_app_user_id,
-                              inputParam.salary_header_id
+                              inputParam.salary_header_id,
                             ],
                             // printQuery: true
                           })
-                          .then(salary_process => {
+                          .then((salary_process) => {
                             InsertEmployeeLeaveSalary({
                               leave_salary_accrual_detail: leave_salary_accrual_detail,
                               annual_leave_data: annual_leave_data,
                               _mysql: _mysql,
                               next: next,
-                              decimal_places: req.userIdentity.decimal_places
+                              decimal_places: req.userIdentity.decimal_places,
                             })
-                              .then(Employee_Leave_Salary => {
+                              .then((Employee_Leave_Salary) => {
                                 _mysql
                                   .executeQuery({
                                     query:
@@ -2017,11 +2050,11 @@ export default {
                                       inputParam.year,
                                       inputParam.month,
                                       inputParam.hospital_id,
-                                      inputParam.employee_id
+                                      inputParam.employee_id,
                                     ],
                                     // printQuery: true
                                   })
-                                  .then(project_wise_payroll => {
+                                  .then((project_wise_payroll) => {
                                     if (project_wise_payroll.length > 0) {
                                       UpdateProjectWisePayroll({
                                         project_wise_payroll: project_wise_payroll,
@@ -2029,17 +2062,17 @@ export default {
                                         net_salary: inputParam.net_salary,
                                         next: next,
                                         decimal_places:
-                                          req.userIdentity.decimal_places
+                                          req.userIdentity.decimal_places,
                                       })
-                                        .then(Employee_Leave_Salary => {
+                                        .then((Employee_Leave_Salary) => {
                                           InsertGratuityProvision({
                                             inputParam: inputParam,
                                             _mysql: _mysql,
                                             next: next,
                                             decimal_places:
-                                              req.userIdentity.decimal_places
+                                              req.userIdentity.decimal_places,
                                           })
-                                            .then(gratuity_provision => {
+                                            .then((gratuity_provision) => {
                                               if (
                                                 inputParam._leave_salary_acc
                                                   .length > 0
@@ -2050,21 +2083,23 @@ export default {
                                                   next: next,
                                                   decimal_places:
                                                     req.userIdentity
-                                                      .decimal_places
+                                                      .decimal_places,
                                                 })
                                                   .then(
-                                                    Leave_Salary_Provission => {
+                                                    (
+                                                      Leave_Salary_Provission
+                                                    ) => {
                                                       // _mysql.commitTransaction(
                                                       //   () => {
                                                       //     _mysql.releaseConnection();
                                                       req.records = {
-                                                        leave_salary_number: leave_salary_number
+                                                        leave_salary_number: leave_salary_number,
                                                       };
                                                       next();
                                                       // });
                                                     }
                                                   )
-                                                  .catch(e => {
+                                                  .catch((e) => {
                                                     _mysql.rollBackTransaction(
                                                       () => {
                                                         next(e);
@@ -2076,19 +2111,19 @@ export default {
                                                 //   _mysql.releaseConnection();
 
                                                 req.records = {
-                                                  leave_salary_number: leave_salary_number
+                                                  leave_salary_number: leave_salary_number,
                                                 };
                                                 next();
                                                 // });
                                               }
                                             })
-                                            .catch(e => {
+                                            .catch((e) => {
                                               _mysql.rollBackTransaction(() => {
                                                 next(e);
                                               });
                                             });
                                         })
-                                        .catch(e => {
+                                        .catch((e) => {
                                           _mysql.rollBackTransaction(() => {
                                             next(e);
                                           });
@@ -2099,9 +2134,9 @@ export default {
                                         _mysql: _mysql,
                                         next: next,
                                         decimal_places:
-                                          req.userIdentity.decimal_places
+                                          req.userIdentity.decimal_places,
                                       })
-                                        .then(gratuity_provision => {
+                                        .then((gratuity_provision) => {
                                           if (
                                             inputParam._leave_salary_acc
                                               .length > 0
@@ -2111,18 +2146,20 @@ export default {
                                               _mysql: _mysql,
                                               next: next,
                                               decimal_places:
-                                                req.userIdentity.decimal_places
+                                                req.userIdentity.decimal_places,
                                             })
-                                              .then(Leave_Salary_Provission => {
-                                                // _mysql.commitTransaction(() => {
-                                                //   _mysql.releaseConnection();
-                                                req.records = {
-                                                  leave_salary_number: leave_salary_number
-                                                };
-                                                next();
-                                                // });
-                                              })
-                                              .catch(e => {
+                                              .then(
+                                                (Leave_Salary_Provission) => {
+                                                  // _mysql.commitTransaction(() => {
+                                                  //   _mysql.releaseConnection();
+                                                  req.records = {
+                                                    leave_salary_number: leave_salary_number,
+                                                  };
+                                                  next();
+                                                  // });
+                                                }
+                                              )
+                                              .catch((e) => {
                                                 _mysql.rollBackTransaction(
                                                   () => {
                                                     next(e);
@@ -2133,50 +2170,50 @@ export default {
                                             // _mysql.commitTransaction(() => {
                                             //   _mysql.releaseConnection();
                                             req.records = {
-                                              leave_salary_number: leave_salary_number
+                                              leave_salary_number: leave_salary_number,
                                             };
                                             next();
                                             // });
                                           }
                                         })
-                                        .catch(e => {
+                                        .catch((e) => {
                                           _mysql.rollBackTransaction(() => {
                                             next(e);
                                           });
                                         });
                                     }
                                   })
-                                  .catch(e => {
+                                  .catch((e) => {
                                     _mysql.rollBackTransaction(() => {
                                       next(e);
                                     });
                                   });
                               })
-                              .catch(e => {
+                              .catch((e) => {
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
                               });
                           })
-                          .catch(e => {
+                          .catch((e) => {
                             _mysql.rollBackTransaction(() => {
                               next(e);
                             });
                           });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -2190,11 +2227,11 @@ export default {
                 values: [
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
-                  inputParam.salary_header_id
+                  inputParam.salary_header_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(salary_process => {
+              .then((salary_process) => {
                 _mysql
                   .executeQuery({
                     query:
@@ -2205,36 +2242,36 @@ export default {
                       inputParam.year,
                       inputParam.month,
                       inputParam.hospital_id,
-                      inputParam.employee_id
+                      inputParam.employee_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(project_wise_payroll => {
+                  .then((project_wise_payroll) => {
                     if (project_wise_payroll.length > 0) {
                       UpdateProjectWisePayroll({
                         project_wise_payroll: project_wise_payroll,
                         _mysql: _mysql,
                         net_salary: inputParam.net_salary,
                         next: next,
-                        decimal_places: req.userIdentity.decimal_places
+                        decimal_places: req.userIdentity.decimal_places,
                       })
-                        .then(Employee_Leave_Salary => {
+                        .then((Employee_Leave_Salary) => {
                           InsertGratuityProvision({
                             inputParam: inputParam,
                             _mysql: _mysql,
                             next: next,
-                            decimal_places: req.userIdentity.decimal_places
+                            decimal_places: req.userIdentity.decimal_places,
                           })
-                            .then(gratuity_provision => {
+                            .then((gratuity_provision) => {
                               if (inputParam._leave_salary_acc.length > 0) {
                                 UpdateLeaveSalaryProvission({
                                   inputParam: inputParam,
                                   _mysql: _mysql,
                                   next: next,
                                   decimal_places:
-                                    req.userIdentity.decimal_places
+                                    req.userIdentity.decimal_places,
                                 })
-                                  .then(Leave_Salary_Provission => {
+                                  .then((Leave_Salary_Provission) => {
                                     // _mysql.commitTransaction(() => {
                                     //   _mysql.releaseConnection();
                                     //   req.records = gratuity_provision;
@@ -2243,7 +2280,7 @@ export default {
                                     req.records = gratuity_provision;
                                     next();
                                   })
-                                  .catch(e => {
+                                  .catch((e) => {
                                     _mysql.rollBackTransaction(() => {
                                       next(e);
                                     });
@@ -2258,13 +2295,13 @@ export default {
                                 next();
                               }
                             })
-                            .catch(e => {
+                            .catch((e) => {
                               _mysql.rollBackTransaction(() => {
                                 next(e);
                               });
                             });
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
@@ -2274,17 +2311,17 @@ export default {
                         inputParam: inputParam,
                         _mysql: _mysql,
                         next: next,
-                        decimal_places: req.userIdentity.decimal_places
+                        decimal_places: req.userIdentity.decimal_places,
                       })
-                        .then(gratuity_provision => {
+                        .then((gratuity_provision) => {
                           if (inputParam._leave_salary_acc.length > 0) {
                             UpdateLeaveSalaryProvission({
                               inputParam: inputParam,
                               _mysql: _mysql,
                               next: next,
-                              decimal_places: req.userIdentity.decimal_places
+                              decimal_places: req.userIdentity.decimal_places,
                             })
-                              .then(Leave_Salary_Provission => {
+                              .then((Leave_Salary_Provission) => {
                                 // _mysql.commitTransaction(() => {
                                 //   _mysql.releaseConnection();
                                 //   req.records = gratuity_provision;
@@ -2293,7 +2330,7 @@ export default {
                                 req.records = gratuity_provision;
                                 next();
                               })
-                              .catch(e => {
+                              .catch((e) => {
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -2308,27 +2345,27 @@ export default {
                             next();
                           }
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
                         });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -2372,10 +2409,10 @@ export default {
             input.hospital_id,
             input.employee_group_id,
             input.month,
-            input.year
-          ]
+            input.year,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           // _mysql.releaseConnection();
           // req.records = result;
           // next();
@@ -2389,21 +2426,21 @@ export default {
           let total_net_salary = 0;
 
           if (salary.length > 0) {
-            total_earnings = new LINQ(salary).Sum(s =>
+            total_earnings = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_earnings)
             );
-            total_deductions = new LINQ(salary).Sum(s =>
+            total_deductions = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_deductions)
             );
-            total_contributions = new LINQ(salary).Sum(s =>
+            total_contributions = new LINQ(salary).Sum((s) =>
               parseFloat(s.total_contributions)
             );
-            total_net_salary = new LINQ(salary).Sum(s =>
+            total_net_salary = new LINQ(salary).Sum((s) =>
               parseFloat(s.net_salary)
             );
 
             let salary_header_ids = new LINQ(salary)
-              .Select(s => s.hims_f_salary_id)
+              .Select((s) => s.hims_f_salary_id)
               .ToArray();
 
             _mysql
@@ -2429,9 +2466,9 @@ export default {
                   where salary_header_id in ( " +
                   salary_header_ids +
                   ");",
-                values: [input.year, input.month, input.year, input.month]
+                values: [input.year, input.month, input.year, input.month],
               })
-              .then(results => {
+              .then((results) => {
                 let earnings = results[0];
                 let deductions = results[1];
                 let basic_id = results[2][0]["basic_earning_component"];
@@ -2479,90 +2516,90 @@ export default {
 
                   let employee_earning = new LINQ(earnings)
                     .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                      (w) => w.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
                         earnings_id: s.earnings_id,
                         amount: s.amount,
-                        nationality_id: s.nationality_id
+                        nationality_id: s.nationality_id,
                       };
                     })
                     .ToArray();
 
                   let employee_deduction = new LINQ(deductions)
                     .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                      (w) => w.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_f_salary_deductions_id:
                           s.hims_f_salary_deductions_id,
                         deductions_id: s.deductions_id,
                         amount: s.amount,
-                        nationality_id: s.nationality_id
+                        nationality_id: s.nationality_id,
                       };
                     })
                     .ToArray();
 
                   let employee_contributions = new LINQ(contributions)
                     .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                      (w) => w.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_f_salary_contributions_id:
                           s.hims_f_salary_contributions_id,
                         contributions_id: s.contributions_id,
                         amount: s.amount,
-                        nationality_id: s.nationality_id
+                        nationality_id: s.nationality_id,
                       };
                     })
                     .ToArray();
 
                   total_basic += new LINQ(employee_earning)
-                    .Where(w => w.earnings_id == basic_id)
-                    .Select(s => parseFloat(s.amount))
+                    .Where((w) => w.earnings_id == basic_id)
+                    .Select((s) => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
                   sum_gratuity += new LINQ(gratuity)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.gratuity_amount))
+                    .Where((w) => w.employee_id == salary[i]["employee_id"])
+                    .Select((s) => parseFloat(s.gratuity_amount))
                     .FirstOrDefault(0);
 
                   sum_leave_salary += new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.leave_salary))
+                    .Where((w) => w.employee_id == salary[i]["employee_id"])
+                    .Select((s) => parseFloat(s.leave_salary))
                     .FirstOrDefault(0);
 
                   sum_airfare_amount += new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.airfare_amount))
+                    .Where((w) => w.employee_id == salary[i]["employee_id"])
+                    .Select((s) => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
 
                   let emp_gratuity = new LINQ(gratuity)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => {
+                    .Where((w) => w.employee_id == salary[i]["employee_id"])
+                    .Select((s) => {
                       return {
-                        gratuity_amount: s.gratuity_amount
+                        gratuity_amount: s.gratuity_amount,
                       };
                     })
                     .FirstOrDefault({ gratuity_amount: 0 });
 
                   let emp_accural = new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => {
+                    .Where((w) => w.employee_id == salary[i]["employee_id"])
+                    .Select((s) => {
                       return {
                         leave_days: s.leave_days,
                         leave_salary: s.leave_salary,
-                        airfare_amount: s.airfare_amount
+                        airfare_amount: s.airfare_amount,
                       };
                     })
                     .FirstOrDefault({
                       leave_days: 0,
                       leave_salary: 0,
-                      airfare_amount: 0
+                      airfare_amount: 0,
                     });
 
                   outputArray.push({
@@ -2572,7 +2609,7 @@ export default {
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     employee_contributions: employee_contributions,
-                    complete_ot: complete_ot
+                    complete_ot: complete_ot,
                   });
                 }
 
@@ -2587,11 +2624,11 @@ export default {
                   total_net_salary: total_net_salary,
                   sum_gratuity: sum_gratuity,
                   sum_leave_salary: sum_leave_salary,
-                  sum_airfare_amount: sum_airfare_amount
+                  sum_airfare_amount: sum_airfare_amount,
                 };
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -2601,14 +2638,14 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please Provide valid input "
+        message: "Please Provide valid input ",
       };
       next();
       return;
@@ -2616,7 +2653,7 @@ export default {
   },
 
   generateAccountingEntry: (req, res, next) => {
-    console.log("generateAccountingEntry", req.flag)
+    console.log("generateAccountingEntry", req.flag);
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -2626,9 +2663,9 @@ export default {
         _mysql
           .executeQueryWithTransaction({
             query:
-              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+              "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
           })
-          .then(org_data => {
+          .then((org_data) => {
             if (
               org_data[0]["product_type"] == "HIMS_ERP" ||
               org_data[0]["product_type"] == "FINANCE_ERP"
@@ -2640,20 +2677,20 @@ export default {
               where account in ('SAL_PYBLS', 'LV_SAL_PYBL', 'AIRFR_PYBL', 'GRAT_PYBL');\
               select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='LS';\
               select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='AR';\
-              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='EOS';"
+              select head_id, child_id from hims_d_earning_deduction where component_category='E' and component_type='EOS';",
                 })
-                .then(result => {
+                .then((result) => {
                   const salary_pay_acc = result[0].find(
-                    f => f.account === "SAL_PYBLS"
+                    (f) => f.account === "SAL_PYBLS"
                   );
                   const lv_salary_pay_acc = result[0].find(
-                    f => f.account === "LV_SAL_PYBL"
+                    (f) => f.account === "LV_SAL_PYBL"
                   );
                   const airfair_pay_acc = result[0].find(
-                    f => f.account === "AIRFR_PYBL"
+                    (f) => f.account === "AIRFR_PYBL"
                   );
                   const gratuity_pay_acc = result[0].find(
-                    f => f.account === "GRAT_PYBL"
+                    (f) => f.account === "GRAT_PYBL"
                   );
 
                   const leave_sal_expence_acc = result[1][0];
@@ -2725,11 +2762,11 @@ export default {
                         inputParam.year,
                         inputParam.month,
                         inputParam.employee_id,
-                        inputParam.employee_id
+                        inputParam.employee_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(headerResult => {
+                    .then((headerResult) => {
                       const leave_salary_booking = headerResult[6];
                       const gratuity_provision_booking = headerResult[7];
                       const loan_payable_amount = headerResult[8];
@@ -2741,7 +2778,7 @@ export default {
                         "transaction_date",
                         "amount",
                         "voucher_type",
-                        "narration"
+                        "narration",
                       ];
 
                       _mysql
@@ -2752,12 +2789,12 @@ export default {
                           includeValues: Header_IncludeValuess,
                           extraValues: {
                             entered_date: new Date(),
-                            entered_by: req.userIdentity.algaeh_d_app_user_id
+                            entered_by: req.userIdentity.algaeh_d_app_user_id,
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(finance_header => {
+                        .then((finance_header) => {
                           _mysql
                             .executeQueryWithTransaction({
                               query:
@@ -2766,85 +2803,85 @@ export default {
                             where from_screen = ? and document_id in (?)",
                               values: [
                                 inputParam.ScreenCode,
-                                inputParam.salary_header_id
+                                inputParam.salary_header_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(insert_result => {
+                            .then((insert_result) => {
                               const insert_finance_detail = [];
 
-                              insert_result.forEach(per_salary => {
+                              insert_result.forEach((per_salary) => {
                                 const employee_barnch = headerResult[0].find(
-                                  f =>
+                                  (f) =>
                                     f.hims_f_salary_id ===
                                     per_salary.document_id
                                 );
 
                                 const earnings = headerResult[1]
                                   .filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_f_salary_id ===
                                       per_salary.document_id
                                   )
-                                  .map(m => {
+                                  .map((m) => {
                                     return {
                                       ...m,
                                       day_end_header_id:
-                                        per_salary.finance_day_end_header_id
+                                        per_salary.finance_day_end_header_id,
                                     };
                                   });
                                 const deduction = headerResult[2]
                                   .filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_f_salary_id ===
                                       per_salary.document_id
                                   )
-                                  .map(m => {
+                                  .map((m) => {
                                     return {
                                       ...m,
                                       day_end_header_id:
-                                        per_salary.finance_day_end_header_id
+                                        per_salary.finance_day_end_header_id,
                                     };
                                   });
                                 const contribution = headerResult[3]
                                   .filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_f_salary_id ===
                                       per_salary.document_id
                                   )
-                                  .map(m => {
+                                  .map((m) => {
                                     return {
                                       ...m,
                                       day_end_header_id:
-                                        per_salary.finance_day_end_header_id
+                                        per_salary.finance_day_end_header_id,
                                     };
                                   });
 
                                 const lib_acc_contribution = headerResult[4]
                                   .filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_f_salary_id ===
                                       per_salary.document_id
                                   )
-                                  .map(m => {
+                                  .map((m) => {
                                     return {
                                       ...m,
                                       day_end_header_id:
-                                        per_salary.finance_day_end_header_id
+                                        per_salary.finance_day_end_header_id,
                                     };
                                   });
 
                                 const loan_data = headerResult[5]
                                   .filter(
-                                    f =>
+                                    (f) =>
                                       f.hims_f_salary_id ===
                                       per_salary.document_id
                                   )
-                                  .map(m => {
+                                  .map((m) => {
                                     return {
                                       ...m,
                                       day_end_header_id:
-                                        per_salary.finance_day_end_header_id
+                                        per_salary.finance_day_end_header_id,
                                     };
                                   });
 
@@ -2865,14 +2902,14 @@ export default {
                                     credit_amount: per_salary.amount,
                                     hospital_id: employee_barnch.hospital_id,
                                     sub_department_id:
-                                      employee_barnch.sub_department_id
+                                      employee_barnch.sub_department_id,
                                   }
                                 );
                               });
 
-                              leave_salary_booking.forEach(per_employee => {
+                              leave_salary_booking.forEach((per_employee) => {
                                 const finance_header = insert_result.find(
-                                  f =>
+                                  (f) =>
                                     f.employee_id === per_employee.employee_id
                                 );
 
@@ -2888,7 +2925,7 @@ export default {
                                   credit_amount: per_employee.leave_salary,
                                   hospital_id: per_employee.hospital_id,
                                   sub_department_id:
-                                    per_employee.sub_department_id
+                                    per_employee.sub_department_id,
                                 });
 
                                 //Booking Leave salary to Expence account
@@ -2903,7 +2940,7 @@ export default {
                                   credit_amount: 0,
                                   hospital_id: per_employee.hospital_id,
                                   sub_department_id:
-                                    per_employee.sub_department_id
+                                    per_employee.sub_department_id,
                                 });
 
                                 if (
@@ -2921,7 +2958,7 @@ export default {
                                     credit_amount: per_employee.airfare_amount,
                                     hospital_id: per_employee.hospital_id,
                                     sub_department_id:
-                                      per_employee.sub_department_id
+                                      per_employee.sub_department_id,
                                   });
 
                                   //Booking Airfaie to Expence account
@@ -2936,15 +2973,15 @@ export default {
                                     credit_amount: 0,
                                     hospital_id: per_employee.hospital_id,
                                     sub_department_id:
-                                      per_employee.sub_department_id
+                                      per_employee.sub_department_id,
                                   });
                                 }
                               });
 
                               gratuity_provision_booking.forEach(
-                                per_employee => {
+                                (per_employee) => {
                                   const gra_finance_header = insert_result.find(
-                                    f =>
+                                    (f) =>
                                       f.employee_id === per_employee.employee_id
                                   );
 
@@ -2964,7 +3001,7 @@ export default {
                                         per_employee.gratuity_amount,
                                       hospital_id: per_employee.hospital_id,
                                       sub_department_id:
-                                        per_employee.sub_department_id
+                                        per_employee.sub_department_id,
                                     });
 
                                     //Booking Gratuity Provision to Expence account
@@ -2980,15 +3017,15 @@ export default {
                                       credit_amount: 0,
                                       hospital_id: per_employee.hospital_id,
                                       sub_department_id:
-                                        per_employee.sub_department_id
+                                        per_employee.sub_department_id,
                                     });
                                   }
                                 }
                               );
 
-                              loan_payable_amount.forEach(per_employee => {
+                              loan_payable_amount.forEach((per_employee) => {
                                 const loan_finance_header = insert_result.find(
-                                  f =>
+                                  (f) =>
                                     f.employee_id === per_employee.employee_id
                                 );
 
@@ -3007,7 +3044,7 @@ export default {
                                     credit_amount: 0,
                                     hospital_id: per_employee.hospital_id,
                                     sub_department_id:
-                                      per_employee.sub_department_id
+                                      per_employee.sub_department_id,
                                   });
                                 }
                               });
@@ -3021,7 +3058,7 @@ export default {
                                 "payment_type",
                                 "credit_amount",
                                 "hospital_id",
-                                "sub_department_id"
+                                "sub_department_id",
                               ];
 
                               const month = moment().format("M");
@@ -3036,42 +3073,42 @@ export default {
                                   bulkInsertOrUpdate: true,
                                   extraValues: {
                                     year: year,
-                                    month: month
+                                    month: month,
                                   },
-                                  printQuery: true
+                                  printQuery: true,
                                 })
-                                .then(subResult => {
+                                .then((subResult) => {
                                   _mysql.commitTransaction(() => {
                                     _mysql.releaseConnection();
                                     // req.records = subResult;
                                     next();
                                   });
                                 })
-                                .catch(error => {
+                                .catch((error) => {
                                   _mysql.rollBackTransaction(() => {
                                     next(error);
                                   });
                                 });
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -3084,7 +3121,7 @@ export default {
               });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -3100,7 +3137,7 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
 
 function InsertEmployeeLeaveSalary(options) {
@@ -3131,11 +3168,11 @@ function InsertEmployeeLeaveSalary(options) {
                   leave_salary_accrual_detail[i].employee_id,
                   leave_salary_accrual_detail[i].year,
                   leave_salary_accrual_detail[i].employee_id,
-                  annual_leave_data[0].hims_d_leave_id
+                  annual_leave_data[0].hims_d_leave_id,
                 ],
                 // printQuery: true
               })
-              .then(employee_leave_salary => {
+              .then((employee_leave_salary) => {
                 let employee_leave_salary_header = employee_leave_salary[0];
                 let monthly_leave = employee_leave_salary[1][0];
 
@@ -3249,21 +3286,20 @@ function InsertEmployeeLeaveSalary(options) {
                       leave_salary_accrual_detail[i].leave_salary,
                       leave_salary_accrual_detail[i].airfare_amount,
                       leave_salary_accrual_detail[i].year,
-                      leave_salary_accrual_detail[i].month
+                      leave_salary_accrual_detail[i].month,
                     ]
                   );
 
                   // if (i === leave_salary_accrual_detail.length - 1) {
                   _mysql
                     .executeQuery({ query: strQry, printQuery: false })
-                    .then(update_employee_leave => {
+                    .then((update_employee_leave) => {
                       resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       reject(e);
                     });
                   // }
-
                 } else {
                   _mysql
                     .executeQuery({
@@ -3284,16 +3320,16 @@ function InsertEmployeeLeaveSalary(options) {
                         "1",
                         "0",
                         "0",
-                        "0"
+                        "0",
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(employee_leave_header => {
+                    .then((employee_leave_header) => {
                       let IncludeValues = [
                         "employee_leave_salary_header_id",
                         "leave_days",
                         "leave_salary_amount",
-                        "airticket_amount"
+                        "airticket_amount",
                       ];
                       let inputValues = [
                         {
@@ -3303,8 +3339,8 @@ function InsertEmployeeLeaveSalary(options) {
                           leave_salary_amount:
                             leave_salary_accrual_detail[i].leave_salary,
                           airticket_amount:
-                            leave_salary_accrual_detail[i].airfare_amount
-                        }
+                            leave_salary_accrual_detail[i].airfare_amount,
+                        },
                       ];
 
                       _mysql
@@ -3315,12 +3351,12 @@ function InsertEmployeeLeaveSalary(options) {
                           includeValues: IncludeValues,
                           extraValues: {
                             year: leave_salary_accrual_detail[0].year,
-                            month: leave_salary_accrual_detail[0].month
+                            month: leave_salary_accrual_detail[0].month,
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(leave_detail => {
+                        .then((leave_detail) => {
                           let monthly_close_balance =
                             monthly_leave.close_balance === null
                               ? 0
@@ -3370,28 +3406,28 @@ function InsertEmployeeLeaveSalary(options) {
                                 monthly_close_balance,
                                 projected_applied_leaves,
                                 accumulated_leaves,
-                                monthly_leave.hims_f_employee_monthly_leave_id
+                                monthly_leave.hims_f_employee_monthly_leave_id,
                               ],
 
                               // printQuery: true
                             })
-                            .then(monthly_leave => {
+                            .then((monthly_leave) => {
                               resolve();
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               reject(error);
                             });
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           reject(error);
                         });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       reject(e);
                     });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 reject(e);
               });
           })
@@ -3401,13 +3437,13 @@ function InsertEmployeeLeaveSalary(options) {
         .then(() => {
           resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           reject(e);
         });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -3470,17 +3506,17 @@ function getOtManagement(options) {
             );
             current_ot_amt_array.push({
               earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-              amount: per_hour_salary
+              amount: per_hour_salary,
             });
           }
 
-          final_earning_amount = _.sumBy(current_ot_amt_array, s => {
+          final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
             return parseFloat(s.amount);
           });
 
           resolve({ current_ot_amt_array, final_earning_amount });
         } else {
-          _earnings.map(obj => {
+          _earnings.map((obj) => {
             // //OT Calculation
 
             if (
@@ -3494,7 +3530,7 @@ function getOtManagement(options) {
               //   parseFloat(empResult["ot_holiday_hours"]);
 
               let earn_amount = _.chain(_earnings)
-                .filter(f => {
+                .filter((f) => {
                   if (f.earnings_id == obj.earnings_id) {
                     return parseFloat(f.amount);
                   }
@@ -3507,12 +3543,12 @@ function getOtManagement(options) {
               if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                    parseFloat(hrms_option[0].salary_calendar_fixed_days)
                 );
               } else if (hrms_option[0].ot_calculation == "P") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                  parseFloat(empResult["total_days"])
+                    parseFloat(empResult["total_days"])
                 );
               } else if (hrms_option[0].ot_calculation == "A") {
                 _per_day_salary =
@@ -3547,13 +3583,13 @@ function getOtManagement(options) {
                 );
                 current_ot_amt_array.push({
                   earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-                  amount: final_price
+                  amount: final_price,
                 });
               }
             }
           });
 
-          final_earning_amount = _.sumBy(current_ot_amt_array, s => {
+          final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
             return parseFloat(s.amount);
           });
 
@@ -3565,7 +3601,7 @@ function getOtManagement(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -3589,11 +3625,11 @@ function getShortAge(options) {
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
 
-        _earnings.map(obj => {
+        _earnings.map((obj) => {
           //ShortAge Calculation
           if (obj["calculation_type"] == "V") {
             let earn_amount = _.chain(current_earning_amt_array)
-              .filter(f => {
+              .filter((f) => {
                 if (f.earnings_id == obj.earnings_id) {
                   return f.amount;
                 }
@@ -3602,7 +3638,7 @@ function getShortAge(options) {
 
             let _per_day_salary = parseFloat(
               parseFloat(earn_amount[0].amount) /
-              parseFloat(empResult["total_days"])
+                parseFloat(empResult["total_days"])
             );
 
             let per_hour_salary = _per_day_salary / Noof_Working_Hours;
@@ -3611,13 +3647,13 @@ function getShortAge(options) {
             if (per_hour_salary > 0) {
               current_shortage_amt_array.push({
                 deductions_id: shortage_comp[0].hims_d_earning_deduction_id,
-                amount: per_hour_salary
+                amount: per_hour_salary,
               });
             }
           }
         });
 
-        final_deduction_amount = _.sumBy(current_shortage_amt_array, s => {
+        final_deduction_amount = _.sumBy(current_shortage_amt_array, (s) => {
           return parseFloat(s.amount);
         });
 
@@ -3628,7 +3664,7 @@ function getShortAge(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -3659,7 +3695,7 @@ function getEarningComponents(options) {
         resolve({ current_earning_amt_array, final_earning_amount });
       }
 
-      _earnings.map(obj => {
+      _earnings.map((obj) => {
         if (obj.calculation_type == "F") {
           if (leave_salary == null || leave_salary == undefined) {
             // ED.limit_applicable, ED.limit_amount
@@ -3710,7 +3746,7 @@ function getEarningComponents(options) {
           current_earning_amt_array.push({
             earnings_id: obj.earnings_id,
             amount: current_earning_amt,
-            per_day_salary: current_earning_per_day_salary
+            per_day_salary: current_earning_per_day_salary,
           });
         } else if (obj["calculation_type"] == "V") {
           let leave_period =
@@ -3724,7 +3760,7 @@ function getEarningComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_earning_per_day_salary = parseFloat(
                 obj["amount"] /
-                parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               if (
@@ -3737,6 +3773,7 @@ function getEarningComponents(options) {
               let days =
                 parseFloat(empResult["unpaid_leave"]) +
                 parseFloat(empResult["absent_days"]) +
+                parseFloat(empResult["pending_unpaid_leave"]) +
                 leave_period;
 
               let amount = current_earning_per_day_salary * days;
@@ -3827,77 +3864,76 @@ function getEarningComponents(options) {
 
                 //Slab
                 if (_LeaveRule[i].calculation_type == "SL") {
-                  if (_LeaveRule[i].value_type == "RA") {
-                    let leave_rule_days = _LeaveRule[i].total_days;
+                  // if (_LeaveRule[i].value_type == "RA") {
+                  let leave_rule_days = _LeaveRule[i].total_days;
 
-                    if (leaves_till_date < leave_rule_days) {
-                      balance_days = leaves_till_date;
-                      leaves_till_date = 0;
+                  if (leaves_till_date < leave_rule_days) {
+                    balance_days = leaves_till_date;
+                    leaves_till_date = 0;
+                  } else {
+                    x =
+                      previous_leave > 0
+                        ? leaves_till_date - leave_rule_days - previous_leave
+                        : leaves_till_date - leave_rule_days;
+                    y =
+                      previous_leave > 0
+                        ? leaves_till_date - previous_leave
+                        : leaves_till_date;
+
+                    // x=previous_leave<0?
+
+                    if (leave_rule_days > 0) {
+                      balance_days = leave_rule_days;
                     } else {
-                      x =
-                        previous_leave > 0
-                          ? leaves_till_date - leave_rule_days - previous_leave
-                          : leaves_till_date - leave_rule_days;
-                      y =
-                        previous_leave > 0
-                          ? leaves_till_date - previous_leave
-                          : leaves_till_date;
+                      balance_days = x;
+                    }
+                    leaves_till_date = x;
 
-                      // x=previous_leave<0?
-
-                      if (leave_rule_days > 0) {
-                        balance_days = leave_rule_days;
-                      } else {
-                        balance_days = x;
-                      }
-                      leaves_till_date = x;
-
-                      if (leaves_till_date > current_leave) {
-                        balance_days = 0;
-                      } else {
-                        if (y > current_leave) {
-                          y = y - current_leave;
-                          balance_days = balance_days - y;
-                        }
+                    if (leaves_till_date > current_leave) {
+                      balance_days = 0;
+                    } else {
+                      if (y > current_leave) {
+                        y = y - current_leave;
+                        balance_days = balance_days - y;
                       }
                     }
-                    if (balance_days > 0) {
-                      let split_sal = 0;
-                      if (paytype == "NO") {
-                      } else if (paytype == "FD") {
-                        current_earning_amt = current_earning_amt;
-                      } else if (paytype == "HD") {
-                        split_sal = perday_salary / 2;
-                        split_sal = split_sal * balance_days;
-
-                        current_earning_amt = current_earning_amt - split_sal;
-                      } else if (paytype == "UN") {
-                        split_sal = perday_salary * balance_days;
-
-                        current_earning_amt = current_earning_amt - split_sal;
-                      } else if (paytype == "QD") {
-                        split_sal = (perday_salary * 3) / 4;
-                        split_sal = split_sal * balance_days;
-
-                        current_earning_amt = current_earning_amt - split_sal;
-                      } else if (paytype == "TQ") {
-                        split_sal = perday_salary / 4;
-                        split_sal = split_sal * balance_days;
-
-                        current_earning_amt = current_earning_amt - split_sal;
-                      }
-                    }
-                    previous_leave = leaves_till_date - current_leave;
-                    previous_leave = previous_leave - leave_rule_days;
-
-
                   }
+                  if (balance_days > 0) {
+                    let split_sal = 0;
+                    if (paytype == "NO") {
+                    } else if (paytype == "FD") {
+                      current_earning_amt = current_earning_amt;
+                    } else if (paytype == "HD") {
+                      split_sal = perday_salary / 2;
+                      split_sal = split_sal * balance_days;
+
+                      current_earning_amt = current_earning_amt - split_sal;
+                    } else if (paytype == "UN") {
+                      split_sal = perday_salary * balance_days;
+
+                      current_earning_amt = current_earning_amt - split_sal;
+                    } else if (paytype == "QD") {
+                      split_sal = (perday_salary * 3) / 4;
+                      split_sal = split_sal * balance_days;
+
+                      current_earning_amt = current_earning_amt - split_sal;
+                    } else if (paytype == "TQ") {
+                      split_sal = perday_salary / 4;
+                      split_sal = split_sal * balance_days;
+
+                      current_earning_amt = current_earning_amt - split_sal;
+                    }
+                  }
+                  previous_leave = leaves_till_date - current_leave;
+                  previous_leave = previous_leave - leave_rule_days;
+
+                  // }
                 }
               }
               if (
                 obj["limit_applicable"] === "Y" &&
                 parseFloat(current_earning_amt) >
-                parseFloat(obj["limit_amount"])
+                  parseFloat(obj["limit_amount"])
               ) {
                 current_earning_amt = obj["limit_amount"];
               }
@@ -3916,7 +3952,7 @@ function getEarningComponents(options) {
             current_earning_amt_array.push({
               earnings_id: obj.earnings_id,
               amount: current_earning_amt,
-              per_day_salary: current_earning_per_day_salary
+              per_day_salary: current_earning_per_day_salary,
             });
           } else {
             current_earning_amt = utilities.decimalPoints(
@@ -3932,13 +3968,13 @@ function getEarningComponents(options) {
             current_earning_amt_array.push({
               earnings_id: obj.earnings_id,
               amount: current_earning_amt,
-              per_day_salary: current_earning_per_day_salary
+              per_day_salary: current_earning_per_day_salary,
             });
           }
         }
       });
 
-      final_earning_amount = _.sumBy(current_earning_amt_array, s => {
+      final_earning_amount = _.sumBy(current_earning_amt_array, (s) => {
         return parseFloat(s.amount);
       });
 
@@ -3950,12 +3986,12 @@ function getEarningComponents(options) {
       resolve({
         current_earning_amt_array,
         final_earning_amount,
-        accrual_amount
+        accrual_amount,
       });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -3980,14 +4016,14 @@ function getDeductionComponents(options) {
         resolve({ current_deduction_amt_array, final_deduction_amount });
       }
 
-      _deduction.map(obj => {
+      _deduction.map((obj) => {
         if (obj["calculation_type"] == "F") {
           if (leave_salary == null || leave_salary == undefined) {
             current_deduction_amt = obj["amount"];
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -4008,7 +4044,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -4021,7 +4057,7 @@ function getDeductionComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_deduction_per_day_salary = parseFloat(
                 obj["amount"] /
-                parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               let days =
@@ -4041,7 +4077,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -4059,7 +4095,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -4082,11 +4118,11 @@ function getDeductionComponents(options) {
         current_deduction_amt_array.push({
           deductions_id: obj.deductions_id,
           amount: current_deduction_amt,
-          per_day_salary: current_deduction_per_day_salary
+          per_day_salary: current_deduction_per_day_salary,
         });
       });
 
-      final_deduction_amount = _.sumBy(current_deduction_amt_array, s => {
+      final_deduction_amount = _.sumBy(current_deduction_amt_array, (s) => {
         return parseFloat(s.amount);
       });
 
@@ -4099,7 +4135,7 @@ function getDeductionComponents(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4124,7 +4160,7 @@ function getContrubutionsComponents(options) {
         resolve({ current_contribution_amt_array, final_contribution_amount });
       }
 
-      _contrubutions.map(obj => {
+      _contrubutions.map((obj) => {
         // ContrubutionsComponents();
         if (obj["calculation_type"] == "F") {
           if (leave_salary == null || leave_salary == undefined) {
@@ -4132,7 +4168,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4153,7 +4189,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4166,7 +4202,7 @@ function getContrubutionsComponents(options) {
             if (hrms_option[0].salary_calendar == "F") {
               current_contribution_per_day_salary = parseFloat(
                 obj["amount"] /
-                parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                  parseFloat(hrms_option[0].salary_calendar_fixed_days)
               );
 
               let days =
@@ -4186,7 +4222,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4203,7 +4239,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4219,7 +4255,7 @@ function getContrubutionsComponents(options) {
         );
         current_contribution_amt_array.push({
           contributions_id: obj.contributions_id,
-          amount: current_contribution_amt
+          amount: current_contribution_amt,
           // per_day_salary: current_contribution_per_day_salary
         });
       });
@@ -4229,15 +4265,18 @@ function getContrubutionsComponents(options) {
         decimal_places
       );
 
-      final_contribution_amount = _.sumBy(current_contribution_amt_array, s => {
-        return parseFloat(s.amount);
-      });
+      final_contribution_amount = _.sumBy(
+        current_contribution_amt_array,
+        (s) => {
+          return parseFloat(s.amount);
+        }
+      );
 
       resolve({ current_contribution_amt_array, final_contribution_amount });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4257,34 +4296,34 @@ function getLoanDueandPayable(options) {
           resolve({
             total_loan_due_amount,
             total_loan_payable_amount,
-            current_loan_array
+            current_loan_array,
           });
         } else {
-          total_loan_payable_amount = _.sumBy(_loanPayable, s => {
+          total_loan_payable_amount = _.sumBy(_loanPayable, (s) => {
             return parseFloat(s.approved_amount);
           });
 
           resolve({
             total_loan_due_amount,
             total_loan_payable_amount,
-            current_loan_array
+            current_loan_array,
           });
         }
       }
 
-      current_loan_array = _.map(_loan, s => {
+      current_loan_array = _.map(_loan, (s) => {
         return {
           loan_application_id: s.hims_f_loan_application_id,
           loan_due_amount: s.loan_skip_months > 0 ? 0 : s.installment_amount,
-          balance_amount: s.pending_loan
+          balance_amount: s.pending_loan,
         };
       });
 
-      total_loan_due_amount = _.sumBy(current_loan_array, s => {
+      total_loan_due_amount = _.sumBy(current_loan_array, (s) => {
         return parseFloat(s.loan_due_amount);
       });
       if (_loanPayable.length != 0) {
-        total_loan_payable_amount = _.sumBy(_loanPayable, s => {
+        total_loan_payable_amount = _.sumBy(_loanPayable, (s) => {
           return parseFloat(s.approved_amount);
         });
       }
@@ -4292,12 +4331,12 @@ function getLoanDueandPayable(options) {
       resolve({
         total_loan_due_amount,
         total_loan_payable_amount,
-        current_loan_array
+        current_loan_array,
       });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4315,14 +4354,14 @@ function getAdvanceDue(options) {
         resolve({ advance_due_amount, current_deduct_compoment });
       }
 
-      advance_due_amount = _.sumBy(_advance, s => {
+      advance_due_amount = _.sumBy(_advance, (s) => {
         return parseFloat(s.payment_amount);
       });
 
-      current_deduct_compoment = _.map(_dedcomponent, s => {
+      current_deduct_compoment = _.map(_dedcomponent, (s) => {
         return {
           deductions_id: s.hims_d_earning_deduction_id,
-          amount: advance_due_amount
+          amount: advance_due_amount,
         };
       });
 
@@ -4330,7 +4369,7 @@ function getAdvanceDue(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4350,40 +4389,40 @@ function getMiscellaneous(options) {
           current_earn_compoment,
           current_deduct_compoment,
           final_earning_amount,
-          final_deduction_amount
+          final_deduction_amount,
         });
       }
 
       current_earn_compoment = _.chain(_miscellaneous)
-        .filter(f => {
+        .filter((f) => {
           return f.category == "E";
         })
         .value();
 
-      current_earn_compoment = _.map(current_earn_compoment, s => {
+      current_earn_compoment = _.map(current_earn_compoment, (s) => {
         return {
           earnings_id: s.earning_deductions_id,
-          amount: s.amount
+          amount: s.amount,
         };
       });
 
       current_deduct_compoment = _.chain(_miscellaneous)
-        .filter(f => {
+        .filter((f) => {
           return f.category == "D";
         })
         .value();
-      current_deduct_compoment = _.map(current_deduct_compoment, s => {
+      current_deduct_compoment = _.map(current_deduct_compoment, (s) => {
         return {
           deductions_id: s.earning_deductions_id,
-          amount: s.amount
+          amount: s.amount,
         };
       });
 
-      final_earning_amount = _.sumBy(current_earn_compoment, s => {
+      final_earning_amount = _.sumBy(current_earn_compoment, (s) => {
         return parseFloat(s.amount);
       });
 
-      final_deduction_amount = _.sumBy(current_deduct_compoment, s => {
+      final_deduction_amount = _.sumBy(current_deduct_compoment, (s) => {
         return parseFloat(s.amount);
       });
 
@@ -4391,12 +4430,12 @@ function getMiscellaneous(options) {
         current_earn_compoment,
         current_deduct_compoment,
         final_earning_amount,
-        final_deduction_amount
+        final_deduction_amount,
       });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4415,11 +4454,11 @@ function UpdateProjectWisePayroll(options) {
 
       let finalData = {};
       _.chain(project_wise_payroll)
-        .groupBy(g => g.employee_id)
-        .map(item => {
+        .groupBy((g) => g.employee_id)
+        .map((item) => {
           finalData[
             _.get(_.find(item, "employee_id"), "employee_id")
-          ] = _.sumBy(item, s => {
+          ] = _.sumBy(item, (s) => {
             return s.complete_hours;
           });
         })
@@ -4435,7 +4474,7 @@ function UpdateProjectWisePayroll(options) {
         let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
         complete_hours = complete_hours + "." + mins;
 
-        let net_salary_amt = _.filter(net_salary, f => {
+        let net_salary_amt = _.filter(net_salary, (f) => {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
 
@@ -4475,16 +4514,16 @@ function UpdateProjectWisePayroll(options) {
           query: strQry,
           // printQuery: true
         })
-        .then(project_payroll => {
+        .then((project_payroll) => {
           resolve();
         })
-        .catch(e => {
+        .catch((e) => {
           reject(e);
         });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4510,7 +4549,7 @@ function InsertGratuityProvision(options) {
           values: [inputParam.salary_end_date, inputParam.employee_id],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           const _employee = result[0];
           const _options = result[1];
 
@@ -4524,12 +4563,11 @@ function InsertGratuityProvision(options) {
           }
           const _optionsDetals = _options[0];
           if (_optionsDetals.gratuity_provision == 1) {
-            let _eligibleDays = 0;
-
             let strQry = "";
-            let promiseAll = [];
+            // let promiseAll = [];
 
             for (let k = 0; k < _employee.length; k++) {
+              let _eligibleDays = 0;
               // promiseAll.push(
               new Promise((resolve, reject) => {
                 try {
@@ -4555,8 +4593,14 @@ function InsertGratuityProvision(options) {
                     );
                   }
 
-                  let gratuity_month = parseFloat(inputParam.month) === 1 ? 12 : parseFloat(inputParam.month) - 1
-                  let gratuity_year = parseFloat(inputParam.month) === 1 ? parseFloat(inputParam.year) - 1 : parseFloat(inputParam.year)
+                  let gratuity_month =
+                    parseFloat(inputParam.month) === 1
+                      ? 12
+                      : parseFloat(inputParam.month) - 1;
+                  let gratuity_year =
+                    parseFloat(inputParam.month) === 1
+                      ? parseFloat(inputParam.year) - 1
+                      : parseFloat(inputParam.year);
 
                   _mysql
                     .executeQuery({
@@ -4571,55 +4615,54 @@ function InsertGratuityProvision(options) {
                         _componentsList_total,
                         _employee[k].hims_d_employee_id,
                         gratuity_year,
-                        gratuity_month
+                        gratuity_month,
                       ],
                       // printQuery: true
                     })
-                    .then(result_data => {
-
+                    .then((result_data) => {
                       let earnings = result_data[0];
                       let gratuity_data = result_data[1];
                       if (_optionsDetals.end_of_service_type == "S") {
                         if (
                           _employee[k].endOfServiceYears >= 0 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range1
+                            _optionsDetals.from_service_range1
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days1;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range1 &&
+                            _optionsDetals.from_service_range1 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range2
+                            _optionsDetals.from_service_range2
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days2;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range2 &&
+                            _optionsDetals.from_service_range2 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range3
+                            _optionsDetals.from_service_range3
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days3;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range3 &&
+                            _optionsDetals.from_service_range3 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range4
+                            _optionsDetals.from_service_range4
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days4;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range4 &&
+                            _optionsDetals.from_service_range4 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range5
+                            _optionsDetals.from_service_range5
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
@@ -4633,8 +4676,6 @@ function InsertGratuityProvision(options) {
                             _optionsDetals.eligible_days5;
                         }
                       } else if (_optionsDetals.end_of_service_type == "H") {
-
-
                         let by =
                           _employee[k].endOfServiceYears -
                           _optionsDetals.from_service_range1;
@@ -4650,7 +4691,7 @@ function InsertGratuityProvision(options) {
                             ted =
                               ted +
                               _optionsDetals.from_service_range2 *
-                              _optionsDetals.eligible_days2;
+                                _optionsDetals.eligible_days2;
 
                             by =
                               _employee[k].endOfServiceYears -
@@ -4659,7 +4700,7 @@ function InsertGratuityProvision(options) {
                               ted =
                                 ted +
                                 _optionsDetals.from_service_range3 *
-                                _optionsDetals.eligible_days3;
+                                  _optionsDetals.eligible_days3;
 
                               by =
                                 _employee[k].endOfServiceYears -
@@ -4668,7 +4709,7 @@ function InsertGratuityProvision(options) {
                                 ted =
                                   ted +
                                   _optionsDetals.from_service_range4 *
-                                  _optionsDetals.eligible_days4;
+                                    _optionsDetals.eligible_days4;
 
                                 by =
                                   _employee[k].endOfServiceYears -
@@ -4677,7 +4718,7 @@ function InsertGratuityProvision(options) {
                                   ted =
                                     ted +
                                     _optionsDetals.from_service_range5 *
-                                    _optionsDetals.eligible_days5;
+                                      _optionsDetals.eligible_days5;
                                 }
                               } else {
                                 let daysAvilable =
@@ -4685,7 +4726,8 @@ function InsertGratuityProvision(options) {
                                   _optionsDetals.from_service_range3;
 
                                 _eligibleDays =
-                                  ted + daysAvilable * _optionsDetals.eligible_days4;
+                                  ted +
+                                  daysAvilable * _optionsDetals.eligible_days4;
                               }
                             } else {
                               let daysAvilable =
@@ -4693,7 +4735,8 @@ function InsertGratuityProvision(options) {
                                 _optionsDetals.from_service_range2;
 
                               _eligibleDays =
-                                ted + daysAvilable * _optionsDetals.eligible_days3;
+                                ted +
+                                daysAvilable * _optionsDetals.eligible_days3;
                             }
                           } else {
                             let daysAvilable =
@@ -4710,7 +4753,8 @@ function InsertGratuityProvision(options) {
                             // }
 
                             _eligibleDays =
-                              ted + daysAvilable * _optionsDetals.eligible_days2;
+                              ted +
+                              daysAvilable * _optionsDetals.eligible_days2;
                           }
                         } else {
                           ted =
@@ -4720,9 +4764,12 @@ function InsertGratuityProvision(options) {
                         ted = _eligibleDays;
                       }
 
-                      const _sumOfTotalEarningComponents = _.sumBy(earnings, (s) => {
-                        return s.amount;
-                      });
+                      const _sumOfTotalEarningComponents = _.sumBy(
+                        earnings,
+                        (s) => {
+                          return s.amount;
+                        }
+                      );
                       let gratuity = 0;
 
                       if (_optionsDetals.end_of_service_calculation == "AN") {
@@ -4740,8 +4787,8 @@ function InsertGratuityProvision(options) {
                       // console.log("_eligibleDays", _eligibleDays)
                       // console.log("gratuity", gratuity)
 
-
-                      let _computatedAmoutSum = parseFloat(_eligibleDays) * parseFloat(gratuity);
+                      let _computatedAmoutSum =
+                        parseFloat(_eligibleDays) * parseFloat(gratuity);
 
                       _computatedAmoutSum = utilities.decimalPoints(
                         _computatedAmoutSum,
@@ -4755,14 +4802,18 @@ function InsertGratuityProvision(options) {
                       //   console.log("hims_d_employee_id", _employee[k].hims_d_employee_id)
                       // }
 
-
                       let gratuity_amount = 0;
                       if (gratuity_data.length > 0) {
-                        gratuity_amount = parseFloat(_computatedAmoutSum) - (parseFloat(gratuity_data[0].acc_gratuity) + parseFloat(_employee[k].gratuity_encash))
+                        gratuity_amount =
+                          parseFloat(_computatedAmoutSum) -
+                          (parseFloat(gratuity_data[0].acc_gratuity) +
+                            parseFloat(_employee[k].gratuity_encash));
                       } else {
-                        gratuity_amount = _computatedAmoutSum
+                        gratuity_amount = _computatedAmoutSum;
                       }
-                      _computatedAmoutSum = parseFloat(_computatedAmoutSum) - parseFloat(_employee[k].gratuity_encash)
+                      _computatedAmoutSum =
+                        parseFloat(_computatedAmoutSum) -
+                        parseFloat(_employee[k].gratuity_encash);
 
                       gratuity_amount = utilities.decimalPoints(
                         gratuity_amount,
@@ -4785,7 +4836,7 @@ function InsertGratuityProvision(options) {
                           gratuity_amount,
                           _computatedAmoutSum,
                           gratuity_amount,
-                          _computatedAmoutSum
+                          _computatedAmoutSum,
                         ]
                       );
 
@@ -4801,45 +4852,41 @@ function InsertGratuityProvision(options) {
                       //     reject(e);
                       //   });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       reject(e);
                     });
                 } catch (e) {
                   reject(e);
                 }
               })
-                .then(result => {
+                .then((result) => {
                   _mysql
                     .executeQuery({
                       query: strQry,
-                      printQuery: false
+                      printQuery: false,
                     })
-                    .then(result => {
+                    .then((result) => {
                       resolve();
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       reject(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   reject(e);
                 });
-
             }
-
-
-
           } else {
             resolve();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           reject(e);
         });
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -4861,7 +4908,7 @@ function UpdateLeaveSalaryProvission(options) {
             values: [inputParam._leave_salary_acc[i].employee_id],
             // printQuery: true
           })
-          .then(leave_salary_header => {
+          .then((leave_salary_header) => {
             let balance_leave_days =
               parseFloat(leave_salary_header[0].balance_leave_days) -
               parseFloat(inputParam._leave_salary_acc[i].leave_salary_days);
@@ -4877,7 +4924,7 @@ function UpdateLeaveSalaryProvission(options) {
               [
                 balance_leave_days,
                 balance_leave_salary_amount,
-                leave_salary_header[0].hims_f_employee_leave_salary_header_id
+                leave_salary_header[0].hims_f_employee_leave_salary_header_id,
               ]
             );
 
@@ -4887,22 +4934,22 @@ function UpdateLeaveSalaryProvission(options) {
                   query: strQry,
                   // printQuery: true
                 })
-                .then(project_wise_payroll => {
+                .then((project_wise_payroll) => {
                   resolve();
                 })
-                .catch(e => {
+                .catch((e) => {
                   reject(e);
                 });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             reject(e);
           });
       }
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }

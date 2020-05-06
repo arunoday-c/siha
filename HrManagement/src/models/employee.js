@@ -87,7 +87,10 @@ export default {
           req.query.hospital_requires === undefined ||
           req.query.hospital_requires === true
         ) {
-          if (req.query.hospital_id != null) {
+          if (req.query.select_all === "true") {
+            _strAppend +=
+              " and E.hospital_id in (" + req.query.hospital_id + ")";
+          } else if (req.query.hospital_id != null) {
             _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
           } else {
             _strAppend +=
@@ -107,10 +110,11 @@ export default {
           .executeQuery({
             query:
               "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,N.nationality as nationality_name,\
-                R.religion_name, DE.designation,employee_group_id  FROM hims_d_employee E \
+                R.religion_name, DE.designation,employee_group_id, G.monthly_accrual_days  FROM hims_d_employee E \
                 left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
                 left join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 left join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
+                left join hims_d_employee_group G on E.employee_group_id = G.hims_d_employee_group_id \
                 left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
                 E.record_status = 'A'  " +
               specificEmployee +
@@ -158,8 +162,8 @@ export default {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
-            gratuity_encash,created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            gratuity_encash,identity_type_id, identity_no, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -211,6 +215,8 @@ export default {
               input.entitled_daily_ot,
               input.employee_category,
               input.gratuity_encash,
+              input.identity_type_id,
+              input.identity_no,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -275,20 +281,20 @@ export default {
           .executeQuery({
             query:
               "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?, date_of_birth=?, sex=?,\
-               primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
-               religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
-               present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
+              primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
+              religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
+              present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
               permanent_address2=?, permanent_pincode=?, permanent_city_id=?, permanent_state_id=?,\
               permanent_country_id=?, isdoctor=?, license_number=?, date_of_joining=?, appointment_type=?,\
               employee_type=?, reliving_date=?, notice_period=?, date_of_resignation=?, company_bank_id=?,\
-             employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
-          accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
-          total_contributions=?,\
-          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
-          exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
-          reporting_to_id=?,sub_department_id=?,employee_designation_id=?, entitled_daily_ot= ? , \
-          employee_bank_id=?,services_id=?, employee_status=?,inactive_date=?, employee_category=?, gratuity_encash=?,updated_date=?,updated_by=?\
-          WHERE record_status='A' and  hims_d_employee_id=?",
+              employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
+              accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
+              total_contributions=?, net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,\
+              airfare_process=?,exit_date=?, exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,\
+              pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
+              employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
+              inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?, \
+              updated_date=?,updated_by=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -359,6 +365,9 @@ export default {
               input.inactive_date,
               input.employee_category,
               input.gratuity_encash,
+              input.identity_type_id,
+              input.identity_no,
+
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.hims_d_employee_id,
@@ -1565,7 +1574,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
+          "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, GP.acc_gratuity,\
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
           E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
           strQry +
@@ -1629,12 +1638,13 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount)\
-          VALUE(?,?,?,?)",
+          "INSERT INTO `hims_f_gratuity_provision` (employee_id, year, month, gratuity_amount, acc_gratuity)\
+          VALUE(?,?,?,?,?)",
         values: [
           input.employee_id,
           input.year,
           input.month,
+          input.gratuity_amount,
           input.gratuity_amount,
         ],
         printQuery: true,
@@ -1709,11 +1719,11 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE hims_f_gratuity_provision set month=?,gratuity_amount=? \
+          "UPDATE hims_f_gratuity_provision set month=?,acc_gratuity=? \
           WHERE hims_f_gratuity_provision_id = ?",
         values: [
           input.month,
-          input.gratuity_amount,
+          input.acc_gratuity,
           input.hims_f_gratuity_provision_id,
         ],
         printQuery: true,

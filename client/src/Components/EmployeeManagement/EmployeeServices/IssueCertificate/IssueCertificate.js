@@ -8,7 +8,7 @@ import "./IssueCertificate.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 // import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -27,7 +27,9 @@ class IssueCertificate extends Component {
       extra: {},
       hospital_id: null,
       loading_Process: false,
-      certificate_type: null
+      certificate_type: null,
+      certificate_types: [],
+      kpi_parameters: [],
     };
   }
 
@@ -53,8 +55,9 @@ class IssueCertificate extends Component {
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
+
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.organizations === undefined ||
@@ -65,17 +68,32 @@ class IssueCertificate extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
+    algaehApiCall({
+      uri: "/Document/getKPI",
+      method: "GET",
+      module: "documentManagement",
+      onSuccess: (response) => {
+        const { data } = response;
+        this.setState({ certificate_types: data["result"] });
+      },
+      onCatch: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   }
 
   employeeSearch() {
     this.clearState();
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -83,21 +101,21 @@ class IssueCertificate extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            employee_id: row.hims_d_employee_id
+            employee_id: row.hims_d_employee_id,
           },
           () => this.getEmployees()
         );
-      }
+      },
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -105,7 +123,7 @@ class IssueCertificate extends Component {
     this.setState({
       employee_name: null,
       full_name: null,
-      loading_Process: false
+      loading_Process: false,
     });
   }
 
@@ -123,14 +141,14 @@ class IssueCertificate extends Component {
             employee_id: this.state.employee_id,
             sub_department_id: this.state.sub_department_id,
             hospital_id: this.state.hospital_id,
-            ...this.state.extra
+            ...this.state.extra,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             AlgaehLoader({ show: false });
             if (res.data.success) {
               swalMessage({
                 title: "Leave Applied Successfully",
-                type: "success"
+                type: "success",
               });
               this.setState({ loading_Process: false });
               this.getEmployeeLeaveHistory();
@@ -139,20 +157,20 @@ class IssueCertificate extends Component {
               this.setState({ loading_Process: false }, () => {
                 swalMessage({
                   title: res.data.records.message,
-                  type: "error"
+                  type: "error",
                 });
               });
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -161,39 +179,46 @@ class IssueCertificate extends Component {
       uri: "/employee/get",
       module: "hrManagement",
       data: {
-        hims_d_employee_id: this.state.employee_id
+        hims_d_employee_id: this.state.employee_id,
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         this.setState(
           {
-            employee: res.data.records[0]
+            employee: res.data.records[0],
           },
-          () => { }
+          () => {}
         );
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   searchSelect(data) {
-    console.log(data);
     this.setState(
       {
         employee_id: data.hims_d_employee_id,
         full_name: data.full_name,
         display_name: data.full_name,
-        sub_department_id: data.sub_department_id
+        sub_department_id: data.sub_department_id,
       },
       () => this.getEmployees()
     );
   }
-
+  onChangeHandler(e) {
+    debugger;
+    const { name, value } = e;
+    // let certificate={};
+    // if(name==="certificate_type"){
+    //   certificate
+    // }
+    this.setState({ [name]: value });
+  }
   render() {
     // let leaveData = this.state.emp_leaves_data
     //   ? this.state.emp_leaves_data
@@ -214,7 +239,7 @@ class IssueCertificate extends Component {
                     div={{ className: "col-12 form-group  mandatory" }}
                     label={{
                       forceLabel: "Select Branch",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "hospital_id",
@@ -223,44 +248,37 @@ class IssueCertificate extends Component {
                       dataSource: {
                         textField: "hospital_name",
                         valueField: "hims_d_hospital_id",
-                        data: this.props.organizations
+                        data: this.props.organizations,
                       },
-                      //                      onChange: this.dropDownHandler.bind(this),
+                      onChange: this.onChangeHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          hospital_id: null
+                          hospital_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Select Certificate Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "certificate_type",
                       className: "select-fld",
                       value: this.state.certificate_type,
                       dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: [
-                          {
-                            name: "Experience Certificate",
-                            value: "1"
-                          },
-                          {
-                            name: "Employement Certificate",
-                            value: "2"
-                          },
-                          {
-                            name: "Educational Form",
-                            value: "3"
-                          }
-                        ]
-                      }
+                        valueField: "_id",
+                        textField: "kpi_name",
+                        data: this.state.certificate_types,
+                      },
+                      onChange: this.onChangeHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          certificate_type: null,
+                        });
+                      },
                     }}
                   />
                   <div className="col-12 globalSearchCntr form-group mandatory">
@@ -315,8 +333,8 @@ class IssueCertificate extends Component {
                             <AlgaehLabel label={{ forceLabel: "Emp. ID" }} />
                           ),
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "employee_name",
@@ -327,9 +345,9 @@ class IssueCertificate extends Component {
                           ),
                           others: {
                             style: {
-                              textAlign: "left"
-                            }
-                          }
+                              textAlign: "left",
+                            },
+                          },
                         },
                         {
                           fieldName: "requestDate",
@@ -339,8 +357,8 @@ class IssueCertificate extends Component {
                             />
                           ),
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "requestedFor",
@@ -348,7 +366,7 @@ class IssueCertificate extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Requested For" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "url",
@@ -357,7 +375,7 @@ class IssueCertificate extends Component {
                               label={{ forceLabel: "Print / Issue" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <div>
                                 {" "}
@@ -367,9 +385,9 @@ class IssueCertificate extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 150
-                          }
-                        }
+                            maxWidth: 150,
+                          },
+                        },
                       ]}
                       keyId=""
                       dataSource={{
@@ -379,9 +397,9 @@ class IssueCertificate extends Component {
                             employee_name: "Aboobacker Sidhiqe",
                             requestDate: "07-01-2020",
                             requestedFor: "Salary Certificate",
-                            url: "https://google.com"
-                          }
-                        ]
+                            url: "https://google.com",
+                          },
+                        ],
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -400,14 +418,14 @@ class IssueCertificate extends Component {
 
 function mapStateToProps(state) {
   return {
-    organizations: state.organizations
+    organizations: state.organizations,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
     },
     dispatch
   );

@@ -26,7 +26,7 @@
                     </td>
                     <td><label class="textEnLft">Request No:</label><span class="valueText">{{encashment_number}}</span>
                     </td>
-                    <td><label class="textEnLft">Request Status:</label><span class="valueText">{{authorized}}</span>
+                    <td><label class="textEnLft">Request Status:</label><span class="valueText">{{auth_status}}</span>
                     </td>
 
                 </tr>
@@ -34,12 +34,39 @@
                     <td><label class="textEnLft">Requested Leave Type:</label><span
                             class="valueText">{{leave_description}}</span>
                     </td>
-                    <td><label class="textEnLft">Requested For:</label><span class="valueText">{{leave_days}}days</span>
+                    <td><label class="textEnLft">Requested For:</label><span class="valueText">{{leave_days}}
+                            days</span>
                     </td>
                     <td><label class="textEnLft">Encashment Amount</label><span
                             class="valueText">{{total_amount}}</span>
                     </td>
                 </tr>
+            </table>
+        </section>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
+                <tr>
+                    <td>
+                        <b class="signArea"></b>
+                        <small>Requested By</small>
+                        <span>{{full_name}}</span>
+                        <small>{{designation}}</small>
+                    </td>
+                    {{#each detail}}
+                    <td><b class="signArea"></b>
+                        <small>{{desc1}}:{{value1}}</small>
+                        <span>{{desc2}}:{{value2}}</span>
+                        <small>{{desc3}}:{{value3}}</small>
+                    </td>{{/each }}
+
+                    <td><b class="signArea"></b>
+                        <small>Paid By</small>
+                        <span>{{posted_by}}</span>
+                        <small>{{payment_date}}</small>
+                    </td>
+                </tr>
+
+
             </table>
         </section>
 

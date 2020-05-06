@@ -107,7 +107,8 @@ export function addContractManagement(req, res, next) {
                         IncludeValues = [
                             "services_id",
                             "service_frequency",
-                            "service_price"
+                            "service_price",
+                            "comments"
                         ];
 
                         _mysql

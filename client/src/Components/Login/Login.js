@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { withRouter } from "react-router-dom";
-import { Spin, getPreferences } from "algaeh-react-components";
+import {
+  Spin,
+  getPreferences,
+  AlgaehModal,
+  AlgaehButton,
+  Input,
+} from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 import { setItem, clearItem } from "algaeh-react-components/storage";
 import Swal from "sweetalert2";
@@ -42,14 +48,30 @@ function Login(props) {
     happyBirthDay: "",
     loading: true,
   });
+  const [rspLoader, setRSPLoader] = useState(false);
+  const [pinPopup, setPinPopup] = useState(false);
+  const [pinNo, setPINNo] = useState({
+    pinOne: "",
+    pinTwo: "",
+    pinThree: "",
+    pinFour: "",
+    pinFive: "",
+  });
+  const [vPinloading, setVPinLoading] = useState(false);
   const [userImage, setUserImage] = useState("");
   const [remberMe, setRememberMe] = useState(
     remebermeUser !== null && remebermeUser !== "" ? true : false
   );
   const [loginLoad, setLoginLoad] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [changePassword, setChangePassword] = useState({
+    newPassword: "",
+    confirm: "",
+  });
+  const [showChangePassWord, setShowChangePassword] = useState(false);
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
+  const pinOneRef = useRef(undefined);
   const { clearAll, setSelectedMenuItem, setUserPreferencesData } = useContext(
     MainContext
   );
@@ -396,6 +418,128 @@ function Login(props) {
     document.cookie = "userName=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     window.location.reload(true);
   }
+  function resetPassWord(e) {
+    e.preventDefault();
+    const { username } = login;
+    setRSPLoader(true);
+    setChangePassword({ newPassword: "", confirm: "" });
+    setPINNo({
+      pinOne: "",
+      pinTwo: "",
+      pinThree: "",
+      pinFour: "",
+      pinFive: "",
+    });
+    algaehApiCall({
+      uri: "/apiAuth/resetPassword",
+      data: { username },
+      notoken: true,
+      method: "POST",
+      onSuccess: (response) => {
+        setRSPLoader(false);
+        setPinPopup(true);
+
+        swalMessage({
+          type: "success",
+          title: "please check your email",
+        });
+        pinOneRef.current.focus();
+      },
+      onCatch: (error) => {
+        setRSPLoader(false);
+        setPinPopup(false);
+
+        swalMessage({
+          type: "error",
+          title: error,
+        });
+      },
+    });
+  }
+  function onClickOK() {
+    const { username } = login;
+    setVPinLoading(true);
+    const { pinOne, pinTwo, pinThree, pinFour, pinFive } = pinNo;
+    const pin = pinOne + pinTwo + pinThree + pinFour + pinFive;
+    algaehApiCall({
+      uri: "/apiAuth/verifyPin",
+      data: { username, pinNo: pin },
+      notoken: true,
+      method: "POST",
+      onSuccess: (response) => {
+        setVPinLoading(false);
+        setPinPopup(false);
+        setShowChangePassword(true);
+        swalMessage({
+          type: "success",
+          title: "Successfully Verified",
+        });
+      },
+      onCatch: (error) => {
+        setVPinLoading(false);
+        setShowChangePassword(false);
+        swalMessage({
+          type: "error",
+          title: error,
+        });
+      },
+    });
+  }
+  function onChangePIN(e) {
+    const { name, value } = e.target;
+    const next = e.target.parentElement.getAttribute("next");
+    setPINNo((result) => {
+      return { ...result, [name]: value };
+    });
+    if (next !== null) document.getElementsByName(next)[0].focus();
+    if (name === "pinFive") {
+      document
+        .getElementsByClassName("ant-modal-footer")[0]
+        .querySelectorAll("button")[1]
+        .focus();
+    }
+  }
+  function onOnlyNumber(evt) {
+    const charCode = evt.which ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) return false;
+    return true;
+  }
+  function onChangeCreatePassword(e) {
+    const { name, value } = e.target;
+    setChangePassword((result) => {
+      return { ...result, [name]: value };
+    });
+  }
+  function onOKPassword() {
+    const { username } = login;
+    const { newPassword, confirm } = changePassword;
+    if (newPassword !== confirm) {
+      swalMessage({
+        type: "error",
+        title: "Password not matching",
+      });
+      return;
+    }
+    algaehApiCall({
+      uri: "/apiAuth/changePasswordRequest",
+      data: { username, newPassword },
+      notoken: true,
+      method: "PUT",
+      onSuccess: (response) => {
+        setShowChangePassword(false);
+        swalMessage({
+          type: "success",
+          title: "Please Login",
+        });
+      },
+      onCatch: (error) => {
+        swalMessage({
+          type: "error",
+          title: error,
+        });
+      },
+    });
+  }
   return (
     <div className="login bg">
       <Spin
@@ -424,6 +568,139 @@ function Login(props) {
                     <div className="col-12">
                       {showPassword === true ? (
                         <div className="col-12 passwordSec">
+                          <AlgaehModal
+                            width={350}
+                            title="Verify PIN"
+                            visible={pinPopup}
+                            centered={true}
+                            destroyOnClose={true}
+                            cancelText="Re-Send PIN"
+                            okText="Verify"
+                            cancelButtonProps={{ type: "primary" }}
+                            onCancel={resetPassWord}
+                            closable={false}
+                            onOk={onClickOK}
+                            okButtonProps={{ loading: vPinloading }}
+                          >
+                            <div className="row">
+                              <AlagehFormGroup
+                                div={{ className: "col-2 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "pinOne",
+                                  value: pinNo.pinOne,
+                                  events: {
+                                    onChange: onChangePIN,
+                                  },
+                                  others: {
+                                    next: "pinTwo",
+                                    ref: pinOneRef,
+                                    maxLength: "1",
+                                    onKeyDown: onOnlyNumber,
+                                  },
+                                }}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-2 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "pinTwo",
+                                  value: pinNo.pinTwo,
+                                  events: {
+                                    onChange: onChangePIN,
+                                  },
+                                  others: {
+                                    next: "pinThree",
+                                    maxLength: "1",
+                                    onKeyPress: onOnlyNumber,
+                                  },
+                                }}
+                              />
+
+                              <AlagehFormGroup
+                                div={{ className: "col-2 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "pinThree",
+                                  value: pinNo.pinThree,
+                                  events: {
+                                    onChange: onChangePIN,
+                                  },
+                                  others: {
+                                    next: "pinFour",
+                                    maxLength: "1",
+                                    onKeyPress: onOnlyNumber,
+                                  },
+                                }}
+                              />
+
+                              <AlagehFormGroup
+                                div={{ className: "col-2 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "pinFour",
+                                  value: pinNo.pinFour,
+                                  events: {
+                                    onChange: onChangePIN,
+                                  },
+                                  others: {
+                                    next: "pinFive",
+                                    maxLength: "1",
+                                    onKeyDown: onOnlyNumber,
+                                  },
+                                }}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-2 form-group" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "pinFive",
+                                  value: pinNo.pinFive,
+                                  events: {
+                                    onChange: onChangePIN,
+                                  },
+                                  others: {
+                                    maxLength: "1",
+                                    onKeyPress: onOnlyNumber,
+                                  },
+                                }}
+                              />
+                            </div>
+                          </AlgaehModal>
+                          <AlgaehModal
+                            title="Change Password"
+                            visible={showChangePassWord}
+                            destroyOnClose={true}
+                            onOk={onOKPassword}
+                            onCancel={() => {
+                              setShowChangePassword(false);
+                            }}
+                          >
+                            <div className="col-12 form-group">
+                              <label className="style_Label ">
+                                New Password
+                              </label>
+                              <Input.Password
+                                placeholder="New Password"
+                                defaultValue={changePassword.newPassword}
+                                name="newPassword"
+                                className="ant-input txt-fld"
+                                onChange={onChangeCreatePassword}
+                              ></Input.Password>
+                            </div>
+                            <div className="col-12 form-group">
+                              <label className="style_Label ">
+                                Confirm Password
+                              </label>
+                              <Input.Password
+                                placeholder="New Password"
+                                defaultValue={changePassword.confirm}
+                                name="confirm"
+                                className="ant-input txt-fld"
+                                onChange={onChangeCreatePassword}
+                              ></Input.Password>
+                            </div>
+                          </AlgaehModal>
                           {login.happyBirthDay !== "" ? (
                             <div class="wishMsg">
                               <div class="animated infinte bounceIn delay-1s messegeText">
@@ -518,9 +795,13 @@ function Login(props) {
                               </p>
                               <p className="frgtPass">
                                 Forgot Password? |{" "}
-                                <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting from ">
-                                  Request New Password
-                                </a>
+                                {rspLoader === true ? (
+                                  <label>Please wait generating request</label>
+                                ) : (
+                                  <a href="#" onClick={resetPassWord}>
+                                    Request New Password
+                                  </a>
+                                )}
                               </p>
                             </div>
                           </div>

@@ -5,7 +5,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../../Wrapper/algaehWrapper";
 
 import variableJson from "../../../../../utils/GlobalVariables.json";
@@ -15,14 +15,13 @@ import {
   otEntitleHandaler,
   employeeStatusHandler,
   dateFormater,
-  bankEventhandle
+  bankEventhandle,
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-
 
 class OfficalDetails extends Component {
   constructor(props) {
@@ -34,7 +33,7 @@ class OfficalDetails extends Component {
       reliving_date: undefined,
       // employee_status: null,
       inactive_date: undefined,
-      selectedLang: getCookie("Language")
+      selectedLang: getCookie("Language"),
     };
   }
 
@@ -51,8 +50,8 @@ class OfficalDetails extends Component {
           method: "GET",
           redux: {
             type: "BANK_GET_DATA",
-            mappingName: "banks"
-          }
+            mappingName: "banks",
+          },
         });
       }
       if (
@@ -65,8 +64,8 @@ class OfficalDetails extends Component {
           method: "GET",
           redux: {
             type: "COMPANY_ACC_DATA",
-            mappingName: "companyaccount"
-          }
+            mappingName: "companyaccount",
+          },
         });
       }
 
@@ -81,8 +80,8 @@ class OfficalDetails extends Component {
           data: { hospital_requires: false },
           redux: {
             type: "EMPLY_GET_DATA",
-            mappingName: "all_employees"
-          }
+            mappingName: "all_employees",
+          },
         });
       }
 
@@ -96,8 +95,8 @@ class OfficalDetails extends Component {
           method: "GET",
           redux: {
             type: "DSGTN_GET_DATA",
-            mappingName: "designations"
-          }
+            mappingName: "designations",
+          },
         });
       }
 
@@ -112,8 +111,8 @@ class OfficalDetails extends Component {
           data: { record_status: "A" },
           redux: {
             type: "EMP_GROUP_GET",
-            mappingName: "emp_groups"
-          }
+            mappingName: "emp_groups",
+          },
         });
       }
 
@@ -127,8 +126,8 @@ class OfficalDetails extends Component {
           method: "GET",
           redux: {
             type: "OVER_TIME_GET_DATA",
-            mappingName: "overTime"
-          }
+            mappingName: "overTime",
+          },
         });
       }
 
@@ -141,8 +140,8 @@ class OfficalDetails extends Component {
           method: "GET",
           redux: {
             type: "ORGS_GET_DATA",
-            mappingName: "branches"
-          }
+            mappingName: "branches",
+          },
         });
       }
       if (this.state.HIMS_Active === true) {
@@ -157,8 +156,8 @@ class OfficalDetails extends Component {
             data: { service_type_id: 1 },
             redux: {
               type: "SERVICES_GET_DATA",
-              mappingName: "depservices"
-            }
+              mappingName: "depservices",
+            },
           });
         }
       }
@@ -167,7 +166,7 @@ class OfficalDetails extends Component {
 
   render() {
     const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
-    console.log("this.state.HIMS_Active", this.state.HRMS_Active);
+
     return (
       <React.Fragment>
         <div
@@ -191,7 +190,7 @@ class OfficalDetails extends Component {
                   div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Assign Division/Branch",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "hospital_id",
@@ -200,27 +199,27 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "hospital_name",
                       valueField: "hims_d_hospital_id",
-                      data: this.props.branches
+                      data: this.props.branches,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "2"
+                      tabIndex: "2",
                     },
                     onClear: () => {
                       this.setState({
-                        hospital_id: null
+                        hospital_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        hospital_id: null
+                        hospital_id: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Appointemt Type",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "appointment_type",
@@ -229,27 +228,27 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: variableJson.EMP_APPT_TYPE
+                      data: variableJson.EMP_APPT_TYPE,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "2"
+                      tabIndex: "2",
                     },
                     onClear: () => {
                       this.setState({
-                        appointment_type: null
+                        appointment_type: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        appointment_type: null
+                        appointment_type: null,
                       });
-                    }
+                    },
                   }}
                 />{" "}
                 <AlagehAutoComplete
                   div={{ className: "col mandatory form-group" }}
                   label={{
                     forceLabel: "Employee Type",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "employee_type",
@@ -258,37 +257,37 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: variableJson.EMPLOYEE_TYPE
+                      data: variableJson.EMPLOYEE_TYPE,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "3"
+                      tabIndex: "3",
                     },
                     onClear: () => {
                       this.setState({
-                        employee_type: null
+                        employee_type: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        employee_type: null
+                        employee_type: null,
                       });
-                    }
+                    },
                   }}
                 />{" "}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory form-group" }}
                   label={{
                     fieldName: "date_of_joining",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "date_of_joining",
                     others: {
-                      tabIndex: "1"
-                    }
+                      tabIndex: "1",
+                    },
                   }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.date_of_joining}
                 />
@@ -300,12 +299,12 @@ class OfficalDetails extends Component {
                 <div className="col-3">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department"
+                      forceLabel: "Department",
                     }}
                   />
                   <h6>
                     {this.state.department_name === null ||
-                      this.state.department_name === undefined
+                    this.state.department_name === undefined
                       ? "------"
                       : this.state.department_name}
                   </h6>
@@ -314,7 +313,7 @@ class OfficalDetails extends Component {
                   div={{ className: "col-3 mandatory form-group" }}
                   label={{
                     forceLabel: "Sub Department",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "sub_department_id",
@@ -324,18 +323,18 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "sub_department_name",
                       valueField: "hims_d_sub_department_id",
-                      data: this.props.subdepartment
+                      data: this.props.subdepartment,
                     },
 
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        sub_department_id: null
+                        sub_department_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        sub_department_id: null
+                        sub_department_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -356,7 +355,7 @@ class OfficalDetails extends Component {
                   div={{ className: "col-3 mandatory form-group" }}
                   label={{
                     forceLabel: "Reporting to",
-                    isImp: false
+                    isImp: false,
                   }}
                   selector={{
                     name: "reporting_to_id",
@@ -365,27 +364,27 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "full_name",
                       valueField: "hims_d_employee_id",
-                      data: this.props.all_employees
+                      data: this.props.all_employees,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "2"
+                      tabIndex: "2",
                     },
                     onClear: () => {
                       this.setState({
-                        reporting_to_id: null
+                        reporting_to_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        reporting_to_id: null
+                        reporting_to_id: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col-3 mandatory form-group" }}
                   label={{
                     forceLabel: "Emp. Designation",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "employee_designation_id",
@@ -394,20 +393,20 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "designation",
                       valueField: "hims_d_designation_id",
-                      data: this.props.designations
+                      data: this.props.designations,
                     },
                     onChange: texthandle.bind(this, this),
                     others: {
-                      tabIndex: "2"
+                      tabIndex: "2",
                     },
                     onClear: () => {
                       this.setState({
-                        employee_designation_id: null
+                        employee_designation_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        employee_designation_id: null
+                        employee_designation_id: null,
                       });
-                    }
+                    },
                   }}
                 />
                 {this.state.HRMS_Active === true ? (
@@ -415,7 +414,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
                       forceLabel: "Employee Group",
-                      isImp: this.state.HRMS_Active
+                      isImp: this.state.HRMS_Active,
                     }}
                     selector={{
                       name: "employee_group_id",
@@ -424,29 +423,45 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "group_description",
                         valueField: "hims_d_employee_group_id",
-                        data: this.props.emp_groups
+                        data: this.props.emp_groups,
                       },
                       onChange: texthandle.bind(this, this),
                       others: {
-                        tabIndex: "2"
+                        tabIndex: "2",
                       },
                       onClear: () => {
                         this.setState({
-                          employee_group_id: null
+                          employee_group_id: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          employee_group_id: null
+                          employee_group_id: null,
                         });
-                      }
+                      },
                     }}
                   />
+                ) : null}
+
+                {this.state.HRMS_Active === true ? (
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Vaccation Accruval Days",
+                      }}
+                    />
+                    <h6>
+                      {this.state.monthly_accrual_days === null ||
+                      this.state.monthly_accrual_days === undefined
+                        ? "0 Days"
+                        : this.state.monthly_accrual_days + "Days"}
+                    </h6>
+                  </div>
                 ) : null}
                 {this.state.HRMS_Active === true ? (
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
                       forceLabel: "Employee Category",
-                      isImp: this.state.HRMS_Active
+                      isImp: this.state.HRMS_Active,
                     }}
                     selector={{
                       name: "employee_category",
@@ -455,20 +470,20 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: variableJson.EMP_CATEGORY
+                        data: variableJson.EMP_CATEGORY,
                       },
                       onChange: texthandle.bind(this, this),
                       others: {
-                        tabIndex: "2"
+                        tabIndex: "2",
                       },
                       onClear: () => {
                         this.setState({
-                          employee_category: null
+                          employee_category: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          employee_category: null
+                          employee_category: null,
                         });
-                      }
+                      },
                     }}
                   />
                 ) : null}
@@ -493,7 +508,7 @@ class OfficalDetails extends Component {
                         <span>
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Entitle for OverTime"
+                              forceLabel: "Entitle for OverTime",
                             }}
                           />
                         </span>
@@ -514,17 +529,17 @@ class OfficalDetails extends Component {
                               dataSource: {
                                 textField: "overtime_group_description",
                                 valueField: "hims_d_overtime_group_id",
-                                data: this.props.overTime
+                                data: this.props.overTime,
                               },
                               onChange: texthandle.bind(this, this),
                               onClear: () => {
                                 this.setState({
-                                  overtime_group_id: null
+                                  overtime_group_id: null,
                                 });
                                 this.props.EmpMasterIOputs.updateEmployeeTabs({
-                                  overtime_group_id: null
+                                  overtime_group_id: null,
                                 });
-                              }
+                              },
                             }}
                           />
                         ) : null}
@@ -536,7 +551,7 @@ class OfficalDetails extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
-                      fieldName: "services_id"
+                      fieldName: "services_id",
                     }}
                     selector={{
                       name: "services_id",
@@ -545,18 +560,18 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "service_name",
                         valueField: "hims_d_services_id",
-                        data: this.props.depservices
+                        data: this.props.depservices,
                       },
 
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          services_id: null
+                          services_id: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          services_id: null
+                          services_id: null,
                         });
-                      }
+                      },
                     }}
                   />
                 ) : null}
@@ -569,7 +584,7 @@ class OfficalDetails extends Component {
                   div={{ className: "col-3 mandatory form-group" }}
                   label={{
                     forceLabel: "Employee Status",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "title_id",
@@ -578,123 +593,123 @@ class OfficalDetails extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: variableJson.EMPLOYEE_STATUS
+                      data: variableJson.EMPLOYEE_STATUS,
                     },
                     onChange: employeeStatusHandler.bind(this, this),
 
                     onClear: () => {
                       this.setState({
-                        employee_status: null
+                        employee_status: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        employee_status: null
+                        employee_status: null,
                       });
-                    }
+                    },
                   }}
                 />{" "}
                 {this.state.employee_status === "I" ? (
                   <div className="col-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Inactive Date"
+                        forceLabel: "Inactive Date",
                       }}
                     />
                     <h6>
                       {this.state.inactive_date === null ||
-                        this.state.inactive_date === undefined
+                      this.state.inactive_date === undefined
                         ? "DD/MM/YYYY"
                         : dateFormater(this, this.state.inactive_date)}
                     </h6>
                   </div>
                 ) : null}
                 {this.state.employee_status !== "A" &&
-                  this.state.employee_status !== "I" ? (
-                    <React.Fragment>
-                      <AlgaehDateHandler
-                        div={{ className: "col-3 mandatory form-group" }}
-                        label={{
-                          forceLabel:
-                            this.state.employee_status === "A" ||
-                              this.state.employee_status === "I"
-                              ? "Date of leaving"
-                              : this.state.employee_status === "R"
-                                ? "Date of Resignation"
-                                : this.state.employee_status === "T"
-                                  ? "Date of Termination"
-                                  : this.state.employee_status === "E"
-                                    ? "Date of Retirement"
-                                    : "",
-                          isImp:
-                            this.state.employee_status === "R" ||
-                              this.state.employee_status === "T"
+                this.state.employee_status !== "I" ? (
+                  <React.Fragment>
+                    <AlgaehDateHandler
+                      div={{ className: "col-3 mandatory form-group" }}
+                      label={{
+                        forceLabel:
+                          this.state.employee_status === "A" ||
+                          this.state.employee_status === "I"
+                            ? "Date of leaving"
+                            : this.state.employee_status === "R"
+                            ? "Date of Resignation"
+                            : this.state.employee_status === "T"
+                            ? "Date of Termination"
+                            : this.state.employee_status === "E"
+                            ? "Date of Retirement"
+                            : "",
+                        isImp:
+                          this.state.employee_status === "R" ||
+                          this.state.employee_status === "T"
+                            ? true
+                            : false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "date_of_resignation",
+                        others: {
+                          disabled:
+                            this.state.enable_active_status === "I"
                               ? true
-                              : false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_resignation",
-                          others: {
-                            disabled:
-                              this.state.enable_active_status === "I"
-                                ? true
-                                : false
-                          }
-                        }}
-                        // maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this)
-                        }}
-                        value={this.state.date_of_resignation}
-                      />
+                              : false,
+                        },
+                      }}
+                      // maxDate={new Date()}
+                      events={{
+                        onChange: datehandle.bind(this, this),
+                      }}
+                      value={this.state.date_of_resignation}
+                    />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-2" }}
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Notice Period",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        value: this.state.notice_period,
+                        className: "txt-fld",
+                        name: "notice_period",
+
+                        events: {
+                          onChange: texthandle.bind(this, this),
+                        },
+                        others: {
+                          tabIndex: "7",
+                          type: "number",
+                        },
+                      }}
+                    />
+                    <div className="col-3">
+                      <AlgaehLabel
                         label={{
-                          forceLabel: "Notice Period",
-                          isImp: false
-                        }}
-                        textBox={{
-                          value: this.state.notice_period,
-                          className: "txt-fld",
-                          name: "notice_period",
-
-                          events: {
-                            onChange: texthandle.bind(this, this)
-                          },
-                          others: {
-                            tabIndex: "7",
-                            type: "number"
-                          }
+                          forceLabel: "Expected Relieving Date",
                         }}
                       />
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Expectec Relieving Date"
-                          }}
-                        />
-                        <h6>
-                          {this.state.reliving_date === null ||
-                            this.state.reliving_date === undefined
-                            ? "DD/MM/YYYY"
-                            : dateFormater(this, this.state.reliving_date)}
-                        </h6>
-                      </div>
-                      <AlgaehDateHandler
-                        div={{ className: "col-3" }}
-                        label={{ forceLabel: "Date of Exit" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "exit_date"
-                        }}
-                        minDate={this.state.date_of_resignation}
-                        events={{
-                          onChange: datehandle.bind(this, this)
-                        }}
-                        value={this.state.exit_date}
-                      />
-                    </React.Fragment>
-                  ) : null}
+                      <h6>
+                        {this.state.reliving_date === null ||
+                        this.state.reliving_date === undefined
+                          ? "DD/MM/YYYY"
+                          : dateFormater(this, this.state.reliving_date)}
+                      </h6>
+                    </div>
+                    <AlgaehDateHandler
+                      div={{ className: "col-3" }}
+                      label={{ forceLabel: "Date of Exit" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "exit_date",
+                      }}
+                      minDate={this.state.date_of_resignation}
+                      events={{
+                        onChange: datehandle.bind(this, this),
+                      }}
+                      value={this.state.exit_date}
+                    />
+                  </React.Fragment>
+                ) : null}
               </div>
               {/* <h5>
                 <span>Accomodation Details</span>
@@ -732,7 +747,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Select Employee Bank",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "employee_bank_id",
@@ -741,17 +756,17 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "bank_name",
                         valueField: "hims_d_bank_id",
-                        data: this.props.banks
+                        data: this.props.banks,
                       },
                       onChange: bankEventhandle.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          employee_bank_id: null
+                          employee_bank_id: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          employee_bank_id: null
+                          employee_bank_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -759,16 +774,16 @@ class OfficalDetails extends Component {
                     div={{ className: "col-6 mandatory form-group" }}
                     label={{
                       forceLabel: "SWIFT Code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.employee_bank_ifsc_code,
                       className: "txt-fld",
                       name: "employee_bank_ifsc_code",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
-                      disabled: true
+                      disabled: true,
                     }}
                   />
 
@@ -776,7 +791,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col-12 mandatory form-group" }}
                     label={{
                       forceLabel: "Account No.",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.employee_account_number,
@@ -784,11 +799,11 @@ class OfficalDetails extends Component {
                       name: "employee_account_number",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
                 </div>
@@ -800,7 +815,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Select Employeer Bank",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "company_bank_id",
@@ -809,17 +824,17 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "bank_name",
                         valueField: "bank_id",
-                        data: this.props.companyaccount
+                        data: this.props.companyaccount,
                       },
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          company_bank_id: null
+                          company_bank_id: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          company_bank_id: null
+                          company_bank_id: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -827,7 +842,7 @@ class OfficalDetails extends Component {
                     div={{ className: "col mandatory form-group" }}
                     label={{
                       forceLabel: "Mode of Payment",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "mode_of_payment",
@@ -836,17 +851,17 @@ class OfficalDetails extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: variableJson.MODE_OF_PAYMENT
+                        data: variableJson.MODE_OF_PAYMENT,
                       },
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          mode_of_payment: null
+                          mode_of_payment: null,
                         });
                         this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          mode_of_payment: null
+                          mode_of_payment: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -869,7 +884,7 @@ function mapStateToProps(state) {
     emp_groups: state.emp_groups,
     overTime: state.overTime,
     branches: state.branches,
-    depservices: state.depservices
+    depservices: state.depservices,
   };
 }
 
@@ -883,7 +898,7 @@ function mapDispatchToProps(dispatch) {
       getEmpGroups: AlgaehActions,
       getOvertimeGroups: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getDepServices: AlgaehActions
+      getDepServices: AlgaehActions,
     },
     dispatch
   );
