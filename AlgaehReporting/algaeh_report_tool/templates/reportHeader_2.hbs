@@ -8,29 +8,25 @@
         font-weight: normal;
         font-size: 11px;
         overflow: hidden;
-        border-bottom: 0.06em dashed #ccc;
-        background-color: #e8feff !important;
     }
 
     .col-left {
         float: left;
-        width: 20%;
+        width: 30%;
         text-align: left;
-        background: red;
     }
 
     .col-center {
-        width: 60%;
+        width: 40%;
         text-align: center;
-        background: blue;
-        float: left;
+        float: none;
+        margin: 0 auto;
     }
 
     .col-right {
         float: right;
-        width: 20%;
+        width: 25%;
         text-align: right;
-        background: green;
     }
 
     .hospitalLogo img {
@@ -76,27 +72,39 @@
         display: block;
         color: #ccc;
     }
+
+    .headerFooterStyle {
+        width: 100%;
+        height: 10px;
+        float: left;
+        text-align: center;
+        border-top: 0.5rem dotted #ccc;
+        font-size: 8px;
+        margin-top: 5px;
+    }
 </style>
 
 <body>
 
-    {{!--   <div class="reportHeaderCntr">
-
-        <div class="col-left">
+    <div class="reportHeaderCntr">
+        <div class="col-right">
             <p><b>{{hospital_name}}</b></p>
             <p>{{hospital_address}}</p>
+
+        </div>
+        <div class="col-left">
+            <h4>{{{report_name_for_header}}}</h4>
+            <p>Report Generated Date: {{currentDateTime 'date'}}</p>
+            <p>MOT Registration No: <span>2051054263</span></p>
         </div>
         <div class="col-center">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
-            <h4>{{{report_name_for_header}}}</h4>
-            {{!-- <p>Report Generated Date: {{currentDateTime 'date'}}</p> --}}
-    {{!-- <p class="showFilterValue">{{#each filter}}
-                <span><small>{{label}}:</small>{{labelValue}} </span>
-                {{/each }}</p> --}}
-    </div>
-
-    <div class="col-right"></div>
-
+            <p><b>{{organisation_name}}</b></p>
+        </div>
+        <div class="headerFooterStyle">
+            <p><span>Tel: +966 13 858 7000</span> / <span>Fax: +966 13 858 1324</span> / <span>E-Mail:
+                    info@twareat.com</span></p>
+        </div>
     </div>
 
     {{!--  <table class="reportHeaderCntr">
