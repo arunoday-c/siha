@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "algaeh-mysql": "^1.3.4",
+    "axios": "^0.19.2",
     "blob": "0.0.5",
     "body-parser": "^1.18.2",
     "bwip-js": "^1.7.3",
