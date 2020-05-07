@@ -151,7 +151,7 @@ class FinalSettlement extends Component {
 
   setNetEarnings() {
     let net_earnings =
-      parseFloat(this.state.data.total_earnings) +
+      parseFloat(this.state.total_earnings) +
       parseFloat(this.state.data.total_leave_encash_amount) +
       parseFloat(this.state.data.gratuity_amount) +
       parseFloat(this.state.data.total_salary);
@@ -168,7 +168,7 @@ class FinalSettlement extends Component {
 
   setNetDeductions() {
     let net_deduction =
-      parseFloat(this.state.data.total_deductions) +
+      parseFloat(this.state.total_deductions) +
       parseFloat(this.state.data.total_loan_amount);
 
     this.setState(
@@ -184,6 +184,7 @@ class FinalSettlement extends Component {
     let net_amount =
       parseFloat(this.state.net_earnings) -
       parseFloat(this.state.net_deductions);
+
     this.setState({
       net_amount: net_amount,
     });
@@ -192,7 +193,6 @@ class FinalSettlement extends Component {
     let total_earnings = Enumerable.from(this.state.earningList).sum((s) =>
       parseInt(s.amount, 10)
     );
-
     this.setState(
       {
         total_earnings: total_earnings ? total_earnings : 0,
@@ -244,7 +244,6 @@ class FinalSettlement extends Component {
       ScreenCode: getCookie("ScreenCode"),
     };
 
-    //  console.log("Send Data:", JSON.stringify(send_data));
     AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/finalsettlement/save",
