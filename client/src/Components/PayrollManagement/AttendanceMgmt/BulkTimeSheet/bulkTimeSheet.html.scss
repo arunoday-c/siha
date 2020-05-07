@@ -36,7 +36,7 @@
           min-width: 80px;
           max-width: 80px;
           min-height: 80px;
-          background: #c1fff9 !important;
+          background: hsl(174, 100%, 88%) !important;
           &:first-child {
             position: -webkit-sticky;
             position: sticky;
@@ -107,6 +107,7 @@
                 font-weight: bold;
               }
             }
+
             span {
               display: inline-block;
               width: 100%;
@@ -119,7 +120,12 @@
                 border: none;
               }
               &:hover {
-                background: none;
+                background: linear-gradient(
+                  90deg,
+                  rgba(255, 255, 255, 1) 0%,
+                  rgba(255, 255, 255, 1) 99%,
+                  rgba(43, 53, 49, 1) 100%
+                );
                 cursor: default;
               }
             }
