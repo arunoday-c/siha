@@ -1047,48 +1047,13 @@ class FinalSettlement extends Component {
             </div>
           </div>
 
-          <div className="col-3" style={{ marginBottom: 40 }}>
+          <div className="col-12" style={{ marginBottom: 40 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12">
-                    <label className="style_Label ">Total Salary</label>
-                    <h6>
-                      {FsData.total_salary
-                        ? GetAmountFormart(FsData.total_salary)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  <div className="col-12">
-                    <label className="style_Label ">Gratuity Amount</label>
-                    <h6>
-                      {FsData.gratuity_amount
-                        ? GetAmountFormart(FsData.gratuity_amount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  <div className="col-12">
-                    <label className="style_Label ">Leave Encashment</label>
-                    <h6>
-                      {FsData.total_leave_encash_amount
-                        ? GetAmountFormart(FsData.total_leave_encash_amount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-9" style={{ marginBottom: 40 }}>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-4">
                     <div className="row">
-                      <div className="col-12">
+                      {/* <div className="col-12">
                         <label className="style_Label ">Net Earnings</label>
                         <h6>
                           {GetAmountFormart(this.state.net_earnings)
@@ -1104,9 +1069,45 @@ class FinalSettlement extends Component {
                             ? GetAmountFormart(this.state.net_deductions)
                             : GetAmountFormart(0)}
                         </h6>
-                      </div>
-                      <div className="col-12">
+                      </div> */}
+                      <div className="col">
                         <label className="style_Label ">Net Amount</label>
+                        <h6>
+                          {GetAmountFormart(this.state.net_amount)
+                            ? GetAmountFormart(this.state.net_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Total Salary</label>
+                        <h6>
+                          {FsData.total_salary
+                            ? GetAmountFormart(FsData.total_salary)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Gratuity Amount</label>
+                        <h6>
+                          {FsData.gratuity_amount
+                            ? GetAmountFormart(FsData.gratuity_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Leave Encashment</label>
+                        <h6>
+                          {FsData.total_leave_encash_amount
+                            ? GetAmountFormart(FsData.total_leave_encash_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">
+                          Final Payble Amount
+                        </label>
                         <h6 style={{ fontSize: "2em" }}>
                           {GetAmountFormart(this.state.net_amount)
                             ? GetAmountFormart(this.state.net_amount)
@@ -1115,9 +1116,9 @@ class FinalSettlement extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-8">
+                  <div className="col-12">
                     <div className="row">
-                      <div className="col">
+                      <div className="col-12">
                         <div className="customCheckbox">
                           <label className="checkbox inline">
                             <input
@@ -1137,7 +1138,7 @@ class FinalSettlement extends Component {
                         </div>
                       </div>
 
-                      <div className="col-12">
+                      <div className="col">
                         <label>Remarks</label>
                         <textarea
                           name="remarks"
@@ -1162,7 +1163,9 @@ class FinalSettlement extends Component {
                 onClick={this.saveFinalSettlement.bind(this)}
                 disabled={this.state.disableSave}
               >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Send for Payment", returnText: true }}
+                />
               </button>
 
               <button
@@ -1175,14 +1178,14 @@ class FinalSettlement extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-other">
+              {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Print",
-                    //   returnText: true
+                     returnText: true
                   }}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
