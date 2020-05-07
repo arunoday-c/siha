@@ -24,32 +24,18 @@ class IssueCertificate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      extra: {},
       hospital_id: null,
-      loading_Process: false,
+
+      employee_name: null,
       certificate_type: null,
       certificate_types: [],
       kpi_parameters: [],
+      hims_d_employee_id: null,
     };
   }
 
   componentWillUnmount() {
     this.clearState();
-  }
-
-  getDateRange(startDate, endDate) {
-    var dates = [];
-
-    var currDate = moment(startDate).startOf("day");
-    var lastDate = moment(endDate).startOf("day");
-
-    var now = currDate.clone();
-
-    while (now.isSameOrBefore(lastDate)) {
-      dates.push(now.format("YYYYMMDD"));
-      now.add(1, "days");
-    }
-    return dates;
   }
 
   static contextType = MainContext;
@@ -90,7 +76,6 @@ class IssueCertificate extends Component {
   }
 
   employeeSearch() {
-    this.clearState();
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee,
@@ -102,127 +87,67 @@ class IssueCertificate extends Component {
         callBack(text);
       },
       onRowSelect: (row) => {
-        this.setState(
-          {
-            employee_name: row.full_name,
-            employee_id: row.hims_d_employee_id,
-          },
-          () => this.getEmployees()
-        );
+        this.setState({
+          employee_name: row.full_name,
+          hims_d_employee_id: row.hims_d_employee_id,
+        });
       },
-    });
-  }
-
-  changeTexts(e) {
-    this.setState({
-      [e.target.name]: e.target.value,
     });
   }
 
   clearState() {
     this.setState({
       employee_name: null,
-      full_name: null,
-      loading_Process: false,
+      certificate_type: null,
+      certificate_types: [],
+      kpi_parameters: [],
+      hims_d_employee_id: null,
     });
   }
 
-  IssueCertificate() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      querySelector: "data-validate='apply-leave-div'",
-      onSuccess: () => {
-        AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/leave/applyEmployeeLeave",
-          method: "POST",
-          module: "hrManagement",
-          data: {
-            employee_id: this.state.employee_id,
-            sub_department_id: this.state.sub_department_id,
-            hospital_id: this.state.hospital_id,
-            ...this.state.extra,
-          },
-          onSuccess: (res) => {
-            AlgaehLoader({ show: false });
-            if (res.data.success) {
-              swalMessage({
-                title: "Leave Applied Successfully",
-                type: "success",
-              });
-              this.setState({ loading_Process: false });
-              this.getEmployeeLeaveHistory();
-              this.clearState();
-            } else if (!res.data.success) {
-              this.setState({ loading_Process: false }, () => {
-                swalMessage({
-                  title: res.data.records.message,
-                  type: "error",
-                });
-              });
-            }
-          },
-          onCatch: (err) => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: err.message,
-              type: "error",
-            });
-          },
-        });
-      },
+  searchSelect(data) {
+    this.setState({
+      employee_id: data.hims_d_employee_id,
+      full_name: data.full_name,
+      display_name: data.full_name,
+      sub_department_id: data.sub_department_id,
     });
   }
-
-  getEmployees() {
+  onChangeHandler(e) {
+    const { name, value } = e;
+    let certificate = {};
+    if (name === "certificate_type") {
+      certificate = { kpi_parameters: e.selected.kpi_parameters };
+    }
+    this.setState({ [name]: value, ...certificate });
+  }
+  generateCertificate() {
     algaehApiCall({
-      uri: "/employee/get",
-      module: "hrManagement",
-      data: {
-        hims_d_employee_id: this.state.employee_id,
-      },
+      uri: "/getDocsReports",
       method: "GET",
-      onSuccess: (res) => {
-        this.setState(
-          {
-            employee: res.data.records[0],
-          },
-          () => {}
-        );
+      module: "reports",
+      headers: {
+        Accept: "blob",
       },
-      onFailure: (err) => {
+      others: { responseType: "blob" },
+      data: {
+        parameters: { hims_d_employee_id: this.state.hims_d_employee_id },
+        _id: this.state.certificate_type,
+      },
+      onSuccess: (response) => {
+        const urlBlob = URL.createObjectURL(response.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+        window.open(origin);
+      },
+      onCatch: (error) => {
         swalMessage({
-          title: err.message,
+          title: error.message,
           type: "error",
         });
       },
     });
   }
-
-  searchSelect(data) {
-    this.setState(
-      {
-        employee_id: data.hims_d_employee_id,
-        full_name: data.full_name,
-        display_name: data.full_name,
-        sub_department_id: data.sub_department_id,
-      },
-      () => this.getEmployees()
-    );
-  }
-  onChangeHandler(e) {
-    debugger;
-    const { name, value } = e;
-    // let certificate={};
-    // if(name==="certificate_type"){
-    //   certificate
-    // }
-    this.setState({ [name]: value });
-  }
   render() {
-    // let leaveData = this.state.emp_leaves_data
-    //   ? this.state.emp_leaves_data
-    //   : [];
     return (
       <React.Fragment>
         <div className="row apply_leave">
@@ -277,6 +202,7 @@ class IssueCertificate extends Component {
                       onClear: () => {
                         this.setState({
                           certificate_type: null,
+                          kpi_parameters: [],
                         });
                       },
                     }}
@@ -300,7 +226,7 @@ class IssueCertificate extends Component {
                       Clear
                     </button>
                     <button
-                      // onClick={this.applyLeave.bind(this)}
+                      onClick={this.generateCertificate.bind(this)}
                       type="button"
                       className="btn btn-primary"
                       disabled={this.state.Request_enable}
