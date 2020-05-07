@@ -81,7 +81,7 @@ class HRSettings extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Template Master",
+                    forceLabel: "Certificate Master",
                   }}
                 />
               ),
