@@ -621,3 +621,14 @@ body {
 .footerSeal {
   text-align: right;
 }
+.terms_loop{
+  margin:0 20px;
+  padding:0;
+}
+
+.terms_loop li{
+  margin:0;
+  padding:0;
+  line-height:15px;
+  font-size:11px;
+}

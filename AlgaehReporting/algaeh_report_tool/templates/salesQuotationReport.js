@@ -13,7 +13,8 @@ const executePDF = function executePDFMethod(options) {
       let strQuery = "";
       if (input.HRMNGMT_Active) {
         strQuery =
-          "SELECT SQ.*, C.customer_name, E.full_name as employee_name from hims_f_sales_quotation SQ \
+          "SELECT SQ.*, C.customer_name, E.full_name as employee_name, E.primary_contact_no, E.work_email\
+          from hims_f_sales_quotation SQ \
           inner join  hims_d_customer C on  SQ.customer_id = C.hims_d_customer_id \
           inner join  hims_d_employee E on  SQ.sales_person_id = E.hims_d_employee_id \
           where SQ.hims_f_sales_quotation_id =? ";
@@ -31,6 +32,21 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(headerResult => {
+          // console.log("headerResult.comment_list", headerResult.terms_conditions)
+
+          // const str = "1*2"
+          // var string = str.split("*");
+
+          // console.log(string);
+
+          headerResult[0].comment_list =
+            headerResult[0].terms_conditions !== null
+              ? headerResult[0].terms_conditions.split("<br/>")
+              : [];
+
+
+          // // headerResult.comment_list
+          console.log("headerResult.comment_list", headerResult[0].comment_list)
           options.mysql
             .executeQuery({
               query:

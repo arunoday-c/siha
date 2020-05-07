@@ -390,14 +390,14 @@ class LeaveEncashmentAuth extends Component {
                                   row
                                 )}
                               />
-                              <i
+                              {/* <i
                                 className="fas fa-print"
                                 onClick={generateLeaveEncashSlip.bind(
                                   this,
                                   this,
                                   row
                                 )}
-                              />
+                              /> */}
                             </span>
                           );
                         },

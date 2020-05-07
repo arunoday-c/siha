@@ -15,7 +15,8 @@
                 <div>
                     {{!-- <h3>Customer Details</h3> --}}
                     <p>Customer Name:<span class="valueText">{{customer_name}}</span></p>
-                    <p>Sales Person Name:<span class="valueText">{{employee_name}}</span></p>
+                    <p>Sales Person Name/Contact No/Email:<span
+                            class="valueText">{{employee_name}}/{{primary_contact_no}}/{{work_email}}</span></p>
                     <p>Delivery Date:<span class="valueText">{{delivery_date}}</span></p>
                 </div>
 
@@ -101,13 +102,12 @@
         </section>
         {{/ifCond}}
         <section>
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td><label class=""><b>Terms & Conditions</b></label>:<br>
-                        {{{terms_conditions }}}
-                    </td>
-                </tr>
-            </table>
+
+            <h4> Terms & Conditions: </h4>
+            <ol class="terms_loop"> {{#each comment_list}}
+                <li>{{[]}}</li> {{/each}}
+            </ol>
+
         </section>
         <div class="footerSeal"><img src="{{imageSource 'images/clientSeal.png'}}" /></div>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

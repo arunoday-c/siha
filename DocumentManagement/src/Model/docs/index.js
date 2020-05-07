@@ -135,5 +135,35 @@ export default (db) => {
             .end();
         });
     },
+    getDocumentById: (req, res) => {
+      const { _id } = req.query;
+      documentModel
+        .findOne({ _id })
+        .select("_id kpi_type kpi_name kpi_query kpi_parameters")
+        .then((result) => {
+          res.status(200).json({ success: true, result });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            success: false,
+            message: error,
+          });
+        });
+    },
+    getDocumentMasterById: (req, res) => {
+      const { kpi_id } = req.query;
+      documentMasterModel
+        .findOne({ kpi_id })
+        .select("kpi_html")
+        .then((result) => {
+          res.status(200).json({ success: true, result });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            success: false,
+            message: error,
+          });
+        });
+    },
   };
 };

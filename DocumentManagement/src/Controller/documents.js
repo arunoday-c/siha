@@ -6,7 +6,13 @@ export default (db) => {
   const api = Router();
   const { saveDocument, getDocument, deleteDocument } = docs(db);
   const { saveLogo, getLogo } = logos(db);
-  const { saveDocumentKPI, getDocumentKPI, saveDocumentMaster } = KPI(db);
+  const {
+    saveDocumentKPI,
+    getDocumentKPI,
+    saveDocumentMaster,
+    getDocumentById,
+    getDocumentMasterById,
+  } = KPI(db);
   api.post("/save", saveDocument);
   api.get("/get", getDocument);
   api.delete("/delete", deleteDocument);
@@ -15,5 +21,7 @@ export default (db) => {
   api.post("/saveKPI", saveDocumentKPI);
   api.get("/getKPI", getDocumentKPI);
   api.post("/saveKPIMaster", saveDocumentMaster);
+  api.get("/getDocumentById", getDocumentById);
+  api.get("/getDocumentMasterById", getDocumentMasterById);
   return api;
 };
