@@ -149,18 +149,9 @@ class FinalSettlement extends Component {
     }
   }
 
-  setNetAmount() {
-    let net_amount =
-      parseFloat(this.state.net_earnings) -
-      parseFloat(this.state.net_deductions);
-    this.setState({
-      net_amount: net_amount,
-    });
-  }
-
   setNetEarnings() {
     let net_earnings =
-      parseFloat(this.state.data.total_earnings) +
+      parseFloat(this.state.total_earnings) +
       parseFloat(this.state.data.total_leave_encash_amount) +
       parseFloat(this.state.data.gratuity_amount) +
       parseFloat(this.state.data.total_salary);
@@ -177,7 +168,7 @@ class FinalSettlement extends Component {
 
   setNetDeductions() {
     let net_deduction =
-      parseFloat(this.state.data.total_deductions) +
+      parseFloat(this.state.total_deductions) +
       parseFloat(this.state.data.total_loan_amount);
 
     this.setState(
@@ -189,12 +180,19 @@ class FinalSettlement extends Component {
       }
     );
   }
+  setNetAmount() {
+    let net_amount =
+      parseFloat(this.state.net_earnings) -
+      parseFloat(this.state.net_deductions);
 
+    this.setState({
+      net_amount: net_amount,
+    });
+  }
   setTotalEarnings() {
     let total_earnings = Enumerable.from(this.state.earningList).sum((s) =>
       parseInt(s.amount, 10)
     );
-
     this.setState(
       {
         total_earnings: total_earnings ? total_earnings : 0,
@@ -246,7 +244,6 @@ class FinalSettlement extends Component {
       ScreenCode: getCookie("ScreenCode"),
     };
 
-    //  console.log("Send Data:", JSON.stringify(send_data));
     AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/finalsettlement/save",
@@ -586,46 +583,12 @@ class FinalSettlement extends Component {
             </h6>
           </div>
 
-          {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6>
-                  {this.state.employee_name
-                    ? this.state.employee_name
-                    : "------"}
-                </h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                  onClick={this.employeeSearch.bind(this)}
-                />
-              </div>
-            </div>
-          </div> */}
-
           <div className="col">
             <label className="style_Label ">Employee Code</label>
             <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
           </div>
 
-          <div className="col">
+          <div className="col-4">
             <label className="style_Label ">Employee Name</label>
             <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
           </div>
@@ -645,27 +608,13 @@ class FinalSettlement extends Component {
           </div>
         </div>
         <div className="row" style={{ marginTop: 120 }}>
-          {/* <div className="col-12">
-            <div
-              className="portlet portlet-bordered margin-bottom-15"
-              style={{ padding: 0 }}
-            >
-              <div className="portlet-body">
-                <div className="col-12" style={{ marginTop: 7 }}>
-                  <div className="row">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
-
           <div className="col-8">
             <div className="row">
               <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Earnings</h3>
+                      <h3 className="caption-subject">Other Earnings</h3>
                     </div>
                     <div className="actions" />
                   </div>
@@ -802,29 +751,26 @@ class FinalSettlement extends Component {
                           }}
                         />
                       </div>
-                      <div className="col">
+                      {/* <div className="col">
                         <label className="style_Label ">Total Earnings</label>
                         <h6>
                           {FsData.total_salary
                             ? GetAmountFormart(this.state.total_earnings)
                             : GetAmountFormart(0)}
                         </h6>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
               </div>
+
               <div className="col-6">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Employee Deduction</h3>
+                      <h3 className="caption-subject">Other Deduction</h3>
                     </div>
-                    <div className="actions">
-                      {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" />
-                        </a> */}
-                    </div>
+                    <div className="actions"></div>
                   </div>
 
                   <div className="portlet-body">
@@ -961,14 +907,14 @@ class FinalSettlement extends Component {
                         />
                       </div>
 
-                      <div className="col">
+                      {/* <div className="col">
                         <label className="style_Label ">Total Deductions</label>
                         <h6>
                           {FsData.total_salary
                             ? GetAmountFormart(this.state.total_deductions)
                             : GetAmountFormart(0)}
                         </h6>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -982,7 +928,7 @@ class FinalSettlement extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Employee Loans</h3>
+                      <h3 className="caption-subject">Pending Loans</h3>
                     </div>
                     <div className="actions">
                       {/*    <a className="btn btn-primary btn-circle active">
@@ -1032,6 +978,72 @@ class FinalSettlement extends Component {
                           }}
                         />
                       </div>
+                      {/* <div className="col">
+                        <label className="style_Label ">Total Loan</label>
+                        <h6>
+                          {FsData.total_loan_amount
+                            ? GetAmountFormart(FsData.total_loan_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div> */}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-12" style={{ marginBottom: 40 }}>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    <div className="row">
+                      <div className="col">
+                        <label className="style_Label ">Total Salary</label>
+                        <h6>
+                          {FsData.total_salary
+                            ? GetAmountFormart(FsData.total_salary)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>{" "}
+                      <i className="fas fa-plus calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">Gratuity Amount</label>
+                        <h6>
+                          {FsData.gratuity_amount
+                            ? GetAmountFormart(FsData.gratuity_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>{" "}
+                      <i className="fas fa-plus calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">Leave Encashment</label>
+                        <h6>
+                          {FsData.total_leave_encash_amount
+                            ? GetAmountFormart(FsData.total_leave_encash_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>{" "}
+                      <i className="fas fa-plus calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">Total Earnings</label>
+                        <h6>
+                          {FsData.total_salary
+                            ? GetAmountFormart(this.state.total_earnings)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>{" "}
+                      <i className="fas fa-minus calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">Total Deduction</label>
+                        <h6>
+                          {FsData.total_salary
+                            ? GetAmountFormart(this.state.total_deductions)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>{" "}
+                      <i className="fas fa-minus calcSybmbol"></i>
                       <div className="col">
                         <label className="style_Label ">Total Loan</label>
                         <h6>
@@ -1040,74 +1052,12 @@ class FinalSettlement extends Component {
                             : GetAmountFormart(0)}
                         </h6>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-3" style={{ marginBottom: 40 }}>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12">
-                    <label className="style_Label ">Total Salary</label>
-                    <h6>
-                      {FsData.total_salary
-                        ? GetAmountFormart(FsData.total_salary)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  <div className="col-12">
-                    <label className="style_Label ">Gratuity Amount</label>
-                    <h6>
-                      {FsData.gratuity_amount
-                        ? GetAmountFormart(FsData.gratuity_amount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  <div className="col-12">
-                    <label className="style_Label ">Leave Encashment</label>
-                    <h6>
-                      {FsData.total_leave_encash_amount
-                        ? GetAmountFormart(FsData.total_leave_encash_amount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-9" style={{ marginBottom: 40 }}>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-4">
-                    <div className="row">
-                      <div className="col-12">
-                        <label className="style_Label ">Net Earnings</label>
+                      <i className="fas fa-equals calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">
+                          Final Payble Amount
+                        </label>
                         <h6>
-                          {GetAmountFormart(this.state.net_earnings)
-                            ? GetAmountFormart(this.state.net_earnings)
-                            : GetAmountFormart(0)}
-                        </h6>
-                      </div>
-
-                      <div className="col-12">
-                        <label className="style_Label ">Net Deduction</label>
-                        <h6>
-                          {GetAmountFormart(this.state.net_deductions)
-                            ? GetAmountFormart(this.state.net_deductions)
-                            : GetAmountFormart(0)}
-                        </h6>
-                      </div>
-                      <div className="col-12">
-                        <label className="style_Label ">Net Amount</label>
-                        <h6 style={{ fontSize: "2em" }}>
                           {GetAmountFormart(this.state.net_amount)
                             ? GetAmountFormart(this.state.net_amount)
                             : GetAmountFormart(0)}
@@ -1115,9 +1065,9 @@ class FinalSettlement extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-8">
+                  <div className="col-12">
                     <div className="row">
-                      <div className="col">
+                      <div className="col-12">
                         <div className="customCheckbox">
                           <label className="checkbox inline">
                             <input
@@ -1137,7 +1087,7 @@ class FinalSettlement extends Component {
                         </div>
                       </div>
 
-                      <div className="col-12">
+                      <div className="col">
                         <label>Remarks</label>
                         <textarea
                           name="remarks"
@@ -1162,7 +1112,9 @@ class FinalSettlement extends Component {
                 onClick={this.saveFinalSettlement.bind(this)}
                 disabled={this.state.disableSave}
               >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Send for Payment", returnText: true }}
+                />
               </button>
 
               <button
@@ -1175,14 +1127,14 @@ class FinalSettlement extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-other">
+              {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Print",
-                    //   returnText: true
+                     returnText: true
                   }}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
