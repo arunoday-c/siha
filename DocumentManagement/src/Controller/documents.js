@@ -12,6 +12,8 @@ export default (db) => {
     saveDocumentMaster,
     getDocumentById,
     getDocumentMasterById,
+    saveCertificateIssued,
+    getCertificateIssuedList,
   } = KPI(db);
   api.post("/save", saveDocument);
   api.get("/get", getDocument);
@@ -23,5 +25,7 @@ export default (db) => {
   api.post("/saveKPIMaster", saveDocumentMaster);
   api.get("/getDocumentById", getDocumentById);
   api.get("/getDocumentMasterById", getDocumentMasterById);
+  api.post("/saveCertificateIssued", saveCertificateIssued);
+  api.get("/getIssuedCertificates", getCertificateIssuedList);
   return api;
 };
