@@ -411,7 +411,7 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
     try {
         let inputParam = { ...req.body };
 
-        let complete = "Y";
+        let complete = inputParam.complete === "N" ? "N" : "Y";
 
         const partial_recived = new LINQ(inputParam.inventory_stock_detail)
             .Where(w => w.quantity_outstanding != 0)

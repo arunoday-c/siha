@@ -212,9 +212,9 @@ const AcknowledgeTransferEntry = $this => {
       InputObj.pharmacy_stock_detail[i].expiry_date === null
         ? null
         : moment(
-            InputObj.pharmacy_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD");
+          InputObj.pharmacy_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
   }
 
   InputObj.ScreenCode = getCookie("ScreenCode");
@@ -299,9 +299,9 @@ const SaveTransferEntry = $this => {
       InputObj.pharmacy_stock_detail[i].expiry_date === null
         ? null
         : moment(
-            InputObj.pharmacy_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD");
+          InputObj.pharmacy_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
@@ -312,6 +312,10 @@ const SaveTransferEntry = $this => {
     } else {
       delete InputObj.stock_detail[j].batches;
     }
+  }
+
+  if (InputObj.stock_detail.length !== InputObj.inventory_stock_detail.length) {
+    InputObj.complete = "N"
   }
 
   let stock_detail = _.filter(InputObj.stock_detail, f => {

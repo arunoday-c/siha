@@ -153,6 +153,10 @@ const SaveDispatchNote = $this => {
     }
   }
 
+  if (InputObj.stock_detail.length !== InputObj.inventory_stock_detail.length) {
+    InputObj.complete = "N"
+  }
+
   let stock_detail = _.filter(InputObj.stock_detail, f => {
     return f.removed === "N";
   });
