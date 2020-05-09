@@ -342,7 +342,7 @@ class EmployeeMasterIndex extends Component {
                   </label>
                 </div>
               </div> */}
-              <div className="col-lg-7 col-md-7 col-sm-12 employeeMasterLegend">
+              <div className="col-lg-9 col-md-9 col-sm-12 employeeMasterLegend">
                 <div className="card-group">
                   <div className="card">
                     <div className="card-body">
