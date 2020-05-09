@@ -1,24 +1,34 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-const getEmployeeDetails = $this => {
-
-  let inputObj = {}
-  if ($this.state.AllBranches === true) {
-    debugger
+const getEmployeeDetails = ($this) => {
+  let inputObj = {};
+  // if ($this.state.AllBranches === true) {
+  //   const all_branches = $this.props.organizations.map((item) => {
+  //     return item.hims_d_hospital_id;
+  //   });
+  //   inputObj = { select_all: true, hospital_id: all_branches, show_all_status: true }
+  // } else {
+  //   inputObj = { hospital_id: $this.state.hospital_id, show_all_status: true }
+  // }
+  if ($this.state.hospital_id === -1) {
     const all_branches = $this.props.organizations.map((item) => {
       return item.hims_d_hospital_id;
     });
-    inputObj = { select_all: true, hospital_id: all_branches, show_all_status: true }
+    inputObj = {
+      select_all: true,
+      hospital_id: all_branches,
+      show_all_status: true,
+    };
   } else {
-    inputObj = { hospital_id: $this.state.hospital_id, show_all_status: true }
+    inputObj = { hospital_id: $this.state.hospital_id, show_all_status: true };
   }
   algaehApiCall({
     uri: "/employee/get",
     module: "hrManagement",
     method: "GET",
     data: inputObj,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -29,13 +39,13 @@ const getEmployeeDetails = $this => {
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
       AlgaehLoader({ show: false });
-    }
+    },
   });
 };
 
@@ -63,7 +73,7 @@ const EditEmployeeMaster = ($this, row) => {
     isOpen: !$this.state.isOpen,
     employeeDetailsPop: row,
     editEmployee: true,
-    employee_status: row.employee_status
+    employee_status: row.employee_status,
   });
 };
 
@@ -73,7 +83,7 @@ const texthandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getEmployeeDetails($this);
@@ -84,16 +94,20 @@ const texthandle = ($this, e) => {
 const selectAllBranches = ($this, e) => {
   let name = e.name || e.target.name;
 
-
   $this.setState(
     {
-      [name]: e.target.checked
+      [name]: e.target.checked,
     },
     () => {
       AlgaehLoader({ show: true });
       getEmployeeDetails($this);
     }
   );
-}
+};
 
-export { getEmployeeDetails, EditEmployeeMaster, texthandle, selectAllBranches };
+export {
+  getEmployeeDetails,
+  EditEmployeeMaster,
+  texthandle,
+  selectAllBranches,
+};

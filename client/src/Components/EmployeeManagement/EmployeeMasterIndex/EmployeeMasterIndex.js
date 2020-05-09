@@ -24,7 +24,7 @@ import {
   getEmployeeDetails,
   EditEmployeeMaster,
   texthandle,
-  selectAllBranches,
+  // selectAllBranches,
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
@@ -41,7 +41,8 @@ class EmployeeMasterIndex extends Component {
       editEmployee: false,
       forceRender: false,
       hospital_id: "",
-      AllBranches: false,
+      // AllBranches: false,
+      branches: [],
     };
   }
   static contextType = MainContext;
@@ -84,7 +85,22 @@ class EmployeeMasterIndex extends Component {
           type: "ORGS_GET_DATA",
           mappingName: "organizations",
         },
+        afterSuccess: (result) => {
+          result.push({
+            hims_d_hospital_id: -1,
+            hospital_name: "All",
+          });
+          this.setState({ branches: result });
+        },
       });
+    } else {
+      const result = this.props.organizations;
+      result.push({
+        hims_d_hospital_id: -1,
+        hospital_name: "All",
+      });
+      this.setState({ branches: result });
+      // this.setState({ branches: result });
     }
 
     if (
@@ -285,35 +301,34 @@ class EmployeeMasterIndex extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              {this.state.AllBranches === false ? (
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3 col-md-3 col-sm-12" }}
-                  label={{
-                    forceLabel: "Select Branch",
-                  }}
-                  selector={{
-                    name: "hospital_id",
-                    className: "select-fld",
-                    value: this.state.hospital_id,
-                    dataSource: {
-                      textField: "hospital_name",
-                      valueField: "hims_d_hospital_id",
-                      data: this.props.organizations,
-                    },
-                    onChange: texthandle.bind(this, this),
-                    others: {
-                      tabIndex: "2",
-                    },
-                    onClear: () => {
-                      this.setState({
-                        hospital_id: null,
-                      });
-                    },
-                  }}
-                />
-              ) : null}
-
-              <div className="col-lg-2 col-md-2 col-sm-12">
+              {/* {this.state.AllBranches === false ? ( */}
+              <AlagehAutoComplete
+                div={{ className: "col-lg-3 col-md-3 col-sm-12" }}
+                label={{
+                  forceLabel: "Select Branch",
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField: "hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.state.branches, //this.props.organizations,
+                  },
+                  onChange: texthandle.bind(this, this),
+                  others: {
+                    tabIndex: "2",
+                  },
+                  onClear: () => {
+                    this.setState({
+                      hospital_id: null,
+                    });
+                  },
+                }}
+              />
+              {/* ) : null} */}
+              {/* <div className="col-lg-2 col-md-2 col-sm-12">
                 <label>View All Branch</label>
                 <div className="customCheckbox">
                   <label className="checkbox inline">
@@ -326,7 +341,7 @@ class EmployeeMasterIndex extends Component {
                     <span>Yes</span>
                   </label>
                 </div>
-              </div>
+              </div> */}
               <div className="col-lg-7 col-md-7 col-sm-12 employeeMasterLegend">
                 <div className="card-group">
                   <div className="card">
