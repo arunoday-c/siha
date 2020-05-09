@@ -1,6 +1,6 @@
 body {
   font-family: "Segoe UI", sans-serif;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .print-body {
@@ -231,7 +231,7 @@ body {
   text-align: right;
   float: right;
   width: 25%;
-  font-size: 12px;
+  font-size: 11px;
   font-family: "Calibri", sans-serif;
 }
 .textEnLft {
@@ -239,6 +239,17 @@ body {
   float: left;
   width: 25%;
 }
+
+.textArbRht {
+  text-align: right;
+}
+.textEngLft {
+  text-align: left;
+}
+.textEngCtr {
+  text-align: center;
+}
+
 .valueText {
   margin-left: 10px;
   text-align: left;
@@ -252,12 +263,9 @@ body {
   text-align: right;
 }
 .footerTotalDown {
-  background: #ccc;
-  font-weight: bold !important;
+  background: #eee;
 }
-.footerTotalDown td {
-  text-align: right !important;
-}
+
 .numberFld {
   text-align: right !important;
 }
@@ -381,7 +389,7 @@ body {
   border: 1px solid #ccc;
   padding: 3px;
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
   text-align: center;
 }
 .barcodeLine {
@@ -595,7 +603,7 @@ body {
 
 .customDvSalesOrder h3 {
   font-weight: bold;
-  font-size: 12px;
+  font-size: 11px;
   margin: 0;
   padding: 0;
   /* border-bottom: 1px dashed #ccc; */
@@ -618,19 +626,22 @@ body {
 .footerSeal img {
   height: 100px;
   width: 180px;
-  float:right
+  float: right;
 }
 .footerSeal {
   text-align: right;
 }
-.terms_loop{
-  margin:0 20px;
-  padding:0;
+.terms_loop {
+  margin: 0 20px;
+  padding: 0;
 }
 
-.terms_loop li{
-  margin:0;
-  padding:0;
-  line-height:15px;
-  font-size:11px;
+.terms_loop li {
+  margin: 0;
+  padding: 0;
+  line-height: 15px;
+  font-size: 11px;
+}
+.footerInfoSection p {
+  line-height: 8px;
 }
