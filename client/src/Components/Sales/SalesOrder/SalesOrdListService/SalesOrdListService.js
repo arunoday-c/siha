@@ -152,8 +152,11 @@ class SalesOrdListService extends Component {
                       columns={spotlightSearch.Services.servicemaster}
                       displayField="service_name"
                       value={this.state.service_name}
-                      searchName="servicemaster"
+                      searchName="servicetypeservice"
                       onClick={servicechangeText.bind(this, this)}
+                      extraParameters={{
+                        service_type_id: 7
+                      }}
                       ref={(attReg) => {
                         this.attReg = attReg;
                       }}
@@ -343,33 +346,33 @@ class SalesOrdListService extends Component {
                               return this.state.dataExists === true ? (
                                 parseFloat(row.quantity)
                               ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    number: {
-                                      allowNegative: false,
-                                      thousandSeparator: ",",
-                                    },
-                                    dontAllowKeys: ["-", "e", "."],
-                                    value: parseFloat(row.quantity),
-                                    className: "txt-fld",
-                                    name: "quantity",
-                                    events: {
-                                      onChange: qtyonchangegridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      onFocus: (e) => {
-                                        e.target.oldvalue = e.target.value;
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
                                       },
-                                    },
-                                  }}
-                                />
-                              );
+                                      dontAllowKeys: ["-", "e", "."],
+                                      value: parseFloat(row.quantity),
+                                      className: "txt-fld",
+                                      name: "quantity",
+                                      events: {
+                                        onChange: qtyonchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
                             },
                             others: {
                               minWidth: 90,
@@ -432,29 +435,29 @@ class SalesOrdListService extends Component {
                               return this.state.dataExists === true ? (
                                 row.discount_percentage
                               ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: row.discount_percentage,
-                                    className: "txt-fld",
-                                    name: "discount_percentage",
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      onFocus: (e) => {
-                                        e.target.oldvalue = e.target.value;
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.discount_percentage,
+                                      className: "txt-fld",
+                                      name: "discount_percentage",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
                                       },
-                                    },
-                                  }}
-                                />
-                              );
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
                             },
                           },
                           {

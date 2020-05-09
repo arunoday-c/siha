@@ -616,7 +616,9 @@ body {
   margin: 0;
 }
 .footerSeal img {
-  height: 80px;
+  height: 100px;
+  width: 180px;
+  float:right
 }
 .footerSeal {
   text-align: right;

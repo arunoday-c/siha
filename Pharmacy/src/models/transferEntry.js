@@ -726,7 +726,7 @@ export default {
               .executeQuery({
                 query:
                   "select D.*,LOC.*,IM.item_description, PU.uom_description from hims_f_pharmacy_material_detail D \
-                  inner join `hims_m_item_location` LOC  on D.item_id=LOC.item_id \
+                  left join `hims_m_item_location` LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_item_master` IM  on IM.hims_d_item_master_id=D.item_id \
                   inner join `hims_d_pharmacy_uom` PU  on PU.hims_d_pharmacy_uom_id=D.item_uom \
                   where D.pharmacy_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
@@ -737,9 +737,7 @@ export default {
               .then(pharmacy_stock_detail => {
                 _mysql.releaseConnection();
 
-                utilities
-                  .logger()
-                  .log("pharmacy_stock_detail: ", pharmacy_stock_detail);
+                console.log("pharmacy_stock_detail: ", pharmacy_stock_detail);
 
                 var item_grp = _(pharmacy_stock_detail)
                   .groupBy("item_id")
@@ -747,7 +745,7 @@ export default {
                   .value();
 
                 let outputArray = [];
-                utilities.logger().log("item_grp: ", item_grp);
+                console.log("item_grp: ", item_grp);
 
                 for (let i = 0; i < item_grp.length; i++) {
                   let item = new LINQ(pharmacy_stock_detail)

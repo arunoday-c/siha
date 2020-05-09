@@ -1,6 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
+  const moment = options.moment;
   return new Promise(function (resolve, reject) {
     try {
       let input = {};
@@ -32,12 +33,6 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(headerResult => {
-          // console.log("headerResult.comment_list", headerResult.terms_conditions)
-
-          // const str = "1*2"
-          // var string = str.split("*");
-
-          // console.log(string);
 
           headerResult[0].comment_list =
             headerResult[0].terms_conditions !== null
@@ -45,8 +40,7 @@ const executePDF = function executePDFMethod(options) {
               : [];
 
 
-          // // headerResult.comment_list
-          console.log("headerResult.comment_list", headerResult[0].comment_list)
+
           options.mysql
             .executeQuery({
               query:
@@ -67,6 +61,13 @@ const executePDF = function executePDFMethod(options) {
             .then(qutation_detail => {
               let sales_quotation_items = qutation_detail[0];
               let sales_quotation_services = qutation_detail[1];
+
+              headerResult[0].sales_quotation_date = moment(headerResult[0].sales_quotation_date).format(
+                "DD-MM-YYYY"
+              );
+              headerResult[0].delivery_date = moment(headerResult[0].delivery_date).format(
+                "DD-MM-YYYY"
+              );
 
               const result = {
                 ...headerResult[0],

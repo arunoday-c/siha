@@ -3,7 +3,7 @@
 
         width: 100%;
         border-collapse: collapse;
-        margin: 0 18px 18px;
+        margin: 30px 18px 18px;
         font-family: Arial, sans-serif;
         font-weight: normal;
         font-size: 11px;
@@ -33,7 +33,7 @@
         margin: 0;
         padding: 0;
         border: none;
-        height: 30px;
+        height: 45px;
         width: auto;
         text-align: center;
     }
@@ -87,24 +87,26 @@
 <body>
 
     <div class="reportHeaderCntr">
-        <div class="col-right">
-            <p><b>{{hospital_name}}</b></p>
-            <p>{{hospital_address}}</p>
-
-        </div>
         <div class="col-left">
+            <p><b>{{organization_name}}</b></p>
+            <p>{{hospital_address}}</p>
+            <p>Tel: <span>{{phone1}}</span></p>
+            <p>Fax: <span>{{fax}}</span></p>
+            <p>E-Mail: <span>{{email}}</span></p>
+            <p>MOT Registration No: <span>{{business_registration_number}}</span></p>
+        </div>
+        <div class="col-right">
             <h4>{{{report_name_for_header}}}</h4>
             <p>Report Generated Date: {{currentDateTime 'date'}}</p>
-            <p>MOT Registration No: <span>2051054263</span></p>
         </div>
         <div class="col-center">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
             <p><b>{{organisation_name}}</b></p>
         </div>
-        <div class="headerFooterStyle">
+        {{!-- <div class="headerFooterStyle">
             <p><span>Tel: +966 13 858 7000</span> / <span>Fax: +966 13 858 1324</span> / <span>E-Mail:
                     info@twareat.com</span></p>
-        </div>
+        </div> --}}
     </div>
 
     {{!--  <table class="reportHeaderCntr">
