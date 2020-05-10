@@ -4,6 +4,7 @@ export default function Payroll({
   allYears,
   MONTHS,
   LEAVE_STATUS,
+  LOAN_STATUS,
   algaehApiCall,
   moment,
 }) {
@@ -740,6 +741,20 @@ export default function Payroll({
             others: {
               maxDate: new Date(),
               minDate: null,
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "status",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOAN_STATUS,
+            },
+            events: {
+              onChange: (reportState, currentValue) => {},
             },
           },
           {

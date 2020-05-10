@@ -25,6 +25,14 @@ const executePDF = function executePDFMethod(options) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
 
+      if (
+        input.status !== "" &&
+        input.status !== null &&
+        input.status !== undefined
+      ) {
+        strData += ` and loan_authorized='${input.status}'`;
+      }
+
       let is_local = "";
       if (input.is_local === "Y") {
         is_local = " and H.default_nationality=E.nationality ";
