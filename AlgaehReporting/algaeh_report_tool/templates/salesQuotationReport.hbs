@@ -1,7 +1,7 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
-    <div class="print-body" style="top:10px important; z-index:9">
+    <div class="print-body" style="top:30px important; z-index:9; margin-top:35px;; margin-bottom:0px">
 
         <section>
 
@@ -10,13 +10,10 @@
                     {{!-- <h3>Vendor Details</h3> --}}
                     <p>Quotation No:<span class="valueText">{{sales_quotation_number}}</span></p>
                     <p>Quotation Date:<span class="valueText">{{sales_quotation_date}}</span></p>
-                    <p>Quotation Validty Till:<span class="valueText">{{quote_validity}}</span></p>
                 </div>
                 <div>
                     {{!-- <h3>Customer Details</h3> --}}
                     <p>Customer Name:<span class="valueText">{{customer_name}}</span></p>
-                    <p>Sales Person Name/Contact No/Email:<span
-                            class="valueText">{{employee_name}}/{{primary_contact_no}}/{{work_email}}</span></p>
                     <p>Delivery Date:<span class="valueText">{{delivery_date}}</span></p>
                 </div>
 
@@ -47,8 +44,8 @@
                         <td>{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{uom_description}}</td>
-                        <td>{{quantity}}</td>
                         <td>{{unit_cost}}</td>
+                        <td>{{quantity}}</td>
                         <td>{{extended_cost}}</td>
                         <td>{{discount_amount}}</td>
                         <td>{{net_extended_cost}}</td>
@@ -77,6 +74,7 @@
                         <th>Net Ext. Amt.</th>
                         <th>Tax Amt.</th>
                         <th>Total Amt. </th>
+                        <th>Comments</th>
 
                     </tr>
                 </thead>
@@ -87,13 +85,14 @@
                         <td>{{inc @index}}</td>
                         <td>{{service_name}}</td>
                         <td>{{service_frequency}}</td>
-                        <td class="numberFld">{{quantity}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{quantity}}</td>
                         <td class="numberFld">{{extended_cost}}</td>
                         <td class="numberFld">{{discount_amount}}</td>
                         <td class="numberFld">{{net_extended_cost}}</td>
                         <td class="numberFld">{{tax_amount}}</td>
                         <td class="numberFld">{{total_amount}}</td>
+                        <td class="">{{comments}}</td>
 
                     </tr>
                     {{/each }}
@@ -109,7 +108,23 @@
             </ol>
 
         </section>
-        <div class="footerSeal"><img src="{{imageSource 'images/clientSeal.png'}}" /></div>
+
+        <div>
+            <div style="float:left">
+                <h4> Best Regards: </h4>
+                <h4>{{employee_name}}</h4>
+                <p> <span>Contact No: {{primary_contact_no}}</span><br />
+                    <span>Email: {{work_email}}</span></p>
+
+            </div>
+
+
+
+            <div class="footerSeal">
+                <img src="{{imageSource 'images/clientSeal.png'}}" /></div>
+        </div>
+
+
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>

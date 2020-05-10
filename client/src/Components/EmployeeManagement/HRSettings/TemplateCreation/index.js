@@ -1,23 +1,39 @@
 import React, { memo, useState, useRef, useEffect } from "react";
-import JoditEditor from "jodit-react";
+
+import "./certificateMaster.scss";
+import {
+  AlgaehDataGrid,
+  AlagehAutoComplete,
+  AlgaehLabel,
+  AlagehFormGroup,
+} from "../../../Wrapper/algaehWrapper";
 import {
   Spin,
   AlgaehFormGroup,
   AlgaehAutoComplete,
   AlgaehMessagePop,
+  AlgaehButton,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
-import Jodit from "jodit";
-import "jodit/build/jodit.min.css";
-
+import Editor from "./editor";
 export default memo(function () {
-  const [publishLoader, setPublishLoader] = useState(false);
+  const [kpi_types, setKpiTypes] = useState([]);
   const [input, setInput] = useState({
-    kpi_types: "",
     _id: undefined,
-    columns: [],
   });
+  const [masterInput, setMasterInput] = useState({
+    kpi_type: "",
+    kpi_name: "",
+    kpi_parameters: "",
+    kpi_query: "",
+    kpi_status: "A",
+  });
+  const [buttonType, setButtonType] = useState("Add To List");
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    getKPI();
+  }, []);
+  function getKPI() {
     newAlgaehApi({
       uri: "/Document/getKPI",
       method: "GET",
@@ -25,9 +41,7 @@ export default memo(function () {
     })
       .then((response) => {
         const { data } = response;
-        setInput((result) => {
-          return { ...result, kpi_types: data["result"] };
-        });
+        setKpiTypes(data["result"]);
       })
       .catch((error) => {
         AlgaehMessagePop({
@@ -35,224 +49,209 @@ export default memo(function () {
           type: "error",
         });
       });
-  }, []);
-  const joditEditor = useRef(undefined);
+  }
 
-  function onAutoCompletChangeHandler(selected) {
-    const { _id, columns } = selected;
-    setInput((result) => {
-      return { ...result, _id, columns };
+  function onEditHandler(row) {
+    setMasterInput(row);
+    setButtonType("Update List");
+  }
+  function onMasterInputHnadler(e) {
+    const { name, value } = e.target;
+    setMasterInput((result) => {
+      return { ...result, [name]: value };
     });
   }
-  function onClearAutoComplete() {
-    setInput((result) => {
-      return { ...result, _id: undefined, columns: [] };
-    });
+  function onAddOrUpdate() {
+    const { kpi_type, kpi_name, kpi_parameters, kpi_query } = masterInput;
+    setLoading(true);
+
+    newAlgaehApi({
+      uri: "/Document/saveKPI",
+      method: "POST",
+      module: "documentManagement",
+      data: {
+        kpi_type:
+          buttonType === "Update List"
+            ? kpi_type
+            : kpi_name.toLowerCase().replace(/ /g, "_"),
+        kpi_query: kpi_query,
+        kpi_status: "A",
+        kpi_name: kpi_name,
+        kpi_parameters: Array.isArray(kpi_parameters)
+          ? kpi_parameters
+          : kpi_parameters.split(","),
+      },
+    })
+      .then((response) => {
+        setLoading(false);
+        getKPI();
+        setButtonType("Add To List");
+        AlgaehMessagePop({
+          display: "Successfully inserted",
+          type: "success",
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        AlgaehMessagePop({
+          display: error,
+          type: "error",
+        });
+      });
   }
-  const { _id, kpi_types, columns } = input;
+  function onClearHandler() {
+    setMasterInput({
+      kpi_type: "",
+      kpi_name: "",
+      kpi_parameters: "",
+      kpi_query: "",
+      kpi_status: "A",
+    });
+    setButtonType("Add To List");
+  }
+  const { _id } = input;
   return (
     <div className="row">
-      <div className="col-12">
-        <AlgaehAutoComplete
-          div={{ className: "col-2 form-group mandatory" }}
-          label={{ forceLabel: "KPI Type", isImp: true }}
-          selector={{
-            name: "_id",
-            dataSource: {
-              data: kpi_types,
-              valueField: "_id",
-              textField: "kpi_name",
-            },
-            value: _id,
-            onChange: onAutoCompletChangeHandler,
-            onClear: onClearAutoComplete,
-          }}
-        />
-      </div>
-      <div className="col-12">
-        <Spin tip="Please wait document is publishing" spinning={publishLoader}>
-          <JoditEditor
-            ref={joditEditor}
-            config={{
-              readonly: publishLoader,
-              autofocus: true,
-              enableDragAndDropFileToEditor: true,
-              uploader: {
-                imagesExtensions: ["jpg", "png", "jpeg", "gif"],
-                insertImageAsBase64URI: true,
-              },
-              toolbarButtonSize: "small",
-              inline: false,
-              toolbar: true,
-              toolbarInline: true,
-              popup: {
-                selection: [
-                  "bold",
-                  "underline",
-                  "italic",
-                  "font",
-                  "fontsize",
-                  "brush",
-                  "cut",
-                  "copy",
-                  "paste",
-                  "copyformat",
-                ],
-              },
-              events: {
-                getIcon: function (name, control, clearName) {
-                  if (clearName === "checkbox") {
-                    return "<i class='fa fa-square'/>";
-                  } else if (clearName === "publish") {
-                    return "<i class='fa fa-upload'/>";
-                  } else if (clearName === "label") {
-                    return "<i class='fa fa-tag'/>";
-                  }
-                },
-                afterInsertNode: function (e) {
-                  switch (e.nodeName) {
-                    case "TABLE":
-                      e.addEventListener("dblclick", (event) => {
-                        const tbl = event.currentTarget;
-                        const field = tbl.getAttribute("data-table-field");
-                        const prot = prompt("Change array field name:", field);
-                        tbl.setAttribute("data-table-field", prot);
-                      });
-                      break;
-                  }
-                },
-              },
-              extraButtons: [
-                {
-                  exec: function (editor) {
-                    const value = prompt("Enter checkbox field name");
-                    const check = document.createElement("input");
-                    check.type = "checkbox";
-                    check.setAttribute("data-checkbox-field", value);
-                    check.title = value;
-                    editor.selection.insertNode(check);
+      <div className="col-5">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Certificate List</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <AlagehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Certificate Name",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "kpi_name",
+                  value: masterInput.kpi_name,
+                  events: {
+                    onChange: onMasterInputHnadler,
                   },
-                  name: "checkbox",
-                  tooltip: "Add dynamic checkbox",
-                  icon: "square",
-                },
-                {
-                  name: "label",
-                  tooltip: "Label",
-                  icon: "label",
-                  popup: function (editor) {
-                    const select = document.createElement("select");
-                    let option = document.createElement("option");
-                    option.innerHTML = "---Select field---";
-                    select.options.add(option);
-                    for (let i = 0; i < columns.length; i++) {
-                      option = document.createElement("option");
-                      option.value = columns[i];
-                      option.innerHTML = columns[i];
-                      select.options.add(option);
-                    }
+                }}
+              />
+              <AlagehFormGroup
+                div={{ className: "col-6 form-group mandatory" }}
+                label={{
+                  forceLabel: "Parameters",
+                  isImp: true,
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "kpi_parameters",
+                  value: masterInput.kpi_parameters,
+                  events: {
+                    onChange: onMasterInputHnadler,
+                  },
+                }}
+              />
+              <div className="col-9 form-group mandatory">
+                <label className="style_Label ">
+                  Query<span className="imp">&nbsp;*</span>
+                </label>
+                <div
+                  algaeh_required="true"
+                  row="5"
+                  className="ui input txt-fld"
+                >
+                  <textarea
+                    rows="2"
+                    name="kpi_query"
+                    value={masterInput.kpi_query}
+                    onChange={onMasterInputHnadler}
+                  />
+                </div>
+              </div>
+              <div className="col">
+                <AlgaehButton
+                  style={{ marginTop: 42 }}
+                  className="btn btn-primary"
+                  onClick={onAddOrUpdate}
+                  loading={loading}
+                >
+                  {buttonType}
+                </AlgaehButton>
+                <br />
+                <AlgaehButton
+                  style={{ marginTop: 4 }}
+                  className="btn btn"
+                  onClick={onClearHandler}
+                  loading={loading}
+                >
+                  Clear
+                </AlgaehButton>
+              </div>
 
-                    select.addEventListener("change", (e) => {
-                      const value = e.target.value;
-                      const text =
-                        e.target.options[e.target.selectedIndex].text;
-                      const lable = document.createElement("span");
-                      lable.setAttribute("data-label-field", value);
-                      lable.innerHTML = `{{${text}}}`;
-                      lable.title = `${value}`;
-                      editor.selection.insertNode(lable);
-                    });
-                    return select;
-                  },
-                },
-                {
-                  exec: function (editor) {
-                    setPublishLoader(true);
-                    const document = joditEditor.current.value;
-                    newAlgaehApi({
-                      uri: "/Document/saveKPIMaster",
-                      method: "POST",
-                      module: "documentManagement",
-                      data: {
-                        kpi_id: _id,
-                        kpi_html: document,
+              <div className="col-12">
+                <AlgaehDataGrid
+                  id="certificateMasterList"
+                  columns={[
+                    {
+                      fieldName: "eidtable",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Action",
+                          }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <button
+                            onClick={() => {
+                              onEditHandler(row);
+                            }}
+                          >
+                            Edit
+                          </button>
+                        );
                       },
-                    })
-                      .then((response) => {
-                        const { data } = response;
-                        setPublishLoader(false);
-                        AlgaehMessagePop({
-                          display: "Successfully inserted",
-                          type: "success",
-                        });
-                      })
-                      .catch((error) => {
-                        setPublishLoader(false);
-                        AlgaehMessagePop({
-                          display: error,
-                          type: "error",
-                        });
-                      });
-                  },
-                  name: "publish",
-                  tooltip: "Publish this.",
-                  icon: "upload",
-                },
-              ],
-              controls: [
-                {
-                  label: {
-                    exec: function (editor) {
-                      const lable = document.createElement("lable");
-                      lable.setAttribute("data-label-field", "");
-                      lable.innerText = "{{fieldName}}";
-                      editor.selection.insertNode(lable);
+                      others: {
+                        maxWidth: 100,
+                        filterable: false,
+                      },
                     },
-                  },
-                },
-              ],
-              buttons: [
-                "selectall",
-                "undo",
-                "redo",
-                "cut",
-                "copy",
-                "paste",
-                "copyformat",
-                "|",
-                "bold",
-                "strikethrough",
-                "underline",
-                "italic",
-                "eraser",
-                "|",
-                "superscript",
-                "subscript",
-                "|",
-                "ul",
-                "ol",
-                "|",
-                "outdent",
-                "indent",
-                "align",
-                "direction",
-                "|",
-                "font",
-                "fontsize",
-                "brush",
-                "paragraph",
-                "|",
-                "image",
-                "table",
-                "|",
-                "hr",
-                "source",
-                "fullsize",
-                "print",
-              ],
-            }}
-          />
-        </Spin>
+                    {
+                      fieldName: "kpi_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Certificate Name",
+                          }}
+                        />
+                      ),
+                    },
+                  ]}
+                  keyId="_id"
+                  dataSource={{
+                    data: kpi_types,
+                  }}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 50 }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-7">
+        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Template Preview</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <Editor data={kpi_types} />
+          </div>
+        </div>
       </div>
     </div>
   );

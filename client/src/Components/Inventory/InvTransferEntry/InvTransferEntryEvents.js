@@ -200,12 +200,13 @@ const SaveTransferEntry = $this => {
       InputObj.inventory_stock_detail[i].expiry_date === null
         ? null
         : moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD");
+          InputObj.inventory_stock_detail[i].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
   }
 
   delete InputObj.item_details;
+
 
   for (let j = 0; j < InputObj.stock_detail.length; j++) {
     if (InputObj.stock_detail[j].inventory_stock_detail === undefined) {
@@ -213,6 +214,10 @@ const SaveTransferEntry = $this => {
     } else {
       delete InputObj.stock_detail[j].batches;
     }
+  }
+
+  if (InputObj.stock_detail.length !== InputObj.inventory_stock_detail.length) {
+    InputObj.complete = "N"
   }
 
   let stock_detail = _.filter(InputObj.stock_detail, f => {

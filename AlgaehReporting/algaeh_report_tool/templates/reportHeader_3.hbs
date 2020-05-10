@@ -1,6 +1,5 @@
 <style type="text/css">
     .reportHeaderCntr {
-
         width: 100%;
         border-collapse: collapse;
         margin: 0 18px 18px;
@@ -12,12 +11,12 @@
 
     .col-left {
         float: left;
-        width: 30%;
+        width: 25%;
         text-align: left;
     }
 
     .col-center {
-        width: 40%;
+        width: 50%;
         text-align: center;
         float: none;
         margin: 0 auto;
@@ -38,7 +37,7 @@
         text-align: center;
     }
 
-    .reportHeaderCntr h4 {
+    .reportHeaderCntr h5 {
         margin: 3px 0;
         padding: 0;
         font-size: 11px;
@@ -47,9 +46,13 @@
     .reportHeaderCntr p {
         margin: 2px 0;
         padding: 0;
-        font-size: 8px;
+        font-size: 7px;
+        line-height: 10px;
     }
 
+    .reportHeaderCntr p b {
+        font-size: 8px;
+    }
 
     .showFilterValue {
         width: 100%;
@@ -90,62 +93,24 @@
         <div class="col-left">
             <p><b>{{organization_name}}</b></p>
             <p>{{hospital_address}}</p>
-            <p>MOT Reg. No: <span>{{business_registration_number}}</span></p>
+            <p>Tel: <span>{{phone1}}</span></p>
+            <p>Vat No: <span>{{business_registration_number}}</span></p>
         </div>
         <div class="col-right">
-            <h4>{{{report_name_for_header}}}</h4>
-            <p>Report Generated Date: {{currentDateTime 'date'}}</p>
+            <p><b>{{organization_name}}</b></p>
+            <p>{{hospital_address}}</p>
+            <p>رقم الهاتف: <span>{{phone1}}</span></p>
+            <p>رقم الضريبة المضافة: <span>{{business_registration_number}}</span></p>
         </div>
+
         <div class="col-center">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
-            <p><b>{{organisation_name}}</b></p>
+            <h5>{{{report_name_for_header}}}</h5>
         </div>
         <div class="headerFooterStyle">
-            <p><span>Tel: {{phone1}}</span> / <span>Fax: {{fax}}</span> / <span>E-Mail:
-                    {{email}}</span></p>
+
         </div>
     </div>
 
-    {{!--  <table class="reportHeaderCntr">
-        <tr>
-            <th>
-                <div class="hospitalLogo"><img src="{{imageSource 'images/clientLogo.png'}}" /></div>
-                <div class="hospitalAddress">
-                    <h4>{{{report_name_for_header}}}</h4>
-                    <p>{{hospital_address}}</p>
-                    <p>Date: {{currentDateTime 'date'}}</p>
-                </div>
-
-            </th>
-        </tr> data:image/png;base64,{{logoUrl "1" "ORG"}}
-
-
-        <tr>
-            <th rowspan="4" width="20%">
-                <p>{{hospital_address}}</p>
-            </th>
-            <th width="60%"></th><span class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></span></th>
-            <th rowspan="4" width="20%"></th>Address</th>
-        </tr>
-        <tr>
-            <td>
-                <h4>{{{report_name_for_header}}}</h4>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <p>Report Generated Date: {{currentDateTime 'date'}}</p>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <p class="showFilterValue">{{#each filter}}
-                    <span><small>{{label}}:</small>{{labelValue}} </span>
-                    {{/each }}</p>
-            </td>
-        </tr>
-
-
-    </table>--}}
 
 </body>

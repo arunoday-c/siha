@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import moment from "moment";
 const documentSchema = new mongoose.Schema(
   {
     kpi_type: String,
@@ -20,6 +21,20 @@ const documentMaster = new mongoose.Schema(
 const documentMasterModel = mongoose.model(
   "algaeh_kpi_document_master",
   documentMaster
+);
+const certificateIssuedSchema = mongoose.Schema(
+  {
+    employee_id: Number,
+    employee_name: String,
+    requested_for: String,
+    request_date: String,
+    kpi_id: String,
+  },
+  { autoCreate: true }
+);
+const certificateIssuedModel = mongoose.model(
+  "algaeh_certificate_requests",
+  certificateIssuedSchema
 );
 export default (db) => {
   return {
@@ -63,7 +78,7 @@ export default (db) => {
               .status(400)
               .json({
                 success: false,
-                message: error,
+                message: error.message,
               })
               .end();
           });
@@ -72,7 +87,7 @@ export default (db) => {
           .status(400)
           .json({
             success: false,
-            message: error,
+            message: error.message,
           })
           .end();
       }
@@ -95,7 +110,14 @@ export default (db) => {
                 }
                 return col;
               });
-            return { _id, kpi_type, kpi_name, columns, kpi_parameters };
+            return {
+              _id,
+              kpi_type,
+              kpi_name,
+              columns,
+              kpi_parameters,
+              kpi_query,
+            };
           });
           res.status(200).json({ success: true, result: records });
         })
@@ -164,6 +186,66 @@ export default (db) => {
             message: error,
           });
         });
+    },
+    getCertificateIssuedList: (req, res) => {
+      certificateIssuedModel
+        .find({})
+        .select(
+          "_id employee_id request_date employee_name requested_for kpi_id"
+        )
+        .then((result) => {
+          res.status(200).json({ success: true, result });
+        })
+        .catch((error) => {
+          res.status(400).json({
+            success: false,
+            message: error.message,
+          });
+        });
+    },
+    saveCertificateIssued: (req, res) => {
+      const { employee_id, employee_name, requested_for, kpi_id } = req.body;
+      try {
+        const date = moment().format("YYYYMMDD");
+
+        certificateIssuedModel
+          .findOneAndUpdate(
+            {
+              employee_id,
+              kpi_id,
+              request_date: date,
+            },
+            {
+              request_date: date,
+              employee_id,
+              employee_name,
+              requested_for,
+              kpi_id,
+            },
+            {
+              new: true,
+              upsert: true,
+            }
+          )
+          .then((result) => {
+            res
+              .status(200)
+              .json({
+                success: true,
+              })
+              .catch((error) => {
+                req.status(400).json({
+                  success: false,
+                  message: error.message,
+                });
+              });
+          });
+      } catch (e) {
+        res.status(400).json({
+          success: false,
+          message: e.message,
+        });
+      }
     },
   };
 };

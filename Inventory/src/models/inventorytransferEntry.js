@@ -665,28 +665,29 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select D.*,LOC.*,IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
-                  inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
+                  "select D.*,LOC.*, IM.hims_d_inventory_item_master_id, IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
+                  left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                   inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
                   where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
                   and D.quantity_outstanding<>0 order by  date(LOC.expirydt) ",
                 values: [inputParam.hims_f_inventory_material_header_id],
-                printQuery: false
+                printQuery: true
               })
               .then(inventory_stock_detail => {
                 _mysql.releaseConnection();
 
                 var item_grp = _(inventory_stock_detail)
-                  .groupBy("item_id")
-                  .map((row, item_id) => item_id)
+                  .groupBy("hims_d_inventory_item_master_id")
+                  .map((row, hims_d_inventory_item_master_id) => hims_d_inventory_item_master_id)
                   .value();
 
+                console.log("item_grp", item_grp)
                 let outputArray = [];
 
                 for (let i = 0; i < item_grp.length; i++) {
                   let item = new LINQ(inventory_stock_detail)
-                    .Where(w => w.item_id == item_grp[i])
+                    .Where(w => w.hims_d_inventory_item_master_id == item_grp[i])
                     .Select(s => {
                       return {
                         hims_f_inventory_material_detail_id:
@@ -695,7 +696,7 @@ export default {
                         completed: s.completed,
                         item_category_id: s.item_category_id,
                         item_group_id: s.item_group_id,
-                        item_id: s.item_id,
+                        item_id: s.hims_d_inventory_item_master_id,
                         from_qtyhand: s.from_qtyhand,
                         to_qtyhand: s.to_qtyhand,
                         quantity_required: s.quantity_required,
@@ -714,10 +715,11 @@ export default {
                     })
                     .FirstOrDefault();
 
+                  console.log("item", item)
                   let batches = new LINQ(inventory_stock_detail)
                     .Where(
                       w =>
-                        w.item_id == item_grp[i] &&
+                        w.hims_d_inventory_item_master_id == item_grp[i] &&
                         w.qtyhand > 0 &&
                         w.inventory_location_id == inputParam.from_location_id
                     )
@@ -725,7 +727,7 @@ export default {
                       return {
                         hims_m_inventory_item_location_id:
                           s.hims_m_inventory_item_location_id,
-                        item_id: s.item_id,
+                        item_id: s.hims_d_inventory_item_master_id,
                         inventory_location_id: s.inventory_location_id,
                         item_location_status: s.item_location_status,
                         batchno: s.batchno,

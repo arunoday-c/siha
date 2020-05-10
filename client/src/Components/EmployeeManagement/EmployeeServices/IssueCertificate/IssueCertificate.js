@@ -3,34 +3,34 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-
+import moment from "moment";
 import "./IssueCertificate.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
-// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import moment from "moment";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
-
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-
+import { AlgaehButton } from "algaeh-react-components";
 class IssueCertificate extends Component {
   constructor(props) {
     super(props);
     this.state = {
       hospital_id: null,
-
       employee_name: null,
       certificate_type: null,
+      certificate_name: "",
       certificate_types: [],
       kpi_parameters: [],
+      allIssuedCertificates: [],
       hims_d_employee_id: null,
+      disabled: true,
+      loading: false,
     };
   }
 
@@ -73,8 +73,28 @@ class IssueCertificate extends Component {
         });
       },
     });
+    this.getAllIssuedCertificates();
   }
-
+  getAllIssuedCertificates() {
+    algaehApiCall({
+      uri: "/Document/getIssuedCertificates",
+      method: "GET",
+      module: "documentManagement",
+      onSuccess: (response) => {
+        const { data } = response;
+        this.setState({
+          allIssuedCertificates: data["result"],
+          loading: false,
+        });
+      },
+      onCatch: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
@@ -90,6 +110,7 @@ class IssueCertificate extends Component {
         this.setState({
           employee_name: row.full_name,
           hims_d_employee_id: row.hims_d_employee_id,
+          disabled: false,
         });
       },
     });
@@ -102,6 +123,8 @@ class IssueCertificate extends Component {
       certificate_types: [],
       kpi_parameters: [],
       hims_d_employee_id: null,
+      disabled: true,
+      loading: false,
     });
   }
 
@@ -117,27 +140,62 @@ class IssueCertificate extends Component {
     const { name, value } = e;
     let certificate = {};
     if (name === "certificate_type") {
-      certificate = { kpi_parameters: e.selected.kpi_parameters };
+      certificate = {
+        kpi_parameters: e.selected.kpi_parameters,
+        certificate_name: e.selected.kpi_name,
+      };
     }
     this.setState({ [name]: value, ...certificate });
   }
   generateCertificate() {
+    this.setState({ loading: true }, () => {
+      algaehApiCall({
+        uri: "/getDocsReports",
+        method: "GET",
+        module: "reports",
+        headers: {
+          Accept: "blob",
+        },
+        others: { responseType: "blob" },
+        data: {
+          parameters: { hims_d_employee_id: this.state.hims_d_employee_id },
+          _id: this.state.certificate_type,
+        },
+        onSuccess: (response) => {
+          this.saveToIssueCertificateList();
+          const urlBlob = URL.createObjectURL(response.data);
+          const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+          window.open(origin);
+        },
+        onCatch: (error) => {
+          swalMessage({
+            title: error.message,
+            type: "error",
+          });
+        },
+      });
+    });
+  }
+
+  saveToIssueCertificateList() {
+    const {
+      certificate_type,
+      hims_d_employee_id,
+      employee_name,
+      certificate_name,
+    } = this.state;
     algaehApiCall({
-      uri: "/getDocsReports",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob",
-      },
-      others: { responseType: "blob" },
+      uri: "/Document/saveCertificateIssued",
+      method: "POST",
+      module: "documentManagement",
       data: {
-        parameters: { hims_d_employee_id: this.state.hims_d_employee_id },
-        _id: this.state.certificate_type,
+        kpi_id: certificate_type,
+        employee_id: hims_d_employee_id,
+        employee_name: employee_name,
+        requested_for: certificate_name,
       },
-      onSuccess: (response) => {
-        const urlBlob = URL.createObjectURL(response.data);
-        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
-        window.open(origin);
+      onSuccess: () => {
+        this.getAllIssuedCertificates();
       },
       onCatch: (error) => {
         swalMessage({
@@ -147,6 +205,7 @@ class IssueCertificate extends Component {
       },
     });
   }
+
   render() {
     return (
       <React.Fragment>
@@ -218,21 +277,21 @@ class IssueCertificate extends Component {
                   </div>
                   <div className="col-12" style={{ textAlign: "right" }}>
                     <button
-                      // onClick={this.clearState.bind(this)}
+                      onClick={this.clearState.bind(this)}
                       type="button"
                       className="btn btn-default"
                       style={{ marginRight: 15 }}
                     >
                       Clear
                     </button>
-                    <button
+                    <AlgaehButton
                       onClick={this.generateCertificate.bind(this)}
-                      type="button"
+                      loading={this.state.loading}
                       className="btn btn-primary"
-                      disabled={this.state.Request_enable}
+                      disabled={this.state.disabled}
                     >
                       Generate Certificate
-                    </button>
+                    </AlgaehButton>
                   </div>
                 </div>
               </div>
@@ -276,60 +335,38 @@ class IssueCertificate extends Component {
                           },
                         },
                         {
-                          fieldName: "requestDate",
+                          fieldName: "request_date",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Requested Date" }}
                             />
+                          ),
+                          displayTemplate: (row) => (
+                            <spna>
+                              {moment(row.request_date, "YYYYMMDD").format(
+                                "DD-MM-YYYY"
+                              )}
+                            </spna>
                           ),
                           others: {
                             maxWidth: 150,
                           },
                         },
                         {
-                          fieldName: "requestedFor",
+                          fieldName: "requested_for",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Requested For" }}
                             />
                           ),
                         },
-                        {
-                          fieldName: "url",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Print / Issue" }}
-                            />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <div>
-                                {" "}
-                                <button className="">Issue</button>/
-                                <button className="">Print</button>
-                              </div>
-                            );
-                          },
-                          others: {
-                            maxWidth: 150,
-                          },
-                        },
                       ]}
-                      keyId=""
+                      filter={true}
                       dataSource={{
-                        data: [
-                          {
-                            employee_id: "10045",
-                            employee_name: "Aboobacker Sidhiqe",
-                            requestDate: "07-01-2020",
-                            requestedFor: "Salary Certificate",
-                            url: "https://google.com",
-                          },
-                        ],
+                        data: this.state.allIssuedCertificates,
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
                     />
                   </div>
                 </div>

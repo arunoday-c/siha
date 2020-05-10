@@ -7,24 +7,59 @@
 
             <table class="tableForLabel" cell-padding="0">
                 <tr>
+                    <td class="textEngLft" style="width:20%">Invoice No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{invoice_number}}</b></td>
+                    <td class="textArbRht" style="width:20%">رقم الفاتورة</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">Date</td>
+                    <td colspan="2" class="textEngCtr" style="width:50%"><b>{{invoice_date}}</b></td>
+                    <td class="textArbRht" style="width:20%">التاريخ</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">Customer</td>
+                    <td class="textEngLft" style="width:30%"><b>{{customer_name}}</b></td>
+                    <td class="textArbRht" style="width:30%"><b>{{customer_name}}</b></td>
+                    <td class="textArbRht" style="width:20%">العميل</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">Address</td>
+                    <td class="textEngLft" style="width:30%"><b>{{address}}</b></td>
+                    <td class="textArbRht" style="width:30%"><b>{{address}}</b></td>
+                    <td class="textArbRht" style="width:20%">العنوان</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">PO No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{sales_order_number}}</b></td>
+                    <td class="textArbRht" style="width:20%">:رقم الفاتورة</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">VAT No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>Vat No. Here</b></td>
+                    <td class="textArbRht" style="width:20%">الرقم الضريبي</td>
+                </tr>
+
+
+            </table>
+
+
+            {{!-- <table class="tableForLabel" cell-padding="0">
+                <tr>
                     <td><label class="textEnLft">Order No.</label>:<span class="valueText">{{sales_order_number}}</span>
                     </td>
                     <td><label class="textEnLft">Customer</label>:<span class="valueText">{{customer_name}}</span></td>
-
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Bill To</label>:<span class="valueText">{{customer_name}}</span>
                     </td>
                     <td><label class="textEnLft">Customer Address</label>:<span class="valueText">{{address}}</span>
                     </td>
-
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Order No</label>:<span class="valueText">{{invoice_number}}</span>
                     </td>
                     <td><label class="textEnLft">Order Date</label>:<span class="valueText">{{invoice_date}}</span>
                     </td>
-
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Delivery Date</label>:<span class="valueText">{{delivery_date }}</span>
@@ -33,7 +68,7 @@
                     </td>
                 </tr>
 
-            </table>
+            </table> --}}
 
 
         </section>
@@ -45,7 +80,7 @@
                         <th>Service Name</th>
                         <th>Price</th>
                         <th>Qty</th>
-                        <th>Frequency</th>
+                        {{!-- <th>Frequency</th> --}}
                         <th>Ext. Cost</th>
                         <th>Disc. Amt.</th>
                         <th>Net Ext. Cost</th>
@@ -62,7 +97,7 @@
                         <td>{{service_name}}</td>
                         <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{quantity}}</td>
-                        <td class="numberFld">{{service_frequency}}</td>
+                        {{!-- <td class="numberFld">{{service_frequency}}</td> --}}
                         <td class="numberFld">{{extended_cost}}</td>
                         <td class="numberFld">{{discount_amount}}</td>
                         <td class="numberFld">{{net_extended_cost}}</td>
@@ -70,14 +105,38 @@
                         <td class="numberFld">{{total_amount}}</td>
 
                     </tr>
-                    {{/each }}
+                    {{/each }}</tbody>
+            </table>
+        </section>
 
-                    <tr class="footerTotalDown">
-                        <td colspan="9">Net Total</td>
-                        <td class="numberFld">{{net_payable}}</td>
-                    </tr>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                {{!-- <td colspan="9">Net Total</td>
+                    <td class="numberFld">{{net_payable}}</td> --}}
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">Total Amount Before VAT</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td class="textArbRht" style="width:20%">الإجمالى قبل ضريبة القيمه المضافة</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">VAT @ 5%</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة @ 5%</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">Total Including VAT</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{net_payable}}</td>
+                    <td class="textArbRht" style="width:20%">الإجمالي بعد ضريبة القيمة المضافة</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="textEngLft" style="width:20%">Outstanding Balance {{SAR}}</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td class="textArbRht" style="width:20%">الرصيد المستحق بالريال السعودي</td>
+                </tr>
                 </tbody>
             </table>
+        </section>
+        <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td>Narration:<span class="valueText"> {{narration}}</span>
@@ -86,6 +145,15 @@
             </table>
 
         </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+        <section>
+            <p>Finance Manager</p>
+            <div style="width: 30%; height:50px; border-bottom:1px solid #000"></div>
+        </section>
+        <section class="footerInfoSection">
+            <p><b>Bank Information</b></p>
+            <p>{{organization_name}}</p>
+            <p>Bank Name: AlFransi Bank</p>
+            <p>IBAN: SA56-5500-0000-0982-7860-0165</p>
+        </section>
     </div>
 </body>

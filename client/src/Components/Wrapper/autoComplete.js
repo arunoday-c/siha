@@ -6,7 +6,7 @@ import isEqual from "lodash/isEqual";
 import {
   checkSecurity,
   saveUserPrefernce,
-  getUserPreferences
+  getUserPreferences,
 } from "../../utils/GlobalFunctions";
 import { Dropdown } from "semantic-ui-react";
 class AutoComplete extends PureComponent {
@@ -16,7 +16,7 @@ class AutoComplete extends PureComponent {
       hasSecurity: false,
       value: null,
       data: [],
-      loader: true
+      loader: true,
     };
   }
 
@@ -24,7 +24,7 @@ class AutoComplete extends PureComponent {
     if (this.state.hasSecurity) return;
     const _templtate =
       typeof props.selector.template === "function"
-        ? item => {
+        ? (item) => {
             return props.selector.template(item);
           }
         : undefined;
@@ -49,7 +49,7 @@ class AutoComplete extends PureComponent {
                 text: item[props.selector.dataSource.textField],
                 content:
                   _templtate === undefined ? undefined : _templtate(item),
-                ...item
+                ...item,
               };
             })
         : _estData.map((item, index) => {
@@ -58,26 +58,26 @@ class AutoComplete extends PureComponent {
               value: item[props.selector.dataSource.valueField],
               text: item[props.selector.dataSource.textField],
               content: _templtate === undefined ? undefined : _templtate(item),
-              ...item
+              ...item,
             };
           });
 
       this.setState({
         data: _data,
-        loader: false
+        loader: false,
       });
 
       if (props.compireoldprops === true) {
         if (props.selector.value !== this.props.selector.value) {
           this.setState({
             value: props.selector.value,
-            loader: false
+            loader: false,
           });
         }
       } else {
         this.setState({
           value: props.selector.value,
-          loader: false
+          loader: false,
         });
       }
     }
@@ -96,7 +96,7 @@ class AutoComplete extends PureComponent {
         screen_element_code: _security.screen_element_code,
         hasSecurity: () => {
           hasSecurity = true;
-        }
+        },
       });
     }
     return hasSecurity;
@@ -115,7 +115,7 @@ class AutoComplete extends PureComponent {
         : this.props.selector.dataSource.data;
     const _templtate =
       typeof that.props.selector.template === "function"
-        ? item => {
+        ? (item) => {
             return that.props.selector.template(item);
           }
         : undefined;
@@ -132,7 +132,7 @@ class AutoComplete extends PureComponent {
               value: item[that.props.selector.dataSource.valueField],
               text: item[that.props.selector.dataSource.textField],
               content: _templtate === undefined ? undefined : _templtate(item),
-              ...item
+              ...item,
             };
           })
       : _estData.map((item, index) => {
@@ -141,7 +141,7 @@ class AutoComplete extends PureComponent {
             value: item[that.props.selector.dataSource.valueField],
             text: item[that.props.selector.dataSource.textField],
             content: _templtate === undefined ? undefined : _templtate(item),
-            ...item
+            ...item,
           };
         });
 
@@ -150,18 +150,18 @@ class AutoComplete extends PureComponent {
       this.props.selector.name,
       this.props.selector.value
     )
-      .then(result => {
+      .then((result) => {
         this.setState({
           value: result,
           data: _data,
-          loader: false
+          loader: false,
         });
       })
-      .catch(e => {
+      .catch((e) => {
         this.setState({
           value: this.props.selector.value,
           data: _data,
-          loader: false
+          loader: false,
         });
       });
   }
@@ -174,14 +174,14 @@ class AutoComplete extends PureComponent {
           currrentValue === null)
       ) {
         getUserPreferences({ name: name })
-          .then(result => {
+          .then((result) => {
             if (Object.keys(result).length > 0) {
               resolve(result.selectedValue);
             } else {
               resolve(currrentValue);
             }
           })
-          .catch(e => {
+          .catch((e) => {
             reject(e);
           });
       } else {
@@ -198,10 +198,10 @@ class AutoComplete extends PureComponent {
           currrentValue !== undefined)
       ) {
         saveUserPrefernce({ name: name, value: currrentValue })
-          .then(result => {
+          .then((result) => {
             resolve();
           })
-          .catch(e => {
+          .catch((e) => {
             reject();
           });
       } else {
@@ -215,7 +215,7 @@ class AutoComplete extends PureComponent {
       this.setState(
         {
           value: items.value,
-          name: this.props.selector.name
+          name: this.props.selector.name,
         },
         () => {
           if (typeof this.props.selector.onClear === "function") {
@@ -225,7 +225,7 @@ class AutoComplete extends PureComponent {
       );
       return;
     }
-    const _selector = items.options.find(f => {
+    const _selector = items.options.find((f) => {
       return f.value === items.value;
     });
 
@@ -238,14 +238,14 @@ class AutoComplete extends PureComponent {
       {
         selected: _selector,
         value: items.value,
-        name: this.props.selector.name
+        name: this.props.selector.name,
       },
       () => {
         if (typeof this.props.selector.onChange === "function") {
           this.props.selector.onChange({
             selected: _selector,
             value: items.value,
-            name: this.props.selector.name
+            name: this.props.selector.name,
           });
         }
       }
@@ -287,7 +287,7 @@ class AutoComplete extends PureComponent {
         ? { onClose: this.props.selector.onClose }
         : {};
     const referenceValue = {
-      referencevalue: this.state.value
+      referencevalue: this.state.value,
     };
 
     return (
@@ -311,7 +311,7 @@ class AutoComplete extends PureComponent {
           data_role: "dropdownlist",
           type: "text",
           ..._isImportant,
-          ...this.props.selector.others
+          ...this.props.selector.others,
         }}
         noResultsMessage={_noResultsMessage}
         value={this.state.value}
