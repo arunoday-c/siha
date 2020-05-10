@@ -1,6 +1,6 @@
 import {
-
   LEAVE_STATUS,
+  LOAN_STATUS,
   MONTHS,
   LOCAL_TYPE,
   FORMAT_PAYTYPE,
@@ -9,7 +9,7 @@ import {
   COMPARISON,
   EMP_FORMAT_GENDER,
   DATE_OF_JOIN,
-  EMPLOYEE_TYPE
+  EMPLOYEE_TYPE,
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -34,7 +34,7 @@ export default function loadActiveReports(
   return new Promise((resolve, reject) => {
     try {
       const {
-        hims_d_hospital_id
+        hims_d_hospital_id,
         //  product_type
       } = userToken;
       // const { screen_code } = selectedMenu;
@@ -58,7 +58,7 @@ export default function loadActiveReports(
             EMP_FORMAT_GENDER,
             DATE_OF_JOIN,
             moment,
-            allYears
+            allYears,
           });
           break;
         case "appointment":
@@ -69,7 +69,7 @@ export default function loadActiveReports(
             hospital_id: hims_d_hospital_id,
             algaehApiCall,
             EXPIRY_STATUS,
-            moment
+            moment,
           });
           break;
         case "patient":
@@ -82,8 +82,9 @@ export default function loadActiveReports(
             allYears,
             MONTHS,
             LEAVE_STATUS,
+            LOAN_STATUS,
             algaehApiCall,
-            moment
+            moment,
           });
           break;
         case "pharmacy":
@@ -92,7 +93,7 @@ export default function loadActiveReports(
             algaehApiCall,
             FORMAT_PAYTYPE,
             EXPIRY_STATUS,
-            moment
+            moment,
           });
           break;
         case "project":
@@ -102,7 +103,7 @@ export default function loadActiveReports(
             moment,
             allYears,
             MONTHS,
-            algaehApiCall
+            algaehApiCall,
           });
           break;
         case "vat":
@@ -111,7 +112,7 @@ export default function loadActiveReports(
             moment,
             allYears,
             MONTHS,
-            algaehApiCall
+            algaehApiCall,
           });
           break;
         default:

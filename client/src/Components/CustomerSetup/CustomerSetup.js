@@ -50,6 +50,8 @@ class CustomerSetup extends Component {
     this.setState({
       customer_code: "",
       customer_name: "",
+      arabic_customer_name: "",
+      vat_number: "",
       business_registration_no: "",
       email_id_1: "",
       email_id_2: "",
@@ -138,6 +140,8 @@ class CustomerSetup extends Component {
           hims_d_customer_id: this.state.hims_d_customer_id,
           customer_code: this.state.customer_code,
           customer_name: this.state.customer_name,
+          arabic_customer_name: this.state.arabic_customer_name,
+          vat_number: this.state.vat_number,
           business_registration_no: this.state.business_registration_no,
           email_id_1: this.state.email_id_1,
           email_id_2: this.state.email_id_2,
@@ -330,15 +334,31 @@ class CustomerSetup extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-2 form-group mandatory" }}
+                      div={{ className: "col-5 form-group mandatory" }}
                       label={{
-                        fieldName: "business_registration_no",
+                        forceLabel: "Customer Name in Arabic",
                         isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "business_registration_no",
-                        value: this.state.business_registration_no,
+                        name: "arabic_customer_name",
+                        value: this.state.arabic_customer_name,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-3 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Vat Number",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "vat_number",
+                        value: this.state.vat_number,
                         events: {
                           onChange: this.changeTexts.bind(this)
                         }
@@ -409,11 +429,26 @@ class CustomerSetup extends Component {
                         }
                       }}
                     />
+                    <AlagehFormGroup
+                      div={{ className: "col-3 form-group" }}
+                      label={{
+                        fieldName: "business_registration_no",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "business_registration_no",
+                        value: this.state.business_registration_no,
+                        events: {
+                          onChange: this.changeTexts.bind(this)
+                        }
+                      }}
+                    />
                     <AlagehAutoComplete
-                      div={{ className: "col-3 form-group mandatory" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "country",
-                        isImp: true
+                        isImp: false
                       }}
                       selector={{
                         name: "country_id",
@@ -428,10 +463,10 @@ class CustomerSetup extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-3 form-group mandatory" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "state",
-                        isImp: true
+                        isImp: false
                       }}
                       selector={{
                         name: "state_id",
