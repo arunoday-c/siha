@@ -98,15 +98,18 @@ export default {
                 _mysql
                   .executeQuery({
                     query:
-                      "INSERT INTO `hims_d_customer` (customer_code,customer_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
+                      "INSERT INTO `hims_d_customer` (customer_code,customer_name, arabic_customer_name, vat_number,\
+                        bank_name,business_registration_no,email_id_1,email_id_2,website,\
               contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
               purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
               project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
-              created_date, created_by, updated_date, updated_by,head_id,child_id)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               created_date, created_by, updated_date, updated_by,head_id,child_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       inputParam.customer_code,
                       inputParam.customer_name,
+                      inputParam.arabic_customer_name,
+                      inputParam.vat_number,
                       inputParam.bank_name,
                       inputParam.business_registration_no,
                       inputParam.email_id_1,
@@ -129,6 +132,7 @@ export default {
                       inputParam.finance_inch_name,
                       inputParam.finance_inch_number,
                       inputParam.finance_inch_emailid,
+
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
@@ -160,15 +164,18 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO `hims_d_customer` (customer_code,customer_name,bank_name,business_registration_no,email_id_1,email_id_2,website,\
+                  "INSERT INTO `hims_d_customer` (customer_code,customer_name,arabic_customer_name, vat_number, \
+                    bank_name,business_registration_no,email_id_1,email_id_2,website,\
           contact_number,payment_terms,payment_mode,postal_code,address, country_id, state_id, city_id,\
           purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
           project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid, \
           created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   inputParam.customer_code,
                   inputParam.customer_name,
+                  inputParam.arabic_customer_name,
+                  inputParam.vat_number,
                   inputParam.bank_name,
                   inputParam.business_registration_no,
                   inputParam.email_id_1,
@@ -226,7 +233,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_customer` SET  customer_name=?,customer_status=?,business_registration_no=?, \
+            "UPDATE `hims_d_customer` SET  customer_name=?,arabic_customer_name=?, vat_number = ?, customer_status=?,business_registration_no=?, \
             email_id_1=?,email_id_2=?,website=?, contact_number=?,payment_terms=?,payment_mode=?,bank_name=?,\
             postal_code=?,address=?, country_id=?, state_id=?, city_id=?, purchase_inch_name=?, \
             purchase_inch_number=?, purchase_inch_emailid=? , project_inch_name=?, project_inch_number=?, \
@@ -234,6 +241,8 @@ export default {
           updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_customer_id`=?;",
           values: [
             inputParam.customer_name,
+            inputParam.arabic_customer_name,
+            inputParam.vat_number,
             inputParam.customer_status,
             inputParam.business_registration_no,
             inputParam.email_id_1,

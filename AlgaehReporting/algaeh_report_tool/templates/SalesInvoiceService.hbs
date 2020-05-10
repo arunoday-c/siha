@@ -19,23 +19,22 @@
                 <tr>
                     <td class="textEngLft" style="width:20%">Customer</td>
                     <td class="textEngLft" style="width:30%"><b>{{customer_name}}</b></td>
-                    <td class="textArbRht" style="width:30%"><b>{{customer_name}}</b></td>
+                    <td class="textArbRht" style="width:30%"><b>{{arabic_customer_name}}</b></td>
                     <td class="textArbRht" style="width:20%">العميل</td>
                 </tr>
                 <tr>
                     <td class="textEngLft" style="width:20%">Address</td>
-                    <td class="textEngLft" style="width:30%"><b>{{address}}</b></td>
-                    <td class="textArbRht" style="width:30%"><b>{{address}}</b></td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{address}}</b></td>
                     <td class="textArbRht" style="width:20%">العنوان</td>
                 </tr>
                 <tr>
                     <td class="textEngLft" style="width:20%">PO No.</td>
-                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{sales_order_number}}</b></td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{customer_po_no}}</b></td>
                     <td class="textArbRht" style="width:20%">:رقم الفاتورة</td>
                 </tr>
                 <tr>
                     <td class="textEngLft" style="width:20%">VAT No.</td>
-                    <td colspan="2" class="textEngCtr" style="width:60%"><b>Vat No. Here</b></td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{vat_number}}</b></td>
                     <td class="textArbRht" style="width:20%">الرقم الضريبي</td>
                 </tr>
 
@@ -115,12 +114,12 @@
                     <td class="numberFld">{{net_payable}}</td> --}}
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">Total Amount Before VAT</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{amount_before_vat}}</td>
                     <td class="textArbRht" style="width:20%">الإجمالى قبل ضريبة القيمه المضافة</td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">VAT @ 5%</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{total_tax}}</td>
                     <td class="textArbRht" style="width:20%">قيمة الضريبة المضافة @ 5%</td>
                 </tr>
                 <tr class="footerTotalDown">
@@ -130,7 +129,7 @@
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="textEngLft" style="width:20%">Outstanding Balance {{SAR}}</td>
-                    <td colspan="7" class="textArbRht" style="width:60%">0.00</td>
+                    <td colspan="7" class="textArbRht" style="width:60%">{{net_payable}}</td>
                     <td class="textArbRht" style="width:20%">الرصيد المستحق بالريال السعودي</td>
                 </tr>
                 </tbody>
