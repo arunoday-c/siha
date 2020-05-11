@@ -251,7 +251,7 @@ export default class AttendanceSettings extends Component {
 
     return (
       <div className="row TransactionAttendanceScreen">
-        <div className="col-12">
+        <div className="col-8">
           <div className="portlet portlet-bordered  transactionSettings">
             <div className="portlet-title">
               <div className="caption">
@@ -277,7 +277,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 /> */}
 
-                <div className="col-2">
+                <div className="col-3">
                   <label>Pay salary before processing</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -305,7 +305,7 @@ export default class AttendanceSettings extends Component {
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{ forceLabel: "Payroll Payment Date", isImp: false }}
                   selector={{
                     sort: "off",
@@ -326,7 +326,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
 
-                <div className="col-2">
+                <div className="col-3">
                   <label>Salary Calendar</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -355,7 +355,7 @@ export default class AttendanceSettings extends Component {
 
                 {this.state.salary_calendar === "F" ? (
                   <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Days", isImp: true }}
                     selector={{
                       sort: "off",
@@ -378,7 +378,7 @@ export default class AttendanceSettings extends Component {
                 ) : null}
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{ forceLabel: "Basic Earning Component", isImp: true }}
                   selector={{
                     name: "basic_earning_component",
@@ -397,13 +397,113 @@ export default class AttendanceSettings extends Component {
                     },
                   }}
                 />
-              </div>
 
-              <div className="row">
-                <div className="col-2">
+                <AlagehAutoComplete
+                  div={{ className: "col-3 form-group" }}
+                  label={{ forceLabel: "Advance deduction", isImp: false }}
+                  selector={{
+                    name: "advance_deduction",
+                    value: this.state.advance_deduction,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: ADV_DEDUCTION,
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        advance_deduction: null,
+                      });
+                    },
+                  }}
+                />
+
+                <AlagehFormGroup
+                  div={{ className: "col-3 form-group" }}
+                  label={{
+                    forceLabel: "Yearly Working Days",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "yearly_working_days",
+                    value: this.state.yearly_working_days,
+                    events: {
+                      onChange: this.textHandler.bind(this),
+                    },
+                    others: {
+                      type: "number",
+                    },
+                  }}
+                />
+
+                <div className="col-3">
+                  <label>External Finance</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="external_finance"
+                        checked={this.state.external_finance === "Y"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="external_finance"
+                        checked={this.state.external_finance === "N"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col-4 form-group">
+                  <label>OT Calculation</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="P"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "P"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Periodical</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="F"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "F"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Fixed</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="A"
+                        name="ot_calculation"
+                        checked={this.state.ot_calculation === "A"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Annual</span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col">
                   <label>Authorization Plan</label>
                   <div className="customRadio">
-                    <label className="radio block">
+                    <label className="radio inline">
                       <input
                         type="radio"
                         value="R"
@@ -414,7 +514,7 @@ export default class AttendanceSettings extends Component {
                       <span>Role Wise</span>
                     </label>
 
-                    <label className="radio block">
+                    <label className="radio inline">
                       <input
                         type="radio"
                         value="A"
@@ -426,8 +526,11 @@ export default class AttendanceSettings extends Component {
                     </label>
                   </div>
                 </div>
+              </div>
+
+              <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{
                     forceLabel: "Leave Authorization level",
                     isImp: false,
@@ -450,7 +553,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{
                     forceLabel: "Loan Authorization level",
                     isImp: false,
@@ -473,7 +576,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{
                     forceLabel: "Review Authorization level",
                     isImp: false,
@@ -496,7 +599,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
+                  div={{ className: "col-3 form-group" }}
                   label={{ forceLabel: "Leave encashment level", isImp: false }}
                   selector={{
                     name: "leave_encash_level",
@@ -515,47 +618,6 @@ export default class AttendanceSettings extends Component {
                     },
                   }}
                 />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Advance deduction", isImp: false }}
-                  selector={{
-                    name: "advance_deduction",
-                    value: this.state.advance_deduction,
-                    className: "select-fld",
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: ADV_DEDUCTION,
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        advance_deduction: null,
-                      });
-                    },
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    forceLabel: "Yearly Working Days",
-                    isImp: true,
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "yearly_working_days",
-                    value: this.state.yearly_working_days,
-                    events: {
-                      onChange: this.textHandler.bind(this),
-                    },
-                    others: {
-                      type: "number",
-                    },
-                  }}
-                />
-
                 {/* <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Attendence Starts", isImp: true }}
@@ -633,70 +695,8 @@ export default class AttendanceSettings extends Component {
                       });
                     },
                   }}
-                /> */}
-                <div className="col">
-                  <label>OT Calculation</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="P"
-                        name="ot_calculation"
-                        checked={this.state.ot_calculation === "P"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Periodical</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="F"
-                        name="ot_calculation"
-                        checked={this.state.ot_calculation === "F"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Fixed</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="A"
-                        name="ot_calculation"
-                        checked={this.state.ot_calculation === "A"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Annual</span>
-                    </label>
-                  </div>
-                </div>
-                <div className="col">
-                  <label>External Finance</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Y"
-                        name="external_finance"
-                        checked={this.state.external_finance === "Y"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Yes</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="N"
-                        name="external_finance"
-                        checked={this.state.external_finance === "N"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
-                {/*
+                /> 
+                
                 <div className="col-2">
                   <label>Allow Round Off</label>
                   <div className="customRadio">
@@ -738,7 +738,7 @@ export default class AttendanceSettings extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-8">
+                <div className="col-12">
                   <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col-4 form-group" }}
@@ -962,7 +962,7 @@ export default class AttendanceSettings extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
-                          forceLabel: "Number of break hr/day",
+                          forceLabel: "No. of break hr/day",
                           isImp: false,
                         }}
                         textBox={{
@@ -981,7 +981,7 @@ export default class AttendanceSettings extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
-                          forceLabel: "Number of working hr/day",
+                          forceLabel: "No. of working hr/day",
                           isImp: false,
                         }}
                         textBox={{
@@ -1095,7 +1095,7 @@ export default class AttendanceSettings extends Component {
                       <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{
-                          forceLabel: "Number of working hr/day",
+                          forceLabel: "No. of working hr/day",
                           isImp: false,
                         }}
                         textBox={{
@@ -1168,7 +1168,7 @@ export default class AttendanceSettings extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="row">
+                  {/* <div className="row">
                     <div className="col-12">
                       <label>Apply late rules</label>
                       <div className="customCheckbox">
@@ -1208,9 +1208,24 @@ export default class AttendanceSettings extends Component {
                         others={{}}
                       />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
-                <div className="col-4">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-4" style={{ marginBottom: 35 }}>
+          <div className="portlet portlet-bordered ">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Service Confiiguration</h3>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="col-12">
+                {" "}
+                <div className="row">
+                  {" "}
                   <div
                     className="col-12 algaehLabelFormGroup margin-top-15"
                     style={{ marginBottom: 25 }}
@@ -1337,7 +1352,10 @@ export default class AttendanceSettings extends Component {
 
                       <AlagehAutoComplete
                         div={{ className: "col-12 form-group" }}
-                        label={{ forceLabel: "Swipe Card Type", isImp: false }}
+                        label={{
+                          forceLabel: "Swipe Card Type",
+                          isImp: false,
+                        }}
                         selector={{
                           name: "biometric_swipe_id",
                           value: this.state.biometric_swipe_id,
@@ -1357,24 +1375,161 @@ export default class AttendanceSettings extends Component {
                       />
                     </div>
                   </div>
+                  <div
+                    className="col-12 algaehLabelFormGroup margin-top-15"
+                    style={{ marginBottom: 0 }}
+                  >
+                    <label className="algaehLabelGroup">
+                      Email Configuration
+                    </label>
+                    <div className="row">
+                      <div className="col-12">
+                        <label>Email Notfication Required</label>
+                        <div className="customRadio">
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Y"
+                              name="email_noti_req"
+                              // checked={}
+                              //onChange={this.onRamzantimingChange.bind(this)}
+                            />
+                            <span>Yes</span>
+                          </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="N"
+                              name="email_noti_req"
+                              // checked={
+                              //   this.state.ramzan_timing_req === "N"
+                              //     ? true
+                              //     : false
+                              // }
+                              // onChange={this.onRamzantimingChange.bind(this)}
+                            />
+                            <span>No</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Email Service Type",
+                          isImp: false,
+                        }}
+                        selector={{
+                          name: "email_serv_type",
+                          value: "",
+                          className: "select-fld",
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: [],
+                          },
+                          // onChange: this.dropDownHandler.bind(this),
+                          // onClear: () => {
+                          //   this.setState({
+                          //     biometric_database: null,
+                          //   });
+                          // },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Host Name",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "email_host_name",
+                          value: "",
+                          // events: {
+                          //   onChange: this.textHandler.bind(this),
+                          // },
+                          others: {
+                            type: "text",
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Email Port Number",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "email_port_no",
+                          value: "",
+                          // events: {
+                          //   onChange: this.textHandler.bind(this),
+                          // },
+                          others: {
+                            type: "number",
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Host Username",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "email_service_login",
+                          value: "",
+                          // events: {
+                          //   onChange: this.textHandler.bind(this),
+                          // },
+                          others: {
+                            type: "text",
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Host Password",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "email_service_password",
+                          value: "",
+                          events: {
+                            onChange: this.textHandler.bind(this),
+                          },
+                          others: {
+                            type: "password",
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
-              </div>
+        </div>{" "}
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
             </div>
           </div>
         </div>
