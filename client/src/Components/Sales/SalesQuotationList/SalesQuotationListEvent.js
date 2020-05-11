@@ -1,6 +1,8 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
     e = ctrl || e;
@@ -56,6 +58,13 @@ const getSalesQuotationList = $this => {
 
     if ($this.state.customer_id) {
         inpObj.customer_id = $this.state.customer_id;
+    }
+
+    debugger
+    if ($this.HRMNGMT_Active) {
+        if ($this.state.sales_person_id && $this.state.checkAll === false) {
+            inpObj.sales_person_id = $this.state.sales_person_id;
+        }
     }
 
     algaehApiCall({
@@ -125,11 +134,66 @@ const changeEventHandaler = ($this, ctrl, e) => {
     });
 };
 
+const employeeSearch = $this => {
+    AlgaehSearch({
+        searchGrid: {
+            columns: spotlightSearch.Employee_details.employee
+        },
+        searchName: "employee_branch_wise",
+        uri: "/gloabelSearch/get",
+        inputs: "hospital_id = " + $this.state.hospital_id,
+        onContainsChange: (text, serchBy, callBack) => {
+            callBack(text);
+        },
+        onRowSelect: row => {
+            $this.setState({
+                employee_name: row.full_name,
+                sales_person_id: row.hims_d_employee_id
+            }, () => {
+                getSalesQuotationList($this);
+            });
+        }
+    });
+};
+
+const selectCheckBox = ($this, e) => {
+    let name = e.name || e.target.name
+    $this.setState({
+        checkAll: name === "checkAll" ? true : false,
+        checkUserWise: name === "checkUserWise" ? true : false,
+        checkSelf: name === "checkSelf" ? true : false,
+        quotation_list: [],
+        employee_name: null,
+        sales_person_id: null
+    }, () => {
+        if (name === "checkSelf" || name === "checkAll") {
+            getSalesQuotationList($this)
+        }
+    });
+}
+
+const closeTransferPerson = ($this) => {
+    $this.setState({
+        transferPopup: !$this.state.transferPopup,
+        quot_detail: {}
+    });
+}
+
+const ShowTransferPopup = ($this, row) => {
+    $this.setState({
+        transferPopup: !$this.state.transferPopup,
+        quot_detail: row
+    })
+}
 export {
     LocationchangeTexts,
     dateFormater,
     getSalesQuotationList,
     datehandle,
     changeEventHandaler,
-    dateFormaterTime
+    dateFormaterTime,
+    employeeSearch,
+    selectCheckBox,
+    closeTransferPerson,
+    ShowTransferPopup
 };

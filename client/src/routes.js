@@ -401,6 +401,10 @@ const SalesReturnEntry = React.lazy(() =>
   retry(() => import("./Components/Sales/SalesReturnEntry/SalesReturnEntry"))
 );
 
+const CustomerContractList = React.lazy(() =>
+  retry(() => import("./Components/Sales/CustomerContractList/CustomerContractList"))
+);
+
 const PatientRecall = React.lazy(() =>
   retry(() => import("./Components/PatientRecall/PatientRecall"))
 );
@@ -473,6 +477,11 @@ const PurchaseOrderEntry = React.lazy(() =>
 const PurchaseReturnEntry = React.lazy(() =>
   retry(() =>
     import("./Components/Procurement/PurchaseReturnEntry/PurchaseReturnEntry")
+  )
+);
+const PurchaseRequestList = React.lazy(() =>
+  retry(() =>
+    import("./Components/Procurement/PurchaseRequestList/PurchaseRequestList")
   )
 );
 const PurchaseOrderList = React.lazy(() =>
@@ -1041,6 +1050,11 @@ const appRoutes = [
     isExactPath: true,
     component: <SalesReturnEntry />
   },
+  {
+    path: "/CustomerContractList",
+    isExactPath: true,
+    component: <CustomerContractList />
+  },
 
   {
     path: "/PatientRecall",
@@ -1188,6 +1202,11 @@ const appRoutes = [
     path: "/PurchaseOrderList",
     isExactPath: true,
     component: <PurchaseOrderList />
+  },
+  {
+    path: "/PurchaseRequestList",
+    isExactPath: true,
+    component: <PurchaseRequestList />
   },
   {
     path: "/DeliveryNoteEntry",

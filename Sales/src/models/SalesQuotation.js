@@ -234,11 +234,17 @@ export function getSalesQuotationList(req, res, next) {
       _strAppend += ` and sales_quotation_number= '${req.query.sales_quotation_number}'`
     }
 
+    if (req.query.sales_person_id !== null && req.query.sales_person_id !== undefined) {
+      _strAppend += ` and sales_person_id= ${req.query.sales_person_id}`
+    }
+
     _mysql
       .executeQuery({
         query:
-          "SELECT SQ.*, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C  \
-          where SQ.customer_id = C.hims_d_customer_id " + _strAppend + " order by hims_f_sales_quotation_id desc",
+          "SELECT SQ.*, C.customer_name, E.full_name from hims_f_sales_quotation SQ \
+          inner join hims_d_customer C on SQ.customer_id = C.hims_d_customer_id \
+          left join hims_d_employee E on SQ.sales_person_id = E.hims_d_employee_id   \
+          where 1=1 " + _strAppend + " order by hims_f_sales_quotation_id desc",
         printQuery: true
       })
       .then(headerResult => {
@@ -267,6 +273,34 @@ export function updateSalesQuotation(req, res, next) {
         query:
           "update hims_f_sales_quotation set comments=? where hims_f_sales_quotation_id=?",
         values: [req.body.comments, req.body.hims_f_sales_quotation_id],
+        printQuery: true
+      })
+      .then(headerResult => {
+
+        _mysql.releaseConnection();
+        req.records = headerResult;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+export function transferSalesQuotation(req, res, next) {
+  const _mysql = new algaehMysql();
+  // const utilities = new algaehUtilities();
+  try {
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_sales_quotation set sales_person_id=? where hims_f_sales_quotation_id=?",
+        values: [req.body.sales_person_id, req.body.hims_f_sales_quotation_id],
         printQuery: true
       })
       .then(headerResult => {

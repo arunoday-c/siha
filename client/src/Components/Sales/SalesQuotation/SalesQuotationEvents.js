@@ -26,6 +26,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const ClearData = ($this, e) => {
+  const userToken = this.context.userToken;
   let IOputs = {
     hims_f_sales_quotation_id: null,
     sales_quotation_number: null,
@@ -64,8 +65,8 @@ const ClearData = ($this, e) => {
     discount_percentage: 0,
     unit_cost: 0,
     tax_percent: 0,
-    sales_person_id: null,
-    employee_name: null,
+    sales_person_id: $this.state.log_sales_person_id,
+    employee_name: $this.state.log_employee_name,
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
     comment_list: [],
@@ -364,7 +365,7 @@ const generateSalesQuotation = ($this, data) => {
       // console.log("gg",data)
       const urlBlob = URL.createObjectURL(res.data);
       const reportName = `${data.sales_quotation_number}-Sales Quotation Report`
-            const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
       window.open(origin);
       // window.document.title = "Sales Quotation Report";
     }

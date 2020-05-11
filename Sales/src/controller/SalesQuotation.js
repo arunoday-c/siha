@@ -4,7 +4,8 @@ import {
   addSalesQuotation,
   getSalesQuotation,
   getSalesQuotationList,
-  updateSalesQuotation
+  updateSalesQuotation,
+  transferSalesQuotation
 } from "../models/SalesQuotation";
 
 export default function SalesQuotation() {
@@ -43,6 +44,16 @@ export default function SalesQuotation() {
   api.put(
     "/updateSalesQuotation",
     updateSalesQuotation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.put(
+    "/transferSalesQuotation",
+    transferSalesQuotation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

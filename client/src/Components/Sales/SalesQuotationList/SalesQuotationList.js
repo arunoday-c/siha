@@ -10,26 +10,51 @@ import {
   dateFormater,
   getSalesQuotationList,
   datehandle,
-  changeEventHandaler,
-  dateFormaterTime
+  // changeEventHandaler,
+  dateFormaterTime,
+  employeeSearch,
+  selectCheckBox,
+  closeTransferPerson,
+  ShowTransferPopup
 } from "./SalesQuotationListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityComponent } from "algaeh-react-components";
+import SalesQuotationTransfer from "./SalesQuotationTransfer"
+
 
 class SalesQuotationList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.HRMNGMT_Active = false;
+    this.state = {
+      checkSelf: true,
+      checkAll: false,
+      checkUserWise: false,
+      transferPopup: false
+    };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.HRMNGMT_Active =
+      userToken.product_type === "HIMS_ERP" ||
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
+        ? true
+        : false;
+
     let month = moment().format("MM");
     let year = moment().format("YYYY");
     //to load the same list when user come back from whatever screen they went.
@@ -39,7 +64,9 @@ class SalesQuotationList extends Component {
         {
           from_date,
           to_date,
-          customer_id
+          customer_id,
+          sales_person_id: userToken.employee_id,
+          hospital_id: userToken.hims_d_hospital_id,
         },
         () => getSalesQuotationList(this)
       );
@@ -49,7 +76,9 @@ class SalesQuotationList extends Component {
           to_date: new Date(),
           from_date: moment("01" + month + year, "DDMMYYYY")._d,
           customer_id: null,
-          quotation_list: []
+          quotation_list: [],
+          sales_person_id: userToken.employee_id,
+          hospital_id: userToken.hims_d_hospital_id,
         },
         () => getSalesQuotationList(this)
       );
@@ -76,6 +105,13 @@ class SalesQuotationList extends Component {
   render() {
     return (
       <React.Fragment>
+        <SalesQuotationTransfer
+          open={this.state.transferPopup}
+          onClose={closeTransferPerson.bind(this, this)}
+          quot_detail={this.state.quot_detail}
+          hospital_id={this.state.hospital_id}
+          HRMNGMT_Active={this.HRMNGMT_Active}
+        />
         <div className="hptl-sales-quotation-list-form">
           <div
             className="row inner-top-search"
@@ -101,7 +137,7 @@ class SalesQuotationList extends Component {
                   }}
                   value={this.state.to_date}
                 />
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-3 mandatory" }}
                   label={{ forceLabel: "Customer", isImp: true }}
                   selector={{
@@ -124,7 +160,63 @@ class SalesQuotationList extends Component {
                     },
                     autoComplete: "off"
                   }}
-                />
+                /> */}
+
+                <AlgaehSecurityComponent componentCode="SALE_QUO_LST_CHEK_LVL">
+                  {this.HRMNGMT_Active ? (
+                    <div className="row">
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="checkSelf"
+                            checked={this.state.checkSelf}
+                            onChange={selectCheckBox.bind(this, this)}
+                          />
+                          <span>Self</span>
+                        </label>
+                        <label
+                          className="checkbox inline"
+                          style={{ marginRight: 20 }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="checkAll"
+                            checked={this.state.checkAll}
+                            onChange={selectCheckBox.bind(this, this)}
+                          />
+                          <span>Select All</span>
+                        </label>
+
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="checkUserWise"
+                            checked={this.state.checkUserWise}
+                            onChange={selectCheckBox.bind(this, this)}
+                          />
+                          <span>User Wise</span>
+                        </label>
+                      </div>
+                      {this.state.checkUserWise === true ?
+                        <div className={"col globalSearchCntr"}>
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sales Person Wise" }}
+                          />
+                          <h6
+                            className="mandatory"
+                            onClick={employeeSearch.bind(this, this)}
+                          >
+                            {this.state.employee_name
+                              ? this.state.employee_name
+                              : "Search Employee"}
+                            <i className="fas fa-search fa-lg" />
+                          </h6>
+                        </div> : null}
+                    </div>) : null}
+                </AlgaehSecurityComponent>
+
+
               </div>
             </div>
           </div>
@@ -157,19 +249,10 @@ class SalesQuotationList extends Component {
                                   });
                                 }}
                               />
-                              {/* {row.trans_pending === true ? (
-                                                                <i
-                                                                    className="fa fa-exchange-alt"
-                                                                    onClick={() => {
-                                                                        this.ourOwnMiniNavigator({
-                                                                            RQ_Screen: "TransferEntry",
-                                                                            hims_f_pharamcy_material_header_id:
-                                                                                row.hims_f_pharamcy_material_header_id,
-                                                                            from_location: row.to_location_id
-                                                                        });
-                                                                    }}
-                                                                />
-                                                            ) : null} */}
+                              <i
+                                className="fa fa-exchange-alt"
+                                onClick={ShowTransferPopup.bind(this, this, row)}
+                              />
                             </span>
                           );
                         },
@@ -194,8 +277,8 @@ class SalesQuotationList extends Component {
                               Order Created
                             </span>
                           ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                                <span className="badge badge-success">Closed</span>
+                              );
                         },
                         disabled: true,
                         others: {
@@ -252,6 +335,20 @@ class SalesQuotationList extends Component {
                           style: { textAlign: "center" }
                         }
                       },
+                      // {
+                      //   fieldName: "employee_name",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Sales Person" }}
+                      //     />
+                      //   ),
+                      //   disabled: true,
+                      //   others: {
+                      //     maxWidth: 150,
+                      //     resizable: false,
+                      //     style: { textAlign: "center" }
+                      //   }
+                      // },
                       {
                         fieldName: "quote_validity",
                         label: (

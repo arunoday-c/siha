@@ -158,3 +158,77 @@ export function addContractManagement(req, res, next) {
         });
     }
 };
+
+export function getContractManagementList(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        console.log("getContractManagement: ")
+        let strQuery = ""
+
+        if (req.query.HRMNGMT_Active === "true") {
+            strQuery = "SELECT CM.* , E.full_name as employee_name, C.customer_name from hims_f_contract_management CM \
+            inner join  hims_d_employee E on  CM.incharge_employee_id = E.hims_d_employee_id \
+            inner join  hims_d_customer C on  C.hims_d_customer_id = CM.customer_id"
+        } else {
+            strQuery = "SELECT CM.*, C.customer_name from hims_f_contract_management CM \
+            inner join  hims_d_customer C on  C.hims_d_customer_id = CM.customer_id"
+        }
+        _mysql
+            .executeQuery({
+                query: strQuery,
+                printQuery: true
+            })
+            .then(headerResult => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+};
+
+export function getOrderListGenContract(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        console.log("getSalesOrder: ", req.query.HRMNGMT_Active)
+
+        let strQuery = ""
+        let strQry = req.query.customer_id != null ? " and customer_id= " + req.query.customer_id : "";
+        if (req.query.HRMNGMT_Active === "true") {
+            console.log("getSalesOrder: HR")
+            strQuery = "SELECT SO.*, E.full_name as employee_name, SQ.sales_quotation_number from hims_f_sales_order SO \
+                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id\
+                        inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
+                        where 1=1 "+ strQry
+        } else {
+            console.log("getSalesOrder: No HR")
+            strQuery = "SELECT SO.* from hims_f_sales_order SO \
+                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+                        where 1=1 "+ strQry
+        }
+        _mysql
+            .executeQuery({
+                query: strQuery,
+                values: [req.query.sales_order_number],
+                printQuery: true
+            })
+            .then(headerResult => {
+                _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+};
