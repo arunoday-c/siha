@@ -7,14 +7,14 @@ async function generateDates(fromdate, todate, format) {
     {
       header: "Emp. Code",
       key: "employee_code",
-      horizontal: "center"
+      horizontal: "center",
     },
     {
       header: "Employee Name",
       key: "full_name",
       width: 40,
-      horizontal: "center"
-    }
+      horizontal: "center",
+    },
   ];
   let start = new Date(moment(fromdate, "YYYY-MM-DD")._d);
   let end = new Date(moment(todate, "YYYY-MM-DD")._d);
@@ -24,7 +24,7 @@ async function generateDates(fromdate, todate, format) {
       header: dt.format(format),
       key: dt.format("YYYYMMDD"),
       horizontal: "center",
-      width: 10
+      width: 10,
     });
     var newDate = start.setDate(start.getDate() + 1);
     start = new Date(newDate);
@@ -61,7 +61,7 @@ function excelManualTimeSheet(req, res, next) {
 
         //Work worksheet creation
         var worksheet = workbook.addWorksheet(sheetName, {
-          properties: { tabColor: { argb: "FFC0000" } }
+          properties: { tabColor: { argb: "FFC0000" } },
         });
         //Adding columns
         worksheet.columns = columns;
@@ -70,18 +70,18 @@ function excelManualTimeSheet(req, res, next) {
         worksheet.getRow(1).fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "000000" }
+          fgColor: { argb: "000000" },
         };
         worksheet.getRow(1).font = {
           name: "calibri",
           family: 4,
           size: 12,
           bold: true,
-          color: { argb: "FFFFFF" }
+          color: { argb: "FFFFFF" },
         };
         worksheet.getRow(1).alignment = {
           vertical: "middle",
-          horizontal: "center"
+          horizontal: "center",
         };
 
         //To freez first column
@@ -91,14 +91,14 @@ function excelManualTimeSheet(req, res, next) {
             xSplit: 2,
             ySplit: 0,
             activeCell: "A1",
-            topLeftCell: "C1"
+            topLeftCell: "C1",
           },
           {
             state: "frozen",
             xSplit: 0,
             ySplit: 1,
-            activeCell: "A1"
-          }
+            activeCell: "A1",
+          },
         ];
 
         const data = req.records; //require("../../testDB/data.json");
@@ -108,7 +108,7 @@ function excelManualTimeSheet(req, res, next) {
           const rest = data[i];
           let employee = {
             full_name: rest.full_name,
-            employee_code: rest.employee_code
+            employee_code: rest.employee_code,
           };
           for (let j = 0; j < rest.dates.length; j++) {
             const dates = rest.dates[j];
@@ -125,7 +125,7 @@ function excelManualTimeSheet(req, res, next) {
           worksheet.addRow(employee);
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (rowNumber === 1) {
             row.protection = { locked: true };
           } else {
@@ -138,14 +138,14 @@ function excelManualTimeSheet(req, res, next) {
                 top: { style: "double", color: { argb: "000000" } },
                 left: { style: "double", color: { argb: "000000" } },
                 bottom: { style: "double", color: { argb: "000000" } },
-                right: { style: "double", color: { argb: "000000" } }
+                right: { style: "double", color: { argb: "000000" } },
               };
               if (colNumber === 1 || colNumber === 2) {
                 cell.protection = { locked: true };
               } else {
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
 
                 if (cell.value === "N") {
@@ -153,12 +153,15 @@ function excelManualTimeSheet(req, res, next) {
                   cell.font = { color: { argb: "BFBFBF" } };
                 }
 
+                if (cell.value === "EXT") {
+                  cell.protection = { locked: true };
+                }
                 if (cell.value !== "PR") {
                   if (colorR !== "") {
                     cell.fill = {
                       type: "pattern",
                       pattern: "solid",
-                      fgColor: { argb: colorR.replace("#", "") }
+                      fgColor: { argb: colorR.replace("#", "") },
                     };
                   }
                 } else {
@@ -170,9 +173,9 @@ function excelManualTimeSheet(req, res, next) {
                           color: { theme: 1 },
                           name: "Calibri",
                           family: 2,
-                          scheme: "minor"
+                          scheme: "minor",
                         },
-                        text: "Project Name :=  "
+                        text: "Project Name :=  ",
                       },
                       {
                         font: {
@@ -181,11 +184,11 @@ function excelManualTimeSheet(req, res, next) {
                           color: { theme: 1 },
                           name: "Calibri",
                           family: 2,
-                          scheme: "minor"
+                          scheme: "minor",
                         },
-                        text: valueColor[2]
-                      }
-                    ]
+                        text: valueColor[2],
+                      },
+                    ],
                   };
                 }
 
@@ -207,9 +210,9 @@ function excelManualTimeSheet(req, res, next) {
                           color: { theme: 1 },
                           name: "Calibri",
                           family: 2,
-                          scheme: "minor"
+                          scheme: "minor",
                         },
-                        text: "Leave Description :=  "
+                        text: "Leave Description :=  ",
                       },
                       {
                         font: {
@@ -218,11 +221,11 @@ function excelManualTimeSheet(req, res, next) {
                           color: { theme: 1 },
                           name: "Calibri",
                           family: 2,
-                          scheme: "minor"
+                          scheme: "minor",
                         },
-                        text: valueColor[2]
-                      }
-                    ]
+                        text: valueColor[2],
+                      },
+                    ],
                   };
                 }
               }
@@ -233,45 +236,45 @@ function excelManualTimeSheet(req, res, next) {
         worksheet.lastRow.hidden = true;
         await worksheet.protect("algaeh@2019", {
           selectLockedCells: true,
-          selectUnlockedCells: true
+          selectUnlockedCells: true,
         });
 
         //For Help Document
         var helpSheet = workbook.addWorksheet("Help", {
-          properties: { tabColor: { argb: "48A897" } }
+          properties: { tabColor: { argb: "48A897" } },
         });
         helpSheet.columns = [
           {
             header: "Abbrevation",
             horizontal: "center",
-            width: 10
+            width: 10,
           },
           {
             header: "Full Form",
             width: 50,
-            horizontal: "center"
+            horizontal: "center",
           },
           {
             header: "Comments",
             width: 70,
-            horizontal: "center"
-          }
+            horizontal: "center",
+          },
         ];
 
         helpSheet.addRow([
           "WO",
           "Week Off",
-          "User can mention hour if employee worked on WO days"
+          "User can mention hour if employee worked on WO days",
         ]);
         helpSheet.addRow([
           "HO",
           "Public Holiday",
-          "User can mention hour if employee worked on HO days"
+          "User can mention hour if employee worked on HO days",
         ]);
         helpSheet.addRow([
           "PR",
           "Present Days/Project assigned Days",
-          "Mouse Hover on Red Dot mark to view assigned project for that day"
+          "Mouse Hover on Red Dot mark to view assigned project for that day",
         ]);
         helpSheet.addRow(["UL", "Unpaid Leave", ""]);
         helpSheet.addRow(["PL", "Paid Leave", ""]);
@@ -280,7 +283,7 @@ function excelManualTimeSheet(req, res, next) {
         helpSheet.addRow([
           "N",
           "Not Editable/ Project Not assigned to Employee",
-          ""
+          "",
         ]);
 
         helpSheet.mergeCells("A10:E10");
@@ -291,24 +294,24 @@ function excelManualTimeSheet(req, res, next) {
           cell.font = { bold: true, color: { argb: "ffffff" } };
           cell.alignment = {
             vertical: "middle",
-            horizontal: "center"
+            horizontal: "center",
           };
           cell.fill = {
             type: "pattern",
             pattern: "solid",
-            fgColor: { argb: "16365C" }
+            fgColor: { argb: "16365C" },
           };
         });
         helpSheet.getRow(12).eachCell((cell, index) => {
           cell.font = { bold: true, color: { argb: "ffffff" } };
           cell.alignment = {
             vertical: "middle",
-            horizontal: "center"
+            horizontal: "center",
           };
           cell.fill = {
             type: "pattern",
             pattern: "solid",
-            fgColor: { argb: "963634" }
+            fgColor: { argb: "963634" },
           };
         });
         helpSheet.eachRow((row, index) => {
@@ -318,35 +321,35 @@ function excelManualTimeSheet(req, res, next) {
                 top: { style: "thin", color: { argb: "000000" } },
                 left: { style: "thin", color: { argb: "000000" } },
                 bottom: { style: "thin", color: { argb: "000000" } },
-                right: { style: "thin", color: { argb: "000000" } }
+                right: { style: "thin", color: { argb: "000000" } },
               };
 
               if (index === 2 && celIndex === 1) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
-                  fgColor: { argb: "E7FEFD" }
+                  fgColor: { argb: "E7FEFD" },
                 };
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
               if (index === 3 && celIndex === 1) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
-                  fgColor: { argb: "EAEAFD" }
+                  fgColor: { argb: "EAEAFD" },
                 };
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
               if (index === 4 && celIndex === 1) {
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
               if (
@@ -356,11 +359,11 @@ function excelManualTimeSheet(req, res, next) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
-                  fgColor: { argb: "FF0000" }
+                  fgColor: { argb: "FF0000" },
                 };
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
               if (
@@ -370,11 +373,11 @@ function excelManualTimeSheet(req, res, next) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
-                  fgColor: { argb: "EC7C00" }
+                  fgColor: { argb: "EC7C00" },
                 };
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
 
@@ -382,11 +385,11 @@ function excelManualTimeSheet(req, res, next) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
-                  fgColor: { argb: "F5F5F5" }
+                  fgColor: { argb: "F5F5F5" },
                 };
                 cell.alignment = {
                   vertical: "middle",
-                  horizontal: "center"
+                  horizontal: "center",
                 };
               }
             });
@@ -401,7 +404,7 @@ function excelManualTimeSheet(req, res, next) {
           "Content-Disposition",
           "attachment; filename=" + "Report.xlsx"
         );
-        workbook.xlsx.write(res).then(function(data) {
+        workbook.xlsx.write(res).then(function (data) {
           res.end();
           console.log("File write done........");
         });
@@ -414,10 +417,10 @@ function excelManualTimeSheet(req, res, next) {
 
 function excelManualTimeSheetRead(req, res, next) {
   let buffer = "";
-  const isValidDate = d => {
+  const isValidDate = (d) => {
     return d instanceof Date && !isNaN(d);
   };
-  req.on("data", chunk => {
+  req.on("data", (chunk) => {
     buffer += chunk.toString();
   });
   req.on("end", () => {
@@ -447,7 +450,7 @@ function excelManualTimeSheetRead(req, res, next) {
           return;
         }
 
-        worksheet.eachRow(function(row, rowNumber) {
+        worksheet.eachRow(function (row, rowNumber) {
           if (rowNumber === 1) {
             columns = row.values;
           } else {
@@ -492,7 +495,7 @@ function excelManualTimeSheetRead(req, res, next) {
           next();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         next(error);
       });
   });
@@ -500,5 +503,5 @@ function excelManualTimeSheetRead(req, res, next) {
 
 export default {
   excelManualTimeSheet,
-  excelManualTimeSheetRead
+  excelManualTimeSheetRead,
 };

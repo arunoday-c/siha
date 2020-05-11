@@ -5664,7 +5664,7 @@ export default {
                         from_date,
                         to_date,
                       ],
-                      printQuery: true,
+                      printQuery: false,
                     })
                     .then((result) => {
                       if (result[0].length > 0) {
@@ -7315,7 +7315,7 @@ function generateExcelTimesheet(input) {
         });
       } else {
         allDates.forEach((attendance_date) => {
-          if (attendance_date < emp["exit_date"]) {
+          if (attendance_date <= emp["exit_date"]) {
             const TimeSheetUploaded = empTimeSheet.find((e) => {
               return e.attendance_date == attendance_date;
             });
@@ -7503,10 +7503,10 @@ function generateExcelTimesheet(input) {
             }
           } else {
             emp["data"].push({
-              status: "AB",
+              status: "EXT",
               attendance_date: attendance_date,
-              [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "AB",
-              color: "#9C9A99",
+              [moment(attendance_date, "YYYY-MM-DD").format("YYYYMMDD")]: "EXT",
+              color: "#FCF802",
             });
           }
         });
@@ -7778,7 +7778,7 @@ function generateProjectRosterTimesheet(input) {
           // });
         } else {
           allDates.forEach((attendance_date) => {
-            if (attendance_date < emp[0]["exit_date"]) {
+            if (attendance_date <= emp[0]["exit_date"]) {
               const TimeSheetUploaded = empTimeSheet
                 ? empTimeSheet.find((e) => {
                     return e.attendance_date == attendance_date;
@@ -7984,13 +7984,13 @@ function generateProjectRosterTimesheet(input) {
             } else {
               outputArray.push({
                 attendance_date: attendance_date,
-                status: "AB",
+                status: "EXT",
                 [moment(attendance_date, "YYYY-MM-DD").format(
                   "YYYYMMDD"
-                )]: "AB",
+                )]: "EXT",
                 project_id: null,
                 project_desc: "employee is resigned",
-                color: "#9C9A99",
+                color: "#FCF802",
               });
             }
           });
@@ -8736,6 +8736,28 @@ function mergeTimesheetData(input) {
               //   updated_date: new Date()
               // });
               break;
+            case "EXT":
+              insertArray.push({
+                worked_hours: 0,
+                hours: 0,
+                minutes: 0,
+                actual_hours: 0,
+                actual_minutes: 0,
+                employee_id: day.employee_id,
+                attendance_date: day.attendance_date,
+                status: day["worked_status"],
+                sub_department_id: day.sub_department_id,
+                project_id: day.project_id,
+                is_anual_leave: day.leave_category == "A" ? "Y" : "N",
+                month: day.month,
+                year: day.year,
+                hospital_id: hospital_id,
+                created_by: updated_by,
+                updated_by: updated_by,
+                updated_date: new Date(),
+              });
+
+              break;
 
             default:
               if (day["status"] != "N") {
@@ -9349,7 +9371,7 @@ function processBulkAtt_Normal(data) {
                           }
 
                           if (
-                            AttenResult[i]["attendance_date"] <
+                            AttenResult[i]["attendance_date"] <=
                             AttenResult[0]["exit_date"]
                           ) {
                             dailyAttendance.push({
@@ -9415,43 +9437,44 @@ function processBulkAtt_Normal(data) {
                               ot_holiday_hours: holiday_ot_hour,
                               ot_holiday_minutes: holiday_ot_min,
                             });
-                          } else {
-                            dailyAttendance.push({
-                              employee_id: AttenResult[i]["employee_id"],
-                              project_id: AttenResult[i]["project_id"],
-                              hospital_id: AttenResult[i]["hospital_id"],
-                              sub_department_id:
-                                AttenResult[i]["sub_department_id"],
-                              attendance_date:
-                                AttenResult[i]["attendance_date"],
-                              year: input.year,
-                              month: input.month,
-                              total_days: 1,
-                              present_days: 0,
-                              display_present_days: 0,
-                              absent_days: 1,
-                              total_work_days: 1,
-                              weekoff_days: 0,
-                              holidays: 0,
-                              paid_leave: 0,
-                              unpaid_leave: 0,
-                              anual_leave: 0,
-                              total_hours: 0,
-                              hours: 0,
-                              minutes: 0,
-                              working_hours: 0,
-
-                              shortage_hours: 0,
-                              shortage_minutes: 0,
-                              ot_work_hours: 0,
-                              ot_minutes: 0,
-
-                              ot_weekoff_hours: 0,
-                              ot_weekoff_minutes: 0,
-                              ot_holiday_hours: 0,
-                              ot_holiday_minutes: 0,
-                            });
                           }
+                          // else {
+                          //   dailyAttendance.push({
+                          //     employee_id: AttenResult[i]["employee_id"],
+                          //     project_id: AttenResult[i]["project_id"],
+                          //     hospital_id: AttenResult[i]["hospital_id"],
+                          //     sub_department_id:
+                          //       AttenResult[i]["sub_department_id"],
+                          //     attendance_date:
+                          //       AttenResult[i]["attendance_date"],
+                          //     year: input.year,
+                          //     month: input.month,
+                          //     total_days: 1,
+                          //     present_days: 0,
+                          //     display_present_days: 0,
+                          //     absent_days: 1,
+                          //     total_work_days: 1,
+                          //     weekoff_days: 0,
+                          //     holidays: 0,
+                          //     paid_leave: 0,
+                          //     unpaid_leave: 0,
+                          //     anual_leave: 0,
+                          //     total_hours: 0,
+                          //     hours: 0,
+                          //     minutes: 0,
+                          //     working_hours: 0,
+
+                          //     shortage_hours: 0,
+                          //     shortage_minutes: 0,
+                          //     ot_work_hours: 0,
+                          //     ot_minutes: 0,
+
+                          //     ot_weekoff_hours: 0,
+                          //     ot_weekoff_minutes: 0,
+                          //     ot_holiday_hours: 0,
+                          //     ot_holiday_minutes: 0,
+                          //   });
+                          // }
                         }
                       }
                     })
@@ -9548,6 +9571,7 @@ function processBulkAtt_Normal(data) {
         COALESCE(sum(DA.ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
         COALESCE(sum(DA.ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
         COALESCE(sum(DA.ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60),0) as ot_holiday_hours\
+       , case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance ,E.exit_date 
         from hims_f_daily_attendance DA\
         inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id  and E.suspend_salary <>'Y' 
              ${deptStr}      left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
@@ -9559,6 +9583,8 @@ function processBulkAtt_Normal(data) {
         select employee_id, sum(updaid_leave_duration) as updaid_leave_duration from hims_f_pending_leave 
 where month=? and year=? group by employee_id;  ${projectQry}       `,
                           values: [
+                            month_start,
+                            month_end,
                             input.year,
                             input.month,
                             input.hospital_id,
@@ -9604,7 +9630,10 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   emp_leave.updaid_leave_duration;
                               }
                             }
-                            if (options["salary_calendar"] == "F") {
+                            if (
+                              options["salary_calendar"] == "F" &&
+                              DilayResult[i]["partial_attendance"] == "N"
+                            ) {
                               const t_paid_days =
                                 options["salary_calendar_fixed_days"] -
                                 parseFloat(DilayResult[i]["absent_days"]) -
@@ -9987,7 +10016,7 @@ function processBulkAtt_with_cutoff(data) {
                   cutoff_next_day,
                   month_end,
                 ],
-                printQuery: true,
+                printQuery: false,
               })
               .then((result) => {
                 const prev_month_timesheet = result[0];
