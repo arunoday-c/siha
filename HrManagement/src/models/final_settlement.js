@@ -300,8 +300,8 @@ export default {
                 ["Y", _input.employee_id]
               );
               query += _mysql.mysqlQueryFormat(
-                "update hims_f_salary set salary_settled=?, salary_paid=? ,final_settlement_id=? where hims_f_salary_id=?;",
-                ["Y", "Y", req.body.hims_f_final_settlement_header_id, _input.hims_f_salary_id]
+                "update hims_f_salary set salary_settled=?, final_settlement_id=? where hims_f_salary_id=?;",
+                ["Y", req.body.hims_f_final_settlement_header_id, _input.hims_f_salary_id]
               );
 
               if (_input.hims_f_end_of_service_id != null) {
@@ -310,12 +310,6 @@ export default {
                   ["Y", _input.hims_f_end_of_service_id]
                 );
               }
-
-
-              query += _mysql.mysqlQueryFormat(
-                "update hims_f_salary set settled=? where hims_f_end_of_service_id=?",
-                ["Y", _input.hims_f_end_of_service_id]
-              );
 
 
               _mysql
