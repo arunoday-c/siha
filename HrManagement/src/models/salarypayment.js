@@ -2,7 +2,6 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 import { LINQ } from "node-linq";
-import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
@@ -30,11 +29,11 @@ export default {
         .executeQuery({
           query:
             "select hims_f_salary_id, salary_number, employee_id,present_days,display_present_days, salary_processed, \
-                        S.gross_salary, S.net_salary, advance_due, loan_payable_amount, \
+            S.gross_salary, S.net_salary, advance_due, loan_payable_amount, \
             loan_due_amount, emp.employee_code, emp.full_name,salary_paid from hims_f_salary S, \
             hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id \
-            and emp.sub_department_id=SD.hims_d_sub_department_id and salary_processed = 'Y' and salary_type = 'NS' and \
-            `year` = ? and `month` = ? and S.hospital_id=? " +
+            and emp.sub_department_id=SD.hims_d_sub_department_id and salary_processed = 'Y' and salary_settled='N' \
+            and salary_type = 'NS' and `year` = ? and `month` = ? and S.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true,
@@ -341,40 +340,40 @@ export default {
                     salary[i]["ot_work_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_work_hours"].toString().split(".")[0]
-                        );
+                        salary[i]["ot_work_hours"].toString().split(".")[0]
+                      );
                   ot_min +=
                     salary[i]["ot_work_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_work_hours"].toString().split(".")[1]
-                        );
+                        salary[i]["ot_work_hours"].toString().split(".")[1]
+                      );
 
                   ot_hours +=
                     salary[i]["ot_weekoff_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_weekoff_hours"].toString().split(".")[0]
-                        );
+                        salary[i]["ot_weekoff_hours"].toString().split(".")[0]
+                      );
                   ot_min +=
                     salary[i]["ot_weekoff_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_weekoff_hours"].toString().split(".")[1]
-                        );
+                        salary[i]["ot_weekoff_hours"].toString().split(".")[1]
+                      );
 
                   ot_hours +=
                     salary[i]["ot_holiday_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_holiday_hours"].toString().split(".")[0]
-                        );
+                        salary[i]["ot_holiday_hours"].toString().split(".")[0]
+                      );
                   ot_min +=
                     salary[i]["ot_holiday_hours"] === null
                       ? 0
                       : parseInt(
-                          salary[i]["ot_holiday_hours"].toString().split(".")[1]
-                        );
+                        salary[i]["ot_holiday_hours"].toString().split(".")[1]
+                      );
 
                   ot_hours += parseInt(parseInt(ot_min) / parseInt(60));
 
@@ -608,8 +607,8 @@ export default {
                                 generatedNumbers.PAYMENT,
                                 inputParam.ScreenCode,
                                 "Salary Payment for " +
-                                  laibility_amount.narration +
-                                  laibility_amount.salary_payable,
+                                laibility_amount.narration +
+                                laibility_amount.salary_payable,
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
                               ],
