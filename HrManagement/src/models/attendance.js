@@ -9053,6 +9053,7 @@ function processBulkAtt_Normal(data) {
                 values: [
                   month_start,
                   month_end,
+
                   input.year,
                   input.month,
                   input.hospital_id,
@@ -9573,7 +9574,8 @@ function processBulkAtt_Normal(data) {
         COALESCE(sum(DA.ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
         COALESCE(sum(DA.ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
         COALESCE(sum(DA.ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60),0) as ot_holiday_hours\
-       , case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance ,E.exit_date 
+       , case  when E.exit_date  between date(?) and date(?) then 'Y' else 'N' end as partial_attendance ,E.exit_date ,
+          case when date_of_joining >date(?) then 'Y' else 'N' end as late_joined
         from hims_f_daily_attendance DA\
         inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id  and E.suspend_salary <>'Y' 
              ${deptStr}      left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
@@ -9587,6 +9589,7 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                           values: [
                             month_start,
                             month_end,
+                            month_start,
                             input.year,
                             input.month,
                             input.hospital_id,
@@ -9634,7 +9637,8 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                             }
                             if (
                               options["salary_calendar"] == "F" &&
-                              DilayResult[i]["partial_attendance"] == "N"
+                              DilayResult[i]["partial_attendance"] == "N" &&
+                              DilayResult[i]["late_joined"] == "N"
                             ) {
                               const t_paid_days =
                                 options["salary_calendar_fixed_days"] -
