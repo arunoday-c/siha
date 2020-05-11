@@ -38,7 +38,7 @@ class SalesListService extends Component {
       unit_cost: 0,
       tax_percent: 0,
       service_frequency: null,
-      comments: "",
+      service_comments: "",
     };
   }
 
@@ -221,11 +221,11 @@ class SalesListService extends Component {
                       />
 
                       <textarea
-                        value={this.state.comments}
-                        name="comments"
+                        value={this.state.service_comments}
+                        name="service_comments"
                         onChange={this.textAreaEvent.bind(this)}
                       >
-                        {this.state.comments}
+                        {this.state.service_comments}
                       </textarea>
                     </div>
                     <div className="col-12 subFooter-btn">
@@ -470,7 +470,7 @@ class SalesListService extends Component {
                             disabled: true,
                           },
                           {
-                            fieldName: "comments",
+                            fieldName: "service_comments",
                             label: (
                               <AlgaehLabel
                                 label={{

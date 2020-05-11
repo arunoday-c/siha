@@ -821,7 +821,7 @@ export default {
           internal_error: true,
           message: "No receipt details"
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -1941,19 +1941,8 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
-
-    utilities.logger().log("updatePatientPackage: ");
     try {
       let inputParam = req.body;
-
-      utilities.logger().log("consultation data : ", inputParam.consultation);
-
-      utilities
-        .logger()
-        .log("updatePatientPackage visit_id : ", inputParam.visit_id);
-      utilities
-        .logger()
-        .log("updatePatientPackage doctor_id : ", inputParam.doctor_id);
 
       if (inputParam.consultation == "Y") {
         for (let i = 0; i < inputParam.package_details.length; i++) {
@@ -1961,8 +1950,6 @@ export default {
           inputParam.package_details[i].doctor_id = inputParam.doctor_id;
         }
       }
-
-      utilities.logger().log("package_details: ", inputParam.package_details);
       req.body.incharge_or_provider = req.body.doctor_id;
       req.body.billed = "N";
       let qry = "";
@@ -2001,13 +1988,6 @@ export default {
               if (pack_results.length > 0) {
                 strQuery = ", `closed`='Y', closed_type='D' ";
               }
-
-              utilities
-                .logger()
-                .log(
-                  "actual_utilize_amount: ",
-                  inputParam.actual_utilize_amount
-                );
               _mysql
                 .executeQuery({
                   query:
@@ -2045,9 +2025,6 @@ export default {
                       return f.service_type_id == 4;
                     }
                   );
-
-                  utilities.logger().log("_services : ", _services);
-
                   insertOrderServices({
                     services: _services,
                     _mysql: _mysql,
@@ -2056,11 +2033,7 @@ export default {
                     req: req
                   })
                     .then(Order_Services => {
-                      utilities
-                        .logger()
-                        .log("_inv_services : ", _inv_services.length);
                       if (_inv_services.length > 0) {
-                        utilities.logger().log("IncludeValues : ");
                         let IncludeValues = [
                           "patient_id",
                           "visit_id",
@@ -2116,6 +2089,7 @@ export default {
                             printQuery: true
                           })
                           .then(inv_order_detail => {
+
                             req.records = inv_order_detail;
                             next();
                           })
@@ -2125,6 +2099,8 @@ export default {
                             });
                           });
                       } else {
+                        req.records = {}
+
                         next();
                       }
                     })
@@ -2376,7 +2352,7 @@ export default {
                     prices = allCompany_price.find(item => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2568,8 +2544,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                            parseFloat(deductable_percentage)) /
-                          100
+                          parseFloat(deductable_percentage)) /
+                        100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2722,8 +2698,8 @@ export default {
                       from_pos == "Y"
                         ? parseFloat(unit_cost)
                         : unit_cost != 0
-                        ? parseFloat(unit_cost)
-                        : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
@@ -4161,8 +4137,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     from_pos == "Y"
                       ? unit_cost
                       : unit_cost != 0
-                      ? unit_cost
-                      : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {
@@ -4538,7 +4514,6 @@ function insertOrderServices(options) {
       const inputParam = options.inputParam;
       const req = options.req;
       const utilities = new algaehUtilities();
-      utilities.logger().log("_services : ", _services.length);
       if (_services.length > 0) {
         let IncludeValues = [
           "patient_id",
@@ -4591,7 +4566,7 @@ function insertOrderServices(options) {
             printQuery: true
           })
           .then(order_detail => {
-            utilities.logger().log("order_detail: ", order_detail);
+
             let patient_id;
             let doctor_id;
             let visit_id;
@@ -4604,17 +4579,13 @@ function insertOrderServices(options) {
               })
               .ToArray();
 
-            utilities.logger().log("services: ", services);
+
             let servicesForPreAproval = [];
 
             servicesForPreAproval.push(patient_id);
             servicesForPreAproval.push(doctor_id);
             servicesForPreAproval.push(visit_id);
             servicesForPreAproval.push(services);
-
-            utilities
-              .logger()
-              .log("servicesForPreAproval: ", servicesForPreAproval);
 
             _mysql
               .executeQuery({

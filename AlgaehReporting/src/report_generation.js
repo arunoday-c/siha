@@ -465,7 +465,7 @@ export default {
                       );
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom: "70px",
+                        bottom: "100px",
                       };
                     } else {
                       _pdfTemplating[
