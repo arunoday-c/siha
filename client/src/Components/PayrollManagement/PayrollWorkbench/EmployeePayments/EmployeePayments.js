@@ -8,7 +8,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
@@ -20,7 +20,7 @@ import {
   ProessEmpPayment,
   ClearData,
   PaymentOnClear,
-  getFinanceHeaders
+  getFinanceHeaders,
 } from "./EmployeePaymentEvents.js";
 import { MainContext } from "algaeh-react-components/context";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -36,7 +36,6 @@ class EmployeePayment extends Component {
 
     this.FIN_Active = false;
     this.state = {};
-
   }
 
   UNSAFE_componentWillMount() {
@@ -51,17 +50,17 @@ class EmployeePayment extends Component {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
     if (this.FIN_Active === true) {
-      getFinanceHeaders(this)
+      getFinanceHeaders(this);
     }
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
-    })
+      hospital_id: userToken.hims_d_hospital_id,
+    });
 
     if (
       this.props.organizations === undefined ||
@@ -72,8 +71,8 @@ class EmployeePayment extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -88,8 +87,8 @@ class EmployeePayment extends Component {
 
         redux: {
           type: "EMPLY_GET_DATA",
-          mappingName: "all_employees"
-        }
+          mappingName: "all_employees",
+        },
       });
     }
 
@@ -103,8 +102,8 @@ class EmployeePayment extends Component {
         method: "GET",
         redux: {
           type: "PAYROLL_COMPONENT_DATA",
-          mappingName: "payrollcomponents"
-        }
+          mappingName: "payrollcomponents",
+        },
       });
     }
 
@@ -116,15 +115,15 @@ class EmployeePayment extends Component {
         method: "GET",
         redux: {
           type: "BANK_GET_DATA",
-          mappingName: "banks"
-        }
+          mappingName: "banks",
+        },
       });
     }
   }
 
   render() {
     const earnings = Enumerable.from(this.props.payrollcomponents)
-      .where(w => w.component_category === "A")
+      .where((w) => w.component_category === "A")
       .toArray();
     return (
       <React.Fragment>
@@ -134,7 +133,7 @@ class EmployeePayment extends Component {
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -143,21 +142,21 @@ class EmployeePayment extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  data: this.props.organizations,
                 },
                 onChange: branchHandelEvent.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    hospital_id: null,
                   });
-                }
+                },
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Payment Type",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "sel_payment_type",
@@ -166,13 +165,13 @@ class EmployeePayment extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE
+                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE,
                 },
                 onChange: Paymenttexthandle.bind(this, this),
                 others: {
-                  tabIndex: "2"
+                  tabIndex: "2",
                 },
-                onClear: PaymentOnClear.bind(this, this)
+                onClear: PaymentOnClear.bind(this, this),
               }}
             />
 
@@ -234,20 +233,20 @@ class EmployeePayment extends Component {
                                     label={{ forceLabel: "Request Type" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
-                                    f => f.value === row.payment_type
+                                    (f) => f.value === row.payment_type
                                   );
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].name
                                         : ""}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "request_number",
@@ -256,9 +255,9 @@ class EmployeePayment extends Component {
                                     label={{ forceLabel: "Request No." }}
                                   />
                                 ),
-                                className: drow => {
+                                className: (drow) => {
                                   return "greenCell";
-                                }
+                                },
                               },
                               {
                                 fieldName: "employee_code",
@@ -266,7 +265,7 @@ class EmployeePayment extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Employee Code" }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "full_name",
@@ -274,7 +273,7 @@ class EmployeePayment extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Employee Name" }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "payment_amount",
@@ -282,21 +281,21 @@ class EmployeePayment extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Requested Amount" }}
                                   />
-                                )
-                              }
+                                ),
+                              },
                             ]}
                             keyId="requested_application_id"
                             dataSource={{
-                              data: this.state.requestPayment
+                              data: this.state.requestPayment,
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             filter={true}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {},
                             }}
-                            onRowSelect={row => {
+                            onRowSelect={(row) => {
                               getPaymentDetails(this, row);
                             }}
                           />
@@ -319,96 +318,96 @@ class EmployeePayment extends Component {
                         {this.state.request_number === null ? (
                           ""
                         ) : (
-                            <>
-                              <div className="col-4">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Leave Request No."
-                                  }}
-                                />
-                                <h6>
-                                  {this.state.request_number
-                                    ? this.state.request_number
-                                    : "----------"}
-                                </h6>
-                              </div>
-                              <div className="col-8">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Employee Name"
-                                  }}
-                                />
-                                <h6>
-                                  {this.state.full_name
-                                    ? this.state.full_name
-                                    : "----------"}
-                                </h6>
-                              </div>
-                              {this.state.sel_payment_type === "LS" ? (
-                                <>
-                                  <div className="col-3 form-group">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Leave Salary"
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_leave_amount === null
-                                        ? 0.0
-                                        : this.state.dis_leave_amount}
-                                    </h6>
-                                  </div>{" "}
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Airfare Amt."
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.airfare_months === null
-                                        ? 0.0
-                                        : this.state.airfare_months}
-                                    </h6>
-                                  </div>
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Normal Salary"
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_salary_amount === null
-                                        ? 0.0
-                                        : this.state.dis_salary_amount}
-                                    </h6>
-                                  </div>{" "}
-                                  <div className="col-3">
-                                    <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Total Salary"
-                                      }}
-                                    />
-                                    <h6>
-                                      {this.state.dis_total_amount === null
-                                        ? 0.0
-                                        : this.state.dis_total_amount}
-                                    </h6>
-                                  </div>
-                                </>
-                              ) : null}
-                            </>
-                          )}
+                          <>
+                            <div className="col-4">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Request No.",
+                                }}
+                              />
+                              <h6>
+                                {this.state.request_number
+                                  ? this.state.request_number
+                                  : "----------"}
+                              </h6>
+                            </div>
+                            <div className="col-8">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Employee Name",
+                                }}
+                              />
+                              <h6>
+                                {this.state.full_name
+                                  ? this.state.full_name
+                                  : "----------"}
+                              </h6>
+                            </div>
+                            {this.state.sel_payment_type === "LS" ? (
+                              <>
+                                <div className="col-3 form-group">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Leave Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_leave_amount === null
+                                      ? 0.0
+                                      : this.state.dis_leave_amount}
+                                  </h6>
+                                </div>{" "}
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Airfare Amt.",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.airfare_months === null
+                                      ? 0.0
+                                      : this.state.airfare_months}
+                                  </h6>
+                                </div>
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Normal Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_salary_amount === null
+                                      ? 0.0
+                                      : this.state.dis_salary_amount}
+                                  </h6>
+                                </div>{" "}
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Total Salary",
+                                    }}
+                                  />
+                                  <h6>
+                                    {this.state.dis_total_amount === null
+                                      ? 0.0
+                                      : this.state.dis_total_amount}
+                                  </h6>
+                                </div>
+                              </>
+                            ) : null}
+                          </>
+                        )}
                         <div className="col-4 form-group">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Payment Date"
+                              forceLabel: "Payment Date",
                             }}
                           />
                           <h6>
                             {this.state.payment_date
                               ? moment(this.state.payment_date).format(
-                                Options.dateFormat
-                              )
+                                  Options.dateFormat
+                                )
                               : Options.dateFormat}
                           </h6>
                         </div>
@@ -416,24 +415,24 @@ class EmployeePayment extends Component {
                           div={{ className: "col-4 form-group mandatory" }}
                           label={{
                             forceLabel: "Payment Amount",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "payment_amount",
                             value: this.state.payment_amount,
                             others: {
-                              disabled: true
+                              disabled: true,
                             },
                             option: {
-                              type: "text"
-                            }
+                              type: "text",
+                            },
                           }}
                         />{" "}
                         <div className="col-4">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Generate Document No."
+                              forceLabel: "Generate Document No.",
                             }}
                           />
                           <h6>
@@ -451,7 +450,7 @@ class EmployeePayment extends Component {
                                 isImp:
                                   this.state.sel_payment_type === "AD"
                                     ? true
-                                    : false
+                                    : false,
                               }}
                               selector={{
                                 name: "deduction_month",
@@ -460,9 +459,9 @@ class EmployeePayment extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.MONTHS
+                                  data: GlobalVariables.MONTHS,
                                 },
-                                onChange: texthandle.bind(this, this)
+                                onChange: texthandle.bind(this, this),
                               }}
                             />
                             <AlagehFormGroup
@@ -472,18 +471,18 @@ class EmployeePayment extends Component {
                                 isImp:
                                   this.state.sel_payment_type === "AD"
                                     ? true
-                                    : false
+                                    : false,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "year",
                                 value: this.state.year,
                                 events: {
-                                  onChange: texthandle.bind(this, this)
+                                  onChange: texthandle.bind(this, this),
                                 },
                                 option: {
-                                  type: "text"
-                                }
+                                  type: "text",
+                                },
                               }}
                             />
                             <AlagehAutoComplete
@@ -493,7 +492,7 @@ class EmployeePayment extends Component {
                                 isImp:
                                   this.state.sel_payment_type === "AD"
                                     ? true
-                                    : false
+                                    : false,
                               }}
                               selector={{
                                 name: "earnings_id",
@@ -502,9 +501,9 @@ class EmployeePayment extends Component {
                                 dataSource: {
                                   textField: "earning_deduction_description",
                                   valueField: "hims_d_earning_deduction_id",
-                                  data: earnings
+                                  data: earnings,
                                 },
-                                onChange: texthandle.bind(this, this)
+                                onChange: texthandle.bind(this, this),
                               }}
                             />{" "}
                             {/* <div className="col-12">
@@ -525,7 +524,7 @@ class EmployeePayment extends Component {
                           div={{ className: "col-4 form-group mandatory" }}
                           label={{
                             forceLabel: "Mode of Payment",
-                            isImp: true
+                            isImp: true,
                           }}
                           selector={{
                             name: "payment_mode",
@@ -534,9 +533,9 @@ class EmployeePayment extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: GlobalVariables.EMP_PAYMENT_MODE
+                              data: GlobalVariables.EMP_PAYMENT_MODE,
                             },
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           }}
                         />
                         {this.state.payment_mode === "CH" ? (
@@ -545,7 +544,7 @@ class EmployeePayment extends Component {
                               div={{ className: "col-4 mandatory" }}
                               label={{
                                 forceLabel: "Select a Bank",
-                                isImp: true
+                                isImp: true,
                               }}
                               selector={{
                                 name: "bank_id",
@@ -554,9 +553,9 @@ class EmployeePayment extends Component {
                                 dataSource: {
                                   textField: "bank_name",
                                   valueField: "hims_d_bank_id",
-                                  data: this.props.banks
+                                  data: this.props.banks,
                                 },
-                                onChange: texthandle.bind(this, this)
+                                onChange: texthandle.bind(this, this),
                               }}
                             />
                             <AlagehFormGroup
@@ -566,54 +565,54 @@ class EmployeePayment extends Component {
                                 isImp:
                                   this.state.payment_mode === "CH"
                                     ? true
-                                    : false
+                                    : false,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "cheque_number",
                                 value: this.state.cheque_number,
                                 events: {
-                                  onChange: texthandle.bind(this, this)
+                                  onChange: texthandle.bind(this, this),
                                 },
                                 option: {
-                                  type: "text"
-                                }
+                                  type: "text",
+                                },
                               }}
                             />
                           </>
-                        ) : this.state.payment_mode === "CS" && this.FIN_Active === true ?
-                            (<AlgaehTreeSearch
-                              div={{ className: "col-6 form-group" }}
-                              label={{
-                                forceLabel: "Cash in Hand Account",
-                                isImp: true,
-                                align: "ltr"
-                              }}
-                              tree={{
-                                treeDefaultExpandAll: true,
-                                onChange: value => {
-
-                                  this.setState({
-                                    selected_account: value
-                                  })
-
-                                },
-                                data: this.state.cash_finance_account || [],
-                                textField: "label",
-                                valueField: node => {
-                                  if (node["leafnode"] === "Y") {
-                                    return (
-                                      node["head_id"] +
-                                      "-" +
-                                      node["finance_account_child_id"]
-                                    );
-                                  } else {
-                                    return node["finance_account_head_id"];
-                                  }
-                                },
-                                value: this.state.selected_account
-                              }}
-                            />) : null}
+                        ) : this.state.payment_mode === "CS" &&
+                          this.FIN_Active === true ? (
+                          <AlgaehTreeSearch
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "Cash in Hand Account",
+                              isImp: true,
+                              align: "ltr",
+                            }}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: (value) => {
+                                this.setState({
+                                  selected_account: value,
+                                });
+                              },
+                              data: this.state.cash_finance_account || [],
+                              textField: "label",
+                              valueField: (node) => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              value: this.state.selected_account,
+                            }}
+                          />
+                        ) : null}
                       </div>
                       <div className="row">
                         <div className="col-12">
@@ -663,9 +662,9 @@ class EmployeePayment extends Component {
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
-                                f => f.value === row.payment_type
+                                (f) => f.value === row.payment_type
                               );
 
                               return (
@@ -675,7 +674,7 @@ class EmployeePayment extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "payment_application_code",
@@ -683,7 +682,7 @@ class EmployeePayment extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Payment No" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "employee_code",
@@ -691,7 +690,7 @@ class EmployeePayment extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Employee Code" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "full_name",
@@ -699,7 +698,7 @@ class EmployeePayment extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Employee Name" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "payment_amount",
@@ -707,7 +706,7 @@ class EmployeePayment extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Payment Amount" }}
                               />
-                            )
+                            ),
                           },
 
                           {
@@ -717,7 +716,7 @@ class EmployeePayment extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Process Date" }}
                               />
-                            )
+                            ),
                           },
 
                           {
@@ -729,9 +728,9 @@ class EmployeePayment extends Component {
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
-                                f => f.value === row.payment_mode
+                                (f) => f.value === row.payment_mode
                               );
 
                               return (
@@ -741,7 +740,7 @@ class EmployeePayment extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "bank_id",
@@ -750,13 +749,13 @@ class EmployeePayment extends Component {
                                 label={{ forceLabel: "Bank Details" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.banks === undefined
                                   ? []
                                   : this.props.banks.filter(
-                                    f => f.hims_d_bank_id === row.bank_id
-                                  );
+                                      (f) => f.hims_d_bank_id === row.bank_id
+                                    );
 
                               return (
                                 <span>
@@ -765,30 +764,30 @@ class EmployeePayment extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "cheque_number",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Cheque/ Transaction No."
+                                  forceLabel: "Cheque/ Transaction No.",
                                 }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "deduction_month",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Deduction Month"
+                                  forceLabel: "Deduction Month",
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.MONTHS.filter(
-                                f => f.value === row.deduction_month
+                                (f) => f.value === row.deduction_month
                               );
 
                               return (
@@ -798,21 +797,21 @@ class EmployeePayment extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "cancel",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Cancel"
+                                  forceLabel: "Cancel",
                                 }}
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.FORMAT_YESNO.filter(
-                                f => f.value === row.cancel
+                                (f) => f.value === row.cancel
                               );
 
                               return (
@@ -822,20 +821,20 @@ class EmployeePayment extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.PreviousPayments
+                          data: this.state.PreviousPayments,
                         }}
                         // isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         filter={true}
                         events={{
-                          onEdit: () => { },
-                          onDelete: () => { },
-                          onDone: () => { }
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {},
                         }}
                       />
                     </div>
@@ -855,7 +854,7 @@ function mapStateToProps(state) {
     organizations: state.organizations,
     all_employees: state.all_employees,
     payrollcomponents: state.payrollcomponents,
-    banks: state.banks
+    banks: state.banks,
   };
 }
 
@@ -865,7 +864,7 @@ function mapDispatchToProps(dispatch) {
       getOrganizations: AlgaehActions,
       getEmployees: AlgaehActions,
       getEarningDeduction: AlgaehActions,
-      getBanks: AlgaehActions
+      getBanks: AlgaehActions,
     },
     dispatch
   );
