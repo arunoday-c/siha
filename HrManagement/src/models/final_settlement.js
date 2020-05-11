@@ -312,12 +312,6 @@ export default {
               }
 
 
-              query += _mysql.mysqlQueryFormat(
-                "update hims_f_salary set settled=? where hims_f_end_of_service_id=?",
-                ["Y", _input.hims_f_end_of_service_id]
-              );
-
-
               _mysql
                 .executeQuery({
                   query: query,
