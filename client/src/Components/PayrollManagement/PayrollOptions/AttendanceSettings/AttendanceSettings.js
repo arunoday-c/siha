@@ -1256,7 +1256,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-8 form-group" }}
                         label={{
                           forceLabel: "Server Name",
                           isImp: false,
@@ -1275,7 +1275,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-4 form-group" }}
                         label={{
                           forceLabel: "Port Number",
                           isImp: false,
@@ -1294,7 +1294,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Login ID",
                           isImp: false,
@@ -1313,7 +1313,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Password",
                           isImp: false,
@@ -1332,7 +1332,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Database",
                           isImp: false,
@@ -1351,7 +1351,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Swipe Card Type",
                           isImp: false,
@@ -1383,7 +1383,7 @@ export default class AttendanceSettings extends Component {
                       Email Configuration
                     </label>
                     <div className="row">
-                      <div className="col-12">
+                      <div className="col-6">
                         <label>Email Notfication Required</label>
                         <div className="customRadio">
                           <label className="radio inline">
@@ -1415,7 +1415,7 @@ export default class AttendanceSettings extends Component {
                       </div>
 
                       <AlagehAutoComplete
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Email Service Type",
                           isImp: false,
@@ -1439,7 +1439,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-8 form-group" }}
                         label={{
                           forceLabel: "Host Name",
                           isImp: false,
@@ -1458,9 +1458,9 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-4 form-group" }}
                         label={{
-                          forceLabel: "Email Port Number",
+                          forceLabel: "Port Number",
                           isImp: false,
                         }}
                         textBox={{
@@ -1477,9 +1477,9 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
-                          forceLabel: "Host Username",
+                          forceLabel: "Host Email",
                           isImp: false,
                         }}
                         textBox={{
@@ -1496,7 +1496,7 @@ export default class AttendanceSettings extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-12 form-group" }}
+                        div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Host Password",
                           isImp: false,
