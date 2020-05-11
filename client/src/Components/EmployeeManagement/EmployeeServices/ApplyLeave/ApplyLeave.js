@@ -617,15 +617,30 @@ class ApplyLeave extends Component {
       },
       method: "GET",
       onSuccess: (res) => {
-        this.setState(
-          {
-            employee: res.data.records[0],
-          },
-          () => {
-            this.getEmployeeLeaveData();
-            this.getEmployeeLeaveHistory();
-          }
-        );
+        if (res.data.records[0]) {
+          this.setState(
+            {
+              employee: res.data.records[0],
+            },
+            () => {
+              this.getEmployeeLeaveData();
+              this.getEmployeeLeaveHistory();
+            }
+          );
+        } else {
+          this.setState(
+            {
+              employee_id: null,
+              employee_name: "",
+            },
+            () => {
+              swalMessage({
+                title: "Selected Employee is not active",
+                type: "error",
+              });
+            }
+          );
+        }
       },
       onFailure: (err) => {
         swalMessage({

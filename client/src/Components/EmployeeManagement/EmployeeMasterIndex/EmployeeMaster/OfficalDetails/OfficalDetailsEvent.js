@@ -14,47 +14,51 @@ const texthandle = ($this, e) => {
       ) {
         swalMessage({
           type: "error",
-          title: $this.state.date_of_releaving_label + " cannot blank"
+          title: $this.state.date_of_releaving_label + " cannot blank",
         });
         return;
       }
       _notice = {
-        reliving_date: moment($this.state.date_of_resignation).add(value, "days")
-          ._d
+        reliving_date: moment($this.state.date_of_resignation).add(
+          value,
+          "days"
+        )._d,
+        [name]: value,
       };
+      $this.setState(_notice);
       break;
     case "sub_department_id":
       $this.setState({
         [name]: value,
         department_name: e.selected.department_name,
-        ..._notice
+        ..._notice,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         department_name: e.selected.department_name,
-        ..._notice
+        ..._notice,
       });
       break;
     case "employee_group_id":
       $this.setState({
         [name]: value,
         monthly_accrual_days: e.selected.monthly_accrual_days,
-        ..._notice
+        ..._notice,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         monthly_accrual_days: e.selected.monthly_accrual_days,
-        ..._notice
+        ..._notice,
       });
       break;
     default:
       $this.setState({
         [name]: value,
-        ..._notice
+        ..._notice,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
-        ..._notice
+        ..._notice,
       });
       break;
   }
@@ -62,10 +66,10 @@ const texthandle = ($this, e) => {
 
 const accomodationProvided = ($this, e) => {
   $this.setState({
-    [e.target.name]: e.target.checked ? "Y" : "N"
+    [e.target.name]: e.target.checked ? "Y" : "N",
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e.target.name]: e.target.checked ? "Y" : "N"
+    [e.target.name]: e.target.checked ? "Y" : "N",
   });
 };
 
@@ -77,18 +81,18 @@ const datehandle = ($this, ctrl, e) => {
         reliving_date: moment(ctrl).add(
           parseFloat($this.state.notice_period),
           "days"
-        )._d
+        )._d,
       };
     }
   }
   let selected_date = moment(ctrl, "YYYY-MM-DD", true).isValid();
   $this.setState({
     [e]: selected_date === true ? ctrl : null,
-    ..._notice
+    ..._notice,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [e]: selected_date === true ? ctrl : null,
-    ..._notice
+    ..._notice,
   });
 };
 const employeeStatusHandler = ($this, e) => {
@@ -110,11 +114,11 @@ const employeeStatusHandler = ($this, e) => {
     enable_active_status: e.value,
     date_of_releaving_label: _date_of_releaving,
     employee_status: e.value,
-    ..._other
+    ..._other,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     employee_status: e.value,
-    ..._other
+    ..._other,
   });
 };
 
@@ -129,22 +133,22 @@ const bankEventhandle = ($this, e) => {
   let value = e.value || e.target.value;
   $this.setState({
     [name]: value,
-    employee_bank_ifsc_code: e.selected.bank_code
+    employee_bank_ifsc_code: e.selected.bank_code,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value,
-    employee_bank_ifsc_code: e.selected.bank_code
+    employee_bank_ifsc_code: e.selected.bank_code,
   });
 };
 
 const otEntitleHandaler = ($this, e) => {
   $this.setState({
     [e.target.name]: e.target.checked ? "Y" : "N",
-    overtime_group_id: null
+    overtime_group_id: null,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [e.target.name]: e.target.checked ? "Y" : "N",
-    overtime_group_id: null
+    overtime_group_id: null,
   });
 };
 export {
@@ -154,5 +158,5 @@ export {
   employeeStatusHandler,
   dateFormater,
   bankEventhandle,
-  otEntitleHandaler
+  otEntitleHandaler,
 };
