@@ -9008,13 +9008,15 @@ function processBulkAtt_Normal(data) {
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id and E.suspend_salary <>'Y' \
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\          
          left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-        S.year=? and S.month=? where  E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
+        S.year=? and S.month=? where    (E.exit_date is null or E.exit_date >date(?) ) and 
+        E.date_of_joining<= date(?) and ( S.salary_processed is null or  S.salary_processed='N')  and TS.hospital_id=? and TS.year=? and TS.month=?    ${strQry.replace(
           /employee_id/gi,
           "TS.employee_id"
         )} group by TS.employee_id having count(*)< ?; ;`,
           values: [
             input.year,
             input.month,
+            month_end,
             month_start,
             input.hospital_id,
             input.year,
