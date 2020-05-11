@@ -59,7 +59,7 @@ export default {
                   _input.employee_id,
                   _input.employee_id,
                   _input.employee_id,
-                  _input.employee_id,
+                  _input.employee_id
                 ],
               })
               .then((result) => {
@@ -90,8 +90,8 @@ export default {
                     const _total_loan_amount =
                       _loanList.length > 0
                         ? _.chain(_loanList).sumBy((s) =>
-                            parseFloat(s.pending_loan)
-                          )
+                          parseFloat(s.pending_loan)
+                        )
                         : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
@@ -300,8 +300,8 @@ export default {
                 ["Y", _input.employee_id]
               );
               query += _mysql.mysqlQueryFormat(
-                "update hims_f_salary set salary_settled=? where hims_f_salary_id=?;",
-                ["Y", _input.hims_f_salary_id]
+                "update hims_f_salary set salary_settled=?, salary_paid=? ,final_settlement_id=? where hims_f_salary_id=?;",
+                ["Y", "Y", req.body.hims_f_final_settlement_header_id, _input.hims_f_salary_id]
               );
 
               if (_input.hims_f_end_of_service_id != null) {
@@ -310,6 +310,13 @@ export default {
                   ["Y", _input.hims_f_end_of_service_id]
                 );
               }
+
+
+              query += _mysql.mysqlQueryFormat(
+                "update hims_f_salary set settled=? where hims_f_end_of_service_id=?",
+                ["Y", _input.hims_f_end_of_service_id]
+              );
+
 
               _mysql
                 .executeQuery({
@@ -440,9 +447,9 @@ export default {
                           final_settlement_data[0].final_settlement_number,
                           inputParam.ScreenCode,
                           "Final Settlement Process for " +
-                            final_settlement_data[0].employee_code +
-                            "/" +
-                            final_settlement_data[0].full_name,
+                          final_settlement_data[0].employee_code +
+                          "/" +
+                          final_settlement_data[0].full_name,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],

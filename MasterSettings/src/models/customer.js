@@ -307,11 +307,11 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_customer_id, customer_code, customer_name, customer_status, business_registration_no, email_id_1,\
+            "select hims_d_customer_id, customer_code, customer_name, arabic_customer_name, customer_status, business_registration_no, email_id_1,\
           email_id_2, website, contact_number, payment_terms, payment_mode, bank_name, \
           purchase_inch_name, purchase_inch_number,purchase_inch_emailid, project_inch_name, \
           project_inch_number, project_inch_emailid, finance_inch_name, finance_inch_number, finance_inch_emailid,\
-          postal_code,address, country_id, state_id, city_id from hims_d_customer where record_status='A' " +
+          postal_code,address, country_id, state_id, city_id, vat_number from hims_d_customer where record_status='A' " +
             _strAppend +
             " order by hims_d_customer_id desc",
           values: inputValues,
