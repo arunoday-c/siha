@@ -479,11 +479,11 @@ const PurchaseReturnEntry = React.lazy(() =>
     import("./Components/Procurement/PurchaseReturnEntry/PurchaseReturnEntry")
   )
 );
-const PurchaseRequestList = React.lazy(() =>
-  retry(() =>
-    import("./Components/Procurement/PurchaseRequestList/PurchaseRequestList")
-  )
-);
+// const PurchaseRequestList = React.lazy(() =>
+//   retry(() =>
+//     import("./Components/Procurement/PurchaseRequestList/PurchaseRequestList")
+//   )
+// );
 const PurchaseOrderList = React.lazy(() =>
   retry(() =>
     import("./Components/Procurement/PurchaseOrderList/PurchaseSwitch")
@@ -1203,11 +1203,11 @@ const appRoutes = [
     isExactPath: true,
     component: <PurchaseOrderList />
   },
-  {
-    path: "/PurchaseRequestList",
-    isExactPath: true,
-    component: <PurchaseRequestList />
-  },
+  // {
+  //   path: "/PurchaseRequestList",
+  //   isExactPath: true,
+  //   component: <PurchaseRequestList />
+  // },
   {
     path: "/DeliveryNoteEntry",
     isExactPath: true,
