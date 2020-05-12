@@ -8,7 +8,6 @@ import { Notifications } from "../Notifications";
 import Items from "./item";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
-import clientLogo from "../../../assets/svg/clientLogo.png";
 
 function NavBars(props) {
   const {
@@ -101,7 +100,14 @@ function NavBars(props) {
 
         <div className="navbar-brand appLogoCntr">
           <span className="appCustomLogo">
-            <img src={clientLogo}></img>
+            <img
+              src={`http://${window.location.hostname}${
+                window.location.port ? ":3006" : "/docServer"
+              }/api/v1/Document/getLogo?image_id=${
+                userToken.hims_d_hospital_id
+              }&logo_type=APP`}
+              alt="client logo"
+            />
             {/* load client logo here  */}
           </span>
           <span>

@@ -16,6 +16,7 @@ import { Checkbox } from "antd";
 import { newAlgaehApi } from "../../../../hooks";
 import { MainContext } from "algaeh-react-components/context";
 import { logoUrl, LoadLogo } from "../imagesSettings";
+
 export function Organization(props) {
   const [organisation, setOrganisation] = useState({});
   const baseEmailConfig = {
@@ -29,6 +30,7 @@ export function Organization(props) {
   const [emailConfig, setEmailConfig] = useState(baseEmailConfig);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [org_image, setOrgImage] = useState(undefined);
+  const [app_logo, setAppLogo] = useState(undefined);
   const [loadingOrgImage, setLoadingOrgImage] = useState(false);
   const { countryMaster } = props;
   const { userToken } = useContext(MainContext);
@@ -139,7 +141,6 @@ export function Organization(props) {
 
   function handleEmailChange(e) {
     const { name, value, checked } = e.target;
-    console.log(name, value, "name and value");
 
     if (name === "is_enabled") {
       setEmailConfig((state) => {
@@ -202,6 +203,20 @@ export function Organization(props) {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (imageUrl) => {
         setOrgImage(imageUrl);
+        setLoadingOrgImage(false);
+      });
+    }
+  }
+
+  function onLogoHandleChange(info) {
+    if (info.file.status === "uploading") {
+      setLoadingOrgImage(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        setAppLogo(imageUrl);
         setLoadingOrgImage(false);
       });
     }
@@ -449,6 +464,42 @@ export function Organization(props) {
                     </AlgaehButton>
                   </div>
                 </div>{" "}
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-3">
+                <Upload
+                  name="org_image"
+                  listType="picture-card"
+                  showUploadList={false}
+                  onChange={onLogoHandleChange}
+                  data={{
+                    image_id: hims_d_organization_id,
+                    logo_type: "APP",
+                  }}
+                  action={logoUrl({ uri: "/Document/saveLogo" })}
+                  accept=".png"
+                  className="orgImageUpload"
+                >
+                  {app_logo ? (
+                    <img
+                      src={app_logo}
+                      alt="avatar"
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <>
+                      <LoadLogo
+                        key="app"
+                        input={{
+                          image_id: hims_d_organization_id,
+                          logo_type: "APP",
+                        }}
+                      />
+                      {uploadButton}
+                    </>
+                  )}
+                </Upload>
               </div>
             </div>
           </div>

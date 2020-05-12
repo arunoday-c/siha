@@ -103,7 +103,7 @@ const getMainOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `SELECT hims_d_organization_id,product_type,organization_name,business_registration_number,
-        fiscal_period,fiscal_quarters,tax_number,country_id FROM hims_d_organization where record_status='A' limit 1;`,
+        fiscal_period,fiscal_quarters,tax_number,country_id,email FROM hims_d_organization where record_status='A' limit 1;`,
         printQuery: true,
       })
       .then((result) => {
