@@ -187,6 +187,7 @@ class EOSGratuity extends Component {
                 calculated_gratutity_amount: res.data.result.gratuity_amount,
                 computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
+                entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: true,
                 gratuity_done: true,
               });
@@ -197,6 +198,7 @@ class EOSGratuity extends Component {
                 calculated_gratutity_amount: res.data.result.gratuity_amount,
                 computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
+                entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: false,
               });
             }
@@ -435,14 +437,29 @@ class EOSGratuity extends Component {
                           </h6>
                         </div>
                         <div className="col-4 form-group">
-                          <label className="style_Label ">Eligiable Days</label>
-                          <h6>
-                            {" "}
-                            {EosData.eligible_day
-                              ? parseFloat(EosData.eligible_day).toFixed(3)
-                              : 0}{" "}
-                            Day(s)
-                          </h6>
+                          {EosData.entitled_amount === undefined ? (
+                            <>
+                              <label className="style_Label ">
+                                Eligiable Days
+                              </label>
+                              <h6>
+                                {" "}
+                                {EosData.eligible_day
+                                  ? parseFloat(EosData.eligible_day).toFixed(3)
+                                  : 0}{" "}
+                                Day(s)
+                              </h6>
+                            </>
+                          ) : (
+                            <>
+                              <label className="style_Label ">
+                                Entitled Amount
+                              </label>
+                              <h6>
+                                {GetAmountFormart(EosData.entitled_amount)}
+                              </h6>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
