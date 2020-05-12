@@ -33,6 +33,7 @@ class OfficalDetails extends Component {
       reliving_date: undefined,
       // employee_status: null,
       inactive_date: undefined,
+      eos_id: undefined,
       selectedLang: getCookie("Language"),
     };
   }
@@ -42,6 +43,21 @@ class OfficalDetails extends Component {
     InputOutput.HIMS_Active = this.props.EmpMasterIOputs.state.HIMS_Active;
     InputOutput.HRMS_Active = this.props.EmpMasterIOputs.state.HRMS_Active;
     this.setState({ ...this.state, ...InputOutput }, () => {
+      if (
+        this.props.eosReasons === undefined ||
+        this.props.eosReasons.length === 0
+      ) {
+        this.props.getEosReasons({
+          uri: "/endofservice/eosOptions",
+          module: "hrManagement",
+          method: "GET",
+          redux: {
+            type: "EOS_GET_DATA",
+            mappingName: "eosReasons",
+          },
+        });
+      }
+
       if (this.props.banks === undefined || this.props.banks.length === 0) {
         this.props.getBanks({
           uri: "/bankmaster/getBank",
@@ -708,6 +724,44 @@ class OfficalDetails extends Component {
                       }}
                       value={this.state.exit_date}
                     />
+                    {this.props.eosReasons === undefined ||
+                    this.props.eosReasons.length === 0 ? null : (
+                      <AlagehAutoComplete
+                        div={{ className: "col-3 mandatory form-group" }}
+                        label={{
+                          forceLabel: "EOS Reason",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "eos_reason",
+                          className: "select-fld",
+                          value: this.state.eos_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "eos_reason_name"
+                                : "eos_reason_other_lan",
+                            valueField: "eos_reson_id",
+                            data: this.props.eosReasons,
+                          },
+                          onChange: (e) => {
+                            this.setState({ eos_id: e.value });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              eos_id: e.value,
+                            });
+                          },
+
+                          onClear: () => {
+                            this.setState({
+                              eos_id: undefined,
+                            });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              eos_id: undefined,
+                            });
+                          },
+                        }}
+                      />
+                    )}
                   </React.Fragment>
                 ) : null}
               </div>
@@ -885,6 +939,7 @@ function mapStateToProps(state) {
     overTime: state.overTime,
     branches: state.branches,
     depservices: state.depservices,
+    eosReasons: state.eosReasons,
   };
 }
 
@@ -899,6 +954,7 @@ function mapDispatchToProps(dispatch) {
       getOvertimeGroups: AlgaehActions,
       getOrganizations: AlgaehActions,
       getDepServices: AlgaehActions,
+      getEosReasons: AlgaehActions,
     },
     dispatch
   );
