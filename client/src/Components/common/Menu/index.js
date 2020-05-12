@@ -102,6 +102,7 @@ function NavBars(props) {
         <div className="navbar-brand appLogoCntr">
           <span className="appCustomLogo">
             <img src={clientLogo}></img>
+            {/* load client logo here  */}
           </span>
           <span>
             <i className="appName">

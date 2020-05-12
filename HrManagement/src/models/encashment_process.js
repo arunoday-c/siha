@@ -7,12 +7,19 @@ export default {
     const _EncashDetails = req.query;
 
     /* Select statemwnt  */
+
+    /* Annualized Calc*/
+    //sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) as leave_amount
+
+    /* Fixed Calc*/
+    //sum( ((empEarn.amount/30)*(leaEncash.percent/100))*close_balance) as leave_amount
+
     _mysql
       .executeQuery({
         query:
           "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
             leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
-            sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) as leave_amount , \
+            sum( ((empEarn.amount/30)*(leaEncash.percent/100))*close_balance) as leave_amount , \
             close_balance as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
             hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
             `year`=? and  ML.leave_id = ? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
