@@ -270,7 +270,7 @@ export default {
           E.full_name as employee_name ,E.company_bank_id,E.employee_bank_name,E.employee_bank_ifsc_code,\
           E.employee_account_number, S.salary_processed ,S.total_work_days ,S.net_salary ,S.total_deductions,S.total_hours,\
           S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hours,E.nationality  from hims_f_salary S \
-          inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where S.salary_processed='Y' and S.salary_type <>'LS' and S.final_settlement_id is null \
+          inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where S.salary_paid='Y' and S.salary_type = 'NS' \
           and E.company_bank_id=? and E.mode_of_payment='WPS' and  S.year=? and S.month=?; \
           select default_nationality from hims_d_hospital;`,
           values: [input.company_bank_id, input.year, input.month],
