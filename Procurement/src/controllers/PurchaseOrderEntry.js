@@ -13,6 +13,8 @@ const {
   updateInvReqEntry,
   updatePurchaseOrderEntry,
   getVendorQuotation,
+  raiseRequestForPO,
+  getraiseRequestForPO,
   releaseDB
 } = purchaseModels;
 
@@ -96,6 +98,26 @@ export default () => {
   api.put(
     "/updatePurchaseOrderEntry",
     updatePurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/raiseRequestForPO",
+    raiseRequestForPO,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get(
+    "/getraiseRequestForPO",
+    getraiseRequestForPO,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

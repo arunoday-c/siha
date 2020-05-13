@@ -1,5 +1,5 @@
 import moment from "moment";
-import { swalMessage } from "../../../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 // import swal from "sweetalert2";
 import Options from "../../../../Options.json";
 import _ from "lodash";
@@ -224,11 +224,43 @@ const AddSelectedBatches = ($this, context) => {
     }
 };
 
+const RequestPO = ($this, item) => {
+    debugger
+    algaehApiCall({
+        uri: "/PurchaseOrderEntry/raiseRequestForPO",
+        module: "procurement",
+        method: "POST",
+        data: {
+            item_id: item.item_id,
+            request_from: "I",
+            request_qty: item.ordered_quantity,
+            request_location: $this.state.location_id
+        },
+        onSuccess: response => {
+            if (response.data.success) {
+
+                swalMessage({
+                    title: "Requested Succesfully...",
+                    type: "success"
+                });
+            }
+
+        },
+        onFailure: error => {
+            swalMessage({
+                title: error.message,
+                type: "error"
+            });
+        }
+    });
+}
+
 
 export {
     datehandle,
     onchangegridcol,
     dateFormater,
     getItemLocationStock,
-    AddSelectedBatches
+    AddSelectedBatches,
+    RequestPO
 };

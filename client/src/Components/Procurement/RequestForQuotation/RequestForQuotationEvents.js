@@ -274,7 +274,7 @@ const getData = ($this, quotation_for) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({
@@ -354,6 +354,17 @@ const dateValidate = ($this, value, event) => {
   }
 };
 
+const setDataFromRequest = ($this, e) => {
+
+  getData($this, "INV");
+
+  let IOputs = {};
+  IOputs.quotation_detail = $this.props.quotation_detail
+  IOputs.saveEnable = true
+  IOputs.quotation_for = "INV"
+  $this.setState({ ...$this.state, ...IOputs });
+};
+
 export {
   texthandle,
   poforhandle,
@@ -364,5 +375,6 @@ export {
   generateRequestQuotation,
   datehandle,
   clearItemDetails,
-  dateValidate
+  dateValidate,
+  setDataFromRequest
 };
