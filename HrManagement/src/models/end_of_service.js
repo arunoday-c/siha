@@ -8,7 +8,7 @@ export default {
     const _input = req.query;
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-    const { decimal_places } = req.userIdentity;
+    const { decimal_places, org_country_id } = req.userIdentity;
 
     _mysql
       .executeQuery({
@@ -29,7 +29,7 @@ export default {
               "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
               datediff(date(exit_date),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
               E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-              E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
+              E.sub_department_id,E.employee_designation_id,E.date_of_birth,E.eos_id,\
               SD.sub_department_name,SD.arabic_sub_department_name \
             from hims_d_employee E Left join hims_d_sub_department SD \
              on SD.hims_d_sub_department_id = E.sub_department_id \
@@ -42,9 +42,6 @@ export default {
           .then((result) => {
             const _result = result[0];
             const _options = result[1];
-
-            // utilities.logger().log("_result: ", _result);
-
             if (_result.length == 0) {
               _mysql.releaseConnection();
               next(
@@ -57,8 +54,6 @@ export default {
               );
               return;
             }
-
-            // utilities.logger().log("_options: ", _options);
 
             if (_options.length == 0) {
               _mysql.releaseConnection();
@@ -127,138 +122,28 @@ export default {
                   _employee.endOfServiceYears * _optionsDetals.eligible_days5;
               }
             } else if (_optionsDetals.end_of_service_type == "H") {
-              let by =
-                _employee.endOfServiceYears -
-                _optionsDetals.from_service_range1;
-              let ted = 0;
-              if (by > 0) {
-                ted =
-                  _optionsDetals.from_service_range1 *
-                  _optionsDetals.eligible_days1;
-                by =
-                  _employee.endOfServiceYears -
-                  _optionsDetals.from_service_range2;
-                if (by > 0) {
-                  // ted =
-                  //   (ted +
-                  //     (_optionsDetals.from_service_range2 -
-                  //       _optionsDetals.from_service_range1)) *
-                  //   by;
-                  ted =
-                    ted +
-                    _optionsDetals.from_service_range2 *
-                      _optionsDetals.eligible_days2;
-
-                  by =
-                    _employee.endOfServiceYears -
-                    _optionsDetals.from_service_range3;
-                  if (by > 0) {
-                    ted =
-                      ted +
-                      _optionsDetals.from_service_range3 *
-                        _optionsDetals.eligible_days3;
-
-                    // ted =
-                    //   (ted +
-                    //     (_optionsDetals.from_service_range3 -
-                    //       _optionsDetals.from_service_range2)) *
-                    //   by;
-                    by =
-                      _employee.endOfServiceYears -
-                      _optionsDetals.from_service_range3;
-                    if (by > 0) {
-                      ted =
-                        ted +
-                        _optionsDetals.from_service_range4 *
-                          _optionsDetals.eligible_days4;
-                      // ted =
-                      //   (ted +
-                      //     (_optionsDetals.from_service_range4 -
-                      //       _optionsDetals.from_service_range3)) *
-                      //   by;
-
-                      by =
-                        _employee.endOfServiceYears -
-                        _optionsDetals.from_service_range4;
-                      if (by > 0) {
-                        // ted =
-                        //   (ted +
-                        //     (_optionsDetals.from_service_range5 -
-                        //       _optionsDetals.from_service_range4)) *
-                        //   by;
-                        ted =
-                          ted +
-                          _optionsDetals.from_service_range5 *
-                            _optionsDetals.eligible_days5;
-                      }
-                      // else {
-                      //   // _eligibleDays = ted
-                      //   // _eligibleDays =
-                      //   //   ted + by * _optionsDetals.eligible_days4;
-                      // }
-                    } else {
-                      let daysAvilable =
-                        _employee.endOfServiceYears -
-                        _optionsDetals.from_service_range3;
-
-                      _eligibleDays =
-                        ted + daysAvilable * _optionsDetals.eligible_days4;
-                      // _eligibleDays = ted + by * _optionsDetals.eligible_days3;
-                    }
-                  } else {
-                    let daysAvilable =
-                      _employee.endOfServiceYears -
-                      _optionsDetals.from_service_range2;
-
-                    _eligibleDays =
-                      ted + daysAvilable * _optionsDetals.eligible_days3;
-                  }
-                } else {
-                  // _eligibleDays = ted + by * _optionsDetals.eligible_days2;
-                  let daysAvilable =
-                    _employee.endOfServiceYears -
-                    _optionsDetals.from_service_range1;
-
-                  _eligibleDays =
-                    ted + daysAvilable * _optionsDetals.eligible_days2;
-                }
-              } else {
-                ted =
-                  _employee.endOfServiceYears * _optionsDetals.eligible_days1;
+              let _componentsList_total = [];
+              if (_optionsDetals.end_of_service_component1 != null) {
+                _componentsList_total.push(
+                  _optionsDetals.end_of_service_component1
+                );
               }
-              ted = _eligibleDays;
-            }
-
-            // utilities.logger().log("_optionsDetals: ", _optionsDetals);
-
-            let _componentsList_total = [];
-            if (_optionsDetals.end_of_service_component1 != null) {
-              _componentsList_total.push(
-                _optionsDetals.end_of_service_component1
-              );
-            }
-            if (_optionsDetals.end_of_service_component2 != null) {
-              _componentsList_total.push(
-                _optionsDetals.end_of_service_component2
-              );
-            }
-            if (_optionsDetals.end_of_service_component3 != null) {
-              _componentsList_total.push(
-                _optionsDetals.end_of_service_component3
-              );
-            }
-            if (_optionsDetals.end_of_service_component4 != null) {
-              _componentsList_total.push(
-                _optionsDetals.end_of_service_component4
-              );
-            }
-
-            // utilities
-            //   .logger()
-            //   .log("_componentsList_total: ", _componentsList_total);
-
-            _mysql
-              .executeQuery({
+              if (_optionsDetals.end_of_service_component2 != null) {
+                _componentsList_total.push(
+                  _optionsDetals.end_of_service_component2
+                );
+              }
+              if (_optionsDetals.end_of_service_component3 != null) {
+                _componentsList_total.push(
+                  _optionsDetals.end_of_service_component3
+                );
+              }
+              if (_optionsDetals.end_of_service_component4 != null) {
+                _componentsList_total.push(
+                  _optionsDetals.end_of_service_component4
+                );
+              }
+              const queryForm = _mysql.executeQuery({
                 query:
                   "select hims_d_employee_earnings_id,employee_id, earnings_id,earning_deduction_description,\
                   EE.short_desc, amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where \
@@ -266,53 +151,172 @@ export default {
                   and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
                 values: [_input.hims_d_employee_id, _componentsList_total],
                 printQuery: true,
-              })
-              .then((earnings) => {
-                _mysql.releaseConnection();
-                let _computatedAmout = 0;
-                const _sumOfTotalEarningComponents = _.sumBy(earnings, (s) => {
-                  return s.amount;
-                });
-                let gratuity = 0;
-                if (_optionsDetals.end_of_service_calculation == "AN") {
-                  // _computatedAmout = _.chain(earnings)
-                  //   .map((items) => {
-                  //     return (items.amount * 12) / 365;
-                  //   })
-                  //   .value();
-                  gratuity = (_sumOfTotalEarningComponents * 12) / 365;
-                } else if (_optionsDetals.end_of_service_calculation == "FI") {
-                  // _computatedAmout = _.chain(earnings)
-                  //   .map((items) => {
-                  //     return items.amount / 30; // _optionsDetals.end_of_service_days;
-                  //   })
-                  //   .value();
-                  gratuity = _sumOfTotalEarningComponents / 30;
-                }
-
-                _computatedAmout = _eligibleDays * gratuity;
-                // console.log("_computatedAmout", _computatedAmout);
-                // const _computatedAmoutSum =
-                //   _computatedAmout.reduce((a, b) => {
-                //     return a + b;
-                //   }, 0) * _eligibleDays;
-
-                req.records = {
-                  computed_amount: _computatedAmout, //_computatedAmoutSum,
-                  paybale_amout: _computatedAmout, //_computatedAmoutSum,
-                  ..._employee,
-                  componentList: earnings, //earnings,
-                  totalEarningComponents: _sumOfTotalEarningComponents,
-                  eligible_day: _eligibleDays,
-                  endofServexit: endofServexit,
-                  gratuity_amount: gratuity,
-                };
-                next();
-              })
-              .catch((error) => {
-                _mysql.releaseConnection();
-                next(error);
               });
+              if (org_country_id === 178) {
+                eosBySaudaiRule(
+                  _optionsDetals,
+                  _employee,
+                  queryForm,
+                  _mysql,
+                  req,
+                  next
+                );
+              } else {
+                let by =
+                  _employee.endOfServiceYears -
+                  _optionsDetals.from_service_range1;
+                let ted = 0;
+                if (by > 0) {
+                  ted =
+                    _optionsDetals.from_service_range1 *
+                    _optionsDetals.eligible_days1;
+                  by =
+                    _employee.endOfServiceYears -
+                    _optionsDetals.from_service_range2;
+                  if (by > 0) {
+                    // ted =
+                    //   (ted +
+                    //     (_optionsDetals.from_service_range2 -
+                    //       _optionsDetals.from_service_range1)) *
+                    //   by;
+                    ted =
+                      ted +
+                      _optionsDetals.from_service_range2 *
+                        _optionsDetals.eligible_days2;
+
+                    by =
+                      _employee.endOfServiceYears -
+                      _optionsDetals.from_service_range3;
+                    if (by > 0) {
+                      ted =
+                        ted +
+                        _optionsDetals.from_service_range3 *
+                          _optionsDetals.eligible_days3;
+
+                      // ted =
+                      //   (ted +
+                      //     (_optionsDetals.from_service_range3 -
+                      //       _optionsDetals.from_service_range2)) *
+                      //   by;
+                      by =
+                        _employee.endOfServiceYears -
+                        _optionsDetals.from_service_range3;
+                      if (by > 0) {
+                        ted =
+                          ted +
+                          _optionsDetals.from_service_range4 *
+                            _optionsDetals.eligible_days4;
+                        // ted =
+                        //   (ted +
+                        //     (_optionsDetals.from_service_range4 -
+                        //       _optionsDetals.from_service_range3)) *
+                        //   by;
+
+                        by =
+                          _employee.endOfServiceYears -
+                          _optionsDetals.from_service_range4;
+                        if (by > 0) {
+                          // ted =
+                          //   (ted +
+                          //     (_optionsDetals.from_service_range5 -
+                          //       _optionsDetals.from_service_range4)) *
+                          //   by;
+                          ted =
+                            ted +
+                            _optionsDetals.from_service_range5 *
+                              _optionsDetals.eligible_days5;
+                        }
+                        // else {
+                        //   // _eligibleDays = ted
+                        //   // _eligibleDays =
+                        //   //   ted + by * _optionsDetals.eligible_days4;
+                        // }
+                      } else {
+                        let daysAvilable =
+                          _employee.endOfServiceYears -
+                          _optionsDetals.from_service_range3;
+
+                        _eligibleDays =
+                          ted + daysAvilable * _optionsDetals.eligible_days4;
+                        // _eligibleDays = ted + by * _optionsDetals.eligible_days3;
+                      }
+                    } else {
+                      let daysAvilable =
+                        _employee.endOfServiceYears -
+                        _optionsDetals.from_service_range2;
+
+                      _eligibleDays =
+                        ted + daysAvilable * _optionsDetals.eligible_days3;
+                    }
+                  } else {
+                    // _eligibleDays = ted + by * _optionsDetals.eligible_days2;
+                    let daysAvilable =
+                      _employee.endOfServiceYears -
+                      _optionsDetals.from_service_range1;
+
+                    _eligibleDays =
+                      ted + daysAvilable * _optionsDetals.eligible_days2;
+                  }
+                } else {
+                  ted =
+                    _employee.endOfServiceYears * _optionsDetals.eligible_days1;
+                }
+                ted = _eligibleDays;
+
+                queryForm
+                  .then((earnings) => {
+                    _mysql.releaseConnection();
+                    let _computatedAmout = 0;
+                    const _sumOfTotalEarningComponents = _.sumBy(
+                      earnings,
+                      (s) => {
+                        return s.amount;
+                      }
+                    );
+                    let gratuity = 0;
+                    if (_optionsDetals.end_of_service_calculation == "AN") {
+                      // _computatedAmout = _.chain(earnings)
+                      //   .map((items) => {
+                      //     return (items.amount * 12) / 365;
+                      //   })
+                      //   .value();
+                      gratuity = (_sumOfTotalEarningComponents * 12) / 365;
+                    } else if (
+                      _optionsDetals.end_of_service_calculation == "FI"
+                    ) {
+                      // _computatedAmout = _.chain(earnings)
+                      //   .map((items) => {
+                      //     return items.amount / 30; // _optionsDetals.end_of_service_days;
+                      //   })
+                      //   .value();
+                      gratuity = _sumOfTotalEarningComponents / 30;
+                    }
+
+                    _computatedAmout = _eligibleDays * gratuity;
+                    // console.log("_computatedAmout", _computatedAmout);
+                    // const _computatedAmoutSum =
+                    //   _computatedAmout.reduce((a, b) => {
+                    //     return a + b;
+                    //   }, 0) * _eligibleDays;
+
+                    req.records = {
+                      computed_amount: _computatedAmout, //_computatedAmoutSum,
+                      paybale_amout: _computatedAmout, //_computatedAmoutSum,
+                      ..._employee,
+                      componentList: earnings, //earnings,
+                      totalEarningComponents: _sumOfTotalEarningComponents,
+                      eligible_day: _eligibleDays,
+                      endofServexit: endofServexit,
+                      gratuity_amount: gratuity,
+                    };
+                    next();
+                  })
+                  .catch((error) => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+              }
+            }
           })
           .catch((e) => {
             _mysql.releaseConnection();
@@ -427,3 +431,89 @@ export default {
       });
   },
 };
+function eosBySaudaiRule(options, employee, queryForm, _mysql, req, next) {
+  const { endOfServiceYears, employee_status } = employee;
+  const {
+    from_service_range1,
+    from_service_range2,
+    from_service_range3,
+    from_service_range4,
+    from_service_range5,
+    eligible_days1,
+    eligible_days2,
+    eligible_days3,
+    eligible_days4,
+    eligible_days5,
+    benifit_day1,
+    benifit_day2,
+    benifit_day3,
+    benifit_day4,
+    benifit_day5,
+  } = options;
+
+  const eosYears =
+    typeof endOfServiceYears === "string"
+      ? parseFloat(endOfServiceYears)
+      : endOfServiceYears;
+  queryForm.then((earnings) => {
+    _mysql.releaseConnection();
+    const sumOfEarning = _.sumBy(earnings, (s) => {
+      return typeof s.amount === "string" ? parseFloat(s.amount) : s.amount;
+    });
+    const frm_ser_range1 = parseFloat(from_service_range1);
+    const frm_ser_range2 = parseFloat(from_service_range2);
+    const frm_ser_range3 = parseFloat(from_service_range3);
+    const frm_ser_range4 = parseFloat(from_service_range4);
+    const frm_ser_range5 = parseFloat(from_service_range5);
+    let entitled_amount = 0;
+    let benefit_amount = 0;
+    if (employee_status === "R") {
+      if (eosYears >= frm_ser_range1) {
+        const service =
+          eosYears >= frm_ser_range2 ? frm_ser_range2 : frm_ser_range1;
+        let total = sumOfEarning * service;
+        entitled_amount = total * (eligible_days2 / 30);
+        const eosDifference = eosYears - service;
+        if (eosDifference > 0) {
+          if (parseInt(eosYears) <= frm_ser_range3) {
+            total = sumOfEarning * eosDifference;
+            const ent_amt = total * (eligible_days3 / 30);
+            entitled_amount = ent_amt + entitled_amount;
+            benefit_amount = entitled_amount * benifit_day3;
+          } else if (parseInt(eosYears) > frm_ser_range3) {
+            total = sumOfEarning * eosDifference;
+            entitled_amount = entitled_amount + total * (eligible_days4 / 30);
+            benefit_amount = entitled_amount * benifit_day4;
+          }
+        } else {
+          benefit_amount = entitled_amount * benifit_day2;
+        }
+      }
+    } else if (employee_status === "T") {
+      let firstPeriod,
+        secondPeriod = 0;
+      if (eosYears > frm_ser_range2) {
+        firstPeriod = frm_ser_range2;
+        secondPeriod = eosYears - frm_ser_range2;
+      } else {
+        firstPeriod = eosYears;
+      }
+      entitled_amount =
+        (firstPeriod + secondPeriod) * sumOfEarning * (eligible_days2 / 30);
+      benefit_amount =
+        firstPeriod * sumOfEarning * (eligible_days2 / 30) +
+        secondPeriod * sumOfEarning;
+    }
+
+    req.records = {
+      componentList: earnings,
+      computed_amount: benefit_amount,
+      paybale_amout: benefit_amount,
+      entitled_amount,
+      ...employee,
+      totalEarningComponents: sumOfEarning,
+      eligible_day: eosYears,
+    };
+    next();
+  });
+}

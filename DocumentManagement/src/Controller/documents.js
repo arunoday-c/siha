@@ -4,7 +4,13 @@ import logos from "../Model/saveImages";
 import KPI from "../Model/docs/index";
 export default (db) => {
   const api = Router();
-  const { saveDocument, getDocument, deleteDocument } = docs(db);
+  const {
+    saveDocument,
+    getDocument,
+    deleteDocument,
+    getEmailConfig,
+    setEmailConfig,
+  } = docs(db);
   const { saveLogo, getLogo } = logos(db);
   const {
     saveDocumentKPI,
@@ -27,5 +33,7 @@ export default (db) => {
   api.get("/getDocumentMasterById", getDocumentMasterById);
   api.post("/saveCertificateIssued", saveCertificateIssued);
   api.get("/getIssuedCertificates", getCertificateIssuedList);
+  api.get("/getEmailConfig", getEmailConfig);
+  api.post("/setEmailConfig", setEmailConfig);
   return api;
 };

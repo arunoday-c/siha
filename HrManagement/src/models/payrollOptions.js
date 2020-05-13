@@ -106,9 +106,9 @@ export default {
         printQuery: true,
       })
       .then((result) => {
-        const utilities = new algaehUtilities();
+        // const utilities = new algaehUtilities();
 
-        utilities.logger().log("result: ", result);
+        // utilities.logger().log("result: ", result);
 
         if (result.length > 0) {
           let componentArray = [];
@@ -125,6 +125,7 @@ export default {
             Obj["service_range"] = 0;
             Obj["from_service_range"] = result[0]["from_service_range1"];
             Obj["eligible_days"] = result[0]["eligible_days1"];
+            Obj["benefit_days"] = result[0]["benifit_day1"];
             service_days.push(Obj);
           }
 
@@ -133,6 +134,7 @@ export default {
             Obj["service_range"] = result[0]["from_service_range1"];
             Obj["from_service_range"] = result[0]["from_service_range2"];
             Obj["eligible_days"] = result[0]["eligible_days2"];
+            Obj["benefit_days"] = result[0]["benifit_day2"];
             service_days.push(Obj);
           }
 
@@ -141,6 +143,7 @@ export default {
             Obj["service_range"] = result[0]["from_service_range2"];
             Obj["from_service_range"] = result[0]["from_service_range3"];
             Obj["eligible_days"] = result[0]["eligible_days3"];
+            Obj["benefit_days"] = result[0]["benifit_day3"];
             service_days.push(Obj);
           }
 
@@ -149,11 +152,12 @@ export default {
             Obj["service_range"] = result[0]["from_service_range3"];
             Obj["from_service_range"] = result[0]["from_service_range4"];
             Obj["eligible_days"] = result[0]["eligible_days4"];
+            Obj["benefit_days"] = result[0]["benifit_day4"];
             service_days.push(Obj);
           }
 
-          utilities.logger().log("componentArray: ", componentArray);
-          utilities.logger().log("service_days: ", service_days);
+          // utilities.logger().log("componentArray: ", componentArray);
+          // utilities.logger().log("service_days: ", service_days);
 
           _mysql
             .executeQuery({
@@ -208,8 +212,10 @@ export default {
       input.service_days.map((item, index) => {
         input["from_service_range" + (index + 1)] = item.from_service_range;
         input["eligible_days" + (index + 1)] = item.eligible_days;
+        input[`benifit_day${index + 1}`] = item.benefit_days;
       });
     }
+
     // console.log("input.service_days", input);
     _mysql
       .executeQuery({
@@ -219,8 +225,8 @@ export default {
           from_service_range4=?,from_service_range5=?,eligible_days1=?,eligible_days2=?,eligible_days3=?,\
           eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,\
           end_of_service_type=?,gratuity_in_final_settle=?,round_off_nearest_year=?, terminate_salary=?,end_of_service_payment=?,\
-          end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,updated_by=?,updated_date=? \
-                   where hims_d_end_of_service_options_id=?",
+          end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,updated_by=?,updated_date=?, \
+          benifit_day1=?,benifit_day2=?,benifit_day3=?,benifit_day4=?,benifit_day5=? where hims_d_end_of_service_options_id=?",
         values: [
           input.end_of_service_component1,
           input.end_of_service_component2,
@@ -249,6 +255,11 @@ export default {
           input.gratuity_provision,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
+          input.benifit_day1,
+          input.benifit_day2,
+          input.benifit_day3,
+          input.benifit_day4,
+          input.benifit_day5,
           input.hims_d_end_of_service_options_id,
         ],
 
@@ -279,6 +290,7 @@ export default {
       input.service_days.map((item, index) => {
         input["from_service_range" + (index + 1)] = item.from_service_range;
         input["eligible_days" + (index + 1)] = item.eligible_days;
+        input[`benifit_day${index + 1}`] = item.benefit_days;
       });
     }
     // console.log("input.service_days", input);
@@ -290,8 +302,9 @@ export default {
           from_service_range4, from_service_range5, eligible_days1, eligible_days2, eligible_days3, eligible_days4, \
           eligible_days5, end_of_service_calculation, end_of_service_days, end_of_service_type, gratuity_in_final_settle, \
           round_off_nearest_year, terminate_salary, end_of_service_payment, end_of_service_years, pending_salary_with_final, \
-          limited_years, gratuity_provision, created_by, created_date) \
-        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          limited_years, gratuity_provision, created_by, created_date,benifit_day1,benifit_day2,benifit_day3,\
+          benifit_day4,benifit_day5) \
+        values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.end_of_service_component1,
           input.end_of_service_component2,
@@ -320,6 +333,11 @@ export default {
           input.gratuity_provision,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
+          input.benifit_day1,
+          input.benifit_day2,
+          input.benifit_day3,
+          input.benifit_day4,
+          input.benifit_day5,
         ],
 
         printQuery: true,

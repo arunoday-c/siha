@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => { },
+          printQuery: (query) => {},
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -162,8 +162,8 @@ export default {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
-            gratuity_encash,identity_type_id, identity_no, created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            gratuity_encash,identity_type_id, identity_no, created_date,created_by,updated_date,updated_by,eos_id) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -222,6 +222,7 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
+              input.eos_id,
             ],
             printQuery: true,
           })
@@ -294,7 +295,7 @@ export default {
               pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
               employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
               inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?, \
-              updated_date=?,updated_by=? WHERE record_status='A' and  hims_d_employee_id=?",
+              updated_date=?,updated_by=?,eos_id=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
               input.full_name,
@@ -370,6 +371,7 @@ export default {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
+              input.eos_id,
               input.hims_d_employee_id,
             ],
           })

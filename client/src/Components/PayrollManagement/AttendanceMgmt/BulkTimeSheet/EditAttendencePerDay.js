@@ -1,24 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../Wrapper/algaehButton";
 
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default function EditAttendencePerDay(props) {
   const { onClose, project_state } = props;
-
-  const [loadingProcess, setLoadingProcess] = useState(false);
   const [projectId, setProjectId] = useState("");
   const [workingHours, setWorkingHours] = useState("");
+  const [loadingProcess, setLoadingProcess] = useState(false);
+
+  useEffect(() => {
+    if (project_state.showPopup) {
+      setProjectId(project_state.project_id || "");
+      setWorkingHours(project_state.worked_hours || "");
+    } else {
+      setProjectId("");
+      setWorkingHours("");
+    }
+  }, [project_state]);
+
   function SaveAttendanceAndProject(options) {
     const { projectId, workingHours } = options;
-    const _proID = projectId === "" ? project_state.project_id : projectId;
-    const _workHr =
-      workingHours === "" ? project_state.worked_hours : workingHours;
+
     algaehApiCall({
       uri: "/attendance/SaveAttendanceAndProject",
       module: "hrManagement",
@@ -26,14 +34,14 @@ export default function EditAttendencePerDay(props) {
       data: {
         hims_f_project_roster_id: project_state.hims_f_project_roster_id,
         hims_f_daily_time_sheet_id: project_state.hims_f_daily_time_sheet_id,
-        project_id: _proID,
-        worked_hours: _workHr
+        project_id: projectId,
+        worked_hours: workingHours,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           setLoadingProcess(false);
           if (response.data.result[0] === undefined) {
-            const split_hr_min = _workHr.toString().split(".");
+            const split_hr_min = workingHours.toString().split(".");
             let mins = "00";
             if (split_hr_min.length > 1) {
               mins =
@@ -42,18 +50,18 @@ export default function EditAttendencePerDay(props) {
                   : split_hr_min[1];
             }
             const hr_min = `${split_hr_min[0].substring(0, 2)}.${mins}`;
-            onClose({ project_id: _proID, worked_hours: hr_min });
+            onClose({ project_id: projectId, worked_hours: hr_min });
           } else {
             onClose(response.data.result[0]);
           }
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -65,7 +73,7 @@ export default function EditAttendencePerDay(props) {
       events={{
         onClose: () => {
           onClose();
-        }
+        },
       }}
     >
       <div className="popupInner" data-validate="editBulkCell">
@@ -74,7 +82,7 @@ export default function EditAttendencePerDay(props) {
             <div className="col-8 form-group">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Employee Name"
+                  forceLabel: "Employee Name",
                 }}
               />
               <h6>
@@ -86,7 +94,7 @@ export default function EditAttendencePerDay(props) {
             <div className="col-4 form-group">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Selected Date"
+                  forceLabel: "Selected Date",
                 }}
               />
               <h6>
@@ -99,25 +107,25 @@ export default function EditAttendencePerDay(props) {
               div={{ className: "col-7 form-group mandatory" }}
               label={{
                 forceLabel: "Assigned Project",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "project_id",
                 className: "select-fld",
-                value: projectId === "" ? project_state.project_id : projectId,
+                value: projectId || undefined,
                 dataSource: {
                   textField: "project_desc",
                   valueField: "hims_d_project_id",
-                  data: project_state.projects
+                  data: project_state.projects,
                 },
-                onChange: e => {
+                onChange: (e) => {
                   let value = e.value;
                   setProjectId(value);
                 },
                 onClear: () => {
                   setProjectId("");
                   setWorkingHours("");
-                }
+                },
               }}
             />
 
@@ -125,22 +133,19 @@ export default function EditAttendencePerDay(props) {
               div={{ className: "col-5 form-group mandatory" }}
               label={{
                 forceLabel: "Worked Hours",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "worked_hours",
-                value:
-                  workingHours === ""
-                    ? project_state.worked_hours
-                    : workingHours,
+                value: workingHours,
                 events: {
-                  onChange: e => {
+                  onChange: (e) => {
                     let value = e.target.value;
                     setWorkingHours(value);
-                  }
-                }
+                  },
+                },
               }}
             />
           </div>
@@ -161,7 +166,7 @@ export default function EditAttendencePerDay(props) {
                 }}
                 label={{
                   forceLabel: "SAVE",
-                  returnText: true
+                  returnText: true,
                 }}
               />
 

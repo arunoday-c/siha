@@ -1203,11 +1203,11 @@ const appRoutes = [
     isExactPath: true,
     component: <PurchaseOrderList />
   },
-  {
-    path: "/PurchaseRequestList",
-    isExactPath: true,
-    component: <PurchaseRequestList />
-  },
+  // {
+  //   path: "/PurchaseRequestList",
+  //   isExactPath: true,
+  //   component: <PurchaseRequestList />
+  // },
   {
     path: "/DeliveryNoteEntry",
     isExactPath: true,
