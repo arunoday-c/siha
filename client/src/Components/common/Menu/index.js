@@ -104,7 +104,7 @@ function NavBars(props) {
               src={`http://${window.location.hostname}${
                 window.location.port ? ":3006" : "/docServer"
               }/api/v1/Document/getLogo?image_id=${
-                userToken.hims_d_hospital_id
+                userToken.organization_id
               }&logo_type=APP`}
               alt="client logo"
             />
