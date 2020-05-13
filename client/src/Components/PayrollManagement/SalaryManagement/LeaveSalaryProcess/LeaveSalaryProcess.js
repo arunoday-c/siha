@@ -11,7 +11,7 @@ import moment from "moment";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import {
   LeaveSalProcess,
@@ -24,7 +24,7 @@ import {
   getEmployeeAnnualLeaveToProcess,
   eventHandaler,
   selectEmployee,
-  getHrmsOptions
+  getHrmsOptions,
 } from "./LeaveSalaryProcessEvents.js";
 import Options from "../../../../Options.json";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
@@ -37,7 +37,7 @@ class LeaveSalaryProcess extends Component {
     this.state = {
       hospital_id: null,
       hrms_options: {},
-      decimal_place: null
+      decimal_place: null,
     };
 
     getHrmsOptions(this);
@@ -55,7 +55,7 @@ class LeaveSalaryProcess extends Component {
     this.setState(
       {
         hospital_id: userToken.hims_d_hospital_id,
-        decimal_place: userToken.decimal_places
+        decimal_place: userToken.decimal_places,
       },
       () => {
         getEmployeeAnnualLeaveToProcess(this, this);
@@ -71,8 +71,8 @@ class LeaveSalaryProcess extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -83,14 +83,14 @@ class LeaveSalaryProcess extends Component {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
         data: {
-          sub_department_status: "A"
+          sub_department_status: "A",
         },
         module: "masterSettings",
         method: "GET",
         redux: {
           type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
-        }
+          mappingName: "subdepartment",
+        },
       });
     }
 
@@ -105,8 +105,8 @@ class LeaveSalaryProcess extends Component {
 
         redux: {
           type: "EMPLY_GET_DATA",
-          mappingName: "all_employees"
-        }
+          mappingName: "all_employees",
+        },
       });
     }
   }
@@ -129,7 +129,7 @@ class LeaveSalaryProcess extends Component {
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -138,18 +138,18 @@ class LeaveSalaryProcess extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  data: this.props.organizations,
                 },
                 onChange: eventHandaler.bind(this, this),
                 others: {
-                  disabled: this.state.dataExists
+                  disabled: this.state.dataExists,
                 },
                 onClear: () => {
                   this.setState({
                     hospital_id: null,
-                    emp_leave_salary: []
+                    emp_leave_salary: [],
                   });
-                }
+                },
               }}
             />
             <div className="col-2 globalSearchCntr">
@@ -164,7 +164,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col-2">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Date"
+                  forceLabel: "Date",
                 }}
               />
               <h6>
@@ -197,11 +197,11 @@ class LeaveSalaryProcess extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Emp. Code"
+                              forceLabel: "Emp. Code",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span
                               className="pat-code"
@@ -211,21 +211,21 @@ class LeaveSalaryProcess extends Component {
                             </span>
                           );
                         },
-                        className: row => {
+                        className: (row) => {
                           return "greenCell";
                         },
-                        others: { maxWidth: 100 }
+                        others: { maxWidth: 100 },
                       },
                       {
                         fieldName: "full_name",
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Employee Name"
+                              forceLabel: "Employee Name",
                             }}
                           />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="hims_f_salary_detail_id"
                     dataSource={{ data: this.state.emp_leave_salary }}
@@ -273,11 +273,11 @@ class LeaveSalaryProcess extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Action"
+                              forceLabel: "Action",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
@@ -294,20 +294,20 @@ class LeaveSalaryProcess extends Component {
                         },
                         others: {
                           minWidth: 50,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
                       },
                       {
                         // fieldsort: "off",
                         fieldName: "month",
                         label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display = GlobalVariables.MONTHS.filter(
-                            f => f.value === row.month
+                            (f) => f.value === row.month
                           );
 
                           return (
@@ -317,7 +317,7 @@ class LeaveSalaryProcess extends Component {
                                 : ""}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "start_date",
@@ -326,9 +326,9 @@ class LeaveSalaryProcess extends Component {
                             label={{ forceLabel: "Salary Start Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{dateFormater(row.start_date)}</span>;
-                        }
+                        },
                       },
                       {
                         fieldName: "end_date",
@@ -337,9 +337,9 @@ class LeaveSalaryProcess extends Component {
                             label={{ forceLabel: "Salary End Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{dateFormater(row.end_date)}</span>;
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_start_date",
@@ -348,11 +348,11 @@ class LeaveSalaryProcess extends Component {
                             label={{ forceLabel: "Leave Start Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(row.leave_start_date)}</span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_end_date",
@@ -361,20 +361,20 @@ class LeaveSalaryProcess extends Component {
                             label={{ forceLabel: "Leave End Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(row.leave_end_date)}</span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_category",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display = GlobalVariables.LEAVE_CATEGORY.filter(
-                            f => f.value === row.leave_category
+                            (f) => f.value === row.leave_category
                           );
 
                           return (
@@ -384,25 +384,25 @@ class LeaveSalaryProcess extends Component {
                                 : ""}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_period",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Period" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "salary_no",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Salary No" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "salary_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Salary Date" }} />
-                        )
+                        ),
                         // displayTemplate: row => {
                         //   return <span>{dateFormater(row.expiry_date)}</span>;
                         // }
@@ -411,14 +411,14 @@ class LeaveSalaryProcess extends Component {
                         fieldName: "gross_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Gross Salary" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "net_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="hims_f_leave_salary_detail_id"
                     dataSource={{ data: this.state.leave_salary_detail }}
@@ -449,12 +449,12 @@ class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
-        <div className="col">
+        <div className="col" style={{ marginBottom: 50 }}>
           <div className="row">
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Leave Days to be Paid"
+                  forceLabel: "Leave Days to be Paid",
                 }}
               />
               <h6>
@@ -469,7 +469,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Leave Salary"
+                  forceLabel: "Leave Salary",
                 }}
               />
               <h6>
@@ -481,7 +481,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Airfare"
+                  forceLabel: "Airfare",
                 }}
               />
               <h6>
@@ -493,7 +493,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Airfare Months"
+                  forceLabel: "Airfare Months",
                 }}
               />
               <h6>
@@ -506,7 +506,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Net Salary"
+                  forceLabel: "Net Salary",
                 }}
               />
               <h6>
@@ -518,7 +518,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col">
               <AlgaehLabel
                 label={{
-                  forceLabel: "Total Salary"
+                  forceLabel: "Total Salary",
                 }}
               />
               <h6>
@@ -561,7 +561,7 @@ function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
     organizations: state.organizations,
-    all_employees: state.all_employees
+    all_employees: state.all_employees,
   };
 }
 
@@ -570,7 +570,7 @@ function mapDispatchToProps(dispatch) {
     {
       getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getEmployees: AlgaehActions
+      getEmployees: AlgaehActions,
     },
     dispatch
   );

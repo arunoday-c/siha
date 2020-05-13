@@ -14,7 +14,8 @@ import {
     onchangegridcol,
     dateFormater,
     getItemLocationStock,
-    AddSelectedBatches
+    AddSelectedBatches,
+    RequestPO
 } from "./DispatchNoteItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import _ from "lodash";
@@ -121,6 +122,19 @@ class DispatchNoteItems extends Component {
                                                                 Delivered Till Date:
                                                                 <span>{item.delivered_to_date}</span>
                                                             </span>
+
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-primary"
+                                                                onClick={RequestPO.bind(this, this, item)}
+                                                                style={{
+                                                                    marginTop: 8,
+                                                                    float: "right",
+                                                                    marginLeft: 10
+                                                                }}
+                                                            >
+                                                                PO Request
+                                                            </button>
                                                         </div>
                                                         <div className="itemAction">
                                                             <span>
@@ -144,6 +158,7 @@ class DispatchNoteItems extends Component {
                                                                 />
                                                             </span>
                                                         </div>
+
                                                     </li>
                                                 );
                                             })}

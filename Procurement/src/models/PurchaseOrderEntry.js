@@ -697,4 +697,62 @@ export default {
       next(e);
     }
   },
+  raiseRequestForPO: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_f_procurement_purchase_request` (item_id, request_from, request_location, \
+              request_qty, requested_date) \
+            VALUE(?, ?, ?, ?, ?)",
+          values: [
+            req.body.item_id,
+            req.body.request_from,
+            req.body.request_location,
+            req.body.request_qty,
+            new Date(),
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getraiseRequestForPO: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select PR.*, IM.item_description,IL.location_description, IM.category_id, IM.group_id, IM.purchase_uom_id  \
+            from hims_f_procurement_purchase_request PR \
+            inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = PR.item_id\
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location;",
+          printQuery: true
+        })
+        .then(headerResult => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  }
 };

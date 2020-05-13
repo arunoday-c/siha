@@ -99,9 +99,23 @@ function NavBars(props) {
         )}
 
         <div className="navbar-brand appLogoCntr">
-          <p className="appLogoOnly">
-            {product_type !== undefined ? product_type.replace("_", " ") : ""}
-          </p>
+          <span className="appCustomLogo">
+            <img
+              src={`http://${window.location.hostname}${
+                window.location.port ? ":3006" : "/docServer"
+              }/api/v1/Document/getLogo?image_id=${
+                userToken.organization_id
+              }&logo_type=APP`}
+              alt="client logo"
+            />
+            {/* load client logo here  */}
+          </span>
+          <span>
+            <i className="appName">
+              {" "}
+              {product_type !== undefined ? product_type.replace("_", " ") : ""}
+            </i>
+          </span>
         </div>
         <h5 className="topNavbar-title mr-auto">
           <BreadCrum
@@ -123,7 +137,7 @@ function NavBars(props) {
           }}
           className="dropdown navTopbar-dropdown"
           // disabled={this.state.openPanel}
-          onClick={showNotification}
+          // onClick={showNotification}
         >
           <i className="fas fa-bell fa-lg" />
         </button>
@@ -156,6 +170,10 @@ function NavBars(props) {
             <div className="dropdown-divider" />
             <button className="dropdown-item" onClick={onPasswordChange}>
               <i className="fas fa-key" /> Change Password
+            </button>{" "}
+            <div className="dropdown-divider" />
+            <button className="dropdown-item">
+              <i className="fas fa-question-circle" /> Help
             </button>
             <div className="dropdown-divider" />
             <button className="dropdown-item" onClick={onLogoutClick}>

@@ -78,6 +78,7 @@ class SalesQuotationList extends Component {
           customer_id: null,
           quotation_list: [],
           sales_person_id: userToken.employee_id,
+          loged_in_employee: userToken.employee_id,
           hospital_id: userToken.hims_d_hospital_id,
         },
         () => getSalesQuotationList(this)
@@ -258,7 +259,7 @@ class SalesQuotationList extends Component {
                         },
                         others: {
                           resizable: false,
-                          maxWidth: 60,
+                          maxWidth: 100,
 
                           style: { textAlign: "center" },
                           filterable: false

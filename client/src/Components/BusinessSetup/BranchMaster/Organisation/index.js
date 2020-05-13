@@ -6,29 +6,17 @@ import {
   AlgaehMessagePop,
   AlgaehButton,
 } from "algaeh-react-components";
-import {
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDataGrid,
-} from "../../../Wrapper/algaehWrapper";
-import { Checkbox } from "antd";
 import { newAlgaehApi } from "../../../../hooks";
 import { MainContext } from "algaeh-react-components/context";
 import { logoUrl, LoadLogo } from "../imagesSettings";
+import EmailConfig from "./EmailConfig";
+
 export function Organization(props) {
   const [organisation, setOrganisation] = useState({});
-  const baseEmailConfig = {
-    host: "",
-    port: "",
-    secure: false,
-    user: "",
-    pass: "",
-    is_enabled: false,
-  };
-  const [emailConfig, setEmailConfig] = useState(baseEmailConfig);
+
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [org_image, setOrgImage] = useState(undefined);
+  const [app_logo, setAppLogo] = useState(undefined);
   const [loadingOrgImage, setLoadingOrgImage] = useState(false);
   const { countryMaster } = props;
   const { userToken } = useContext(MainContext);
@@ -36,34 +24,12 @@ export function Organization(props) {
     userToken.user_type === "SU" || userToken.user_type === "AD" ? false : true;
 
   useEffect(() => {
-    Promise.all([
-      newAlgaehApi({
-        uri: "/organization/getMainOrganization",
-        method: "GET",
-      }),
-      newAlgaehApi({
-        uri: "/Document/getEmailConfig",
-        method: "GET",
-        module: "documentManagement",
-      }),
-    ])
+    newAlgaehApi({
+      uri: "/organization/getMainOrganization",
+      method: "GET",
+    })
       .then((result) => {
-        const { records, success, message } = result[0].data;
-        const {
-          data: emailConf,
-          success: emailSuccess,
-          message: emailMsg,
-        } = result[1].data;
-
-        if (emailSuccess) {
-          setEmailConfig(emailConf[0] || baseEmailConfig);
-        } else {
-          AlgaehMessagePop({
-            display: emailMsg,
-            type: "error",
-          });
-        }
-
+        const { records, success, message } = result.data;
         if (success === true) {
           setOrganisation(records);
           setOrgImage(
@@ -87,28 +53,6 @@ export function Organization(props) {
       });
   }, []);
 
-  async function updateEmailConfig() {
-    try {
-      const res = await newAlgaehApi({
-        uri: "/Document/setEmailConfig",
-        method: "POST",
-        data: emailConfig,
-        module: "documentManagement",
-      });
-      if (res.data.success) {
-        AlgaehMessagePop({
-          display: res.data.message,
-          type: "success",
-        });
-      }
-    } catch (e) {
-      AlgaehMessagePop({
-        display: e.response.data.message || e.message,
-        type: "error",
-      });
-    }
-  }
-
   const {
     hims_d_organization_id,
     organization_name,
@@ -118,9 +62,11 @@ export function Organization(props) {
     fiscal_period,
     fiscal_quarters,
     country_id,
+    email,
+    phone1,
+    address1,
+    address2,
   } = organisation;
-
-  const { host, port, is_enabled, pass, secure, user } = emailConfig;
 
   function onChangeHandler(e, val, nme) {
     if (nme !== undefined) {
@@ -135,26 +81,6 @@ export function Organization(props) {
     setOrganisation((state) => {
       return { ...state, [name]: value };
     });
-  }
-
-  function handleEmailChange(e) {
-    const { name, value, checked } = e.target;
-    console.log(name, value, "name and value");
-
-    if (name === "is_enabled") {
-      setEmailConfig((state) => {
-        const res = !state.is_enabled ? state : baseEmailConfig;
-        return {
-          is_enabled: !state.is_enabled,
-          ...res,
-        };
-      });
-    }
-
-    setEmailConfig((state) => ({
-      ...state,
-      [name]: value !== undefined ? value : checked,
-    }));
   }
 
   function onClearHandler(nme) {
@@ -202,6 +128,20 @@ export function Organization(props) {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (imageUrl) => {
         setOrgImage(imageUrl);
+        setLoadingOrgImage(false);
+      });
+    }
+  }
+
+  function onLogoHandleChange(info) {
+    if (info.file.status === "uploading") {
+      setLoadingOrgImage(true);
+      return;
+    }
+    if (info.file.status === "done") {
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, (imageUrl) => {
+        setAppLogo(imageUrl);
         setLoadingOrgImage(false);
       });
     }
@@ -278,7 +218,7 @@ export function Organization(props) {
                 <div className="row">
                   <AlgaehFormGroup
                     div={{
-                      className: "col-7 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Business Reg. Name",
@@ -308,7 +248,7 @@ export function Organization(props) {
           </div> */}
                   <AlgaehFormGroup
                     div={{
-                      className: "col-3 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Business Reg.. No.",
@@ -325,7 +265,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-2 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Tax No.",
@@ -341,7 +281,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Product Type", isImp: true }}
                     selector={{
                       name: "product_type",
@@ -374,14 +314,12 @@ export function Organization(props) {
                       others: {
                         disabled: userToken.user_type === "SU" ? false : true,
                       },
-
                       onChange: onChangeHandler,
-
                       onClear: onClearHandler,
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Fiscal Period", isImp: true }}
                     selector={{
                       name: "fiscal_period",
@@ -400,7 +338,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Fiscal Quarters", isImp: true }}
                     selector={{
                       name: "fiscal_quarters",
@@ -421,7 +359,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Default Country", isImp: true }}
                     selector={{
                       name: "country_id",
@@ -436,7 +374,111 @@ export function Organization(props) {
 
                       onClear: onClearHandler,
                     }}
-                  />{" "}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-3">
+                <Upload
+                  name="org_image"
+                  listType="picture-card"
+                  showUploadList={false}
+                  onChange={onLogoHandleChange}
+                  data={{
+                    image_id: hims_d_organization_id,
+                    logo_type: "APP",
+                  }}
+                  action={logoUrl({ uri: "/Document/saveLogo" })}
+                  accept=".png"
+                  className="orgImageUpload"
+                >
+                  {app_logo ? (
+                    <img
+                      src={app_logo}
+                      alt="avatar"
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <>
+                      <LoadLogo
+                        key="app"
+                        input={{
+                          image_id: hims_d_organization_id,
+                          logo_type: "APP",
+                        }}
+                      />
+                      {uploadButton}
+                    </>
+                  )}
+                </Upload>
+              </div>
+              <div className="col">
+                <div className="row">
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Email",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "email",
+                      type: "text",
+                      className: "txt-fld",
+                      value: email,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Phone",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "phone1",
+                      type: "text",
+                      className: "txt-fld",
+                      value: phone1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Address Line 1",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address1",
+                      type: "text",
+                      className: "txt-fld",
+                      value: address1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Address Line 2",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address2",
+                      type: "text",
+                      className: "txt-fld",
+                      value: address2,
+                      onChange: onChangeHandler,
+                    }}
+                  />
                   <div className="col">
                     <AlgaehButton
                       className="btn btn-primary"
@@ -448,133 +490,14 @@ export function Organization(props) {
                       Update
                     </AlgaehButton>
                   </div>
-                </div>{" "}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="col-4">
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Email Configuration</h3>
-            </div>
-            <div className="actions"></div>
-          </div>
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-12 form-group">
-                <Checkbox
-                  onChange={handleEmailChange}
-                  name="is_enabled"
-                  checked={is_enabled}
-                >
-                  Activate Email Nofication
-                </Checkbox>
-              </div>
-
-              <AlagehFormGroup
-                div={{ className: "col-8 form-group" }}
-                label={{
-                  forceLabel: "SMTP Host Name",
-                  isImp: false,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "host",
-                  value: host,
-                  disabled: !is_enabled,
-                  events: {
-                    onChange: handleEmailChange,
-                  },
-                  others: {
-                    type: "text",
-                  },
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col-4 form-group" }}
-                label={{
-                  forceLabel: "SMTP Port",
-                  isImp: false,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "port",
-                  value: port,
-                  disabled: !is_enabled,
-                  events: {
-                    onChange: handleEmailChange,
-                  },
-                  others: {
-                    type: "number",
-                  },
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col-6 form-group" }}
-                label={{
-                  forceLabel: "SMTP Username",
-                  isImp: false,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "user",
-                  value: user,
-                  disabled: !is_enabled,
-                  events: {
-                    onChange: handleEmailChange,
-                  },
-                  others: {
-                    type: "text",
-                  },
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col-6 form-group" }}
-                label={{
-                  forceLabel: "SMTP Password",
-                  isImp: false,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "pass",
-                  value: pass,
-                  disabled: !is_enabled,
-                  events: {
-                    onChange: handleEmailChange,
-                  },
-                  others: {
-                    type: "password",
-                  },
-                }}
-              />
-              <div className="col-6 form-group">
-                <Checkbox
-                  onChange={handleEmailChange}
-                  name="secure"
-                  checked={secure}
-                >
-                  Is SSL enabled
-                </Checkbox>
-              </div>
-              <div className="col">
-                <AlgaehButton
-                  className="btn btn-primary"
-                  style={{ float: "right", marginTop: 20 }}
-                  // disabled={!is_enabled}
-                  onClick={updateEmailConfig}
-                >
-                  Update Email
-                </AlgaehButton>
-              </div>
-            </div>
-          </div>
-        </div>
+        {userToken.user_type === "SU" ? <EmailConfig /> : null}
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ const getMainOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `SELECT hims_d_organization_id,product_type,organization_name,business_registration_number,
-        fiscal_period,fiscal_quarters,tax_number,country_id FROM hims_d_organization where record_status='A' limit 1;`,
+        fiscal_period,fiscal_quarters,tax_number,country_id,email,phone1,phone2,fax,address1,address2 FROM hims_d_organization where record_status='A' limit 1;`,
         printQuery: true,
       })
       .then((result) => {
@@ -131,6 +131,10 @@ const updateOrganization = (req, res, next) => {
     fiscal_quarters,
     tax_number,
     country_id,
+    phone1,
+    email,
+    address1,
+    address2,
   } = req.body;
   const { user_type } = req.userIdentity;
   let updateProduct = "";
@@ -141,7 +145,7 @@ const updateOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `update hims_d_organization set organization_name=?,business_registration_number=?,
-        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=? ${updateProduct} where hims_d_organization_id=?`,
+        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=? ${updateProduct} where hims_d_organization_id=?`,
         values: [
           organization_name,
           business_registration_number,
@@ -149,6 +153,10 @@ const updateOrganization = (req, res, next) => {
           fiscal_quarters,
           tax_number,
           country_id,
+          phone1,
+          email,
+          address1,
+          address2,
           hims_d_organization_id,
         ],
         printQuery: true,

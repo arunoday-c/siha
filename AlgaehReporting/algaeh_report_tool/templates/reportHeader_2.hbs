@@ -33,7 +33,7 @@
         margin: 0;
         padding: 0;
         border: none;
-        height: 55px;
+        height: 50px;
         width: auto;
         text-align: center;
     }
@@ -82,26 +82,31 @@
         font-size: 8px;
         margin-top: 5px;
     }
+
+    .h1 {
+        font-size: 30px;
+    }
 </style>
 
 <body>
 
     <div class="reportHeaderCntr">
-        <div class="col-left">
+        {{!-- <div class="col-left">
             <p><b>{{organization_name}}</b></p>
             <p>{{address1}}</p>
             <p><span>Tel: {{phone1}}</span></p>
             <p><span>Fax: {{fax}}</span></p>
             <p><span>E-Mail: {{email}}</span></p>
             <p>MOT Reg. No: <span>{{business_registration_number}}</span></p>
-        </div>
+        </div> --}}
         <div class="col-right">
-            <h4>{{{report_name_for_header}}}</h4>
+            <h1 class="h1">{{{report_name_for_header}}}</h1>
             {{!-- <p>Report Generated Date: {{currentDateTime 'date'}}</p> --}}
         </div>
-        <div class="col-center">
+        <div class="col-left">
             <p class="hospitalLogo"><img src="{{logoUrl 'ORG' identity }}" /></p>
             <p><b>{{organisation_name}}</b></p>
+            <p>MOT Reg. No: <span>{{business_registration_number}}</span></p>
         </div>
         {{!-- <div class="headerFooterStyle">
             <p><span>Tel: {{phone1}}</span> / <span>Fax: {{fax}}</span> / <span>E-Mail:

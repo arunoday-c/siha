@@ -5,7 +5,6 @@ export function logoUrl(inputs = { uri: "", module: "" }) {
 }
 export function LoadLogo(input = { image_id: "", logo_type: "" }) {
   const { image_id, logo_type } = input;
-  console.log("input", input);
   if (image_id === undefined) {
     return "";
   }
