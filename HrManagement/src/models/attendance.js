@@ -7025,8 +7025,10 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             worked_hours: num[0] + "." + num[1],
             hours: num[0],
             minutes: num[1],
-            actual_hours: actual_hours,
-            actual_minutes: actual_mins,
+
+            actual_hours: day["RMZ_HR"] > 0 ? day["RMZ_HR"] : actual_hours,
+            actual_minutes: day["RMZ_HR"] > 0 ? day["RMZ_MIN"] : actual_mins,
+
             employee_id: day.employee_id,
             attendance_date: day.attendance_date,
             status: day.status,
