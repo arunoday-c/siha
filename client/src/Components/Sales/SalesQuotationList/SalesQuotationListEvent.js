@@ -62,7 +62,7 @@ const getSalesQuotationList = $this => {
 
     debugger
     if ($this.HRMNGMT_Active) {
-        if ($this.state.sales_person_id && $this.state.checkAll === false) {
+        if ($this.state.sales_person_id && ($this.state.checkAll === false || $this.state.checkSelf === true)) {
             inpObj.sales_person_id = $this.state.sales_person_id;
         }
     }
@@ -164,7 +164,7 @@ const selectCheckBox = ($this, e) => {
         checkSelf: name === "checkSelf" ? true : false,
         quotation_list: [],
         employee_name: null,
-        sales_person_id: null
+        sales_person_id: name === "checkSelf" ? $this.state.loged_in_employee : null
     }, () => {
         if (name === "checkSelf" || name === "checkAll") {
             getSalesQuotationList($this)

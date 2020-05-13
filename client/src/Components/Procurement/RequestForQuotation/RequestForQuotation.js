@@ -25,29 +25,36 @@ import {
     generateRequestQuotation,
     datehandle,
     clearItemDetails,
-    dateValidate
+    dateValidate,
+    setDataFromRequest
 } from "./RequestForQuotationEvents";
 
 
 class RequestForQuotation extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            // quotation_detail: []
+        };
     }
 
     UNSAFE_componentWillMount() {
         let IOputs = RequestQuotation.inputParam();
-        this.setState(IOputs);
+        this.setState(IOputs, () => {
+            debugger
+        });
     }
 
-    // componentDidMount() {
-    //     if (
-    //         this.props.quotation_number !== undefined &&
-    //         this.props.quotation_number.length !== 0
-    //     ) {
-    //         getCtrlCode(this, this.props.quotation_number);
-    //     }
-    // }
+    componentDidMount() {
+
+        debugger
+        if (
+            this.props.quotation_detail !== undefined &&
+            this.props.quotation_detail.length !== 0
+        ) {
+            setDataFromRequest(this)
+        }
+    }
 
     render() {
         const class_finder = this.state.dataExitst === true
@@ -153,9 +160,9 @@ class RequestForQuotation extends Component {
                                             valueField: "value",
                                             data: GlobalVariables.PO_FROM
                                         },
-                                        others: {
-                                            disabled: this.state.quotation_detail.length > 0 ? true : false
-                                        },
+                                        // others: {
+                                        //     disabled: this.state.quotation_detail.length > 0 ? true : false
+                                        // },
                                         onChange: poforhandle.bind(this, this),
                                         onClear: () => {
                                             clearItemDetails(this, this)

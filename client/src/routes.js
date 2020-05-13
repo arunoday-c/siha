@@ -481,7 +481,7 @@ const PurchaseReturnEntry = React.lazy(() =>
 );
 const PurchaseRequestList = React.lazy(() =>
   retry(() =>
-    import("./Components/Procurement/PurchaseRequestList/PurchaseRequestList")
+    import("./Components/Procurement/PurchaseRequestList/PurchaseRequestSwitch")
   )
 );
 const PurchaseOrderList = React.lazy(() =>
