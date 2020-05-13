@@ -120,6 +120,10 @@ export function Organization(props) {
     fiscal_period,
     fiscal_quarters,
     country_id,
+    email,
+    phone1,
+    address1,
+    address2,
   } = organisation;
 
   const { host, port, is_enabled, pass, secure, user } = emailConfig;
@@ -293,7 +297,7 @@ export function Organization(props) {
                 <div className="row">
                   <AlgaehFormGroup
                     div={{
-                      className: "col-7 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Business Reg. Name",
@@ -323,7 +327,7 @@ export function Organization(props) {
           </div> */}
                   <AlgaehFormGroup
                     div={{
-                      className: "col-3 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Business Reg.. No.",
@@ -340,7 +344,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-2 form-group mandatory",
+                      className: "col-4 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Tax No.",
@@ -356,7 +360,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Product Type", isImp: true }}
                     selector={{
                       name: "product_type",
@@ -389,14 +393,12 @@ export function Organization(props) {
                       others: {
                         disabled: userToken.user_type === "SU" ? false : true,
                       },
-
                       onChange: onChangeHandler,
-
                       onClear: onClearHandler,
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Fiscal Period", isImp: true }}
                     selector={{
                       name: "fiscal_period",
@@ -415,7 +417,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Fiscal Quarters", isImp: true }}
                     selector={{
                       name: "fiscal_quarters",
@@ -436,7 +438,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-2 form-group mandatory" }}
+                    div={{ className: "col-3 form-group mandatory" }}
                     label={{ forceLabel: "Default Country", isImp: true }}
                     selector={{
                       name: "country_id",
@@ -451,19 +453,8 @@ export function Organization(props) {
 
                       onClear: onClearHandler,
                     }}
-                  />{" "}
-                  <div className="col">
-                    <AlgaehButton
-                      className="btn btn-primary"
-                      style={{ float: "right", marginTop: 20 }}
-                      disabled={disabledEdits}
-                      onClick={onClickUpdate}
-                      loading={loadingUpdate}
-                    >
-                      Update
-                    </AlgaehButton>
-                  </div>
-                </div>{" "}
+                  />
+                </div>
               </div>
             </div>
             <div className="row">
@@ -500,6 +491,85 @@ export function Organization(props) {
                     </>
                   )}
                 </Upload>
+              </div>
+              <div className="col">
+                <div className="row">
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Email",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "email",
+                      type: "text",
+                      className: "txt-fld",
+                      value: email,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Phone",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "phone1",
+                      type: "text",
+                      className: "txt-fld",
+                      value: phone1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Address Line 1",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address1",
+                      type: "text",
+                      className: "txt-fld",
+                      value: address1,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-4 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Address Line 2",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "address2",
+                      type: "text",
+                      className: "txt-fld",
+                      value: address2,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <div className="col">
+                    <AlgaehButton
+                      className="btn btn-primary"
+                      style={{ float: "right", marginTop: 20 }}
+                      disabled={disabledEdits}
+                      onClick={onClickUpdate}
+                      loading={loadingUpdate}
+                    >
+                      Update
+                    </AlgaehButton>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
