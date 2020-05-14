@@ -735,8 +735,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select PR.*, IM.item_description,IL.location_description, IM.category_id, IM.group_id, IM.purchase_uom_id  \
-            from hims_f_procurement_purchase_request PR \
+            "select PR.*, IM.item_description,IL.location_description, IM.hims_d_inventory_item_master_id as inv_item_id, \
+            IM.category_id as inv_item_category_id, IM.group_id as inv_item_group_id, IM.purchase_uom_id as inventory_uom_id, \
+            PR.request_qty as quantity from hims_f_procurement_purchase_request PR \
             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = PR.item_id\
             inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location;",
           printQuery: true

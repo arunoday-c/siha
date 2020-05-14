@@ -40,14 +40,10 @@ class RequestForQuotation extends Component {
 
     UNSAFE_componentWillMount() {
         let IOputs = RequestQuotation.inputParam();
-        this.setState(IOputs, () => {
-            debugger
-        });
+        this.setState(IOputs);
     }
 
     componentDidMount() {
-
-        debugger
         if (
             this.props.quotation_detail !== undefined &&
             this.props.quotation_detail.length !== 0
@@ -160,9 +156,9 @@ class RequestForQuotation extends Component {
                                             valueField: "value",
                                             data: GlobalVariables.PO_FROM
                                         },
-                                        // others: {
-                                        //     disabled: this.state.quotation_detail.length > 0 ? true : false
-                                        // },
+                                        others: {
+                                            disabled: this.state.quotation_detail.length > 0 ? true : false
+                                        },
                                         onChange: poforhandle.bind(this, this),
                                         onClear: () => {
                                             clearItemDetails(this, this)
