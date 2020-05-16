@@ -20,7 +20,7 @@ const {
   paging,
   whereCondition,
   releaseDBConnection,
-  jsonArrayToObject
+  jsonArrayToObject,
 } = utils;
 
 //created by irfan: to add  physical_examination_header
@@ -33,7 +33,7 @@ let physicalExaminationHeader = (req, res, next) => {
     assesment_type: null,
     mandatory: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("physicalExaminationHeader");
@@ -61,7 +61,7 @@ let physicalExaminationHeader = (req, res, next) => {
           input.assesment_type,
           input.mandatory,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -87,7 +87,7 @@ let physicalExaminationDetails = (req, res, next) => {
     description: null,
     mandatory: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("physicalExaminationDetails");
@@ -112,7 +112,7 @@ let physicalExaminationDetails = (req, res, next) => {
           input.description,
           input.mandatory,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -138,7 +138,7 @@ let physicalExaminationSubDetails = (req, res, next) => {
     description: null,
     mandatory: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("physicalExaminationSubDetails");
@@ -164,7 +164,7 @@ let physicalExaminationSubDetails = (req, res, next) => {
           input.description,
           input.mandatory,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -196,7 +196,7 @@ let addOrder = (req, res, next) => {
     ordered_date: null,
     test_type: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addOrder");
@@ -229,7 +229,7 @@ let addOrder = (req, res, next) => {
           input.test_type,
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -257,7 +257,7 @@ let addSample = (req, res, next) => {
     collected: null,
     collected_date: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addSample");
@@ -286,7 +286,7 @@ let addSample = (req, res, next) => {
           input.collected_date,
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -314,7 +314,7 @@ let addAnalytes = (req, res, next) => {
     text: null,
     status: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addAnalytes");
@@ -341,7 +341,7 @@ let addAnalytes = (req, res, next) => {
           input.text,
           input.status,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -364,7 +364,7 @@ let addReviewOfSysHeader = (req, res, next) => {
   let reviewOfSysHeaderModel = {
     description: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addReviewOfSysHeader");
@@ -407,7 +407,7 @@ let addReviewOfSysDetails = (req, res, next) => {
     review_of_system_heder_id: null,
     description: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addReviewOfSysDetails");
@@ -431,7 +431,7 @@ let addReviewOfSysDetails = (req, res, next) => {
           input.review_of_system_heder_id,
           input.description,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -456,7 +456,7 @@ let addAllergy = (req, res, next) => {
     allergy_type: null,
     allergy_name: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addAllergy");
@@ -480,7 +480,7 @@ let addAllergy = (req, res, next) => {
           input.allergy_type,
           input.allergy_name,
           input.created_by,
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -534,7 +534,7 @@ let addChronicalConditions = (req, res, next) => {
     hims_d_chronic_conditions_id: null,
     name: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addChronicalConditions");
@@ -612,7 +612,7 @@ let addEncounterReview = (req, res, next) => {
     review_header_id: null,
     review_details_id: null,
     created_by: null,
-    updated_by: null
+    updated_by: null,
   };
 
   debugFunction("addEncounterReview");
@@ -638,7 +638,7 @@ let addEncounterReview = (req, res, next) => {
           input.review_details_id,
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -696,7 +696,7 @@ let getMyDay = (req, res, next) => {
   const { employee_id, sub_department_id, from_app } = req.query;
   let requestValues = [
     req.userIdentity.employee_id,
-    req.userIdentity.sub_department_id
+    req.userIdentity.sub_department_id,
   ];
   if (from_app === "mobileapp") {
     requestValues = [employee_id, sub_department_id];
@@ -724,7 +724,7 @@ let getMyDay = (req, res, next) => {
           ),
           moment(new Date(req.query.toDate)).format(
             keyPath.default.dbFormat.date
-          )
+          ),
         ]
       );
     else if (
@@ -733,7 +733,9 @@ let getMyDay = (req, res, next) => {
       req.query.toDate != undefined
     ) {
       _query += _mysql.mysqlQueryFormat("date(E.created_date) = date(?)", [
-        moment(new Date(req.query.toDate)).format(keyPath.default.dbFormat.date)
+        moment(new Date(req.query.toDate)).format(
+          keyPath.default.dbFormat.date
+        ),
       ]);
     }
     if (req.query.status == "A") {
@@ -758,14 +760,14 @@ let getMyDay = (req, res, next) => {
             where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and V.hospital_id=? AND " +
           _query,
         values: [req.userIdentity.hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         let final_result = null;
         if (result.length == 0) {
           final_result = {
             provider_id: req.userIdentity.employee_id,
-            sub_department_id: req.userIdentity.sub_department_id
+            sub_department_id: req.userIdentity.sub_department_id,
           };
         } else {
           final_result = result;
@@ -774,7 +776,7 @@ let getMyDay = (req, res, next) => {
         req.records = final_result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -836,7 +838,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
                       currentEncounterNo,
                       req.body.updated_by,
                       new Date(),
-                      req.body.patient_encounter_id
+                      req.body.patient_encounter_id,
                     ],
                     (error, result) => {
                       if (error) {
@@ -895,90 +897,105 @@ let getPatientProfile = (req, res, next) => {
 };
 
 //created by irfan: to  get Patient Vitals
-let getPatientVitalsOLD = (req, res, next) => {
-  let selectWhere = {
-    patient_id: "ALL",
-    visit_id: "ALL"
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    // let inputData = extend({}, req.query);
+// let getPatientVitals = (req, res, next) => {
+//   const _mysql = new algaehMysql({ path: keyPath });
+//   try {
+//     let inputs = req.query;
+//     _mysql
+//       .executeQuery({
+//         query:
+//           "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+//       })
+//       .then((rec) => {
+//         const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
 
-    let where = whereCondition(extend(selectWhere, req.query));
+//         let sqlQuery = _mysql.mysqlQueryFormat(
+//           "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
+//             case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
+//             formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
+//             inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+//             left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+//             where PV.record_status='A' and PH.record_status='A'  "
+//         );
+//         if (inputs.visit_id != null) {
+//           sqlQuery += _mysql.mysqlQueryFormat(" and visit_id=?", [
+//             inputs.visit_id,
+//           ]);
+//         }
+//         if (inputs.patient_id != null) {
+//           sqlQuery += _mysql.mysqlQueryFormat(" and patient_id=?", [
+//             inputs.patient_id,
+//           ]);
+//         }
+//         sqlQuery += _mysql.mysqlQueryFormat(
+//           " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
+//             _limit +
+//             ";"
+//         );
+//         _mysql
+//           .executeQuery({ query: sqlQuery, printQuery: true })
+//           .then((result) => {
+//             req.records = result;
+//             next();
+//           })
+//           .catch((error) => {
+//             _mysql.releaseConnection();
+//             next(error);
+//           });
+//       })
+//       .catch((error) => {
+//         _mysql.releaseConnection();
+//         next(error);
+//       });
+//   } catch (e) {
+//     _mysql.releaseConnection();
+//     next(e);
+//   }
+// };
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select * from hims_f_patient_vitals where " +
-          where.condition +
-          " order by visit_date desc, visit_time desc;",
-        where.values,
-
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by irfan: to  get Patient Vitals
 let getPatientVitals = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
+
   try {
     let inputs = req.query;
     _mysql
       .executeQuery({
         query:
-          "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'"
+          "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
+        printQuery: true,
       })
-      .then(rec => {
+      .then((rec) => {
         const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
 
-        let sqlQuery = _mysql.mysqlQueryFormat(
-          "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
-            case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
-            formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
-            inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
-            left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
-            where PV.record_status='A' and PH.record_status='A'  "
-        );
-        if (inputs.visit_id != null) {
-          sqlQuery += _mysql.mysqlQueryFormat(" and visit_id=?", [
-            inputs.visit_id
-          ]);
+        let strQuery = "";
+        if (inputs.visit_id > 0) {
+          strQuery += " and visit_id= " + inputs.visit_id;
         }
-        if (inputs.patient_id != null) {
-          sqlQuery += _mysql.mysqlQueryFormat(" and patient_id=?", [
-            inputs.patient_id
-          ]);
+        if (inputs.patient_id > 0) {
+          strQuery += " and patient_id= " + inputs.patient_id;
         }
-        sqlQuery += _mysql.mysqlQueryFormat(
-          " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
-            _limit +
-            ";"
-        );
         _mysql
-          .executeQuery({ query: sqlQuery, printQuery: true })
-          .then(result => {
+          .executeQuery({
+            query: `select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
+          case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
+          formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
+          inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
+          left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
+          where PV.record_status='A' and PH.record_status='A' ${strQuery}
+           group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0,${_limit} ;`,
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -987,7 +1004,6 @@ let getPatientVitals = (req, res, next) => {
     next(e);
   }
 };
-
 //created by irfan: to  getPatientAllergies
 let getPatientAllergies = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -1002,14 +1018,14 @@ let getPatientAllergies = (req, res, next) => {
           where PA.record_status='A' and patient_id=? and PA.allergy_id=A.hims_d_allergy_id \
           order by hims_f_patient_allergy_id desc;",
         values: [inputData.patient_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1115,14 +1131,14 @@ let getChiefComplaints = (req, res, next) => {
           "select hims_d_hpi_header_id,hpi_description,created_date from hims_d_hpi_header where \
           sub_department_id=? and record_status='A';",
         values: [req.userIdentity.sub_department_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1188,8 +1204,8 @@ let addNewChiefComplaint = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [input.sub_department_id, new Date(), new Date()],
-            req: req
-          })
+            req: req,
+          }),
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1238,7 +1254,7 @@ let addPatientChiefComplaints = (req, res, next) => {
         "comment",
         "complaint_type",
         "created_by",
-        "updated_by"
+        "updated_by",
       ];
 
       connection.query(
@@ -1252,10 +1268,10 @@ let addPatientChiefComplaints = (req, res, next) => {
             newFieldToInsert: [
               new Date(),
               new Date(),
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            req: req
-          })
+            req: req,
+          }),
         ],
         (error, Result) => {
           releaseDBConnection(db, connection);
@@ -1287,15 +1303,15 @@ let getPatientChiefComplaints = (req, res, next) => {
           from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
           where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
         values: [inputData.episode_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // utilities.logger().log("result: ", result);
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1315,15 +1331,15 @@ let getPatientBasicChiefComplaints = (req, res, next) => {
         query:
           "select * from hims_f_episode_chief_complaint where episode_id=?",
         values: [inputData.episode_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // utilities.logger().log("result: ", result);
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1347,7 +1363,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
         [
           new Date(),
           req.body.updated_by,
-          req.body.hims_f_episode_chief_complaint_id
+          req.body.hims_f_episode_chief_complaint_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1394,7 +1410,7 @@ let addPatientNewAllergy = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1424,14 +1440,14 @@ let getAllAllergies = (req, res, next) => {
         query:
           "select hims_d_allergy_id, allergy_type, allergy_name \
           from hims_d_allergy where record_status='A';",
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1488,13 +1504,13 @@ let getPatientAllergy = (req, res, next) => {
           "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
     hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
     and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
-        values: [inputData.patient_id]
+        values: [inputData.patient_id],
       })
-      .then(result => {
+      .then((result) => {
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1533,7 +1549,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1571,7 +1587,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
               inputParam[i].complaint_type,
               moment().format("YYYY-MM-DD HH:mm"),
               req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_f_episode_chief_complaint_id
+              inputParam[i].hims_f_episode_chief_complaint_id,
             ]
           );
         }
@@ -1584,7 +1600,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
             });
           }
 
-          connection.commit(error => {
+          connection.commit((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -1624,7 +1640,7 @@ let addPatientDiagnosis = (req, res, next) => {
         "diagnosis_type",
         "final_daignosis",
         "created_by",
-        "updated_by"
+        "updated_by",
       ];
 
       connection.query(
@@ -1636,8 +1652,8 @@ let addPatientDiagnosis = (req, res, next) => {
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
             newFieldToInsert: [req.userIdentity.hospital_id],
-            req: req
-          })
+            req: req,
+          }),
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1682,7 +1698,7 @@ let addPatientROS = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1714,7 +1730,7 @@ let updatePatientDiagnosis = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1730,7 +1746,7 @@ let updatePatientDiagnosis = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_f_patient_diagnosis_id
+          input.hims_f_patient_diagnosis_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -1740,7 +1756,7 @@ let updatePatientDiagnosis = (req, res, next) => {
               next(error);
             });
           }
-          connection.commit(error => {
+          connection.commit((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -1762,7 +1778,7 @@ let updatePatientDiagnosis = (req, res, next) => {
 //created by:irfan,to get ROS header& details
 let getReviewOfSystem = (req, res, next) => {
   let selectWhere = {
-    hims_d_review_of_system_header_id: "ALL"
+    hims_d_review_of_system_header_id: "ALL",
   };
 
   debugFunction("getReviewOfSystem");
@@ -1868,7 +1884,7 @@ let updatePatientROS = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1888,7 +1904,7 @@ let updatePatientROS = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_f_encounter_review_id
+          input.hims_f_encounter_review_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -1898,7 +1914,7 @@ let updatePatientROS = (req, res, next) => {
               next(error);
             });
           }
-          connection.commit(error => {
+          connection.commit((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -1968,7 +1984,7 @@ let addPatientVitalsOLD = (req, res, next) => {
           new Date(),
           inputparam.created_by,
           new Date(),
-          inputparam.updated_by
+          inputparam.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2008,7 +2024,7 @@ let addPatientVitals = (req, res, next) => {
         "vital_value",
         "vital_value_one",
         "vital_value_two",
-        "formula_value"
+        "formula_value",
       ];
 
       const _query = mysql.format(
@@ -2024,11 +2040,11 @@ let addPatientVitals = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               new Date(),
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
 
-            req: req
-          })
+            req: req,
+          }),
         ]
       );
       connection.query(
@@ -2089,7 +2105,7 @@ let addPatientPhysicalExamination = (req, res, next) => {
           inputparam.created_by,
           new Date(),
           inputparam.updated_by,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2121,7 +2137,7 @@ let updatePatientAllergy = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -2140,7 +2156,7 @@ let updatePatientAllergy = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_f_patient_allergy_id
+          input.hims_f_patient_allergy_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -2151,7 +2167,7 @@ let updatePatientAllergy = (req, res, next) => {
             });
           }
 
-          connection.commit(error => {
+          connection.commit((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -2295,7 +2311,7 @@ let addDietAdvice = (req, res, next) => {
     diet_id: null,
     comments: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   if (req.db == null) {
@@ -2321,7 +2337,7 @@ let addDietAdvice = (req, res, next) => {
         new Date(),
         new Date(),
         inputParam.updated_by,
-        req.userIdentity.hospital_id
+        req.userIdentity.hospital_id,
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2364,7 +2380,7 @@ let getEpisodeDietAdvice = (req, res, next) => {
   let Diet = {
     hims_f_patient_diet_id: "ALL",
     patient_id: "ALL",
-    episode_id: "ALL"
+    episode_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -2385,13 +2401,13 @@ let getEpisodeDietAdvice = (req, res, next) => {
           condition.condition +
           " " +
           pagePaging,
-        values: condition.values
+        values: condition.values,
       },
-      result => {
+      (result) => {
         req.records = result;
         next();
       },
-      error => {
+      (error) => {
         next(error);
       },
       true
@@ -2411,7 +2427,7 @@ let addReferalDoctor = (req, res, next) => {
     hospital_name: null,
     reason: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   if (req.db == null) {
@@ -2441,7 +2457,7 @@ let addReferalDoctor = (req, res, next) => {
         inputParam.created_by,
         new Date(),
         "A",
-        inputParam.external_doc_name
+        inputParam.external_doc_name,
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2465,7 +2481,7 @@ let addFollowUp = (req, res, next) => {
     followup_date: null,
     reason: null,
     created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id
+    updated_by: req.userIdentity.algaeh_d_app_user_id,
   };
 
   if (req.db == null) {
@@ -2491,7 +2507,7 @@ let addFollowUp = (req, res, next) => {
         inputParam.reason,
         inputParam.created_by,
         new Date(),
-        req.userIdentity.hospital_id
+        req.userIdentity.hospital_id,
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2568,7 +2584,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -2589,7 +2605,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
           new Date(),
           input.updated_by,
           input.record_status,
-          input.hims_f_episode_examination_id
+          input.hims_f_episode_examination_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, result) => {
@@ -2600,7 +2616,7 @@ let updatePatientPhysicalExam = (req, res, next) => {
             });
           }
 
-          connection.commit(error => {
+          connection.commit((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -2640,11 +2656,11 @@ let getVitalsHeaderMaster = (req, res, next) => {
      where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
     ) \
     SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
-        values: [req.userIdentity.sub_department_id]
+        values: [req.userIdentity.sub_department_id],
       })
-      .then(result => {
+      .then((result) => {
         const vitalDetails = new LINQ(result)
-          .Select(s => {
+          .Select((s) => {
             return s.hims_d_vitals_header_id;
           })
           .ToArray();
@@ -2653,19 +2669,19 @@ let getVitalsHeaderMaster = (req, res, next) => {
             query:
               "select hims_d_vitals_details_id,vitals_header_id,gender,min_age,max_age,min_value,max_value from hims_d_vitals_details where vitals_header_id in (?)",
             values: [vitalDetails],
-            printQuery: true
+            printQuery: true,
           })
-          .then(detailResult => {
+          .then((detailResult) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2694,7 +2710,7 @@ let addPatientHistory = (req, res, next) => {
         "history_type",
         "remarks",
         "created_by",
-        "updated_by"
+        "updated_by",
       ];
 
       connection.query(
@@ -2710,10 +2726,10 @@ let addPatientHistory = (req, res, next) => {
               input.provider_id,
               new Date(),
               new Date(),
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            req: req
-          })
+            req: req,
+          }),
         ],
 
         (error, results) => {
@@ -2733,94 +2749,121 @@ let addPatientHistory = (req, res, next) => {
 };
 
 //created by irfan: to getPatientHistory
-let getPatientHistoryBACKUP = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_patient_history_id,history_type, provider_id, patient_id, remarks from hims_f_patient_history\
-        where record_status='A' and patient_id=?",
-        [req.query.patient_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
+// let getPatientHistory = (req, res, next) => {
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     db.getConnection((error, connection) => {
+//       connection.query(
+//         "select \
+//         	hims_f_patient_history_id, \
+//         	history_type, \
+//         	provider_id, \
+//         	concat(T.title,' ', E.full_name) as provider_name, \
+//         	patient_id,\
+//         	remarks, \
+//         	PH.created_date \
+//         from \
+//         	hims_f_patient_history as PH \
+//         	inner join  hims_d_employee as E \
+//         	on PH.provider_id = E.hims_d_employee_id \
+//         	left join hims_d_title as T \
+//         	on T.his_d_title_id = E.title_id \
+//         where \
+//         	PH.provider_id = E.hims_d_employee_id \
+//         	and PH.record_status = 'A' \
+//         	and E.record_status = 'A' \
+//         	and  patient_id =?;",
+//         [req.query.patient_id],
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+
+//           let history = _.chain(result)
+//             .groupBy((g) => g.history_type)
+//             .map(function (detail, key) {
+//               return {
+//                 groupType: key,
+//                 groupName:
+//                   key == "SOH"
+//                     ? "Social History"
+//                     : key === "MEH"
+//                     ? "Medical History"
+//                     : key === "SGH"
+//                     ? "Surgical History"
+//                     : key === "FMH"
+//                     ? "Family History"
+//                     : key === "BRH"
+//                     ? "Birth History"
+//                     : "",
+//                 groupDetail: detail,
+//               };
+//             })
+//             .value();
+
+//           req.records = history;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 //created by irfan: to getPatientHistory
 let getPatientHistory = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select \
-        	hims_f_patient_history_id, \
-        	history_type, \
-        	provider_id, \
-        	concat(T.title,' ', E.full_name) as provider_name, \
-        	patient_id,\
-        	remarks, \
-        	PH.created_date \
-        from \
-        	hims_f_patient_history as PH \
-        	inner join  hims_d_employee as E \
-        	on PH.provider_id = E.hims_d_employee_id \
-        	left join hims_d_title as T \
-        	on T.his_d_title_id = E.title_id \
-        where \
-        	PH.provider_id = E.hims_d_employee_id \
-        	and PH.record_status = 'A' \
-        	and E.record_status = 'A' \
-        	and  patient_id =?;",
-        [req.query.patient_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
+    _mysql
+      .executeQuery({
+        query: `select hims_f_patient_history_id, history_type, provider_id, 
+ concat(T.title,' ', E.full_name) as provider_name, patient_id, remarks, 
+ PH.created_date       from  hims_f_patient_history as PH  inner join  hims_d_employee as E 
+ on PH.provider_id = E.hims_d_employee_id  left join hims_d_title as T 
+ on T.his_d_title_id = E.title_id       where  PH.provider_id = E.hims_d_employee_id 
+ and PH.record_status = 'A'  and E.record_status = 'A'  and  patient_id =?;`,
+        values: [req.query.patient_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
 
-          let history = _.chain(result)
-            .groupBy(g => g.history_type)
-            .map(function(detail, key) {
-              return {
-                groupType: key,
-                groupName:
-                  key == "SOH"
-                    ? "Social History"
-                    : key === "MEH"
-                    ? "Medical History"
-                    : key === "SGH"
-                    ? "Surgical History"
-                    : key === "FMH"
-                    ? "Family History"
-                    : key === "BRH"
-                    ? "Birth History"
-                    : "",
-                groupDetail: detail
-              };
-            })
-            .value();
+        let history = _.chain(result)
+          .groupBy((g) => g.history_type)
+          .map(function (detail, key) {
+            return {
+              groupType: key,
+              groupName:
+                key == "SOH"
+                  ? "Social History"
+                  : key === "MEH"
+                  ? "Medical History"
+                  : key === "SGH"
+                  ? "Surgical History"
+                  : key === "FMH"
+                  ? "Family History"
+                  : key === "BRH"
+                  ? "Birth History"
+                  : "",
+              groupDetail: detail,
+            };
+          })
+          .value();
 
-          req.records = history;
-          next();
-        }
-      );
-    });
+        req.records = history;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2855,14 +2898,14 @@ let getFollowUp = (req, res, next) => {
     _mysql
       .executeQuery({
         query: strQuery,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2940,13 +2983,13 @@ let updatePatientEncounter = (req, res, next) => {
 
     if (inputData.examination_notes != null) {
       strQuery += _mysql.mysqlQueryFormat("examination_notes=?", [
-        inputData.examination_notes
+        inputData.examination_notes,
       ]);
     }
     if (inputData.assesment_notes != null) {
       const putComma = inputData.examination_notes != null ? "," : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "assesment_notes =?", [
-        inputData.assesment_notes
+        inputData.assesment_notes,
       ]);
     }
 
@@ -2958,7 +3001,7 @@ let updatePatientEncounter = (req, res, next) => {
           ? ","
           : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
-        inputData.significant_signs
+        inputData.significant_signs,
       ]);
     }
 
@@ -2972,7 +3015,7 @@ let updatePatientEncounter = (req, res, next) => {
           ? ","
           : "";
       strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
-        inputData.other_signs
+        inputData.other_signs,
       ]);
     }
     strQuery += " where encounter_id=?";
@@ -2981,15 +3024,15 @@ let updatePatientEncounter = (req, res, next) => {
       .executeQuery({
         query: strQuery,
         values: [inputData.encounter_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // utilities.logger().log("result: ", result);
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3048,27 +3091,53 @@ let updatePatientEncounter = (req, res, next) => {
 };
 
 //created by Nowshad: to get
+// let getPatientEncounter = (req, res, next) => {
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     db.getConnection((error, connection) => {
+//       connection.query(
+//         "SELECT examination_notes,assesment_notes, other_signs, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
+//         [req.query.encounter_id],
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 let getPatientEncounter = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT examination_notes,assesment_notes, other_signs, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
-        [req.query.encounter_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT examination_notes,assesment_notes, other_signs,\
+         significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
+        values: [req.query.encounter_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        req.records = result;
+        _mysql.releaseConnection();
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -3143,7 +3212,7 @@ let addSickLeave = (req, res, next) => {
                 input.from_date,
                 input.to_date,
                 input.no_of_days,
-                input.remarks
+                input.remarks,
               ],
               (error, results) => {
                 releaseDBConnection(db, connection);
@@ -3219,14 +3288,14 @@ let getActiveEncounters = (req, res, next) => {
           and date(current_date()) and E.provider_id = ? and  E.`status` in ('W','CO') and E.hospital_id=?; \
           ",
         values: [provider_id, hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         req.records = result;
         _mysql.releaseConnection();
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3297,5 +3366,5 @@ export default {
   deleteDietAdvice,
   getSummaryFollowUp,
   addSickLeave,
-  getSickLeave
+  getSickLeave,
 };
