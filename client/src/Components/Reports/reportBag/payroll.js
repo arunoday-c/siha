@@ -1264,12 +1264,12 @@ export default function Payroll({
         ],
       },
       {
-        subitem: "Final Settlement Report",
-        reportName: "salaryFinalSettlement",
+        subitem: "Final Salary Statement Detail",
+        reportName: "finalSalaryStatementDetails",
         requireIframe: true,
         pageSize: "A3",
-        componentCode: "RPT_PAY_SAL_STM",
-        pageOrentation: "landscape",
+        componentCode: "RPT_FIN_SAL_STM_DTL",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             className: "col-2 mandatory form-group",
@@ -1322,11 +1322,11 @@ export default function Payroll({
             },
           },
           {
-            className: "col-2 form-group",
+            className: "col-2 form-group mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
@@ -1403,6 +1403,7 @@ export default function Payroll({
             },
           },
         ],
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Earnings & Deductions Report",
@@ -1748,6 +1749,56 @@ export default function Payroll({
               valueField: "value",
               data: LOCAL_TYPE,
             },
+          },
+        ],
+      },
+      {
+        subitem: "Advance Request Report",
+        reportName: "employeeAdvanceReport",
+        pageSize: "A3",
+        componentCode: "RPT_PAY_ADV_REQ",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+
+            // events: {
+            //   onChange: (reportState, currentEvent) => {
+            //     //provider_id_list CONTROL NAME AND APPEND BY _LIST
+            //     algaehApiCall({
+            //       uri: "/branchMaster/getBranchWiseDepartments",
+            //       module: "masterSettings",
+            //       method: "GET",
+            //       data: { hospital_id: currentEvent.value },
+
+            //       onSuccess: (result) => {
+            //         reportState.setState({
+            //           department_id_list: result.data.records,
+            //         });
+            //       },
+            //     });
+            //   },
+            //   onClear: (reportState, currentName) => {
+            //     reportState.setState({
+            //       [currentName]: undefined,
+            //       department_id_list: [],
+            //     });
+            //   },
+            // },
           },
         ],
       },

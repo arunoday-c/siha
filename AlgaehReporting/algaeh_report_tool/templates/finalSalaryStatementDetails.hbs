@@ -1,0 +1,189 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+        {{#hasElement employees}}
+
+
+        <section>
+
+
+
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Emp. Code</th>
+                        <th>Emp. Name</th>
+                        <th>Desgnation</th>
+                        <th>Nationality</th>
+                        {{!-- <th>Dep.</th> --}}
+                        {{!-- <th>Working Days</th> --}}
+                        <th>PR Days</th>
+                        <th>Paid Days</th>
+                        {{#hasElement earning_component}}
+                        {{#each earning_component}}
+                        <th>{{short_desc}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+                        <th>Total Earnings</th>
+                        {{#hasElement deduction_component}}
+                        {{#each deduction_component}}
+                        <th>{{short_desc}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+                        <th>Total Deduction </th>
+                        <th>Loan EMI</th>
+                        <th>Net Salary</th>
+                        {{#hasElement contributions_component}}
+                        {{#each contributions_component}}
+                        <th>{{short_desc}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+                        <th>Total Contribution</th>
+                        <th>Overtime Hr</th>
+                        <th>Employee + Employer</th>
+                        {{!-- <th>Leave Provision</th>
+                        <th>Airfrare Amount</th> --}}
+                        {{!-- <th>Gratuity Provision</th> --}}
+                        <th>
+                            Mode Of Payment
+                        </th>
+                        {{!-- <th>
+                            Salary Payed Date
+                        </th> --}}
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="numberFld" colspan="7"></td>
+                        <td colspan={{span_earning}}></td>
+                        <td class="numberFld">{{sum_earnings}}</td>
+                        <td colspan={{span_deduction}}></td>
+                        <td class="numberFld">{{sum_deductions}}</td>
+                        <td class="numberFld"></td>
+                        <td class="numberFld">{{sum_net_salary}}</td>
+                        <td colspan={{span_contribution}}></td>
+                        <td class="numberFld">{{sum_contributions}}</td>
+                        <td colspan="4"></td>
+                    </tr>
+                    {{#each employees}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
+                        <td>{{nationality}}</td>
+                        {{!-- <td>{{sub_department_name}}</td> --}}
+                        {{!-- <td>{{total_days}}</td> --}}
+                        <td>{{display_present_days}}</td>
+                        <td>{{total_paid_days}}</td>
+
+
+                        {{#hasElement ../earning_component}}
+                        {{#hasElement employee_earning}}
+                        {{#each ../earning_component}}
+                        <td class="numberFld"> {{dynamicSalary hims_d_earning_deduction_id ../employee_earning "E"}}
+                        </td>
+                        {{/each }}
+                        {{else}}
+                        <td class="numberFld">NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+                        <td class="numberFld numberFldTotal">{{total_earnings}}</td>
+
+
+
+
+                        {{#hasElement ../deduction_component}}
+                        {{#hasElement employee_deduction}}
+                        {{#each ../deduction_component}}
+                        <td class="numberFld"> {{dynamicSalary hims_d_earning_deduction_id ../employee_deduction "D"}}
+                        </td>
+                        {{/each }}
+                        {{else}}
+                        <td class="numberFld">NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+                        <td class="numberFld numberFldTotal">{{total_deductions}}</td>
+                        <td class="numberFld">{{loan_due_amount}} </td>
+                        <td class="numberFld numberFldTotal">{{net_salary}}</td>
+                        {{#hasElement ../contributions_component}}
+                        {{#hasElement employee_contributions}}
+                        {{#each ../contributions_component}}
+                        <td class="numberFld">
+                            {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
+                        {{/each }}
+                        {{else}}
+                        <td class="numberFld">NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+
+                        <td class="numberFld numberFldTotal">{{total_contributions}}</td>
+                        <td class="numberFld">{{complete_ot}}</td>
+                        <td class="numberFld">{{employe_plus_employr}}</td>
+                        {{!-- <td class="numberFld">{{leave_salary}}</td>
+                        <td class="numberFld">{{airfare_amount}}</td> --}}
+                        {{!-- <td class="numberFld">{{gratuity_amount}}</td> --}}
+                        <td>
+                            {{mode_of_payment}}
+                        </td>
+                        {{!-- <td>
+                            {{salary_paid_date}}
+                           
+                        </td> --}}
+                        <td>{{processed_status}} / {{payment_status}}</td>
+                    </tr>
+                    {{/each }}{{else}}
+                    <tr>
+                        <td class="noResultTextReport">No Records Found</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </section>
+
+        {{/hasElement }}
+
+
+
+
+        {{!-- <table class="tableTotal">
+            <tr>
+                <td>
+                    Grand Total Earnings
+                </td>
+                <td>
+                    {{sum_earnings}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Deduction
+                </td>
+                <td>
+                    {{sum_deductions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Contribution
+                </td>
+                <td>
+                    {{sum_contributions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Net Salary
+                </td>
+                <td>
+                    {{sum_net_salary}}
+                </td>
+            </tr>
+        </table> --}}
+    </div>
+
+</body>
