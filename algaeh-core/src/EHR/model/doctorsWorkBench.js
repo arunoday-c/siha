@@ -1482,84 +1482,65 @@ let getPatientAllergy = (req, res, next) => {
   }
 };
 //created by irfan: to add updatePatientChiefComplaints
+
 let updatePatientChiefComplaints = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    debugFunction("updatePatientChiefComplaints");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let inputParam = req.body.chief_complaints;
+    let chief_len = inputParam.length;
+    let qry = "";
+
+    for (let i = 0; i < chief_len; i++) {
+      const _complaint_inactive_date =
+        inputParam[i].complaint_inactive_date != null
+          ? inputParam[i].complaint_inactive_date
+          : null;
+      qry += _mysql.mysqlQueryFormat(
+        "UPDATE `hims_f_episode_chief_complaint` SET episode_id=?, chief_complaint_id=?, onset_date=?, \
+        `interval`=?, duration=?,severity=?, score=?, pain=?, chronic=?, complaint_inactive=?,\
+        complaint_inactive_date=?,comment=?,complaint_type=?,\
+        updated_date=?,updated_by=? where hims_f_episode_chief_complaint_id=?;",
+        [
+          inputParam[i].episode_id,
+          inputParam[i].chief_complaint_id,
+          inputParam[i].onset_date,
+          inputParam[i].interval,
+          inputParam[i].duration,
+          inputParam[i].severity,
+          inputParam[i].score,
+          inputParam[i].pain,
+          inputParam[i].chronic,
+          inputParam[i].complaint_inactive,
+          _complaint_inactive_date,
+          inputParam[i].comment,
+          inputParam[i].complaint_type,
+          moment().format("YYYY-MM-DD HH:mm"),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam[i].hims_f_episode_chief_complaint_id,
+        ]
+      );
     }
-    let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction((error) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-
-        let inputParam = extend([], req.body.chief_complaints);
-
-        let qry = "";
-
-        for (let i = 0; i < req.body.chief_complaints.length; i++) {
-          const _complaint_inactive_date =
-            inputParam[i].complaint_inactive_date != null
-              ? inputParam[i].complaint_inactive_date
-              : null;
-          qry += mysql.format(
-            "UPDATE `hims_f_episode_chief_complaint` SET episode_id=?, chief_complaint_id=?, onset_date=?, \
-            `interval`=?, duration=?,severity=?, score=?, pain=?, chronic=?, complaint_inactive=?,\
-            complaint_inactive_date=?,comment=?,complaint_type=?,\
-            updated_date=?,updated_by=? where hims_f_episode_chief_complaint_id=?;",
-            [
-              inputParam[i].episode_id,
-              inputParam[i].chief_complaint_id,
-              inputParam[i].onset_date,
-              inputParam[i].interval,
-              inputParam[i].duration,
-              inputParam[i].severity,
-              inputParam[i].score,
-              inputParam[i].pain,
-              inputParam[i].chronic,
-              inputParam[i].complaint_inactive,
-              _complaint_inactive_date,
-              inputParam[i].comment,
-              inputParam[i].complaint_type,
-              moment().format("YYYY-MM-DD HH:mm"),
-              req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_f_episode_chief_complaint_id,
-            ]
-          );
-        }
-
-        connection.query(qry, (error, updateResult) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-
-          connection.commit((error) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            releaseDBConnection(db, connection);
-            req.records = updateResult;
-            next();
-          });
+    _mysql
+      .executeQueryWithTransaction({
+        query: qry,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
         });
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
