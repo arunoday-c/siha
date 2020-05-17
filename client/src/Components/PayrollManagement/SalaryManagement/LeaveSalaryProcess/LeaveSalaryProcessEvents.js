@@ -2,7 +2,7 @@ import Enumerable from "linq";
 import {
   swalMessage,
   algaehApiCall,
-  getCookie
+  getCookie,
 } from "../../../../utils/algaehApiCall.js";
 // import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
@@ -18,7 +18,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -26,7 +26,7 @@ const getLeaveSalaryProcess = ($this, e) => {
   AlgaehLoader({ show: true });
 
   let inputObj = {
-    employee_id: $this.state.employee_id
+    employee_id: $this.state.employee_id,
   };
 
   algaehApiCall({
@@ -34,7 +34,7 @@ const getLeaveSalaryProcess = ($this, e) => {
     module: "hrManagement",
     data: inputObj,
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       AlgaehLoader({ show: false });
       let data = response.data.result;
 
@@ -47,17 +47,17 @@ const getLeaveSalaryProcess = ($this, e) => {
 
       $this.setState(data);
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message || error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     year: moment().year(),
     month: moment(new Date()).format("M"),
@@ -67,11 +67,11 @@ const ClearData = $this => {
     hospital_id: null,
     ProcessBtn: true,
     encash_type: null,
-    SaveBtn: true
+    SaveBtn: true,
   });
 };
 
-const MainClearData = $this => {
+const MainClearData = ($this) => {
   let IOputs = LeaveSalaryProcessIOputs.inputParam();
   IOputs.hospital_id = $this.state.hospital_id;
 
@@ -80,10 +80,10 @@ const MainClearData = $this => {
   });
 };
 
-const employeeSearch = $this => {
+const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Employee_details.employee
+      columns: spotlightSearch.Employee_details.employee,
     },
     searchName: "employee",
     uri: "/gloabelSearch/get",
@@ -91,7 +91,7 @@ const employeeSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       let IOputs = LeaveSalaryProcessIOputs.inputParam();
       IOputs.employee_name = row.full_name;
       IOputs.employee_id = row.hims_d_employee_id;
@@ -99,7 +99,7 @@ const employeeSearch = $this => {
       $this.setState(IOputs, () => {
         getLeaveSalaryProcess($this);
       });
-    }
+    },
   });
 };
 
@@ -114,20 +114,20 @@ const selectEmployee = ($this, row) => {
   });
 };
 
-const dateFormater = value => {
+const dateFormater = (value) => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
   }
 };
 
-const LeaveSalProcess = $this => {
+const LeaveSalProcess = ($this) => {
   let year = moment($this.state.leave_start_date).format("YYYY");
   let inputObj = {
     hims_d_employee_id: $this.state.employee_id,
     leave_start_date: $this.state.leave_start_date,
     leave_end_date: $this.state.leave_end_date,
     leave_period: $this.state.leave_period,
-    year: year
+    year: year,
   };
   let leave_salary_detail = $this.state.leave_salary_detail;
 
@@ -137,8 +137,7 @@ const LeaveSalProcess = $this => {
     method: "GET",
     module: "hrManagement",
     data: inputObj,
-    onSuccess: response => {
-
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.result.length > 0) {
           let salaryObj = [];
@@ -149,7 +148,7 @@ const LeaveSalProcess = $this => {
           for (let i = 0; i < leave_salary_detail.length; i++) {
             salaryObj = Enumerable.from(response.data.result[0])
               .where(
-                w =>
+                (w) =>
                   w.month === leave_salary_detail[i].month &&
                   w.year === leave_salary_detail[i].year
               )
@@ -163,15 +162,15 @@ const LeaveSalProcess = $this => {
               salaryObj[0].hims_f_salary_id;
           }
 
-          let leave_amount = parseFloat(response.data.result[1][0].leave_amount).toFixed(
-            $this.state.decimal_place
-          );
+          let leave_amount = parseFloat(
+            response.data.result[1][0].leave_amount
+          ).toFixed($this.state.decimal_place);
           // GetAmountFormart(
           //   response.data.result[1][0].leave_amount
           // );
-          let airfare_amount = parseFloat(response.data.result[1][0].airfare_amount).toFixed(
-            $this.state.decimal_place
-          );
+          let airfare_amount = parseFloat(
+            response.data.result[1][0].airfare_amount
+          ).toFixed($this.state.decimal_place);
           // GetAmountFormart(
           //   response.data.result[1][0].airfare_amount
           // );
@@ -182,7 +181,7 @@ const LeaveSalProcess = $this => {
           // x = airfare_amount.split(" ");
           // airfare_amount = response.data.result[1][0].airfare_amount;
 
-          let salary_amount = Enumerable.from(leave_salary_detail).sum(s =>
+          let salary_amount = Enumerable.from(leave_salary_detail).sum((s) =>
             parseFloat(s.net_amount)
           );
 
@@ -196,9 +195,10 @@ const LeaveSalProcess = $this => {
           AlgaehLoader({ show: false });
 
           let total_amount =
-            parseFloat(salary_amount) +
-            parseFloat(leave_amount) +
-            parseFloat(airfare_amount);
+            parseFloat(salary_amount) + parseFloat(leave_amount);
+
+          //Commeneted for shaksy requirement
+          // parseFloat(airfare_amount);
 
           total_amount = parseFloat(total_amount).toFixed(
             $this.state.decimal_place
@@ -217,40 +217,44 @@ const LeaveSalProcess = $this => {
             ProcessBtn: true,
             dis_salary_amount: GetAmountFormart(salary_amount),
             airfare_months: response.data.result[1][0].airfare_months,
-            dis_leave_amount: GetAmountFormart(response.data.result[1][0].leave_amount),
-            dis_airfare_amount: GetAmountFormart(response.data.result[1][0].airfare_amount),
-            dis_total_amount: GetAmountFormart(total_amount)
+            dis_leave_amount: GetAmountFormart(
+              response.data.result[1][0].leave_amount
+            ),
+            dis_airfare_amount: GetAmountFormart(
+              response.data.result[1][0].airfare_amount
+            ),
+            dis_total_amount: GetAmountFormart(total_amount),
           });
           swalMessage({
             title: "Processed succesfully..",
-            type: "success"
+            type: "success",
           });
         } else {
           AlgaehLoader({ show: false });
           swalMessage({
             title: "Please, Process the time sheet.",
-            type: "error"
+            type: "error",
           });
         }
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });
         swalMessage({
           title: response.data.result.message,
-          type: "error"
+          type: "error",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const SaveLeaveSalary = $this => {
+const SaveLeaveSalary = ($this) => {
   AlgaehLoader({ show: true });
   let inputObj = $this.state;
   inputObj.annual_leave_calculation =
@@ -281,7 +285,7 @@ const SaveLeaveSalary = $this => {
     module: "hrManagement",
     data: inputObj,
     method: "POST",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         AlgaehLoader({ show: false });
         let data = response.data.result;
@@ -292,29 +296,29 @@ const SaveLeaveSalary = $this => {
         $this.setState(data);
         swalMessage({
           title: "Saved Succefully...",
-          type: "success"
+          type: "success",
         });
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });
         swalMessage({
           title: response.data.result.message,
-          type: "error"
+          type: "error",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message || error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getLeaveSalary = $this => {
+const getLeaveSalary = ($this) => {
   let inputObj = {
-    hims_f_leave_salary_header_id: $this.state.hims_f_leave_salary_header_id
+    hims_f_leave_salary_header_id: $this.state.hims_f_leave_salary_header_id,
   };
   AlgaehLoader({ show: true });
   algaehApiCall({
@@ -322,7 +326,7 @@ const getLeaveSalary = $this => {
     module: "hrManagement",
     data: inputObj,
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.result;
 
@@ -340,24 +344,24 @@ const getLeaveSalary = $this => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: response.data.result.message,
-          type: "error"
+          type: "error",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const LoadLeaveSalary = $this => {
+const LoadLeaveSalary = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.emp_payment_apply.leave_settlement
+      columns: spotlightSearch.emp_payment_apply.leave_settlement,
     },
     searchName: "leave_settlement",
     uri: "/gloabelSearch/get",
@@ -365,17 +369,17 @@ const LoadLeaveSalary = $this => {
       callBack(text);
     },
     // inputs: "LH.hospital_id=  " + $this.state.hospital_id,
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState(
         {
           leave_salary_number: row.leave_salary_number,
-          hims_f_leave_salary_header_id: row.hims_f_leave_salary_header_id
+          hims_f_leave_salary_header_id: row.hims_f_leave_salary_header_id,
         },
         () => {
           getLeaveSalary($this);
         }
       );
-    }
+    },
   });
 };
 
@@ -385,14 +389,14 @@ const openSalaryComponents = ($this, row) => {
     month: row.month,
     hospital_id: $this.state.hospital_id,
     employee_id: $this.state.employee_id,
-    salary_type: "LS"
+    salary_type: "LS",
   };
   algaehApiCall({
     uri: "/salary/getSalaryProcess",
     module: "hrManagement",
     data: inputObj,
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.result;
         if (data.length === 0) {
@@ -402,19 +406,19 @@ const openSalaryComponents = ($this, row) => {
         const salaryprocess_Earning = Enumerable.from(
           data[0]["salaryprocess_detail"][0]
         )
-          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .where((w) => w.salary_header_id === header.hims_f_salary_id)
           .toArray();
 
         const salaryprocess_Deduction = Enumerable.from(
           data[0]["salaryprocess_detail"][1]
         )
-          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .where((w) => w.salary_header_id === header.hims_f_salary_id)
           .toArray();
 
         const salaryprocess_Contribute = Enumerable.from(
           data[0]["salaryprocess_detail"][2]
         )
-          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .where((w) => w.salary_header_id === header.hims_f_salary_id)
           .toArray();
 
         $this.setState({
@@ -443,41 +447,41 @@ const openSalaryComponents = ($this, row) => {
           total_paid_days: header.total_paid_days,
           display_present_days: header.display_present_days,
           comp_off_days: 0,
-          pending_unpaid_leave: header.pending_unpaid_leave
+          pending_unpaid_leave: header.pending_unpaid_leave,
         });
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });
         swalMessage({
           title: response.data.result.message,
-          type: "error"
+          type: "error",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const closeSalaryComponents = ($this, e) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
   });
 };
 
-const getEmployeeAnnualLeaveToProcess = $this => {
+const getEmployeeAnnualLeaveToProcess = ($this) => {
   algaehApiCall({
     uri: "/leavesalaryprocess/getEmployeeAnnualLeaveToProcess",
     module: "hrManagement",
     data: { hospital_id: $this.state.hospital_id },
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       $this.setState({ emp_leave_salary: response.data.result });
-    }
+    },
   });
 };
 
@@ -487,7 +491,7 @@ const eventHandaler = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getEmployeeAnnualLeaveToProcess($this);
@@ -495,22 +499,22 @@ const eventHandaler = ($this, e) => {
   );
 };
 
-const getHrmsOptions = $this => {
+const getHrmsOptions = ($this) => {
   algaehApiCall({
     uri: "/payrollOptions/getHrmsOptions",
     method: "GET",
     module: "hrManagement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({ hrms_options: res.data.result[0] });
       }
     },
-    onFailure: err => {
+    onFailure: (err) => {
       swalMessage({
         title: err.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -528,5 +532,5 @@ export {
   getEmployeeAnnualLeaveToProcess,
   eventHandaler,
   selectEmployee,
-  getHrmsOptions
+  getHrmsOptions,
 };
