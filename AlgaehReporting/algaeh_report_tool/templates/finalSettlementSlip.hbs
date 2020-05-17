@@ -1,0 +1,118 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+{{#each result}}
+
+<body style="width: 100%; height: 100%;">
+    <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td colspan="3"><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{full_name}}</span></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{designation}}</span></td>
+
+                    <td><label class="textEnLft">Sub Department: </label><span class="valueText">
+                            {{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Date of Joining</label><span class="valueText">{{DOJ}}</span>
+                    <td><label class="textEnLft">Date of Exit:</label><span class="valueText">{{DOE}}</span>
+                    </td>
+
+                    <td><label class="textEnLft">Salary Month & Year:</label><span class="valueText">{{month}} -
+                            {{year}}</span></td>
+                </tr>
+
+            </table>
+        </section>
+
+        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc;">
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Earnigns</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each emp_earnings}}
+                    <tr>
+                        <td style="height: 25px;" valign="top">{{earning_description}}</td>
+                        <td style="height: 25px;" valign="top" class="numberFld">{{earning_amount}}</td>
+                    </tr>
+                    {{/each}}
+
+                    {{!-- <tr class="footerTotalDown">
+                        <td>Total</td>
+                        <td class="numberFld">{{total_earnings}}</td>
+                    </tr> --}}
+                </tbody>
+            </table>
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Deductions</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each emp_deductions}}
+                    <tr>
+                        <td style="height: 25px;">{{deduction_description}}</td>
+                        <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
+                    </tr>
+                    {{/each}}
+
+
+                    {{!-- <tr class="footerTotalDown">
+                        <td>Total</td>
+                        <td class="numberFld">{{total_deductions}}</td>
+                    </tr> --}}
+
+                </tbody>
+            </table>
+        </section>
+
+        <br />
+        <section>
+            <table class="tableForLabel labelBlock" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Total Earnigns: </label><span
+                            class="valueText">{{total_earnings}}</span></td>
+                    <td><label class="textEnLft">Total Dedections:</label><span
+                            class="valueText">{{total_deductions}}</span>
+                    </td>
+                    <td><label class="textEnLft">Total Loan Due:</label><span
+                            class="valueText">{{loan_due_amount}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Total Leave Encashed Days: </label><span
+                            class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Total Leave Encashed Amt:</label><span
+                            class="valueText">{{employee_code}}</span>
+                    </td>
+                    <td><label class="textEnLft">Total Gratuity Amt:</label><span class="valueText">{{full_name}}</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><label class="textEnLft">In Words: </label><span
+                            class="valueText">{{salary_in_words}}</span>
+                    </td>
+                    <td><label class="textEnLft">Total Leave Encashed Amt:</label><span
+                            class="valueText">{{net_salary}}</span>
+                    </td>
+
+                </tr>
+
+                <tr>
+            </table>
+        </section>
+        <p style="text-align: center">This is a system generated payslip on {{currentDateTime 'date'}}. </p>
+    </div>
+</body>
+{{/each }}

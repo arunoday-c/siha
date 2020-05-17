@@ -1981,6 +1981,20 @@
       "value": "CAN"
     }
   ],
+  "ADV_LOAN_STATUS": [
+    {
+      "name": "Approved",
+      "value": "APR"
+    },
+    {
+      "name": "Paid",
+      "value": "PAI"
+    },
+    {
+      "name": "Rejected",
+      "value": "REJ"
+    }
+  ],
   "LEAVE_EDIT": [
     {
       "name": "Edit",

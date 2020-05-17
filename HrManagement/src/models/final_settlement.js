@@ -15,6 +15,7 @@ export default {
             "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans as total_loan_amount,\
               total_salary,total_leave_encash as total_leave_encash_amount, total_eos as gratuity_amount,\
               forfiet,remarks FROM hims_f_final_settlement_header where employee_id=?; \
+              select salary_type from hims_f_salary where employee_id=?; \
               select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
               E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
               E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,\
@@ -22,7 +23,7 @@ export default {
               Left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
               left join hims_d_title T on T.his_d_title_id = E.title_id \
               where E.hims_d_employee_id=?",
-          values: [_input.employee_id, _input.employee_id],
+          values: [_input.employee_id, _input.employee_id, _input.employee_id],
         })
         .then((headerresult) => {
           const _header = headerresult[0];
@@ -59,7 +60,7 @@ export default {
                   _input.employee_id,
                   _input.employee_id,
                   _input.employee_id,
-                  _input.employee_id
+                  _input.employee_id,
                 ],
               })
               .then((result) => {
@@ -90,8 +91,8 @@ export default {
                     const _total_loan_amount =
                       _loanList.length > 0
                         ? _.chain(_loanList).sumBy((s) =>
-                          parseFloat(s.pending_loan)
-                        )
+                            parseFloat(s.pending_loan)
+                          )
                         : 0;
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
@@ -301,7 +302,11 @@ export default {
               );
               query += _mysql.mysqlQueryFormat(
                 "update hims_f_salary set salary_settled=?, final_settlement_id=? where hims_f_salary_id=?;",
-                ["Y", req.body.hims_f_final_settlement_header_id, _input.hims_f_salary_id]
+                [
+                  "Y",
+                  req.body.hims_f_final_settlement_header_id,
+                  _input.hims_f_salary_id,
+                ]
               );
 
               if (_input.hims_f_end_of_service_id != null) {
@@ -310,7 +315,6 @@ export default {
                   ["Y", _input.hims_f_end_of_service_id]
                 );
               }
-
 
               _mysql
                 .executeQuery({
@@ -441,9 +445,9 @@ export default {
                           final_settlement_data[0].final_settlement_number,
                           inputParam.ScreenCode,
                           "Final Settlement Process for " +
-                          final_settlement_data[0].employee_code +
-                          "/" +
-                          final_settlement_data[0].full_name,
+                            final_settlement_data[0].employee_code +
+                            "/" +
+                            final_settlement_data[0].full_name,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                         ],
