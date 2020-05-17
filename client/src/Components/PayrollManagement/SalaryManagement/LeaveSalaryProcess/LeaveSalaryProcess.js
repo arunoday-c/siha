@@ -450,35 +450,59 @@ class LeaveSalaryProcess extends Component {
           </div>
         </div>
         <div className="col" style={{ marginBottom: 50 }}>
-          <div className="row">
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Days to be Paid",
-                }}
-              />
-              <h6>
-                <span>
-                  {this.state.leave_period === null
-                    ? 0
-                    : this.state.leave_period}
-                </span>{" "}
-                Days
-              </h6>
+          {" "}
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Days to be Paid",
+                    }}
+                  />
+                  <h6>
+                    <span>
+                      {this.state.leave_period === null
+                        ? 0
+                        : this.state.leave_period}
+                    </span>{" "}
+                    Days
+                  </h6>
+                </div>
+                {/* <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Airfare Months",
+                    }}
+                  />
+                  <h6>
+                    {this.state.airfare_months === null
+                      ? 0
+                      : this.state.airfare_months}
+                  </h6>
+                </div> */}
+              </div>
             </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Salary",
-                }}
-              />
-              <h6>
-                {this.state.dis_leave_amount === null
-                  ? 0
-                  : this.state.dis_leave_amount}
-              </h6>
-            </div>
-            <div className="col">
+          </div>
+        </div>
+        <div className="col-8" style={{ marginBottom: 50 }}>
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Salary",
+                    }}
+                  />
+                  <h6>
+                    {this.state.dis_leave_amount === null
+                      ? 0
+                      : this.state.dis_leave_amount}
+                  </h6>
+                </div>
+                <i className="fas fa-plus calcSybmbol"></i>
+                {/* <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Airfare",
@@ -490,42 +514,36 @@ class LeaveSalaryProcess extends Component {
                   : this.state.dis_airfare_amount}
               </h6>
             </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Airfare Months",
-                }}
-              />
-              <h6>
-                {this.state.airfare_months === null
-                  ? 0
-                  : this.state.airfare_months}
-              </h6>
-            </div>
 
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Net Salary",
-                }}
-              />
-              <h6>
-                {this.state.dis_salary_amount === null
-                  ? 0
-                  : this.state.dis_salary_amount}
-              </h6>
-            </div>
-            <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Total Salary",
-                }}
-              />
-              <h6>
-                {this.state.dis_total_amount === null
-                  ? 0
-                  : this.state.dis_total_amount}
-              </h6>
+                     
+            <i className="fas fa-plus calcSybmbol"></i> */}
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Salary",
+                    }}
+                  />
+                  <h6>
+                    {this.state.dis_salary_amount === null
+                      ? 0
+                      : this.state.dis_salary_amount}
+                  </h6>
+                </div>
+                <i className="fas fa-equals calcSybmbol"></i>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Salary",
+                    }}
+                  />
+                  <h6>
+                    {this.state.dis_total_amount === null
+                      ? 0
+                      : this.state.dis_total_amount}
+                  </h6>
+                </div>
+              </div>
             </div>
           </div>
         </div>
