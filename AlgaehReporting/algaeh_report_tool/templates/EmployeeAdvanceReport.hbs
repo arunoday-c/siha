@@ -15,10 +15,11 @@
                         <th>Deducting Month & Year</th>
                         <th>Advance Amount</th>
                         <th>Reason for Advance</th>
+                        <th>status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each details}}
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{request_number}}</td>
@@ -28,6 +29,7 @@
                         <td>{{deducting_month}}-{{deducting_year}}</td>
                         <td>{{payment_amount}}</td>
                         <td>{{adv_reason}}</td>
+                        <td>{{status}}</td>
                     </tr>
                     {{/each }}
 

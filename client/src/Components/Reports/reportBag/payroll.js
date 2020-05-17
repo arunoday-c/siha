@@ -5,6 +5,7 @@ export default function Payroll({
   MONTHS,
   LEAVE_STATUS,
   LOAN_STATUS,
+  ADV_LOAN_STATUS,
   algaehApiCall,
   moment,
 }) {
@@ -1799,6 +1800,66 @@ export default function Payroll({
             //     });
             //   },
             // },
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "year",
+            sort: "off",
+            isImp: true,
+            initialLoad: true,
+            label: "year",
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears,
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS,
+            },
+            others: {
+              sort: "off",
+            },
+            events: {
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                });
+              },
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "status",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: ADV_LOAN_STATUS,
+            },
+            events: {
+              onChange: (reportState, currentValue) => {},
+            },
           },
         ],
       },
