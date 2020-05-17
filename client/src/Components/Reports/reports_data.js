@@ -1,6 +1,7 @@
 import {
   LEAVE_STATUS,
   LOAN_STATUS,
+  ADV_LOAN_STATUS,
   MONTHS,
   LOCAL_TYPE,
   FORMAT_PAYTYPE,
@@ -83,6 +84,7 @@ export default function loadActiveReports(
             MONTHS,
             LEAVE_STATUS,
             LOAN_STATUS,
+            ADV_LOAN_STATUS,
             algaehApiCall,
             moment,
           });
