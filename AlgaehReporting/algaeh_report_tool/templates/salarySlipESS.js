@@ -21,7 +21,7 @@ const executePDF = function executePDFMethod(options) {
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, GP.gratuity_amount,GP.acc_gratuity  COALESCE(LS.balance_leave_days,0) as annual_leave_days,COALESCE(LS.balance_leave_salary_amount,0) as annual_leave_salary_amount from
+          E.employee_code, E.full_name, E.date_of_joining,DE.designation,H.hospital_name, COALESCE(GP.gratuity_amount,0) as gratuity_amount,COALESCE(GP.acc_gratuity,0) as acc_gratuity, COALESCE(LS.balance_leave_days,0) as annual_leave_days,COALESCE(LS.balance_leave_salary_amount,0) as annual_leave_salary_amount from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -32,6 +32,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id
           left join hims_d_department D on D.hims_d_department_id = SDP.department_id
           left join hims_f_gratuity_provision GP on S.employee_id = GP.employee_id and GP.year=S.year and GP.month=S.month
+          left join hims_f_employee_leave_salary_header LS on S.employee_id = LS.employee_id
           where S.employee_id in(?) and S.year=? and S.month=? ;`,
           values: [input.employee_id, input.year, input.month],
           printQuery: true,
