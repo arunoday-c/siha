@@ -56,7 +56,7 @@ export default class PurchaseRequestList extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="hptl-phase1-requisition-list-form">
+                <div className="hptl-phase1-purchase-list-form">
                     {/* <div
                         className="row inner-top-search"
                         style={{ marginTop: "75px", paddingBottom: "10px" }}

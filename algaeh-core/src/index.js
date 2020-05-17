@@ -38,11 +38,10 @@ if (process.env.NODE_ENV === "production") {
 }
 
 process.env.MYSQL_KEYS = JSON.stringify(keys);
-
 app.use(
   cors({
     origin: "*",
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
   })
 );
 
@@ -51,7 +50,7 @@ app.server = http.createServer(app);
 //parse application json
 app.use(
   bodyParser.json({
-    limit: keys.bodyLimit
+    limit: keys.bodyLimit,
   })
 );
 
@@ -61,7 +60,7 @@ passport.use(
   new LocalStrategy(
     {
       usernameField: "username",
-      passwordField: "password"
+      passwordField: "password",
     },
     (username, password, done) => {
       return done(null, username);
@@ -99,16 +98,16 @@ app.set("trust proxy", true);
 //api routeres v1
 app.use("/api/v1", routes);
 
-process.on("warning", warning => {
+process.on("warning", (warning) => {
   logger.log("warn", "warning-Core", warning);
 });
-process.on("uncaughtException", error => {
+process.on("uncaughtException", (error) => {
   logger.log("error", "uncaughtException-Core", error);
 });
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("error", "unhandledRejection-Core", {
     reason: reason,
-    promise: promise
+    promise: promise,
   });
 });
 //Error Handling MiddleWare
@@ -128,7 +127,7 @@ app.use((error, req, res, next) => {
                 success: false,
                 message:
                   error.sqlMessage != null ? error.sqlMessage : error.message,
-                isSql: error.sqlMessage != null ? true : false
+                isSql: error.sqlMessage != null ? true : false,
               })
               .end();
           });
@@ -140,7 +139,7 @@ app.use((error, req, res, next) => {
               success: false,
               message:
                 error.sqlMessage != null ? error.sqlMessage : error.message,
-              isSql: error.sqlMessage != null ? true : false
+              isSql: error.sqlMessage != null ? true : false,
             })
             .end();
         }
@@ -151,7 +150,7 @@ app.use((error, req, res, next) => {
             success: false,
             message:
               error.sqlMessage != null ? error.sqlMessage : error.message,
-            isSql: error.sqlMessage != null ? true : false
+            isSql: error.sqlMessage != null ? true : false,
           })
           .end();
       }
@@ -162,7 +161,7 @@ app.use((error, req, res, next) => {
         .json({
           success: false,
           message: error.sqlMessage != null ? error.sqlMessage : error.message,
-          isSql: error.sqlMessage != null ? true : false
+          isSql: error.sqlMessage != null ? true : false,
         })
         .end();
     }
@@ -172,7 +171,7 @@ app.use((error, req, res, next) => {
       .json({
         success: false,
         message: error.sqlMessage != null ? error.sqlMessage : error.message,
-        isSql: error.sqlMessage != null ? true : false
+        isSql: error.sqlMessage != null ? true : false,
       })
       .end();
   }
@@ -181,7 +180,7 @@ app.use((error, req, res, next) => {
     source: req.originalUrl,
     requestClient: req.headers["x-client-ip"],
     reqUserIdentity: req.userIdentity,
-    errorDescription: error
+    errorDescription: error,
   };
   logger.log("error", "unhandlerd", _error);
 });

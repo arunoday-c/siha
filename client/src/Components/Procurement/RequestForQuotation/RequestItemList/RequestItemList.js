@@ -32,6 +32,7 @@ class RequestItemList extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
+    debugger
     this.setState(nextProps.RequestQuotation);
   }
 

@@ -123,8 +123,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const RequestForQuotation = ($this) => {
-
-    debugger
     let _purchase_request_list = $this.state.purchase_request_list;
 
     let listOfinclude = Enumerable.from(_purchase_request_list)

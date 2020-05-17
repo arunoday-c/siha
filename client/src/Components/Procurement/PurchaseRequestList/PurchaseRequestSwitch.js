@@ -54,7 +54,7 @@ class PurchaseRequestSwitch extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-requisition-list-form">
+      <div className="hptl-phase1-purchase-list-form">
         <div>
           <button
             className="d-none"

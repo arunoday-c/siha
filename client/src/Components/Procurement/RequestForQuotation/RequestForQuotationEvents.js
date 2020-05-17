@@ -360,7 +360,8 @@ const setDataFromRequest = ($this, e) => {
 
   let IOputs = {};
   IOputs.quotation_detail = $this.props.quotation_detail
-  IOputs.saveEnable = true
+  IOputs.saveEnable = false
+  IOputs.ClearDisable = true
   IOputs.quotation_for = "INV"
   $this.setState({ ...$this.state, ...IOputs });
 };
