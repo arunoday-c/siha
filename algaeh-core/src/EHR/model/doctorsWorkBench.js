@@ -2478,202 +2478,27 @@ let deleteDietAdvice = (req, res, next) => {
 };
 
 let getEpisodeDietAdvice = (req, res, next) => {
-  let Diet = {
-    hims_f_patient_diet_id: "ALL",
-    patient_id: "ALL",
-    episode_id: "ALL",
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
-
-    let condition = whereCondition(extend(Diet, req.query));
-    selectStatement(
-      {
-        db: req.db,
-        query:
-          "SELECT * FROM `hims_f_patient_diet` WHERE `record_status`='A' AND " +
-          condition.condition +
-          " " +
-          pagePaging,
-        values: condition.values,
-      },
-      (result) => {
-        req.records = result;
-        next();
-      },
-      (error) => {
-        next(error);
-      },
-      true
-    );
-  } catch (e) {
-    next(e);
-  }
-};
-
-let addReferalDoctor = (req, res, next) => {
-  let referraldoc = {
-    hims_f_patient_referral_id: null,
-    patient_id: null,
-    episode_id: null,
-    referral_type: null,
-    sub_department_id: null,
-    hospital_name: null,
-    reason: null,
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-  };
-
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
-    let inputParam = extend(referraldoc, req.body);
-    connection.query(
-      "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
-      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,`hospital_id`,`updated_by`,`updated_date`,`record_status`,`external_doc_name`) \
-      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)",
-      [
-        inputParam.patient_id,
-        inputParam.episode_id,
-        inputParam.referral_type,
-        inputParam.sub_department_id,
-        inputParam.doctor_id,
-        inputParam.hospital_name,
-        inputParam.reason,
-        inputParam.created_by,
-        new Date(),
-        req.userIdentity.hospital_id,
-        inputParam.created_by,
-        new Date(),
-        "A",
-        inputParam.external_doc_name,
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
-        req.records = result;
-        next();
-      }
-    );
-  });
-};
-
-let addFollowUp = (req, res, next) => {
-  let followup = {
-    hims_f_patient_followup_id: null,
-    patient_id: null,
-    episode_id: null,
-    doctor_id: null,
-    followup_type: null,
-    followup_date: null,
-    reason: null,
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-  };
-
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
-    let inputParam = extend(followup, req.body);
-    connection.query(
-      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`, `followup_type`, \
-       `followup_date`, `sub_department_id`, `reason`, `created_by` ,`created_date`,hospital_id) \
-      VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?, ?)",
-      [
-        inputParam.patient_id,
-        inputParam.doctor_id,
-        inputParam.episode_id,
-        inputParam.followup_type,
-        inputParam.followup_date,
-        inputParam.sub_department_id,
-        inputParam.reason,
-        inputParam.created_by,
-        new Date(),
-        req.userIdentity.hospital_id,
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
-        req.records = result;
-        next();
-      }
-    );
-  });
-};
-
-//created by:irfan,to get Patient physical examination
-let getPatientPhysicalExaminationOLD = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
-  // debugFunction("getPatientPhysicalExamination");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
+    let input = req.query;
 
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-    let input = extend({}, req.query);
+    let str = "";
 
-    // select hims_f_episode_examination_id,  comments ,\
-    //   hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
-    //               hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
-    //               hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
-    //               from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
-    //               where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
-    //               EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?
-    // connection.query(
+    if (input.hims_f_patient_diet_id) {
+      str += " and hims_f_patient_diet_id=" + input.hims_f_patient_diet_id;
+    }
+    if (input.patient_id) {
+      str += " and patient_id=" + input.patient_id;
+    }
+    if (input.episode_id) {
+      str += " and episode_id=" + input.episode_id;
+    }
+
     _mysql
       .executeQuery({
-        query:
-          "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
-        hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
-                    hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
-                    hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory\
-                    from  ((hims_f_episode_examination EE  join hims_d_physical_examination_header PH on EE.exam_header_id=PH.hims_d_physical_examination_header_id) left join hims_d_physical_examination_details PD on\
-                      EE.exam_details_id=PD.hims_d_physical_examination_details_id )\
-                    left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
-                   where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
-        valuws: [input.patient_id, input.episode_id],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = result;
-
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        query: `SELECT * FROM hims_f_patient_diet WHERE record_status='A' ${str} ;`,
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2689,6 +2514,94 @@ let getPatientPhysicalExaminationOLD = (req, res, next) => {
     next(e);
   }
 };
+
+let addReferalDoctor = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let inputParam = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
+        `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,`hospital_id`,`updated_by`,`updated_date`,`external_doc_name`) \
+        VALUES (  ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);",
+        values: [
+          inputParam.patient_id,
+          inputParam.episode_id,
+          inputParam.referral_type,
+          inputParam.sub_department_id,
+          inputParam.doctor_id,
+          inputParam.hospital_name,
+          inputParam.reason,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.hospital_id,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.external_doc_name,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+let addFollowUp = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let inputParam = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`, `followup_type`, \
+        `followup_date`, `sub_department_id`, `reason`, `created_by` ,`created_date`,hospital_id) \
+       VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?, ?);",
+        values: [
+          inputParam.patient_id,
+          inputParam.doctor_id,
+          inputParam.episode_id,
+          inputParam.followup_type,
+          inputParam.followup_date,
+          inputParam.sub_department_id,
+          inputParam.reason,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.hospital_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+//created by:irfan,to get Patient physical examination
+
 let getPatientPhysicalExamination = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
