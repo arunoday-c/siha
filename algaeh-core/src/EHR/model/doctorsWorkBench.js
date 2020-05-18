@@ -897,61 +897,6 @@ let getPatientProfile = (req, res, next) => {
 };
 
 //created by irfan: to  get Patient Vitals
-// let getPatientVitals = (req, res, next) => {
-//   const _mysql = new algaehMysql({ path: keyPath });
-//   try {
-//     let inputs = req.query;
-//     _mysql
-//       .executeQuery({
-//         query:
-//           "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
-//       })
-//       .then((rec) => {
-//         const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
-
-//         let sqlQuery = _mysql.mysqlQueryFormat(
-//           "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time, PV.updated_by, PV.updated_Date,\
-//             case_type, vital_id, PH.vitals_name, vital_short_name, PH.uom, vital_value, vital_value_one, vital_value_two, \
-//             formula_value, PH.sequence_order, PH.display, AU.user_display_name from hims_f_patient_vitals PV \
-//             inner join hims_d_vitals_header PH on PV.vital_id=PH.hims_d_vitals_header_id  \
-//             left join algaeh_d_app_user AU on AU.algaeh_d_app_user_id=PV.updated_by  \
-//             where PV.record_status='A' and PH.record_status='A'  "
-//         );
-//         if (inputs.visit_id != null) {
-//           sqlQuery += _mysql.mysqlQueryFormat(" and visit_id=?", [
-//             inputs.visit_id,
-//           ]);
-//         }
-//         if (inputs.patient_id != null) {
-//           sqlQuery += _mysql.mysqlQueryFormat(" and patient_id=?", [
-//             inputs.patient_id,
-//           ]);
-//         }
-//         sqlQuery += _mysql.mysqlQueryFormat(
-//           " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
-//             _limit +
-//             ";"
-//         );
-//         _mysql
-//           .executeQuery({ query: sqlQuery, printQuery: true })
-//           .then((result) => {
-//             req.records = result;
-//             next();
-//           })
-//           .catch((error) => {
-//             _mysql.releaseConnection();
-//             next(error);
-//           });
-//       })
-//       .catch((error) => {
-//         _mysql.releaseConnection();
-//         next(error);
-//       });
-//   } catch (e) {
-//     _mysql.releaseConnection();
-//     next(e);
-//   }
-// };
 
 let getPatientVitals = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -1537,84 +1482,65 @@ let getPatientAllergy = (req, res, next) => {
   }
 };
 //created by irfan: to add updatePatientChiefComplaints
+
 let updatePatientChiefComplaints = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    debugFunction("updatePatientChiefComplaints");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let inputParam = req.body.chief_complaints;
+    let chief_len = inputParam.length;
+    let qry = "";
+
+    for (let i = 0; i < chief_len; i++) {
+      const _complaint_inactive_date =
+        inputParam[i].complaint_inactive_date != null
+          ? inputParam[i].complaint_inactive_date
+          : null;
+      qry += _mysql.mysqlQueryFormat(
+        "UPDATE `hims_f_episode_chief_complaint` SET episode_id=?, chief_complaint_id=?, onset_date=?, \
+        `interval`=?, duration=?,severity=?, score=?, pain=?, chronic=?, complaint_inactive=?,\
+        complaint_inactive_date=?,comment=?,complaint_type=?,\
+        updated_date=?,updated_by=? where hims_f_episode_chief_complaint_id=?;",
+        [
+          inputParam[i].episode_id,
+          inputParam[i].chief_complaint_id,
+          inputParam[i].onset_date,
+          inputParam[i].interval,
+          inputParam[i].duration,
+          inputParam[i].severity,
+          inputParam[i].score,
+          inputParam[i].pain,
+          inputParam[i].chronic,
+          inputParam[i].complaint_inactive,
+          _complaint_inactive_date,
+          inputParam[i].comment,
+          inputParam[i].complaint_type,
+          moment().format("YYYY-MM-DD HH:mm"),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam[i].hims_f_episode_chief_complaint_id,
+        ]
+      );
     }
-    let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction((error) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-
-        let inputParam = extend([], req.body.chief_complaints);
-
-        let qry = "";
-
-        for (let i = 0; i < req.body.chief_complaints.length; i++) {
-          const _complaint_inactive_date =
-            inputParam[i].complaint_inactive_date != null
-              ? inputParam[i].complaint_inactive_date
-              : null;
-          qry += mysql.format(
-            "UPDATE `hims_f_episode_chief_complaint` SET episode_id=?, chief_complaint_id=?, onset_date=?, \
-            `interval`=?, duration=?,severity=?, score=?, pain=?, chronic=?, complaint_inactive=?,\
-            complaint_inactive_date=?,comment=?,complaint_type=?,\
-            updated_date=?,updated_by=? where hims_f_episode_chief_complaint_id=?;",
-            [
-              inputParam[i].episode_id,
-              inputParam[i].chief_complaint_id,
-              inputParam[i].onset_date,
-              inputParam[i].interval,
-              inputParam[i].duration,
-              inputParam[i].severity,
-              inputParam[i].score,
-              inputParam[i].pain,
-              inputParam[i].chronic,
-              inputParam[i].complaint_inactive,
-              _complaint_inactive_date,
-              inputParam[i].comment,
-              inputParam[i].complaint_type,
-              moment().format("YYYY-MM-DD HH:mm"),
-              req.userIdentity.algaeh_d_app_user_id,
-              inputParam[i].hims_f_episode_chief_complaint_id,
-            ]
-          );
-        }
-
-        connection.query(qry, (error, updateResult) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-
-          connection.commit((error) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            releaseDBConnection(db, connection);
-            req.records = updateResult;
-            next();
-          });
+    _mysql
+      .executeQueryWithTransaction({
+        query: qry,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      })
+      .catch((error) => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
         });
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2261,7 +2187,7 @@ let getPhysicalExamination = (req, res, next) => {
 };
 
 //created by Noor: to get all physical examination
-let getAllPhysicalExamination = (req, res, next) => {
+let getAllPhysicalExaminationOLD = (req, res, next) => {
   try {
     debugFunction("getPhysicalExamination");
     if (req.db == null) {
@@ -2299,6 +2225,44 @@ let getAllPhysicalExamination = (req, res, next) => {
       );
     });
   } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getAllPhysicalExamination = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    const _all = req.query.allDept == "G" ? "" : " and sub_department_id=?";
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_d_physical_examination_header_id,\
+        examination_type,h.description,assesment_type,\
+        h.mandatory,hims_d_physical_examination_details_id,\
+        d.description as dtl_description,\
+        sd.description as sub_dtl_description,\
+        sd.mandatory ,sd.hims_d_physical_examination_subdetails_id FROM hims_d_physical_examination_header h left outer join  hims_d_physical_examination_details d \
+        on h.hims_d_physical_examination_header_id = d.physical_examination_header_id left outer join \
+        hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
+         where         h.record_status='A' " +
+          _all,
+        values: [req.userIdentity.sub_department_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2522,7 +2486,7 @@ let addFollowUp = (req, res, next) => {
 };
 
 //created by:irfan,to get Patient physical examination
-let getPatientPhysicalExamination = (req, res, next) => {
+let getPatientPhysicalExaminationOLD = (req, res, next) => {
   debugFunction("getPatientPhysicalExamination");
   try {
     if (req.db == null) {
@@ -2565,6 +2529,40 @@ let getPatientPhysicalExamination = (req, res, next) => {
       );
     });
   } catch (e) {
+    next(e);
+  }
+};
+let getPatientPhysicalExamination = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  let input = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
+        hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+        hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+        hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory\
+        from  ((hims_f_episode_examination EE  join hims_d_physical_examination_header PH on EE.exam_header_id=PH.hims_d_physical_examination_header_id) left join hims_d_physical_examination_details PD on\
+        EE.exam_details_id=PD.hims_d_physical_examination_details_id )\
+        left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
+        where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
+        values: [input.patient_id, input.episode_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2748,72 +2746,6 @@ let addPatientHistory = (req, res, next) => {
   }
 };
 
-//created by irfan: to getPatientHistory
-// let getPatientHistory = (req, res, next) => {
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-//     db.getConnection((error, connection) => {
-//       connection.query(
-//         "select \
-//         	hims_f_patient_history_id, \
-//         	history_type, \
-//         	provider_id, \
-//         	concat(T.title,' ', E.full_name) as provider_name, \
-//         	patient_id,\
-//         	remarks, \
-//         	PH.created_date \
-//         from \
-//         	hims_f_patient_history as PH \
-//         	inner join  hims_d_employee as E \
-//         	on PH.provider_id = E.hims_d_employee_id \
-//         	left join hims_d_title as T \
-//         	on T.his_d_title_id = E.title_id \
-//         where \
-//         	PH.provider_id = E.hims_d_employee_id \
-//         	and PH.record_status = 'A' \
-//         	and E.record_status = 'A' \
-//         	and  patient_id =?;",
-//         [req.query.patient_id],
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-
-//           let history = _.chain(result)
-//             .groupBy((g) => g.history_type)
-//             .map(function (detail, key) {
-//               return {
-//                 groupType: key,
-//                 groupName:
-//                   key == "SOH"
-//                     ? "Social History"
-//                     : key === "MEH"
-//                     ? "Medical History"
-//                     : key === "SGH"
-//                     ? "Surgical History"
-//                     : key === "FMH"
-//                     ? "Family History"
-//                     : key === "BRH"
-//                     ? "Birth History"
-//                     : "",
-//                 groupDetail: detail,
-//               };
-//             })
-//             .value();
-
-//           req.records = history;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
 //created by irfan: to getPatientHistory
 let getPatientHistory = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -3091,30 +3023,7 @@ let updatePatientEncounter = (req, res, next) => {
 };
 
 //created by Nowshad: to get
-// let getPatientEncounter = (req, res, next) => {
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-//     db.getConnection((error, connection) => {
-//       connection.query(
-//         "SELECT examination_notes,assesment_notes, other_signs, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
-//         [req.query.encounter_id],
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-//           req.records = result;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
+
 let getPatientEncounter = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 

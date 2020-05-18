@@ -7,9 +7,12 @@ import {
   AlgaehButton,
 } from "algaeh-react-components";
 import { newAlgaehApi } from "../../../../hooks";
+import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { MainContext } from "algaeh-react-components/context";
 import { logoUrl, LoadLogo } from "../imagesSettings";
 import EmailConfig from "./EmailConfig";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 export function Organization(props) {
   const [organisation, setOrganisation] = useState({});
@@ -22,6 +25,11 @@ export function Organization(props) {
   const { userToken } = useContext(MainContext);
   const disabledEdits =
     userToken.user_type === "SU" || userToken.user_type === "AD" ? false : true;
+  const [hospitalList, setHospitalList] = useState([]);
+  const [fullName, setFullName] = useState("");
+  const [employeeID, setEmployeeId] = useState(0);
+  const [hospitalID, setHospitalID] = useState(userToken.hims_d_hospital_id);
+  const [employee, setEmloyees] = useState("");
 
   useEffect(() => {
     newAlgaehApi({
@@ -66,6 +74,8 @@ export function Organization(props) {
     phone1,
     address1,
     address2,
+    hims_d_head_of_organization_id,
+    head_of_organisation_name,
   } = organisation;
 
   function onChangeHandler(e, val, nme) {
@@ -98,6 +108,7 @@ export function Organization(props) {
     })
       .then((result) => {
         setLoadingUpdate(false);
+
         const { success, message } = result.data;
         AlgaehMessagePop({
           display: message,
@@ -145,6 +156,36 @@ export function Organization(props) {
         setLoadingOrgImage(false);
       });
     }
+  }
+
+  function employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee,
+      },
+
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        // let arr = setEmloyees(employees);
+        // console.log("arra", arr);
+
+        setEmployeeId(row.hims_d_employee_id);
+        setOrganisation((state) => {
+          return {
+            ...state,
+            hims_d_head_of_organization_id: row.hims_d_employee_id,
+            head_of_organisation_name: row.full_name,
+          };
+        });
+        setFullName(row.full_name);
+
+        setHospitalID(row.hospital_id);
+      },
+    });
   }
 
   const uploadButton = (
@@ -479,6 +520,13 @@ export function Organization(props) {
                       onChange: onChangeHandler,
                     }}
                   />
+                  <div className="col-4 globalSearchCntr">
+                    <AlgaehLabel label={{ forceLabel: "Organization Head" }} />
+                    <h6 onClick={employeeSearch}>
+                      {fullName ? fullName : head_of_organisation_name}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
                   <div className="col">
                     <AlgaehButton
                       className="btn btn-primary"

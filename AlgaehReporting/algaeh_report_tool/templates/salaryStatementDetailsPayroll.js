@@ -68,7 +68,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
 				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
 				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where E.hospital_id=? and  E.suspend_salary ='N' and S.salary_type <>'LS' and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
+				where E.hospital_id=? and  E.suspend_salary ='N' and S.salary_type ='NS' and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local} ${str}`,
           values: [
             input.hospital_id,
             input.employee_group_id,

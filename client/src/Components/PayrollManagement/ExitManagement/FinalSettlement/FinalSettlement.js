@@ -103,12 +103,10 @@ class FinalSettlement extends Component {
         data: {
           employee_id: this.state.hims_d_employee_id,
         },
+
         onSuccess: (res) => {
           if (res.data.success) {
-            if (
-              res.data.result.flag !== undefined &&
-              res.data.result.flag === "Settled"
-            ) {
+            if (res.data.result.flag !== undefined) {
               this.setState(
                 {
                   ...res.data.result,
@@ -530,6 +528,41 @@ class FinalSettlement extends Component {
             this.loadFinalSettlement(this);
           }
         );
+      },
+    });
+  }
+
+  generateFinalSettlementSlip() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "finalSettlementSlip",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.hims_d_employee_id,
+              // this.state.hims_d_employee_id,
+            },
+            {
+              name: "hims_f_salary_id",
+              value: this.state.data.hims_f_salary_id,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
       },
     });
   }
@@ -1124,6 +1157,19 @@ class FinalSettlement extends Component {
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
+                />
+              </button>
+              <button
+                type="button"
+                className="btn btn-other"
+                // onClick={this.clearState.bind(this)}
+                onClick={this.generateFinalSettlementSlip.bind(this)}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Generate Settlement Slip",
+                    returnText: true,
+                  }}
                 />
               </button>
 
