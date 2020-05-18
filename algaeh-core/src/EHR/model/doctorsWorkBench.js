@@ -942,7 +942,7 @@ let getEncounterReview = (req, res, next) => {
     _mysql
       .executeQuery({
         query: "SELECT * FROM hims_f_encounter_review where encounter_id=?",
-        values: [encounter_id],
+        values: [req.query.encounter_id],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
         //           if (error) {
@@ -1068,80 +1068,53 @@ let getMyDay = (req, res, next) => {
     next(e);
   }
 };
-
 //created by irfan: to update patient encounter status to WIP
 let updatdePatEncntrStatus = (req, res, next) => {
   try {
-    debugFunction("updatdePatEncntrStatus");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    const _mysql = new algaehMysql({ path: keyPath });
 
-    debugLog("Input Data", req.body);
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      let currentEncounterNo = null;
-
-      connection.query(
-        "SELECT encounter_id FROM algaeh_d_app_config where param_name='VISITEXPERIDAY';",
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          }
-
-          currentEncounterNo = result[0].encounter_id;
-          console.log("currentEncounterNo:", currentEncounterNo);
-
-          if (currentEncounterNo > 0) {
-            let nextEncounterNo = currentEncounterNo + 1;
-            console.log("nextEncounterNo:", nextEncounterNo);
-
-            connection.query(
-              "update algaeh_d_app_config set encounter_id=?,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY'",
-              [nextEncounterNo, req.body.updated_by, new Date()],
-              (error, updateResult) => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-
-                if (updateResult != null) {
-                  connection.query(
-                    "UPDATE  hims_f_patient_encounter SET `checked_in` = 'Y', `status`='W', encounter_id=?,\
-                     updated_by=?, updated_date=? WHERE hims_f_patient_encounter_id=? AND  record_status='A';",
-                    [
-                      currentEncounterNo,
-                      req.body.updated_by,
-                      new Date(),
-                      req.body.patient_encounter_id,
-                    ],
-                    (error, result) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-                      releaseDBConnection(db, connection);
-                      req.records = { encounter_id: currentEncounterNo };
-                      next();
-                    }
-                  );
-                }
-              }
-            );
-          }
-        }
-      );
-    });
+    _mysql
+      .executeQueryWithTransaction({
+        query: `SELECT encounter_id FROM algaeh_d_app_config where param_name='VISITEXPERIDAY' for update; `,
+        printQuery: true,
+      })
+      .then((result) => {
+        let currentEncounterNo = result[0].encounter_id;
+        let nextEncounterNo = parseInt(currentEncounterNo) + 1;
+        _mysql
+          .executeQueryWithTransaction({
+            query: `update algaeh_d_app_config set encounter_id=?,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY';
+            UPDATE  hims_f_patient_encounter SET checked_in = 'Y', status='W', encounter_id=?, updated_by=?, updated_date=? 
+            WHERE hims_f_patient_encounter_id=? AND  record_status='A'; `,
+            values: [
+              nextEncounterNo,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              currentEncounterNo,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.body.patient_encounter_id,
+            ],
+            printQuery: true,
+          })
+          .then((resultd) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = resultd;
+              next();
+            });
+          })
+          .catch((e) => {
+            mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      })
+      .catch((e) => {
+        mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   } catch (e) {
     next(e);
   }
@@ -1169,20 +1142,6 @@ let getPatientProfile = (req, res, next) => {
         inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
         PV.hims_f_patient_visit_id=PE.visit_id  where P.hims_d_patient_id=? and PE.episode_id=?;",
         values: [inputData.patient_id, inputData.episode_id],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1463,60 +1422,33 @@ let getChiefComplaints = (req, res, next) => {
 };
 
 //created by irfan:  to add new chief complaints (hpi header)
+//created by irfan:  to add new chief complaints (hpi header)
 let addNewChiefComplaint = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
-  // debugFunction("addNewChiefComplaint");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-    let input = extend({}, req.body);
+    let input = req.body;
 
     let header = req.headers["x-app-user-identity"];
     header = decryption(header);
-    input.sub_department_id = header.sub_department_id;
-    // debugLog("sub_department_id:", header.sub_department_id);
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
+    let sub_department_id = header.sub_department_id;
 
     const insurtColumns = ["hpi_description", "created_by", "updated_by"];
 
-    // connection.query(
     _mysql
       .executeQuery({
-        query:
-          "INSERT INTO hims_d_hpi_header(" +
-          insurtColumns.join(",") +
-          ",`sub_department_id`,created_date,update_date) VALUES ?",
-        values: [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body,
-            newFieldToInsert: [input.sub_department_id, new Date(), new Date()],
-            req: req,
-          }),
-        ],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-
-        //           debugLog("Results are recorded...");
-        //           req.records = result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        query: "INSERT INTO hims_d_hpi_header(??) VALUES ?",
+        values: input,
+        includeValues: insurtColumns,
+        printQuery: false,
+        bulkInsertOrUpdate: true,
+        extraValues: {
+          sub_department_id: sub_department_id,
+          created_date: new Date(),
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+        },
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1532,24 +1464,11 @@ let addNewChiefComplaint = (req, res, next) => {
     next(e);
   }
 };
-
 // created by : irfan to ADD  patient-chief complaint
 let addPatientChiefComplaints = (req, res, next) => {
-  // debugFunction("addPatientChiefComplaints");
   const _mysql = new algaehMysql({ path: keyPath });
 
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-    // //let input = extend({}, req.body);
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     releaseDBConnection(db, connection);
-    //     next(error);
-    //   }
-
     const insurtColumns = [
       "episode_id",
       "patient_id",
@@ -1563,43 +1482,23 @@ let addPatientChiefComplaints = (req, res, next) => {
       "pain",
       "comment",
       "complaint_type",
-      "created_by",
-      "updated_by",
     ];
 
-    // connection.query(
     _mysql
       .executeQuery({
-        query:
-          "INSERT INTO hims_f_episode_chief_complaint(`" +
-          insurtColumns.join("`,`") +
-          "`,created_date,updated_date,hospital_id) VALUES ?",
-        values: [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body,
-            newFieldToInsert: [
-              new Date(),
-              new Date(),
-              req.userIdentity.hospital_id,
-            ],
-            req: req,
-          }),
-        ],
-        //         (error, Result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = Result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        query: "INSERT INTO hims_f_episode_chief_complaint(??) VALUES ?",
+
+        values: req.body,
+        includeValues: insurtColumns,
+        printQuery: false,
+        bulkInsertOrUpdate: true,
+        extraValues: {
+          created_date: new Date(),
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+          hospital_id: req.userIdentity.hospital_id,
+        },
       })
       .then((result) => {
         _mysql.releaseConnection();
