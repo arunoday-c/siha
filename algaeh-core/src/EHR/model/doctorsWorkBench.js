@@ -2243,175 +2243,29 @@ let addPatientPhysicalExamination = (req, res, next) => {
 
 //created by irfan: to updatePatientAllergy
 let updatePatientAllergy = (req, res, next) => {
-  try {
-    debugFunction("updatePatientAllergy");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
-    debugLog("Input Data", req.body);
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction((error) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        let queryBuilder =
+  try {
+    _mysql
+      .executeQuery({
+        query:
           "update hims_f_patient_allergy set allergy_inactive=?,\
-          `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, record_status=? where `record_status`='A' and  hims_f_patient_allergy_id=?;";
-        let inputs = [
+        `comment`=?,onset=?,severity=?,onset_date=?, updated_date=?,updated_by=?, \
+        record_status=? where `record_status`='A' and  hims_f_patient_allergy_id=?;",
+        values: [
           input.allergy_inactive,
           input.comment,
           input.onset,
           input.severity,
           input.onset_date,
           new Date(),
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
           input.hims_f_patient_allergy_id,
-        ];
+        ],
 
-        connection.query(queryBuilder, inputs, (error, result) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-
-          connection.commit((error) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            releaseDBConnection(db, connection);
-            req.records = result;
-            next();
-          });
-        });
-      });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by irfan: to get physical examination
-let getPhysicalExamination = (req, res, next) => {
-  try {
-    debugFunction("getPhysicalExamination");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    debugLog("Input Data", req.query);
-    let input = extend({}, req.query);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      let queryBuilder = "";
-
-      let input = req.query;
-
-      debugLog("separtment:", req.userIdentity.sub_department_id);
-
-      if (
-        input.hims_d_physical_examination_details_id == "null" &&
-        input.hims_d_physical_examination_header_id == "null"
-      ) {
-        queryBuilder =
-          "SELECT hims_d_physical_examination_header_id, examination_type, \
-            description as header_description, sub_department_id, assesment_type, \
-            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='G';\
-            SELECT hims_d_physical_examination_header_id, examination_type,description as header_description, sub_department_id, assesment_type,\
-            mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='S' and sub_department_id='" +
-          req.userIdentity.sub_department_id +
-          "';";
-        debugLog("only physical header");
-      } else if (
-        input.hims_d_physical_examination_header_id != "null" &&
-        input.hims_d_physical_examination_details_id == "null"
-      ) {
-        queryBuilder =
-          "SELECT hims_d_physical_examination_details_id, physical_examination_header_id,\
-          description as detail_description, mandatory as detail_mandatory FROM hims_d_physical_examination_details\
-           where   record_status='A' and  physical_examination_header_id='" +
-          input.hims_d_physical_examination_header_id +
-          "';";
-        debugLog("only detail ");
-      } else if (input.hims_d_physical_examination_details_id != "null") {
-        queryBuilder =
-          "SELECT hims_d_physical_examination_subdetails_id, physical_examination_details_id, description as sub_detail_description,\
-          mandatory as sub_detail_mandatory from hims_d_physical_examination_subdetails where record_status='A' and physical_examination_details_id='" +
-          input.hims_d_physical_examination_details_id +
-          "'";
-        debugLog("only sub -detail ");
-      }
-      debugLog("Query Physical Exam", queryBuilder);
-      connection.query(queryBuilder, (error, result) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        releaseDBConnection(db, connection);
-        debugLog("result", result[1]);
-
-        req.records = result;
-        next();
-      });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-//created by Noor: to get all physical examination
-let getAllPhysicalExaminationOLD = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-
-  try {
-    // debugFunction("getPhysicalExamination");
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-    const _all = req.query.allDept == "G" ? "" : " and sub_department_id=?";
-    // let queryBuilder =
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT hims_d_physical_examination_header_id,\
-      examination_type,h.description,assesment_type,\
-      h.mandatory,hims_d_physical_examination_details_id,\
-      d.description as dtl_description,\
-      sd.description as sub_dtl_description,\
-      sd.mandatory ,sd.hims_d_physical_examination_subdetails_id FROM hims_d_physical_examination_header h left outer join  hims_d_physical_examination_details d \
-      on h.hims_d_physical_examination_header_id = d.physical_examination_header_id left outer join \
-      hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
-       where \
-      h.record_status='A' " +
-          _all,
-        // connection.query(
-        //   queryBuilder,
-        values: [req.userIdentity.sub_department_id],
+        printQuery: true,
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -2428,20 +2282,66 @@ let getAllPhysicalExaminationOLD = (req, res, next) => {
     next(e);
   }
 };
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-//           req.records = result;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
+
+//created by irfan: to get physical examination
+let getPhysicalExamination = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    let input = req.query;
+
+    let queryBuilder = "";
+
+    if (
+      !input.hims_d_physical_examination_details_id > 0 &&
+      !input.hims_d_physical_examination_header_id > 0
+    ) {
+      queryBuilder =
+        "SELECT hims_d_physical_examination_header_id, examination_type, \
+          description as header_description, sub_department_id, assesment_type, \
+          mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='G';\
+          SELECT hims_d_physical_examination_header_id, examination_type,description as header_description, sub_department_id, assesment_type,\
+          mandatory as header_mandatory FROM hims_d_physical_examination_header where record_status='A'and examination_type='S' and sub_department_id='" +
+        req.userIdentity.sub_department_id +
+        "';";
+    } else if (
+      input.hims_d_physical_examination_header_id > 0 &&
+      !input.hims_d_physical_examination_details_id == "null"
+    ) {
+      queryBuilder =
+        "SELECT hims_d_physical_examination_details_id, physical_examination_header_id,\
+        description as detail_description, mandatory as detail_mandatory FROM hims_d_physical_examination_details\
+         where   record_status='A' and  physical_examination_header_id='" +
+        input.hims_d_physical_examination_header_id +
+        "';";
+    } else if (input.hims_d_physical_examination_details_id > 0) {
+      queryBuilder =
+        "SELECT hims_d_physical_examination_subdetails_id, physical_examination_details_id, description as sub_detail_description,\
+        mandatory as sub_detail_mandatory from hims_d_physical_examination_subdetails where record_status='A' and physical_examination_details_id='" +
+        input.hims_d_physical_examination_details_id +
+        "'";
+    }
+
+    _mysql
+      .executeQuery({
+        query: queryBuilder,
+        values: [req.query.patient_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 
 //created by irfan:
 let getAllPhysicalExamination = (req, res, next) => {
@@ -2551,28 +2451,30 @@ let addDietAdvice = (req, res, next) => {
 };
 
 let deleteDietAdvice = (req, res, next) => {
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
     let inputParam = req.body;
-    connection.query(
-      "DELETE FROM  `hims_f_patient_diet`  WHERE `hims_f_patient_diet_id`=?;",
-      [inputParam.hims_f_patient_diet_id],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    _mysql
+      .executeQuery({
+        query:
+          "DELETE FROM  `hims_f_patient_diet`  WHERE `hims_f_patient_diet_id`=?;",
+        values: [inputParam.hims_f_patient_diet_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      }
-    );
-  });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
 };
 
 let getEpisodeDietAdvice = (req, res, next) => {
