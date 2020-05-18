@@ -1871,57 +1871,29 @@ let updatePatientChiefComplaints = (req, res, next) => {
 let addPatientDiagnosis = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
-  // debugLog("addPatientDiagnosis");
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-
     const insurtColumns = [
       "patient_id",
       "episode_id",
       "daignosis_id",
       "diagnosis_type",
       "final_daignosis",
-      "created_by",
-      "updated_by",
     ];
 
-    // connection.query(
     _mysql
       .executeQuery({
-        query:
-          "INSERT INTO hims_f_patient_diagnosis(" +
-          insurtColumns.join(",") +
-          ",hospital_id) VALUES ?",
-        values: [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body,
-            newFieldToInsert: [req.userIdentity.hospital_id],
-            req: req,
-          }),
-        ],
-        //         (error, result) => {
-        //           releaseDBConnection(db, connection);
-        //           if (error) {
-        //             next(error);
-        //           }
-        //           req.records = result;
-        //           next();
-        //         }
-        //       );
-        //     });
-        //   } catch (e) {
-        //     next(e);
-        //   }
-        // };
+        query: "INSERT INTO hims_f_patient_diagnosis(??) VALUES ?",
+        values: req.body,
+        includeValues: insurtColumns,
+        printQuery: false,
+        bulkInsertOrUpdate: true,
+        extraValues: {
+          created_date: new Date(),
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+          hospital_id: req.userIdentity.hospital_id,
+        },
       })
       .then((result) => {
         _mysql.releaseConnection();
@@ -1937,8 +1909,6 @@ let addPatientDiagnosis = (req, res, next) => {
     next(e);
   }
 };
-
-//creat
 
 //created by irfan: to add patient encounter review
 let addPatientROS = (req, res, next) => {
@@ -2007,119 +1977,80 @@ let addPatientROS = (req, res, next) => {
 
 //created by irfan: to update PatientDiagnosis
 let updatePatientDiagnosis = (req, res, next) => {
-  try {
-    debugFunction("updatePatientDiagnosis");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    debugLog("Input Data", req.body);
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction((error) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        let queryBuilder =
-          "update hims_f_patient_diagnosis set diagnosis_type=?,\
-           final_daignosis=?,updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_patient_diagnosis_id=?;";
-        let inputs = [
+  let input = req.body;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_patient_diagnosis set diagnosis_type=?, final_daignosis=?,\
+        updated_date=?,updated_by=?, record_status=? where `record_status`='A' and hims_f_patient_diagnosis_id=?;",
+        values: [
           input.diagnosis_type,
           input.final_daignosis,
           new Date(),
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
           input.hims_f_patient_diagnosis_id,
-        ];
-
-        connection.query(queryBuilder, inputs, (error, result) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-          connection.commit((error) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            releaseDBConnection(db, connection);
-            req.records = result;
-            next();
-          });
-        });
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
     next(e);
   }
 };
 
 //created by:irfan,to get ROS header& details
+
 let getReviewOfSystem = (req, res, next) => {
-  let selectWhere = {
-    hims_d_review_of_system_header_id: "ALL",
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("getReviewOfSystem");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let strQry = "select 1";
+
+    if (req.query.hims_d_review_of_system_header_id > 0) {
+      strQry =
+        "SELECT hims_d_review_of_system_header_id, description FROM hims_d_review_of_system_header\
+       where record_status='A' and hims_d_review_of_system_header_id=" +
+        req.query.hims_d_review_of_system_header_id;
+    } else {
+      strQry =
+        "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
+      hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
+       RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A'";
     }
-    let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
+    _mysql
+      .executeQuery({
+        query: strQry,
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-      let ROS_header = req.query.hims_d_review_of_system_header_id;
-      let where = whereCondition(extend(selectWhere, req.query));
-      debugLog("ROS_header:", ROS_header);
-      if (ROS_header == "null" || ROS_header === undefined) {
-        connection.query(
-          "SELECT hims_d_review_of_system_header_id, description FROM hims_d_review_of_system_header where record_status='A'",
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      } else {
-        connection.query(
-          "select RH.hims_d_review_of_system_header_id,RH.description as header_description,RD.hims_d_review_of_system_details_id,RD.description as detail_description from\
-        hims_d_review_of_system_header RH,hims_d_review_of_system_details RD where\
-         RH.hims_d_review_of_system_header_id=RD.review_of_system_heder_id and RD.record_status='A' and RH.record_status='A' and" +
-            where.condition,
-          where.values,
-
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      }
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
+
 //created by:irfan,to get Patient ROS
 let getPatientROS = (req, res, next) => {
   debugFunction("getPatientROS");
