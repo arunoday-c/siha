@@ -25,36 +25,41 @@ const {
 
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
-  let physicalExaminationHeaderModel = {
-    hims_d_physical_examination_header: null,
-    examination_type: null,
-    description: null,
-    sub_department_id: null,
-    assesment_type: null,
-    mandatory: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+  // let physicalExaminationHeaderModel = {
+  //   hims_d_physical_examination_header: null,
+  //   examination_type: null,
+  //   description: null,
+  //   sub_department_id: null,
+  //   assesment_type: null,
+  //   mandatory: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  let input = req.body;
 
-  debugFunction("physicalExaminationHeader");
+  // debugFunction("physicalExaminationHeader");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(physicalExaminationHeaderModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(physicalExaminationHeaderModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_physical_examination_header(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_physical_examination_header(\
             examination_type,description,sub_department_id,assesment_type,\
             mandatory,created_by,updated_by)values(\
             ?,?,?,?,?,?,?)",
-        [
+        values: [
           input.examination_type,
           input.description,
           input.sub_department_id,
@@ -63,161 +68,224 @@ let physicalExaminationHeader = (req, res, next) => {
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      })
+      //         (error, results) => {
+      //           releaseDBConnection(db, connection);
+      //           if (error) {
+      //             next(error);
+      //           }
+      //           debugLog("Results are recorded...");
+      //           req.records = results;
+      //           next();
+      //         }
+      //       );
+      //     });
+      //   } catch (e) {
+      //     next(e);
+      //   }
+      // };
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add  physical_examination_details
 let physicalExaminationDetails = (req, res, next) => {
-  let physicalExaminationDetailsModel = {
-    hims_d_physical_examination_details_id: null,
-    physical_examination_header_id: null,
-    description: null,
-    mandatory: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // let physicalExaminationDetailsModel = {
+  //   hims_d_physical_examination_details_id: null,
+  //   physical_examination_header_id: null,
+  //   description: null,
+  //   mandatory: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
 
   debugFunction("physicalExaminationDetails");
+  let input = req.body;
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(physicalExaminationDetailsModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(physicalExaminationDetailsModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_physical_examination_details(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_physical_examination_details(\
             physical_examination_header_id,description,mandatory,created_by,updated_by)values(\
               ?,?,?,?,?)",
-        [
+        values: [
           input.physical_examination_header_id,
           input.description,
           input.mandatory,
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      })
+      //         (error, results) => {
+      //           releaseDBConnection(db, connection);
+      //           if (error) {
+      //             next(error);
+      //           }
+      //           debugLog("Results are recorded...");
+      //           req.records = results;
+      //           next();
+      //         }
+      //       );
+      //     });
+      //   } catch (e) {
+      //     next(e);
+      //   }
+      // };
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add  physical_examination_subdetails
 let physicalExaminationSubDetails = (req, res, next) => {
-  let physicalExaminationSubDetailsModel = {
-    hims_d_physical_examination_subdetails_id: null,
-    physical_examination_details_id: null,
-    description: null,
-    mandatory: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // let physicalExaminationSubDetailsModel = {
+  //   hims_d_physical_examination_subdetails_id: null,
+  //   physical_examination_details_id: null,
+  //   description: null,
+  //   mandatory: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  let input = req.body;
 
   debugFunction("physicalExaminationSubDetails");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(physicalExaminationSubDetailsModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(physicalExaminationSubDetailsModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_physical_examination_subdetails(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_physical_examination_subdetails(\
             physical_examination_details_id,\
             description,mandatory,created_by,updated_by)values(\
                 ?,?,?,?,?)",
-        [
+        values: [
           input.physical_examination_details_id,
           input.description,
           input.mandatory,
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan:  to add order
 let addOrder = (req, res, next) => {
-  let hims_f_lab_orderModel = {
-    hims_f_lab_order_id: null,
-    patient_id: null,
-    visit_id: null,
-    provider_id: null,
-    service_id: null,
-    status: null,
-    billed: null,
-    cancelled: null,
-    ordered_date: null,
-    test_type: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("addOrder");
+  // let hims_f_lab_orderModel = {
+  //   hims_f_lab_order_id: null,
+  //   patient_id: null,
+  //   visit_id: null,
+  //   provider_id: null,
+  //   service_id: null,
+  //   status: null,
+  //   billed: null,
+  //   cancelled: null,
+  //   ordered_date: null,
+  //   test_type: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  let input = req.body;
+
+  // debugFunction("addOrder");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(hims_f_lab_orderModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(hims_f_lab_orderModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_f_lab_order(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_f_lab_order(\
           patient_id,visit_id,provider_id,service_id,status,billed,\
           cancelled,ordered_date,test_type,created_by,updated_by,hospital_id)values(\
               ?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
+        values: [
           input.patient_id,
           input.visit_id,
           input.provider_id,
@@ -231,54 +299,75 @@ let addOrder = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        printQuery: true,
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add sample
 let addSample = (req, res, next) => {
-  let hims_d_lab_sampleModel = {
-    hims_d_lab_sample_id: null,
-    order_id: null,
-    sample_id: null,
-    status: null,
-    collected: null,
-    collected_date: null,
-    created_by: null,
-    updated_by: null,
-  };
+  // let hims_d_lab_sampleModel = {
+  //   hims_d_lab_sample_id: null,
+  //   order_id: null,
+  //   sample_id: null,
+  //   status: null,
+  //   collected: null,
+  //   collected_date: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("addSample");
+  // debugFunction("addSample");
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let input = extend(hims_d_lab_sampleModel, req.body);
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       releaseDBConnection(db, connection);
+  //       next(error);
+  //     }
+  let input = req.body;
+  //     connection.query(
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(hims_d_lab_sampleModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      connection.query(
-        "insert into hims_f_lab_sample(\
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_f_lab_sample(\
           order_id,sample_id,status,collected,\
           collected_date,created_by,updated_by,hospital_id)values(\
               ?,?,?,?,?,?,?,?)",
-        [
+        value: [
           input.order_id,
           input.sample_id,
           input.status,
@@ -288,53 +377,74 @@ let addSample = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add Analytes
 let addAnalytes = (req, res, next) => {
-  let AnalytesModel = {
-    hims_d_lab_analytes_id: null,
-    sample_id: null,
-    analyte_id: null,
-    result: null,
-    text: null,
-    status: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
-  debugFunction("addAnalytes");
+  // let AnalytesModel = {
+  //   hims_d_lab_analytes_id: null,
+  //   sample_id: null,
+  //   analyte_id: null,
+  //   result: null,
+  //   text: null,
+  //   status: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+
+  // debugFunction("addAnalytes");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(AnalytesModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(AnalytesModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_lab_analytes(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_lab_analytes(\
           sample_id,analyte_id,result,text,status,created_by,updated_by)values(\
               ?,?,?,?,?,?,?)",
-        [
+        values: [
           input.sample_id,
           input.analyte_id,
           input.result,
@@ -343,296 +453,437 @@ let addAnalytes = (req, res, next) => {
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add ReviewOfSysHeader
 let addReviewOfSysHeader = (req, res, next) => {
-  let reviewOfSysHeaderModel = {
-    description: null,
-    created_by: null,
-    updated_by: null,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("addReviewOfSysHeader");
+  // let reviewOfSysHeaderModel = {
+  //   description: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  let input = req.body;
+
+  // debugFunction("addReviewOfSysHeader");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(reviewOfSysHeaderModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(reviewOfSysHeaderModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_review_of_system_header(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_review_of_system_header(\
           description,created_by,updated_by)values(\
               ?,?,?)",
-        [input.description, input.created_by, input.updated_by],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        values: [input.description, input.created_by, input.updated_by],
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add ReviewOfSysDetails
 let addReviewOfSysDetails = (req, res, next) => {
-  let reviewOfSysDetailsModel = {
-    review_of_system_heder_id: null,
-    description: null,
-    created_by: null,
-    updated_by: null,
-  };
+  // let reviewOfSysDetailsModel = {
+  //   review_of_system_heder_id: null,
+  //   description: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
-  debugFunction("addReviewOfSysDetails");
+  // debugFunction("addReviewOfSysDetails");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(reviewOfSysDetailsModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(reviewOfSysDetailsModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_review_of_system_details(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_review_of_system_details(\
           review_of_system_heder_id,description,created_by,updated_by)values(\
               ?,?,?,?)",
-        [
+        values: [
           input.review_of_system_heder_id,
           input.description,
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan:  to add allergic details
 let addAllergy = (req, res, next) => {
-  let AllergyModel = {
-    hims_d_allergy_id: null,
-    allergy_type: null,
-    allergy_name: null,
-    created_by: null,
-    updated_by: null,
-  };
+  // let AllergyModel = {
+  //   hims_d_allergy_id: null,
+  //   allergy_type: null,
+  //   allergy_name: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
-  debugFunction("addAllergy");
+  // debugFunction("addAllergy");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(AllergyModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(AllergyModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_allergy(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_allergy(\
           allergy_type,allergy_name,created_by,updated_by)values(\
               ?,?,?,?)",
-        [
+        values: [
           input.allergy_type,
           input.allergy_name,
           input.created_by,
           input.updated_by,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan:  to get allergic details
 let getAllergyDetails = (req, res, next) => {
-  debugFunction("getAllergyDetails");
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // debugFunction("getAllergyDetails");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query("SELECT * FROM hims_d_allergy", (error, results) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
-        debugLog("Results fetched");
-        req.records = results;
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query: "SELECT * FROM hims_d_allergy",
+        //          (error, results) => {
+        //         releaseDBConnection(db, connection);
+        //         if (error) {
+        //           next(error);
+        //         }
+        //         debugLog("Results fetched");
+        //         req.records = results;
+        //         next();
+        //       });
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
         next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan:  to add chronical conditions
 let addChronicalConditions = (req, res, next) => {
-  let ChronicalConditionsModel = {
-    hims_d_chronic_conditions_id: null,
-    name: null,
-    created_by: null,
-    updated_by: null,
-  };
+  // let ChronicalConditionsModel = {
+  //   hims_d_chronic_conditions_id: null,
+  //   name: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
 
-  debugFunction("addChronicalConditions");
+  // debugFunction("addChronicalConditions");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(ChronicalConditionsModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let input = extend(ChronicalConditionsModel, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_d_chronic_conditions(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_chronic_conditions(\
           name,created_by,updated_by)values(\
               ?,?,?)",
-        [input.name, input.created_by, input.updated_by],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        values: [input.name, input.created_by, input.updated_by],
+
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
-
 //created by irfan:  to get chronical conditions
 let getChronicalConditions = (req, res, next) => {
-  debugFunction("getChronicalConditions");
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // debugFunction("getChronicalConditions");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
+
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query: "SELECT * FROM hims_d_chronic_conditions;",
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results fetched");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-
-      connection.query(
-        "SELECT * FROM hims_d_chronic_conditions;",
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results fetched");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan:  to add encounter review
 let addEncounterReview = (req, res, next) => {
-  let EncounterReviewMOdel = {
-    hims_f_encounter_review_id: null,
-    encounter_id: null,
-    review_header_id: null,
-    review_details_id: null,
-    created_by: null,
-    updated_by: null,
-  };
+  // let EncounterReviewMOdel = {
+  //   hims_f_encounter_review_id: null,
+  //   encounter_id: null,
+  //   review_header_id: null,
+  //   review_details_id: null,
+  //   created_by: null,
+  //   updated_by: null,
+  // };
+  const _mysql = new algaehMysql({ path: keyPath });
+  // let input = req.body;
 
-  debugFunction("addEncounterReview");
+  // debugFunction("addEncounterReview");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let input = extend(EncounterReviewMOdel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      connection.query(
-        "insert into hims_f_encounter_review(\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_f_encounter_review(\
           encounter_id,review_header_id,review_details_id,created_by,updated_by,hospital_id)values(\
               ?,?,?,?,?,?)",
-        [
+        values: [
           input.encounter_id,
           input.review_header_id,
           input.review_details_id,
@@ -640,56 +891,88 @@ let addEncounterReview = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results are recorded...");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
-
 //created by irfan:  to getEncounterReview
 let getEncounterReview = (req, res, next) => {
-  debugFunction("getEncounterReview");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
+  // debugFunction("getEncounterReview");
+  try {
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
+    //   let encounter_id = req.query.encounter_id;
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query: "SELECT * FROM hims_f_encounter_review where encounter_id=?",
+        values: [encounter_id],
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           debugLog("Results fetched");
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-      let encounter_id = req.query.encounter_id;
-      connection.query(
-        "SELECT * FROM hims_f_encounter_review where encounter_id=?",
-        [encounter_id],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results fetched");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
-
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -866,32 +1149,52 @@ let updatdePatEncntrStatus = (req, res, next) => {
 
 //created by irfan: to get patient profile
 let getPatientProfile = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputData = extend({}, req.query);
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
         PV.age_in_years,PV.age_in_months,PV.age_in_days, PV.sub_department_id, PE.payment_type,PE.updated_date as Encounter_Date \
         from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
         inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
         PV.hims_f_patient_visit_id=PE.visit_id  where P.hims_d_patient_id=? and PE.episode_id=?;",
-        [inputData.patient_id, inputData.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        values: [inputData.patient_id, inputData.episode_id],
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1009,60 +1312,101 @@ let getPatientAllergies = (req, res, next) => {
 
 //created by irfan: to  getPatientDiet
 let getPatientDiet = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+
     let inputData = extend({}, req.query);
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_patient_diet_id, patient_id, episode_id, diet_id, comments, till_date, DM.hims_d_diet_description,DM.diet_status,DM.hims_d_diet_note FROM\
         hims_f_patient_diet PD,hims_d_diet_master DM where patient_id=? and episode_id=? and DM.record_status='A'\
         and DM.hims_d_diet_master_id=PD.diet_id",
-        [inputData.patient_id, inputData.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        values: [inputData.patient_id, inputData.episode_id],
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to  getPatientDiagnosis
 let getPatientDiagnosis = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputData = extend({}, req.query);
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_code , icd.icd_description ,\
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id,icd.icd_code , icd.icd_description ,\
         diagnosis_type, final_daignosis from hims_f_patient_diagnosis pd,hims_d_icd icd where pd.record_status='A'\
         and patient_id=? and episode_id=? and pd.daignosis_id=icd.hims_d_icd_id;",
-        [inputData.patient_id, inputData.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        values: [inputData.patient_id, inputData.episode_id],
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1120,31 +1464,36 @@ let getChiefComplaints = (req, res, next) => {
 
 //created by irfan:  to add new chief complaints (hpi header)
 let addNewChiefComplaint = (req, res, next) => {
-  debugFunction("addNewChiefComplaint");
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // debugFunction("addNewChiefComplaint");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let input = extend({}, req.body);
 
     let header = req.headers["x-app-user-identity"];
     header = decryption(header);
     input.sub_department_id = header.sub_department_id;
-    debugLog("sub_department_id:", header.sub_department_id);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // debugLog("sub_department_id:", header.sub_department_id);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      const insurtColumns = ["hpi_description", "created_by", "updated_by"];
+    const insurtColumns = ["hpi_description", "created_by", "updated_by"];
 
-      connection.query(
-        "INSERT INTO hims_d_hpi_header(" +
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO hims_d_hpi_header(" +
           insurtColumns.join(",") +
           ",`sub_department_id`,created_date,update_date) VALUES ?",
-        [
+        values: [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
@@ -1152,61 +1501,80 @@ let addNewChiefComplaint = (req, res, next) => {
             req: req,
           }),
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
 
-          debugLog("Results are recorded...");
-          req.records = result;
-          next();
-        }
-      );
-    });
+        //           debugLog("Results are recorded...");
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 // created by : irfan to ADD  patient-chief complaint
 let addPatientChiefComplaints = (req, res, next) => {
-  debugFunction("addPatientChiefComplaints");
+  // debugFunction("addPatientChiefComplaints");
+  const _mysql = new algaehMysql({ path: keyPath });
 
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    //let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // //let input = extend({}, req.body);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
 
-      const insurtColumns = [
-        "episode_id",
-        "patient_id",
-        "chief_complaint_id",
-        "icd_code_id",
-        "onset_date",
-        "duration",
-        "interval",
-        "severity",
-        "score",
-        "pain",
-        "comment",
-        "complaint_type",
-        "created_by",
-        "updated_by",
-      ];
+    const insurtColumns = [
+      "episode_id",
+      "patient_id",
+      "chief_complaint_id",
+      "icd_code_id",
+      "onset_date",
+      "duration",
+      "interval",
+      "severity",
+      "score",
+      "pain",
+      "comment",
+      "complaint_type",
+      "created_by",
+      "updated_by",
+    ];
 
-      connection.query(
-        "INSERT INTO hims_f_episode_chief_complaint(`" +
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO hims_f_episode_chief_complaint(`" +
           insurtColumns.join("`,`") +
           "`,created_date,updated_date,hospital_id) VALUES ?",
-        [
+        values: [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
@@ -1218,17 +1586,32 @@ let addPatientChiefComplaints = (req, res, next) => {
             req: req,
           }),
         ],
-        (error, Result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = Result;
-          next();
-        }
-      );
-    });
+        //         (error, Result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = Result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1295,55 +1678,80 @@ let getPatientBasicChiefComplaints = (req, res, next) => {
 
 //created by irfan: to DELETE patient ChiefComplaints
 let deletePatientChiefComplaints = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     //let inputData = extend({}, req.query);
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "update hims_f_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
-        [
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
+        values: [
           new Date(),
           req.body.updated_by,
           req.body.hims_f_episode_chief_complaint_id,
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add new allergy for a patient
 let addPatientNewAllergy = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputparam = extend({}, req.body);
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
 
-      connection.query(
-        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`,\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`,\
          allergy_inactive,created_date,`created_by`,updated_date,`updated_by`,hospital_id)\
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
+        values: [
           inputparam.patient_id,
           inputparam.allergy_id,
           inputparam.onset,
@@ -1357,17 +1765,32 @@ let addPatientNewAllergy = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1547,33 +1970,38 @@ let updatePatientChiefComplaints = (req, res, next) => {
 
 //created by irfan: to add patient_diagnosis
 let addPatientDiagnosis = (req, res, next) => {
-  debugLog("addPatientDiagnosis");
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // debugLog("addPatientDiagnosis");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
 
-      const insurtColumns = [
-        "patient_id",
-        "episode_id",
-        "daignosis_id",
-        "diagnosis_type",
-        "final_daignosis",
-        "created_by",
-        "updated_by",
-      ];
+    const insurtColumns = [
+      "patient_id",
+      "episode_id",
+      "daignosis_id",
+      "diagnosis_type",
+      "final_daignosis",
+      "created_by",
+      "updated_by",
+    ];
 
-      connection.query(
-        "INSERT INTO hims_f_patient_diagnosis(" +
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO hims_f_patient_diagnosis(" +
           insurtColumns.join(",") +
           ",hospital_id) VALUES ?",
-        [
+        values: [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
@@ -1581,40 +2009,62 @@ let addPatientDiagnosis = (req, res, next) => {
             req: req,
           }),
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
+//creat
+
 //created by irfan: to add patient encounter review
 let addPatientROS = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputparam = extend({}, req.body);
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
 
-      connection.query(
-        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,\
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,\
           review_details_id,`comment`,created_date,created_by,updated_date,updated_by,hospital_id)\
         VALUE(?,?,?,?,?,?,?,?,?,?)",
-        [
+        values: [
           inputparam.patient_id,
           inputparam.episode_id,
           inputparam.review_header_id,
@@ -1626,17 +2076,32 @@ let addPatientROS = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           req.userIdentity.hospital_id,
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1756,7 +2221,6 @@ let getReviewOfSystem = (req, res, next) => {
     next(e);
   }
 };
-
 //created by:irfan,to get Patient ROS
 let getPatientROS = (req, res, next) => {
   debugFunction("getPatientROS");
@@ -1797,14 +2261,16 @@ let getPatientROS = (req, res, next) => {
 
 //created by irfan: to update Patient ROS
 let updatePatientROS = (req, res, next) => {
-  try {
-    debugFunction("updatePatientROS");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    debugLog("Input Data", req.body);
+  try {
+    // debugFunction("updatePatientROS");
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+
+    // debugLog("Input Data", req.body);
     let input = extend({}, req.body);
     db.getConnection((error, connection) => {
       if (error) {
@@ -2004,23 +2470,28 @@ let addPatientVitals = (req, res, next) => {
 
 //created by irfan: to add patient physical examination
 let addPatientPhysicalExamination = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputparam = extend({}, req.body);
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
 
-      connection.query(
-        "INSERT INTO hims_f_episode_examination (`patient_id`, `episode_id`, `exam_header_id`, \
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO hims_f_episode_examination (`patient_id`, `episode_id`, `exam_header_id`, \
         `exam_details_id`, `exam_subdetails_id`, `comments`, `created_date`, `created_by`, `updated_date`, `updated_by`,hospital_id) \
         VALUE(?,?,?,?,?,?,?,?,?,?,?)",
-        [
+        values: [
           inputparam.patient_id,
           inputparam.episode_id,
           inputparam.exam_header_id,
@@ -2033,17 +2504,33 @@ let addPatientPhysicalExamination = (req, res, next) => {
           inputparam.updated_by,
           req.userIdentity.hospital_id,
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2188,19 +2675,24 @@ let getPhysicalExamination = (req, res, next) => {
 
 //created by Noor: to get all physical examination
 let getAllPhysicalExaminationOLD = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    debugFunction("getPhysicalExamination");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      const _all = req.query.allDept == "G" ? "" : " and sub_department_id=?";
-      let queryBuilder =
-        "SELECT hims_d_physical_examination_header_id,\
+    // debugFunction("getPhysicalExamination");
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    const _all = req.query.allDept == "G" ? "" : " and sub_department_id=?";
+    // let queryBuilder =
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_d_physical_examination_header_id,\
       examination_type,h.description,assesment_type,\
       h.mandatory,hims_d_physical_examination_details_id,\
       d.description as dtl_description,\
@@ -2210,24 +2702,40 @@ let getAllPhysicalExaminationOLD = (req, res, next) => {
       hims_d_physical_examination_subdetails sd  on sd.physical_examination_details_id=d.hims_d_physical_examination_details_id \
        where \
       h.record_status='A' " +
-        _all;
-      connection.query(
-        queryBuilder,
-        [req.userIdentity.sub_department_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+          _all,
+        // connection.query(
+        //   queryBuilder,
+        values: [req.userIdentity.sub_department_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 //created by irfan:
 let getAllPhysicalExamination = (req, res, next) => {
@@ -2268,51 +2776,72 @@ let getAllPhysicalExamination = (req, res, next) => {
 };
 
 let addDietAdvice = (req, res, next) => {
-  let dietadvice = {
-    hims_f_patient_diet_id: null,
-    patient_id: null,
-    episode_id: null,
-    diet_id: null,
-    comments: null,
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
+  // let dietadvice = {
+  //   hims_f_patient_diet_id: null,
+  //   patient_id: null,
+  //   episode_id: null,
+  //   diet_id: null,
+  //   comments: null,
+  //   created_by: req.userIdentity.algaeh_d_app_user_id,
+  //   updated_by: req.userIdentity.algaeh_d_app_user_id,
+  // };
+  let input = req.body;
+  // if (req.db == null) {
+  //   next(httpStatus.dataBaseNotInitilizedError());
+  // }
+  // let db = req.db;
+  // db.getConnection((error, connection) => {
+  //   if (error) {
+  //     next(error);
+  //   }
+  try {
     let inputParam = extend(dietadvice, req.body);
-    connection.query(
-      "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
       , `created_by` ,`created_date`,updated_date,updated_by,hospital_id) \
    VALUES ( ?, ?, ?, ?, ?, ?,?, ?,?,?)",
-      [
-        inputParam.patient_id,
-        inputParam.episode_id,
-        inputParam.diet_id,
-        inputParam.comments,
-        inputParam.till_date,
-        inputParam.created_by,
-        new Date(),
-        new Date(),
-        inputParam.updated_by,
-        req.userIdentity.hospital_id,
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+        values: [
+          inputParam.patient_id,
+          inputParam.episode_id,
+          inputParam.diet_id,
+          inputParam.comments,
+          inputParam.till_date,
+          inputParam.created_by,
+          new Date(),
+          new Date(),
+          inputParam.updated_by,
+          req.userIdentity.hospital_id,
+        ],
+        //       (error, result) => {
+        //         releaseDBConnection(db, connection);
+        //         if (error) {
+        //           next(error);
+        //         }
+        //         req.records = result;
+        //         next();
+        //       }
+        //     );
+        //   });
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      }
-    );
-  });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
 };
 
 let deleteDietAdvice = (req, res, next) => {
@@ -2487,28 +3016,33 @@ let addFollowUp = (req, res, next) => {
 
 //created by:irfan,to get Patient physical examination
 let getPatientPhysicalExaminationOLD = (req, res, next) => {
-  debugFunction("getPatientPhysicalExamination");
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  // debugFunction("getPatientPhysicalExamination");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let input = extend({}, req.query);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    let input = extend({}, req.query);
 
-      // select hims_f_episode_examination_id,  comments ,\
-      //   hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
-      //               hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
-      //               hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
-      //               from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
-      //               where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
-      //               EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?
-      connection.query(
-        "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
+    // select hims_f_episode_examination_id,  comments ,\
+    //   hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
+    //               hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
+    //               hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory \
+    //               from hims_f_episode_examination EE,hims_d_physical_examination_header PH ,hims_d_physical_examination_details PD,hims_d_physical_examination_subdetails PS\
+    //               where EE.exam_header_id=PH.hims_d_physical_examination_header_id and EE.exam_details_id=PD.hims_d_physical_examination_details_id and EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id and \
+    //               EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_episode_examination_id, patient_id, episode_id, exam_header_id, exam_details_id,exam_subdetails_id, comments ,\
         hims_d_physical_examination_header_id, PH.examination_type, PH.description as header_description,PH.sub_department_id, PH.assesment_type, PH.mandatory as header_mandatory,\
                     hims_d_physical_examination_details_id,PD.description as detail_description, PD.mandatory as detail_mandatory,\
                     hims_d_physical_examination_subdetails_id,PS.description as subdetail_description, PS.mandatory as subdetail_mandatory\
@@ -2516,19 +3050,34 @@ let getPatientPhysicalExaminationOLD = (req, res, next) => {
                       EE.exam_details_id=PD.hims_d_physical_examination_details_id )\
                     left join hims_d_physical_examination_subdetails PS on EE.exam_subdetails_id=PS.hims_d_physical_examination_subdetails_id \
                    where  EE.record_status='A' and EE.patient_id= ? and EE.episode_id=?",
-        [input.patient_id, input.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
+        valuws: [input.patient_id, input.episode_id],
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
 
-          next();
-        }
-      );
-    });
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2872,14 +3421,19 @@ let getFollowUp = (req, res, next) => {
 
 //created by irfan: to get
 let getPatientEpisodeSummary = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      connection.query(
-        "SELECT hims_f_episode_chief_complaint_id, ECC.episode_id, ECC.patient_id, chief_complaint_id, \
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_episode_chief_complaint_id, ECC.episode_id, ECC.patient_id, chief_complaint_id, \
         onset_date, `interval`, duration, severity, score, pain, chronic, complaint_inactive ,\
         full_name as patient_name,arabic_name,gender,age\
         ,hims_f_patient_visit_id,visit_date ,sub_department_name,comment from\
@@ -2888,19 +3442,33 @@ let getPatientEpisodeSummary = (req, res, next) => {
         inner join hims_f_patient_visit V on ECC.episode_id=V.episode_id\
         inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id\
         where ECC.episode_id=?    group by  ECC.chief_complaint_id ",
-        [req.query.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
+        values: [req.query.episode_id],
+        //         (error, result) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = result;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    next(error);
   }
 };
 
@@ -3148,32 +3716,49 @@ let addSickLeave = (req, res, next) => {
 //created by irfan: to add  physical_examination_details
 let getSickLeave = (req, res, next) => {
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     releaseDBConnection(db, connection);
+    //     next(error);
+    //   }
+
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        values: [req.query.patient_id, req.query.visit_id],
+        //         (error, results) => {
+        //           releaseDBConnection(db, connection);
+        //           if (error) {
+        //             next(error);
+        //           }
+        //           req.records = results;
+        //           next();
+        //         }
+        //       );
+        //     });
+        //   } catch (e) {
+        //     next(e);
+        //   }
+        // };
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-
-      connection.query(
-        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
-        [req.query.patient_id, req.query.visit_id],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = results;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
+      });
+  } catch (error) {
+    next(error);
   }
 };
 
