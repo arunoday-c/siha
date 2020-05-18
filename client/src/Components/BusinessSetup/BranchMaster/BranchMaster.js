@@ -3,6 +3,7 @@ import "./BranchMaster.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -11,11 +12,14 @@ import {
   getCookie,
 } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
 
 import { Checkbox, Upload, message } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components/context";
 // /branchMaster/getBranchMaster
 import Organization from "./Organisation";
 export default class BranchMaster extends Component {
@@ -23,6 +27,7 @@ export default class BranchMaster extends Component {
     super(props);
     this.state = {
       allBranches: [],
+      hospital_id: "",
       allDepartments: [],
       Departments: [],
       editBranch: false,
@@ -33,6 +38,8 @@ export default class BranchMaster extends Component {
       checkAll: false,
       checkAllIntermediate: undefined,
       selectedBranchName: "",
+      employee_id: undefined,
+      hospitalList: [],
     };
     this.getBranchMaster();
     this.getCurrencyMaster();
@@ -128,6 +135,7 @@ export default class BranchMaster extends Component {
 
       onSuccess: (response) => {
         if (response.data.success) {
+          console.log("data", response.data);
           this.setState({
             countryMaster: response.data.records,
           });
@@ -254,7 +262,7 @@ export default class BranchMaster extends Component {
               default_currency: this.state.default_currency,
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
-              requied_emp_id: this.state.requied_emp_id,
+              requied_emp_id: this.state.hrequied_emp_id,
               algaeh_api_auth_id: algaeh_api_auth_id,
             },
             onSuccess: (response) => {
@@ -756,7 +764,6 @@ export default class BranchMaster extends Component {
     return (
       <div className="BranchMaster">
         <div className="row">
-          {" "}
           <div className="col-12">
             <Organization countryMaster={this.state.countryMaster} />
           </div>
@@ -789,6 +796,7 @@ export default class BranchMaster extends Component {
                       },
                     }}
                   />
+
                   <AlagehFormGroup
                     div={{ className: "col-12 form-group mandatory" }}
                     label={{
