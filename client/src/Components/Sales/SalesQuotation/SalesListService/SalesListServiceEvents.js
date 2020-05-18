@@ -3,6 +3,7 @@ import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
+import swal from "sweetalert2";
 
 const UomchangeTexts = ($this, context, ctrl, e) => {
     e = ctrl || e;
@@ -93,7 +94,7 @@ const AddSerices = ($this, context) => {
     let serviceData = Enumerable.from($this.state.sales_quotation_services)
         .where(
             w =>
-                w.services_id === $this.state.services_id
+                w.services_id === $this.state.services_id && w.service_frequency === $this.state.service_frequency
         )
         .toArray();
     if ($this.state.services_id === null) {
@@ -108,12 +109,6 @@ const AddSerices = ($this, context) => {
     ) {
         swalMessage({
             title: "Enter the Quantity.",
-            type: "warning"
-        });
-        return
-    } else if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
-        swalMessage({
-            title: "Enter the Unit Cost.",
             type: "warning"
         });
         return
@@ -132,18 +127,37 @@ const AddSerices = ($this, context) => {
             type: "warning"
         });
     } else {
+        // if ($this.state.unit_cost === null || parseFloat($this.state.unit_cost) === 0) {
+
+        //     swal({
+        //         title: "Unit Cost not entered. Do you waht to Continue",
+        //         type: "warning",
+        //         showCancelButton: true,
+        //         confirmButtonText: "Yes",
+        //         confirmButtonColor: "#44b8bd",
+        //         cancelButtonColor: "#d33",
+        //         cancelButtonText: "No",
+        //     }).then((willDelete) => {
+        //         if (!willDelete.value) {
+        //             return
+        //         }
+        //     });
+        // }
         let sales_quotation_services = $this.state.sales_quotation_services;
+        if ($this.state.unit_cost === null || $this.state.unit_cost === undefined) {
+            $this.state.unit_cost = 0
+        }
 
         const extended_cost = parseFloat($this.state.unit_cost) * parseFloat($this.state.quantity)
         const discount_amount = ((parseFloat(extended_cost) * parseFloat($this.state.discount_percentage)) / 100).toFixed(
             $this.state.decimal_place
         );
         const net_extended_cost = extended_cost - discount_amount
-        const tax_amount = ((parseFloat(net_extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
-            $this.state.decimal_place
-        );
+        // const tax_amount = ((parseFloat(net_extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
+        //     $this.state.decimal_place
+        // );
 
-        const total_amount = (parseFloat(net_extended_cost) + parseFloat(tax_amount)).toFixed(
+        const total_amount = (parseFloat(net_extended_cost)).toFixed(
             $this.state.decimal_place
         );
 
@@ -159,7 +173,7 @@ const AddSerices = ($this, context) => {
             net_extended_cost: net_extended_cost,
             discount_amount: discount_amount,
             tax_percentage: $this.state.tax_percentage,
-            tax_amount: tax_amount,
+            // tax_amount: tax_amount,
             total_amount: total_amount,
             comments: $this.state.service_comments
         };
@@ -282,11 +296,11 @@ const calculateAmount = ($this, context, row, _index) => {
     )
 
 
-    row.tax_amount = ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed(
-        $this.state.decimal_place
-    );
+    // row.tax_amount = ((parseFloat(row.net_extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed(
+    //     $this.state.decimal_place
+    // );
 
-    row.total_amount = (parseFloat(row.net_extended_cost) + parseFloat(row.tax_amount)).toFixed(
+    row.total_amount = (parseFloat(row.net_extended_cost)).toFixed(
         $this.state.decimal_place
     );
 

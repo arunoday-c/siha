@@ -33,6 +33,7 @@ import {
   deleteComment,
   getCtrlCode,
   employeeSearch,
+  getCostCenters
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -75,16 +76,21 @@ class ContractManagement extends Component {
       notification_days1: null,
       notification_days2: null,
       comments: "",
+      cost_projects: [],
+      project_id: null,
+      hospital_id: null,
+      organizations: []
     };
+    getCostCenters(this)
   }
 
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
 
-    this.setState({
-      hospital_id: userToken.hims_d_hospital_id,
-    });
+    // this.setState({
+    //   hospital_id: userToken.hims_d_hospital_id,
+    // });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
@@ -366,6 +372,61 @@ class ContractManagement extends Component {
                   />
                 </>
               ) : null}
+              <AlagehAutoComplete
+                div={{ className: "col-2 form-group mandatory" }}
+                label={{
+                  forceLabel: "Select Project",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "project_id",
+                  className: "select-fld",
+                  value: this.state.project_id,
+                  dataSource: {
+                    textField: "cost_center",
+                    valueField: "cost_center_id",
+                    data: this.state.cost_projects,
+                  },
+                  onChange: texthandle.bind(this, this),
+                  others: {
+                    disabled: this.state.dataExists,
+                  },
+                  onClear: () => {
+                    this.setState({
+                      project_id: null,
+                      hospital_id: null,
+                      organizations: [],
+                    });
+                  },
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col-2 mandatory" }}
+                label={{
+                  forceLabel: "Select Branch",
+                  isImp: true,
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField: "hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.state.organizations,
+                  },
+                  onChange: texthandle.bind(this, this),
+                  others: {
+                    disabled: this.state.dataExists,
+                  },
+                  onClear: () => {
+                    this.setState({
+                      hospital_id: null,
+                    });
+                  },
+                }}
+              />
             </div>
           </div>
         </div>
@@ -417,6 +478,9 @@ class ContractManagement extends Component {
                         value={this.state.service_name}
                         searchName="servicemaster"
                         onClick={servicechangeText.bind(this, this)}
+                        extraParameters={{
+                          service_type_id: 7
+                        }}
                         ref={(attReg) => {
                           this.attReg = attReg;
                         }}

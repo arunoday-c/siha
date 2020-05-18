@@ -78,9 +78,9 @@ export function addContractManagement(req, res, next) {
                         query:
                             "INSERT INTO hims_f_contract_management (contract_number, contract_date, customer_id, \
                                 start_date, end_date, contract_code, quotation_ref_numb, terms_conditions, \
-                                incharge_employee_id, notification_days1, notification_days2, \
+                                incharge_employee_id, notification_days1, notification_days2, project_id,\
                                 created_date, created_by, updated_date, updated_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                             contract_number,
                             new Date(),
@@ -93,6 +93,7 @@ export function addContractManagement(req, res, next) {
                             input.incharge_employee_id,
                             input.notification_days1,
                             input.notification_days2,
+                            input.project_id,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
                             new Date(),

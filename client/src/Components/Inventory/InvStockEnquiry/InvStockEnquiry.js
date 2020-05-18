@@ -233,29 +233,36 @@ class InvStockEnquiry extends Component {
               <AlgaehDataGrid
                 id="inv_initial_stock"
                 columns={[
-                  {
-                    fieldName: "inventory_location_id",
-                    label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.inventorylocations === undefined
-                          ? []
-                          : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.inventory_location_id
-                            );
+                  // {
+                  //   fieldName: "inventory_location_id",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                  //   displayTemplate: row => {
+                  //     let display =
+                  //       this.props.inventorylocations === undefined
+                  //         ? []
+                  //         : this.props.inventorylocations.filter(
+                  //             f =>
+                  //               f.hims_d_inventory_location_id ===
+                  //               row.inventory_location_id
+                  //           );
 
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].location_description
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others: { filterable: false }
+                  //     return (
+                  //       <span>
+                  //         {display !== undefined && display.length !== 0
+                  //           ? display[0].location_description
+                  //           : ""}
+                  //       </span>
+                  //     );
+                  //   },
+                  //   others: { filterable: false }
+                  // },
+                  {
+                    fieldName: "item_code",
+                    label: <AlgaehLabel label={{ forceLabel: "Item Code" }} />,
+                    others: { filterable: true }
                   },
+
+
 
                   {
                     fieldName: "item_id",
@@ -265,10 +272,10 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemlist === undefined
                           ? []
                           : this.props.inventoryitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_id
-                            );
+                            f =>
+                              f.hims_d_inventory_item_master_id ===
+                              row.item_id
+                          );
 
                       return (
                         <span
@@ -295,10 +302,10 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                              f =>
-                                f.hims_d_inventory_uom_id ===
-                                row.stocking_uom_id
-                            );
+                            f =>
+                              f.hims_d_inventory_uom_id ===
+                              row.stocking_uom_id
+                          );
 
                       return (
                         <span>
@@ -318,8 +325,8 @@ class InvStockEnquiry extends Component {
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                              f => f.hims_d_inventory_uom_id === row.sales_uom
-                            );
+                            f => f.hims_d_inventory_uom_id === row.sales_uom
+                          );
 
                       return (
                         <span>
@@ -342,8 +349,8 @@ class InvStockEnquiry extends Component {
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        parseFloat(row.qtyhand)
-                      );
+                          parseFloat(row.qtyhand)
+                        );
                     },
                     disabled: true,
                     others: { filterable: false }
@@ -396,7 +403,7 @@ class InvStockEnquiry extends Component {
                 paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
-                  onEdit: row => {},
+                  onEdit: row => { },
                   onDone: updateStockDetils.bind(this, this)
                 }}
               />

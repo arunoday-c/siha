@@ -362,7 +362,7 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_description,IM.stocking_uom_id,  coalesce(PLR.reorder_qty, IM.reorder_qty,0) as reorder_qty ,\
+            "SELECT IM.item_code,IM.item_description,IM.stocking_uom_id,  coalesce(PLR.reorder_qty, IM.reorder_qty,0) as reorder_qty ,\
             hims_m_item_location_id, IL.item_id, pharmacy_location_id,\
             item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
             last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom,\

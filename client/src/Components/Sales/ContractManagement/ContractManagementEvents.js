@@ -17,6 +17,12 @@ const texthandle = ($this, ctrl, e) => {
         selected_terms_conditions: e.selected.terms_cond_description
       });
       break;
+    case "project_id":
+      $this.setState({
+        [name]: value,
+        organizations: e.selected.branches
+      });
+      break;
     default:
       $this.setState({
         [name]: value
@@ -331,7 +337,7 @@ const employeeSearch = $this => {
     },
     searchName: "employee_branch_wise",
     uri: "/gloabelSearch/get",
-    inputs: "hospital_id = " + $this.state.hospital_id,
+    // inputs: "hospital_id = " + $this.state.hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -340,6 +346,20 @@ const employeeSearch = $this => {
         employee_name: row.full_name,
         incharge_employee_id: row.hims_d_employee_id
       });
+    }
+  });
+};
+
+const getCostCenters = $this => {
+  algaehApiCall({
+    uri: "/finance_masters/getCostCenters",
+    method: "GET",
+    module: "finance",
+
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({ cost_projects: response.data.result });
+      }
     }
   });
 };
@@ -357,5 +377,6 @@ export {
   AddSerices,
   addToTermCondition,
   deleteComment,
-  employeeSearch
+  employeeSearch,
+  getCostCenters
 };

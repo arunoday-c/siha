@@ -201,7 +201,7 @@ class SalesListService extends Component {
                       }}
                     />
 
-                    <div className="col-6 form-group mandatory">
+                    {/* <div className="col-6 form-group mandatory">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Tax %",
@@ -212,7 +212,7 @@ class SalesListService extends Component {
                           ? this.state.tax_percentage
                           : "-----------"}
                       </h6>
-                    </div>
+                    </div> */}
                     <div className="col-12">
                       <AlgaehLabel
                         label={{
@@ -425,39 +425,39 @@ class SalesListService extends Component {
                             ),
                           },
 
-                          {
-                            fieldName: "net_extended_cost",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Net Ext. Cost",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "tax_percentage",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Tax %",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "tax_amount",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Tax Amount",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
+                          // {
+                          //   fieldName: "net_extended_cost",
+                          //   label: (
+                          //     <AlgaehLabel
+                          //       label={{
+                          //         forceLabel: "Net Ext. Cost",
+                          //       }}
+                          //     />
+                          //   ),
+                          //   disabled: true,
+                          // },
+                          // {
+                          //   fieldName: "tax_percentage",
+                          //   label: (
+                          //     <AlgaehLabel
+                          //       label={{
+                          //         forceLabel: "Tax %",
+                          //       }}
+                          //     />
+                          //   ),
+                          //   disabled: true,
+                          // },
+                          // {
+                          //   fieldName: "tax_amount",
+                          //   label: (
+                          //     <AlgaehLabel
+                          //       label={{
+                          //         forceLabel: "Tax Amount",
+                          //       }}
+                          //     />
+                          //   ),
+                          //   disabled: true,
+                          // },
                           {
                             fieldName: "total_amount",
                             label: (

@@ -26,7 +26,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const ClearData = ($this, e) => {
-  const userToken = this.context.userToken;
+  // const userToken = this.context.userToken;
   let IOputs = {
     hims_f_sales_quotation_id: null,
     sales_quotation_number: null,
