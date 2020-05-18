@@ -9,15 +9,17 @@ export function getSalesOrder(req, res, next) {
         let strQuery = ""
         if (req.query.HRMNGMT_Active === "true") {
             console.log("getSalesOrder: HR")
-            strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number from hims_f_sales_order SO \
+            strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+                        left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
                         where SO.sales_order_number =? "
         } else {
             console.log("getSalesOrder: No HR")
-            strQuery = "SELECT SO.*, C.customer_name from hims_f_sales_order SO \
+            strQuery = "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
+                        left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
                         inner join  hims_d_customer C on  SO.customer_id = C.hims_d_customer_id \
                         where SO.sales_order_number =? "
         }
@@ -99,16 +101,17 @@ export function addSalesOrder(req, res, next) {
                     .executeQuery({
                         query:
                             "INSERT INTO hims_f_sales_order (sales_order_number, sales_order_date, sales_order_mode, \
-                                sales_quotation_id, reference_number, customer_id, sales_man, \
+                                sales_quotation_id, contract_id, reference_number, customer_id, sales_man, \
                                   payment_terms, delivery_date, sales_person_id, sub_total, discount_amount, net_total, \
                                   total_tax, net_payable, narration, project_id, customer_po_no, created_date, \
                                   created_by, updated_date, updated_by, hospital_id)\
-                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                          values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         values: [
                             sales_order_number,
                             new Date(),
                             input.sales_order_mode,
                             input.sales_quotation_id,
+                            input.contract_id,
                             input.reference_number,
                             input.customer_id,
                             input.sales_man,
@@ -745,3 +748,62 @@ function updateSalesQuotation(options) {
         options.next(e);
     });
 }
+
+export function getContractSalesOrder(req, res, next) {
+    const _mysql = new algaehMysql();
+    try {
+        console.log("getContractManagement: ")
+        let strQuery = ""
+        if (req.query.HRMNGMT_Active === "true") {
+            strQuery = "SELECT CM.* , E.full_name as employee_name, CM.incharge_employee_id as sales_person_id, \
+            C.payment_terms from hims_f_contract_management CM \
+            inner join  hims_d_employee E on  CM.incharge_employee_id = E.hims_d_employee_id \
+            inner join  hims_d_customer C on  CM.customer_id = C.hims_d_customer_id \
+            where CM.contract_number =? "
+        } else {
+            strQuery = "SELECT * from hims_f_contract_management CM where contract_number =? "
+        }
+
+        _mysql
+            .executeQuery({
+                query: strQuery,
+                values: [req.query.contract_number],
+                printQuery: true
+            })
+            .then(headerResult => {
+                if (headerResult.length != 0) {
+                    _mysql
+                        .executeQuery({
+                            query: "select QS.*, S.service_name, S.vat_percent as tax_percentage from hims_f_contract_management_services QS \
+                            inner join hims_d_services S on S.hims_d_services_id = QS.services_id \
+                            where contract_management_id=?;",
+                            values: [headerResult[0].hims_f_contract_management_id],
+                            printQuery: true
+                        })
+                        .then(contract_services => {
+                            _mysql.releaseConnection();
+                            req.records = {
+                                ...headerResult[0],
+                                ...{ contract_services }
+                            };
+                            next();
+                        })
+                        .catch(error => {
+                            _mysql.releaseConnection();
+                            next(error);
+                        });
+                } else {
+                    _mysql.releaseConnection();
+                    req.records = headerResult;
+                    next();
+                }
+            })
+            .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+            });
+    } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+    }
+};

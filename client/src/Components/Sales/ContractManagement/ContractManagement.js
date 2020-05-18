@@ -88,9 +88,9 @@ class ContractManagement extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HRMS" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+        userToken.product_type === "HRMS" ||
+        userToken.product_type === "HRMS_ERP" ||
+        userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -173,8 +173,8 @@ class ContractManagement extends Component {
                 <h6>
                   {this.state.contract_date
                     ? moment(this.state.contract_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -183,17 +183,17 @@ class ContractManagement extends Component {
           printArea={
             this.state.contract_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Contract Report",
-                      events: {
-                        onClick: () => {
-                          generateContractReport(this.state);
-                        },
+                menuitems: [
+                  {
+                    label: "Contract Report",
+                    events: {
+                      onClick: () => {
+                        generateContractReport(this.state);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -273,10 +273,10 @@ class ContractManagement extends Component {
                   className: "txt-fld",
                   name: "start_date",
                 }}
-                minDate={new Date()}
+                // minDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this),
-                  onBlur: dateValidate.bind(this, this),
+                  // onBlur: dateValidate.bind(this, this),
                 }}
                 disabled={this.state.dataExists}
                 value={this.state.start_date}
@@ -573,7 +573,7 @@ class ContractManagement extends Component {
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                    display.length !== 0
+                                      display.length !== 0
                                       ? display[0].name
                                       : ""}
                                   </span>
@@ -689,24 +689,24 @@ class ContractManagement extends Component {
                     <ol>
                       {this.state.comment_list.length > 0
                         ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  {this.state.dataExists ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                          return (
+                            <React.Fragment key={index}>
+                              <li key={index}>
+                                <span>{row}</span>
+                                {this.state.dataExists ? null : (
+                                  <i
+                                    className="fas fa-times"
+                                    onClick={deleteComment.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  ></i>
+                                )}
+                              </li>
+                            </React.Fragment>
+                          );
+                        })
                         : null}
                     </ol>
                   </div>

@@ -7,7 +7,8 @@ import {
     getSalesOrderList,
     updateSalesOrderEntry,
     cancelSalesServiceOrder,
-    ValidateContract
+    ValidateContract,
+    getContractSalesOrder
 } from "../models/SalesOrder";
 
 export default function SalesOrder() {
@@ -66,6 +67,13 @@ export default function SalesOrder() {
                 result: req.records
             });
         }
+    });
+
+    api.get("/getContractSalesOrder", getContractSalesOrder, (req, res, next) => {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+            success: true,
+            records: req.records
+        });
     });
 
     return api;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+// import { withRouter } from "react-router-dom";
+// import { connect } from "react-redux";
+// import { bindActionCreators } from "redux";
 
 import "./SalesOrderList.scss";
 import "./../../../styles/site.scss";
@@ -21,10 +21,10 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-import { AlgaehActions } from "../../../actions/algaehActions";
+// import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-class SalesOrderList extends Component {
+export default class SalesOrderList extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -58,16 +58,16 @@ class SalesOrderList extends Component {
       );
     }
 
-    this.props.getCustomerMaster({
-      uri: "/customer/getCustomerMaster",
-      module: "masterSettings",
-      data: { customer_status: "A" },
-      method: "GET",
-      redux: {
-        type: "CUSTOMER_GET_DATA",
-        mappingName: "customer_data"
-      }
-    });
+    // this.props.getCustomerMaster({
+    //   uri: "/customer/getCustomerMaster",
+    //   module: "masterSettings",
+    //   data: { customer_status: "A" },
+    //   method: "GET",
+    //   redux: {
+    //     type: "CUSTOMER_GET_DATA",
+    //     mappingName: "customer_data"
+    //   }
+    // });
   }
 
   ourOwnMiniNavigator = obj => {
@@ -104,7 +104,7 @@ class SalesOrderList extends Component {
                   }}
                   value={this.state.to_date}
                 />
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-3 mandatory" }}
                   label={{ forceLabel: "Customer", isImp: true }}
                   selector={{
@@ -127,7 +127,7 @@ class SalesOrderList extends Component {
                     },
                     autoComplete: "off"
                   }}
-                />
+                /> */}
 
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
@@ -239,6 +239,27 @@ class SalesOrderList extends Component {
                         }
                       },
                       {
+                        fieldName: "sales_order_mode",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sales Mode" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.sales_order_mode === "I" ? (
+                            <span className="badge badge-success">Item Order</span>
+                          ) : (
+                              <span className="badge badge-success">Service Order</span>
+                            );
+                        },
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                          filterable: false
+                        }
+                      },
+                      {
                         fieldName: "customer_name",
                         label: (
                           <AlgaehLabel
@@ -293,11 +314,15 @@ class SalesOrderList extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.invoice_generated === "Y" ? (
+                          return row.sales_order_mode === "I" ? row.invoice_generated === "Y" ? (
                             <span className="badge badge-success">Yes</span>
                           ) : (
                               <span className="badge badge-danger">No</span>
-                            );
+                            ) : row.closed === "Y" ? (
+                              <span className="badge badge-success">Yes</span>
+                            ) : (
+                                <span className="badge badge-danger">No</span>
+                              );
                         },
                         others: {
                           maxWidth: 150,
@@ -305,7 +330,10 @@ class SalesOrderList extends Component {
                           style: { textAlign: "center" },
                           filterable: false
                         }
-                      }
+                      },
+
+
+
                     ]}
                     keyId="sales_order_number"
                     filter={true}
@@ -325,21 +353,21 @@ class SalesOrderList extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    customer_data: state.customer_data
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     customer_data: state.customer_data
+//   };
+// }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getCustomerMaster: AlgaehActions
-    },
-    dispatch
-  );
-}
+// function mapDispatchToProps(dispatch) {
+//   return bindActionCreators(
+//     {
+//       getCustomerMaster: AlgaehActions
+//     },
+//     dispatch
+//   );
+// }
 
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
-);
+// export default withRouter(
+//   connect(mapStateToProps, mapDispatchToProps)(SalesOrderList)
+// );

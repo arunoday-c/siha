@@ -172,8 +172,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "invinitialstock",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_stock_header where record_status ='A'and hospital_id=" +
-          hospitalId,
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_stock_header where record_status ='A'",
         orderBy: "hims_f_inventory_stock_header_id desc"
       },
       {

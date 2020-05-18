@@ -57,7 +57,9 @@ const texthandle = ($this, ctrl, e) => {
         discount_percentage: 0,
         unit_cost: 0,
         tax_percent: 0,
-        organizations: []
+        organizations: [],
+        contract_number: null,
+        contract_id: null
       });
       break;
     case "project_id":
@@ -218,9 +220,102 @@ const SalesQuotationSearch = ($this, e) => {
   });
 };
 
+const ContractSearch = ($this, e) => {
+  // let inputObj =
+  //   " date(quote_validity) >= date('" +
+  //   moment(new Date()).format("YYYY-MM-DD") +
+  //   "') and ";
+  // inputObj =
+  //   $this.state.sales_order_mode === "I"
+  //     ? " quote_items_status='G'"
+  //     : " quote_services_status='G'";
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Sales.ContractMang
+    },
+    searchName: "ContractMang",
+    uri: "/gloabelSearch/get",
+    // inputs: inputObj,
+
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/SalesOrder/getContractSalesOrder",
+        module: "sales",
+        method: "GET",
+        data: {
+          contract_number: row.contract_number,
+          HRMNGMT_Active: $this.HRMNGMT_Active
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            data.sales_order_services = data.contract_services
+            debugger
+
+            data.contract_id = data.hims_f_contract_management_id;
+            data.saveEnable = false;
+            data.selectedData = true;
+            data.grid_edit = false;
+
+            for (let i = 0; i < data.sales_order_services.length; i++) {
+              data.sales_order_services[i].quantity = 1
+              data.sales_order_services[i].unit_cost = data.sales_order_services[i].service_price
+              data.sales_order_services[i].extended_cost = data.sales_order_services[i].service_price
+              data.sales_order_services[i].discount_percentage = 0
+              data.sales_order_services[i].discount_amount = 0
+              data.sales_order_services[i].net_extended_cost = data.sales_order_services[i].service_price
+              data.sales_order_services[i].tax_amount =
+                (parseFloat(data.sales_order_services[i].service_price) *
+                  parseFloat(data.sales_order_services[i].tax_percentage)) / 100;
+
+              data.sales_order_services[i].total_amount =
+                parseFloat(data.sales_order_services[i].service_price) +
+                parseFloat(data.sales_order_services[i].tax_amount);
+            }
+
+            data.sub_total = _.sumBy(data.sales_order_services, s =>
+              parseFloat(s.extended_cost)
+            );
+            data.discount_amount = _.sumBy(data.sales_order_services, s =>
+              parseFloat(s.discount_amount)
+            );
+            data.net_total = _.sumBy(data.sales_order_services, s =>
+              parseFloat(s.net_extended_cost)
+            );
+
+            data.total_tax = _.sumBy(data.sales_order_services, s =>
+              parseFloat(s.tax_amount)
+            );
+
+            data.net_payable = _.sumBy(data.sales_order_services, s =>
+              parseFloat(s.total_amount)
+            );
+
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+          AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  });
+};
+
 const ClearData = ($this, e) => {
   let IOputs = {
     hims_f_sales_order_id: null,
+    sales_order_mode: "I",
     sales_quotation_number: null,
     sales_quotation_id: null,
     sales_order_number: null,
@@ -264,7 +359,9 @@ const ClearData = ($this, e) => {
     unit_cost: 0,
     tax_percent: 0,
     selectedData: false,
-    organizations: []
+    organizations: [],
+    contract_number: null,
+    contract_id: null
     // services_required: "N"
   };
 
@@ -491,7 +588,7 @@ const employeeSearch = $this => {
     },
     searchName: "employee_branch_wise",
     uri: "/gloabelSearch/get",
-    inputs: "hospital_id = " + $this.state.hospital_id,
+    // inputs: "hospital_id = " + $this.state.hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -644,5 +741,6 @@ export {
   dateValidate,
   AuthorizeOrderEntry,
   CancelSalesServiceOrder,
-  getCostCenters
+  getCostCenters,
+  ContractSearch
 };

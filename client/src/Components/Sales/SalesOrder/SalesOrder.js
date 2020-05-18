@@ -29,6 +29,7 @@ import {
   AuthorizeOrderEntry,
   CancelSalesServiceOrder,
   getCostCenters,
+  ContractSearch
 } from "./SalesOrderEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { GetAmountFormart } from "../../../utils/GlobalFunctions";
@@ -82,6 +83,8 @@ class SalesOrder extends Component {
       cancelDisable: false,
       organizations: [],
       cost_projects: [],
+      contract_number: null,
+      contract_id: null
     };
     getSalesOptions(this, this);
   }
@@ -288,7 +291,7 @@ class SalesOrder extends Component {
             <div className="col-lg-12">
               <div className="row">
                 {this.state.services_required === "Y" ? (
-                  <div className="col ">
+                  <div className="col-2 ">
                     <label>Order Mode</label>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -321,17 +324,30 @@ class SalesOrder extends Component {
                   </div>
                 ) : null}
 
-                <div className={"col-2 globalSearchCntr" + class_finder}>
-                  <AlgaehLabel
-                    label={{ forceLabel: "Search by Quotation No." }}
-                  />
-                  <h6 onClick={SalesQuotationSearch.bind(this, this)}>
-                    {this.state.sales_quotation_number
-                      ? this.state.sales_quotation_number
-                      : "Quotation No."}
-                    <i className="fas fa-search fa-lg"></i>
-                  </h6>
-                </div>
+                {this.state.sales_order_mode === "I" ?
+                  <div className={"col globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search by Quotation No." }}
+                    />
+                    <h6 onClick={SalesQuotationSearch.bind(this, this)}>
+                      {this.state.sales_quotation_number
+                        ? this.state.sales_quotation_number
+                        : "Quotation No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+
+                  : <div className={"col globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Contract No." }}
+                    />
+                    <h6 onClick={ContractSearch.bind(this, this)}>
+                      {this.state.contract_number
+                        ? this.state.contract_number
+                        : "Contract No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>}
 
                 <AlagehAutoComplete
                   div={{ className: "col form-group mandatory" }}
@@ -421,21 +437,23 @@ class SalesOrder extends Component {
                   )}
               </div>
               <div className="row">
-                <AlgaehDateHandler
-                  div={{ className: "col mandatory" }}
-                  label={{ forceLabel: "Delivery Date", isImp: true }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "delivery_date",
-                  }}
-                  minDate={new Date()}
-                  events={{
-                    onChange: datehandle.bind(this, this),
-                    onBlur: dateValidate.bind(this, this),
-                  }}
-                  disabled={this.state.dataExists}
-                  value={this.state.delivery_date}
-                />
+                {this.state.sales_order_mode === "I" ?
+                  <AlgaehDateHandler
+                    div={{ className: "col mandatory" }}
+                    label={{ forceLabel: "Delivery Date", isImp: this.state.sales_order_mode === "I" ? true : false }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "delivery_date",
+                    }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this),
+                    }}
+                    disabled={this.state.dataExists}
+                    value={this.state.delivery_date}
+                  /> : null}
+
 
                 <AlagehFormGroup
                   div={{ className: "col" }}

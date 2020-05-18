@@ -202,20 +202,17 @@ export function getOrderListGenContract(req, res, next) {
         let strQry = req.query.customer_id != null ? " and customer_id= " + req.query.customer_id : "";
         if (req.query.HRMNGMT_Active === "true") {
             console.log("getSalesOrder: HR")
-            strQuery = "SELECT SO.*, E.full_name as employee_name, SQ.sales_quotation_number from hims_f_sales_order SO \
-                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id\
+            strQuery = "SELECT SO.*, E.full_name as employee_name from hims_f_sales_order SO \
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
-                        where 1=1 "+ strQry
+                        where contract_id=? "+ strQry
         } else {
             console.log("getSalesOrder: No HR")
-            strQuery = "SELECT SO.* from hims_f_sales_order SO \
-                        left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
-                        where 1=1 "+ strQry
+            strQuery = "SELECT SO.* from hims_f_sales_order SO where contract_id=? " + strQry
         }
         _mysql
             .executeQuery({
                 query: strQuery,
-                values: [req.query.sales_order_number],
+                values: [req.query.contract_id],
                 printQuery: true
             })
             .then(headerResult => {

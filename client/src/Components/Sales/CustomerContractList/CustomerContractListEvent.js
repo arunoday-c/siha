@@ -104,7 +104,7 @@ const dateFormaterTime = ($this, value) => {
 };
 
 const ShowOrdersOfContarct = ($this, row) => {
-    let inpObj = { HRMNGMT_Active: true };
+    let inpObj = { HRMNGMT_Active: true, contract_id: row.hims_f_contract_management_id };
 
     if ($this.state.from_date !== null) {
         inpObj.from_date = $this.state.from_date;
