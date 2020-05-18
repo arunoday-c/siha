@@ -65,8 +65,8 @@ let physicalExaminationHeader = (req, res, next) => {
           input.sub_department_id,
           input.assesment_type,
           input.mandatory,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
       })
       //         (error, results) => {
@@ -137,8 +137,8 @@ let physicalExaminationDetails = (req, res, next) => {
           input.physical_examination_header_id,
           input.description,
           input.mandatory,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
       })
       //         (error, results) => {
@@ -210,8 +210,8 @@ let physicalExaminationSubDetails = (req, res, next) => {
           input.physical_examination_details_id,
           input.description,
           input.mandatory,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
@@ -450,8 +450,8 @@ let addAnalytes = (req, res, next) => {
           input.result,
           input.text,
           input.status,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
@@ -581,8 +581,8 @@ let addReviewOfSysDetails = (req, res, next) => {
         values: [
           input.review_of_system_heder_id,
           input.description,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
@@ -650,8 +650,8 @@ let addAllergy = (req, res, next) => {
         values: [
           input.allergy_type,
           input.allergy_name,
-          input.created_by,
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
@@ -2639,31 +2639,18 @@ let getPatientPhysicalExamination = (req, res, next) => {
 
 //created by irfan: to update or delete Patient physical examination
 let updatePatientPhysicalExam = (req, res, next) => {
-  try {
-    debugFunction("updatePatientPhysicalExam");
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    debugLog("Input Data", req.body);
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.beginTransaction((error) => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-        let queryBuilder =
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
           "UPDATE `hims_f_episode_examination` SET  `patient_id`=?,\
-          `episode_id`=?, `exam_header_id`=?, `exam_details_id`=?, `exam_subdetails_id`=?, `comments`=?,\
-          `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_f_episode_examination_id`=?;";
-        let inputs = [
+        `episode_id`=?, `exam_header_id`=?, `exam_details_id`=?, `exam_subdetails_id`=?, `comments`=?,\
+        `updated_date`=?, `updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_f_episode_examination_id`=?;",
+        values: [
           input.patient_id,
           input.episode_id,
           input.exam_header_id,
@@ -2671,34 +2658,23 @@ let updatePatientPhysicalExam = (req, res, next) => {
           input.exam_subdetails_id,
           input.comments,
           new Date(),
-          input.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
           input.hims_f_episode_examination_id,
-        ];
-
-        connection.query(queryBuilder, inputs, (error, result) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-
-          connection.commit((error) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            req.records = result;
-            releaseDBConnection(db, connection);
-            next();
-          });
-        });
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -2761,57 +2737,40 @@ let getVitalsHeaderMaster = (req, res, next) => {
 
 //created by irfan: to add patient_historty
 let addPatientHistory = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
+    let patient_history = req.body.patient_history;
+    const insurtColumns = ["history_type", "remarks"];
 
-    db.getConnection((error, connection) => {
-      if (error) {
+    _mysql
+      .executeQuery({
+        query: "INSERT INTO hims_f_patient_history(??) VALUES ?",
+        values: patient_history,
+        includeValues: insurtColumns,
+        printQuery: false,
+        bulkInsertOrUpdate: true,
+        extraValues: {
+          patient_id: req.body.patient_id,
+          provider_id: req.body.provider_id,
+          hospital_id: req.userIdentity.hospital_id,
+          created_date: new Date(),
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+        },
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-      let input = extend({}, req.body);
-
-      const insurtColumns = [
-        "history_type",
-        "remarks",
-        "created_by",
-        "updated_by",
-      ];
-
-      connection.query(
-        "INSERT INTO hims_f_patient_history(" +
-          insurtColumns.join(",") +
-          ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
-        [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body.patient_history,
-            newFieldToInsert: [
-              input.patient_id,
-              input.provider_id,
-              new Date(),
-              new Date(),
-              req.userIdentity.hospital_id,
-            ],
-            req: req,
-          }),
-        ],
-
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -3142,68 +3101,52 @@ let getPatientEncounter = (req, res, next) => {
 
 //created by irfan:  to get allergic details
 let getSummaryFollowUp = (req, res, next) => {
-  debugFunction("getAllergyDetails");
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
+    _mysql
+      .executeQuery({
+        query: "SELECT * FROM hims_f_patient_followup where episode_id=?;",
+        values: [req.query.episode_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-
-      connection.query(
-        "SELECT * FROM hims_f_patient_followup where episode_id=?;",
-        [req.query.episode_id],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results fetched");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 //created by irfan: to add  physical_examination_details
 let addSickLeave = (req, res, next) => {
-  let addSickLeave = {};
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("addSickLeave");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(addSickLeave, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      connection.query(
-        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
-        [input.patient_id, input.visit_id],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          if (results.length == 0) {
-            connection.query(
-              "insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
-                to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?, ?)",
-              [
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        values: [input.patient_id, input.visit_id],
+      })
+      .then((result) => {
+        if (result.length > 0) {
+          req.records = [];
+          next();
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
+              to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?, ?)",
+              values: [
                 input.patient_id,
                 input.visit_id,
                 input.episode_id,
@@ -3212,24 +3155,24 @@ let addSickLeave = (req, res, next) => {
                 input.no_of_days,
                 input.remarks,
               ],
-              (error, results) => {
-                releaseDBConnection(db, connection);
-                if (error) {
-                  next(error);
-                }
-                debugLog("Results are recorded...");
-                req.records = results;
-                next();
-              }
-            );
-          } else {
-            req.records = results;
-            next();
-          }
+            })
+            .then((resultd) => {
+              _mysql.releaseConnection();
+              req.records = resultd;
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
         }
-      );
-    });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
