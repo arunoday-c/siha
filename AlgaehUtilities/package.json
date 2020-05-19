@@ -20,6 +20,8 @@
     "jsonwebtoken": "^8.4.0",
     "jstimezonedetect": "^1.0.7",
     "moment": "^2.23.0",
+    "mongodb": "^3.5.7",
+    "mongodb-client-encryption": "^1.0.1",
     "nodemailer": "^5.1.1",
     "regenerator": "^0.14.4",
     "utilities": "^1.0.5",
