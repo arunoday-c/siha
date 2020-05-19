@@ -433,10 +433,11 @@ export function updateinvSalesOrderOnceDispatch(req, res, next) {
         _mysql
             .executeQuery({
                 query:
-                    "UPDATE `hims_f_sales_order` SET `is_completed`=?, `completed_date`=? \
+                    "UPDATE `hims_f_sales_order` SET `is_completed`=?, `completed_by`=?, `completed_date`=? \
                         WHERE `hims_f_sales_order_id`=?; " + strQuery,
                 values: [
                     complete,
+                    req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     inputParam.sales_order_id
                 ],
