@@ -12,56 +12,40 @@ const { releaseDBConnection, jsonArrayToObject } = utils;
 //code
 
 //created by irfan:  to add ICD
+
 let addIcd = (req, res, next) => {
-  let addIcdModel = {
-    hims_d_icd_id: null,
-    icd_code: null,
-    icd_description: null,
-    long_icd_description: null,
-    icd_level: null,
-    icd_type: null,
-    created_by: null,
-    updated_by: null
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
 
-  debugFunction("addIcd");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend(addIcdModel, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    let input = req.body;
 
-      connection.query(
-        "insert into hims_d_icd(\
-            icd_code,icd_description,long_icd_description,icd_level,icd_type,created_by,updated_by)values(\
-                ?,?,?,?,?,?,?)",
-        [
+    _mysql
+      .executeQuery({
+        query:
+          "insert into hims_d_icd(\
+                icd_code,icd_description,long_icd_description,icd_level,icd_type,created_by,updated_by)values(\
+                    ?,?,?,?,?,?,?)",
+        values: [
           input.icd_code,
           input.icd_description,
           input.long_icd_description,
           input.icd_level,
           input.icd_type,
-          input.created_by,
-          input.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
         ],
-        (error, results) => {
-          if (error) {
-            next(error);
-            releaseDBConnection(db, connection);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      })
+      .then((resultd) => {
+        _mysql.releaseConnection();
+        req.records = resultd;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -78,7 +62,7 @@ let addPlanAndPolicy = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -108,7 +92,7 @@ let addPlanAndPolicy = (req, res, next) => {
               new Date(),
               obj.created_by,
               new Date(),
-              obj.updated_by
+              obj.updated_by,
             ],
             (error, result) => {
               if (error) {
@@ -192,7 +176,7 @@ let addPlanAndPolicy = (req, res, next) => {
                     new Date(),
                     obj.created_by,
                     new Date(),
-                    obj.updated_by
+                    obj.updated_by,
                   ],
                   (error, resultoff) => {
                     if (error) {
@@ -202,7 +186,7 @@ let addPlanAndPolicy = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -229,177 +213,98 @@ let addPlanAndPolicy = (req, res, next) => {
 
 // created by : irfan to get chief complaint elements (hpi details)
 let getHpiElements = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type,created_date \
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_hpi_details_id,hpi_header_id,element_description,element_type,created_date \
         from hims_d_hpi_details  where hpi_header_id=? and record_status='A';",
-        [inputData.hpi_header_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        values: [req.query.hpi_header_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 // created by : irfan to ADD chief complaint elements(hpi details)
 let addHpiElement = (req, res, next) => {
-  debugFunction("addHpiElement");
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
+    const _mysql = new algaehMysql({ path: keyPath });
 
-      connection.beginTransaction(error => {
-        if (error) {
-          connection.rollback(() => {
-            releaseDBConnection(db, connection);
-            next(error);
-          });
-        }
-
-        connection.query(
+    _mysql
+      .executeQueryWithTransaction({
+        query:
           "insert into hims_d_hpi_details(hpi_header_id,element_description,element_type,created_date,created_by,updated_date,updated_by) \
         values(?,?,?,?,?,?,?)",
-          [
-            input.hpi_header_id,
-            input.element_description,
-            input.element_type,
-            new Date(),
-            input.created_by,
-            new Date(),
-            input.updated_by
-          ],
-          (error, results) => {
-            if (error) {
-              connection.rollback(() => {
-                releaseDBConnection(db, connection);
-                next(error);
-              });
-            }
-            //adding HPI element to [patient]
-
-            if (input.patient_id != null && results.insertId != null) {
-              connection.query(
+        values: [
+          input.hpi_header_id,
+          input.element_description,
+          input.element_type,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
+        printQuery: true,
+      })
+      .then((result) => {
+        if (input.patient_id > 0 && result.insertId > 0) {
+          _mysql
+            .executeQueryWithTransaction({
+              query:
                 "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,\
-                  created_date,created_by,updated_date,updated_by,hospital_id) \
-                 values(?,?,?,?,?,?,?,?,?)",
-                [
-                  input.patient_id,
-                  input.episode_id,
-                  input.hpi_header_id,
-                  results.insertId,
-                  new Date(),
-                  input.created_by,
-                  new Date(),
-                  input.updated_by,
-                  req.userIdentity.hospital_id
-                ],
-                (error, resultPatientEP) => {
-                  if (error) {
-                    connection.rollback(() => {
-                      releaseDBConnection(db, connection);
-                      next(error);
-                    });
-                  }
-
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    releaseDBConnection(db, connection);
-                    req.records = resultPatientEP;
-                    next();
-                  });
-                }
-              );
-            } else {
-              debugFunction("esle");
-              connection.commit(error => {
-                if (error) {
-                  connection.rollback(() => {
-                    releaseDBConnection(db, connection);
-                    next(error);
-                  });
-                }
-                releaseDBConnection(db, connection);
-                req.records = results;
+              created_date,created_by,updated_date,updated_by,hospital_id) \
+             values(?,?,?,?,?,?,?,?,?)",
+              values: [
+                input.patient_id,
+                input.episode_id,
+                input.hpi_header_id,
+                results.insertId,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id,
+              ],
+              printQuery: true,
+            })
+            .then((resultd) => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = resultd;
                 next();
               });
-            }
-          }
-        );
-      });
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
-// created by : irfan to addPatientHpi
-let addPatientHpiBACKUP = (req, res, next) => {
-  debugFunction("addPatientHpi");
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
-        next(error);
-      }
-
-      connection.query(
-        "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
-        values(?,?,?,?,?,?,?,?)",
-        [
-          input.patient_id,
-          input.episode_id,
-          input.hpi_header_id,
-          input.hpi_detail_id,
-
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
+            })
+            .catch((e) => {
+              mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = resultd;
+            next();
+          });
         }
-      );
-    });
+      })
+      .catch((e) => {
+        mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   } catch (e) {
     next(e);
   }
@@ -407,85 +312,72 @@ let addPatientHpiBACKUP = (req, res, next) => {
 
 // created by : irfan to addPatientHpi
 let addPatientHpi = (req, res, next) => {
-  debugFunction("addPatientHpi");
+  const _mysql = new algaehMysql({ path: keyPath });
+
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let input = extend({}, req.body);
-    db.getConnection((error, connection) => {
-      if (error) {
-        releaseDBConnection(db, connection);
+    let input = req.body;
+
+    const insurtColumns = ["hpi_detail_id"];
+
+    _mysql
+      .executeQuery({
+        query: "INSERT INTO hims_f_episode_hpi(??) VALUES ?",
+        values: input.hpi_detail_ids,
+        includeValues: insurtColumns,
+        printQuery: false,
+        bulkInsertOrUpdate: true,
+        extraValues: {
+          patient_id: input.patient_id,
+          episode_id: input.episode_id,
+          hpi_header_id: input.hpi_header_id,
+          hospital_id: req.userIdentity.hospital_id,
+          created_date: new Date(),
+          created_by: req.userIdentity.algaeh_d_app_user_id,
+          updated_date: new Date(),
+          updated_by: req.userIdentity.algaeh_d_app_user_id,
+        },
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      }
-
-      const insurtColumns = ["hpi_detail_id", "created_by", "updated_by"];
-
-      connection.query(
-        "INSERT INTO hims_f_episode_hpi(" +
-          insurtColumns.join(",") +
-          ",patient_id,episode_id, hpi_header_id,created_date,updated_date,hospital_id) VALUES ?",
-        [
-          jsonArrayToObject({
-            sampleInputObject: insurtColumns,
-            arrayObj: req.body.hpi_detail_ids,
-            newFieldToInsert: [
-              input.patient_id,
-              input.episode_id,
-              input.hpi_header_id,
-              new Date(),
-              new Date(),
-              req.userIdentity.hospital_id
-            ],
-            req: req
-          })
-        ],
-
-        (error, results) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
-        }
-      );
-    });
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 // created by : irfan to getPatientHpi hpi elements
 let getPatientHpi = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description,HD.element_type, episode_id\
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select EH.patient_id, EH.hpi_header_id,hpi_description as chief_complaint, hpi_detail_id, HD.element_description,HD.element_type, episode_id\
         from hims_f_episode_hpi EH,hims_d_hpi_details HD,hims_d_hpi_header HH\
         where EH.record_status='A' and   HH.record_status='A'  and  HD.record_status='A'  and\
         EH.hpi_detail_id=HD.hims_d_hpi_details_id and \
         EH.hpi_header_id=HH.hims_d_hpi_header_id and EH.episode_id=?;",
-        [inputData.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        values: [req.query.episode_id],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -495,7 +387,7 @@ export default {
   getHpiElements,
   addHpiElement,
   addPatientHpi,
-  getPatientHpi
+  getPatientHpi,
 };
 
 // localhost:3002/api/v1/doctorsWorkBench/getPatientVitals?patient_id=48
