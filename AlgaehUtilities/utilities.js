@@ -1,21 +1,21 @@
 const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
 let winston = require("winston");
-require("winston-mongodb").MongoDB;
+require("winston-mongodb");
 const keys = require("algaeh-keys");
 
 function algaehUtilities(options) {
   this.options = options;
   this.keys = this.keys != null ? this.keys : require("algaeh-keys").default;
 }
-algaehUtilities.prototype.encryption = function(data) {
+algaehUtilities.prototype.encryption = function (data) {
   try {
     return data;
   } catch (error) {
     throw error;
   }
 };
-algaehUtilities.prototype.decryption = function(data) {
+algaehUtilities.prototype.decryption = function (data) {
   try {
     return data;
   } catch (error) {
@@ -23,7 +23,7 @@ algaehUtilities.prototype.decryption = function(data) {
   }
 };
 
-algaehUtilities.prototype.getTokenData = function(token) {
+algaehUtilities.prototype.getTokenData = function (token) {
   try {
     var _details = jwt.decode(token, this.keys.SECRETKey);
     return _details;
@@ -31,7 +31,7 @@ algaehUtilities.prototype.getTokenData = function(token) {
     throw error;
   }
 };
-algaehUtilities.prototype.tokenVerify = function(token) {
+algaehUtilities.prototype.tokenVerify = function (token) {
   try {
     var _verify = jwt.verify(token, this.keys.SECRETKey);
     return _verify;
@@ -40,7 +40,7 @@ algaehUtilities.prototype.tokenVerify = function(token) {
   }
 };
 
-algaehUtilities.prototype.httpStatus = function() {
+algaehUtilities.prototype.httpStatus = function () {
   return {
     ok: 200,
     created: 201,
@@ -61,11 +61,11 @@ algaehUtilities.prototype.httpStatus = function() {
     },
     dataBaseNotInitilizedError: () => {
       return generateError(503, "Database is not initilized");
-    }
+    },
   };
 };
 
-algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
+algaehUtilities.prototype.decimalPoints = function (value, decimal_point) {
   decimal_point = decimal_point || 2;
   let data_value = value;
   if (typeof value === "string") {
@@ -77,7 +77,7 @@ algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
   return parseFloat(data_value.toFixed(decimal_point));
 };
 
-algaehUtilities.prototype.logger = function(reqTracker) {
+algaehUtilities.prototype.logger = function (reqTracker) {
   reqTracker = reqTracker || "";
 
   var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
@@ -94,20 +94,20 @@ algaehUtilities.prototype.logger = function(reqTracker) {
   if (process.env.NODE_ENV === "development") {
     transport = new winston.transports.Console({
       colorize: true,
-      format: winston.format.simple()
+      format: winston.format.simple(),
     });
   } else {
     transport = new winston.transports.MongoDB({
       db: mongoDb.connectionURI,
       options: { useUnifiedTopology: true, poolSize: 10 },
       collection: "audit_logs",
-      tryReconnect: true
+      tryReconnect: true,
     });
   }
 
   var logger = winston.createLogger({
     transports: [transport],
-    format: winston.format.json()
+    format: winston.format.json(),
   });
   return {
     log: (message, obj, logtype) => {
@@ -115,15 +115,15 @@ algaehUtilities.prototype.logger = function(reqTracker) {
       logger.log({
         level: logtype,
         message,
-        metadata: obj
+        metadata: obj,
       });
       logger.close();
       return this;
-    }
+    },
   };
 };
 
-algaehUtilities.prototype.getCurrencyFormart = function(
+algaehUtilities.prototype.getCurrencyFormart = function (
   value,
   CurrencyDetail,
   addSymbol
@@ -150,11 +150,7 @@ algaehUtilities.prototype.getCurrencyFormart = function(
     const k = Math.pow(10, prec);
     return Math.round(n * k) / k;
   };
-  let s = prec
-    ? toFixedFix(n, prec)
-    : Math.round(n)
-        .toString()
-        .split(".");
+  let s = prec ? toFixedFix(n, prec) : Math.round(n).toString().split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
