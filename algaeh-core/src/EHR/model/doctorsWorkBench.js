@@ -766,7 +766,11 @@ let addChronicalConditions = (req, res, next) => {
           "insert into hims_d_chronic_conditions(\
           name,created_by,updated_by)values(\
               ?,?,?)",
-        values: [input.name, input.created_by, input.updated_by],
+        values: [
+          input.name,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
 
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
