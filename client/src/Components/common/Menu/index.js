@@ -136,8 +136,8 @@ function NavBars(props) {
             marginRight: 0,
           }}
           className="dropdown navTopbar-dropdown"
-          // disabled={this.state.openPanel}
-          // onClick={showNotification}
+          // disabled={openNotif}
+          onClick={showNotification}
         >
           <i className="fas fa-bell fa-lg" />
         </button>
