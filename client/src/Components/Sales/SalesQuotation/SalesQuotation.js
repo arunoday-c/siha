@@ -22,7 +22,7 @@ import {
   addToTermCondition,
   deleteComment,
   generateSalesQuotation,
-  // getEmployeeDetailsLogedin
+  CancelQuotation
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -82,7 +82,8 @@ class SalesQuotation extends Component {
       comment_list: [],
       qotation_status: "G",
       log_sales_person_id: null,
-      log_employee_name: null
+      log_employee_name: null,
+      cancelEnable: true
     };
     getSalesOptions(this, this);
   }
@@ -90,7 +91,7 @@ class SalesQuotation extends Component {
   static contextType = MainContext;
   componentDidMount() {
     const userToken = this.context.userToken;
-        
+
     this.setState({
       decimal_place: userToken.decimal_places,
       hospital_id: userToken.hims_d_hospital_id,
@@ -235,16 +236,20 @@ class SalesQuotation extends Component {
                     />
                     <h6>
                       {this.state.qotation_status === "G" ? (
-                        <span className="badge badge-danger">
+                        <span className="badge badge-warning">
                           Quotation Generated
                         </span>
                       ) : this.state.qotation_status === "O" ? (
-                        <span className="badge badge-danger">
+                        <span className="badge badge-info">
                           Order Created
                         </span>
+                      ) : this.state.qotation_status === "CL" ? (
+                        <span className="badge badge-danger">
+                          Quotation Cancelled
+                        </span>
                       ) : (
-                            <span className="badge badge-success">Closed</span>
-                          )}
+                              <span className="badge badge-success">Closed</span>
+                            )}
                     </h6>
                   </div>
                 ) : null}
@@ -675,11 +680,13 @@ class SalesQuotation extends Component {
                   >
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Save & Print",
+                        forceLabel: "Save",
                         returnText: true,
                       }}
                     />
                   </button>
+
+
 
                   <button
                     type="button"
@@ -689,6 +696,20 @@ class SalesQuotation extends Component {
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={CancelQuotation.bind(this, this)}
+                    disabled={this.state.cancelEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel",
+                        returnText: true,
+                      }}
                     />
                   </button>
 

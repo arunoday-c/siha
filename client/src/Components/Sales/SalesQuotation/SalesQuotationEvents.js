@@ -5,6 +5,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
+import swal from "sweetalert2";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -74,7 +75,8 @@ const ClearData = ($this, e) => {
 
     service_name: "",
     services_id: null,
-    service_frequency: null
+    service_frequency: null,
+    cancelEnable: true
   };
 
   $this.setState(IOputs);
@@ -240,6 +242,13 @@ const getCtrlCode = ($this, docNumber) => {
             : [];
         data.saveEnable = true;
         data.dataExists = true;
+        data.cancelEnable = data.qotation_status === "G" ? false : true;
+
+        // if ($this.state.qotation_status === "G") {
+        //   data.cancelEnable = false;
+        // } else {
+        //   data.cancelEnable = true;
+        // }
 
         data.addedItem = true;
         $this.setState(data);
@@ -371,6 +380,49 @@ const generateSalesQuotation = ($this, data) => {
     }
   });
 };
+
+const CancelQuotation = ($this) => {
+
+  swal({
+    title: "Do you want to Cancel Quotation?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willUpdate => {
+    if (willUpdate.value) {
+
+      let inputObj = {
+        hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
+        cancelled: "Y"
+      };
+      algaehApiCall({
+        uri: "/SalesQuotation/updateSalesQuotation",
+        module: "sales",
+        method: "PUT",
+        data: inputObj,
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              type: "success",
+              title: "Cancelled successfully ..."
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message
+            });
+          }
+        }
+      });
+    }
+  });
+}
+
 export {
   changeTexts,
   ClearData,
@@ -383,5 +435,6 @@ export {
   employeeSearch,
   addToTermCondition,
   deleteComment,
-  generateSalesQuotation
+  generateSalesQuotation,
+  CancelQuotation
 };
