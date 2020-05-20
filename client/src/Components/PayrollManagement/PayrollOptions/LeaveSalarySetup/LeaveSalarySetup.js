@@ -3,7 +3,7 @@ import "./LeaveSalarySetup.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { ANNUAL_LEAVE_CAL } from "../../../../utils/GlobalVariables.json";
@@ -17,7 +17,7 @@ export default class LeaveSalarySetup extends Component {
       earningDeductionList: [],
       airfare_percentage: 0,
       hims_d_hrms_options_id: null,
-      annual_leave_calculation: null
+      annual_leave_calculation: null,
     };
 
     this.getLeaveSalaryOptions();
@@ -28,17 +28,17 @@ export default class LeaveSalarySetup extends Component {
       uri: "/payrollOptions/getLeaveSalaryOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState(res.data.result[0]);
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -53,23 +53,23 @@ export default class LeaveSalarySetup extends Component {
           airfare_percentage: this.state.airfare_percentage,
           annual_leave_process_separately: this.state
             .annual_leave_process_separately,
-          annual_leave_calculation: this.state.annual_leave_calculation
+          annual_leave_calculation: this.state.annual_leave_calculation,
         },
         method: "POST",
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Saved Successfully",
-              type: "success"
+              type: "success",
             });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     } else {
       algaehApiCall({
@@ -82,23 +82,23 @@ export default class LeaveSalarySetup extends Component {
           annual_leave_process_separately: this.state
             .annual_leave_process_separately,
           hims_d_hrms_options_id: this.state.hims_d_hrms_options_id,
-          annual_leave_calculation: this.state.annual_leave_calculation
+          annual_leave_calculation: this.state.annual_leave_calculation,
         },
         method: "PUT",
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Saved Successfully",
-              type: "success"
+              type: "success",
             });
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -108,18 +108,18 @@ export default class LeaveSalarySetup extends Component {
   }
   onChangeAirfare(e) {
     this.setState({
-      airfare_factor: e.value
+      airfare_factor: e.value,
     });
   }
   basicComponentChange(e) {
     this.setState({
-      basic_earning_component: e.value
+      basic_earning_component: e.value,
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -128,19 +128,19 @@ export default class LeaveSalarySetup extends Component {
       uri: "/payrollOptions/getSalarySetUp",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            earningDeductionList: res.data.records
+            earningDeductionList: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -149,18 +149,18 @@ export default class LeaveSalarySetup extends Component {
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            airfare_percentage: null
-          })
+              [e.target.name]: e.target.value,
+              airfare_percentage: null,
+            })
           : this.setState({
-            [e.target.name]: e.target.value
-          });
+              [e.target.name]: e.target.value,
+            });
 
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
         break;
     }
@@ -177,7 +177,7 @@ export default class LeaveSalarySetup extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-2">
+                <div className="col-3">
                   <label>Process Annual Leave Separately</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -237,22 +237,25 @@ export default class LeaveSalarySetup extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Annual Leave Calculation", isImp: true }}
+                  label={{
+                    forceLabel: "Annual Leave Calculation",
+                    isImp: true,
+                  }}
                   selector={{
                     name: "annual_leave_calculation",
                     className: "select-fld",
                     dataSource: {
                       data: ANNUAL_LEAVE_CAL,
                       textField: "name",
-                      valueField: "value"
+                      valueField: "value",
                     },
                     onChange: this.dropDownHandler.bind(this),
                     value: this.state.annual_leave_calculation,
                     onClear: () => {
                       this.setState({
-                        annual_leave_calculation: null
+                        annual_leave_calculation: null,
                       });
-                    }
+                    },
                   }}
                 />
                 {this.state.airfare_factor === "PB" ? (
@@ -261,18 +264,18 @@ export default class LeaveSalarySetup extends Component {
                       div={{ className: "col-2 form-group" }}
                       label={{
                         forceLabel: "Airfare Percentage",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "airfare_percentage",
                         value: this.state.airfare_percentage,
                         events: {
-                          onChange: this.textHandler.bind(this)
+                          onChange: this.textHandler.bind(this),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
 
@@ -285,19 +288,17 @@ export default class LeaveSalarySetup extends Component {
                         dataSource: {
                           data: this.state.earningDeductionList,
                           textField: "earning_deduction_description",
-                          valueField: "hims_d_earning_deduction_id"
+                          valueField: "hims_d_earning_deduction_id",
                         },
                         onChange: this.basicComponentChange.bind(this),
                         value: this.state.basic_earning_component,
                         onClear: () => {
                           this.setState({
-                            basic_earning_component: null
+                            basic_earning_component: null,
                           });
-                        }
+                        },
                       }}
                     />
-
-
                   </React.Fragment>
                 ) : null}
               </div>
