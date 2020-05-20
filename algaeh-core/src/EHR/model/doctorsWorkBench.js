@@ -515,7 +515,11 @@ let addReviewOfSysHeader = (req, res, next) => {
           "insert into hims_d_review_of_system_header(\
           description,created_by,updated_by)values(\
               ?,?,?)",
-        values: [input.description, input.created_by, input.updated_by],
+        values: [
+          input.description,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
         //         (error, results) => {
         //           releaseDBConnection(db, connection);
         //           if (error) {
@@ -1598,7 +1602,7 @@ let deletePatientChiefComplaints = (req, res, next) => {
           "update hims_f_episode_chief_complaint set record_status='I',updated_date=?,updated_by=? where `record_status`='A' and hims_f_episode_chief_complaint_id=?",
         values: [
           new Date(),
-          req.body.updated_by,
+          req.userIdentity.algaeh_d_app_user_id,
           req.body.hims_f_episode_chief_complaint_id,
         ],
         //         (error, result) => {
