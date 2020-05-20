@@ -28,7 +28,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.6.2",
-    "algaeh-mysql": "^1.3.4",
+    "algaeh-mysql": "^1.4.0",
     "aws-sdk": "^2.247.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
