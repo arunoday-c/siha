@@ -4,6 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 //import mysql from "mysql";
 import moment from "moment";
 import { LINQ } from "node-linq";
+import { sendPatientAppointment, updatePatientAppointment } from "./okaDoc";
 export default {
   //created by irfan: to add Appointment Status
   addAppointmentStatus: (req, res, next) => {
@@ -23,26 +24,26 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         if (input.default_status == "Y") {
           _mysql
             .executeQuery({
               query:
                 "UPDATE `hims_d_appointment_status` SET  default_status='N'   WHERE default_status='Y' and record_status='A' and  hims_d_appointment_status_id <> ?;\
               ",
-              values: [result.insertId]
+              values: [result.insertId],
             })
-            .then(defStatusRsult => {
+            .then((defStatusRsult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = defStatusRsult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -52,16 +53,16 @@ export default {
             .executeQuery({
               query:
                 "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
-              values: [result.insertId]
+              values: [result.insertId],
             })
-            .then(crtRsult => {
+            .then((crtRsult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = crtRsult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -74,7 +75,7 @@ export default {
           });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -97,15 +98,15 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
-        ]
+          req.userIdentity.hospital_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -130,15 +131,15 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
-        ]
+          req.userIdentity.hospital_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -151,14 +152,14 @@ export default {
       .executeQuery({
         query:
           "select hims_d_appointment_status_id, color_code,description as statusDesc, default_status,steps,authorized FROM\
-           hims_d_appointment_status where record_status='A'  order by steps "
+           hims_d_appointment_status where record_status='A'  order by steps ",
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -169,22 +170,20 @@ export default {
 
     let appointment_room_id = "";
     if (req.query.hims_d_appointment_room_id > 0) {
-      appointment_room_id = ` and hims_d_appointment_room_id=${
-        req.query.hims_d_appointment_room_id
-      }`;
+      appointment_room_id = ` and hims_d_appointment_room_id=${req.query.hims_d_appointment_room_id}`;
     }
     _mysql
       .executeQuery({
         query: `select hims_d_appointment_room_id, description as roomDesc, room_active FROM hims_d_appointment_room where record_status='A'
          and hospital_id=? ${appointment_room_id} order by hims_d_appointment_room_id desc `,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -195,23 +194,21 @@ export default {
 
     let appointment_clinic_id = "";
     if (req.query.hims_d_appointment_clinic_id > 0) {
-      appointment_clinic_id = ` and hims_d_appointment_clinic_id=${
-        req.query.hims_d_appointment_clinic_id
-      }`;
+      appointment_clinic_id = ` and hims_d_appointment_clinic_id=${req.query.hims_d_appointment_clinic_id}`;
     }
     _mysql
       .executeQuery({
         query: `select hims_d_appointment_clinic_id,description , sub_department_id, provider_id, room_id\
          FROM hims_d_appointment_clinic where record_status='A'  and hospital_id=? ${appointment_clinic_id}
         order by hims_d_appointment_clinic_id desc`,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -235,10 +232,10 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
-          input.hims_d_appointment_status_id
-        ]
+          input.hims_d_appointment_status_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         if (input.default_status == "Y" && input.record_status == "A") {
           _mysql
             .executeQuery({
@@ -249,17 +246,17 @@ export default {
               update hims_d_appointment_status  set steps=1 where hims_d_appointment_status_id=? and record_status='A';",
               values: [
                 input.hims_d_appointment_status_id,
-                input.hims_d_appointment_status_id
-              ]
+                input.hims_d_appointment_status_id,
+              ],
             })
-            .then(defStatusRsult => {
+            .then((defStatusRsult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = defStatusRsult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -269,16 +266,16 @@ export default {
             .executeQuery({
               query:
                 "update hims_d_appointment_status set default_status='N' where default_status='C' and record_status='A' and hims_d_appointment_status_id <>? ",
-              values: [input.hims_d_appointment_status_id]
+              values: [input.hims_d_appointment_status_id],
             })
-            .then(crtRsult => {
+            .then((crtRsult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = crtRsult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -288,16 +285,16 @@ export default {
             .executeQuery({
               query:
                 "update hims_d_appointment_status  set steps=null where hims_d_appointment_status_id=?; ",
-              values: [input.hims_d_appointment_status_id]
+              values: [input.hims_d_appointment_status_id],
             })
-            .then(deleteRsult => {
+            .then((deleteRsult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = deleteRsult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -310,7 +307,7 @@ export default {
           });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -325,14 +322,14 @@ export default {
       .executeQuery({
         query:
           "update hims_d_appointment_status  set authorized='Y',updated_date=?, updated_by=? where record_status='A' and hims_d_appointment_status_id>0 ;",
-        values: [new Date(), req.userIdentity.algaeh_d_app_user_id]
+        values: [new Date(), req.userIdentity.algaeh_d_app_user_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -352,15 +349,15 @@ export default {
           input.room_active,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_appointment_room_id
-        ]
+          input.hims_d_appointment_room_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -373,14 +370,14 @@ export default {
       .executeQuery({
         query:
           "UPDATE hims_d_appointment_room SET  record_status='I' WHERE hims_d_appointment_room_id=?",
-        values: [req.body.hims_d_appointment_room_id]
+        values: [req.body.hims_d_appointment_room_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -403,15 +400,15 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.record_status,
-          input.hims_d_appointment_clinic_id
-        ]
+          input.hims_d_appointment_clinic_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -437,21 +434,21 @@ export default {
     ) {
       req.records = {
         schedule_exist: true,
-        message: "Cant create Schedule for the Past dates"
+        message: "Cant create Schedule for the Past dates",
       };
       next();
       return;
     } else if (input.from_work_hr > input.to_work_hr) {
       req.records = {
         schedule_exist: true,
-        message: "Schedule Time Cant be PM to AM "
+        message: "Schedule Time Cant be PM to AM ",
       };
       next();
       return;
     } else if (input.from_work_hr == "00:00" && input.to_work_hr == "00:00") {
       req.records = {
         schedule_exist: true,
-        message: "To Time Can't be Greater Than 11:59 PM"
+        message: "To Time Can't be Greater Than 11:59 PM",
       };
       next();
       return;
@@ -490,11 +487,11 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           let working_days = [];
 
           let inputDays = [
@@ -504,7 +501,7 @@ export default {
             req.body.wednesday,
             req.body.thursday,
             req.body.friday,
-            req.body.saturday
+            req.body.saturday,
           ];
           for (let d = 0; d < 7; d++) {
             if (inputDays[d] == "Y") {
@@ -522,7 +519,7 @@ export default {
             new Date(input.to_date),
             working_days
           );
-          newDateList.map(v => v.toLocaleString());
+          newDateList.map((v) => v.toLocaleString());
           // adding doctors to created schedule
           if (input.schedule_detail.length != 0) {
             if (result.insertId != null) {
@@ -533,7 +530,7 @@ export default {
                 for (let i = 0; i < newDateList.length; i++) {
                   doctorSchedule.push({
                     ...input.schedule_detail[doc],
-                    ...{ schedule_date: newDateList[i] }
+                    ...{ schedule_date: newDateList[i] },
                   });
                 }
                 //get list of dates which are already scheduled for this doctor
@@ -542,15 +539,18 @@ export default {
                   .executeQuery({
                     query:
                       "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
-                    values: [input.schedule_detail[doc].provider_id, new Date()]
+                    values: [
+                      input.schedule_detail[doc].provider_id,
+                      new Date(),
+                    ],
                   })
-                  .then(occupiedDoctorDates => {
+                  .then((occupiedDoctorDates) => {
                     let OccupiedDoctorDatesList = new LINQ(occupiedDoctorDates)
-                      .Select(s => s.schedule_date)
+                      .Select((s) => s.schedule_date)
                       .ToArray();
 
                     let clashingDate = [];
-                    new LINQ(newDateList).Select(s => {
+                    new LINQ(newDateList).Select((s) => {
                       const index = OccupiedDoctorDatesList.indexOf(
                         moment(s).format("YYYY-MM-DD")
                       );
@@ -564,8 +564,8 @@ export default {
                       let appointment_schedule_header_idS = new LINQ(
                         occupiedDoctorDates
                       )
-                        .Where(w => w.schedule_date == clashingDate[0])
-                        .Select(s => s.appointment_schedule_header_id)
+                        .Where((w) => w.schedule_date == clashingDate[0])
+                        .Select((s) => s.appointment_schedule_header_id)
                         .ToArray();
                       //obtain existing schedule time
 
@@ -593,10 +593,10 @@ export default {
                               input.to_work_hr,
                               input.from_work_hr,
                               input.to_work_hr,
-                              appointment_schedule_header_idS[j]
-                            ]
+                              appointment_schedule_header_idS[j],
+                            ],
                           })
-                          .then(timeChecking => {
+                          .then((timeChecking) => {
                             //
                             if (
                               timeChecking[0].length > 0 ||
@@ -606,13 +606,9 @@ export default {
                               if (timeChecking[0].length > 0) {
                                 _mysql.rollBackTransaction(() => {
                                   req.records = {
-                                    message: `schedule already exist on ${
-                                      clashingDate[0]
-                                    } for doctor_id:${
-                                      input.schedule_detail[doc].full_name
-                                    } from ${timeChecking[0][0].from_work_hr} to
+                                    message: `schedule already exist on ${clashingDate[0]} for doctor_id:${input.schedule_detail[doc].full_name} from ${timeChecking[0][0].from_work_hr} to
                                       ${timeChecking[0][0].to_work_hr}`,
-                                    schedule_exist: true
+                                    schedule_exist: true,
                                   };
                                   next();
                                 });
@@ -630,15 +626,9 @@ export default {
                                 if (timeChecking[1].length > 0) {
                                   _mysql.rollBackTransaction(() => {
                                     req.records = {
-                                      message: `schedule already exist on ${
-                                        clashingDate[0]
-                                      } for doctor_id:${
-                                        input.schedule_detail[doc].full_name
-                                      } from ${
-                                        timeChecking[1][0].from_work_hr
-                                      } to
+                                      message: `schedule already exist on ${clashingDate[0]} for doctor_id:${input.schedule_detail[doc].full_name} from ${timeChecking[1][0].from_work_hr} to
                                         ${timeChecking[1][0].to_work_hr}`,
-                                      schedule_exist: true
+                                      schedule_exist: true,
                                     };
                                     next();
                                   });
@@ -661,7 +651,7 @@ export default {
                                 "provider_id",
                                 "clinic_id",
                                 "slot",
-                                "schedule_date"
+                                "schedule_date",
                               ];
 
                               _mysql
@@ -679,11 +669,11 @@ export default {
                                       req.userIdentity.algaeh_d_app_user_id,
                                     updated_date: new Date(),
                                     updated_by:
-                                      req.userIdentity.algaeh_d_app_user_id
+                                      req.userIdentity.algaeh_d_app_user_id,
                                   },
-                                  bulkInsertOrUpdate: true
+                                  bulkInsertOrUpdate: true,
                                 })
-                                .then(schedule_detailResult => {
+                                .then((schedule_detailResult) => {
                                   if (doc == input.schedule_detail.length - 1) {
                                     _mysql.commitTransaction(() => {
                                       _mysql.releaseConnection();
@@ -692,14 +682,14 @@ export default {
                                     });
                                   }
                                 })
-                                .catch(e => {
+                                .catch((e) => {
                                   _mysql.rollBackTransaction(() => {
                                     next(e);
                                   });
                                 });
                             }
                           })
-                          .catch(e => {
+                          .catch((e) => {
                             _mysql.releaseConnection();
                             next(e);
                           });
@@ -712,7 +702,7 @@ export default {
                         "provider_id",
                         "clinic_id",
                         "slot",
-                        "schedule_date"
+                        "schedule_date",
                       ];
 
                       _mysql
@@ -727,11 +717,11 @@ export default {
                             created_date: new Date(),
                             created_by: req.userIdentity.algaeh_d_app_user_id,
                             updated_date: new Date(),
-                            updated_by: req.userIdentity.algaeh_d_app_user_id
+                            updated_by: req.userIdentity.algaeh_d_app_user_id,
                           },
-                          bulkInsertOrUpdate: true
+                          bulkInsertOrUpdate: true,
                         })
-                        .then(schedule_detailResult => {
+                        .then((schedule_detailResult) => {
                           if (doc == input.schedule_detail.length - 1) {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
@@ -740,14 +730,14 @@ export default {
                             });
                           }
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
                         });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
@@ -760,7 +750,7 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -781,21 +771,21 @@ export default {
     ) {
       req.records = {
         schedule_exist: true,
-        message: "Cant create Schedule for the Past dates"
+        message: "Cant create Schedule for the Past dates",
       };
       next();
       return;
     } else if (input.from_work_hr > input.to_work_hr) {
       req.records = {
         schedule_exist: true,
-        message: "Schedule Time Cant be PM to AM "
+        message: "Schedule Time Cant be PM to AM ",
       };
       next();
       return;
     } else if (input.from_work_hr == "00:00" && input.to_work_hr == "00:00") {
       req.records = {
         schedule_exist: true,
-        message: "To Time Can't be Greater Than 11:59 PM"
+        message: "To Time Can't be Greater Than 11:59 PM",
       };
       next();
       return;
@@ -809,7 +799,7 @@ export default {
         input.wednesday,
         input.thursday,
         input.friday,
-        input.saturday
+        input.saturday,
       ];
       for (let d = 0; d < 7; d++) {
         if (inputDays[d] == "Y") {
@@ -826,14 +816,14 @@ export default {
       if (newDateList.length > 365) {
         req.records = {
           schedule_exist: true,
-          message: "You cant have a Schedule More than 365 days "
+          message: "You cant have a Schedule More than 365 days ",
         };
         next();
         return;
       } else {
         // utilities.logger().log("newDateList: ", newDateList);
         if (input.schedule_detail.length > 0) {
-          const providers = input.schedule_detail.map(data => {
+          const providers = input.schedule_detail.map((data) => {
             return data.provider_id;
           });
 
@@ -848,15 +838,15 @@ export default {
                 WHERE H.record_status = 'A' AND D.record_status = 'A' and D.provider_id in (?) \
                 and schedule_date between date(?) and date(?); `,
               values: [providers, input.from_date, input.to_date],
-              printQuery: false
+              printQuery: false,
             })
-            .then(ExistingDates => {
+            .then((ExistingDates) => {
               //  utilities.logger().log("ExistingDates: ", ExistingDates);
 
               const clashing_dates = [];
 
-              newDateList.forEach(n_date => {
-                const schedule = ExistingDates.filter(data => {
+              newDateList.forEach((n_date) => {
+                const schedule = ExistingDates.filter((data) => {
                   if (
                     data.schedule_date == moment(n_date).format("YYYY-MM-DD")
                   ) {
@@ -872,7 +862,7 @@ export default {
               let time_clash = {};
 
               if (clashing_dates.length > 0) {
-                time_clash = clashing_dates.find(element => {
+                time_clash = clashing_dates.find((element) => {
                   if (
                     (element.from_work_hr <= input.from_work_hr &&
                       element.to_work_hr > input.from_work_hr) ||
@@ -892,23 +882,21 @@ export default {
                 Object.keys(time_clash).length > 0
               ) {
                 req.records = {
-                  message: `${time_clash["full_name"]} has schedule on ${
-                    time_clash["schedule_date"]
-                  }`,
-                  schedule_exist: true
+                  message: `${time_clash["full_name"]} has schedule on ${time_clash["schedule_date"]}`,
+                  schedule_exist: true,
                 };
                 next();
                 return;
               } else {
                 const doctorSchedule = [];
 
-                input.schedule_detail.forEach(doctor => {
-                  newDateList.forEach(n_date => {
+                input.schedule_detail.forEach((doctor) => {
+                  newDateList.forEach((n_date) => {
                     doctorSchedule.push({
                       provider_id: doctor["provider_id"],
                       clinic_id: doctor["clinic_id"],
                       slot: doctor["slot"],
-                      schedule_date: n_date
+                      schedule_date: n_date,
                     });
                   });
                 });
@@ -946,16 +934,16 @@ export default {
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
-                      req.userIdentity.hospital_id
+                      req.userIdentity.hospital_id,
                     ],
-                    printQuery: false
+                    printQuery: false,
                   })
-                  .then(result => {
+                  .then((result) => {
                     const insurtColumns = [
                       "provider_id",
                       "clinic_id",
                       "slot",
-                      "schedule_date"
+                      "schedule_date",
                     ];
 
                     _mysql
@@ -969,38 +957,38 @@ export default {
                           created_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
-                        bulkInsertOrUpdate: true
+                        bulkInsertOrUpdate: true,
                       })
-                      .then(schedule_detailResult => {
+                      .then((schedule_detailResult) => {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = schedule_detailResult;
                           next();
                         });
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
                       });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         } else {
           req.records = {
             schedule_exist: true,
-            message: "Please select doctors"
+            message: "Please select doctors",
           };
           next();
           return;
@@ -1036,11 +1024,11 @@ export default {
         values: [
           req.query.sub_dept_id,
           req.query.year,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
@@ -1067,9 +1055,9 @@ export default {
                   result[i]["hims_d_appointment_schedule_header_id"] +
                   ")" +
                   selectDoctor +
-                  " group by  provider_id;"
+                  " group by  provider_id;",
               })
-              .then(results => {
+              .then((results) => {
                 result[i]["doctorsList"] = results;
                 outputArray.push(result[i]);
                 if (i == result.length - 1) {
@@ -1078,7 +1066,7 @@ export default {
                   next();
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -1089,7 +1077,7 @@ export default {
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1129,9 +1117,9 @@ export default {
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
          and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
           and sub_dept_id= SD.hims_d_sub_department_id  and SH.hospital_id=?  ${selectDoctor} ${qry} `,
-          values: [req.userIdentity.hospital_id]
+          values: [req.userIdentity.hospital_id],
         })
-        .then(result => {
+        .then((result) => {
           if (result.length > 0) {
             new Promise((resolve, reject) => {
               try {
@@ -1151,15 +1139,15 @@ export default {
                              and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
                              and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?",
                         values: [
-                          result[j]["hims_d_appointment_schedule_detail_id"]
+                          result[j]["hims_d_appointment_schedule_detail_id"],
                         ],
 
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(modifyResult => {
+                      .then((modifyResult) => {
                         result[j] = modifyResult[0];
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.releaseConnection();
                         next(e);
                       });
@@ -1171,7 +1159,7 @@ export default {
               } catch (e) {
                 reject(e);
               }
-            }).then(modifyRes => {
+            }).then((modifyRes) => {
               let outputArray = [];
               if (result.length > 0) {
                 for (let i = 0; i < result.length; i++) {
@@ -1186,13 +1174,13 @@ export default {
                       values: [
                         result[i].sub_dept_id,
                         result[i].schedule_date,
-                        result[i].provider_id
-                      ]
+                        result[i].provider_id,
+                      ],
                     })
-                    .then(appResult => {
+                    .then((appResult) => {
                       const obj = {
                         ...result[i],
-                        ...{ patientList: appResult }
+                        ...{ patientList: appResult },
                       };
 
                       outputArray.push(obj);
@@ -1203,7 +1191,7 @@ export default {
                         next();
                       }
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.releaseConnection();
                       next(e);
                     });
@@ -1220,14 +1208,14 @@ export default {
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please select department"
+        message: "Please select department",
       };
 
       next();
@@ -1240,9 +1228,7 @@ export default {
 
     let selectQry = "";
     if (req.query.appointment_schedule_header_id > 0) {
-      selectQry += ` and appointment_schedule_header_id=${
-        req.query.appointment_schedule_header_id
-      } `;
+      selectQry += ` and appointment_schedule_header_id=${req.query.appointment_schedule_header_id} `;
     }
     if (req.query.provider_id > 0) {
       selectQry += ` and provider_id=${req.query.provider_id} `;
@@ -1257,21 +1243,21 @@ export default {
        from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD \
        where SH.record_status='A' and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id\
          and SH.hospital_id=? ${selectQry}`,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
 
         let activeSchedule = new LINQ(result)
-          .Where(w => w.modified != "M")
-          .Select(s => s)
+          .Where((w) => w.modified != "M")
+          .Select((s) => s)
           .ToArray();
 
         let ids = new LINQ(result)
-          .Where(w => w.modified == "M")
-          .Select(s => s.hims_d_appointment_schedule_detail_id)
+          .Where((w) => w.modified == "M")
+          .Select((s) => s.hims_d_appointment_schedule_detail_id)
           .ToArray();
 
         if (ids.length > 0) {
@@ -1283,9 +1269,9 @@ export default {
             from hims_d_appointment_schedule_modify SM, hims_d_appointment_schedule_detail SD where SM.record_status='A' and SM.record_status='A' and SM.appointment_schedule_detail_id=SD.hims_d_appointment_schedule_detail_id and\
             appointment_schedule_detail_id in (" +
                 ids +
-                ")"
+                ")",
             })
-            .then(modResult => {
+            .then((modResult) => {
               _mysql.releaseConnection();
               // req.records = result;
               // next();
@@ -1294,7 +1280,7 @@ export default {
                 let mergeResult = [...activeSchedule, ...modResult];
 
                 let finResult = new LINQ(mergeResult)
-                  .OrderBy(w => w.schedule_date)
+                  .OrderBy((w) => w.schedule_date)
                   .ToArray();
 
                 req.records = finResult;
@@ -1305,7 +1291,7 @@ export default {
                 next();
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -1315,7 +1301,7 @@ export default {
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1336,10 +1322,10 @@ export default {
           input.modified,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.hims_d_appointment_schedule_detail_id
-        ]
+          input.hims_d_appointment_schedule_detail_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         if (
           input.hims_d_appointment_schedule_modify_id != null &&
           input.modified == "M"
@@ -1365,17 +1351,17 @@ export default {
                 input.to_break_hr2,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                input.hims_d_appointment_schedule_modify_id
-              ]
+                input.hims_d_appointment_schedule_modify_id,
+              ],
             })
-            .then(updateModResult => {
+            .then((updateModResult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = updateModResult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -1403,17 +1389,17 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id
-              ]
+                req.userIdentity.hospital_id,
+              ],
             })
-            .then(results => {
+            .then((results) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = results;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
@@ -1426,7 +1412,7 @@ export default {
           });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -1448,11 +1434,11 @@ export default {
           input.to_date,
           input.sub_department_id,
           req.userIdentity.hospital_id,
-          input.provider_id
+          input.provider_id,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
@@ -1463,7 +1449,7 @@ export default {
             invalid_opertaion: true,
             message: `Cant delete ,doctor has appointments from ${
               result[0]["appointment_date"]
-            } to ${result[result.length - 1]["appointment_date"]}`
+            } to ${result[result.length - 1]["appointment_date"]}`,
           };
           next();
         } else {
@@ -1483,24 +1469,24 @@ export default {
                 input.provider_id,
                 input.appointment_schedule_header_id,
                 input.provider_id,
-                input.appointment_schedule_header_id
-              ]
+                input.appointment_schedule_header_id,
+              ],
             })
-            .then(delDesult => {
+            .then((delDesult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = delDesult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1548,15 +1534,15 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           input.record_status,
-          input.hims_d_appointment_schedule_header_id
-        ]
+          input.hims_d_appointment_schedule_header_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1572,9 +1558,9 @@ export default {
         query:
           "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
           from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
-        values: [input.hims_d_appointment_schedule_header_id]
+        values: [input.hims_d_appointment_schedule_header_id],
       })
-      .then(result => {
+      .then((result) => {
         // _mysql.commitTransaction(() => {
         //   _mysql.releaseConnection();
         //   req.records = defStatusRsult;
@@ -1590,7 +1576,7 @@ export default {
           result[0].wednesday,
           result[0].thursday,
           result[0].friday,
-          result[0].saturday
+          result[0].saturday,
         ];
 
         for (let d = 0; d < 7; d++) {
@@ -1604,7 +1590,7 @@ export default {
           new Date(result[0].to_date),
           working_days
         );
-        newDateList.map(v => v.toLocaleString());
+        newDateList.map((v) => v.toLocaleString());
 
         _mysql
           .executeQuery({
@@ -1612,19 +1598,19 @@ export default {
               "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
             values: [input.provider_id, new Date()],
 
-            printQuery: true
+            printQuery: true,
           })
-          .then(occupiedDoctorDates => {
+          .then((occupiedDoctorDates) => {
             // _mysql.releaseConnection();
             // req.records = result;
             // next();
 
             let OccupiedDoctorDatesList = new LINQ(occupiedDoctorDates)
-              .Select(s => s.schedule_date)
+              .Select((s) => s.schedule_date)
               .ToArray();
 
             let clashingDate = [];
-            new LINQ(newDateList).Select(s => {
+            new LINQ(newDateList).Select((s) => {
               const index = OccupiedDoctorDatesList.indexOf(
                 moment(s).format("YYYY-MM-DD")
               );
@@ -1636,8 +1622,8 @@ export default {
             //if date clashes check for time else add
             if (clashingDate.length > 0) {
               let appointment_schedule_header_id = new LINQ(occupiedDoctorDates)
-                .Where(w => w.schedule_date == clashingDate[0])
-                .Select(s => s.appointment_schedule_header_id)
+                .Where((w) => w.schedule_date == clashingDate[0])
+                .Select((s) => s.appointment_schedule_header_id)
                 .ToArray();
               //obtain existing schedule time
 
@@ -1649,12 +1635,12 @@ export default {
                   values: [
                     result[0].from_work_hr,
                     result[0].from_work_hr,
-                    appointment_schedule_header_id[0]
+                    appointment_schedule_header_id[0],
                   ],
 
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(timeChecking => {
+                .then((timeChecking) => {
                   // _mysql.releaseConnection();
                   // req.records = result;
                   // next();
@@ -1664,7 +1650,7 @@ export default {
 
                     req.records = {
                       message: "schedule already exist",
-                      schedule_exist: true
+                      schedule_exist: true,
                     };
                     _mysql.releaseConnection();
                     next();
@@ -1683,7 +1669,7 @@ export default {
                           for (let i = 0; i < newDateList.length; i++) {
                             doctorSchedule.push({
                               ...input.schedule_detail[doc],
-                              ...{ schedule_date: newDateList[i] }
+                              ...{ schedule_date: newDateList[i] },
                             });
                           }
 
@@ -1693,7 +1679,7 @@ export default {
                             "slot",
                             "schedule_date",
                             "created_by",
-                            "updated_by"
+                            "updated_by",
                           ];
 
                           _mysql
@@ -1711,11 +1697,11 @@ export default {
                                   req.userIdentity.algaeh_d_app_user_id,
                                 updated_date: new Date(),
                                 updated_by:
-                                  req.userIdentity.algaeh_d_app_user_id
+                                  req.userIdentity.algaeh_d_app_user_id,
                               },
-                              bulkInsertOrUpdate: true
+                              bulkInsertOrUpdate: true,
                             })
-                            .then(schedule_detailResult => {
+                            .then((schedule_detailResult) => {
                               if (doc == input.schedule_detail.length - 1) {
                                 _mysql.commitTransaction(() => {
                                   _mysql.releaseConnection();
@@ -1724,7 +1710,7 @@ export default {
                                 });
                               }
                             })
-                            .catch(e => {
+                            .catch((e) => {
                               _mysql.rollBackTransaction(() => {
                                 next(e);
                               });
@@ -1738,7 +1724,7 @@ export default {
                     }
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
@@ -1752,7 +1738,7 @@ export default {
                     for (let i = 0; i < newDateList.length; i++) {
                       doctorSchedule.push({
                         ...input.schedule_detail[doc],
-                        ...{ schedule_date: newDateList[i] }
+                        ...{ schedule_date: newDateList[i] },
                       });
                     }
 
@@ -1762,7 +1748,7 @@ export default {
                       "slot",
                       "schedule_date",
                       "created_by",
-                      "updated_by"
+                      "updated_by",
                     ];
 
                     _mysql
@@ -1778,11 +1764,11 @@ export default {
                           created_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
-                        bulkInsertOrUpdate: true
+                        bulkInsertOrUpdate: true,
                       })
-                      .then(schedule_detailResult => {
+                      .then((schedule_detailResult) => {
                         if (doc == input.schedule_detail.length - 1) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
@@ -1791,7 +1777,7 @@ export default {
                           });
                         }
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -1801,12 +1787,12 @@ export default {
               }
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1821,7 +1807,7 @@ export default {
     if (!input.hims_d_appointment_schedule_header_id > 0) {
       req.records = {
         schedule_exist: true,
-        message: "Please select proper Schedule"
+        message: "Please select proper Schedule",
       };
       next();
       return;
@@ -1831,9 +1817,9 @@ export default {
           query:
             "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
           from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
-          values: [input.hims_d_appointment_schedule_header_id]
+          values: [input.hims_d_appointment_schedule_header_id],
         })
-        .then(result => {
+        .then((result) => {
           const cur_schedule = result[0];
           const working_days = [];
 
@@ -1844,7 +1830,7 @@ export default {
             cur_schedule.wednesday,
             cur_schedule.thursday,
             cur_schedule.friday,
-            cur_schedule.saturday
+            cur_schedule.saturday,
           ];
           for (let d = 0; d < 7; d++) {
             if (inputDays[d] == "Y") {
@@ -1861,13 +1847,13 @@ export default {
           if (newDateList.length > 365) {
             req.records = {
               schedule_exist: true,
-              message: "You cant have a Schedule More than 365 days "
+              message: "You cant have a Schedule More than 365 days ",
             };
             next();
             return;
           } else {
             if (input.schedule_detail.length > 0) {
-              const providers = input.schedule_detail.map(data => {
+              const providers = input.schedule_detail.map((data) => {
                 return data.provider_id;
               });
 
@@ -1884,17 +1870,17 @@ export default {
                   values: [
                     providers,
                     cur_schedule.from_date,
-                    cur_schedule.to_date
+                    cur_schedule.to_date,
                   ],
-                  printQuery: false
+                  printQuery: false,
                 })
-                .then(ExistingDates => {
+                .then((ExistingDates) => {
                   //  utilities.logger().log("ExistingDates: ", ExistingDates);
 
                   const clashing_dates = [];
 
-                  newDateList.forEach(n_date => {
-                    const schedule = ExistingDates.filter(data => {
+                  newDateList.forEach((n_date) => {
+                    const schedule = ExistingDates.filter((data) => {
                       if (
                         data.schedule_date ==
                         moment(n_date).format("YYYY-MM-DD")
@@ -1909,7 +1895,7 @@ export default {
                   let time_clash = {};
 
                   if (clashing_dates.length > 0) {
-                    time_clash = clashing_dates.find(element => {
+                    time_clash = clashing_dates.find((element) => {
                       if (
                         (element.from_work_hr <= cur_schedule.from_work_hr &&
                           element.to_work_hr > cur_schedule.from_work_hr) ||
@@ -1929,23 +1915,21 @@ export default {
                     Object.keys(time_clash).length > 0
                   ) {
                     req.records = {
-                      message: `${time_clash["full_name"]} has schedule on ${
-                        time_clash["schedule_date"]
-                      }`,
-                      schedule_exist: true
+                      message: `${time_clash["full_name"]} has schedule on ${time_clash["schedule_date"]}`,
+                      schedule_exist: true,
                     };
                     next();
                     return;
                   } else {
                     const doctorSchedule = [];
 
-                    input.schedule_detail.forEach(doctor => {
-                      newDateList.forEach(n_date => {
+                    input.schedule_detail.forEach((doctor) => {
+                      newDateList.forEach((n_date) => {
                         doctorSchedule.push({
                           provider_id: doctor["provider_id"],
                           clinic_id: doctor["clinic_id"],
                           slot: doctor["slot"],
-                          schedule_date: n_date
+                          schedule_date: n_date,
                         });
                       });
                     });
@@ -1954,7 +1938,7 @@ export default {
                       "provider_id",
                       "clinic_id",
                       "slot",
-                      "schedule_date"
+                      "schedule_date",
                     ];
 
                     _mysql
@@ -1969,36 +1953,36 @@ export default {
                           created_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
-                        bulkInsertOrUpdate: true
+                        bulkInsertOrUpdate: true,
                       })
-                      .then(schedule_detailResult => {
+                      .then((schedule_detailResult) => {
                         _mysql.releaseConnection();
                         req.records = schedule_detailResult;
                         next();
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.releaseConnection();
                         next(e);
                       });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.releaseConnection();
                   next(e);
                 });
             } else {
               req.records = {
                 schedule_exist: true,
-                message: "Please select doctors"
+                message: "Please select doctors",
               };
               next();
               return;
             }
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -2030,7 +2014,9 @@ export default {
         SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
         where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' \
         and sub_department_id=? and provider_id=? and appointment_date=? " +
-          strQry,
+          strQry +
+          ";select employee_code,sub_department_code from hims_d_employee as e inner join hims_d_sub_department as d \
+          on d.hims_d_sub_department_id = e.sub_department_id where e.hims_d_employee_id =?;",
         values: [
           req.userIdentity.hospital_id,
           input.appointment_date,
@@ -2044,11 +2030,12 @@ export default {
 
           input.sub_department_id,
           input.provider_id,
-          input.appointment_date
+          input.appointment_date,
+          input.provider_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(slotResult => {
+      .then((slotResult) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
@@ -2099,22 +2086,28 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               _mysql.releaseConnection();
               req.records = result;
+              req.employee_code = slotResult[2][0]["employee_code"];
+              req.sub_department_code = slotResult[2][0]["sub_department_code"];
+              if (input.is_stand_by === "N") {
+                sendPatientAppointment(req, res);
+              }
+
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2131,7 +2124,10 @@ export default {
         appointment_to_time from hims_f_patient_appointment where record_status='A'\
         and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
-        or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;",
+        or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;\
+        select employee_code,sub_department_code from hims_d_employee as e inner join hims_d_sub_department as d \
+        on d.hims_d_sub_department_id = e.sub_department_id where e.hims_d_employee_id =?;\
+        SELECT description FROM hims_d_appointment_status where hims_d_appointment_status_id=?; ",
         values: [
           input.appointment_date,
           input.provider_id,
@@ -2140,15 +2136,17 @@ export default {
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_to_time,
-          input.hims_f_patient_appointment_id
-        ]
+          input.hims_f_patient_appointment_id,
+          input.provider_id,
+          input.appointment_status_id,
+        ],
       })
-      .then(slotResult => {
+      .then((slotResult) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
 
-        if (slotResult.length > 0 && input.is_stand_by != "Y") {
+        if (slotResult[0].length > 0 && input.is_stand_by != "Y") {
           _mysql.releaseConnection();
           req.records = { slotExist: true };
           next();
@@ -2191,21 +2189,28 @@ export default {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 input.record_status,
-                input.hims_f_patient_appointment_id
-              ]
+                input.hims_f_patient_appointment_id,
+              ],
             })
-            .then(results => {
+            .then((results) => {
               _mysql.releaseConnection();
               req.records = results;
+              if (input.is_stand_by === "N") {
+                req.employee_code = slotResult[1][0]["employee_code"];
+                req.sub_department_code =
+                  slotResult[1][0]["sub_department_code"];
+                req.appointment_status = slotResult[2][0]["description"];
+                updatePatientAppointment(req);
+              }
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2236,14 +2241,14 @@ export default {
     contact_number,email,send_to_provider,gender,confirmed,visit_created,\
     confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
     from hims_f_patient_appointment where record_status='A'  and hospital_id=? ${selectQry}`,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2265,14 +2270,14 @@ export default {
       .executeQuery({
         query: `select hims_d_employee_id as employee_id, services_id, sub_department_id from hims_d_employee \
          where record_status='A' and hospital_id=?  ${selectQry}`,
-        values: [req.userIdentity.hospital_id]
+        values: [req.userIdentity.hospital_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2296,15 +2301,15 @@ export default {
           input.cancel_reason,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.hims_f_patient_appointment_id
-        ]
+          input.hims_f_patient_appointment_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2327,11 +2332,11 @@ export default {
           input.to_date,
           input.sub_department_id,
           req.userIdentity.hospital_id,
-          input.providers
+          input.providers,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
@@ -2340,9 +2345,7 @@ export default {
           _mysql.releaseConnection();
           req.records = {
             invalid_opertaion: true,
-            message: `Cant delete ,${
-              result[0]["full_name"]
-            } has appointments on  ${result[0]["appointment_date"]} `
+            message: `Cant delete ,${result[0]["full_name"]} has appointments on  ${result[0]["appointment_date"]} `,
           };
           next();
         } else {
@@ -2362,24 +2365,24 @@ export default {
                 input.providers,
                 input.appointment_schedule_header_id,
                 input.providers,
-                input.appointment_schedule_header_id
-              ]
+                input.appointment_schedule_header_id,
+              ],
             })
-            .then(delDesult => {
+            .then((delDesult) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = delDesult;
                 next();
               });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -2398,27 +2401,27 @@ export default {
            where hims_f_patient_appointment_id=? and A.hospital_id=?`,
           values: [
             req.query.hims_f_patient_appointment_id,
-            req.userIdentity.hospital_id
-          ]
+            req.userIdentity.hospital_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid appointment id"
+        message: "please provide valid appointment id",
       };
 
       next();
     }
-  }
+  },
 };
 //[0,1,2,3,4,5,6]
 function getDaysArray(start, end, days) {
