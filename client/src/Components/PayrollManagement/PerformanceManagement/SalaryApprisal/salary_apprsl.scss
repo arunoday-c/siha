@@ -5,16 +5,11 @@
     margin-top: 9px;
     background: #fff !important;
   }
-  #NewAppraisalEarnings_Cntr {
+  #NewEarGrid_Cntr,
+  #NewDedGrid_Cntr,
+  #NewConGrid_Cntr {
     .ReactTable {
       max-height: 55vh !important;
-    }
-  }
-
-  #NewAppraisalContributions_Cntr,
-  #NewAppraisalDeductions_Cntr {
-    .ReactTable {
-      max-height: 18vh !important;
     }
   }
 }
