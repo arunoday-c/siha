@@ -80,12 +80,12 @@ export function getDispatchForInvoice(req, res, next) {
                 query:
                     "SELECT SQ.*, SQ.hims_f_dispatch_note_header_id as dispatch_note_header_id, C.customer_name, \
                     H.hospital_name, SO.sales_order_number, SO.hims_f_sales_order_id,SO.payment_terms,\
-                    P.project_desc as project_name from hims_f_sales_dispatch_note_header SQ \
+                    P.project_desc as project_name, SO.is_completed from hims_f_sales_dispatch_note_header SQ \
                     inner join hims_f_sales_order SO on SO.hims_f_sales_order_id = SQ.sales_order_id \
                     inner join hims_d_customer C on SQ.customer_id = C.hims_d_customer_id \
                     inner join hims_d_hospital H  on SQ.hospital_id = H.hims_d_hospital_id \
                     inner join hims_d_project P  on SQ.project_id = P.hims_d_project_id \
-                    where SQ.sales_order_id =? ",
+                    where SQ.invoice_generated='N' and SQ.sales_order_id =?;",
                 values: [req.query.sales_order_id],
                 printQuery: true
             })
@@ -689,43 +689,80 @@ function updateSalesOrder(options) {
             let input = options.input;
             let _mysql = options._mysql;
             let req = options.req
+            let strQuery = ""
+            console.log("input.is_completed", input.is_completed)
+            if (input.sales_invoice_mode === "I") {
+                let dispatch_note_header_id = _.map(input.invoice_entry_detail_item, o => {
+                    return o.dispatch_note_header_id;
+                });
+                strQuery += mysql.format(
+                    "UPDATE hims_f_sales_dispatch_note_header set invoice_generated = 'Y', updated_date=?, updated_by=? \
+                    where hims_f_dispatch_note_header_id in (?);",
+                    [
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        dispatch_note_header_id
+                    ]
+                );
+                if (input.is_completed === "Y") {
+                    strQuery += mysql.format(
+                        "UPDATE hims_f_sales_order set closed = 'Y', closed_date=?, closed_by=? \
+                            where hims_f_sales_order_id=?;",
+                        [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
+                            input.sales_order_id,
 
-            _mysql
-                .executeQuery({
-                    query: "UPDATE hims_f_sales_order set closed = 'Y', closed_date=?, closed_by=? \
-                        where hims_f_sales_order_id=?",
-                    values: [
+                        ]
+                    );
+                }
+            } else {
+                strQuery += mysql.format(
+                    "UPDATE hims_f_sales_order set closed = 'Y', closed_date=?, closed_by=? \
+                        where hims_f_sales_order_id=?;",
+                    [
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         input.sales_order_id
-                    ],
+                    ]
+                );
+            }
+            _mysql
+                .executeQuery({
+                    query: strQuery,
+                    // values: [
+                    //     new Date(),
+                    //     req.userIdentity.algaeh_d_app_user_id,
+                    //     input.sales_order_id
+                    // ],
                     printQuery: true
                 })
                 .then(update_Result => {
-                    if (input.sales_invoice_mode === "I") {
-                        let dispatch_note_header_id = _.map(input.invoice_entry_detail_item, o => {
-                            return o.dispatch_note_header_id;
-                        });
-                        _mysql
-                            .executeQuery({
-                                query: "UPDATE hims_f_sales_dispatch_note_header set invoice_generated = 'Y', updated_date=?, updated_by=? \
-                        where hims_f_dispatch_note_header_id in (?)",
-                                values: [
-                                    new Date(),
-                                    req.userIdentity.algaeh_d_app_user_id,
-                                    dispatch_note_header_id
-                                ],
-                                printQuery: true
-                            })
-                            .then(update_Result => {
-                                resolve()
-                            })
-                            .catch(error => {
-                                reject(error);
-                            });
-                    } else {
-                        resolve()
-                    }
+                    resolve()
+                    // if (input.sales_invoice_mode === "I") {
+                    //     let dispatch_note_header_id = _.map(input.invoice_entry_detail_item, o => {
+                    //         return o.dispatch_note_header_id;
+                    //     });
+                    //     _mysql
+                    //         .executeQuery({
+                    //             query: "UPDATE hims_f_sales_dispatch_note_header set invoice_generated = 'Y', updated_date=?, updated_by=? \
+                    //     where hims_f_dispatch_note_header_id in (?)",
+                    //             values: [
+                    //                 new Date(),
+                    //                 req.userIdentity.algaeh_d_app_user_id,
+                    //                 dispatch_note_header_id
+                    //             ],
+                    //             printQuery: true
+                    //         })
+                    //         .then(update_Result => {
+                    //             resolve()
+                    //         })
+                    //         .catch(error => {
+                    //             reject(error);
+                    //         });
+                    // } else {
+                    //     resolve()
+                    // }
                 })
                 .catch(error => {
                     reject(error);

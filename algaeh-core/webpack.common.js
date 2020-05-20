@@ -1,6 +1,7 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
 const appConf = require("../algaeh-modules.json");
+const webpack = require("webpack");
 const { moduleList } = appConf;
 
 function resolvePaths(list) {
@@ -15,16 +16,16 @@ function resolvePaths(list) {
 module.exports = {
   target: "node",
   entry: {
-    app: ["./src/index.js"]
+    app: ["./src/index.js"],
   },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "[name].js"
+    filename: "[name].js",
   },
   resolve: {
     extensions: [".js", ".json"],
-    symlinks: false,
-    alias: resolvePaths(moduleList)
+    symlinks: true,
+    alias: resolvePaths(moduleList),
   },
   module: {
     rules: [
@@ -34,15 +35,16 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env"]
-          }
-        }
-      }
-    ]
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+    ],
   },
+  plugins: [new webpack.ContextReplacementPlugin(/.*/)],
   externals: [
     nodeExternals({
-      whitelist: Object.keys(moduleList)
-    })
-  ]
+      whitelist: Object.keys(moduleList),
+    }),
+  ],
 };

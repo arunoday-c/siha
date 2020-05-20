@@ -731,7 +731,7 @@ export default class EndServiceOption extends Component {
                             {
                               fieldName: "action",
                               label: (
-                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
                               displayTemplate: (row) => {
                                 return (
@@ -837,7 +837,7 @@ export default class EndServiceOption extends Component {
                             {
                               fieldName: "action",
                               label: (
-                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
                               displayTemplate: (row) => {
                                 return (
