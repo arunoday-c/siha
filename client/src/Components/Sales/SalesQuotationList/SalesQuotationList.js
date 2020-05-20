@@ -277,9 +277,13 @@ class SalesQuotationList extends Component {
                             <span className="badge badge-info">
                               Order Created
                             </span>
+                          ) : row.qotation_status === "CL" ? (
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
                           ) : (
-                                <span className="badge badge-success">Closed</span>
-                              );
+                                  <span className="badge badge-success">Closed</span>
+                                );
                         },
                         disabled: true,
                         others: {

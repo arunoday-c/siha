@@ -1,4 +1,5 @@
 import algaehMysql from "algaeh-mysql";
+import mysql from "mysql";
 
 export function getSalesQuotation(req, res, next) {
   const _mysql = new algaehMysql();
@@ -268,11 +269,33 @@ export function updateSalesQuotation(req, res, next) {
   // const utilities = new algaehUtilities();
   try {
 
+    let strQuery = ""
+
+    if (req.body.cancelled === "Y") {
+      strQuery += mysql.format(
+        "UPDATE hims_f_sales_quotation set qotation_status='CL', updated_by=?, updated_date=? \
+          WHERE hims_f_sales_quotation_id=?",
+        [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.body.hims_f_sales_quotation_id
+        ]
+      );
+    } else {
+      strQuery += mysql.format(
+        "UPDATE hims_f_sales_quotation set comments=? , updated_by=?, updated_date=? \
+          WHERE hims_f_sales_quotation_id=?",
+        [
+          req.body.comments,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.body.hims_f_sales_quotation_id
+        ]
+      );
+    }
     _mysql
       .executeQuery({
-        query:
-          "update hims_f_sales_quotation set comments=? where hims_f_sales_quotation_id=?",
-        values: [req.body.comments, req.body.hims_f_sales_quotation_id],
+        query: strQuery,
         printQuery: true
       })
       .then(headerResult => {
