@@ -59,7 +59,7 @@ export default {
         .executeQuery({
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
-            select finance_account_head_id from finance_account_head where account_code='2.2.2';",
+            select finance_account_head_id from finance_account_head where account_code='2.2.2.1';",
         })
         .then((result) => {
           if (
