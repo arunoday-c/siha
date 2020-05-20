@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { Switch, Route, BrowserRouter } from "react-router-dom";
 import { retry } from "./utils/GlobalFunctions";
+import { IdleManager } from "./Components/common/IdleManager";
 import Login from "./Components/Login/Login";
 import Layout from "./Components/common/layout";
 import Experiment from "./Components/Experiment";
@@ -402,7 +403,9 @@ const SalesReturnEntry = React.lazy(() =>
 );
 
 const CustomerContractList = React.lazy(() =>
-  retry(() => import("./Components/Sales/CustomerContractList/CustomerContractList"))
+  retry(() =>
+    import("./Components/Sales/CustomerContractList/CustomerContractList")
+  )
 );
 
 const PatientRecall = React.lazy(() =>
@@ -542,13 +545,13 @@ const appRoutes = [
   {
     path: "/",
     isExactPath: true,
-    component: <Login />
+    component: <Login />,
   },
   {
     path: "/NoDashboard",
     isExactPath: true,
     noSecurityCheck: true,
-    component: <DefaultLandingPage />
+    component: <DefaultLandingPage />,
   },
   // {
   //   path: "/CommonDashboard",
@@ -562,433 +565,433 @@ const appRoutes = [
   {
     path: "/HISDashboard",
     isExactPath: true,
-    component: <HISDashboard />
+    component: <HISDashboard />,
   },
   {
     path: "/FrontdeskDashboard",
     isExactPath: true,
-    component: <FrontdeskDashboard />
+    component: <FrontdeskDashboard />,
   },
   {
     path: "/DoctorDashboard",
     isExactPath: true,
-    component: <DoctorDashboard />
+    component: <DoctorDashboard />,
   },
   {
     path: "/LabDashboard",
     isExactPath: true,
-    component: <LabDashboard />
+    component: <LabDashboard />,
   },
   {
     path: "/PharmacyDashboard",
     isExactPath: true,
-    component: <PharmacyDashboard />
+    component: <PharmacyDashboard />,
   },
   {
     path: "/InventoryDashboard",
     isExactPath: true,
-    component: <InventoryDashboard />
+    component: <InventoryDashboard />,
   },
   {
     path: "/HrDashboard",
     isExactPath: true,
-    component: <HrDashboard />
+    component: <HrDashboard />,
   },
   {
     path: "/FinDashboard",
     isExactPath: true,
-    component: <FinDashboard />
+    component: <FinDashboard />,
   },
   {
     path: "/AlgaehModules",
     isExactPath: true,
-    component: <AlgaehModules />
+    component: <AlgaehModules />,
   },
 
   {
     path: "/PointOfSale",
     isExactPath: true,
-    component: <PointOfSale />
+    component: <PointOfSale />,
   },
 
   {
     path: "/ItemSetup",
     isExactPath: true,
-    component: <ItemSetup />
+    component: <ItemSetup />,
   },
   {
     path: "/AppointmentSetup",
     isExactPath: true,
-    component: <AppointmentSetup />
+    component: <AppointmentSetup />,
   },
   {
     path: "/LabSetup",
     isExactPath: true,
-    component: <LabSetup />
+    component: <LabSetup />,
   },
   {
     path: "/HospitalServiceSetup",
     isExactPath: true,
-    component: <HospitalServiceSetup />
+    component: <HospitalServiceSetup />,
   },
   {
     path: "/InventorySetup",
     isExactPath: true,
-    component: <InventorySetup />
+    component: <InventorySetup />,
   },
   {
     path: "/InvestigationSetup",
     isExactPath: true,
-    component: <InvestigationSetup />
+    component: <InvestigationSetup />,
   },
   {
     path: "/InventoryItemMaster",
     isExactPath: true,
-    component: <InventoryItemMaster />
+    component: <InventoryItemMaster />,
   },
   {
     path: "/MRDList",
     isExactPath: true,
-    component: <MRDList />
+    component: <MRDList />,
   },
   {
     path: "/InvoiceGeneration",
     isExactPath: true,
-    component: <InvoiceGeneration />
+    component: <InvoiceGeneration />,
   },
   {
     path: "/ItemMomentEnquiry",
     isExactPath: true,
-    component: <ItemMomentEnquiry />
+    component: <ItemMomentEnquiry />,
   },
   {
     path: "/FrontDesk",
     isExactPath: true,
-    component: <PatientRegistration />
+    component: <PatientRegistration />,
   },
   {
     path: "/Appointment",
     isExactPath: true,
-    component: <FrontDesk screen="Appointment" />
+    component: <FrontDesk screen="Appointment" />,
   },
   {
     path: "/UpdatePatientDetails",
     isExactPath: true,
-    component: <UpdatePatientDetails />
+    component: <UpdatePatientDetails />,
   },
   {
     path: "/BusinessSetup",
     isExactPath: true,
-    component: <BusinessSetup />
+    component: <BusinessSetup />,
   },
   {
     path: "/CommonSetup",
     isExactPath: true,
-    component: <CommonSetup />
+    component: <CommonSetup />,
   },
   {
     path: "/OPBilling",
     isExactPath: true,
-    component: <OPBilling />
+    component: <OPBilling />,
   },
   {
     path: "/BillDetails",
     isExactPath: true,
-    component: <BillDetails />
+    component: <BillDetails />,
   },
   {
     path: "/InsuranceSetup",
     isExactPath: true,
-    component: <InsuranceSetup />
+    component: <InsuranceSetup />,
   },
   {
     path: "/SampleCollection",
     isExactPath: true,
-    component: <SampleCollection />
+    component: <SampleCollection />,
   },
   {
     path: "/DoctorsWorkbench",
     isExactPath: true,
-    component: <DoctorsWorkbench />
+    component: <DoctorsWorkbench />,
   },
   {
     path: "/NurseWorkbench",
     isExactPath: true,
-    component: <NurseWorkbench />
+    component: <NurseWorkbench />,
   },
   {
     path: "/PatientPackages",
     isExactPath: true,
-    component: <PatientPackages />
+    component: <PatientPackages />,
   },
 
   {
     path: "/PatientProfile",
     isExactPath: true,
-    component: <PatientProfile />
+    component: <PatientProfile />,
   },
   {
     path: "/AcknowledgeList",
     isExactPath: true,
-    component: <AcknowledgeList />
+    component: <AcknowledgeList />,
   },
   {
     path: "/ExpiringItemList",
     isExactPath: true,
-    component: <ExpiringItemList />
+    component: <ExpiringItemList />,
   },
   {
     path: "/InvAcknowledgeList",
     isExactPath: true,
-    component: <InvAcknowledgeList />
+    component: <InvAcknowledgeList />,
   },
   {
     path: "/MedicalWorkbenchSetup",
     isExactPath: true,
-    component: <MedicalWorkbenchSetup />
+    component: <MedicalWorkbenchSetup />,
   },
   {
     path: "/PharmacySetup",
     isExactPath: true,
-    component: <PharmacySetup />
+    component: <PharmacySetup />,
   },
   {
     path: "/ProcedureSetup",
     isExactPath: true,
-    component: <ProcedureSetup />
+    component: <ProcedureSetup />,
   },
   {
     path: "/VendorSetup",
     isExactPath: true,
-    component: <VendorSetup />
+    component: <VendorSetup />,
   },
   {
     path: "/CustomerSetup",
     isExactPath: true,
-    component: <CustomerSetup />
+    component: <CustomerSetup />,
   },
   {
     path: "/ERPSettings",
     isExactPath: true,
-    component: <ERPSettings />
+    component: <ERPSettings />,
   },
   {
     path: "/SalesSetup",
     isExactPath: true,
-    component: <SalesSetup />
+    component: <SalesSetup />,
   },
   {
     path: "/DayEndProcess",
     isExactPath: true,
-    component: <DayEndProcess />
+    component: <DayEndProcess />,
   },
 
   {
     path: "/FinanceMapping",
     isExactPath: true,
-    component: <FinanceFragment path="Mapping" />
+    component: <FinanceFragment path="Mapping" />,
   },
 
   {
     path: "/CostCenter",
     isExactPath: true,
-    component: <FinanceFragment path="CostCenter" />
+    component: <FinanceFragment path="CostCenter" />,
   },
 
   {
     path: "/Accounts",
     isExactPath: true,
-    component: <FinanceFragment path="Accounts" />
+    component: <FinanceFragment path="Accounts" />,
   },
   {
     path: "/Transactions",
     isExactPath: true,
-    component: <FinanceFragment path="Transactions" />
+    component: <FinanceFragment path="Transactions" />,
   },
   {
     path: "/JournalVoucher",
     isExactPath: true,
-    component: <FinanceFragment path="JournalVoucher" />
+    component: <FinanceFragment path="JournalVoucher" />,
   },
   {
     path: "/FinanceReports",
     isExactPath: true,
-    component: <FinanceFragment path="FinanceReports" />
+    component: <FinanceFragment path="FinanceReports" />,
   },
   {
     path: "/FinanceOptions",
     isExactPath: true,
-    component: <FinanceFragment path="FinanceOptions" />
+    component: <FinanceFragment path="FinanceOptions" />,
   },
   {
     path: "/QuickSearchFinance",
     isExactPath: true,
-    component: <FinanceFragment path="QuickSearchFinance" />
+    component: <FinanceFragment path="QuickSearchFinance" />,
   },
   {
     path: "/CustomerListFinance",
     isExactPath: true,
-    component: <FinanceFragment path="CustomerListFinance" />
+    component: <FinanceFragment path="CustomerListFinance" />,
   },
   {
     path: "/CustomerPayment",
     isExactPath: true,
-    component: <FinanceFragment path="CustomerPayment" />
+    component: <FinanceFragment path="CustomerPayment" />,
   },
   {
     path: "/SupplierListFinance",
     isExactPath: true,
-    component: <FinanceFragment path="SupplierListFinance" />
+    component: <FinanceFragment path="SupplierListFinance" />,
   },
   {
     path: "/SupplierPayment",
     isExactPath: true,
-    component: <FinanceFragment path="SupplierPayment" />
+    component: <FinanceFragment path="SupplierPayment" />,
   },
   {
     path: "/NurseWorkbench",
     isExactPath: true,
-    component: <NurseWorkbench />
+    component: <NurseWorkbench />,
   },
   {
     path: "/AdministrationSetup",
     isExactPath: true,
-    component: <AdministrationSetup />
+    component: <AdministrationSetup />,
   },
   {
     path: "/OPBillCancellation",
     isExactPath: true,
-    component: <OPBillCancellation />
+    component: <OPBillCancellation />,
   },
   {
     path: "/OPCreditSettlement",
     isExactPath: true,
-    component: <OPCreditSettlement />
+    component: <OPCreditSettlement />,
   },
   {
     path: "/POSCreditSettlement",
     isExactPath: true,
-    component: <POSCreditSettlement />
+    component: <POSCreditSettlement />,
   },
   {
     path: "/StockAdjustment",
     isExactPath: true,
-    component: <StockAdjustment />
+    component: <StockAdjustment />,
   },
   {
     path: "/SelfService",
     isExactPath: true,
-    component: <SelfService />
+    component: <SelfService />,
   },
   {
     path: "/EmpServ",
     isExactPath: true,
-    component: <EmpServ />
+    component: <EmpServ />,
   },
   {
     path: "/AttendanceRegularization",
     isExactPath: true,
-    component: <AttendanceRegularization />
+    component: <AttendanceRegularization />,
   },
   {
     path: "/PayrollSettings",
     isExactPath: true,
-    component: <PayrollSettings />
+    component: <PayrollSettings />,
   },
   {
     path: "/SalaryManagement",
     isExactPath: true,
-    component: <SalaryManagement />
+    component: <SalaryManagement />,
   },
   {
     path: "/HolidayMgmnt",
     isExactPath: true,
-    component: <HolidayMgmnt />
+    component: <HolidayMgmnt />,
   },
   {
     path: "/HRSettings",
     isExactPath: true,
-    component: <HRSettings />
+    component: <HRSettings />,
   },
   {
     path: "/LeaveManagement",
     isExactPath: true,
-    component: <LeaveManagement />
+    component: <LeaveManagement />,
   },
   {
     path: "/AttendanceManagement",
     isExactPath: true,
-    component: <AttendanceManagement />
+    component: <AttendanceManagement />,
   },
   {
     path: "/ExitManagement",
     isExactPath: true,
-    component: <ExitManagement />
+    component: <ExitManagement />,
   },
   {
     path: "/PayrollSettings",
     isExactPath: true,
-    component: <PayrollSettings />
+    component: <PayrollSettings />,
   },
   {
     path: "/LoanManagement",
     isExactPath: true,
-    component: <LoanManagement />
+    component: <LoanManagement />,
   },
   {
     path: "/PayrollWorkBench",
     isExactPath: true,
-    component: <PayrollWorkBench />
+    component: <PayrollWorkBench />,
   },
   {
     path: "/PerformanceManagement",
     isExactPath: true,
-    component: <PerformanceManagement />
+    component: <PerformanceManagement />,
   },
   {
     path: "/EmployeeDocuments",
     isExactPath: true,
-    component: <EmployeeDocuments />
+    component: <EmployeeDocuments />,
   },
   {
     path: "/PayrollOptions",
     isExactPath: true,
-    component: <PayrollOptions />
+    component: <PayrollOptions />,
   },
   {
     path: "/ClinicalDeskNew",
     isExactPath: true,
-    component: <ClinicalDeskNew />
+    component: <ClinicalDeskNew />,
   },
   {
     path: "/EmpShiftRost",
     isExactPath: true,
-    component: <EmpShiftRost />
+    component: <EmpShiftRost />,
   },
   {
     path: "/Wps",
     isExactPath: true,
-    component: <Wps />
+    component: <Wps />,
   },
   {
     path: "/ProjJobCst",
     isExactPath: true,
-    component: <ProjJobCst />
+    component: <ProjJobCst />,
   },
   {
     path: "/OrgChart",
     isExactPath: true,
-    component: <OrgChart />
+    component: <OrgChart />,
   },
   {
     path: "/PackageSetup",
     isExactPath: true,
-    component: <PackageSetup />
+    component: <PackageSetup />,
   },
   {
     path: "/FavouriteOrderList",
     isExactPath: true,
-    component: <FavouriteOrderList />
+    component: <FavouriteOrderList />,
   },
   // {
   //   path: "/PackageBilling",
@@ -998,319 +1001,320 @@ const appRoutes = [
   {
     path: "/DiagramMaster",
     isExactPath: true,
-    component: <DiagramMaster />
+    component: <DiagramMaster />,
   },
   {
     path: "/PhysioTherapy",
     isExactPath: true,
-    component: <PhysioTherapy />
+    component: <PhysioTherapy />,
   },
   {
     path: "/DentalLab",
     isExactPath: true,
-    component: <DentalLab />
+    component: <DentalLab />,
   },
   {
     path: "/SalesQuotation",
     isExactPath: true,
-    component: <SalesQuotation />
+    component: <SalesQuotation />,
   },
   {
     path: "/SalesOrder",
     isExactPath: true,
-    component: <SalesOrder />
+    component: <SalesOrder />,
   },
   {
     path: "/DispatchNote",
     isExactPath: true,
-    component: <DispatchNote />
+    component: <DispatchNote />,
   },
   {
     path: "/ContractManagement",
     isExactPath: true,
-    component: <ContractManagement />
+    component: <ContractManagement />,
   },
   {
     path: "/SalesInvoice",
     isExactPath: true,
-    component: <SalesInvoice />
+    component: <SalesInvoice />,
   },
   {
     path: "/SalesQuotationList",
     isExactPath: true,
-    component: <SalesQuotationList />
+    component: <SalesQuotationList />,
   },
   {
     path: "/SalesOrderList",
     isExactPath: true,
-    component: <SalesOrderList />
+    component: <SalesOrderList />,
   },
   {
     path: "/SalesReturnEntry",
     isExactPath: true,
-    component: <SalesReturnEntry />
+    component: <SalesReturnEntry />,
   },
   {
     path: "/CustomerContractList",
     isExactPath: true,
-    component: <CustomerContractList />
+    component: <CustomerContractList />,
   },
 
   {
     path: "/PatientRecall",
     isExactPath: true,
-    component: <PatientRecall />
+    component: <PatientRecall />,
   },
 
   {
     path: "/StaffCashCollection",
     isExactPath: true,
-    component: <StaffCashCollection />
+    component: <StaffCashCollection />,
   },
 
   {
     path: "/PhysicianScheduleSetup",
     isExactPath: true,
-    component: <PhysicianScheduleSetup />
+    component: <PhysicianScheduleSetup />,
   },
 
   {
     path: "/VisitClose",
     isExactPath: true,
-    component: <VisitClose />
+    component: <VisitClose />,
   },
 
   {
     path: "/OPBillPendingList",
     isExactPath: true,
-    component: <OPBillPendingList />
+    component: <OPBillPendingList />,
   },
 
   {
     path: "/AccessionAcknowledgement",
     isExactPath: true,
-    component: <AccessionAcknowledgement />
+    component: <AccessionAcknowledgement />,
   },
 
   {
     path: "/ResultEntryList",
     isExactPath: true,
-    component: <ResultEntryList />
+    component: <ResultEntryList />,
   },
 
   {
     path: "/RadOrderedList",
     isExactPath: true,
-    component: <RadOrderedList />
+    component: <RadOrderedList />,
   },
 
   {
     path: "/RadScheduledList",
     isExactPath: true,
-    component: <RadScheduledList />
+    component: <RadScheduledList />,
   },
 
   {
     path: "/PreApproval",
     isExactPath: true,
-    component: <PreApproval />
+    component: <PreApproval />,
   },
 
   {
     path: "/WorkListGeneration",
     isExactPath: true,
-    component: <WorkListGeneration />
+    component: <WorkListGeneration />,
   },
 
   {
     path: "/RCMWorkbench",
     isExactPath: true,
-    component: <RCMWorkbench />
+    component: <RCMWorkbench />,
   },
   {
     path: "/InitialStock",
     isExactPath: true,
-    component: <InitialStock />
+    component: <InitialStock />,
   },
   {
     path: "/InvInitialStock",
     isExactPath: true,
-    component: <InvInitialStock />
+    component: <InvInitialStock />,
   },
   {
     path: "/InvStockEnquiry",
     isExactPath: true,
-    component: <InvStockEnquiry />
+    component: <InvStockEnquiry />,
   },
   {
     path: "/InvItemMomentEnquiry",
     isExactPath: true,
-    component: <InvItemMomentEnquiry />
+    component: <InvItemMomentEnquiry />,
   },
   {
     path: "/InvRequisitionEntry",
     isExactPath: true,
-    component: <InvRequisitionEntry />
+    component: <InvRequisitionEntry />,
   },
   {
     path: "/InvRequisitionList",
     isExactPath: true,
-    component: <InvRequisitionList />
+    component: <InvRequisitionList />,
   },
   {
     path: "/InvTransferEntry",
     isExactPath: true,
-    component: <InvTransferEntry />
+    component: <InvTransferEntry />,
   },
   {
     path: "/SalesReturn",
     isExactPath: true,
-    component: <SalesReturn />
+    component: <SalesReturn />,
   },
   {
     path: "/PrescriptionList",
     isExactPath: true,
-    component: <PrescriptionList />
+    component: <PrescriptionList />,
   },
   {
     path: "/StockEnquiry",
     isExactPath: true,
-    component: <StockEnquiry />
+    component: <StockEnquiry />,
   },
 
   {
     path: "/InvConsumptionEntry",
     isExactPath: true,
-    component: <InvConsumptionEntry />
+    component: <InvConsumptionEntry />,
   },
   {
     path: "/InvPointOfSale",
     isExactPath: true,
-    component: <InvPointOfSale />
+    component: <InvPointOfSale />,
   },
   {
     path: "/PurchaseOrderEntry",
     isExactPath: true,
-    component: <PurchaseOrderEntry />
+    component: <PurchaseOrderEntry />,
   },
   {
     path: "/PurchaseReturnEntry",
     isExactPath: true,
-    component: <PurchaseReturnEntry />
+    component: <PurchaseReturnEntry />,
   },
   {
     path: "/PurchaseOrderList",
     isExactPath: true,
-    component: <PurchaseOrderList />
+    component: <PurchaseOrderList />,
   },
   {
     path: "/PurchaseRequestList",
     isExactPath: true,
-    component: <PurchaseRequestList />
+    component: <PurchaseRequestList />,
   },
   {
     path: "/DeliveryNoteEntry",
     isExactPath: true,
-    component: <DeliveryNoteEntry />
+    component: <DeliveryNoteEntry />,
   },
   {
     path: "/ReceiptEntry",
     isExactPath: true,
-    component: <ReceiptEntry />
+    component: <ReceiptEntry />,
   },
   {
     path: "/ShipmentEntry",
     isExactPath: true,
-    component: <ShipmentEntry />
+    component: <ShipmentEntry />,
   },
   {
     path: "/RequestForQuotation",
     isExactPath: true,
-    component: <RequestForQuotation />
+    component: <RequestForQuotation />,
   },
   {
     path: "/InvStockAdjustment",
     isExactPath: true,
-    component: <InvStockAdjustment />
+    component: <InvStockAdjustment />,
   },
   {
     path: "/EmployeeMasterIndex",
     isExactPath: true,
-    component: <EmployeeMasterIndex />
+    component: <EmployeeMasterIndex />,
   },
   {
     path: "/VendorsQuotation",
     isExactPath: true,
-    component: <VendorsQuotation />
+    component: <VendorsQuotation />,
   },
   {
     path: "/QuotationCompare",
     isExactPath: true,
-    component: <QuotationCompare />
+    component: <QuotationCompare />,
   },
   {
     path: "/DoctorCommission",
     isExactPath: true,
-    component: <DoctorCommission />
+    component: <DoctorCommission />,
   },
   {
     path: "/DoctorCommission",
     isExactPath: true,
-    component: <DoctorCommission />
+    component: <DoctorCommission />,
   },
   {
     path: "/RequisitionEntry",
     isExactPath: true,
-    component: <RequisitionEntry />
+    component: <RequisitionEntry />,
   },
   {
     path: "/RequisitionList",
     isExactPath: true,
-    component: <RequisitionList />
+    component: <RequisitionList />,
   },
   {
     path: "/ReportsList/:name",
     isExactPath: true,
     others: {
-      strict: true
+      strict: true,
     },
-    component: <ReportsList />
+    component: <ReportsList />,
   },
   {
     path: "/TransferEntry",
     isExactPath: true,
-    component: <TransferEntry />
+    component: <TransferEntry />,
   },
   {
     path: "/ConsumptionEntry",
     isExactPath: true,
-    component: <ConsumptionEntry />
+    component: <ConsumptionEntry />,
   },
 
   {
     path: "/JournalAuthorization",
     isExactPath: true,
-    component: <FinanceFragment path="JournalAuthorization" />
+    component: <FinanceFragment path="JournalAuthorization" />,
   },
   {
     path: "/Experiment",
     isExactPath: true,
-    component: <Experiment />
+    component: <Experiment />,
   },
   {
     path: "/ConcurrentTest",
     isExactPath: true,
-    component: <ConcurrentTest />
+    component: <ConcurrentTest />,
   },
   {
     path: "*",
-    component: <DefaultLandingPage />
-  }
+    component: <DefaultLandingPage />,
+  },
 ];
 
 function Routes() {
   return (
     <BrowserRouter>
+      <IdleManager />
       <Switch>
         {appRoutes.map((routeItem, idx) => {
           // const others = routeItem.others === undefined ? {} : routeItem.others;
@@ -1322,7 +1326,7 @@ function Routes() {
               path={path}
               exact={routeItem.isExactPath}
               strict={true}
-              render={params => {
+              render={(params) => {
                 if (routeItem.path === "/") return routeItem.component;
                 else {
                   return (
