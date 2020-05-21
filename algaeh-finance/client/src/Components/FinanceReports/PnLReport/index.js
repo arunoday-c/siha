@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   AlgaehMessagePop,
   AlgaehButton,
-  AlgaehAutoComplete
+  AlgaehAutoComplete,
 } from "algaeh-react-components";
 import ByYear from "./pandLYear";
 import ByCostCenter from "./pandLCostCenter";
@@ -26,10 +26,11 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
   useEffect(() => {
     if (branch_id) {
       const [required] = organization.filter(
-        el => el.hims_d_hospital_id === parseInt(branch_id, 10)
+        (el) => el.hims_d_hospital_id === parseInt(branch_id, 10)
       );
       setCostCenters(required.cost_centers);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branch_id]);
 
   function handleDropDown(_, value, name) {
@@ -64,13 +65,13 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     const input = {
       hospital_id: branch_id,
       cost_center_id,
-      year
+      year,
     };
     let extraHeaders = {};
     let others = {};
     if (excel) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
       input.excel = true;
@@ -80,17 +81,17 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       module: "finance",
       data: input,
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(response => {
+      .then((response) => {
         handleResponse(response, excel);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -101,7 +102,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
     let input = {};
     if (excel) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
       input.excel = true;
@@ -112,17 +113,17 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       data: input,
 
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(response => {
+      .then((response) => {
         handleResponse(response, excel);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -130,13 +131,13 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
   function loadByTotal(excel) {
     const input = {
       hospital_id: branch_id,
-      cost_center_id
+      cost_center_id,
     };
     let extraHeaders = {};
     let others = {};
     if (excel) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
       input.excel = true;
@@ -146,17 +147,17 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
       module: "finance",
       data: input,
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(response => {
+      .then((response) => {
         handleResponse(response, excel);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(false);
         AlgaehMessagePop({
           type: "error",
-          display: error
+          display: error,
         });
       });
   }
@@ -227,7 +228,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
           div={{ className: "col-3" }}
           label={{
             forceLabel: "Branch",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             value: String(branch_id),
@@ -235,16 +236,16 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             dataSource: {
               data: organization,
               valueField: "hims_d_hospital_id",
-              textField: "hospital_name"
+              textField: "hospital_name",
             },
-            onChange: handleDropDown
+            onChange: handleDropDown,
           }}
         />
         <AlgaehAutoComplete
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Cost Center",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             name: "cost_center_id",
@@ -252,16 +253,16 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             dataSource: {
               data: costCenters,
               valueField: "cost_center_id",
-              textField: "cost_center"
+              textField: "cost_center",
             },
-            onChange: handleDropDown
+            onChange: handleDropDown,
           }}
         />
         <AlgaehAutoComplete
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Year",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             name: "year",
@@ -269,16 +270,16 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             dataSource: {
               data: yearList,
               valueField: "value",
-              textField: "name"
+              textField: "name",
             },
-            onChange: handleDropDown
+            onChange: handleDropDown,
           }}
         />
         <AlgaehAutoComplete
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Based on",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             name: "columnType",
@@ -287,21 +288,21 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
               data: [
                 {
                   name: "Period",
-                  value: "by_year"
+                  value: "by_year",
                 },
                 {
                   name: "Cost Center",
-                  value: "by_center"
+                  value: "by_center",
                 },
                 {
                   name: "Total",
-                  value: "total"
-                }
+                  value: "total",
+                },
               ],
               valueField: "value",
-              textField: "name"
+              textField: "name",
             },
-            onChange: handleDropDown
+            onChange: handleDropDown,
           }}
         />
         <div className="col-2">
@@ -311,6 +312,7 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             onClick={onLoad}
             disabled={!columnType}
             data-name="preview"
+            loading={loading}
             style={{ marginTop: 15 }}
           >
             Preview
@@ -332,22 +334,22 @@ export default function PnLReport({ layout, finOptions, organization, style }) {
             style={{
               fontSize: "4rem",
               margin: "50px 0 20px",
-              color: "rgb(204, 204, 204)"
+              color: "rgb(204, 204, 204)",
             }}
           ></i>
           <p
             style={{
-              fontSize: "1rem"
+              fontSize: "1rem",
             }}
           >
             Apply filter and click load
           </p>
         </div>
       ) : (
-          <>
-            <Content />
-          </>
-        )}
+        <>
+          <Content />
+        </>
+      )}
     </>
   );
 }

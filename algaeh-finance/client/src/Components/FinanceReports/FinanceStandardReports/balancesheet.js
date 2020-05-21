@@ -5,7 +5,7 @@ import ReactToPrint from "react-to-print";
 import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
 import { handleFile } from "../FinanceReportEvents";
-import {  AlgaehMessagePop} from "algaeh-react-components";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 export default function BalanceSheet({ style, footer, layout, dates }) {
   const createPrintObject = useRef(undefined);
@@ -13,6 +13,7 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
 
   useEffect(() => {
     loadBalanceSheet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dates]);
 
   function loadBalanceSheet(excel) {
@@ -20,7 +21,7 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
     let others = {};
     if (excel === true) {
       extraHeaders = {
-        Accept: "blob"
+        Accept: "blob",
       };
       others = { responseType: "blob" };
     }
@@ -30,22 +31,22 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
       data: {
         from_date: dates[0],
         to_date: dates[1],
-        excel
+        excel,
       },
       extraHeaders,
-      options: others
+      options: others,
     })
-      .then(res => {
+      .then((res) => {
         if (excel) {
           handleFile(res.data, "balance_sheet");
         } else {
           setData(res.data.result);
         }
       })
-      .catch(e => {
+      .catch((e) => {
         AlgaehMessagePop({
           title: "error",
-          display: e.message
+          display: e.message,
         });
       });
   }

@@ -7,11 +7,10 @@ import PnLReport from "./PnLReport";
 
 export default function ReportMain({
   selected,
-  data,
   dates,
   layout,
   finOptions,
-  organization
+  organization,
 }) {
   switch (selected) {
     case "BS":
