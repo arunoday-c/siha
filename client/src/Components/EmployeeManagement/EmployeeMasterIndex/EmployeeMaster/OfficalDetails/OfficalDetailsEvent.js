@@ -114,10 +114,16 @@ const employeeStatusHandler = ($this, e) => {
     enable_active_status: e.value,
     date_of_releaving_label: _date_of_releaving,
     employee_status: e.value,
+    exit_date: null,
+    date_of_resignation: null,
+    reliving_date: null,
     ..._other,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     employee_status: e.value,
+    exit_date: null,
+    date_of_resignation: null,
+    reliving_date: null,
     ..._other,
   });
 };
