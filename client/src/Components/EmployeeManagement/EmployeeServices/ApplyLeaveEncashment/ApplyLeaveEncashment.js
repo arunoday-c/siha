@@ -347,7 +347,7 @@ class ApplyLeaveEncashment extends Component {
     }
     if (parseFloat(value) === 0) {
       swalMessage({
-        title: "Cannot be less than 0 Days",
+        title: "Cannot be 0 Days",
         type: "warning",
       });
       return;
