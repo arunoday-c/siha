@@ -4,6 +4,7 @@ import { useHistory } from "react-router-dom";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehModal, AlgaehButton } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
+import { clearItem } from "algaeh-react-components/storage";
 import IdleTimer from "react-idle-timer";
 
 export function IdleManager() {
@@ -13,22 +14,22 @@ export function IdleManager() {
   const idleRef = createRef();
 
   function onIdle() {
-    setVisible(true);
-  }
-
-  function onOk() {
     newAlgaehApi({
       uri: "/apiAuth/logout",
       method: "GET",
     })
       .then(() => {
-        setVisible(false);
-        history.push("/");
-        window.location.reload();
+        setVisible(true);
+        clearItem();
       })
       .catch((e) => {
-        setVisible(false);
+        setVisible(true);
       });
+  }
+
+  function onOk() {
+    history.push("/");
+    window.location.reload();
   }
 
   if (context.userToken) {

@@ -8,24 +8,28 @@ export default function ReportNavBar({ setSelected, selected }) {
   const REPORT_LIST = [
     {
       key: "BS",
-      title: "Balance Sheet"
+      title: "Balance Sheet",
     },
     {
       key: "PL",
-      title: "Profit and Loss"
+      title: "Profit and Loss",
     },
     {
       key: "TB",
-      title: "Trail Balance"
+      title: "Trail Balance",
     },
     {
       key: "AR",
-      title: "AR Aging"
+      title: "AR Aging",
     },
     {
       key: "AP",
-      title: "AP Aging"
-    }
+      title: "AP Aging",
+    },
+    {
+      key: "CF",
+      title: "Cashflow",
+    },
     // {
     //   key: "PLCost",
     //   title: "Profit & Loss by Cost Center"
@@ -40,7 +44,7 @@ export default function ReportNavBar({ setSelected, selected }) {
     <div className="col reportMenuSecLeft">
       <h6>Favourite Reports</h6>
       <ul className="menuListUl">
-        {REPORT_LIST.map(item => (
+        {REPORT_LIST.map((item) => (
           <li
             className={selectedClass(item.key)}
             onClick={() => setSelected(item.key)}
