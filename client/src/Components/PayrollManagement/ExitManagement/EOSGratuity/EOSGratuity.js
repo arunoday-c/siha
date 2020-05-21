@@ -324,7 +324,7 @@ class EOSGratuity extends Component {
             </div>
           </div> */}
 
-          <div className="col form-group">
+          <div className="col">
             <button
               onClick={this.clearState.bind(this)}
               style={{ marginTop: 19 }}
@@ -344,170 +344,76 @@ class EOSGratuity extends Component {
               )}
             </button>
           </div>
+
+          <div className="col">
+            <label className="style_Label ">Payment Status</label>
+            {this.state.gratuity_done === true ? (
+              <p>
+                {" "}
+                <span className="badge badge-success">
+                  Already send for payment
+                </span>
+              </p>
+            ) : (
+              <p>
+                {" "}
+                <span>------</span>
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="row">
-          <div className="col-7">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="col-12" style={{ marginTop: 7 }}>
-                  <div className="row">
-                    <div className="col-lg-8 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">
-                        Employee Information
-                      </label>
-                      <div className="row">
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Employee Code</label>
-                          <h6>
-                            {EosData.employee_code
-                              ? EosData.employee_code
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-8 form-group">
-                          <label className="style_Label ">Employee Name</label>
-                          <h6>
-                            {EosData.full_name ? EosData.full_name : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Date of Birth</label>
-                          <h6>
-                            {EosData.date_of_birth
-                              ? moment(EosData.date_of_birth).format(
-                                  "DD-MMM-YYYY"
-                                )
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Gender</label>
-                          <h6>{EosData.sex ? EosData.sex : "------"}</h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Sub Department</label>
-                          <h6>
-                            {EosData.sub_department_name
-                              ? EosData.sub_department_name
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">
-                            Date of Joining
-                          </label>
-                          <h6>
-                            {EosData.date_of_joining
-                              ? moment(EosData.date_of_joining).format(
-                                  "DD-MMM-YYYY"
-                                )
-                              : "------"}
-                          </h6>
-                        </div>
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Date of Resign</label>
-                          <h6>
-                            {EosData.date_of_resignation
-                              ? moment(EosData.date_of_resignation).format(
-                                  "DD-MMM-YYYY"
-                                )
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">Date of Exit</label>
-                          <h6>
-                            {EosData.exit_date
-                              ? moment(EosData.exit_date).format("DD-MMM-YYYY")
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4 form-group">
-                          <label className="style_Label ">
-                            Year of Service
-                          </label>
-                          <h6>
-                            {EosData.endOfServiceYears
-                              ? EosData.endOfServiceYears
-                              : 0}
-                            {/* {EosData.endOfServiceYears
-                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
-                              : 0}{" "} */}
-                            yrs
-                          </h6>
-                        </div>
-                        <div className="col-4 form-group">
-                          {EosData.entitled_amount === undefined ? (
-                            <>
-                              <label className="style_Label ">
-                                Eligiable Days
-                              </label>
-                              <h6>
-                                {" "}
-                                {EosData.eligible_day
-                                  ? parseFloat(EosData.eligible_day).toFixed(3)
-                                  : 0}{" "}
-                                Day(s)
-                              </h6>
-                            </>
-                          ) : (
-                            <>
-                              <label className="style_Label ">
-                                Entitled Amount
-                              </label>
-                              <h6>
-                                {GetAmountFormart(EosData.entitled_amount)}
-                              </h6>
-                            </>
-                          )}
-                        </div>
-                      </div>
+          <div className="col-12">
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Details</h3>
                     </div>
-                    <div className="col-4 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">
-                        Components Included
-                      </label>
-                      <div className="row">
-                        {/* <ul>
-                            {EosData.componentList.map((data, index) => (
-                          <li >
-                          <span>{data.short_desc}</span> ->
-                          <span>{getAmountFormart(data.amount)}</span>
-                          </li>
-                            ))}
-                        </ul> */}
-                        {EosData.componentList.map((data, index) => (
-                          <div
-                            className="col-12"
-                            key={data.hims_d_employee_earnings_id}
-                          >
-                            <label className="style_Label ">
-                              {data.short_desc === null
-                                ? data.earning_deduction_description
-                                : data.short_desc}
-                            </label>
-                            <h6>{GetAmountFormart(data.amount)}</h6>
-                          </div>
-                        ))}
+                    <div className="actions" />
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col">
+                        <label className="style_Label ">Employee Code</label>
+                        <h6>
+                          {EosData.employee_code
+                            ? EosData.employee_code
+                            : "------"}
+                        </h6>
                       </div>
-                      <div
-                        className="row"
-                        style={{ borderTop: "1px solid #c1c1c1" }}
-                      >
-                        <div className="col-12">
-                          <label className="style_Label ">Total</label>
-                          <h6>
-                            {GetAmountFormart(EosData.totalEarningComponents)}
-                          </h6>
-                        </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Employee Name</label>
+                        <h6>
+                          {EosData.full_name ? EosData.full_name : "------"}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Date of Birth</label>
+                        <h6>
+                          {EosData.date_of_birth
+                            ? moment(EosData.date_of_birth).format(
+                                "DD-MMM-YYYY"
+                              )
+                            : "------"}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Gender</label>
+                        <h6>{EosData.sex ? EosData.sex : "------"}</h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Sub Department</label>
+                        <h6>
+                          {EosData.sub_department_name
+                            ? EosData.sub_department_name
+                            : "------"}
+                        </h6>
                       </div>
                     </div>
                   </div>
@@ -515,149 +421,166 @@ class EOSGratuity extends Component {
               </div>
             </div>
           </div>
-
-          <div className="col-5">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  {/* <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Opening Gratuity Amount",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "previous_gratuity_amount",
-                      value: this.state.previous_gratuity_amount,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
-
-                  {/*  <div className="col-4 form-group">
-                    <label className="style_Label ">
-                      Opening Gratuity Amount
-                    </label>
-                    <h6>
-                      {this.state.calculated_gratutity_amount
-                        ? GetAmountFormart(
-                            this.state.calculated_gratutity_amount
-                          )
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div> */}
-
-                  {/* <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Computed Amount",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "calculated_gratutity_amount",
-                      value: this.state.calculated_gratutity_amount,
-                      events: {},
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
-
-                  <div className="col-8">
-                    <label className="style_Label ">
-                      Total Gratuity Amount
-                    </label>
-                    <h6 style={{ fontSize: "2em" }}>
-                      {this.state.actual_maount
-                        ? GetAmountFormart(this.state.actual_maount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-                  <div className="col-8">
-                    <label className="style_Label ">
-                      Gratuity Encashed Amount
-                    </label>
-                    <h6 style={{ fontSize: "2em" }}>
-                      {this.state.gratuity_encash
-                        ? GetAmountFormart(this.state.gratuity_encash)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  <div className="col-8">
-                    <label className="style_Label ">Computed Amount</label>
-                    <h6 style={{ fontSize: "2em" }}>
-                      {this.state.computed_amount
-                        ? GetAmountFormart(this.state.computed_amount)
-                        : GetAmountFormart(0)}
-                    </h6>
-                  </div>
-                  <div className="col form-group">
-                    <label className="style_Label ">Payment Status</label>
-                    {this.state.gratuity_done === true ? (
-                      <p>
-                        {" "}
-                        <span className="badge badge-success">
-                          Already send for payment
-                        </span>
-                      </p>
-                    ) : (
-                      <p>
-                        {" "}
-                        <span>------</span>
-                      </p>
-                    )}
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-7 form-group" }}
-                    label={{
-                      forceLabel: "Payable Amount",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      decimal: {
-                        allowNegative: false,
-                      },
-                      className: "txt-fld",
-                      name: "payable_amount",
-                      value: this.state.payable_amount,
-                      events: {
-                        onChange: this.textHandler.bind(this),
-                      },
-                      others: {
-                        disabled: this.state.gratuity_done,
-                        // type: "number"
-                      },
-                    }}
-                  />
-                  <div className="col-5">
-                    <div className="customCheckbox" style={{ marginTop: 24 }}>
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          onChange={this.changeChecks.bind(this)}
-                          value="FOR"
-                          name="gratuity_status"
-                        />
-                        <span>Forfeiture</span>
-                      </label>
+          <div className="col-12">
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Gratuity Details</h3>
                     </div>
+                    <div className="actions" />
                   </div>
-                  <div className="col-12">
-                    <label>Remarks</label>
-                    <textarea
-                      name="remarks"
-                      value={this.state.remarks}
-                      onChange={this.textHandler.bind(this)}
-                      className="textArea"
-                      disabled={this.state.gratuity_done}
-                    />
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col">
+                        <label className="style_Label ">Date of Joining</label>
+                        <h6>
+                          {EosData.date_of_joining
+                            ? moment(EosData.date_of_joining).format(
+                                "DD-MMM-YYYY"
+                              )
+                            : "------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Date of Resign</label>
+                        <h6>
+                          {EosData.date_of_resignation
+                            ? moment(EosData.date_of_resignation).format(
+                                "DD-MMM-YYYY"
+                              )
+                            : "------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Date of Exit</label>
+                        <h6>
+                          {EosData.exit_date
+                            ? moment(EosData.exit_date).format("DD-MMM-YYYY")
+                            : "------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Year of Service</label>
+                        <h6>
+                          {EosData.endOfServiceYears
+                            ? EosData.endOfServiceYears
+                            : 0}
+                          {/* {EosData.endOfServiceYears
+                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
+                              : 0}{" "} */}
+                          yrs
+                        </h6>
+                      </div>
+                      <div className="col">
+                        {EosData.entitled_amount === undefined ? (
+                          <>
+                            <label className="style_Label ">
+                              Eligiable Days
+                            </label>
+                            <h6>
+                              {" "}
+                              {EosData.eligible_day
+                                ? parseFloat(EosData.eligible_day).toFixed(3)
+                                : 0}{" "}
+                              Day(s)
+                            </h6>
+                          </>
+                        ) : (
+                          <>
+                            <label className="style_Label ">
+                              Entitled Amount
+                            </label>
+                            <h6>{GetAmountFormart(EosData.entitled_amount)}</h6>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                      <div className="col">
+                        <label className="style_Label ">
+                          Total Gratuity Amount
+                        </label>
+                        <h6>
+                          {this.state.actual_maount
+                            ? GetAmountFormart(this.state.actual_maount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <i className="fas fa-minus calcSybmbol"></i>
+                      <div className="col">
+                        <label className="style_Label ">
+                          Gratuity Encashed Amount
+                        </label>
+                        <h6>
+                          {this.state.gratuity_encash
+                            ? GetAmountFormart(this.state.gratuity_encash)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <i className="fas fa-equals calcSybmbol"></i>
+
+                      <div className="col">
+                        <label className="style_Label ">Computed Amount</label>
+                        <h6>
+                          {this.state.computed_amount
+                            ? GetAmountFormart(this.state.computed_amount)
+                            : GetAmountFormart(0)}
+                        </h6>
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col final_color" }}
+                        label={{
+                          forceLabel: "Payable Amount",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: {
+                            allowNegative: false,
+                          },
+                          className: "txt-fld",
+                          name: "payable_amount",
+                          value: this.state.payable_amount,
+                          events: {
+                            onChange: this.textHandler.bind(this),
+                          },
+                          others: {
+                            disabled: this.state.gratuity_done,
+                            // type: "number"
+                          },
+                        }}
+                      />
+                    </div>
+                    <div className="row">
+                      <div className="col-5">
+                        <div
+                          className="customCheckbox"
+                          style={{ marginTop: 24 }}
+                        >
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              onChange={this.changeChecks.bind(this)}
+                              value="FOR"
+                              name="gratuity_status"
+                            />
+                            <span>Forfeiture</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-12">
+                        <label>Remarks</label>
+                        <textarea
+                          name="remarks"
+                          value={this.state.remarks}
+                          onChange={this.textHandler.bind(this)}
+                          className="textArea"
+                          disabled={this.state.gratuity_done}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
