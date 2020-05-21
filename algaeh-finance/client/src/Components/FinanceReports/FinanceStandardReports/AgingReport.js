@@ -10,27 +10,25 @@ import { handleFile } from "../FinanceReportEvents";
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
-    receivable: { url: "getAccountReceivableAging", title: "Receivable" }
+    receivable: { url: "getAccountReceivableAging", title: "Receivable" },
   };
 
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
-  useEffect(
-    function () {
-      loadReport();
-    },
-    [type, dates]
-  );
+  useEffect(() => {
+    loadReport();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, dates]);
 
   function loadReport(excel) {
     let extraHeaders = {};
     if (excel === true) {
       extraHeaders = {
         headers: {
-          Accept: "blob"
+          Accept: "blob",
         },
-        others: { responseType: "blob" }
+        others: { responseType: "blob" },
       };
     }
     algaehApiCall({
@@ -40,10 +38,10 @@ export default function AgingReport({ style, result, layout, type, dates }) {
       data: {
         from_date: dates[0],
         to_date: dates[1],
-        excel
+        excel,
       },
       ...extraHeaders,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (excel) {
           handleFile(response.data, type);
         } else {
@@ -57,11 +55,11 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               ninety_days_amount: footer.ninety_days_total,
               above_ninety_days_amount: footer.above_ninety_days_total,
               balance: footer.grand_total,
-              customer: ""
+              customer: "",
             });
           }
         }
-      }
+      },
     });
   }
 
@@ -95,7 +93,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
               fieldName: "customer",
               label: "Vendor Name",
               filterable: true,
-              sortable: true
+              sortable: true,
               // style: {
               //   textStyle:"bold"
               // }
@@ -103,44 +101,44 @@ export default function AgingReport({ style, result, layout, type, dates }) {
             {
               fieldName: "todays_amount",
               label: "Current",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
             },
             {
               fieldName: "thirty_days_amount",
               label: "1-30 Days",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
             },
             {
               fieldName: "sixty_days_amount",
               label: "31-60 Days",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
             },
             {
               fieldName: "ninety_days_amount",
               label: "61-90 Days",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
             },
             {
               fieldName: "above_ninety_days_amount",
               label: "Over 90 Days",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
             },
             {
               fieldName: "balance",
               label: "Balance",
-              filterable: true
+              filterable: true,
               // alignColumn:"right",
-            }
+            },
           ]}
           isFilterable={true}
           data={data}
           footer={true}
-          aggregate={fieldName => {
+          aggregate={(fieldName) => {
             if (footerData) {
               return footerData[fieldName];
             }
