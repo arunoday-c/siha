@@ -199,6 +199,22 @@ export default class GratuityAccrual extends Component {
                         ),
                       },
                       {
+                        fieldName: "month",
+                        label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+                        others: {
+                          filterable: false,
+                          maxWidth: 50,
+                        },
+                      },
+                      {
+                        fieldName: "year",
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        others: {
+                          filterable: false,
+                          maxWidth: 50,
+                        },
+                      },
+                      {
                         fieldName: "gratuity_amount",
                         label: (
                           <AlgaehLabel

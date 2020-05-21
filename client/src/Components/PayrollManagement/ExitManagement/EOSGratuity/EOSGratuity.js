@@ -421,7 +421,7 @@ class EOSGratuity extends Component {
               </div>
             </div>
           </div>
-          <div className="col-12">
+          <div className="col-12" style={{ marginBottom: 50 }}>
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
