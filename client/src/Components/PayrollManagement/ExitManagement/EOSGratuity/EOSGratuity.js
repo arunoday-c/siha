@@ -433,152 +433,193 @@ class EOSGratuity extends Component {
                   </div>
                   <div className="portlet-body">
                     <div className="row">
-                      <div className="col">
-                        <label className="style_Label ">Date of Joining</label>
-                        <h6>
-                          {EosData.date_of_joining
-                            ? moment(EosData.date_of_joining).format(
-                                "DD-MMM-YYYY"
-                              )
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <label className="style_Label ">Date of Resign</label>
-                        <h6>
-                          {EosData.date_of_resignation
-                            ? moment(EosData.date_of_resignation).format(
-                                "DD-MMM-YYYY"
-                              )
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <label className="style_Label ">Date of Exit</label>
-                        <h6>
-                          {EosData.exit_date
-                            ? moment(EosData.exit_date).format("DD-MMM-YYYY")
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <label className="style_Label ">Year of Service</label>
-                        <h6>
-                          {EosData.endOfServiceYears
-                            ? EosData.endOfServiceYears
-                            : 0}
-                          {/* {EosData.endOfServiceYears
-                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
-                              : 0}{" "} */}
-                          yrs
-                        </h6>
-                      </div>
-                      <div className="col">
-                        {EosData.entitled_amount === undefined ? (
-                          <>
-                            <label className="style_Label ">
-                              Eligiable Days
-                            </label>
+                      <div className="col-4">
+                        <div className="row">
+                          {EosData.componentList.map((data, index) => (
+                            <div
+                              className="col-12"
+                              key={data.hims_d_employee_earnings_id}
+                            >
+                              <label className="style_Label ">
+                                {data.short_desc === null
+                                  ? data.earning_deduction_description
+                                  : data.short_desc}
+                              </label>
+                              <h6>{GetAmountFormart(data.amount)}</h6>
+                            </div>
+                          ))}{" "}
+                          <div className="col-12">
+                            <label className="style_Label ">Total</label>
                             <h6>
-                              {" "}
-                              {EosData.eligible_day
-                                ? parseFloat(EosData.eligible_day).toFixed(3)
-                                : 0}{" "}
-                              Day(s)
+                              {GetAmountFormart(EosData.totalEarningComponents)}
                             </h6>
-                          </>
-                        ) : (
-                          <>
-                            <label className="style_Label ">
-                              Entitled Amount
-                            </label>
-                            <h6>{GetAmountFormart(EosData.entitled_amount)}</h6>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col">
-                        <label className="style_Label ">
-                          Total Gratuity Amount
-                        </label>
-                        <h6>
-                          {this.state.actual_maount
-                            ? GetAmountFormart(this.state.actual_maount)
-                            : GetAmountFormart(0)}
-                        </h6>
-                      </div>
-                      <i className="fas fa-minus calcSybmbol"></i>
-                      <div className="col">
-                        <label className="style_Label ">
-                          Gratuity Encashed Amount
-                        </label>
-                        <h6>
-                          {this.state.gratuity_encash
-                            ? GetAmountFormart(this.state.gratuity_encash)
-                            : GetAmountFormart(0)}
-                        </h6>
-                      </div>
-                      <i className="fas fa-equals calcSybmbol"></i>
-
-                      <div className="col">
-                        <label className="style_Label ">Computed Amount</label>
-                        <h6>
-                          {this.state.computed_amount
-                            ? GetAmountFormart(this.state.computed_amount)
-                            : GetAmountFormart(0)}
-                        </h6>
-                      </div>
-                      <AlagehFormGroup
-                        div={{ className: "col final_color" }}
-                        label={{
-                          forceLabel: "Payable Amount",
-                          isImp: false,
-                        }}
-                        textBox={{
-                          decimal: {
-                            allowNegative: false,
-                          },
-                          className: "txt-fld",
-                          name: "payable_amount",
-                          value: this.state.payable_amount,
-                          events: {
-                            onChange: this.textHandler.bind(this),
-                          },
-                          others: {
-                            disabled: this.state.gratuity_done,
-                            // type: "number"
-                          },
-                        }}
-                      />
-                    </div>
-                    <div className="row">
-                      <div className="col-5">
-                        <div
-                          className="customCheckbox"
-                          style={{ marginTop: 24 }}
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              onChange={this.changeChecks.bind(this)}
-                              value="FOR"
-                              name="gratuity_status"
-                            />
-                            <span>Forfeiture</span>
-                          </label>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-12">
-                        <label>Remarks</label>
-                        <textarea
-                          name="remarks"
-                          value={this.state.remarks}
-                          onChange={this.textHandler.bind(this)}
-                          className="textArea"
-                          disabled={this.state.gratuity_done}
-                        />
+                      <div className="col-8">
+                        <div className="row">
+                          <div className="col">
+                            <label className="style_Label ">
+                              Date of Joining
+                            </label>
+                            <h6>
+                              {EosData.date_of_joining
+                                ? moment(EosData.date_of_joining).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Date of Resign
+                            </label>
+                            <h6>
+                              {EosData.date_of_resignation
+                                ? moment(EosData.date_of_resignation).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">Date of Exit</label>
+                            <h6>
+                              {EosData.exit_date
+                                ? moment(EosData.exit_date).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Year of Service
+                            </label>
+                            <h6>
+                              {EosData.endOfServiceYears
+                                ? EosData.endOfServiceYears
+                                : 0}
+                              {/* {EosData.endOfServiceYears
+                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
+                              : 0}{" "} */}
+                              yrs
+                            </h6>
+                          </div>
+                          <div className="col">
+                            {EosData.entitled_amount === undefined ? (
+                              <>
+                                <label className="style_Label ">
+                                  Eligiable Days
+                                </label>
+                                <h6>
+                                  {" "}
+                                  {EosData.eligible_day
+                                    ? parseFloat(EosData.eligible_day).toFixed(
+                                        3
+                                      )
+                                    : 0}{" "}
+                                  Day(s)
+                                </h6>
+                              </>
+                            ) : (
+                              <>
+                                <label className="style_Label ">
+                                  Entitled Amount
+                                </label>
+                                <h6>
+                                  {GetAmountFormart(EosData.entitled_amount)}
+                                </h6>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col">
+                            <label className="style_Label ">
+                              Total Gratuity Amount
+                            </label>
+                            <h6>
+                              {this.state.actual_maount
+                                ? GetAmountFormart(this.state.actual_maount)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <i className="fas fa-minus calcSybmbol"></i>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Gratuity Encashed Amount
+                            </label>
+                            <h6>
+                              {this.state.gratuity_encash
+                                ? GetAmountFormart(this.state.gratuity_encash)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <i className="fas fa-equals calcSybmbol"></i>
+
+                          <div className="col">
+                            <label className="style_Label ">
+                              Computed Amount
+                            </label>
+                            <h6>
+                              {this.state.computed_amount
+                                ? GetAmountFormart(this.state.computed_amount)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <AlagehFormGroup
+                            div={{ className: "col final_color" }}
+                            label={{
+                              forceLabel: "Payable Amount",
+                              isImp: false,
+                            }}
+                            textBox={{
+                              decimal: {
+                                allowNegative: false,
+                              },
+                              className: "txt-fld",
+                              name: "payable_amount",
+                              value: this.state.payable_amount,
+                              events: {
+                                onChange: this.textHandler.bind(this),
+                              },
+                              others: {
+                                disabled: this.state.gratuity_done,
+                                // type: "number"
+                              },
+                            }}
+                          />
+                        </div>
+                        <div className="row">
+                          <div className="col-5">
+                            <div
+                              className="customCheckbox"
+                              style={{ marginTop: 24 }}
+                            >
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  onChange={this.changeChecks.bind(this)}
+                                  value="FOR"
+                                  name="gratuity_status"
+                                />
+                                <span>Forfeiture</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-12">
+                            <label>Remarks</label>
+                            <textarea
+                              name="remarks"
+                              value={this.state.remarks}
+                              onChange={this.textHandler.bind(this)}
+                              className="textArea"
+                              disabled={this.state.gratuity_done}
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
