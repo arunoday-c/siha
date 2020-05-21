@@ -4312,7 +4312,7 @@ function calculateNoLeaveDays(inputs, _mysql) {
                       // return;
                       reject({
                         invalid_input: true,
-                        message: `you can't apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`,
+                        message: `Can't apply leave on, ${isHoliday[0].holiday_date} is: (${isHoliday[0].holiday_description})`,
                       });
                     } else {
                       // subtracting  week off or holidays fom LeaveApplied Days
