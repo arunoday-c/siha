@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { employeeSearch } from "./SalaryApprisalEvent";
@@ -21,7 +21,7 @@ class SalaryApprisal extends Component {
       employee_name: null,
       earningComponents: [],
       deductioncomponents: [],
-      contributioncomponents: []
+      contributioncomponents: [],
     };
   }
 
@@ -36,8 +36,8 @@ class SalaryApprisal extends Component {
         method: "GET",
         redux: {
           type: "PAYROLL_COMPONENT_DATA",
-          mappingName: "payrollcomponents"
-        }
+          mappingName: "payrollcomponents",
+        },
       });
     }
   }
@@ -52,7 +52,7 @@ class SalaryApprisal extends Component {
               style={{
                 border: " 1px solid #ced4d9",
                 borderRadius: 5,
-                marginLeft: 0
+                marginLeft: 0,
               }}
             >
               <div className="col">
@@ -72,7 +72,7 @@ class SalaryApprisal extends Component {
                   style={{
                     paddingTop: 17,
                     paddingLeft: 3,
-                    cursor: "pointer"
+                    cursor: "pointer",
                   }}
                   onClick={employeeSearch.bind(this, this)}
                 />
@@ -95,7 +95,7 @@ class SalaryApprisal extends Component {
         </div>
 
         <div className="row">
-          <div className="col-12">
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -108,22 +108,22 @@ class SalaryApprisal extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "General Evaluation",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "",
                       events: {},
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Objective Weightage",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -131,15 +131,15 @@ class SalaryApprisal extends Component {
 
                       events: {},
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Total Weightage",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -147,8 +147,8 @@ class SalaryApprisal extends Component {
 
                       events: {},
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
                 </div>
@@ -161,7 +161,7 @@ class SalaryApprisal extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Final Percentage",
-                      isImp: false
+                      isImp: false,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -169,8 +169,8 @@ class SalaryApprisal extends Component {
 
                       events: {},
                       others: {
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
                   <div className="col form-group">
@@ -184,13 +184,13 @@ class SalaryApprisal extends Component {
                       name: "",
                       className: "select-fld",
                       dataSource: {},
-                      others: {}
+                      others: {},
                     }}
                   />
                 </div>
               </div>
               <div className="row">
-                <div className="col-6">
+                <div className="col">
                   <label>Recomend to remain in service</label>
                   <div className="customCheckbox">
                     <label className="checkbox inline">
@@ -204,61 +204,56 @@ class SalaryApprisal extends Component {
                     disabled
                   />
                 </div>
-                <div className="col-6">
+                <div className="col">
+                  <label>Needs Improvment/ Training</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" name="leave_carry_forward" />
+                      <span>Yes</span>
+                    </label>
+                  </div>
                   <div className="row">
-                    <div className="col">
-                      <label>Needs Improvment/ Training</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input type="checkbox" name="leave_carry_forward" />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col form-group" }}
-                          label={{ forceLabel: "Training List", isImp: false }}
-                          selector={{
-                            name: "",
-                            className: "select-fld",
-                            dataSource: {},
-                            others: {}
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="col">
-                      <label>Extend Probotion Period</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input type="checkbox" name="leave_carry_forward" />
-                          <span>Yes</span>
-                        </label>
-                      </div>
-                      <div className="row">
-                        <AlgaehDateHandler
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Select end of Probotion Period",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: ""
-                          }}
-                          maxDate={new Date()}
-                          events={{}}
-                        />
-                      </div>
-                    </div>
+                    <AlagehAutoComplete
+                      div={{ className: "col form-group" }}
+                      label={{ forceLabel: "Training List", isImp: false }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                        dataSource: {},
+                        others: {},
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col">
+                  <label>Extend Probotion Period</label>
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input type="checkbox" name="leave_carry_forward" />
+                      <span>Yes</span>
+                    </label>
+                  </div>
+                  <div className="row">
+                    <AlgaehDateHandler
+                      div={{ className: "col form-group" }}
+                      label={{
+                        forceLabel: "Select end of Probotion Period",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "",
+                      }}
+                      maxDate={new Date()}
+                      events={{}}
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-12">
+
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -271,23 +266,23 @@ class SalaryApprisal extends Component {
                     <div className="col" style={{ paddingLeft: 0 }}>
                       <div className="row">
                         <AlgaehDateHandler
-                          div={{ className: "col-3 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Increment Effective Date",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: ""
+                            name: "",
                           }}
                           maxDate={new Date()}
                           events={{}}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
                             forceLabel: "Increment Percentage",
-                            isImp: false
+                            isImp: false,
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -295,11 +290,11 @@ class SalaryApprisal extends Component {
 
                             events: {},
                             others: {
-                              type: "number"
-                            }
+                              type: "number",
+                            },
                           }}
                         />
-                        <div className="col-3">
+                        <div className="col">
                           <button
                             className="btn btn-primary"
                             style={{ marginTop: 19 }}
@@ -402,8 +397,11 @@ class SalaryApprisal extends Component {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-12">
+            {" "}
             <div className="row">
-              <div className="col-6">
+              <div className="col-4">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -412,7 +410,7 @@ class SalaryApprisal extends Component {
                   </div>
                   <div className="portlet-body">
                     <div className="row">
-                      <div className="col-12" id="NewAppraisalEarnings_Cntr">
+                      <div className="col-12" id="NewEarGrid_Cntr">
                         <AlgaehDataGrid
                           id="NewAppraisalEarnings"
                           datavalidate="NewAppraisalEarnings"
@@ -424,12 +422,12 @@ class SalaryApprisal extends Component {
                                   label={{ forceLabel: "Earnings" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.payrollcomponents === undefined
                                     ? []
                                     : this.props.payrollcomponents.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_earning_deduction_id ===
                                           row.earnings_id
                                       );
@@ -442,12 +440,12 @@ class SalaryApprisal extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display =
                                   this.props.payrollcomponents === undefined
                                     ? []
                                     : this.props.payrollcomponents.filter(
-                                        f =>
+                                        (f) =>
                                           f.hims_d_earning_deduction_id ===
                                           row.earnings_id
                                       );
@@ -459,7 +457,7 @@ class SalaryApprisal extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "amount",
@@ -467,7 +465,7 @@ class SalaryApprisal extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "PM Amount" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "NMAmount",
@@ -475,7 +473,7 @@ class SalaryApprisal extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "NM Amount" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "py_amount",
@@ -483,7 +481,7 @@ class SalaryApprisal extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "PY Amount" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "NYAmount",
@@ -491,8 +489,8 @@ class SalaryApprisal extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "NY Amount" }}
                                 />
-                              )
-                            }
+                              ),
+                            },
                           ]}
                           keyId=""
                           dataSource={{ data: this.state.earningComponents }}
@@ -507,234 +505,212 @@ class SalaryApprisal extends Component {
                 </div>
               </div>
 
-              <div className="col-6">
-                <div className="row">
-                  <div className="col-12">
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">
-                            Employee Deductions
-                          </h3>
-                        </div>
-                      </div>
-                      <div className="portlet-body">
-                        <div className="row">
-                          <div
-                            className="col-12"
-                            id="NewAppraisalDeductions_Cntr"
-                          >
-                            <AlgaehDataGrid
-                              id="NewAppraisalDeductions"
-                              datavalidate="NewAppraisalDeductions"
-                              columns={[
-                                {
-                                  fieldName: "deductions_id",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Deductions" }}
-                                    />
-                                  ),
-                                  displayTemplate: row => {
-                                    let display =
-                                      this.props.payrollcomponents === undefined
-                                        ? []
-                                        : this.props.payrollcomponents.filter(
-                                            f =>
-                                              f.hims_d_earning_deduction_id ===
-                                              row.deductions_id
-                                          );
+              <div className="col-4">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Deductions</h3>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12" id="NewDedGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="NewAppraisalDeductions"
+                          datavalidate="NewAppraisalDeductions"
+                          columns={[
+                            {
+                              fieldName: "deductions_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Deductions" }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        (f) =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.deductions_id
+                                      );
 
-                                    return (
-                                      <span>
-                                        {display !== null &&
-                                        display.length !== 0
-                                          ? display[0]
-                                              .earning_deduction_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: row => {
-                                    let display =
-                                      this.props.payrollcomponents === undefined
-                                        ? []
-                                        : this.props.payrollcomponents.filter(
-                                            f =>
-                                              f.hims_d_earning_deduction_id ===
-                                              row.deductions_id
-                                          );
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: (row) => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        (f) =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.deductions_id
+                                      );
 
-                                    return (
-                                      <span>
-                                        {display !== null &&
-                                        display.length !== 0
-                                          ? display[0]
-                                              .earning_deduction_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  }
-                                },
-                                {
-                                  fieldName: "amount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "py_amount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PY Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NY Amount" }}
-                                    />
-                                  )
-                                }
-                              ]}
-                              keyId=""
-                              dataSource={{
-                                data: this.state.deductioncomponents
-                              }}
-                              isEditable={false}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                              events={{}}
-                              others={{}}
-                            />
-                          </div>
-                        </div>
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                            },
+                            {
+                              fieldName: "amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PM Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "NMAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NM Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "py_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PY Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "NYAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NY Amount" }}
+                                />
+                              ),
+                            },
+                          ]}
+                          keyId=""
+                          dataSource={{
+                            data: this.state.deductioncomponents,
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className="col-12">
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">
-                            Employer Contribution
-                          </h3>
-                        </div>
-                      </div>
-                      <div className="portlet-body">
-                        <div className="row">
-                          <div
-                            className="col-12"
-                            id="NewAppraisalContributions_Cntr"
-                          >
-                            <AlgaehDataGrid
-                              id="NewAppraisalContributions"
-                              datavalidate="NewAppraisalContributions"
-                              columns={[
-                                {
-                                  fieldName: "contributions_id",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Contributions" }}
-                                    />
-                                  ),
+                </div>
+              </div>
+              <div className="col-4">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employer Contribution</h3>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12" id="NewConGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="NewAppraisalContributions"
+                          datavalidate="NewAppraisalContributions"
+                          columns={[
+                            {
+                              fieldName: "contributions_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Contributions" }}
+                                />
+                              ),
 
-                                  displayTemplate: row => {
-                                    let display =
-                                      this.props.payrollcomponents === undefined
-                                        ? []
-                                        : this.props.payrollcomponents.filter(
-                                            f =>
-                                              f.hims_d_earning_deduction_id ===
-                                              row.contributions_id
-                                          );
+                              displayTemplate: (row) => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        (f) =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.contributions_id
+                                      );
 
-                                    return (
-                                      <span>
-                                        {display !== null &&
-                                        display.length !== 0
-                                          ? display[0]
-                                              .earning_deduction_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  },
-                                  editorTemplate: row => {
-                                    let display =
-                                      this.props.payrollcomponents === undefined
-                                        ? []
-                                        : this.props.payrollcomponents.filter(
-                                            f =>
-                                              f.hims_d_earning_deduction_id ===
-                                              row.contributions_id
-                                          );
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: (row) => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        (f) =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.contributions_id
+                                      );
 
-                                    return (
-                                      <span>
-                                        {display !== null &&
-                                        display.length !== 0
-                                          ? display[0]
-                                              .earning_deduction_description
-                                          : ""}
-                                      </span>
-                                    );
-                                  }
-                                },
-                                {
-                                  fieldName: "amount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "py_amount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PY Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NY Amount" }}
-                                    />
-                                  )
-                                }
-                              ]}
-                              keyId=""
-                              dataSource={{
-                                data: this.state.contributioncomponents
-                              }}
-                              isEditable={false}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                              events={{}}
-                              others={{}}
-                            />
-                          </div>
-                        </div>
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                            },
+                            {
+                              fieldName: "amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PM Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "NMAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NM Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "py_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PY Amount" }}
+                                />
+                              ),
+                            },
+                            {
+                              fieldName: "NYAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NY Amount" }}
+                                />
+                              ),
+                            },
+                          ]}
+                          keyId=""
+                          dataSource={{
+                            data: this.state.contributioncomponents,
+                          }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
                       </div>
                     </div>
                   </div>
@@ -750,14 +726,14 @@ class SalaryApprisal extends Component {
 
 function mapStateToProps(state) {
   return {
-    payrollcomponents: state.payrollcomponents
+    payrollcomponents: state.payrollcomponents,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getEarningDeduction: AlgaehActions
+      getEarningDeduction: AlgaehActions,
     },
     dispatch
   );

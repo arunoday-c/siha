@@ -16,6 +16,11 @@ body {
 .header {
   max-height: 50px;
 }
+
+.fixed-top {
+  z-index: 990;
+}
+
 #hisapp {
   padding-bottom: 5px;
 }

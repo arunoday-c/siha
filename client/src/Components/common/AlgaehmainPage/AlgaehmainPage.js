@@ -470,7 +470,7 @@ class PersistentDrawer extends React.Component {
         });
         this.props.history.push("/");
         // window.location.href = window.location.origin + "/#";
-        //  window.location.reload();
+         window.location.reload();
       }
     });
   }

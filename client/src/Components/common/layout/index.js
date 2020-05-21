@@ -12,7 +12,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
     setUserToken,
     setElementsItems,
     setSelectedMenuItem,
-    setUserPreferencesData
+    setUserPreferencesData,
   } = useContext(MainContext);
   const [pageLoading, setPageLoading] = useState(false);
   const [text] = useState("Please wait configure is in process");
@@ -21,20 +21,20 @@ export default function Layout({ path, noSecurityCheck, children }) {
     if (Object.keys(userToken).length > 0) {
       setPageLoading(true);
     } else {
-      getItem("menu").then(result => {
+      getItem("menu").then((result) => {
         setUserMenu(result);
-        getItem("elements").then(result => {
+        getItem("elements").then((result) => {
           setElementsItems(result);
         });
-        getItem("token").then(result => {
+        getItem("token").then((result) => {
           const details = tokenDecode(result);
           setUserToken(details);
           setPageLoading(true);
         });
-        getItem("userSelectedMenu").then(result => {
+        getItem("userSelectedMenu").then((result) => {
           setSelectedMenuItem(result);
         });
-        getItem("userPreferences").then(result => {
+        getItem("userPreferences").then((result) => {
           setUserPreferencesData(result);
         });
       });
@@ -73,7 +73,7 @@ export default function Layout({ path, noSecurityCheck, children }) {
           userLanguage === "en"
             ? "english_component"
             : userLanguage + "_component"
-          }`}
+        }`}
         id="hisapp"
       >
         {pageLoading ? <>{children}</> : <center>{text}</center>}

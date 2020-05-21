@@ -7,6 +7,7 @@
     "@dabeng/react-orgchart": "^1.0.0",
     "@toast-ui/react-image-editor": "^1.0.0",
     "agentkeepalive": "^4.0.0",
+    "algaeh-mysql": "^1.4.0",
     "algaeh-react-components": "^1.6.3",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
@@ -60,8 +61,7 @@
     "eject": "react-scripts eject",
     "dev": "npm start",
     "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm run start-js",
-    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2 && npm install --registry http://49.206.18.38:4873 algaeh-react-components@latest",
-    "preinstall": "npx npm-force-resolutions"
+    "postinstall": "npm i --no-save --no-optional fabric@^3.3.2"
   },
   "browserslist": {
     "production": [
@@ -75,10 +75,6 @@
     ]
   },
   "devDependencies": {
-    "eslint-plugin-react": "^7.14.3",
-    "npm-force-resolutions": "0.0.3"
-  },
-  "resolutions": {
-    "moment": "2.24.0"
+    "eslint-plugin-react": "^7.14.3"
   }
 }
