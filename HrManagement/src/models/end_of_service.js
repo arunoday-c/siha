@@ -200,9 +200,7 @@ export default {
                       _optionsDetals.eligible_days2;
                   }
                 } else {
-                  _eligibleDays =
-                    _optionsDetals.from_service_range1 *
-                    _optionsDetals.eligible_days1;
+                  _eligibleDays = empEOSYears;
                 }
                 queryForm
                   .then((earnings) => {
