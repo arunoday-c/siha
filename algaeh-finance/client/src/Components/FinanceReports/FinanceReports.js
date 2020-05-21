@@ -3,7 +3,7 @@ import moment from "moment";
 import {
   AlgaehMessagePop,
   AlgaehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "algaeh-react-components";
 import { Spin } from "antd";
 import { newAlgaehApi } from "../../hooks";
@@ -12,7 +12,7 @@ import ReportNavBar from "./ReportNavBar";
 import {
   // getBalanceSheet,
   downloadExcel,
-  handleFile
+  handleFile,
 } from "./FinanceReportEvents";
 import ReportMain from "./ReportMain";
 import "./financeReportStyle.scss";
@@ -35,14 +35,13 @@ function layoutReducer(state, action) {
 }
 
 export default function FinanceReports() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [finOptions, setFinOptions] = useState(null);
   const [selected, setSelected] = useState("BS");
-  const [data, setData] = useState({});
   const [organization, setOrganization] = useState([]);
   const [layout, layoutDispatch] = useReducer(layoutReducer, {
     cols: 24,
-    expand: false
+    expand: false,
   });
   const [period, setPeriod] = useState("TMTD");
   const [dates, setDates] = useState(undefined);
@@ -53,20 +52,23 @@ export default function FinanceReports() {
         const results = await Promise.all([
           newAlgaehApi({
             uri: "/finance_masters/getCostCentersForVoucher",
-            module: "finance"
+            module: "finance",
           }),
           newAlgaehApi({
             uri: "/finance_masters/getFinanceOption",
-            module: "finance"
-          })
+            module: "finance",
+          }),
         ]);
         setOrganization(results[0].data.result);
         const finOpts = results[1].data.result[0];
         setFinOptions(finOpts);
+        setLoading(false);
       } catch (e) {
+        setLoading(false);
+
         AlgaehMessagePop({
           info: "error",
-          display: e.message || e.response.data.message
+          display: e.message || e.response.data.message,
         });
       }
     }
@@ -79,14 +81,14 @@ export default function FinanceReports() {
         uri: "/finance_masters/getFinanceDate",
         module: "finance",
         data: {
-          transaction_date: period
-        }
+          transaction_date: period,
+        },
       })
-        .then(res => {
+        .then((res) => {
           const { result } = res.data;
           setDates([moment(result.from_date), moment(result.to_date)]);
         })
-        .catch(e => console.log(e.message));
+        .catch((e) => console.log(e.message));
     }
   }, [period]);
 
@@ -132,17 +134,17 @@ export default function FinanceReports() {
       selected,
       inputParam: {
         hospital_id: finOptions.default_branch_id,
-        cost_center_id: finOptions.default_cost_center_id
-      }
+        cost_center_id: finOptions.default_cost_center_id,
+      },
     })
-      .then(response => {
+      .then((response) => {
         handleFile(response.data, selected);
       })
-      .catch(error => {
+      .catch((error) => {
         const { message } = error;
         AlgaehMessagePop({
           type: "error",
-          display: message !== "" ? message : error.data.message
+          display: message !== "" ? message : error.data.message,
         });
       });
   }
@@ -162,7 +164,7 @@ export default function FinanceReports() {
                   div={{ className: "col-4" }}
                   label={{
                     forceLabel: "Select Period",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "period",
@@ -171,31 +173,31 @@ export default function FinanceReports() {
                       data: [
                         {
                           name: "This month",
-                          value: "TM"
+                          value: "TM",
                         },
                         {
                           name: "This Month till Date",
-                          value: "TMTD"
+                          value: "TMTD",
                         },
                         {
                           name: "Last month",
-                          value: "LM"
+                          value: "LM",
                         },
                         {
                           name: "Current Year",
-                          value: "CY"
+                          value: "CY",
                         },
                         {
                           name: "Current Yeat till Date",
-                          value: "CYTD"
-                        }
+                          value: "CYTD",
+                        },
                       ],
                       valueField: "value",
-                      textField: "name"
+                      textField: "name",
                     },
                     onChange: (_, value) => {
                       setPeriod(value);
-                    }
+                    },
                   }}
                 />
                 <AlgaehDateHandler
@@ -203,12 +205,12 @@ export default function FinanceReports() {
                   label={{ forceLabel: "Selected Range" }}
                   type="range"
                   textBox={{
-                    value: dates
+                    value: dates,
                   }}
                   events={{
-                    onChange: selected => {
+                    onChange: (selected) => {
                       setDates(selected);
-                    }
+                    },
                   }}
                 />
               </div>
@@ -223,7 +225,6 @@ export default function FinanceReports() {
                 ) : null}
                 <ReportMain
                   selected={selected}
-                  data={data}
                   dates={dates}
                   finOptions={finOptions}
                   layout={layout}

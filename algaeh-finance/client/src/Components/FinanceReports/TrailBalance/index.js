@@ -19,7 +19,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
         hospital_id: finOptions.default_branch_id,
         cost_center_id: finOptions.default_cost_center_id,
         from_date: dates[0],
-        to_date: dates[1]
+        to_date: dates[1],
       };
       if (type === "tree") {
         input.old = "Y";
@@ -27,7 +27,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
       const result = await newAlgaehApi({
         module: "finance",
         data: { ...input },
-        uri: "/financeReports/getTrialBalance"
+        uri: "/financeReports/getTrialBalance",
       });
       setData(result.data.result);
     }
@@ -35,8 +35,9 @@ export default function TrailBalance({ layout, dates, finOptions }) {
       setLoading(true);
       getData()
         .then(() => setLoading(false))
-        .catch(e => setLoading(false));
+        .catch((e) => setLoading(false));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, dates]);
 
   function renderReport() {
@@ -69,7 +70,7 @@ export default function TrailBalance({ layout, dates, finOptions }) {
         div={{ className: "col-4" }}
         label={{
           forceLabel: "Layout Type",
-          isImp: true
+          isImp: true,
         }}
         selector={{
           name: "type",
@@ -78,19 +79,19 @@ export default function TrailBalance({ layout, dates, finOptions }) {
             data: [
               {
                 name: "Table",
-                value: "table"
+                value: "table",
               },
               {
                 name: "Tree",
-                value: "tree"
-              }
+                value: "tree",
+              },
             ],
             valueField: "value",
-            textField: "name"
+            textField: "name",
           },
           onChange: (_, value) => {
             setType(value);
-          }
+          },
         }}
       />
       <ReactToPrint
