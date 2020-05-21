@@ -30,7 +30,7 @@ export default {
               datediff(date(exit_date),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
               E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
               E.sub_department_id,E.employee_designation_id,E.date_of_birth,E.eos_id,\
-              SD.sub_department_name,SD.arabic_sub_department_name \
+              SD.sub_department_name,SD.arabic_sub_department_name,E.gratuity_encash \
             from hims_d_employee E Left join hims_d_sub_department SD \
              on SD.hims_d_sub_department_id = E.sub_department_id \
             left join hims_d_title T \
@@ -162,107 +162,46 @@ export default {
                   next
                 );
               } else {
-                let by =
-                  _employee.endOfServiceYears -
-                  _optionsDetals.from_service_range1;
-                let ted = 0;
-                if (by > 0) {
-                  ted =
+                const empEOSYears = parseFloat(_employee.endOfServiceYears);
+                let difference =
+                  empEOSYears - _optionsDetals.from_service_range1;
+                if (difference > 0) {
+                  let hirearchical =
                     _optionsDetals.from_service_range1 *
                     _optionsDetals.eligible_days1;
-                  by =
-                    _employee.endOfServiceYears -
-                    _optionsDetals.from_service_range2;
-                  if (by > 0) {
-                    // ted =
-                    //   (ted +
-                    //     (_optionsDetals.from_service_range2 -
-                    //       _optionsDetals.from_service_range1)) *
-                    //   by;
-                    ted =
-                      ted +
-                      _optionsDetals.from_service_range2 *
-                        _optionsDetals.eligible_days2;
+                  _eligibleDays = hirearchical;
+                  difference = empEOSYears - _optionsDetals.from_service_range2;
+                  if (difference > 0) {
+                    hirearchical =
+                      empEOSYears - _optionsDetals.from_service_range2;
+                    if (hirearchical > 0) {
+                      hirearchical =
+                        empEOSYears - _optionsDetals.from_service_range3;
+                      if (hirearchical > 0) {
+                        hirearchical =
+                          empEOSYears - _optionsDetals.from_service_range4;
 
-                    by =
-                      _employee.endOfServiceYears -
-                      _optionsDetals.from_service_range3;
-                    if (by > 0) {
-                      ted =
-                        ted +
-                        _optionsDetals.from_service_range3 *
-                          _optionsDetals.eligible_days3;
-
-                      // ted =
-                      //   (ted +
-                      //     (_optionsDetals.from_service_range3 -
-                      //       _optionsDetals.from_service_range2)) *
-                      //   by;
-                      by =
-                        _employee.endOfServiceYears -
-                        _optionsDetals.from_service_range3;
-                      if (by > 0) {
-                        ted =
-                          ted +
-                          _optionsDetals.from_service_range4 *
-                            _optionsDetals.eligible_days4;
-                        // ted =
-                        //   (ted +
-                        //     (_optionsDetals.from_service_range4 -
-                        //       _optionsDetals.from_service_range3)) *
-                        //   by;
-
-                        by =
-                          _employee.endOfServiceYears -
-                          _optionsDetals.from_service_range4;
-                        if (by > 0) {
-                          // ted =
-                          //   (ted +
-                          //     (_optionsDetals.from_service_range5 -
-                          //       _optionsDetals.from_service_range4)) *
-                          //   by;
-                          ted =
-                            ted +
-                            _optionsDetals.from_service_range5 *
-                              _optionsDetals.eligible_days5;
-                        }
-                        // else {
-                        //   // _eligibleDays = ted
-                        //   // _eligibleDays =
-                        //   //   ted + by * _optionsDetals.eligible_days4;
-                        // }
+                        _eligibleDays +=
+                          (empEOSYears - _optionsDetals.from_service_range3) *
+                          _optionsDetals.eligible_days5;
                       } else {
-                        let daysAvilable =
-                          _employee.endOfServiceYears -
-                          _optionsDetals.from_service_range3;
-
-                        _eligibleDays =
-                          ted + daysAvilable * _optionsDetals.eligible_days4;
-                        // _eligibleDays = ted + by * _optionsDetals.eligible_days3;
+                        _eligibleDays +=
+                          (empEOSYears - _optionsDetals.from_service_range3) *
+                          _optionsDetals.eligible_days4;
                       }
                     } else {
-                      let daysAvilable =
-                        _employee.endOfServiceYears -
-                        _optionsDetals.from_service_range2;
-
-                      _eligibleDays =
-                        ted + daysAvilable * _optionsDetals.eligible_days3;
+                      _eligibleDays +=
+                        (empEOSYears - _optionsDetals.from_service_range2) *
+                        _optionsDetals.eligible_days3;
                     }
                   } else {
-                    // _eligibleDays = ted + by * _optionsDetals.eligible_days2;
-                    let daysAvilable =
-                      _employee.endOfServiceYears -
-                      _optionsDetals.from_service_range1;
-
-                    _eligibleDays =
-                      ted + daysAvilable * _optionsDetals.eligible_days2;
+                    _eligibleDays +=
+                      (empEOSYears - _optionsDetals.from_service_range1) *
+                      _optionsDetals.eligible_days2;
                   }
                 } else {
-                  ted =
-                    _employee.endOfServiceYears * _optionsDetals.eligible_days1;
+                  _eligibleDays = 0;
                 }
-                ted = _eligibleDays;
-
                 queryForm
                   .then((earnings) => {
                     _mysql.releaseConnection();
@@ -274,30 +213,18 @@ export default {
                       }
                     );
                     let gratuity = 0;
+                    const gratuity_encash = parseFloat(
+                      _employee["gratuity_encash"]
+                    );
                     if (_optionsDetals.end_of_service_calculation == "AN") {
-                      // _computatedAmout = _.chain(earnings)
-                      //   .map((items) => {
-                      //     return (items.amount * 12) / 365;
-                      //   })
-                      //   .value();
                       gratuity = (_sumOfTotalEarningComponents * 12) / 365;
                     } else if (
                       _optionsDetals.end_of_service_calculation == "FI"
                     ) {
-                      // _computatedAmout = _.chain(earnings)
-                      //   .map((items) => {
-                      //     return items.amount / 30; // _optionsDetals.end_of_service_days;
-                      //   })
-                      //   .value();
                       gratuity = _sumOfTotalEarningComponents / 30;
                     }
-
-                    _computatedAmout = _eligibleDays * gratuity;
-                    // console.log("_computatedAmout", _computatedAmout);
-                    // const _computatedAmoutSum =
-                    //   _computatedAmout.reduce((a, b) => {
-                    //     return a + b;
-                    //   }, 0) * _eligibleDays;
+                    const actual_maount = _eligibleDays * gratuity;
+                    _computatedAmout = actual_maount - gratuity_encash;
 
                     req.records = {
                       computed_amount: _computatedAmout, //_computatedAmoutSum,
@@ -308,6 +235,8 @@ export default {
                       eligible_day: _eligibleDays,
                       endofServexit: endofServexit,
                       gratuity_amount: gratuity,
+                      gratuity_encash: gratuity_encash,
+                      actual_maount: actual_maount,
                     };
                     next();
                   })
