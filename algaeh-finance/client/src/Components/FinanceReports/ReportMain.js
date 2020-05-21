@@ -4,6 +4,7 @@ import Balance from "./FinanceStandardReports/balancesheet";
 import TrailBalance from "./TrailBalance";
 import AgingReport from "./FinanceStandardReports/AgingReport";
 import PnLReport from "./PnLReport";
+import { Cashflow } from "./Cashflow";
 
 export default function ReportMain({
   selected,
@@ -31,6 +32,8 @@ export default function ReportMain({
       return <AgingReport layout={layout} type="receivable" dates={dates} />;
     case "AP":
       return <AgingReport layout={layout} type="payable" dates={dates} />;
+    case "CF":
+      return <Cashflow layout={layout} dates={dates} />;
 
     default:
       return null;
