@@ -34,7 +34,8 @@ export function IdleManager() {
     return (
       <div>
         <AlgaehModal
-          title="Session Timeout"
+          class="SessionTimeoutModal"
+          title="Session "
           visible={visible}
           maskClosable={false}
           closable={false}
@@ -44,7 +45,15 @@ export function IdleManager() {
             </AlgaehButton>
           }
         >
-          <p>You have been inactive for a long time. So Please login again.</p>
+          <div style={{ textAlign: "center" }}>
+            {" "}
+            <i
+              className="fas fa-hourglass-end"
+              style={{ fontSize: "2rem" }}
+            ></i>
+            <h3>Your session has expired!</h3>
+            <p>Click Ok to redirect to login page.</p>
+          </div>
         </AlgaehModal>
 
         <IdleTimer
