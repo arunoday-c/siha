@@ -1,4 +1,5 @@
 import React, { createRef, useState, useContext } from "react";
+import "./IdleManager.scss";
 import { useHistory } from "react-router-dom";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehModal, AlgaehButton } from "algaeh-react-components";
@@ -33,26 +34,33 @@ export function IdleManager() {
   if (context.userToken) {
     return (
       <div>
+        {/* <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+        <div id="title">
+          <span>PURE CSS</span>
+          <br />
+          <span>PARALLAX PIXEL STARS</span>
+        </div>
+        <button className="btn btn-primary btn-lg" onClick={onOk}></button> */}
+
         <AlgaehModal
-          class="SessionTimeoutModal"
-          title="Session "
+          className="SessionTimeoutModal"
+          // title="Session "
           visible={visible}
           maskClosable={false}
           closable={false}
           footer={
             <AlgaehButton key="submit" type="primary" onClick={onOk}>
-              Ok
+              Take me to login page
             </AlgaehButton>
           }
         >
           <div style={{ textAlign: "center" }}>
             {" "}
-            <i
-              className="fas fa-hourglass-end"
-              style={{ fontSize: "2rem" }}
-            ></i>
-            <h3>Your session has expired!</h3>
-            <p>Click Ok to redirect to login page.</p>
+            <i className="fas fa-hourglass-end"></i>
+            <h3>Your session has expired due to inactivity.</h3>
+            <p>Page will redirect to login page.</p>
           </div>
         </AlgaehModal>
 
@@ -61,7 +69,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 15} // mins to milliseco
+          timeout={1000 * 60 * 1} // mins to milliseco
         />
       </div>
     );
