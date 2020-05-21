@@ -1,4 +1,5 @@
 import React, { createRef, useState, useContext } from "react";
+import "./IdleManager.scss";
 import { useHistory } from "react-router-dom";
 import { newAlgaehApi } from "../../../hooks";
 import { AlgaehModal, AlgaehButton } from "algaeh-react-components";
@@ -33,18 +34,34 @@ export function IdleManager() {
   if (context.userToken) {
     return (
       <div>
+        {/* <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+        <div id="title">
+          <span>PURE CSS</span>
+          <br />
+          <span>PARALLAX PIXEL STARS</span>
+        </div>
+        <button className="btn btn-primary btn-lg" onClick={onOk}></button> */}
+
         <AlgaehModal
-          title="Session Timeout"
+          className="SessionTimeoutModal"
+          // title="Session "
           visible={visible}
           maskClosable={false}
           closable={false}
           footer={
             <AlgaehButton key="submit" type="primary" onClick={onOk}>
-              Ok
+              Take me to login page
             </AlgaehButton>
           }
         >
-          <p>You have been inactive for a long time. So Please login again.</p>
+          <div style={{ textAlign: "center" }}>
+            {" "}
+            <i className="fas fa-hourglass-end"></i>
+            <h3>Your session has expired due to inactivity.</h3>
+            <p>Page will redirect to login page.</p>
+          </div>
         </AlgaehModal>
 
         <IdleTimer

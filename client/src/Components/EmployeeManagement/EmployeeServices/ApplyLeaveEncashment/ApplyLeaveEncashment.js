@@ -345,6 +345,13 @@ class ApplyLeaveEncashment extends Component {
       });
       return;
     }
+    if (parseFloat(value) === 0) {
+      swalMessage({
+        title: "Cannot be 0 Days",
+        type: "warning",
+      });
+      return;
+    }
 
     let inputObj = {
       employee_id: this.state.employee_id,

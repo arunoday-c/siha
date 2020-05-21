@@ -28,6 +28,8 @@ class EOSGratuity extends Component {
       gratuity_status: "PRO",
       branches: [],
       hospital_id: undefined,
+      gratuity_encash: 0,
+      actual_maount: 0,
     };
   }
   static contextType = MainContext;
@@ -93,6 +95,8 @@ class EOSGratuity extends Component {
       remarks: "",
       saveDisabled: true,
       gratuity_done: false,
+      gratuity_encash: 0,
+      actual_maount: 0,
     });
   }
 
@@ -190,6 +194,8 @@ class EOSGratuity extends Component {
                 entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: true,
                 gratuity_done: true,
+                actual_maount: res.data.result.actual_maount,
+                gratuity_encash: res.data.result.gratuity_encash,
               });
             } else {
               this.setState({
@@ -200,6 +206,8 @@ class EOSGratuity extends Component {
                 payable_amount: res.data.result.paybale_amout,
                 entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: false,
+                actual_maount: res.data.result.actual_maount,
+                gratuity_encash: res.data.result.gratuity_encash,
               });
             }
           }
@@ -560,6 +568,27 @@ class EOSGratuity extends Component {
                       }
                     }}
                   /> */}
+
+                  <div className="col-8">
+                    <label className="style_Label ">
+                      Total Gratuity Amount
+                    </label>
+                    <h6 style={{ fontSize: "2em" }}>
+                      {this.state.actual_maount
+                        ? GetAmountFormart(this.state.actual_maount)
+                        : GetAmountFormart(0)}
+                    </h6>
+                  </div>
+                  <div className="col-8">
+                    <label className="style_Label ">
+                      Gratuity Encashed Amount
+                    </label>
+                    <h6 style={{ fontSize: "2em" }}>
+                      {this.state.gratuity_encash
+                        ? GetAmountFormart(this.state.gratuity_encash)
+                        : GetAmountFormart(0)}
+                    </h6>
+                  </div>
 
                   <div className="col-8">
                     <label className="style_Label ">Computed Amount</label>
