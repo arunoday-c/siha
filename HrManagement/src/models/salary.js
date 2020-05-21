@@ -4353,6 +4353,7 @@ function getLoanDueandPayable(options) {
       let total_loan_payable_amount = 0;
       let current_loan_array = [];
 
+      // console.log("_loan", _loan)
       if (empResult.partial_attendance === "Y") {
         resolve({
           total_loan_due_amount,
