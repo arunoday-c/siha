@@ -50,17 +50,17 @@ export function IdleManager() {
           visible={visible}
           maskClosable={false}
           closable={false}
-          footer={
-            <AlgaehButton key="submit" type="primary" onClick={onOk}>
-              Take me to login page
-            </AlgaehButton>
-          }
+          footer=""
         >
           <div style={{ textAlign: "center" }}>
             {" "}
             <i className="fas fa-hourglass-end"></i>
             <h3>Your session has expired due to inactivity.</h3>
             <p>Page will redirect to login page.</p>
+            <button className="btn btn-default btn-lg" onClick={onOk}>
+              {" "}
+              Got to login page
+            </button>
           </div>
         </AlgaehModal>
 
