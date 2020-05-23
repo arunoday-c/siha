@@ -203,7 +203,7 @@ export default class GratuityAccrual extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                         others: {
                           filterable: false,
-                          maxWidth: 50,
+                          maxWidth: 60,
                         },
                       },
                       {
@@ -223,7 +223,7 @@ export default class GratuityAccrual extends Component {
                         ),
                         others: {
                           filterable: false,
-                          maxWidth: 150,
+                          maxWidth: 140,
                         },
                       },
                     ]}
