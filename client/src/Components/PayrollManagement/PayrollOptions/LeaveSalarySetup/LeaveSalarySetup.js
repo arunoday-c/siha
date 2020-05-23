@@ -207,7 +207,82 @@ export default class LeaveSalarySetup extends Component {
                     </label>
                   </div>
                 </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Annual Leave Calculation",
+                    isImp: true,
+                  }}
+                  selector={{
+                    name: "annual_leave_calculation",
+                    className: "select-fld",
+                    dataSource: {
+                      data: ANNUAL_LEAVE_CAL,
+                      textField: "name",
+                      valueField: "value",
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    value: this.state.annual_leave_calculation,
+                    onClear: () => {
+                      this.setState({
+                        annual_leave_calculation: null,
+                      });
+                    },
+                  }}
+                />
+                <div className="col-2">
+                  <label>Leave Salary Calendar</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="P"
+                        name="leave_salary_calendar"
+                        // checked={this.state.salary_calendar === "P"}
+                        // onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Periodical</span>
+                    </label>
 
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="F"
+                        name="leave_salary_calendar"
+                        // checked={this.state.salary_calendar === "F"}
+                        // onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Fixed</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col-2">
+                  <label>Airfare Type</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="PB"
+                        name="airfare_type"
+                        // checked={this.state.airfare_factor === "PB"}
+                        // onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Ticket</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="FI"
+                        name="airfare_type"
+                        // checked={this.state.airfare_factor === "FI"}
+                        // onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Cash</span>
+                    </label>
+                  </div>
+                </div>
                 <div className="col-2">
                   <label>Airfare Factor</label>
                   <div className="customRadio">
@@ -235,35 +310,12 @@ export default class LeaveSalarySetup extends Component {
                   </div>
                 </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    forceLabel: "Annual Leave Calculation",
-                    isImp: true,
-                  }}
-                  selector={{
-                    name: "annual_leave_calculation",
-                    className: "select-fld",
-                    dataSource: {
-                      data: ANNUAL_LEAVE_CAL,
-                      textField: "name",
-                      valueField: "value",
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    value: this.state.annual_leave_calculation,
-                    onClear: () => {
-                      this.setState({
-                        annual_leave_calculation: null,
-                      });
-                    },
-                  }}
-                />
                 {this.state.airfare_factor === "PB" ? (
                   <React.Fragment>
                     <AlagehFormGroup
-                      div={{ className: "col-2 form-group" }}
+                      div={{ className: "col-1 form-group" }}
                       label={{
-                        forceLabel: "Airfare Percentage",
+                        forceLabel: "Airfare %",
                         isImp: true,
                       }}
                       textBox={{
