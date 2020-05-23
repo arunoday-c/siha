@@ -140,9 +140,9 @@ function LeaveEntitlement(props) {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.RESET_LEAVE
+                  data: GlobalVariables.RESET_LEAVE,
                 },
-                onChange: value => myParent.dropDownHandler(value)
+                onChange: (value) => myParent.dropDownHandler(value),
               }}
             />
           </div>
@@ -150,7 +150,7 @@ function LeaveEntitlement(props) {
         </div>
         <div className="col-5">
           <div className="row">
-            <div className="col-5  form-group">
+            <div className="col-4 form-group">
               <label>Is Encashment</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -169,9 +169,9 @@ function LeaveEntitlement(props) {
             </div>
 
             <AlagehFormGroup
-              div={{ className: "col-6  form-group" }}
+              div={{ className: "col-4  form-group" }}
               label={{
-                forceLabel: "Encashment Percentage",
+                forceLabel: "Encashment %",
                 isImp:
                   myParent.state.leave_encash === "Y" ||
                   myParent.state.leave_encash === true,
@@ -192,7 +192,30 @@ function LeaveEntitlement(props) {
                 },
               }}
             />
-            <div className="col-5  form-group">
+            <div className="col-4  form-group">
+              <label>Encash Calc Method</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="leave_carry_forward"
+                    // checked={}
+                    // onChange={(e) => myParent.changeChecks(e)}
+                  />
+                  <span>Annualized</span>
+                </label>
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    name="leave_carry_forward"
+                    // checked={}
+                    // onChange={(e) => myParent.changeChecks(e)}
+                  />
+                  <span>Fixed</span>
+                </label>
+              </div>
+            </div>
+            <div className="col-4 form-group">
               <label>Is Carry Forward</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -210,9 +233,9 @@ function LeaveEntitlement(props) {
               </div>
             </div>
             <AlagehFormGroup
-              div={{ className: "col-6  form-group" }}
+              div={{ className: "col-8  form-group" }}
               label={{
-                forceLabel: "Carry Forward Percentage",
+                forceLabel: "Carry Forward %",
                 isImp:
                   myParent.state.leave_carry_forward === "Y" ||
                   myParent.state.leave_carry_forward === true,
@@ -233,7 +256,8 @@ function LeaveEntitlement(props) {
                 },
               }}
             />
-            <div className="col-5  form-group">
+
+            <div className="col-4  form-group">
               <label>Religion Mandatory</label>
               <div className="customCheckbox">
                 <label className="checkbox inline">
@@ -251,7 +275,7 @@ function LeaveEntitlement(props) {
               </div>
             </div>
             <AlagehAutoComplete
-              div={{ className: "col-6 form-group" }}
+              div={{ className: "col-8 form-group" }}
               label={{
                 forceLabel: "Select Religion",
                 isImp:
