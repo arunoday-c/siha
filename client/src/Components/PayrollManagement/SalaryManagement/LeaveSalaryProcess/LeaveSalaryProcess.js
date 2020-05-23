@@ -112,6 +112,7 @@ class LeaveSalaryProcess extends Component {
   }
 
   render() {
+    debugger
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
@@ -170,8 +171,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                      Options.dateFormat
-                    )
+                    Options.dateFormat
+                  )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -255,8 +256,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                      ""
-                    )}{" "}
+                            ""
+                          )}{" "}
                   </>
                 ) : null}
               </div>
@@ -502,21 +503,21 @@ class LeaveSalaryProcess extends Component {
                   </h6>
                 </div>
                 <i className="fas fa-plus calcSybmbol"></i>
-                {/* <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Airfare",
-                }}
-              />
-              <h6>
-                {this.state.dis_airfare_amount === null
-                  ? 0
-                  : this.state.dis_airfare_amount}
-              </h6>
-            </div>
 
-                     
-            <i className="fas fa-plus calcSybmbol"></i> */}
+                {this.state.hrms_options.airfair_booking === "C" ?
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Airfare",
+                      }}
+                    />
+                    <h6>
+                      {this.state.dis_airfare_amount === null
+                        ? 0
+                        : this.state.dis_airfare_amount}
+                    </h6>
+                    <i className="fas fa-plus calcSybmbol"></i>
+                  </div> : null}
 
                 <div className="col">
                   <AlgaehLabel

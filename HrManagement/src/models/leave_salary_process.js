@@ -1905,109 +1905,46 @@ function InsertGratuityProvision(options) {
                         _optionsDetals.eligible_days5;
                     }
                   } else if (_optionsDetals.end_of_service_type == "H") {
-                    // console.log("_employee[k].endOfServiceYears", _employee[k].endOfServiceYears)
-                    let by =
-                      _employee[k].endOfServiceYears -
-                      _optionsDetals.from_service_range1;
-                    let ted = 0;
-                    if (by > 0) {
-                      ted =
+                    const empEOSYears = parseFloat(_employee[k].endOfServiceYears);
+                    let difference =
+                      empEOSYears - _optionsDetals.from_service_range1;
+                    if (difference > 0) {
+                      let hirearchical =
                         _optionsDetals.from_service_range1 *
                         _optionsDetals.eligible_days1;
-                      by =
-                        _employee[k].endOfServiceYears -
-                        _optionsDetals.from_service_range2;
-                      if (by > 0) {
-                        // ted =
-                        //   (ted +
-                        //     (_optionsDetals.from_service_range2 -
-                        //       _optionsDetals.from_service_range1)) *
-                        //   by;
-                        ted =
-                          ted +
-                          _optionsDetals.from_service_range2 *
-                          _optionsDetals.eligible_days2;
+                      _eligibleDays = hirearchical;
+                      difference = empEOSYears - _optionsDetals.from_service_range2;
+                      if (difference > 0) {
+                        hirearchical =
+                          empEOSYears - _optionsDetals.from_service_range2;
+                        if (hirearchical > 0) {
+                          hirearchical =
+                            empEOSYears - _optionsDetals.from_service_range3;
+                          if (hirearchical > 0) {
+                            hirearchical =
+                              empEOSYears - _optionsDetals.from_service_range4;
 
-                        by =
-                          _employee[k].endOfServiceYears -
-                          _optionsDetals.from_service_range3;
-                        if (by > 0) {
-                          // ted =
-                          //   (ted +
-                          //     (_optionsDetals.from_service_range3 -
-                          //       _optionsDetals.from_service_range2)) *
-                          //   by;
-                          ted =
-                            ted +
-                            _optionsDetals.from_service_range3 *
-                            _optionsDetals.eligible_days3;
-
-                          by =
-                            _employee[k].endOfServiceYears -
-                            _optionsDetals.from_service_range3;
-                          if (by > 0) {
-                            // ted =
-                            //   (ted +
-                            //     (_optionsDetals.from_service_range4 -
-                            //       _optionsDetals.from_service_range3)) *
-                            //   by;
-                            ted =
-                              ted +
-                              _optionsDetals.from_service_range4 *
-                              _optionsDetals.eligible_days4;
-
-                            by =
-                              _employee[k].endOfServiceYears -
-                              _optionsDetals.from_service_range4;
-                            if (by > 0) {
-                              // ted =
-                              //   (ted +
-                              //     (_optionsDetals.from_service_range5 -
-                              //       _optionsDetals.from_service_range4)) *
-                              //   by;
-                              ted =
-                                ted +
-                                _optionsDetals.from_service_range5 *
-                                _optionsDetals.eligible_days5;
-                            }
-                            // else {
-                            //   _eligibleDays =
-                            //     ted + by * _optionsDetals.eligible_days4;
-                            // }
+                            _eligibleDays +=
+                              (empEOSYears - _optionsDetals.from_service_range3) *
+                              _optionsDetals.eligible_days5;
                           } else {
-                            let daysAvilable =
-                              _employee[k].endOfServiceYears -
-                              _optionsDetals.from_service_range3;
-
-                            _eligibleDays =
-                              ted + daysAvilable * _optionsDetals.eligible_days4;
-                            // _eligibleDays =
-                            //   ted + by * _optionsDetals.eligible_days3;
+                            _eligibleDays +=
+                              (empEOSYears - _optionsDetals.from_service_range3) *
+                              _optionsDetals.eligible_days4;
                           }
                         } else {
-                          let daysAvilable =
-                            _employee[k].endOfServiceYears -
-                            _optionsDetals.from_service_range2;
-
-                          _eligibleDays =
-                            ted + daysAvilable * _optionsDetals.eligible_days3;
+                          _eligibleDays +=
+                            (empEOSYears - _optionsDetals.from_service_range2) *
+                            _optionsDetals.eligible_days3;
                         }
                       } else {
-                        // _eligibleDays =
-                        //   ted + by * _optionsDetals.eligible_days2;
-                        let daysAvilable =
-                          _employee[k].endOfServiceYears -
-                          _optionsDetals.from_service_range1;
-
-                        _eligibleDays =
-                          ted + daysAvilable * _optionsDetals.eligible_days2;
+                        _eligibleDays +=
+                          (empEOSYears - _optionsDetals.from_service_range1) *
+                          _optionsDetals.eligible_days2;
                       }
                     } else {
-                      ted =
-                        _employee[k].endOfServiceYears *
-                        _optionsDetals.eligible_days1;
+                      _eligibleDays = empEOSYears * _optionsDetals.eligible_days1;
                     }
-                    ted = _eligibleDays;
                   }
 
                   let _componentsList_total = [];

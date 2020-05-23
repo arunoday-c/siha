@@ -39,7 +39,8 @@ export default {
             standard_working_hours=?, standard_break_hours=?, biometric_database=?, biometric_server_name=?, \
             biometric_port_no=?, biometric_database_name=?, biometric_database_login=?, biometric_database_password=?, \
             biometric_swipe_id=?, manual_timesheet_entry=?, authorization_plan=?, ot_calculation = ?, external_finance=?, \
-            updated_date=?, updated_by=?,ramzan_timing_req=?,ramzan_start_date=?,ramzan_end_date=?,ramzan_working_hr_per_day=?,ramzan_eligible_category=? where hims_d_hrms_options_id=?",
+            updated_date=?, updated_by=?,ramzan_timing_req=?,ramzan_start_date=?,ramzan_end_date=?, \
+            ramzan_working_hr_per_day=?,ramzan_eligible_category=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
           input.salary_pay_before_end_date,
@@ -379,7 +380,7 @@ export default {
         .executeQuery({
           query:
             "SELECT hims_d_hrms_options_id, basic_earning_component, airfare_factor, annual_leave_process_separately, \
-            airfare_percentage, annual_leave_calculation FROM hims_d_hrms_options;",
+            airfare_percentage, annual_leave_calculation, airfair_booking FROM hims_d_hrms_options;",
           printQuery: true,
         })
         .then((result) => {
@@ -402,7 +403,8 @@ export default {
       .executeQuery({
         query:
           "update hims_d_hrms_options set \
-          annual_leave_calculation=?, annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
+          annual_leave_calculation=?, annual_leave_process_separately=?,airfare_factor=?,\
+          basic_earning_component=?,airfare_percentage=?,airfair_booking=?,\
           updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.annual_leave_calculation,
@@ -410,6 +412,7 @@ export default {
           input.airfare_factor,
           input.basic_earning_component,
           input.airfare_percentage,
+          input.airfair_booking,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_d_hrms_options_id,
@@ -436,7 +439,8 @@ export default {
       .executeQuery({
         query:
           "INSERT  INTO hims_d_hrms_options(annual_leave_process_separately, airfare_factor, \
-        basic_earning_component, airfare_percentage, annual_leave_calculation, created_date, created_by values(?,?,?,?,?,?,?)",
+        basic_earning_component, airfare_percentage, annual_leave_calculation, airfair_booking, \
+        created_date, created_by values(?,?,?,?,?,?,?)",
 
         values: [
           input.annual_leave_process_separately,
@@ -444,6 +448,7 @@ export default {
           input.basic_earning_component,
           input.airfare_percentage,
           input.annual_leave_calculation,
+          input.airfair_booking,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
         ],

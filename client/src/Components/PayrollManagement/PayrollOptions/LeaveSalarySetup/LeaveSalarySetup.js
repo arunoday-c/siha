@@ -18,6 +18,7 @@ export default class LeaveSalarySetup extends Component {
       airfare_percentage: 0,
       hims_d_hrms_options_id: null,
       annual_leave_calculation: null,
+      airfair_booking: "C"
     };
 
     this.getLeaveSalaryOptions();
@@ -54,6 +55,7 @@ export default class LeaveSalarySetup extends Component {
           annual_leave_process_separately: this.state
             .annual_leave_process_separately,
           annual_leave_calculation: this.state.annual_leave_calculation,
+          airfair_booking: this.state.airfair_booking
         },
         method: "POST",
         onSuccess: (res) => {
@@ -83,6 +85,7 @@ export default class LeaveSalarySetup extends Component {
             .annual_leave_process_separately,
           hims_d_hrms_options_id: this.state.hims_d_hrms_options_id,
           annual_leave_calculation: this.state.annual_leave_calculation,
+          airfair_booking: this.state.airfair_booking
         },
         method: "PUT",
         onSuccess: (res) => {
@@ -149,12 +152,12 @@ export default class LeaveSalarySetup extends Component {
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-              [e.target.name]: e.target.value,
-              airfare_percentage: null,
-            })
+            [e.target.name]: e.target.value,
+            airfare_percentage: null,
+          })
           : this.setState({
-              [e.target.name]: e.target.value,
-            });
+            [e.target.name]: e.target.value,
+          });
 
         break;
 
@@ -238,8 +241,8 @@ export default class LeaveSalarySetup extends Component {
                         type="radio"
                         value="P"
                         name="leave_salary_calendar"
-                        // checked={this.state.salary_calendar === "P"}
-                        // onChange={this.textHandler.bind(this)}
+                      // checked={this.state.salary_calendar === "P"}
+                      // onChange={this.textHandler.bind(this)}
                       />
                       <span>Periodical</span>
                     </label>
@@ -249,8 +252,8 @@ export default class LeaveSalarySetup extends Component {
                         type="radio"
                         value="F"
                         name="leave_salary_calendar"
-                        // checked={this.state.salary_calendar === "F"}
-                        // onChange={this.textHandler.bind(this)}
+                      // checked={this.state.salary_calendar === "F"}
+                      // onChange={this.textHandler.bind(this)}
                       />
                       <span>Fixed</span>
                     </label>
@@ -263,23 +266,23 @@ export default class LeaveSalarySetup extends Component {
                     <label className="radio inline">
                       <input
                         type="radio"
-                        value="PB"
-                        name="airfare_type"
-                        // checked={this.state.airfare_factor === "PB"}
-                        // onChange={this.textHandler.bind(this)}
+                        value="C"
+                        name="airfair_booking"
+                        checked={this.state.airfair_booking === "C"}
+                        onChange={this.textHandler.bind(this)}
                       />
-                      <span>Ticket</span>
+                      <span>Cash</span>
                     </label>
 
                     <label className="radio inline">
                       <input
                         type="radio"
-                        value="FI"
-                        name="airfare_type"
-                        // checked={this.state.airfare_factor === "FI"}
-                        // onChange={this.textHandler.bind(this)}
+                        value="T"
+                        name="airfair_booking"
+                        checked={this.state.airfair_booking === "T"}
+                        onChange={this.textHandler.bind(this)}
                       />
-                      <span>Cash</span>
+                      <span>Ticket</span>
                     </label>
                   </div>
                 </div>

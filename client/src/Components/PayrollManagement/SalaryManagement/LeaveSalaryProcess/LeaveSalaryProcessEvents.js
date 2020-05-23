@@ -195,7 +195,9 @@ const LeaveSalProcess = ($this) => {
           AlgaehLoader({ show: false });
 
           let total_amount =
-            parseFloat(salary_amount) + parseFloat(leave_amount);
+            parseFloat(salary_amount) + parseFloat(leave_amount)
+
+          total_amount = total_amount + $this.state.hrms_options.airfair_booking === "C" ? parseFloat(airfare_amount) : 0;
 
           //Commeneted for shaksy requirement
           // parseFloat(airfare_amount);
@@ -506,6 +508,7 @@ const getHrmsOptions = ($this) => {
     module: "hrManagement",
     onSuccess: (res) => {
       if (res.data.success) {
+        debugger
         $this.setState({ hrms_options: res.data.result[0] });
       }
     },
