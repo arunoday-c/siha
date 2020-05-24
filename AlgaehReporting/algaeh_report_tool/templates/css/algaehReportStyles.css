@@ -259,11 +259,11 @@ body {
   text-align: left;
 }
 .footerTotalUp {
-  font-weight: bold !important;
   text-align: right;
 }
 .footerTotalDown {
   background: #eee;
+  font-weight: bold !important;
 }
 
 .numberFld {

@@ -74,7 +74,7 @@ const ClearData = ($this) => {
 const MainClearData = ($this) => {
   let IOputs = LeaveSalaryProcessIOputs.inputParam();
   IOputs.hospital_id = $this.state.hospital_id;
-
+  IOputs.hims_f_salary_id = null;
   $this.setState(IOputs, () => {
     getEmployeeAnnualLeaveToProcess($this);
   });
@@ -104,6 +104,7 @@ const employeeSearch = ($this) => {
 };
 
 const selectEmployee = ($this, row) => {
+  // IOputs.hims_f_salary_id = null;
   let IOputs = LeaveSalaryProcessIOputs.inputParam();
   IOputs.emp_leave_salary = $this.state.emp_leave_salary;
   IOputs.employee_name = row.full_name;
@@ -139,6 +140,7 @@ const LeaveSalProcess = ($this) => {
     data: inputObj,
     onSuccess: (response) => {
       if (response.data.success) {
+        const hims_f_salary_id = response.data.hims_f_salary_id;
         if (response.data.result.length > 0) {
           let salaryObj = [];
           // let data = response.data.result;
@@ -195,12 +197,19 @@ const LeaveSalProcess = ($this) => {
           AlgaehLoader({ show: false });
 
           let total_amount =
-            parseFloat(salary_amount) + parseFloat(leave_amount)
+            parseFloat(leave_amount) + parseFloat(salary_amount);
+          console.log("total_amount First", total_amount);
 
-          total_amount = total_amount + $this.state.hrms_options.airfair_booking === "C" ? parseFloat(airfare_amount) : 0;
+          total_amount =
+            total_amount +
+            ($this.state.hrms_options.airfair_booking === "C"
+              ? parseFloat(airfare_amount)
+              : 0);
 
           //Commeneted for shaksy requirement
           // parseFloat(airfare_amount);
+
+          console.log("total_amount Second", total_amount);
 
           total_amount = parseFloat(total_amount).toFixed(
             $this.state.decimal_place
@@ -210,6 +219,7 @@ const LeaveSalProcess = ($this) => {
           // total_amount = x[1];
 
           $this.setState({
+            hims_f_salary_id,
             leave_salary_detail: leave_salary_detail,
             salary_amount: salary_amount,
             leave_amount: leave_amount,
@@ -508,7 +518,7 @@ const getHrmsOptions = ($this) => {
     module: "hrManagement",
     onSuccess: (res) => {
       if (res.data.success) {
-        debugger
+        debugger;
         $this.setState({ hrms_options: res.data.result[0] });
       }
     },

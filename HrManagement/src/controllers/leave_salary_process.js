@@ -8,7 +8,7 @@ const {
   InsertLeaveSalary,
   getLeaveSalary,
   getEmployeeAnnualLeaveToProcess,
-  generateAccountingEntry
+  generateAccountingEntry,
 } = leave_salary_process;
 
 export default () => {
@@ -16,14 +16,18 @@ export default () => {
   api.get("/getLeaveSalaryProcess", getLeaveSalaryProcess, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      result: req.records,
     });
   });
 
   api.get("/processLeaveSalary", processLeaveSalary, (req, res, next) => {
+    // console.log("req.records", req.records);
+    let result = req.records;
+
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: req.flag == 1 ? false : true,
-      result: req.records
+      result: result, //req.records,
+      hims_f_salary_id: req.salaryID,
     });
   });
 
@@ -34,24 +38,28 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        result: req.records,
       });
-    });
+    }
+  );
 
   api.get("/getLeaveSalary", getLeaveSalary, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: req.flag == 1 ? false : true,
-      result: req.records
+      result: req.records,
     });
   });
 
-  api.get("/getEmployeeAnnualLeaveToProcess", getEmployeeAnnualLeaveToProcess, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: req.flag == 1 ? false : true,
-      result: req.records
-    });
-  });
-
+  api.get(
+    "/getEmployeeAnnualLeaveToProcess",
+    getEmployeeAnnualLeaveToProcess,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: req.flag == 1 ? false : true,
+        result: req.records,
+      });
+    }
+  );
 
   return api;
 };
