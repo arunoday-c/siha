@@ -96,6 +96,7 @@ db.once("open", function () {
         });
       notifiModel
         .find({
+          user_id: socket.client.user,
           createdAt: {
             $gt: moment().startOf("day"),
             $lt: moment().endOf("day"),
