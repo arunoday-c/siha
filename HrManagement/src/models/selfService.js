@@ -15,7 +15,7 @@ export default {
                 leave_type, include_weekoff, encashment_percentage, religion_required,avail_if_no_balance, \
             include_holiday, holiday_reimbursement,  leave_mode, leave_accrual, leave_encash, leave_carry_forward,\
             exit_permit_required,  proportionate_leave,avail_if_no_balance, document_mandatory, carry_forward_percentage,\
-              leave_status, religion_id , religion_required \
+              leave_status, religion_id , religion_required ,encash_calc_method \
               from hims_d_leave where record_status='A' and leave_status='A'",
             printQuery: false,
           })

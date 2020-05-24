@@ -8,9 +8,11 @@ import logUtils from "../../utils/logging";
 import moment from "moment";
 import Promise from "bluebird";
 import mysql from "mysql";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 //created by irfan:
 
-const { debugLog } = logUtils
+const { debugLog } = logUtils;
 const {
   selectStatement,
   whereCondition,
@@ -18,8 +20,8 @@ const {
   runningNumberGen,
   releaseDBConnection,
   jsonArrayToObject,
-  getMaxAuth
-} = utils
+  getMaxAuth,
+} = utils;
 
 let getEmployeeLeaveData = (req, res, next) => {
   // let selectWhere = {
@@ -30,11 +32,6 @@ let getEmployeeLeaveData = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-
-
-
-
-
 
     //
     //
@@ -76,12 +73,7 @@ let getEmployeeLeaveData = (req, res, next) => {
     //   }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
     // }
 
-    if (
-  
-     
-      req.query.year > 0 &&
-      req.query.employee_id > 0
-    ) {
+    if (req.query.year > 0 && req.query.employee_id > 0) {
       // select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
       // L.leave_description,total_eligible, availed_till_date, close_balance,\
       // E.employee_code ,E.full_name as employee_name\
@@ -100,11 +92,7 @@ let getEmployeeLeaveData = (req, res, next) => {
           inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
           and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
             order by hims_f_employee_monthly_leave_id desc;",
-          [
-            req.query.year,
-            req.query.employee_id
-         
-          ],
+          [req.query.year, req.query.employee_id],
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -119,7 +107,7 @@ let getEmployeeLeaveData = (req, res, next) => {
       req.records = {
         invalid_input: true,
         message:
-          "Please Provide  Valid (year,employee_id,gender,employee_type) "
+          "Please Provide  Valid (year,employee_id,gender,employee_type) ",
       };
 
       next();
@@ -171,7 +159,7 @@ let getYearlyLeaveData = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide year"
+        message: "please provide year",
       };
 
       next();
@@ -213,7 +201,7 @@ let applyEmployeeLeave = (req, res, next) => {
 
       req.records = {
         leave_already_exist: true,
-        message: "select proper sessions"
+        message: "select proper sessions",
       };
 
       next();
@@ -263,7 +251,7 @@ let applyEmployeeLeave = (req, res, next) => {
                     input.to_date,
                     input.from_date,
                     input.to_date,
-                    input.employee_id
+                    input.employee_id,
                   ],
                   (error, result) => {
                     if (error) {
@@ -276,10 +264,10 @@ let applyEmployeeLeave = (req, res, next) => {
                       //clashing both from_leave_session and  to_leave_session
                       const clashing_sessions = new LINQ(result)
                         .Where(
-                          w =>
+                          (w) =>
                             w.to_date == m_fromDate || w.from_date == m_toDate
                         )
-                        .Select(s => {
+                        .Select((s) => {
                           return {
                             hims_f_leave_application_id:
                               s.hims_f_leave_application_id,
@@ -288,7 +276,7 @@ let applyEmployeeLeave = (req, res, next) => {
                             from_leave_session: s.from_leave_session,
                             from_date: s.from_date,
                             to_leave_session: s.to_leave_session,
-                            to_date: s.to_date
+                            to_date: s.to_date,
                           };
                         })
                         .ToArray();
@@ -296,8 +284,8 @@ let applyEmployeeLeave = (req, res, next) => {
                       debugLog("clashing_sessions:", clashing_sessions);
                       //clashing only  new from_leave_session  with existing  to_leave_session
                       const clashing_to_leave_session = new LINQ(result)
-                        .Where(w => w.to_date == m_fromDate)
-                        .Select(s => {
+                        .Where((w) => w.to_date == m_fromDate)
+                        .Select((s) => {
                           return {
                             hims_f_leave_application_id:
                               s.hims_f_leave_application_id,
@@ -306,7 +294,7 @@ let applyEmployeeLeave = (req, res, next) => {
                             from_leave_session: s.from_leave_session,
                             from_date: s.from_date,
                             to_leave_session: s.to_leave_session,
-                            to_date: s.to_date
+                            to_date: s.to_date,
                           };
                         })
                         .ToArray();
@@ -318,8 +306,8 @@ let applyEmployeeLeave = (req, res, next) => {
 
                       //clashing only  new to_leave_session with existing  from_leave_session
                       const clashing_from_leave_session = new LINQ(result)
-                        .Where(w => w.from_date == m_toDate)
-                        .Select(s => {
+                        .Where((w) => w.from_date == m_toDate)
+                        .Select((s) => {
                           return {
                             hims_f_leave_application_id:
                               s.hims_f_leave_application_id,
@@ -328,7 +316,7 @@ let applyEmployeeLeave = (req, res, next) => {
                             from_leave_session: s.from_leave_session,
                             from_date: s.from_date,
                             to_leave_session: s.to_leave_session,
-                            to_date: s.to_date
+                            to_date: s.to_date,
                           };
                         })
                         .ToArray();
@@ -362,7 +350,7 @@ let applyEmployeeLeave = (req, res, next) => {
                                 " leave is already there between this dates " +
                                 not_clashing_sessions[0]["from_date"] +
                                 " AND " +
-                                not_clashing_sessions[0]["to_date"]
+                                not_clashing_sessions[0]["to_date"],
                             };
                             next();
                             return;
@@ -384,10 +372,12 @@ let applyEmployeeLeave = (req, res, next) => {
                                     i++
                                   ) {
                                     let prev_from_leave_session_FH = new LINQ([
-                                      clashing_from_leave_session[i]
+                                      clashing_from_leave_session[i],
                                     ])
-                                      .Where(w => w.from_leave_session == "FH")
-                                      .Select(s => s.from_leave_session)
+                                      .Where(
+                                        (w) => w.from_leave_session == "FH"
+                                      )
+                                      .Select((s) => s.from_leave_session)
                                       .FirstOrDefault();
 
                                     debugLog(
@@ -396,10 +386,12 @@ let applyEmployeeLeave = (req, res, next) => {
                                     );
 
                                     let prev_from_leave_session_SH = new LINQ([
-                                      clashing_from_leave_session[i]
+                                      clashing_from_leave_session[i],
                                     ])
-                                      .Where(w => w.from_leave_session == "SH")
-                                      .Select(s => s.from_leave_session)
+                                      .Where(
+                                        (w) => w.from_leave_session == "SH"
+                                      )
+                                      .Select((s) => s.from_leave_session)
                                       .FirstOrDefault();
                                     debugLog(
                                       "prev_from_leave_session_SH:",
@@ -407,10 +399,12 @@ let applyEmployeeLeave = (req, res, next) => {
                                     );
 
                                     let prev_from_leave_session_FD = new LINQ([
-                                      clashing_from_leave_session[i]
+                                      clashing_from_leave_session[i],
                                     ])
-                                      .Where(w => w.from_leave_session == "FD")
-                                      .Select(s => s.from_leave_session)
+                                      .Where(
+                                        (w) => w.from_leave_session == "FD"
+                                      )
+                                      .Select((s) => s.from_leave_session)
                                       .FirstOrDefault();
                                     debugLog(
                                       "prev_from_leave_session_FD:",
@@ -451,7 +445,7 @@ let applyEmployeeLeave = (req, res, next) => {
                                           " AND " +
                                           clashing_from_leave_session[i][
                                             "to_date"
-                                          ]
+                                          ],
                                       };
                                       next();
                                       return;
@@ -473,7 +467,7 @@ let applyEmployeeLeave = (req, res, next) => {
                               } catch (e) {
                                 reject(e);
                               }
-                            }).then(fromSessionREsult => {
+                            }).then((fromSessionREsult) => {
                               if (clashing_to_leave_session.length > 0) {
                                 debugLog("inside clashing_to_leave_session:");
 
@@ -485,10 +479,10 @@ let applyEmployeeLeave = (req, res, next) => {
                                   //fetch all previous to_leave_sessions
 
                                   let prev_to_leave_session_FH = new LINQ([
-                                    clashing_to_leave_session[i]
+                                    clashing_to_leave_session[i],
                                   ])
-                                    .Where(w => w.to_leave_session == "FH")
-                                    .Select(s => s.to_leave_session)
+                                    .Where((w) => w.to_leave_session == "FH")
+                                    .Select((s) => s.to_leave_session)
                                     .FirstOrDefault();
 
                                   debugLog(
@@ -497,10 +491,10 @@ let applyEmployeeLeave = (req, res, next) => {
                                   );
 
                                   let prev_to_leave_session_FD = new LINQ([
-                                    clashing_to_leave_session[i]
+                                    clashing_to_leave_session[i],
                                   ])
-                                    .Where(w => w.to_leave_session == "FD")
-                                    .Select(s => s.to_leave_session)
+                                    .Where((w) => w.to_leave_session == "FD")
+                                    .Select((s) => s.to_leave_session)
                                     .FirstOrDefault();
 
                                   debugLog(
@@ -509,10 +503,10 @@ let applyEmployeeLeave = (req, res, next) => {
                                   );
 
                                   let prev_to_leave_session_SH = new LINQ([
-                                    clashing_to_leave_session[i]
+                                    clashing_to_leave_session[i],
                                   ])
-                                    .Where(w => w.to_leave_session == "SH")
-                                    .Select(s => s.to_leave_session)
+                                    .Where((w) => w.to_leave_session == "SH")
+                                    .Select((s) => s.to_leave_session)
                                     .FirstOrDefault();
 
                                   debugLog(
@@ -521,10 +515,10 @@ let applyEmployeeLeave = (req, res, next) => {
                                   );
 
                                   let prev2_from_leave_session_FH = new LINQ([
-                                    clashing_to_leave_session[i]
+                                    clashing_to_leave_session[i],
                                   ])
-                                    .Where(w => w.from_leave_session == "FH")
-                                    .Select(s => s.from_leave_session)
+                                    .Where((w) => w.from_leave_session == "FH")
+                                    .Select((s) => s.from_leave_session)
                                     .FirstOrDefault();
 
                                   debugLog(
@@ -541,16 +535,16 @@ let applyEmployeeLeave = (req, res, next) => {
                                     (prev2_from_leave_session_FH == "FH" &&
                                       prev_to_leave_session_SH == "SH" &&
                                       curr_from_session == "FH") ||
-                                    ((prev_to_leave_session_FD == "FD" &&
+                                    (prev_to_leave_session_FD == "FD" &&
                                       curr_from_session == "SH") ||
-                                      (prev_to_leave_session_SH == "SH" &&
-                                        curr_from_session == "SH")) ||
-                                    ((prev_to_leave_session_FH == "FH" &&
+                                    (prev_to_leave_session_SH == "SH" &&
+                                      curr_from_session == "SH") ||
+                                    (prev_to_leave_session_FH == "FH" &&
                                       curr_from_session == "FD") ||
-                                      (prev_to_leave_session_FD == "FD" &&
-                                        curr_from_session == "FD") ||
-                                      (prev_to_leave_session_SH == "SH" &&
-                                        curr_from_session == "FD"))
+                                    (prev_to_leave_session_FD == "FD" &&
+                                      curr_from_session == "FD") ||
+                                    (prev_to_leave_session_SH == "SH" &&
+                                      curr_from_session == "FD")
                                   ) {
                                     debugLog("rejction_one:");
                                     //clashing only  new from_leave_session  with existing  to_leave_session
@@ -565,7 +559,7 @@ let applyEmployeeLeave = (req, res, next) => {
                                           "from_date"
                                         ] +
                                         " AND " +
-                                        clashing_to_leave_session[i]["to_date"]
+                                        clashing_to_leave_session[i]["to_date"],
                                     };
                                     next();
                                     return;
@@ -592,7 +586,7 @@ let applyEmployeeLeave = (req, res, next) => {
                         } catch (e) {
                           reject(e);
                         }
-                      }).then(noClashResult => {
+                      }).then((noClashResult) => {
                         saveF(req, db, next, connection, input, 1);
                       });
                     } else {
@@ -607,7 +601,7 @@ let applyEmployeeLeave = (req, res, next) => {
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: "leave application exceed total eligible leaves"
+                  message: "leave application exceed total eligible leaves",
                 };
                 releaseDBConnection(db, connection);
                 next();
@@ -616,7 +610,7 @@ let applyEmployeeLeave = (req, res, next) => {
             } else {
               req.records = {
                 leave_already_exist: true,
-                message: "you cant apply for this leave type"
+                message: "you cant apply for this leave type",
               };
               releaseDBConnection(db, connection);
               next();
@@ -628,7 +622,7 @@ let applyEmployeeLeave = (req, res, next) => {
     } else {
       req.records = {
         leave_already_exist: true,
-        message: "cannot apply leave for next year "
+        message: "cannot apply leave for next year ",
       };
 
       next();
@@ -639,7 +633,7 @@ let applyEmployeeLeave = (req, res, next) => {
   }
 };
 let saveF = (req, db, next, connection, input, msg) => {
-  connection.beginTransaction(error => {
+  connection.beginTransaction((error) => {
     if (error) {
       connection.rollback(() => {
         releaseDBConnection(db, connection);
@@ -653,12 +647,12 @@ let saveF = (req, db, next, connection, input, msg) => {
         runningNumberGen({
           db: connection,
           module_desc: ["EMPLOYEE_LEAVE"],
-          onFailure: error => {
+          onFailure: (error) => {
             reject(error);
           },
-          onSuccess: result => {
+          onSuccess: (result) => {
             resolve(result);
-          }
+          },
         });
       } catch (e) {
         connection.rollback(() => {
@@ -666,7 +660,7 @@ let saveF = (req, db, next, connection, input, msg) => {
           reject(e);
         });
       }
-    }).then(numGenLeave => {
+    }).then((numGenLeave) => {
       connection.query(
         "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
     from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks, created_date, created_by, updated_date, updated_by)\
@@ -688,7 +682,7 @@ let saveF = (req, db, next, connection, input, msg) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, results) => {
           if (error) {
@@ -701,7 +695,7 @@ let saveF = (req, db, next, connection, input, msg) => {
           if (results.affectedRows > 0) {
             debugLog("affectedRows");
 
-            connection.commit(error => {
+            connection.commit((error) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -821,7 +815,7 @@ let getLeaveBalance = (req, res, next) => {
               } else {
                 req.records = {
                   leave_already_exist: true,
-                  message: "leave application exceed total eligible leaves"
+                  message: "leave application exceed total eligible leaves",
                 };
                 next();
                 return;
@@ -829,7 +823,7 @@ let getLeaveBalance = (req, res, next) => {
             } else {
               req.records = {
                 leave_already_exist: true,
-                message: "you cant apply for this leave type"
+                message: "you cant apply for this leave type",
               };
               next();
               return;
@@ -840,7 +834,7 @@ let getLeaveBalance = (req, res, next) => {
     } else {
       req.records = {
         leave_already_exist: true,
-        message: "cannot apply leave for next year "
+        message: "cannot apply leave for next year ",
       };
       next();
       return;
@@ -900,7 +894,7 @@ let addLeaveMaster = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -937,7 +931,7 @@ let addLeaveMaster = (req, res, next) => {
             input.created_by,
             new Date(),
             input.updated_by,
-            new Date()
+            new Date(),
           ],
           (error, leaveHeadResult) => {
             if (error) {
@@ -959,7 +953,7 @@ let addLeaveMaster = (req, res, next) => {
                       "earnings_id",
                       "percent",
                       "created_by",
-                      "updated_by"
+                      "updated_by",
                     ];
 
                     connection.query(
@@ -973,10 +967,10 @@ let addLeaveMaster = (req, res, next) => {
                           newFieldToInsert: [
                             leaveHeadResult.insertId,
                             new Date(),
-                            new Date()
+                            new Date(),
                           ],
-                          req: req
-                        })
+                          req: req,
+                        }),
                       ],
                       (error, encashResult) => {
                         if (error) {
@@ -993,7 +987,7 @@ let addLeaveMaster = (req, res, next) => {
                             releaseDBConnection(db, connection);
                             req.records = {
                               invalid_data: true,
-                              message: "please send correct data"
+                              message: "please send correct data",
                             };
                             next();
                             return;
@@ -1008,7 +1002,7 @@ let addLeaveMaster = (req, res, next) => {
                 } catch (e) {
                   reject(e);
                 }
-              }).then(leaveEncashRes => {
+              }).then((leaveEncashRes) => {
                 new Promise((resolve, reject) => {
                   try {
                     if (
@@ -1022,7 +1016,7 @@ let addLeaveMaster = (req, res, next) => {
                         "from_value",
                         "to_value",
                         "value_type",
-                        "total_days"
+                        "total_days",
                       ];
 
                       connection.query(
@@ -1034,8 +1028,8 @@ let addLeaveMaster = (req, res, next) => {
                             sampleInputObject: insurtColumnsRules,
                             arrayObj: input.leaveRules,
                             newFieldToInsert: [leaveHeadResult.insertId],
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, ruleResult) => {
                           if (error) {
@@ -1053,7 +1047,7 @@ let addLeaveMaster = (req, res, next) => {
                               releaseDBConnection(db, connection);
                               req.records = {
                                 invalid_data: true,
-                                message: "please send correct data"
+                                message: "please send correct data",
                               };
                               next();
                               return;
@@ -1067,7 +1061,7 @@ let addLeaveMaster = (req, res, next) => {
                   } catch (e) {
                     reject(e);
                   }
-                }).then(leaveRulesRes => {
+                }).then((leaveRulesRes) => {
                   new Promise((resolve, reject) => {
                     try {
                       if (
@@ -1085,7 +1079,7 @@ let addLeaveMaster = (req, res, next) => {
                           "max_number_days",
                           "mandatory_utilize_days",
                           "created_by",
-                          "updated_by"
+                          "updated_by",
                         ];
 
                         connection.query(
@@ -1099,10 +1093,10 @@ let addLeaveMaster = (req, res, next) => {
                               newFieldToInsert: [
                                 leaveHeadResult.insertId,
                                 new Date(),
-                                new Date()
+                                new Date(),
                               ],
-                              req: req
-                            })
+                              req: req,
+                            }),
                           ],
                           (error, detailResult) => {
                             if (error) {
@@ -1119,7 +1113,7 @@ let addLeaveMaster = (req, res, next) => {
                                 releaseDBConnection(db, connection);
                                 req.records = {
                                   invalid_data: true,
-                                  message: "please send correct data"
+                                  message: "please send correct data",
                                 };
                                 next();
                                 return;
@@ -1133,8 +1127,8 @@ let addLeaveMaster = (req, res, next) => {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(finalResult => {
-                    connection.commit(error => {
+                  }).then((finalResult) => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -1153,7 +1147,7 @@ let addLeaveMaster = (req, res, next) => {
                 releaseDBConnection(db, connection);
                 req.records = {
                   invalid_data: true,
-                  message: "Please Send Correct Data"
+                  message: "Please Send Correct Data",
                 };
                 next();
                 return;
@@ -1182,7 +1176,7 @@ let addAttendanceRegularization = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1195,12 +1189,12 @@ let addAttendanceRegularization = (req, res, next) => {
             runningNumberGen({
               db: connection,
               module_desc: ["ATTENDANCE_REGULARIZE"],
-              onFailure: error => {
+              onFailure: (error) => {
                 reject(error);
               },
-              onSuccess: result => {
+              onSuccess: (result) => {
                 resolve(result);
-              }
+              },
             });
           } catch (e) {
             connection.rollback(() => {
@@ -1208,7 +1202,7 @@ let addAttendanceRegularization = (req, res, next) => {
               reject(e);
             });
           }
-        }).then(numGenReg => {
+        }).then((numGenReg) => {
           connection.query(
             "INSERT INTO `hims_f_attendance_regularize` (regularization_code,employee_id,attendance_date,\
              login_date,logout_date,\
@@ -1232,7 +1226,7 @@ let addAttendanceRegularization = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              new Date()
+              new Date(),
             ],
             (error, results) => {
               if (error) {
@@ -1243,7 +1237,7 @@ let addAttendanceRegularization = (req, res, next) => {
               }
 
               if (results.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -1294,10 +1288,12 @@ let getEmployeeAttendReg = (req, res, next) => {
       between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
-    if (req.query.requested != "" &&
-    req.query.requested != null &&
-    req.query.requested != "null"){
-       requested = ` and requested=${req.query.requested}`
+    if (
+      req.query.requested != "" &&
+      req.query.requested != null &&
+      req.query.requested != "null"
+    ) {
+      requested = ` and requested=${req.query.requested}`;
     }
 
     if (
@@ -1311,7 +1307,7 @@ let getEmployeeAttendReg = (req, res, next) => {
     if (dateRange == "" && employee == "") {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
       next();
       return;
@@ -1411,7 +1407,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                         debugLog("leaveRes:", leaveRes);
                         if (leaveRes.length > 0) {
                           const apllicable_leavs = new LINQ(leaveRes)
-                            .Select(s => s.hims_d_leave_id)
+                            .Select((s) => s.hims_d_leave_id)
                             .ToArray();
 
                           debugLog("apllicable_leavs:", apllicable_leavs);
@@ -1434,7 +1430,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                   employees[i].hims_d_employee_id,
                                   year,
                                   employees[i].hims_d_employee_id,
-                                  year
+                                  year,
                                 ],
 
                                 (error, yearOrLeavExist) => {
@@ -1448,14 +1444,14 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     const old_leave_ids = new LINQ(
                                       yearOrLeavExist[1]
                                     )
-                                      .Select(s => s.leave_id)
+                                      .Select((s) => s.leave_id)
                                       .ToArray();
 
                                     debugLog("old_leave_ids:", old_leave_ids);
 
                                     // remove existing leave ids from applicable leave ids
                                     let leaves_to_insert = new_leave_ids.filter(
-                                      val => !old_leave_ids.includes(val)
+                                      (val) => !old_leave_ids.includes(val)
                                     );
                                     debugLog(
                                       "leaves_to_insert:",
@@ -1463,9 +1459,9 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     );
 
                                     const _leaves = leaves_to_insert.map(
-                                      item => {
+                                      (item) => {
                                         return _.chain(leaveRes)
-                                          .find(o => {
+                                          .find((o) => {
                                             return o.hims_d_leave_id == item;
                                           })
 
@@ -1476,15 +1472,15 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     debugLog("_leaves:", _leaves);
                                     monthlyArray.push(
                                       ...new LINQ(_leaves)
-                                        .Where(w => w.hims_d_leave_id > 0)
-                                        .Select(s => {
+                                        .Where((w) => w.hims_d_leave_id > 0)
+                                        .Select((s) => {
                                           return {
                                             employee_id:
                                               employees[i].hims_d_employee_id,
                                             year: year,
                                             leave_id: s.hims_d_leave_id,
                                             total_eligible: s.eligible_days,
-                                            close_balance: s.eligible_days
+                                            close_balance: s.eligible_days,
                                           };
                                         })
                                         .ToArray()
@@ -1493,15 +1489,15 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     // if monthly table data not exist
                                     monthlyArray.push(
                                       ...new LINQ(leaveRes)
-                                        .Where(w => w.hims_d_leave_id > 0)
-                                        .Select(s => {
+                                        .Where((w) => w.hims_d_leave_id > 0)
+                                        .Select((s) => {
                                           return {
                                             employee_id:
                                               employees[i].hims_d_employee_id,
                                             year: year,
                                             leave_id: s.hims_d_leave_id,
                                             total_eligible: s.eligible_days,
-                                            close_balance: s.eligible_days
+                                            close_balance: s.eligible_days,
                                           };
                                         })
                                         .ToArray()
@@ -1512,7 +1508,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     yearArray.push({
                                       employee_id:
                                         employees[i].hims_d_employee_id,
-                                      year: year
+                                      year: year,
                                     });
                                   }
 
@@ -1525,8 +1521,8 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                             } catch (e) {
                               reject(e);
                             }
-                          }).then(insertyearlyMonthly => {
-                            connection.beginTransaction(error => {
+                          }).then((insertyearlyMonthly) => {
+                            connection.beginTransaction((error) => {
                               if (error) {
                                 connection.rollback(() => {
                                   releaseDBConnection(db, connection);
@@ -1538,7 +1534,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                   if (yearArray.length > 0) {
                                     const insurtColumns = [
                                       "employee_id",
-                                      "year"
+                                      "year",
                                     ];
 
                                     connection.query(
@@ -1555,9 +1551,9 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                             req.userIdentity
                                               .algaeh_d_app_user_id,
                                             req.userIdentity
-                                              .algaeh_d_app_user_id
-                                          ]
-                                        })
+                                              .algaeh_d_app_user_id,
+                                          ],
+                                        }),
                                       ],
                                       (error, yearResult) => {
                                         if (error) {
@@ -1583,7 +1579,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                 } catch (e) {
                                   reject(e);
                                 }
-                              }).then(resultofYearInsert => {
+                              }).then((resultofYearInsert) => {
                                 new Promise((resolve, reject) => {
                                   try {
                                     if (monthlyArray.length > 0) {
@@ -1594,7 +1590,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                         "year",
                                         "leave_id",
                                         "total_eligible",
-                                        "close_balance"
+                                        "close_balance",
                                       ];
 
                                       connection.query(
@@ -1604,8 +1600,8 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                         [
                                           jsonArrayToObject({
                                             sampleInputObject: insurtColumns,
-                                            arrayObj: monthlyArray
-                                          })
+                                            arrayObj: monthlyArray,
+                                          }),
                                         ],
                                         (error, monthResult) => {
                                           if (error) {
@@ -1618,7 +1614,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                             });
                                           }
 
-                                          connection.commit(error => {
+                                          connection.commit((error) => {
                                             if (error) {
                                               connection.rollback(() => {
                                                 releaseDBConnection(
@@ -1637,7 +1633,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                     } else {
                                       //commit
 
-                                      connection.commit(error => {
+                                      connection.commit((error) => {
                                         if (error) {
                                           connection.rollback(() => {
                                             releaseDBConnection(db, connection);
@@ -1653,7 +1649,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                         ) {
                                           req.records = {
                                             already_processed: true,
-                                            message: "Leave already processed"
+                                            message: "Leave already processed",
                                           };
                                           next();
                                         } else {
@@ -1665,7 +1661,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                                   } catch (e) {
                                     reject(e);
                                   }
-                                }).then(resultMonthlyInsert => {
+                                }).then((resultMonthlyInsert) => {
                                   //pppppppppppp
                                 });
                               });
@@ -1677,7 +1673,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
                   } catch (e) {
                     reject(e);
                   }
-                }).then(result => {
+                }).then((result) => {
                   //pppppppppppp
                 });
               }
@@ -1692,7 +1688,7 @@ let processYearlyLeaveBACKUP = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide year"
+        message: "please provide year",
       };
 
       next();
@@ -1772,16 +1768,16 @@ let processYearlyLeave = (req, res, next) => {
                     // fetch all the fileds of apllicable_leavs
                     const apllicable_leavsDetail = new LINQ(AllLeaves)
                       .Where(
-                        w =>
+                        (w) =>
                           w.employee_type == AllEmployees[i]["employee_type"] &&
                           (w.gender == AllEmployees[i]["sex"] ||
                             w.gender == "BOTH")
                       )
-                      .Select(s => {
+                      .Select((s) => {
                         return {
                           hims_d_leave_id: s.hims_d_leave_id,
                           eligible_days: s.eligible_days,
-                          eligible_days: s.eligible_days
+                          eligible_days: s.eligible_days,
                         };
                       })
                       .ToArray();
@@ -1789,12 +1785,12 @@ let processYearlyLeave = (req, res, next) => {
                     // fetch only leave ids of apllicable_leavs
                     const apllicable_leavs = new LINQ(AllLeaves)
                       .Where(
-                        w =>
+                        (w) =>
                           w.employee_type == AllEmployees[i]["employee_type"] &&
                           (w.gender == AllEmployees[i]["sex"] ||
                             w.gender == "BOTH")
                       )
-                      .Select(s => s.hims_d_leave_id)
+                      .Select((s) => s.hims_d_leave_id)
                       .ToArray();
 
                     // debugLog("apllicable_leavs:", apllicable_leavs);
@@ -1811,39 +1807,39 @@ let processYearlyLeave = (req, res, next) => {
                           return apllicable_leavs.indexOf(item) == pos;
                         }
                       );
-                    //  debugLog("new_leave_ids:", new_leave_ids);
+                      //  debugLog("new_leave_ids:", new_leave_ids);
                       //step1---checking if yearly leave is  already processed for this employee
                       const yearlyLvExist = new LINQ(AllYearlyLeaves)
                         .Where(
-                          w =>
+                          (w) =>
                             w.employee_id ==
                               AllEmployees[i]["hims_d_employee_id"] &&
                             w.year == year
                         )
-                        .Select(s => s.hims_f_employee_yearly_leave_id)
+                        .Select((s) => s.hims_f_employee_yearly_leave_id)
                         .ToArray().length;
 
-                     // debugLog("yearlyLvExist:", yearlyLvExist);
+                      // debugLog("yearlyLvExist:", yearlyLvExist);
                       //if yearly leave is  not processed for this employee process now
                       if (yearlyLvExist < 1) {
                         yearArray.push({
                           employee_id: AllEmployees[i].hims_d_employee_id,
-                          year: year
+                          year: year,
                         });
                       }
 
                       //step2----checking if monthly leave is  already processed for this employee
                       const monthlyLvExist = new LINQ(AllMonthlyLeaves)
                         .Where(
-                          w =>
+                          (w) =>
                             w.employee_id ==
                               AllEmployees[i]["hims_d_employee_id"] &&
                             w.year == year
                         )
-                        .Select(s => s.leave_id)
+                        .Select((s) => s.leave_id)
                         .ToArray();
 
-                     // debugLog("monthlyLvExist:", monthlyLvExist);
+                      // debugLog("monthlyLvExist:", monthlyLvExist);
                       if (monthlyLvExist.length > 0) {
                         // const old_leave_ids = new LINQ(
                         //   monthlyLvExist
@@ -1855,30 +1851,30 @@ let processYearlyLeave = (req, res, next) => {
 
                         // remove existing leave ids from applicable leave ids
                         let leaves_to_insert = new_leave_ids.filter(
-                          val => !monthlyLvExist.includes(val)
+                          (val) => !monthlyLvExist.includes(val)
                         );
                         debugLog("leaves_to_insert:", leaves_to_insert);
 
-                        const _leaves = leaves_to_insert.map(item => {
+                        const _leaves = leaves_to_insert.map((item) => {
                           return _.chain(apllicable_leavsDetail)
-                            .find(o => {
+                            .find((o) => {
                               return o.hims_d_leave_id == item;
                             })
 
                             .omit(_.isNull)
                             .value();
                         });
-                      //  debugLog("_leaves:", _leaves);
+                        //  debugLog("_leaves:", _leaves);
                         monthlyArray.push(
                           ...new LINQ(_leaves)
-                            .Where(w => w.hims_d_leave_id > 0)
-                            .Select(s => {
+                            .Where((w) => w.hims_d_leave_id > 0)
+                            .Select((s) => {
                               return {
                                 employee_id: AllEmployees[i].hims_d_employee_id,
                                 year: year,
                                 leave_id: s.hims_d_leave_id,
                                 total_eligible: s.eligible_days,
-                                close_balance: s.eligible_days
+                                close_balance: s.eligible_days,
                               };
                             })
                             .ToArray()
@@ -1887,14 +1883,14 @@ let processYearlyLeave = (req, res, next) => {
                         // if monthly table data not exist
                         monthlyArray.push(
                           ...new LINQ(apllicable_leavsDetail)
-                            .Where(w => w.hims_d_leave_id > 0)
-                            .Select(s => {
+                            .Where((w) => w.hims_d_leave_id > 0)
+                            .Select((s) => {
                               return {
                                 employee_id: AllEmployees[i].hims_d_employee_id,
                                 year: year,
                                 leave_id: s.hims_d_leave_id,
                                 total_eligible: s.eligible_days,
-                                close_balance: s.eligible_days
+                                close_balance: s.eligible_days,
                               };
                             })
                             .ToArray()
@@ -1910,10 +1906,10 @@ let processYearlyLeave = (req, res, next) => {
                 } catch (e) {
                   reject(e);
                 }
-              }).then(arrayResult => {
+              }).then((arrayResult) => {
                 debugLog("yearArray:", yearArray);
                 debugLog("monthlyArray:", monthlyArray);
-                connection.beginTransaction(error => {
+                connection.beginTransaction((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -1937,9 +1933,9 @@ let processYearlyLeave = (req, res, next) => {
                                 new Date(),
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
-                                req.userIdentity.algaeh_d_app_user_id
-                              ]
-                            })
+                                req.userIdentity.algaeh_d_app_user_id,
+                              ],
+                            }),
                           ],
                           (error, yearResult) => {
                             if (error) {
@@ -1965,7 +1961,7 @@ let processYearlyLeave = (req, res, next) => {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(resultofYearInsert => {
+                  }).then((resultofYearInsert) => {
                     new Promise((resolve, reject) => {
                       try {
                         if (monthlyArray.length > 0) {
@@ -1976,7 +1972,7 @@ let processYearlyLeave = (req, res, next) => {
                             "year",
                             "leave_id",
                             "total_eligible",
-                            "close_balance"
+                            "close_balance",
                           ];
 
                           connection.query(
@@ -1986,8 +1982,8 @@ let processYearlyLeave = (req, res, next) => {
                             [
                               jsonArrayToObject({
                                 sampleInputObject: insurtColumns,
-                                arrayObj: monthlyArray
-                              })
+                                arrayObj: monthlyArray,
+                              }),
                             ],
                             (error, monthResult) => {
                               if (error) {
@@ -1997,7 +1993,7 @@ let processYearlyLeave = (req, res, next) => {
                                 });
                               }
 
-                              connection.commit(error => {
+                              connection.commit((error) => {
                                 if (error) {
                                   connection.rollback(() => {
                                     releaseDBConnection(db, connection);
@@ -2013,7 +2009,7 @@ let processYearlyLeave = (req, res, next) => {
                         } else {
                           //commit
 
-                          connection.commit(error => {
+                          connection.commit((error) => {
                             if (error) {
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -2026,7 +2022,7 @@ let processYearlyLeave = (req, res, next) => {
                             if (Object.keys(resultofYearInsert).length === 0) {
                               req.records = {
                                 already_processed: true,
-                                message: "Leave already processed"
+                                message: "Leave already processed",
                               };
                               next();
                             } else {
@@ -2038,7 +2034,7 @@ let processYearlyLeave = (req, res, next) => {
                       } catch (e) {
                         reject(e);
                       }
-                    }).then(resultMonthlyInsert => {
+                    }).then((resultMonthlyInsert) => {
                       //pppppppppppp
                     });
                   });
@@ -2048,7 +2044,7 @@ let processYearlyLeave = (req, res, next) => {
               releaseDBConnection(db, connection);
               req.records = {
                 invalid_input: true,
-                message: "No Employees found"
+                message: "No Employees found",
               };
               next();
               return;
@@ -2059,7 +2055,7 @@ let processYearlyLeave = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide year"
+        message: "please provide year",
       };
 
       next();
@@ -2098,7 +2094,7 @@ let markAbsent = (req, res, next) => {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2135,7 +2131,7 @@ let cancelAbsent = (req, res, next) => {
           input.cancel_reason,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_f_absent_id
+          input.hims_f_absent_id,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2220,13 +2216,13 @@ let authorizeLeaveBACK1 = (req, res, next) => {
     ) {
       req.records = {
         invalid_input: true,
-        message: "please provide valid  auth level"
+        message: "please provide valid  auth level",
       };
       next();
       return;
     } else if (input.auth_level == "L1") {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2247,7 +2243,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2270,7 +2266,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -2285,7 +2281,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                   }
                 );
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -2299,7 +2295,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -2312,7 +2308,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
       });
     } else if (input.auth_level == "L2") {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2334,7 +2330,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2357,7 +2353,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -2372,7 +2368,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                   }
                 );
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -2386,7 +2382,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -2403,7 +2399,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
       input.status != undefined
     ) {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2425,7 +2421,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2452,7 +2448,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                         });
                       }
 
-                      connection.commit(error => {
+                      connection.commit((error) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
@@ -2469,15 +2465,15 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                   new Promise((resolve, reject) => {
                     req.options = {
                       db: connection,
-                      onFailure: error => {
+                      onFailure: (error) => {
                         reject(error);
                       },
-                      onSuccess: result => {
+                      onSuccess: (result) => {
                         resolve(result);
-                      }
+                      },
                     };
                     calculateLeaveDays(req, res, next);
-                  }).then(deductionResult => {
+                  }).then((deductionResult) => {
                     new Promise((resolve, reject) => {
                       try {
                         debugLog(" wow deduc:", deductionResult);
@@ -2495,11 +2491,11 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                       } catch (e) {
                         reject(e);
                       }
-                    }).then(deductionResult => {
+                    }).then((deductionResult) => {
                       let monthArray = new LINQ(
                         deductionResult.monthWiseCalculatedLeaveDeduction
                       )
-                        .Select(s => s.month_name)
+                        .Select((s) => s.month_name)
                         .ToArray();
 
                       debugLog("monthArray:", monthArray);
@@ -2539,13 +2535,13 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
                               debugLog("kkk");
                               for (let i = 0; i < monthArray.length; i++) {
-                                Object.keys(leaveData[0]).map(key => {
+                                Object.keys(leaveData[0]).map((key) => {
                                   if (key == monthArray[i]) {
                                     debugLog(key, leaveData[0][key]);
 
                                     oldMonthsData.push({
                                       month_name: key,
-                                      finalLeave: leaveData[0][key]
+                                      finalLeave: leaveData[0][key],
                                     });
                                   }
                                 });
@@ -2566,14 +2562,14 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
                               let finalData = {};
                               _.chain(mergemonths)
-                                .groupBy(g => g.month_name)
-                                .map(item => {
+                                .groupBy((g) => g.month_name)
+                                .map((item) => {
                                   finalData[
                                     _.get(
                                       _.find(item, "month_name"),
                                       "month_name"
                                     )
-                                  ] = _.sumBy(item, s => {
+                                  ] = _.sumBy(item, (s) => {
                                     return s.finalLeave;
                                   });
                                   // return {
@@ -2604,7 +2600,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                                 {
                                   ...finalData,
                                   close_balance: newCloseBal,
-                                  availed_till_date: newAvailTillDate
+                                  availed_till_date: newAvailTillDate,
                                 }
                               );
 
@@ -2622,7 +2618,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                                 {
                                   ...finalData,
                                   close_balance: newCloseBal,
-                                  availed_till_date: newAvailTillDate
+                                  availed_till_date: newAvailTillDate,
                                 },
                                 (error, finalRes) => {
                                   if (error) {
@@ -2633,7 +2629,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                                     });
                                   }
                                   debugLog("pakka:");
-                                  connection.commit(error => {
+                                  connection.commit((error) => {
                                     if (error) {
                                       connection.rollback(() => {
                                         releaseDBConnection(db, connection);
@@ -2650,7 +2646,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                               //invalid data
                               req.records = {
                                 invalid_input: true,
-                                message: "leave balance is low"
+                                message: "leave balance is low",
                               };
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -2664,7 +2660,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
 
                         req.records = {
                           invalid_input: true,
-                          message: "please provide valid month"
+                          message: "please provide valid month",
                         };
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -2675,7 +2671,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
                   });
                 }
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -2689,7 +2685,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -2703,7 +2699,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
       next();
     }
@@ -2728,13 +2724,13 @@ let authorizeLeave = (req, res, next) => {
     ) {
       req.records = {
         invalid_input: true,
-        message: "please provide valid  auth level"
+        message: "please provide valid  auth level",
       };
       next();
       return;
     } else if (input.auth_level == "L1") {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2755,7 +2751,7 @@ let authorizeLeave = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2778,7 +2774,7 @@ let authorizeLeave = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -2793,7 +2789,7 @@ let authorizeLeave = (req, res, next) => {
                   }
                 );
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -2807,7 +2803,7 @@ let authorizeLeave = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -2820,7 +2816,7 @@ let authorizeLeave = (req, res, next) => {
       });
     } else if (input.auth_level == "L2") {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2842,7 +2838,7 @@ let authorizeLeave = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2865,7 +2861,7 @@ let authorizeLeave = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -2880,7 +2876,7 @@ let authorizeLeave = (req, res, next) => {
                   }
                 );
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -2894,7 +2890,7 @@ let authorizeLeave = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -2911,7 +2907,7 @@ let authorizeLeave = (req, res, next) => {
       input.status != undefined
     ) {
       db.getConnection((error, connection) => {
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -2933,7 +2929,7 @@ let authorizeLeave = (req, res, next) => {
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_leave_application_id
+              input.hims_f_leave_application_id,
             ],
             (error, result) => {
               if (error) {
@@ -2960,7 +2956,7 @@ let authorizeLeave = (req, res, next) => {
                         });
                       }
 
-                      connection.commit(error => {
+                      connection.commit((error) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
@@ -3003,7 +2999,7 @@ let authorizeLeave = (req, res, next) => {
                                 input.employee_id,
                                 input.year,
                                 month_number,
-                                input.hims_f_leave_application_id
+                                input.hims_f_leave_application_id,
                               ],
                               (error, resultPL) => {
                                 if (error) {
@@ -3019,7 +3015,7 @@ let authorizeLeave = (req, res, next) => {
                                 } else {
                                   req.records = {
                                     invalid_input: true,
-                                    message: "unpaid leave error"
+                                    message: "unpaid leave error",
                                   };
                                   next();
                                   return;
@@ -3036,21 +3032,21 @@ let authorizeLeave = (req, res, next) => {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(pendingUpdaidResult => {
+                  }).then((pendingUpdaidResult) => {
                     //---START OF-------normal authrization
 
                     new Promise((resolve, reject) => {
                       req.options = {
                         db: connection,
-                        onFailure: error => {
+                        onFailure: (error) => {
                           reject(error);
                         },
-                        onSuccess: result => {
+                        onSuccess: (result) => {
                           resolve(result);
-                        }
+                        },
                       };
                       calculateLeaveDays(req, res, next);
-                    }).then(deductionResult => {
+                    }).then((deductionResult) => {
                       new Promise((resolve, reject) => {
                         try {
                           debugLog(" wow deduc:", deductionResult);
@@ -3068,12 +3064,12 @@ let authorizeLeave = (req, res, next) => {
                         } catch (e) {
                           reject(e);
                         }
-                      }).then(deductionResult => {
+                      }).then((deductionResult) => {
                         updaid_leave_duration = new LINQ(
                           deductionResult.monthWiseCalculatedLeaveDeduction
                         )
-                          .Where(w => w.month_name == month_name)
-                          .Select(s => s.finalLeave)
+                          .Where((w) => w.month_name == month_name)
+                          .Select((s) => s.finalLeave)
                           .FirstOrDefault();
 
                         debugLog(
@@ -3084,7 +3080,7 @@ let authorizeLeave = (req, res, next) => {
                         let monthArray = new LINQ(
                           deductionResult.monthWiseCalculatedLeaveDeduction
                         )
-                          .Select(s => s.month_name)
+                          .Select((s) => s.month_name)
                           .ToArray();
 
                         debugLog("monthArray:", monthArray);
@@ -3131,13 +3127,13 @@ let authorizeLeave = (req, res, next) => {
 
                                 debugLog("kkk");
                                 for (let i = 0; i < monthArray.length; i++) {
-                                  Object.keys(leaveData[0]).map(key => {
+                                  Object.keys(leaveData[0]).map((key) => {
                                     if (key == monthArray[i]) {
                                       debugLog(key, leaveData[0][key]);
 
                                       oldMonthsData.push({
                                         month_name: key,
-                                        finalLeave: leaveData[0][key]
+                                        finalLeave: leaveData[0][key],
                                       });
                                     }
                                   });
@@ -3158,14 +3154,14 @@ let authorizeLeave = (req, res, next) => {
 
                                 let finalData = {};
                                 _.chain(mergemonths)
-                                  .groupBy(g => g.month_name)
-                                  .map(item => {
+                                  .groupBy((g) => g.month_name)
+                                  .map((item) => {
                                     finalData[
                                       _.get(
                                         _.find(item, "month_name"),
                                         "month_name"
                                       )
-                                    ] = _.sumBy(item, s => {
+                                    ] = _.sumBy(item, (s) => {
                                       return s.finalLeave;
                                     });
                                   })
@@ -3208,7 +3204,7 @@ let authorizeLeave = (req, res, next) => {
                                   {
                                     ...finalData,
                                     close_balance: newCloseBal,
-                                    availed_till_date: newAvailTillDate
+                                    availed_till_date: newAvailTillDate,
                                   },
                                   (error, finalRes) => {
                                     if (error) {
@@ -3219,7 +3215,7 @@ let authorizeLeave = (req, res, next) => {
                                       });
                                     }
                                     debugLog("pakka:");
-                                    connection.commit(error => {
+                                    connection.commit((error) => {
                                       if (error) {
                                         connection.rollback(() => {
                                           releaseDBConnection(db, connection);
@@ -3236,7 +3232,7 @@ let authorizeLeave = (req, res, next) => {
                                 //invalid data
                                 req.records = {
                                   invalid_input: true,
-                                  message: "leave balance is low"
+                                  message: "leave balance is low",
                                 };
                                 connection.rollback(() => {
                                   releaseDBConnection(db, connection);
@@ -3250,7 +3246,7 @@ let authorizeLeave = (req, res, next) => {
 
                           req.records = {
                             invalid_input: true,
-                            message: "please provide valid month"
+                            message: "please provide valid month",
                           };
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
@@ -3263,7 +3259,7 @@ let authorizeLeave = (req, res, next) => {
                   //---END OF-------normal authrization
                 }
               } else if (result.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -3277,7 +3273,7 @@ let authorizeLeave = (req, res, next) => {
               } else {
                 req.records = {
                   invalid_input: true,
-                  message: "please provide valid input"
+                  message: "please provide valid input",
                 };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -3291,7 +3287,7 @@ let authorizeLeave = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
       next();
     }
@@ -3407,79 +3403,108 @@ let getLeaveApllication = (req, res, next) => {
 
 //created by irfan:
 let updateLeaveMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+
+    let input = req.body;
+
+    if (input.hims_d_leave_id <= 0) {
+      next(new Error("Please provide proper input"));
     }
-    let db = req.db;
-
-    let input = extend({}, req.body);
-
-    if (input.hims_d_leave_id > 0) {
-      db.getConnection((error, connection) => {
-        connection.query(
+    // db.getConnection((error, connection) => {
+    // connection.query(
+    _mysql
+      .executeQuery({
+        query:
           "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
           leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
           religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,\
-          updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
+          updated_date=?, updated_by=? ,encash_calc_method=? WHERE hims_d_leave_id = ?",
+        printQuery: true,
+        values: [
+          input.leave_description,
+          input.leave_category,
+          input.calculation_type,
+          input.include_weekoff,
+          input.include_holiday,
+          input.leave_mode,
+          input.leave_status,
+          input.leave_accrual,
+          input.leave_encash,
+          input.leave_type,
+          input.encashment_percentage,
+          input.leave_carry_forward,
+          input.carry_forward_percentage,
+          input.religion_required,
+          input.religion_id,
+          input.holiday_reimbursement,
+          input.exit_permit_required,
+          input.proportionate_leave,
+          input.document_mandatory,
 
-          [
-            input.leave_description,
-            input.leave_category,
-            input.calculation_type,
-            input.include_weekoff,
-            input.include_holiday,
-            input.leave_mode,
-            input.leave_status,
-            input.leave_accrual,
-            input.leave_encash,
-            input.leave_type,
-            input.encashment_percentage,
-            input.leave_carry_forward,
-            input.carry_forward_percentage,
-            input.religion_required,
-            input.religion_id,
-            input.holiday_reimbursement,
-            input.exit_permit_required,
-            input.proportionate_leave,
-            input.document_mandatory,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.encash_calc_method,
+          input.hims_d_leave_id,
+        ],
+        // (error, result) => {
+        //   releaseDBConnection(db, connection);
+        //   if (error) {
+        //     next(error);
+        //   }
+      })
+      .then((result) => {
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid input",
+          };
+          next();
+        }
+      })
 
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_leave_id
-          ],
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-
-            if (result.affectedRows > 0) {
-              req.records = result;
-              next();
-            } else {
-              req.records = {
-                invalid_input: true,
-                message: "please provide valid input"
-              };
-              next();
-            }
-          }
-        );
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "please provide valid input"
-      };
-      next();
-    }
+    //  }
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
-
+//             if (result.affectedRows > 0) {
+//               req.records = result;
+//               next();
+//             } else {
+//               req.records = {
+//                 invalid_input: true,
+//                 message: "please provide valid input",
+//               };
+//               next();
+//             }
+//           }
+//         );
+//       });
+//     } else {
+//       req.records = {
+//         invalid_input: true,
+//         message: "please provide valid input",
+//       };
+//       next();
+//     }
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 //created by irfan:
 let calculateLeaveDays = (req, res, next) => {
@@ -3553,14 +3578,10 @@ let calculateLeaveDays = (req, res, next) => {
     ) {
       dateRange.push({
         month_name: dateStart.format("MMMM"),
-        startOfMonth: moment(dateStart)
-          .startOf("month")
-          .format("YYYY-MM-DD"),
-        endOfMonth: moment(dateStart)
-          .endOf("month")
-          .format("YYYY-MM-DD"),
+        startOfMonth: moment(dateStart).startOf("month").format("YYYY-MM-DD"),
+        endOfMonth: moment(dateStart).endOf("month").format("YYYY-MM-DD"),
 
-        numberOfDays: moment(dateStart).daysInMonth()
+        numberOfDays: moment(dateStart).daysInMonth(),
       });
       dateStart.add(1, "month");
     }
@@ -3590,7 +3611,7 @@ let calculateLeaveDays = (req, res, next) => {
               moment(end, "YYYY-MM-DD").diff(
                 moment(start, "YYYY-MM-DD"),
                 "days"
-              ) + 1
+              ) + 1,
           });
         } else if (i == dateRange.length - 1) {
           let start = moment(dateRange[i]["startOfMonth"]).format("YYYY-MM-DD");
@@ -3609,7 +3630,7 @@ let calculateLeaveDays = (req, res, next) => {
               moment(end, "YYYY-MM-DD").diff(
                 moment(start, "YYYY-MM-DD"),
                 "days"
-              ) + 1
+              ) + 1,
           });
         } else {
           debugLog("am three");
@@ -3618,7 +3639,7 @@ let calculateLeaveDays = (req, res, next) => {
           extend(dateRange[i], {
             begning_of_leave: dateRange[i]["startOfMonth"],
             end_of_leave: dateRange[i]["endOfMonth"],
-            leaveDays: dateRange[i]["numberOfDays"]
+            leaveDays: dateRange[i]["numberOfDays"],
           });
         }
       }
@@ -3639,7 +3660,7 @@ let calculateLeaveDays = (req, res, next) => {
         end_of_leave: end,
         leaveDays:
           moment(end, "YYYY-MM-DD").diff(moment(start, "YYYY-MM-DD"), "days") +
-          1
+          1,
       });
 
       calculatedLeaveDays = leave_applied_days;
@@ -3684,7 +3705,7 @@ let calculateLeaveDays = (req, res, next) => {
                   input.to_date,
                   input.to_date,
                   input.to_date,
-                  my_religion
+                  my_religion,
                 ],
                 (error, closeBalanceResult) => {
                   if (error) {
@@ -3701,9 +3722,7 @@ let calculateLeaveDays = (req, res, next) => {
                     releaseDBConnection(req.db, db);
                     req.records = {
                       invalid_input: true,
-                      message: `you cant apply leave,${
-                        closeBalanceResult[1][0].holiday_date
-                      } is holiday   `
+                      message: `you cant apply leave,${closeBalanceResult[1][0].holiday_date} is holiday   `,
                     };
                     next();
                     return;
@@ -3736,7 +3755,7 @@ let calculateLeaveDays = (req, res, next) => {
       } catch (e) {
         reject(e);
       }
-    }).then(result => {
+    }).then((result) => {
       debugLog("my result:", result);
 
       //   "select L.hims_d_leave_id,L.leave_code,L.leave_description,LD.employee_type,hims_d_leave_detail_id,LD.gender,LD.eligible_days ,\
@@ -3772,7 +3791,7 @@ let calculateLeaveDays = (req, res, next) => {
 
               [
                 moment(from_date).format("YYYY-MM-DD"),
-                moment(to_date).format("YYYY-MM-DD")
+                moment(to_date).format("YYYY-MM-DD"),
               ],
               (error, holidayResult) => {
                 if (error) {
@@ -3787,12 +3806,12 @@ let calculateLeaveDays = (req, res, next) => {
 
                 //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
                 let total_weekOff = new LINQ(holidayResult)
-                  .Where(w => w.weekoff == "Y")
+                  .Where((w) => w.weekoff == "Y")
                   .Count();
 
                 let total_holiday = new LINQ(holidayResult)
                   .Where(
-                    w =>
+                    (w) =>
                       (w.holiday == "Y" && w.holiday_type == "RE") ||
                       (w.holiday == "Y" &&
                         w.holiday_type == "RS" &&
@@ -3803,7 +3822,7 @@ let calculateLeaveDays = (req, res, next) => {
 
                 //s -------START OF--- get holidays data and week of data
                 let week_off_Data = new LINQ(holidayResult)
-                  .Select(s => {
+                  .Select((s) => {
                     return {
                       hims_d_holiday_id: s.hims_d_holiday_id,
 
@@ -3817,14 +3836,14 @@ let calculateLeaveDays = (req, res, next) => {
 
                       holiday_type: s.holiday_type,
 
-                      religion_id: s.religion_id
+                      religion_id: s.religion_id,
                     };
                   })
-                  .Where(w => w.weekoff == "Y")
+                  .Where((w) => w.weekoff == "Y")
                   .ToArray();
 
                 let holiday_Data = new LINQ(holidayResult)
-                  .Select(s => {
+                  .Select((s) => {
                     return {
                       hims_d_holiday_id: s.hims_d_holiday_id,
 
@@ -3838,11 +3857,11 @@ let calculateLeaveDays = (req, res, next) => {
 
                       holiday_type: s.holiday_type,
 
-                      religion_id: s.religion_id
+                      religion_id: s.religion_id,
                     };
                   })
                   .Where(
-                    w =>
+                    (w) =>
                       (w.holiday == "Y" && w.holiday_type == "RE") ||
                       (w.holiday == "Y" &&
                         w.holiday_type == "RS" &&
@@ -3868,7 +3887,7 @@ let calculateLeaveDays = (req, res, next) => {
                     reduce_days += parseFloat(
                       new LINQ(holiday_Data)
                         .Where(
-                          w =>
+                          (w) =>
                             dateRange[k]["begning_of_leave"] <=
                               w.holiday_date &&
                             w.holiday_date <= dateRange[k]["end_of_leave"]
@@ -3882,7 +3901,7 @@ let calculateLeaveDays = (req, res, next) => {
                     reduce_days += parseFloat(
                       new LINQ(week_off_Data)
                         .Where(
-                          w =>
+                          (w) =>
                             dateRange[k]["begning_of_leave"] <=
                               w.holiday_date &&
                             w.holiday_date <= dateRange[k]["end_of_leave"]
@@ -3901,7 +3920,7 @@ let calculateLeaveDays = (req, res, next) => {
                         finalLeave:
                           parseFloat(dateRange[k]["leaveDays"]) -
                           parseFloat(reduce_days) -
-                          parseFloat(1)
+                          parseFloat(1),
                       });
                     } else {
                       leaveDeductionArray.push({
@@ -3909,7 +3928,7 @@ let calculateLeaveDays = (req, res, next) => {
                         finalLeave:
                           parseFloat(dateRange[k]["leaveDays"]) -
                           parseFloat(reduce_days) -
-                          parseFloat(0.5)
+                          parseFloat(0.5),
                       });
                     }
                   } else if (
@@ -3921,14 +3940,14 @@ let calculateLeaveDays = (req, res, next) => {
                       finalLeave:
                         parseFloat(dateRange[k]["leaveDays"]) -
                         parseFloat(reduce_days) -
-                        parseFloat(0.5)
+                        parseFloat(0.5),
                     });
                   } else {
                     leaveDeductionArray.push({
                       month_name: dateRange[k]["month_name"],
                       finalLeave:
                         parseFloat(dateRange[k]["leaveDays"]) -
-                        parseFloat(reduce_days)
+                        parseFloat(reduce_days),
                     });
                   }
                   //------- END OF----session belongs to which month and  subtract session from that month----------
@@ -3971,7 +3990,7 @@ let calculateLeaveDays = (req, res, next) => {
                     req.records = {
                       leave_applied_days: leave_applied_days,
                       calculatedLeaveDays: calculatedLeaveDays,
-                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                     };
                     next();
                     return;
@@ -3979,7 +3998,7 @@ let calculateLeaveDays = (req, res, next) => {
                     req.options.onSuccess({
                       leave_applied_days: leave_applied_days,
                       calculatedLeaveDays: calculatedLeaveDays,
-                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                     });
                   }
                 } else {
@@ -3987,18 +4006,14 @@ let calculateLeaveDays = (req, res, next) => {
                     releaseDBConnection(req.db, db);
                     req.records = {
                       invalid_input: true,
-                      message: `you dont have enough leaves for :${
-                        result[0]["leave_description"]
-                      } `
+                      message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                     };
                     next();
                     return;
                   } else {
                     req.options.onSuccess({
                       invalid_input: true,
-                      message: `you dont have enough leaves for :${
-                        result[0]["leave_description"]
-                      } `
+                      message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                     });
                   }
                 }
@@ -4013,13 +4028,13 @@ let calculateLeaveDays = (req, res, next) => {
                   leaveDeductionArray.push({
                     month_name: dateRange[k]["month_name"],
                     finalLeave:
-                      parseFloat(dateRange[k]["leaveDays"]) - parseFloat(1)
+                      parseFloat(dateRange[k]["leaveDays"]) - parseFloat(1),
                   });
                 } else {
                   leaveDeductionArray.push({
                     month_name: dateRange[k]["month_name"],
                     finalLeave:
-                      parseFloat(dateRange[k]["leaveDays"]) - parseFloat(0.5)
+                      parseFloat(dateRange[k]["leaveDays"]) - parseFloat(0.5),
                   });
                 }
               } else if (
@@ -4029,12 +4044,12 @@ let calculateLeaveDays = (req, res, next) => {
                 leaveDeductionArray.push({
                   month_name: dateRange[k]["month_name"],
                   finalLeave:
-                    parseFloat(dateRange[k]["leaveDays"]) - parseFloat(0.5)
+                    parseFloat(dateRange[k]["leaveDays"]) - parseFloat(0.5),
                 });
               } else {
                 leaveDeductionArray.push({
                   month_name: dateRange[k]["month_name"],
-                  finalLeave: parseFloat(dateRange[k]["leaveDays"])
+                  finalLeave: parseFloat(dateRange[k]["leaveDays"]),
                 });
               }
             }
@@ -4051,14 +4066,14 @@ let calculateLeaveDays = (req, res, next) => {
                 req.records = {
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
-                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                 };
                 next();
               } else {
                 req.options.onSuccess({
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
-                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                 });
               }
             } else {
@@ -4066,18 +4081,14 @@ let calculateLeaveDays = (req, res, next) => {
                 releaseDBConnection(req.db, db);
                 req.records = {
                   invalid_input: true,
-                  message: `you dont have enough leaves for :${
-                    result[0]["leave_description"]
-                  } `
+                  message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                 };
                 next();
                 return;
               } else {
                 req.options.onSuccess({
                   invalid_input: true,
-                  message: `you dont have enough leaves for :${
-                    result[0]["leave_description"]
-                  } `
+                  message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                 });
               }
             }
@@ -4088,14 +4099,14 @@ let calculateLeaveDays = (req, res, next) => {
               releaseDBConnection(req.db, db);
               req.records = {
                 invalid_input: true,
-                message: `invalid data `
+                message: `invalid data `,
               };
               next();
               return;
             } else {
               req.options.onSuccess({
                 invalid_input: true,
-                message: `invalid data`
+                message: `invalid data`,
               });
             }
           }
@@ -4181,14 +4192,10 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
     ) {
       dateRange.push({
         month_name: dateStart.format("MMMM"),
-        startOfMonth: moment(dateStart)
-          .startOf("month")
-          .format("YYYY-MM-DD"),
-        endOfMonth: moment(dateStart)
-          .endOf("month")
-          .format("YYYY-MM-DD"),
+        startOfMonth: moment(dateStart).startOf("month").format("YYYY-MM-DD"),
+        endOfMonth: moment(dateStart).endOf("month").format("YYYY-MM-DD"),
 
-        numberOfDays: moment(dateStart).daysInMonth()
+        numberOfDays: moment(dateStart).daysInMonth(),
       });
       dateStart.add(1, "month");
     }
@@ -4218,7 +4225,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
               moment(end, "YYYY-MM-DD").diff(
                 moment(start, "YYYY-MM-DD"),
                 "days"
-              ) + 1
+              ) + 1,
           });
         } else if (i == dateRange.length - 1) {
           let start = moment(dateRange[i]["startOfMonth"]).format("YYYY-MM-DD");
@@ -4237,7 +4244,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
               moment(end, "YYYY-MM-DD").diff(
                 moment(start, "YYYY-MM-DD"),
                 "days"
-              ) + 1
+              ) + 1,
           });
         } else {
           debugLog("am three");
@@ -4246,7 +4253,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
           extend(dateRange[i], {
             begning_of_leave: dateRange[i]["startOfMonth"],
             end_of_leave: dateRange[i]["endOfMonth"],
-            leaveDays: dateRange[i]["numberOfDays"]
+            leaveDays: dateRange[i]["numberOfDays"],
           });
         }
       }
@@ -4267,7 +4274,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
         end_of_leave: end,
         leaveDays:
           moment(end, "YYYY-MM-DD").diff(moment(start, "YYYY-MM-DD"), "days") +
-          1
+          1,
       });
 
       calculatedLeaveDays = leave_applied_days;
@@ -4312,7 +4319,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                   input.to_date,
                   input.to_date,
                   input.to_date,
-                  my_religion
+                  my_religion,
                 ],
                 (error, closeBalanceResult) => {
                   if (error) {
@@ -4329,9 +4336,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     releaseDBConnection(req.db, db);
                     req.records = {
                       invalid_input: true,
-                      message: `you cant apply leave,${
-                        closeBalanceResult[1][0].holiday_date
-                      } is holiday   `
+                      message: `you cant apply leave,${closeBalanceResult[1][0].holiday_date} is holiday   `,
                     };
                     next();
                     return;
@@ -4364,7 +4369,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
       } catch (e) {
         reject(e);
       }
-    }).then(result => {
+    }).then((result) => {
       debugLog("my result:", result);
 
       //   "select L.hims_d_leave_id,L.leave_code,L.leave_description,LD.employee_type,hims_d_leave_detail_id,LD.gender,LD.eligible_days ,\
@@ -4400,7 +4405,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
 
               [
                 moment(from_date).format("YYYY-MM-DD"),
-                moment(to_date).format("YYYY-MM-DD")
+                moment(to_date).format("YYYY-MM-DD"),
               ],
               (error, holidayResult) => {
                 if (error) {
@@ -4415,12 +4420,12 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
 
                 //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
                 let total_weekOff = new LINQ(holidayResult)
-                  .Where(w => w.weekoff == "Y")
+                  .Where((w) => w.weekoff == "Y")
                   .Count();
 
                 let total_holiday = new LINQ(holidayResult)
                   .Where(
-                    w =>
+                    (w) =>
                       (w.holiday == "Y" && w.holiday_type == "RE") ||
                       (w.holiday == "Y" &&
                         w.holiday_type == "RS" &&
@@ -4431,7 +4436,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
 
                 //s -------START OF--- get holidays data and week of data
                 let week_off_Data = new LINQ(holidayResult)
-                  .Select(s => {
+                  .Select((s) => {
                     return {
                       hims_d_holiday_id: s.hims_d_holiday_id,
 
@@ -4445,14 +4450,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
 
                       holiday_type: s.holiday_type,
 
-                      religion_id: s.religion_id
+                      religion_id: s.religion_id,
                     };
                   })
-                  .Where(w => w.weekoff == "Y")
+                  .Where((w) => w.weekoff == "Y")
                   .ToArray();
 
                 let holiday_Data = new LINQ(holidayResult)
-                  .Select(s => {
+                  .Select((s) => {
                     return {
                       hims_d_holiday_id: s.hims_d_holiday_id,
 
@@ -4466,11 +4471,11 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
 
                       holiday_type: s.holiday_type,
 
-                      religion_id: s.religion_id
+                      religion_id: s.religion_id,
                     };
                   })
                   .Where(
-                    w =>
+                    (w) =>
                       (w.holiday == "Y" && w.holiday_type == "RE") ||
                       (w.holiday == "Y" &&
                         w.holiday_type == "RS" &&
@@ -4496,7 +4501,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     reduce_days += parseFloat(
                       new LINQ(holiday_Data)
                         .Where(
-                          w =>
+                          (w) =>
                             dateRange[k]["begning_of_leave"] <=
                               w.holiday_date &&
                             w.holiday_date <= dateRange[k]["end_of_leave"]
@@ -4510,7 +4515,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     reduce_days += parseFloat(
                       new LINQ(week_off_Data)
                         .Where(
-                          w =>
+                          (w) =>
                             dateRange[k]["begning_of_leave"] <=
                               w.holiday_date &&
                             w.holiday_date <= dateRange[k]["end_of_leave"]
@@ -4529,7 +4534,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                         finalLeave:
                           parseFloat(dateRange[k]["leaveDays"]) -
                           parseFloat(reduce_days) -
-                          parseFloat(1)
+                          parseFloat(1),
                       });
                     } else {
                       leaveDeductionArray.push({
@@ -4537,7 +4542,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                         finalLeave:
                           parseFloat(dateRange[k]["leaveDays"]) -
                           parseFloat(reduce_days) -
-                          parseFloat(0.5)
+                          parseFloat(0.5),
                       });
                     }
                   } else if (
@@ -4549,14 +4554,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                       finalLeave:
                         parseFloat(dateRange[k]["leaveDays"]) -
                         parseFloat(reduce_days) -
-                        parseFloat(0.5)
+                        parseFloat(0.5),
                     });
                   } else {
                     leaveDeductionArray.push({
                       month_name: dateRange[k]["month_name"],
                       finalLeave:
                         parseFloat(dateRange[k]["leaveDays"]) -
-                        parseFloat(reduce_days)
+                        parseFloat(reduce_days),
                     });
                   }
                   //------- END OF----session belongs to which month and  subtract session from that month----------
@@ -4599,7 +4604,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     req.records = {
                       leave_applied_days: leave_applied_days,
                       calculatedLeaveDays: calculatedLeaveDays,
-                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                     };
                     next();
                     return;
@@ -4607,7 +4612,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     req.options.onSuccess({
                       leave_applied_days: leave_applied_days,
                       calculatedLeaveDays: calculatedLeaveDays,
-                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                      monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                     });
                   }
                 } else {
@@ -4615,18 +4620,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                     releaseDBConnection(req.db, db);
                     req.records = {
                       invalid_input: true,
-                      message: `you dont have enough leaves for :${
-                        result[0]["leave_description"]
-                      } `
+                      message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                     };
                     next();
                     return;
                   } else {
                     req.options.onSuccess({
                       invalid_input: true,
-                      message: `you dont have enough leaves for :${
-                        result[0]["leave_description"]
-                      } `
+                      message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                     });
                   }
                 }
@@ -4638,7 +4639,7 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
             for (let k = 0; k < dateRange.length; k++) {
               leaveDeductionArray.push({
                 month_name: dateRange[k]["month_name"],
-                finalLeave: dateRange[k]["leaveDays"]
+                finalLeave: dateRange[k]["leaveDays"],
               });
 
               // reduce_days = parseFloat(0);
@@ -4653,14 +4654,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                 req.records = {
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
-                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                 };
                 next();
               } else {
                 req.options.onSuccess({
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
-                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray
+                  monthWiseCalculatedLeaveDeduction: leaveDeductionArray,
                 });
                 debugLog("updateResult", updateResult);
               }
@@ -4669,18 +4670,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
                 releaseDBConnection(req.db, db);
                 req.records = {
                   invalid_input: true,
-                  message: `you dont have enough leaves for :${
-                    result[0]["leave_description"]
-                  } `
+                  message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                 };
                 next();
                 return;
               } else {
                 req.options.onSuccess({
                   invalid_input: true,
-                  message: `you dont have enough leaves for :${
-                    result[0]["leave_description"]
-                  } `
+                  message: `you dont have enough leaves for :${result[0]["leave_description"]} `,
                 });
               }
             }
@@ -4691,14 +4688,14 @@ let calculateLeaveDaysBAckup = (req, res, next) => {
               releaseDBConnection(req.db, db);
               req.records = {
                 invalid_input: true,
-                message: `invalid data `
+                message: `invalid data `,
               };
               next();
               return;
             } else {
               req.options.onSuccess({
                 invalid_input: true,
-                message: `invalid data`
+                message: `invalid data`,
               });
             }
           }
@@ -4785,7 +4782,7 @@ let addLeaveDetailMaster = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -4802,8 +4799,6 @@ let addLeaveDetailMaster = (req, res, next) => {
     next(e);
   }
 };
-
-
 
 //created by Adnan
 let deleteLeaveEncash = (req, res, next) => {
@@ -4952,7 +4947,7 @@ let addLeaveEncashmentMaster = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -4996,7 +4991,7 @@ let addLeaveRulesMaster = (req, res, next) => {
           input.from_value,
           input.to_value,
           input.value_type,
-          input.total_days
+          input.total_days,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -5093,13 +5088,9 @@ let updateLeaveDetailMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
- 
-  
 
     let input = extend({}, req.body);
-    if (
-      input.hims_d_leave_detail_id >0){
-     
+    if (input.hims_d_leave_detail_id > 0) {
       db.getConnection((error, connection) => {
         connection.query(
           "UPDATE hims_d_leave_detail SET leave_header_id = ?,\
@@ -5120,7 +5111,7 @@ let updateLeaveDetailMaster = (req, res, next) => {
             input.mandatory_utilize_days,
             new Date(),
             input.updated_by,
-            input.hims_d_leave_detail_id
+            input.hims_d_leave_detail_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -5146,9 +5137,6 @@ let updateLeaveDetailMaster = (req, res, next) => {
     next(e);
   }
 };
-
-
-
 
 let updateLeaveEncashMaster = (req, res, next) => {
   try {
@@ -5176,7 +5164,7 @@ let updateLeaveEncashMaster = (req, res, next) => {
             input.percent,
             new Date(),
             input.updated_by,
-            input.hims_d_leave_encashment_id
+            input.hims_d_leave_encashment_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -5229,7 +5217,7 @@ let updateLeaveRuleMaster = (req, res, next) => {
             input.to_value,
             input.value_type,
             input.total_days,
-            input.hims_d_leave_rule_id
+            input.hims_d_leave_rule_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -5269,24 +5257,24 @@ let cancelLeave = (req, res, next) => {
       try {
         getMaxAuth({
           req: req,
-          onFailure: error => {
+          onFailure: (error) => {
             reject(error);
           },
-          onSuccess: result => {
+          onSuccess: (result) => {
             resolve(result);
-          }
+          },
         });
       } catch (e) {
         reject(e);
       }
-    }).then(result => {
+    }).then((result) => {
       if (req.userIdentity.leave_authorize_privilege == result.MaxLeave) {
         db.getConnection((error, connection) => {
           if (error) {
             next(error);
           }
 
-          connection.beginTransaction(error => {
+          connection.beginTransaction((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -5336,15 +5324,15 @@ let cancelLeave = (req, res, next) => {
                         new Promise((resolve, reject) => {
                           req.options = {
                             db: connection,
-                            onFailure: error => {
+                            onFailure: (error) => {
                               reject(error);
                             },
-                            onSuccess: result => {
+                            onSuccess: (result) => {
                               resolve(result);
-                            }
+                            },
                           };
                           calculateLeaveDays(req, res, next);
-                        }).then(deductionResult => {
+                        }).then((deductionResult) => {
                           new Promise((resolve, reject) => {
                             try {
                               debugLog(" meo deduc:", deductionResult);
@@ -5362,11 +5350,11 @@ let cancelLeave = (req, res, next) => {
                             } catch (e) {
                               reject(e);
                             }
-                          }).then(deductionResult => {
+                          }).then((deductionResult) => {
                             let monthArray = new LINQ(
                               deductionResult.monthWiseCalculatedLeaveDeduction
                             )
-                              .Select(s => s.month_name)
+                              .Select((s) => s.month_name)
                               .ToArray();
 
                             debugLog("monthArray:", monthArray);
@@ -5413,7 +5401,7 @@ let cancelLeave = (req, res, next) => {
                                     i++
                                   ) {
                                     Object.keys(monthlyLeaveData[0]).map(
-                                      key => {
+                                      (key) => {
                                         // debugLog("ke:",key);
                                         // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
                                         if (
@@ -5434,7 +5422,7 @@ let cancelLeave = (req, res, next) => {
                                                   .monthWiseCalculatedLeaveDeduction[
                                                   i
                                                 ]["finalLeave"]
-                                              )
+                                              ),
                                           };
                                         }
                                       }
@@ -5466,7 +5454,7 @@ let cancelLeave = (req, res, next) => {
                                     {
                                       ...updateMonths,
                                       close_balance: newCloseBal,
-                                      availed_till_date: newAvailTillDate
+                                      availed_till_date: newAvailTillDate,
                                     },
                                     (error, finalRes) => {
                                       if (error) {
@@ -5476,7 +5464,7 @@ let cancelLeave = (req, res, next) => {
                                         });
                                       }
 
-                                      connection.commit(error => {
+                                      connection.commit((error) => {
                                         if (error) {
                                           connection.rollback(() => {
                                             releaseDBConnection(db, connection);
@@ -5503,7 +5491,7 @@ let cancelLeave = (req, res, next) => {
                                 releaseDBConnection(db, connection);
                                 req.records = {
                                   invalid_input: true,
-                                  message: "salary already processed"
+                                  message: "salary already processed",
                                 };
                                 next();
                               });
@@ -5516,7 +5504,7 @@ let cancelLeave = (req, res, next) => {
                           releaseDBConnection(db, connection);
                           req.records = {
                             invalid_input: true,
-                            message: "salary is already processed"
+                            message: "salary is already processed",
                           };
                           next();
                         });
@@ -5529,7 +5517,7 @@ let cancelLeave = (req, res, next) => {
                     releaseDBConnection(db, connection);
                     req.records = {
                       invalid_input: true,
-                      message: "leave already cancelled"
+                      message: "leave already cancelled",
                     };
                     next();
                   });
@@ -5539,7 +5527,7 @@ let cancelLeave = (req, res, next) => {
                     releaseDBConnection(db, connection);
                     req.records = {
                       invalid_input: true,
-                      message: "cant cancel,leave is not Approved yet"
+                      message: "cant cancel,leave is not Approved yet",
                     };
                     next();
                   });
@@ -5551,7 +5539,7 @@ let cancelLeave = (req, res, next) => {
       } else {
         req.records = {
           invalid_input: true,
-          message: "you dont have privilege"
+          message: "you dont have privilege",
         };
         next();
       }
@@ -5579,7 +5567,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
           next(error);
         }
 
-        connection.beginTransaction(error => {
+        connection.beginTransaction((error) => {
           if (error) {
             connection.rollback(() => {
               releaseDBConnection(db, connection);
@@ -5632,15 +5620,15 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                       new Promise((resolve, reject) => {
                         req.options = {
                           db: connection,
-                          onFailure: error => {
+                          onFailure: (error) => {
                             reject(error);
                           },
-                          onSuccess: result => {
+                          onSuccess: (result) => {
                             resolve(result);
-                          }
+                          },
                         };
                         calculateLeaveDays(req, res, next);
-                      }).then(deductionResult => {
+                      }).then((deductionResult) => {
                         new Promise((resolve, reject) => {
                           try {
                             debugLog(" meo deduc:", deductionResult);
@@ -5658,11 +5646,11 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                           } catch (e) {
                             reject(e);
                           }
-                        }).then(deductionResult => {
+                        }).then((deductionResult) => {
                           let monthArray = new LINQ(
                             deductionResult.monthWiseCalculatedLeaveDeduction
                           )
-                            .Select(s => s.month_name)
+                            .Select((s) => s.month_name)
                             .ToArray();
 
                           debugLog("monthArray:", monthArray);
@@ -5705,29 +5693,33 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                                     .monthWiseCalculatedLeaveDeduction.length;
                                   i++
                                 ) {
-                                  Object.keys(monthlyLeaveData[0]).map(key => {
-                                    // debugLog("ke:",key);
-                                    // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
-                                    if (
-                                      key ==
-                                      deductionResult
-                                        .monthWiseCalculatedLeaveDeduction[i][
-                                        "month_name"
-                                      ]
-                                    ) {
-                                      updateMonths = {
-                                        ...updateMonths,
-                                        [key]:
-                                          parseFloat(monthlyLeaveData[0][key]) -
-                                          parseFloat(
-                                            deductionResult
-                                              .monthWiseCalculatedLeaveDeduction[
-                                              i
-                                            ]["finalLeave"]
-                                          )
-                                      };
+                                  Object.keys(monthlyLeaveData[0]).map(
+                                    (key) => {
+                                      // debugLog("ke:",key);
+                                      // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
+                                      if (
+                                        key ==
+                                        deductionResult
+                                          .monthWiseCalculatedLeaveDeduction[i][
+                                          "month_name"
+                                        ]
+                                      ) {
+                                        updateMonths = {
+                                          ...updateMonths,
+                                          [key]:
+                                            parseFloat(
+                                              monthlyLeaveData[0][key]
+                                            ) -
+                                            parseFloat(
+                                              deductionResult
+                                                .monthWiseCalculatedLeaveDeduction[
+                                                i
+                                              ]["finalLeave"]
+                                            ),
+                                        };
+                                      }
                                     }
-                                  });
+                                  );
                                 }
 
                                 debugLog("newCloseBal:", newCloseBal);
@@ -5752,7 +5744,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                                   {
                                     ...updateMonths,
                                     close_balance: newCloseBal,
-                                    availed_till_date: newAvailTillDate
+                                    availed_till_date: newAvailTillDate,
                                   },
                                   (error, finalRes) => {
                                     if (error) {
@@ -5762,7 +5754,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                                       });
                                     }
 
-                                    connection.commit(error => {
+                                    connection.commit((error) => {
                                       if (error) {
                                         connection.rollback(() => {
                                           releaseDBConnection(db, connection);
@@ -5789,7 +5781,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                               releaseDBConnection(db, connection);
                               req.records = {
                                 invalid_input: true,
-                                message: "salary already processed"
+                                message: "salary already processed",
                               };
                               next();
                             });
@@ -5813,7 +5805,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     input.cancelled_remarks,
-                    input.hims_f_leave_application_id
+                    input.hims_f_leave_application_id,
                   ],
                   (error, finalRes) => {
                     if (error) {
@@ -5823,7 +5815,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                       });
                     }
 
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -5842,7 +5834,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   req.records = {
                     invalid_input: true,
-                    message: "leave already cancelled"
+                    message: "leave already cancelled",
                   };
                   next();
                 });
@@ -5852,7 +5844,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   req.records = {
                     invalid_input: true,
-                    message: "salary is already processed"
+                    message: "salary is already processed",
                   };
                   next();
                 });
@@ -5864,7 +5856,7 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: true,
-        message: "you dont have privilege"
+        message: "you dont have privilege",
       };
       next();
     }
@@ -5911,7 +5903,7 @@ let deleteLeaveApplication = (req, res, next) => {
                 } else {
                   req.records = {
                     invalid_input: true,
-                    message: `invalid input`
+                    message: `invalid input`,
                   };
                   next();
                 }
@@ -5921,7 +5913,7 @@ let deleteLeaveApplication = (req, res, next) => {
             releaseDBConnection(db, connection);
             req.records = {
               invalid_input: true,
-              message: `can't delete ,leave already authorized`
+              message: `can't delete ,leave already authorized`,
             };
             next();
             return;
@@ -5952,7 +5944,7 @@ let regularizeAttendance = (req, res, next) => {
             input.regularize_status,
             new Date(),
             input.updated_by,
-            input.hims_f_attendance_regularize_id
+            input.hims_f_attendance_regularize_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -5966,7 +5958,7 @@ let regularizeAttendance = (req, res, next) => {
             } else {
               req.records = {
                 invalid_input: true,
-                message: "please send valid input"
+                message: "please send valid input",
               };
               next();
             }
@@ -6014,5 +6006,5 @@ export default {
   updateLeaveRuleMaster,
   deleteLeaveApplication,
   cancelLeave,
-  regularizeAttendance
+  regularizeAttendance,
 };

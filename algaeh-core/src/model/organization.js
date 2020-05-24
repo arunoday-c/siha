@@ -103,7 +103,7 @@ const getMainOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `SELECT hims_d_organization_id,product_type,organization_name,business_registration_number,
-        fiscal_period,fiscal_quarters,tax_number,country_id,email,phone1,phone2,fax,address1,address2,hims_d_head_of_organization_id,head_of_organisation_name FROM hims_d_organization where record_status='A' limit 1;`,
+        fiscal_period,fiscal_quarters,tax_number,country_id,hims_d_organization.email,phone1,phone2,fax,address1,address2,hims_d_head_of_organization_id,hims_d_employee.full_name FROM hims_d_organization LEFT JOIN hims_d_employee ON hims_d_organization.hims_d_head_of_organization_id = hims_d_employee.hims_d_employee_id where hims_d_organization.record_status='A' limit 1;`,
         printQuery: true,
       })
       .then((result) => {
@@ -136,7 +136,6 @@ const updateOrganization = (req, res, next) => {
     address1,
     address2,
     hims_d_head_of_organization_id,
-    head_of_organisation_name,
   } = req.body;
   const { user_type } = req.userIdentity;
   let updateProduct = "";
@@ -147,7 +146,7 @@ const updateOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `update hims_d_organization set organization_name=?,business_registration_number=?,
-        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=?,head_of_organisation_name=? ${updateProduct} where hims_d_organization_id=?`,
+        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=?, ${updateProduct} where hims_d_organization_id=?`,
         values: [
           organization_name,
           business_registration_number,
@@ -160,7 +159,7 @@ const updateOrganization = (req, res, next) => {
           address1,
           address2,
           hims_d_head_of_organization_id,
-          head_of_organisation_name,
+
           hims_d_organization_id,
         ],
         printQuery: true,

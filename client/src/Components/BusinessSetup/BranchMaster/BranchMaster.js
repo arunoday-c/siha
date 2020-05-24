@@ -135,7 +135,6 @@ export default class BranchMaster extends Component {
 
       onSuccess: (response) => {
         if (response.data.success) {
-          console.log("data", response.data);
           this.setState({
             countryMaster: response.data.records,
           });

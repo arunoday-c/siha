@@ -19,12 +19,14 @@ export default {
         query:
           "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
             leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
-            sum( ((empEarn.amount/30)*(leaEncash.percent/100))*close_balance) as leave_amount , \
+            case  lea.encash_calc_method when 'A' then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))*close_balance) else \
+          sum( ((empEarn.amount/30)*(leaEncash.percent/100))*close_balance) end  as leave_amount ,\
             close_balance as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
             hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
             `year`=? and  ML.leave_id = ? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
             ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
             empEarn.employee_id=ML.employee_id group by leave_id ;",
+        printQuery: true,
         values: [
           _EncashDetails.employee_id,
           _EncashDetails.year,
@@ -461,13 +463,15 @@ export default {
         query:
           "select hims_f_employee_monthly_leave_id,leave_id,ML.employee_id,`year`,close_balance,\
             leaEncash.earnings_id, leaEncash.percent, empEarn.amount, lea.leave_description,  \
-            sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))* ?) as leave_amount , \
+            case lea.encash_calc_method when 'A' then sum( ((empEarn.amount *12/365)*(leaEncash.percent/100))* ?) else \
+            sum(((empEarn.amount/30)*(leaEncash.percent/100))*?) end as leave_amount , \
             ? as leave_days from hims_f_employee_monthly_leave ML, hims_d_leave lea, \
             hims_d_leave_encashment leaEncash, hims_d_employee_earnings empEarn where ML.employee_id=? and \
             `year`=? and ML.leave_id = lea.hims_d_leave_id and lea.leave_encash='Y' and \
             ML.leave_id = leaEncash.leave_header_id and leaEncash.earnings_id = empEarn.earnings_id and \
             empEarn.employee_id=ML.employee_id group by leave_id ;",
         values: [
+          _EncashDetails.leave_days,
           _EncashDetails.leave_days,
           _EncashDetails.leave_days,
           _EncashDetails.employee_id,
