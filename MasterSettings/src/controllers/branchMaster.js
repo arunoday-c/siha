@@ -11,7 +11,7 @@ const {
   getBranchWiseDepartments,
   modifyBranchMaster,
   getDepartmentsChart,
-  dummy_roster
+  getEmployeeReportingTo,
 } = branchModels;
 
 export default () => {
@@ -24,12 +24,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -41,12 +41,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -58,12 +58,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -75,12 +75,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -92,12 +92,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -112,12 +112,12 @@ export default () => {
       if (result.invalid_data == true) {
         res.status(utlities.httpStatus().ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(utlities.httpStatus().ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
 
@@ -131,12 +131,12 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -149,35 +149,39 @@ export default () => {
     if (result.invalid_data == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
     next();
   });
 
-  api.post("/dummy_roster", dummy_roster, (req, res, next) => {
-    let result = req.records;
+  api.get(
+    "/getEmployeeReportingTo",
+    getEmployeeReportingTo,
+    (req, res, next) => {
+      let result = req.records;
 
-    if (result.invalid_data == true) {
-      res.status(utlities.httpStatus().ok).json({
-        success: false,
-        records: result
-      });
-    } else {
-      res.status(utlities.httpStatus().ok).json({
-        success: true,
-        records: result
-      });
+      if (result.invalid_data == true) {
+        res.status(utlities.httpStatus().ok).json({
+          success: false,
+          message: result.message,
+        });
+      } else {
+        res.status(utlities.httpStatus().ok).json({
+          success: true,
+          records: result,
+        });
+      }
+
+      next();
     }
-
-    next();
-  });
+  );
 
   return api;
 };
