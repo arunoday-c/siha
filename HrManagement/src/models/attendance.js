@@ -9663,7 +9663,6 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                 DilayResult[i]["anual_leave"] > 0 &&
                                 options["leave_salary_payment_days"] == "P"
                               ) {
-                                console.log("ONEEEE");
                                 t_paid_days =
                                   parseFloat(DilayResult[i]["present_days"]) +
                                   parseFloat(DilayResult[i]["paid_leave"]) +
@@ -9673,8 +9672,11 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   parseFloat(DilayResult[i]["total_holidays"]) -
                                   parseFloat(DilayResult[i]["anual_leave"]) -
                                   parseFloat(pending_unpaid_leave);
+
+                                DilayResult[i]["total_days"] = moment(
+                                  month_start
+                                ).daysInMonth();
                               } else {
-                                console.log("TWOOOO");
                                 t_paid_days =
                                   options["salary_calendar_fixed_days"] -
                                   parseFloat(DilayResult[i]["absent_days"]) -
