@@ -38,7 +38,7 @@ class FinalSettlement extends Component {
       total_deductions: 0,
       net_earnings: 0,
       net_deductions: 0,
-      net_amount: 0,
+      net_amount: null,
       isEnable: true,
       flag: undefined,
       hospital_id: null,
@@ -553,6 +553,42 @@ class FinalSettlement extends Component {
             {
               name: "hims_f_salary_id",
               value: this.state.data.hims_f_salary_id,
+            },
+            {
+              name: "total_salary_earnings",
+              value: this.state.net_earnings,
+            },
+            {
+              name: "total_salary_deductions",
+              value: this.state.net_deductions,
+            },
+            {
+              name: "total_other_earnings",
+              value: this.state.total_earnings,
+            },
+            {
+              name: "total_other_deductions",
+              value: this.state.total_deductions,
+            },
+            {
+              name: "total_salary",
+              value: this.state.data.total_salary,
+            },
+            {
+              name: "total_leave_encash_amount",
+              value: this.state.data.total_leave_encash_amount,
+            },
+            {
+              name: "total_gratuity_amount",
+              value: this.state.data.gratuity_amount,
+            },
+            {
+              name: "total_loan_amount",
+              value: this.state.data.total_loan_amount,
+            },
+            {
+              name: "final_payble",
+              value: this.state.net_amount,
             },
           ],
           outputFileType: "PDF",
@@ -1159,19 +1195,21 @@ class FinalSettlement extends Component {
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
               </button>
-              <button
-                type="button"
-                className="btn btn-other"
-                // onClick={this.clearState.bind(this)}
-                onClick={this.generateFinalSettlementSlip.bind(this)}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Generate Settlement Slip",
-                    returnText: true,
-                  }}
-                />
-              </button>
+              {this.state.net_amount != null ? (
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  // onClick={this.clearState.bind(this)}
+                  onClick={this.generateFinalSettlementSlip.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Generate Settlement Slip",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : null}
 
               {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
