@@ -162,8 +162,8 @@ export default {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
             employee_group_id, reporting_to_id, employee_designation_id, entitled_daily_ot, employee_category,\
-            gratuity_encash,identity_type_id, identity_no, created_date,created_by,updated_date,updated_by,eos_id) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            gratuity_encash,identity_type_id, identity_no, agency_id, created_date,created_by,updated_date,updated_by,eos_id) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -217,7 +217,7 @@ export default {
               input.gratuity_encash,
               input.identity_type_id,
               input.identity_no,
-
+              input.agency_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -294,7 +294,7 @@ export default {
               airfare_process=?,exit_date=?, exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,\
               pf_applicable=?,overtime_group_id=?,employee_group_id=?, reporting_to_id=?,sub_department_id=?,\
               employee_designation_id=?, entitled_daily_ot= ?, employee_bank_id=?,services_id=?, employee_status=?, \
-              inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?, \
+              inactive_date=?, employee_category=?, gratuity_encash=?, identity_type_id=?, identity_no=?,agency_id=?, \
               updated_date=?,updated_by=?,eos_id=? WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
@@ -368,7 +368,7 @@ export default {
               input.gratuity_encash,
               input.identity_type_id,
               input.identity_no,
-
+              input.agency_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               input.eos_id,

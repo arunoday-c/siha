@@ -51,6 +51,18 @@ const texthandle = ($this, e) => {
         ..._notice,
       });
       break;
+
+    case "appointment_type":
+      $this.setState({
+        [name]: value,
+        agency_id: null
+      });
+      $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
+        agency_id: null
+      });
+      break;
+
     default:
       $this.setState({
         [name]: value,
@@ -157,6 +169,7 @@ const otEntitleHandaler = ($this, e) => {
     overtime_group_id: null,
   });
 };
+
 export {
   texthandle,
   datehandle,
@@ -164,5 +177,5 @@ export {
   employeeStatusHandler,
   dateFormater,
   bankEventhandle,
-  otEntitleHandaler,
+  otEntitleHandaler
 };

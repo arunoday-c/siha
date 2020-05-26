@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   getEmployeeGroups: (req, res, next) => {
@@ -614,6 +614,90 @@ where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designa
         };
         next();
       }
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query: "select * from hims_d_agency WHERE `record_status`='A' order by hims_d_agency_id desc",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_agency (agency_name, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?)",
+          values: [
+            input.agency_name,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_agency SET agency_name = ?, record_status=?\
+          ,updated_date=?, updated_by=?  WHERE hims_d_agency_id = ?",
+          values: [
+            input.agency_name,
+            input.record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_agency_id,
+          ],
+        })
+        .then((update_loan) => {
+          _mysql.releaseConnection();
+          req.records = update_loan;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
     } catch (e) {
       next(e);
     }

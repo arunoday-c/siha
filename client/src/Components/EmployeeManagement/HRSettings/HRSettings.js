@@ -5,6 +5,7 @@ import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 import DocumentMaster from "./DocumentMaster/DocumentMaster";
+import AgencyMaster from "./AgencyMaster/AgencyMaster";
 import { AlgaehTabs } from "algaeh-react-components";
 import CreateTemplates from "./TemplateCreation";
 class HRSettings extends Component {
@@ -87,6 +88,16 @@ class HRSettings extends Component {
               ),
               children: <CreateTemplates />,
             },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Agency Master",
+                  }}
+                />
+              ),
+              children: <AgencyMaster />,
+            }
           ]}
           renderClass="hrSettingsSection"
         />
