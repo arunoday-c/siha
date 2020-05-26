@@ -9657,6 +9657,9 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
+                              DilayResult[i]["total_work_days"] =
+                                options["salary_calendar_fixed_days"];
+
                               let t_paid_days = "";
 
                               if (
@@ -9673,9 +9676,11 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   parseFloat(DilayResult[i]["anual_leave"]) -
                                   parseFloat(pending_unpaid_leave);
 
-                                DilayResult[i]["total_days"] = moment(
+                                const month_days = moment(
                                   month_start
                                 ).daysInMonth();
+                                DilayResult[i]["total_days"] = month_days;
+                                DilayResult[i]["total_work_days"] = month_days;
                               } else {
                                 t_paid_days =
                                   options["salary_calendar_fixed_days"] -
@@ -9685,8 +9690,6 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   parseFloat(pending_unpaid_leave);
                               }
 
-                              DilayResult[i]["total_work_days"] =
-                                options["salary_calendar_fixed_days"];
                               // DilayResult[i]["total_days"]=options["salary_calendar_fixed_days"];
 
                               attResult.push({
