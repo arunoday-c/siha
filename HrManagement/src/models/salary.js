@@ -79,10 +79,8 @@ export default {
             _stringData +
             " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y') and (S.salary_processed is null or  S.salary_processed='N');";
         } else {
-          // inputValues.push(input.year);
-          // inputValues.push(input.month);
           inputValues.push(input.hospital_id);
-          // console.log("input.leave_salary", input.leave_salary)
+
           if (input.leave_salary === "Y") {
             if (input.employee_id != null) {
               _stringData += " and E.hims_d_employee_id=?";
@@ -235,8 +233,7 @@ export default {
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
               OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
-              from hims_d_overtime_group OT, hims_d_employee E where E.overtime_group_id=OT.hims_d_overtime_group_id and E.hims_d_employee_id in (?);\
-            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='SA';\
+              from hims_d_overtime_group OT, hims_d_employee E where E.overtime_group_id=OT.hims_d_overtime_group_id and E.hims_d_employee_id in (?); \
               delete from hims_f_salary_contributions where salary_header_id in (?);\
               delete from hims_f_salary_loans where salary_header_id in (?);\
               delete from hims_f_salary_deductions where salary_header_id in (?);\
@@ -307,16 +304,9 @@ export default {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      // console.log("empResult[i]", empResult[i])
                       if (results[8][0].salary_calendar == "F") {
                         empResult[i]["total_days"] =
                           results[8][0].salary_calendar_fixed_days;
-
-                        // empResult[i]["total_paid_days"] =
-                        //   empResult[i]["total_days"] -
-                        //   empResult[i]["absent_days"] -
-                        //   empResult[i]["unpaid_leave"] -
-                        //   empResult[i]["pending_unpaid_leave"];
                       }
                       getEarningComponents({
                         earnings: _earnings,
@@ -763,21 +753,33 @@ export default {
                                   printQuery: true,
                                 })
                                 .then((detailresult) => {
-                                  if (req.connection == null) {
-                                    req.connection = {
-                                      connection: _mysql.connection,
-                                      isTransactionConnection: _mysql.isTransactionConnection,
-                                      pool: _mysql.pool,
-                                    };
-                                    // _mysql.commitTransaction(() => {
-                                    //   _mysql.releaseConnection();
-                                    req.records = detailresult;
-                                    next();
-                                    resolve(detailresult);
-                                    // });
-                                  } else {
-                                    resolve(salary_header_id);
-                                  }
+                                  UpdateProjectWisePayroll({
+                                    _mysql: _mysql,
+                                    next: next,
+                                    inputParam: req.query,
+                                    decimal_places:
+                                      req.userIdentity.decimal_places,
+                                  })
+                                    .then((Employee_Leave_Salary) => {
+                                      if (req.connection == null) {
+                                        req.connection = {
+                                          connection: _mysql.connection,
+                                          isTransactionConnection: _mysql.isTransactionConnection,
+                                          pool: _mysql.pool,
+                                        };
+                                        req.records = detailresult;
+                                        next();
+                                        resolve(detailresult);
+                                      } else {
+                                        resolve(salary_header_id);
+                                      }
+                                    })
+                                    .catch((e) => {
+                                      _mysql.rollBackTransaction(() => {
+                                        next(e);
+                                      });
+                                    });
+
                                 })
                                 .catch((error) => {
                                   _mysql.rollBackTransaction(() => {
@@ -1816,7 +1818,6 @@ export default {
       inputParam.month = req.query.month;
       /* Select statemwnt  */
 
-      console.log("inputParam.employee_id", inputParam.employee_id)
       let _stringData =
         inputParam.employee_id != null
           ? ` and S.employee_id= ${inputParam.employee_id}`
@@ -1841,7 +1842,6 @@ export default {
         inputParam.salary_type != null
           ? " and salary_type = '" + inputParam.salary_type + "'"
           : " and salary_type in ('NS','FS')";
-      console.log("getSalaryProcess")
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -1867,7 +1867,6 @@ export default {
           printQuery: true,
         })
         .then((salary_process) => {
-          console.log("salary_process", salary_process.length)
           if (salary_process.length > 0) {
             let _salary_data = _.filter(salary_process, (f) => {
               return (
@@ -1923,164 +1922,164 @@ export default {
               })
               .then((result) => {
 
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                //   req.records = [
-                //     {
-                //       salaryprocess_header: salaryprocess_header,
-                //       salaryprocess_detail: result,
-                //     },
-                //   ];
-                //   next();
-                // });
-                if (req.connection == null) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = [
-                      {
-                        salaryprocess_header: salaryprocess_header,
-                        salaryprocess_detail: result,
-                      },
-                    ];
-                    next();
-                  });
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = [
+                    {
+                      salaryprocess_header: salaryprocess_header,
+                      salaryprocess_detail: result,
+                    },
+                  ];
+                  next();
+                });
+                // if (req.connection == null) {
+                //   _mysql.commitTransaction(() => {
+                //     _mysql.releaseConnection();
+                //     req.records = [
+                //       {
+                //         salaryprocess_header: salaryprocess_header,
+                //         salaryprocess_detail: result,
+                //       },
+                //     ];
+                //     next();
+                //   });
 
-                } else {
-                  console.log("inputParam.project_employee_id", inputParam.project_employee_id)
-                  if (inputParam.project_employee_id.length === 0) {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = [
-                        {
-                          salaryprocess_header: salaryprocess_header,
-                          salaryprocess_detail: result,
-                        },
-                      ];
-                      next();
-                    });
-                    return;
-                  }
+                // } else {
+                //   console.log("inputParam.project_employee_id", inputParam.project_employee_id)
+                //   if (inputParam.project_employee_id.length === 0) {
+                //     _mysql.commitTransaction(() => {
+                //       _mysql.releaseConnection();
+                //       req.records = [
+                //         {
+                //           salaryprocess_header: salaryprocess_header,
+                //           salaryprocess_detail: result,
+                //         },
+                //       ];
+                //       next();
+                //     });
+                //     return;
+                //   }
 
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes, month, year, \
-                  COALESCE(worked_hours) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0) as complete_hours\
-                  from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
-                      values: [
-                        inputParam.year,
-                        inputParam.month,
-                        inputParam.hospital_id,
-                        inputParam.project_employee_id,
-                      ],
-                      printQuery: true,
-                    })
-                    .then((project_wise_payroll) => {
-                      if (project_wise_payroll.length > 0) {
-                        let strQry = "";
+                //   _mysql
+                //     .executeQuery({
+                //       query:
+                //         "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes, month, year, \
+                //   COALESCE(worked_hours) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0) as complete_hours\
+                //   from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
+                //       values: [
+                //         inputParam.year,
+                //         inputParam.month,
+                //         inputParam.hospital_id,
+                //         inputParam.project_employee_id,
+                //       ],
+                //       printQuery: true,
+                //     })
+                //     .then((project_wise_payroll) => {
+                //       if (project_wise_payroll.length > 0) {
+                //         let strQry = "";
 
-                        const utilities = new algaehUtilities();
+                //         const utilities = new algaehUtilities();
 
-                        let finalData = {};
-                        _.chain(project_wise_payroll)
-                          .groupBy((g) => g.employee_id)
-                          .map((item) => {
-                            finalData[
-                              _.get(_.find(item, "employee_id"), "employee_id")
-                            ] = _.sumBy(item, (s) => {
-                              return s.complete_hours;
-                            });
-                          })
-                          .value();
+                //         let finalData = {};
+                //         _.chain(project_wise_payroll)
+                //           .groupBy((g) => g.employee_id)
+                //           .map((item) => {
+                //             finalData[
+                //               _.get(_.find(item, "employee_id"), "employee_id")
+                //             ] = _.sumBy(item, (s) => {
+                //               return s.complete_hours;
+                //             });
+                //           })
+                //           .value();
 
-                        for (let z = 0; z < project_wise_payroll.length; z++) {
-                          let cost = 0;
-                          let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
-                          let total_complete_hours =
-                            finalData[project_wise_payroll[z]["employee_id"]];
-                          let worked_minutes = project_wise_payroll[z]["worked_minutes"];
-                          complete_hours += parseInt(worked_minutes / 60);
-                          let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-                          complete_hours = complete_hours + "." + mins;
+                //         for (let z = 0; z < project_wise_payroll.length; z++) {
+                //           let cost = 0;
+                //           let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
+                //           let total_complete_hours =
+                //             finalData[project_wise_payroll[z]["employee_id"]];
+                //           let worked_minutes = project_wise_payroll[z]["worked_minutes"];
+                //           complete_hours += parseInt(worked_minutes / 60);
+                //           let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+                //           complete_hours = complete_hours + "." + mins;
 
-                          let net_salary_amt = _.filter(salary_process, (f) => {
-                            return f.employee_id == project_wise_payroll[z]["employee_id"];
-                          });
+                //           let net_salary_amt = _.filter(salary_process, (f) => {
+                //             return f.employee_id == project_wise_payroll[z]["employee_id"];
+                //           });
 
-                          if (parseFloat(total_complete_hours) > 0) {
-                            cost =
-                              parseFloat(net_salary_amt[0].gross_salary) /
-                              parseFloat(total_complete_hours);
-                          } else {
-                            cost = 0;
-                          }
-                          cost = cost * complete_hours;
+                //           if (parseFloat(total_complete_hours) > 0) {
+                //             cost =
+                //               parseFloat(net_salary_amt[0].gross_salary) /
+                //               parseFloat(total_complete_hours);
+                //           } else {
+                //             cost = 0;
+                //           }
+                //           cost = cost * complete_hours;
 
-                          cost = utilities.decimalPoints(cost, req.userIdentity.decimal_places);
+                //           cost = utilities.decimalPoints(cost, req.userIdentity.decimal_places);
 
-                          strQry += _mysql.mysqlQueryFormat(
-                            "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
-                            [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
-                          );
+                //           strQry += _mysql.mysqlQueryFormat(
+                //             "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
+                //             [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
+                //           );
 
-                          strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
-                            SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SE.earnings_id, \
-                            round( (SE.amount / ${total_complete_hours})*${complete_hours}, ${req.userIdentity.decimal_places}) as amount FROM  \
-                            hims_f_salary S inner join hims_f_salary_earnings SE on S.hims_f_salary_id=SE.salary_header_id WHERE \
-                            employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
-                            and year=${project_wise_payroll[z].year};`;
+                //           strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
+                //             SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SE.earnings_id, \
+                //             round( (SE.amount / ${total_complete_hours})*${complete_hours}, ${req.userIdentity.decimal_places}) as amount FROM  \
+                //             hims_f_salary S inner join hims_f_salary_earnings SE on S.hims_f_salary_id=SE.salary_header_id WHERE \
+                //             employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
+                //             and year=${project_wise_payroll[z].year};`;
 
-                          strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
-                            SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SD.deductions_id, \
-                            round( (SD.amount / ${total_complete_hours})*${complete_hours}, ${req.userIdentity.decimal_places}) as amount FROM  \
-                            hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
-                            employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
-                            and year=${project_wise_payroll[z].year};`;
-                        }
+                //           strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
+                //             SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SD.deductions_id, \
+                //             round( (SD.amount / ${total_complete_hours})*${complete_hours}, ${req.userIdentity.decimal_places}) as amount FROM  \
+                //             hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
+                //             employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
+                //             and year=${project_wise_payroll[z].year};`;
+                //         }
 
-                        _mysql
-                          .executeQuery({
-                            query: strQry,
-                            // printQuery: true
-                          })
-                          .then((project_payroll) => {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = [
-                                {
-                                  salaryprocess_header: salaryprocess_header,
-                                  salaryprocess_detail: result,
-                                },
-                              ];
-                              next();
-                            });
-                          })
-                          .catch((e) => {
-                            _mysql.rollBackTransaction(() => {
-                              next(error);
-                              reject(error);
-                            });
-                          });
-                      } else {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = [
-                            {
-                              salaryprocess_header: salaryprocess_header,
-                              salaryprocess_detail: result,
-                            },
-                          ];
-                          next();
-                        });
-                      }
-                    })
-                    .catch((e) => {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                        reject(error);
-                      });
-                    });
-                }
+                //         _mysql
+                //           .executeQuery({
+                //             query: strQry,
+                //             // printQuery: true
+                //           })
+                //           .then((project_payroll) => {
+                //             _mysql.commitTransaction(() => {
+                //               _mysql.releaseConnection();
+                //               req.records = [
+                //                 {
+                //                   salaryprocess_header: salaryprocess_header,
+                //                   salaryprocess_detail: result,
+                //                 },
+                //               ];
+                //               next();
+                //             });
+                //           })
+                //           .catch((e) => {
+                //             _mysql.rollBackTransaction(() => {
+                //               next(error);
+                //               reject(error);
+                //             });
+                //           });
+                //       } else {
+                //         _mysql.commitTransaction(() => {
+                //           _mysql.releaseConnection();
+                //           req.records = [
+                //             {
+                //               salaryprocess_header: salaryprocess_header,
+                //               salaryprocess_detail: result,
+                //             },
+                //           ];
+                //           next();
+                //         });
+                //       }
+                //     })
+                //     .catch((e) => {
+                //       _mysql.rollBackTransaction(() => {
+                //         next(error);
+                //         reject(error);
+                //       });
+                //     });
+                // }
               })
               .catch((e) => {
                 _mysql.rollBackTransaction(() => {
@@ -4528,81 +4527,112 @@ function getMiscellaneous(options) {
 }
 
 function UpdateProjectWisePayroll(options) {
+  console.log("UpdateProjectWisePayroll")
   return new Promise((resolve, reject) => {
     try {
-      let project_wise_payroll = options.project_wise_payroll;
       let _mysql = options._mysql;
-      let net_salary = options.net_salary;
 
       const decimal_places = options.decimal_places;
+      const inputParam = options.inputParam
       let strQry = "";
+
 
       const utilities = new algaehUtilities();
 
-      let finalData = {};
-      _.chain(project_wise_payroll)
-        .groupBy((g) => g.employee_id)
-        .map((item) => {
-          finalData[
-            _.get(_.find(item, "employee_id"), "employee_id")
-          ] = _.sumBy(item, (s) => {
-            return s.complete_hours;
-          });
+      console.log("inputParam.project_employee_id", inputParam.project_employee_id)
+      if (inputParam.project_employee_id.length === 0) {
+        resolve()
+        return;
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes, month, year,\
+              COALESCE(worked_hours) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0) as complete_hours\
+                from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?);\
+                select employee_id, gross_salary from hims_f_salary S where \
+                `year` = ? and `month` = ?;",
+          values: [
+            inputParam.year,
+            inputParam.month,
+            inputParam.project_employee_id,
+            inputParam.year,
+            inputParam.month
+          ],
+          printQuery: true
         })
-        .value();
+        .then((result) => {
+          let project_wise_payroll = result[0]
+          let salary_data = result[1]
 
-      for (let z = 0; z < project_wise_payroll.length; z++) {
-        let cost = 0;
-        let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
-        let total_complete_hours =
-          finalData[project_wise_payroll[z]["employee_id"]];
-        let worked_minutes = project_wise_payroll[z]["worked_minutes"];
-        complete_hours += parseInt(worked_minutes / 60);
-        let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-        complete_hours = complete_hours + "." + mins;
+          let finalData = {};
+          _.chain(project_wise_payroll)
+            .groupBy((g) => g.employee_id)
+            .map((item) => {
+              finalData[
+                _.get(_.find(item, "employee_id"), "employee_id")
+              ] = _.sumBy(item, (s) => {
+                return s.complete_hours;
+              });
+            })
+            .value();
 
-        let net_salary_amt = _.filter(net_salary, (f) => {
-          return f.employee_id == project_wise_payroll[z]["employee_id"];
-        });
+          for (let z = 0; z < project_wise_payroll.length; z++) {
+            let cost = 0;
+            let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
+            let total_complete_hours =
+              finalData[project_wise_payroll[z]["employee_id"]];
+            let worked_minutes = project_wise_payroll[z]["worked_minutes"];
+            complete_hours += parseInt(worked_minutes / 60);
+            let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+            complete_hours = complete_hours + "." + mins;
 
-        if (parseFloat(total_complete_hours) > 0) {
-          cost =
-            parseFloat(net_salary_amt[0].gross_salary) /
-            parseFloat(total_complete_hours);
-        } else {
-          cost = 0;
-        }
-        cost = cost * complete_hours;
+            let net_salary_amt = _.filter(salary_data, (f) => {
+              return f.employee_id == project_wise_payroll[z]["employee_id"];
+            });
 
-        cost = utilities.decimalPoints(cost, decimal_places);
+            if (parseFloat(total_complete_hours) > 0) {
+              cost =
+                parseFloat(net_salary_amt[0].gross_salary) /
+                parseFloat(total_complete_hours);
+            } else {
+              cost = 0;
+            }
+            cost = cost * complete_hours;
 
-        strQry += _mysql.mysqlQueryFormat(
-          "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
-          [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
-        );
+            cost = utilities.decimalPoints(cost, decimal_places);
 
-        strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
+            strQry += _mysql.mysqlQueryFormat(
+              "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
+              [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
+            );
+
+            strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
         SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SE.earnings_id, \
         round( (SE.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
         hims_f_salary S inner join hims_f_salary_earnings SE on S.hims_f_salary_id=SE.salary_header_id WHERE \
         employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
         and year=${project_wise_payroll[z].year};`;
 
-        strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
+            strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
         SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SD.deductions_id, \
         round( (SD.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
         hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
         employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
         and year=${project_wise_payroll[z].year};`;
-      }
+          }
 
-      _mysql
-        .executeQuery({
-          query: strQry,
-          // printQuery: true
-        })
-        .then((project_payroll) => {
-          resolve();
+          _mysql
+            .executeQuery({
+              query: strQry,
+              // printQuery: true
+            })
+            .then((project_payroll) => {
+              resolve();
+            })
+            .catch((e) => {
+              reject(e);
+            });
         })
         .catch((e) => {
           reject(e);
