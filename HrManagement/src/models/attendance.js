@@ -5513,12 +5513,16 @@ export default {
                             (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
                             and ( S.salary_processed is null or  S.salary_processed='N') ${strQry};                
                             
-                            select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
-                            case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, L.leave_category,
+                            select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
+                            case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, 
+                            case when  L.leave_category='A' and  AN.from_normal_salary='N' then 'A' else 'O'
+                            end as leave_category,
                             L.leave_description,from_date,to_leave_session,to_date,holiday_included,
                             weekoff_included,total_applied_days from hims_f_leave_application LA 
                             inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
-                            inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                            inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
+                            left join hims_f_employee_annual_leave AN on 
+                            LA.hims_f_leave_application_id=AN.leave_application_id ${deptStr}
                             where E.hospital_id=? and LA.status='APR' ${strQry} and  
                             (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
                             date(?) between  from_date and to_date) ;
@@ -5631,12 +5635,16 @@ export default {
                           (E.exit_date is null or E.exit_date >date(?) )  and E.suspend_salary <>'Y'  
                           and ( S.salary_processed is null or  S.salary_processed='N') ${strQry};                
                           
-                          select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
-                          case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, L.leave_category,
+                          select hims_f_leave_application_id,LA.employee_id,leave_application_code,from_leave_session,
+                          case L.leave_type when 'P' then 'PL' when 'U' then 'UL'  end as leave_type, 
+                          case when  L.leave_category='A' and  AN.from_normal_salary='N' then 'A' else 'O'
+                          end as leave_category,
                           L.leave_description,from_date,to_leave_session,to_date,holiday_included,
                           weekoff_included,total_applied_days from hims_f_leave_application LA 
                           inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
-                          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id ${deptStr}
+                          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id 
+                          left join hims_f_employee_annual_leave AN on 
+                          LA.hims_f_leave_application_id=AN.leave_application_id ${deptStr}
                           where E.hospital_id=? and LA.status='APR' ${strQry} and  
                           (from_date between date(?) and date(?) or to_date between date(?) and date(?) or
                           date(?) between  from_date and to_date) ;
@@ -6424,7 +6432,7 @@ export default {
       _mysql
         .executeQuery({
           query: `SELECT  attendance_type,salary_pay_before_end_date,payroll_payment_date,
-          salary_calendar,salary_calendar_fixed_days,standard_working_hours FROM hims_d_hrms_options limit 1; `,
+          salary_calendar,salary_calendar_fixed_days,standard_working_hours,leave_salary_payment_days FROM hims_d_hrms_options limit 1; `,
           values: [],
           printQuery: false,
         })
@@ -9649,12 +9657,31 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                               DilayResult[i]["partial_attendance"] == "N" &&
                               DilayResult[i]["late_joined"] == "N"
                             ) {
-                              const t_paid_days =
-                                options["salary_calendar_fixed_days"] -
-                                parseFloat(DilayResult[i]["absent_days"]) -
-                                parseFloat(DilayResult[i]["unpaid_leave"]) -
-                                parseFloat(DilayResult[i]["anual_leave"]) -
-                                parseFloat(pending_unpaid_leave);
+                              let t_paid_days = "";
+
+                              if (
+                                DilayResult[i]["anual_leave"] > 0 &&
+                                options["leave_salary_payment_days"] == "P"
+                              ) {
+                                console.log("ONEEEE");
+                                t_paid_days =
+                                  parseFloat(DilayResult[i]["present_days"]) +
+                                  parseFloat(DilayResult[i]["paid_leave"]) +
+                                  parseFloat(
+                                    DilayResult[i]["total_weekoff_days"]
+                                  ) +
+                                  parseFloat(DilayResult[i]["total_holidays"]) -
+                                  parseFloat(DilayResult[i]["anual_leave"]) -
+                                  parseFloat(pending_unpaid_leave);
+                              } else {
+                                console.log("TWOOOO");
+                                t_paid_days =
+                                  options["salary_calendar_fixed_days"] -
+                                  parseFloat(DilayResult[i]["absent_days"]) -
+                                  parseFloat(DilayResult[i]["unpaid_leave"]) -
+                                  parseFloat(DilayResult[i]["anual_leave"]) -
+                                  parseFloat(pending_unpaid_leave);
+                              }
 
                               DilayResult[i]["total_work_days"] =
                                 options["salary_calendar_fixed_days"];
