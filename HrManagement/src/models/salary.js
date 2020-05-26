@@ -513,22 +513,17 @@ export default {
 
                                         let _salary_number = empResult[i]["partial_attendance"] ==
                                           "Y"
-                                          ? "-FS-"
+                                          ? "FS-"
                                           : req.query.leave_salary == null
-                                            ? "-NS-"
-                                            : "-LS-" + empResult[i][
-                                              "employee_code"
-                                            ].trim() + month_number + "-" + year;
+                                            ? "NS-"
+                                            : "LS-";
 
-                                        // _salary_number +=
-                                        //   empResult[i]["partial_attendance"] ==
-                                        //     "Y"
-                                        //     ? "-FS-"
-                                        //     : req.query.leave_salary == null
-                                        //       ? "-NS-"
-                                        //       : "-LS-";
-                                        // _salary_number +=
-                                        //   month_number + "-" + year;
+                                        _salary_number +=
+                                          empResult[i][
+                                            "employee_code"
+                                          ].trim();
+                                        _salary_number +=
+                                          "-" + month_number + "-" + year;
 
                                         let _net_salary =
                                           final_earning_amount -
@@ -4532,93 +4527,93 @@ function getMiscellaneous(options) {
   });
 }
 
-// function UpdateProjectWisePayroll(options) {
-//   return new Promise((resolve, reject) => {
-//     try {
-//       let project_wise_payroll = options.project_wise_payroll;
-//       let _mysql = options._mysql;
-//       let net_salary = options.net_salary;
+function UpdateProjectWisePayroll(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let project_wise_payroll = options.project_wise_payroll;
+      let _mysql = options._mysql;
+      let net_salary = options.net_salary;
 
-//       const decimal_places = options.decimal_places;
-//       let strQry = "";
+      const decimal_places = options.decimal_places;
+      let strQry = "";
 
-//       const utilities = new algaehUtilities();
+      const utilities = new algaehUtilities();
 
-//       let finalData = {};
-//       _.chain(project_wise_payroll)
-//         .groupBy((g) => g.employee_id)
-//         .map((item) => {
-//           finalData[
-//             _.get(_.find(item, "employee_id"), "employee_id")
-//           ] = _.sumBy(item, (s) => {
-//             return s.complete_hours;
-//           });
-//         })
-//         .value();
+      let finalData = {};
+      _.chain(project_wise_payroll)
+        .groupBy((g) => g.employee_id)
+        .map((item) => {
+          finalData[
+            _.get(_.find(item, "employee_id"), "employee_id")
+          ] = _.sumBy(item, (s) => {
+            return s.complete_hours;
+          });
+        })
+        .value();
 
-//       for (let z = 0; z < project_wise_payroll.length; z++) {
-//         let cost = 0;
-//         let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
-//         let total_complete_hours =
-//           finalData[project_wise_payroll[z]["employee_id"]];
-//         let worked_minutes = project_wise_payroll[z]["worked_minutes"];
-//         complete_hours += parseInt(worked_minutes / 60);
-//         let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-//         complete_hours = complete_hours + "." + mins;
+      for (let z = 0; z < project_wise_payroll.length; z++) {
+        let cost = 0;
+        let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
+        let total_complete_hours =
+          finalData[project_wise_payroll[z]["employee_id"]];
+        let worked_minutes = project_wise_payroll[z]["worked_minutes"];
+        complete_hours += parseInt(worked_minutes / 60);
+        let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+        complete_hours = complete_hours + "." + mins;
 
-//         let net_salary_amt = _.filter(net_salary, (f) => {
-//           return f.employee_id == project_wise_payroll[z]["employee_id"];
-//         });
+        let net_salary_amt = _.filter(net_salary, (f) => {
+          return f.employee_id == project_wise_payroll[z]["employee_id"];
+        });
 
-//         if (parseFloat(total_complete_hours) > 0) {
-//           cost =
-//             parseFloat(net_salary_amt[0].gross_salary) /
-//             parseFloat(total_complete_hours);
-//         } else {
-//           cost = 0;
-//         }
-//         cost = cost * complete_hours;
+        if (parseFloat(total_complete_hours) > 0) {
+          cost =
+            parseFloat(net_salary_amt[0].gross_salary) /
+            parseFloat(total_complete_hours);
+        } else {
+          cost = 0;
+        }
+        cost = cost * complete_hours;
 
-//         cost = utilities.decimalPoints(cost, decimal_places);
+        cost = utilities.decimalPoints(cost, decimal_places);
 
-//         strQry += _mysql.mysqlQueryFormat(
-//           "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
-//           [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
-//         );
+        strQry += _mysql.mysqlQueryFormat(
+          "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
+          [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
+        );
 
-//         strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
-//         SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SE.earnings_id, \
-//         round( (SE.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
-//         hims_f_salary S inner join hims_f_salary_earnings SE on S.hims_f_salary_id=SE.salary_header_id WHERE \
-//         employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
-//         and year=${project_wise_payroll[z].year};`;
+        strQry += `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
+        SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SE.earnings_id, \
+        round( (SE.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
+        hims_f_salary S inner join hims_f_salary_earnings SE on S.hims_f_salary_id=SE.salary_header_id WHERE \
+        employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
+        and year=${project_wise_payroll[z].year};`;
 
-//         strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
-//         SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SD.deductions_id, \
-//         round( (SD.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
-//         hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
-//         employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
-//         and year=${project_wise_payroll[z].year};`;
-//       }
+        strQry += `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
+        SELECT ${project_wise_payroll[z].hims_f_project_wise_payroll_id} as project_wise_payroll_id, SD.deductions_id, \
+        round( (SD.amount / ${total_complete_hours})*${complete_hours}, ${decimal_places}) as amount FROM  \
+        hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
+        employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
+        and year=${project_wise_payroll[z].year};`;
+      }
 
-//       _mysql
-//         .executeQuery({
-//           query: strQry,
-//           // printQuery: true
-//         })
-//         .then((project_payroll) => {
-//           resolve();
-//         })
-//         .catch((e) => {
-//           reject(e);
-//         });
-//     } catch (e) {
-//       reject(e);
-//     }
-//   }).catch((e) => {
-//     options.next(e);
-//   });
-// }
+      _mysql
+        .executeQuery({
+          query: strQry,
+          // printQuery: true
+        })
+        .then((project_payroll) => {
+          resolve();
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch((e) => {
+    options.next(e);
+  });
+}
 
 function InsertGratuityProvision(options) {
   return new Promise((resolve, reject) => {
