@@ -22,14 +22,15 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `
-          select H.*,D.*, IM.item_code, IM.item_description, IU.uom_description, IL.location_description 
+          select H.*,B.*, ROUND(B.unit_cost, 3) as unit_cost, ROUND(B.quantity_transfer * B.unit_cost, 3) as net_extended_cost,IM.item_code, IM.item_description, IU.uom_description, IL.location_description 
           from hims_f_inventory_transfer_header H 
           inner join hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id = D.transfer_header_id
+          inner join hims_f_inventory_transfer_batches B on D.hims_f_inventory_transfer_detail_id = B.transfer_detail_id
           inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = D.item_id 
           inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = D.uom_transferred_id 
           inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = H.to_location_id 
-          where date(transfer_date)  between date(?) and date(?) and H.hospital_id=? and from_location_id=? ${strQuery}; `,
-          values: [input.from_date, input.to_date, input.hospital_id, input.location_id],
+          where date(transfer_date)  between date(?) and date(?) and from_location_id=? ${strQuery}; `,
+          values: [input.from_date, input.to_date, input.location_id],
           printQuery: true
         })
         .then(result => {
