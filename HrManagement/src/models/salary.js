@@ -511,19 +511,24 @@ export default {
                                             : empResult[i]["gross_salary"] /
                                             empResult[i]["total_days"];
 
-                                        let _salary_number = empResult[i][
-                                          "employee_code"
-                                        ].trim();
+                                        let _salary_number = empResult[i]["partial_attendance"] ==
+                                          "Y"
+                                          ? "-FS-"
+                                          : req.query.leave_salary == null
+                                            ? "-NS-"
+                                            : "-LS-" + empResult[i][
+                                              "employee_code"
+                                            ].trim() + month_number + "-" + year;
 
-                                        _salary_number +=
-                                          empResult[i]["partial_attendance"] ==
-                                            "Y"
-                                            ? "-FS-"
-                                            : req.query.leave_salary == null
-                                              ? "-NS-"
-                                              : "-LS-";
-                                        _salary_number +=
-                                          month_number + "-" + year;
+                                        // _salary_number +=
+                                        //   empResult[i]["partial_attendance"] ==
+                                        //     "Y"
+                                        //     ? "-FS-"
+                                        //     : req.query.leave_salary == null
+                                        //       ? "-NS-"
+                                        //       : "-LS-";
+                                        // _salary_number +=
+                                        //   month_number + "-" + year;
 
                                         let _net_salary =
                                           final_earning_amount -
