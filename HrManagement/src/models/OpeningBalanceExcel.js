@@ -320,7 +320,7 @@ function excelEmployeeGratuityOpenBalance(req, res, next) {
             employee_id: rest.employee_id,
             year: req.query.year,
             month: rest.month || 0,
-            gratuity_amount: rest.gratuity_amount || 0
+            gratuity_amount: rest.acc_gratuity || 0
           };
 
           worksheet.addRow(employee);

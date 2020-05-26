@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => {},
+          printQuery: (query) => { },
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -1612,7 +1612,7 @@ export default {
       .executeQuery({
         query:
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
-          GP.hims_f_gratuity_provision_id, E.hims_d_employee_id as employee_id from hims_d_employee E \
+          GP.hims_f_gratuity_provision_id, GP.acc_gratuity, E.hims_d_employee_id as employee_id from hims_d_employee E \
           left join hims_f_gratuity_provision GP  on E.hims_d_employee_id = GP.employee_id \
           where E.record_status = 'A' and E.hospital_id=? order by cast(E.employee_code as unsigned)" +
           strQry,
