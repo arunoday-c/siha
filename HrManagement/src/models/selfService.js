@@ -54,7 +54,7 @@ export default {
                E.present_state_id,S.state_name as present_state_name ,\
                E.present_country_id,C.country_name present_country_name,\
                E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-               E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
+               E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,E.work_email,\
                E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
                E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name ,\
                 E.effective_start_date,E.effective_end_date, E.employee_bank_ifsc_code ,\
