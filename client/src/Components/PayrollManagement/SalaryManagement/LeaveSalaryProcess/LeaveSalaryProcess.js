@@ -7,6 +7,11 @@ import "./LeaveSalaryProcess.scss";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie,
+} from "../../../../utils/algaehApiCall";
 
 import {
   AlgaehLabel,
@@ -38,6 +43,7 @@ class LeaveSalaryProcess extends Component {
       hospital_id: null,
       hrms_options: {},
       decimal_place: null,
+      hims_f_salary_id: null,
     };
 
     getHrmsOptions(this);
@@ -111,8 +117,87 @@ class LeaveSalaryProcess extends Component {
     }
   }
 
+  generateLeaveSalarySlip() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "leaveSalarySlip",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.employee_id,
+              // this.state.hims_d_employee_id,
+            },
+            {
+              name: "hims_f_salary_id",
+              value:
+                this.state.hims_f_leave_salary_header_id !== null
+                  ? this.state.leave_salary_detail[0].hims_f_salary_id
+                  : this.state.hims_f_salary_id,
+            },
+            {
+              name: "leave_start_date",
+              value:
+                this.state.hims_f_leave_salary_header_id !== null
+                  ? Array.isArray(this.state.leave_salary_detail)
+                    ? this.state.leave_salary_detail[0].leave_start_date
+                    : this.state.leave_start_date
+                  : this.state.leave_start_date,
+            },
+            {
+              name: "leave_end_date",
+              value:
+                this.state.hims_f_leave_salary_header_id !== null
+                  ? Array.isArray(this.state.leave_salary_detail)
+                    ? this.state.leave_salary_detail[0].leave_end_date
+                    : this.state.leave_end_date
+                  : this.state.leave_end_date,
+            },
+            {
+              name: "payment_status",
+              value: this.state.status,
+            },
+            {
+              name: "leave_amount",
+              value: this.state.leave_amount,
+            },
+            {
+              name: "leave_period",
+              value: this.state.leave_period,
+            },
+            {
+              name: "airfare_amount",
+              value:
+                this.state.hrms_options.airfair_booking === "C"
+                  ? this.state.airfare_amount
+                  : 0,
+            },
+            {
+              name: "total_amount",
+              value: this.state.total_amount,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
+      },
+    });
+  }
+
   render() {
-    debugger
+    debugger;
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
@@ -149,6 +234,7 @@ class LeaveSalaryProcess extends Component {
                   this.setState({
                     hospital_id: null,
                     emp_leave_salary: [],
+                    hims_f_salary_id: null,
                   });
                 },
               }}
@@ -171,8 +257,8 @@ class LeaveSalaryProcess extends Component {
               <h6>
                 {this.state.leave_salary_date
                   ? moment(this.state.leave_salary_date).format(
-                    Options.dateFormat
-                  )
+                      Options.dateFormat
+                    )
                   : Options.dateFormat}
               </h6>
             </div>
@@ -256,8 +342,8 @@ class LeaveSalaryProcess extends Component {
                     ) : this.state.status === "CAN" ? (
                       <span className="badge badge-danger">Cancelled</span>
                     ) : (
-                            ""
-                          )}{" "}
+                      ""
+                    )}{" "}
                   </>
                 ) : null}
               </div>
@@ -470,18 +556,6 @@ class LeaveSalaryProcess extends Component {
                     Days
                   </h6>
                 </div>
-                {/* <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Airfare Months",
-                    }}
-                  />
-                  <h6>
-                    {this.state.airfare_months === null
-                      ? 0
-                      : this.state.airfare_months}
-                  </h6>
-                </div> */}
               </div>
             </div>
           </div>
@@ -504,20 +578,23 @@ class LeaveSalaryProcess extends Component {
                 </div>
                 <i className="fas fa-plus calcSybmbol"></i>
 
-                {this.state.hrms_options.airfair_booking === "C" ?
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Airfare",
-                      }}
-                    />
-                    <h6>
-                      {this.state.dis_airfare_amount === null
-                        ? 0
-                        : this.state.dis_airfare_amount}
-                    </h6>
+                {this.state.hrms_options.airfair_booking === "C" ? (
+                  <>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Airfare",
+                        }}
+                      />
+                      <h6>
+                        {this.state.dis_airfare_amount === null
+                          ? 0
+                          : this.state.dis_airfare_amount}
+                      </h6>
+                    </div>{" "}
                     <i className="fas fa-plus calcSybmbol"></i>
-                  </div> : null}
+                  </>
+                ) : null}
 
                 <div className="col">
                   <AlgaehLabel
@@ -554,7 +631,7 @@ class LeaveSalaryProcess extends Component {
             <div className="col-lg-12">
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-default"
                 disabled={this.state.SaveBtn}
                 onClick={SaveLeaveSalary.bind(this, this)}
               >
@@ -562,6 +639,21 @@ class LeaveSalaryProcess extends Component {
                   label={{ forceLabel: "Send for Payment", returnText: true }}
                 />
               </button>
+              {this.state.total_amount != null ? (
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  // onClick={this.clearState.bind(this)}
+                  onClick={this.generateLeaveSalarySlip.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Generate Leave Salary Slip",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+              ) : null}
             </div>
           </div>
         </div>

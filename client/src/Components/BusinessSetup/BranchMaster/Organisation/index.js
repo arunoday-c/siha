@@ -75,7 +75,7 @@ export function Organization(props) {
     address1,
     address2,
     hims_d_head_of_organization_id,
-    head_of_organisation_name,
+    full_name,
   } = organisation;
 
   function onChangeHandler(e, val, nme) {
@@ -170,18 +170,13 @@ export function Organization(props) {
         callBack(text);
       },
       onRowSelect: (row) => {
-        // let arr = setEmloyees(employees);
-        // console.log("arra", arr);
-
         setEmployeeId(row.hims_d_employee_id);
         setOrganisation((state) => {
           return {
             ...state,
             hims_d_head_of_organization_id: row.hims_d_employee_id,
-            head_of_organisation_name: row.full_name,
           };
         });
-        setFullName(row.full_name);
 
         setHospitalID(row.hospital_id);
       },
@@ -523,7 +518,7 @@ export function Organization(props) {
                   <div className="col-4 globalSearchCntr">
                     <AlgaehLabel label={{ forceLabel: "Organization Head" }} />
                     <h6 onClick={employeeSearch}>
-                      {fullName ? fullName : head_of_organisation_name}
+                      {fullName ? fullName : full_name}
                       <i className="fas fa-search fa-lg"></i>
                     </h6>
                   </div>

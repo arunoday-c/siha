@@ -198,18 +198,32 @@ function LeaveEntitlement(props) {
                 <label className="radio inline">
                   <input
                     type="radio"
-                    name="leave_carry_forward"
-                    // checked={}
-                    // onChange={(e) => myParent.changeChecks(e)}
+                    name="encash_calc_method"
+                    value="A"
+                    checked={myParent.state.encash_calc_method === "A"}
+                    onChange={(e) => {
+                      myParent.setState({ encash_calc_method: "A" });
+                    }}
+                    disabled={
+                      !myParent.state.leave_encash ||
+                      myParent.state.leave_encash === "N"
+                    }
                   />
                   <span>Annualized</span>
                 </label>
                 <label className="radio inline">
                   <input
                     type="radio"
-                    name="leave_carry_forward"
-                    // checked={}
-                    // onChange={(e) => myParent.changeChecks(e)}
+                    name="encash_calc_method"
+                    value="F"
+                    checked={myParent.state.encash_calc_method === "F"}
+                    onChange={(e) =>
+                      myParent.setState({ encash_calc_method: "F" })
+                    }
+                    disabled={
+                      !myParent.state.leave_encash ||
+                      myParent.state.leave_encash === "N"
+                    }
                   />
                   <span>Fixed</span>
                 </label>

@@ -155,7 +155,7 @@ export default class SelfService extends Component {
                 <b>{empDetails.primary_contact_no}</b>
               </span>
               <span>
-                <i className="fas fa-envelope" /> <b>{empDetails.email}</b>
+                <i className="fas fa-envelope" /> <b>{empDetails.work_email}</b>
               </span>
             </div>
             <div className="EmployeeDemographic">

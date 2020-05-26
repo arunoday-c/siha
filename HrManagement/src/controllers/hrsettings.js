@@ -19,7 +19,10 @@ const {
   addProject,
   updateProjects,
   getEmployeeAuthorizationSetup,
-  addEmployeeAuthorizationSetup
+  addEmployeeAuthorizationSetup,
+  getAgency,
+  addAgency,
+  updateAgency
 } = hrsettings;
 
 export default () => {
@@ -157,6 +160,26 @@ export default () => {
       }
     }
   );
+  api.get("/getAgency", getAgency, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addAgency", addAgency, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.put("/updateAgency", updateAgency, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
 
   return api;
 };

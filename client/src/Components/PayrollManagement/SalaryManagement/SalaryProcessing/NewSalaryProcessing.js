@@ -235,7 +235,7 @@ class NewSalaryProcessing extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 100,
+                                  minWidth: 80,
                                 },
                               },
                               {
@@ -260,7 +260,34 @@ class NewSalaryProcessing extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 100,
+                                  minWidth: 80,
+                                },
+                              },
+                              {
+                                fieldName: "employee_code",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Emp. Code",
+                                    }}
+                                  />
+                                ),
+                                // others: {
+                                //   minWidth: 80,
+                                // },
+                              },
+                              {
+                                fieldName: "full_name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Emp. Name",
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 300,
+                                  style: { textAlign: "left" },
                                 },
                               },
                               {
@@ -273,31 +300,8 @@ class NewSalaryProcessing extends Component {
                                   />
                                 ),
                                 others: {
-                                  minWidth: 160,
+                                  minWidth: 120,
                                 },
-                              },
-                              {
-                                fieldName: "employee_code",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Emp. Code",
-                                    }}
-                                  />
-                                ),
-                                others: {
-                                  minWidth: 160,
-                                },
-                              },
-                              {
-                                fieldName: "full_name",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Emp. Name",
-                                    }}
-                                  />
-                                ),
                               },
                               {
                                 fieldName: "display_present_days",
