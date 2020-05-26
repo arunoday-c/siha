@@ -472,7 +472,7 @@ class FinalSettlement extends Component {
       onSuccess: (res) => {
         if (res.data.success) {
           let earnings = Enumerable.from(res.data.records)
-            .where((w) => w.component_category === "E")
+            .where((w) => w.component_category === "E" && w.miscellaneous_component === "Y")
             .toArray();
           let deductions = Enumerable.from(res.data.records)
             .where((w) => w.component_category === "D")
@@ -778,7 +778,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
+                            onEdit: () => { },
                             onDelete: this.deleteEarnings.bind(this),
                             onDone: this.updateEarnings.bind(this),
                           }}
@@ -933,7 +933,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
+                            onEdit: () => { },
                             onDelete: this.deleteDeductions.bind(this),
                             onDone: this.updateDeductions.bind(this),
                           }}
@@ -1005,9 +1005,9 @@ class FinalSettlement extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {},
+                            onEdit: () => { },
+                            onDelete: () => { },
+                            onDone: () => { },
                           }}
                         />
                       </div>
