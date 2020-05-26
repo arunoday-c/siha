@@ -32,7 +32,7 @@
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
                 <thead>
                     <tr>
-                        <th style="width: 60%">Earnigns</th>
+                        <th style="width: 60%">Salary Earnigns</th>
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
@@ -44,16 +44,16 @@
                     </tr>
                     {{/each}}
 
-                    {{!-- <tr class="footerTotalDown">
+                    <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_earnings}}</td>
-                    </tr> --}}
+                    </tr>
                 </tbody>
             </table>
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
                 <thead>
                     <tr>
-                        <th style="width: 60%">Deductions</th>
+                        <th style="width: 60%">Salary Deductions</th>
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
@@ -66,50 +66,121 @@
                     </tr>
                     {{/each}}
 
-
-                    {{!-- <tr class="footerTotalDown">
+                    <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_deductions}}</td>
-                    </tr> --}}
+                    </tr>
 
                 </tbody>
             </table>
         </section>
+        {{!-- <br />
+        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc;">
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Earnigns</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each emp_other_earnings}}
+                    <tr>
+                        <td style="height: 25px;" valign="top">{{earning_name}}</td>
+                        <td style="height: 25px;" valign="top" class="numberFld">{{amount}}</td>
+                    </tr>
+                    {{/each}}
 
+
+                </tbody>
+            </table>
+            <table class="tableForData" cell-padding="0" style="width:49.8%;margin-left:0.2%;float:right;">
+                <thead>
+                    <tr>
+                        <th style="width: 60%">Deductions</th>
+                        <th style="width: 40%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each emp_other_deductions}}
+                    <tr>
+                        <td style="height: 25px;">{{deduction_name}}</td>
+                        <td style="height: 25px;" class="numberFld">{{deduction_amount}}</td>
+                    </tr>
+                    {{/each}}
+
+
+
+                </tbody>
+            </table>
+        </section> --}}
         <br />
         <section>
-            <table class="tableForLabel labelBlock" cell-padding="0">
-                <tr>
-                    <td><label class="textEnLft">Total Earnigns: </label><span
-                            class="valueText">{{total_earnings}}</span></td>
-                    <td><label class="textEnLft">Total Dedections:</label><span
-                            class="valueText">{{total_deductions}}</span>
-                    </td>
-                    <td><label class="textEnLft">Total Loan Due:</label><span
-                            class="valueText">{{loan_due_amount}}</span>
+
+            <table class="tableForData">
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Salary</td>
+                    <td class="numberFld" width="29.5%" colspan="3">{{total_salary}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Other Earnings</td>
+                    <td class="numberFld" colspan="3">{{total_other_earnings}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Leave Encashment</td>
+                    <td class="numberFld" colspan="3">{{total_leave_encash_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp" style="border-bottom:1px solid #000">
+                    <td class="numberFld">Total Gratuity</td>
+                    <td class="numberFld" colspan="3">{{total_gratuity_amount}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Total Other Deductions</td>
+                    <td class="numberFld" colspan="3">(-) {{total_other_deductions}}</td>
+                </tr>
+                <tr class="footerTotalUp">
+                    <td class="numberFld">Pending Loan</td>
+                    <td class="numberFld" colspan="3">(-) {{total_loan_amount}}</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="numberFld">Final Settlement Amount</td>
+                    <td class="numberFld" colspan="3">{{final_payble}}</td>
+                </tr>
+                <tr class="footerTotalDown">
+                    <td class="numberFld">In Words</td>
+                    <td class="numberFld salaryWord" colspan="3">{{salary_in_words}}
                     </td>
                 </tr>
+            </table>
+        </section>
+        <section>
+            <table class="tableForLabelSignature labelBlock" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Total Leave Encashed Days: </label><span
-                            class="valueText">{{encashed_leave_days}}</span></td>
-                    <td><label class="textEnLft">Total Leave Encashed Amt:</label><span
-                            class="valueText">{{encashed_leave_amount}}</span>
+                    <td width="30%">
+                        <p>I hereby confirm the above to be correct and have no claim on my Final Settlemet.
+                        </p>
+                        <span>{{full_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
                     </td>
-                    <td><label class="textEnLft">Total Gratuity Amt:</label><span
-                            class="valueText">{{gratuity_amount}}</span>
-                    </td>
+                    {{!-- {{#each detail}}
+                    <td><b class="signArea"></b>
+                        <small>{{desc1}}:{{value1}}</small>
+                        <span>{{desc2}}:{{value2}}</span>
+                        <small>{{desc3}}:{{value3}}</small>
+                    </td>{{/each }} --}}
+
+                    {{!-- <td><b class="signArea"></b>
+                        <small>Paid By</small>
+                        <span>{{posted_by}}</span>
+                        <small>{{payment_date}}</small>
+                    </td> --}}
                 </tr>
 
-                <tr>
-                    <td colspan="2"><label class="textEnLft">In Words: </label><span
-                            class="valueText">{{salary_in_words}}</span>
-                    </td>
-                    <td><label class="textEnLft">Final Payble Amt:</label><span class="valueText">{{net_salary}}</span>
-                    </td>
 
-                </tr>
-
-                <tr>
             </table>
         </section>
         <p style="text-align: center">This is a system generated payslip on {{currentDateTime 'date'}}. </p>

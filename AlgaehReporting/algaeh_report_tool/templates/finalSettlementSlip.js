@@ -82,6 +82,7 @@ const executePDF = function executePDFMethod(options) {
                   });
                 }
               });
+
               const emp_ded_length = emp_deductions.length;
               const emp_ear_length = emp_earnings.length;
               if (emp_ded_length > emp_ear_length) {
@@ -95,20 +96,25 @@ const executePDF = function executePDFMethod(options) {
                   emp_deductions.push({});
                 }
               }
+
+              // const emp_other_ded_length = input.deductingList.length;
+              // const emp_other_ear_length = input.earningList.length;
+              // if (emp_other_ded_length > emp_other_ear_length) {
+              //   const blankIndexs = emp_other_ded_length - emp_other_ear_length;
+              //   for (let d = 0; d < blankIndexs; d++) {
+              //     emp_other_earnings.push({});
+              //   }
+              // } else if (emp_other_ear_length > emp_other_ded_length) {
+              //   const blankIndexs = emp_other_ear_length - emp_other_ded_length;
+              //   for (let d = 0; d < blankIndexs; d++) {
+              //     emp_other_deductions.push({});
+              //   }
+              // }
+
               outputArray.push({
                 year: employe[0].year,
                 // month: employe[0].month,
                 month: moment(employe[0].month, "MM").format("MMMM"),
-                net_salary: options.currencyFormat(
-                  employe[0].net_salary,
-                  options.args.crypto
-                ),
-
-                salary_in_words:
-                  options.args.crypto.currency_symbol +
-                  " " +
-                  writtenForm(employe[0].net_salary) +
-                  " Only",
 
                 total_earnings: options.currencyFormat(
                   employe[0].total_earnings,
@@ -130,25 +136,52 @@ const executePDF = function executePDFMethod(options) {
                 hospital_name: employe[0].hospital_name,
                 emp_earnings: emp_earnings,
                 emp_deductions: emp_deductions,
-                total_days: employe[0].total_days,
-                display_present_days: employe[0].display_present_days,
-                absent_days: employe[0].absent_days,
-                total_work_days: employe[0].total_work_days,
-                total_weekoff_days: employe[0].total_weekoff_days,
-                total_holidays: employe[0].total_holidays,
-                total_leave: employe[0].total_leave,
-                paid_leave: employe[0].paid_leave,
-                unpaid_leave: employe[0].unpaid_leave,
-                total_paid_days: employe[0].total_paid_days,
-                pending_unpaid_leave: employe[0].pending_unpaid_leave,
-                loan_due_amount: employe[0].loan_due_amount,
-                gratuity_amount: employe[0].gratuity_amount,
-                acc_gratuity: employe[0].acc_gratuity,
-                annual_leave_days: employe[0].annual_leave_days,
-                annual_leave_salary_amount:
-                  employe[0].annual_leave_salary_amount,
-                encashed_leave_days: employe[0].encashed_leave_days,
-                encashed_leave_amount: employe[0].encashed_leave_amount,
+                // emp_other_earnings: emp_other_earnings,
+                // emp_other_deductions: emp_other_deductions,
+                total_salary_earnings: options.currencyFormat(
+                  input.total_salary_earnings,
+                  options.args.crypto
+                ),
+                total_salary_deductions: options.currencyFormat(
+                  input.total_salary_deductions,
+                  options.args.crypto
+                ),
+
+                total_other_earnings: options.currencyFormat(
+                  input.total_other_earnings,
+                  options.args.crypto
+                ),
+                total_other_deductions: options.currencyFormat(
+                  input.total_other_deductions,
+                  options.args.crypto
+                ),
+                total_salary: options.currencyFormat(
+                  input.total_salary,
+                  options.args.crypto
+                ),
+
+                total_leave_encash_amount: options.currencyFormat(
+                  input.total_leave_encash_amount,
+                  options.args.crypto
+                ),
+                total_loan_amount: options.currencyFormat(
+                  input.total_loan_amount,
+                  options.args.crypto
+                ),
+                total_gratuity_amount: options.currencyFormat(
+                  input.total_gratuity_amount,
+                  options.args.crypto
+                ),
+                final_payble: options.currencyFormat(
+                  input.final_payble,
+                  options.args.crypto
+                ),
+
+                salary_in_words:
+                  options.args.crypto.currency_symbol +
+                  " " +
+                  writtenForm(input.final_payble) +
+                  " Only",
               });
             });
 
