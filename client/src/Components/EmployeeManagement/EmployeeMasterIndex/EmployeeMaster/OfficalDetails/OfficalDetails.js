@@ -15,7 +15,7 @@ import {
   otEntitleHandaler,
   employeeStatusHandler,
   dateFormater,
-  bankEventhandle
+  bankEventhandle,
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -268,16 +268,16 @@ class OfficalDetails extends Component {
                     onClear: () => {
                       this.setState({
                         appointment_type: null,
-                        agency_id: null
+                        agency_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
                         appointment_type: null,
-                        agency_id: null
+                        agency_id: null,
                       });
                     },
                   }}
                 />
-                {this.state.appointment_type === "A" ?
+                {this.state.appointment_type === "A" ? (
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
@@ -303,7 +303,8 @@ class OfficalDetails extends Component {
                         });
                       },
                     }}
-                  /> : null}
+                  />
+                ) : null}
                 <AlagehAutoComplete
                   div={{ className: "col mandatory form-group" }}
                   label={{
@@ -364,7 +365,7 @@ class OfficalDetails extends Component {
                   />
                   <h6>
                     {this.state.department_name === null ||
-                      this.state.department_name === undefined
+                    this.state.department_name === undefined
                       ? "------"
                       : this.state.department_name}
                   </h6>
@@ -510,9 +511,9 @@ class OfficalDetails extends Component {
                     />
                     <h6>
                       {this.state.monthly_accrual_days === null ||
-                        this.state.monthly_accrual_days === undefined
-                        ? "0 Days"
-                        : this.state.monthly_accrual_days + "Days"}
+                      this.state.monthly_accrual_days === undefined
+                        ? "0 days"
+                        : this.state.monthly_accrual_days + " days"}
                     </h6>
                   </div>
                 ) : null}
@@ -676,138 +677,138 @@ class OfficalDetails extends Component {
                     />
                     <h6>
                       {this.state.inactive_date === null ||
-                        this.state.inactive_date === undefined
+                      this.state.inactive_date === undefined
                         ? "DD/MM/YYYY"
                         : dateFormater(this, this.state.inactive_date)}
                     </h6>
                   </div>
                 ) : null}
                 {this.state.employee_status !== "A" &&
-                  this.state.employee_status !== "I" ? (
-                    <React.Fragment>
-                      <AlgaehDateHandler
-                        div={{ className: "col-3 mandatory form-group" }}
-                        label={{
-                          forceLabel:
-                            this.state.employee_status === "A" ||
-                              this.state.employee_status === "I"
-                              ? "Date of leaving"
-                              : this.state.employee_status === "R"
-                                ? "Date of Resignation"
-                                : this.state.employee_status === "T"
-                                  ? "Date of Termination"
-                                  : this.state.employee_status === "E"
-                                    ? "Date of Retirement"
-                                    : "",
-                          isImp:
-                            this.state.employee_status === "R" ||
-                              this.state.employee_status === "T"
+                this.state.employee_status !== "I" ? (
+                  <React.Fragment>
+                    <AlgaehDateHandler
+                      div={{ className: "col-3 mandatory form-group" }}
+                      label={{
+                        forceLabel:
+                          this.state.employee_status === "A" ||
+                          this.state.employee_status === "I"
+                            ? "Date of leaving"
+                            : this.state.employee_status === "R"
+                            ? "Date of Resignation"
+                            : this.state.employee_status === "T"
+                            ? "Date of Termination"
+                            : this.state.employee_status === "E"
+                            ? "Date of Retirement"
+                            : "",
+                        isImp:
+                          this.state.employee_status === "R" ||
+                          this.state.employee_status === "T"
+                            ? true
+                            : false,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "date_of_resignation",
+                        others: {
+                          disabled:
+                            this.state.enable_active_status === "I"
                               ? true
                               : false,
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "date_of_resignation",
-                          others: {
-                            disabled:
-                              this.state.enable_active_status === "I"
-                                ? true
-                                : false,
-                          },
-                        }}
-                        // maxDate={new Date()}
-                        events={{
-                          onChange: datehandle.bind(this, this),
-                        }}
-                        value={this.state.date_of_resignation}
-                      />
+                        },
+                      }}
+                      // maxDate={new Date()}
+                      events={{
+                        onChange: datehandle.bind(this, this),
+                      }}
+                      value={this.state.date_of_resignation}
+                    />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-2" }}
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Notice Period",
+                        isImp: false,
+                      }}
+                      textBox={{
+                        value: this.state.notice_period,
+                        className: "txt-fld",
+                        name: "notice_period",
+
+                        events: {
+                          onChange: texthandle.bind(this, this),
+                        },
+                        others: {
+                          tabIndex: "7",
+                          type: "number",
+                        },
+                      }}
+                    />
+                    <div className="col-3">
+                      <AlgaehLabel
                         label={{
-                          forceLabel: "Notice Period",
-                          isImp: false,
+                          forceLabel: "Expected Relieving Date",
                         }}
-                        textBox={{
-                          value: this.state.notice_period,
-                          className: "txt-fld",
-                          name: "notice_period",
-
-                          events: {
-                            onChange: texthandle.bind(this, this),
+                      />
+                      <h6>
+                        {this.state.reliving_date === null ||
+                        this.state.reliving_date === undefined
+                          ? "DD/MM/YYYY"
+                          : dateFormater(this, this.state.reliving_date)}
+                      </h6>
+                    </div>
+                    <AlgaehDateHandler
+                      div={{ className: "col-3" }}
+                      label={{ forceLabel: "Date of Exit" }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "exit_date",
+                      }}
+                      minDate={this.state.date_of_resignation}
+                      events={{
+                        onChange: datehandle.bind(this, this),
+                      }}
+                      value={this.state.exit_date}
+                    />
+                    {this.props.eosReasons === undefined ||
+                    this.props.eosReasons.length === 0 ? null : (
+                      <AlagehAutoComplete
+                        div={{ className: "col-3 mandatory form-group" }}
+                        label={{
+                          forceLabel: "EOS Reason",
+                          isImp: true,
+                        }}
+                        selector={{
+                          name: "eos_reason",
+                          className: "select-fld",
+                          value: this.state.eos_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "eos_reason_name"
+                                : "eos_reason_other_lan",
+                            valueField: "eos_reson_id",
+                            data: this.props.eosReasons,
                           },
-                          others: {
-                            tabIndex: "7",
-                            type: "number",
+                          onChange: (e) => {
+                            this.setState({ eos_id: e.value });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              eos_id: e.value,
+                            });
+                          },
+
+                          onClear: () => {
+                            this.setState({
+                              eos_id: undefined,
+                            });
+                            this.props.EmpMasterIOputs.updateEmployeeTabs({
+                              eos_id: undefined,
+                            });
                           },
                         }}
                       />
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Expected Relieving Date",
-                          }}
-                        />
-                        <h6>
-                          {this.state.reliving_date === null ||
-                            this.state.reliving_date === undefined
-                            ? "DD/MM/YYYY"
-                            : dateFormater(this, this.state.reliving_date)}
-                        </h6>
-                      </div>
-                      <AlgaehDateHandler
-                        div={{ className: "col-3" }}
-                        label={{ forceLabel: "Date of Exit" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "exit_date",
-                        }}
-                        minDate={this.state.date_of_resignation}
-                        events={{
-                          onChange: datehandle.bind(this, this),
-                        }}
-                        value={this.state.exit_date}
-                      />
-                      {this.props.eosReasons === undefined ||
-                        this.props.eosReasons.length === 0 ? null : (
-                          <AlagehAutoComplete
-                            div={{ className: "col-3 mandatory form-group" }}
-                            label={{
-                              forceLabel: "EOS Reason",
-                              isImp: true,
-                            }}
-                            selector={{
-                              name: "eos_reason",
-                              className: "select-fld",
-                              value: this.state.eos_id,
-                              dataSource: {
-                                textField:
-                                  this.state.selectedLang === "en"
-                                    ? "eos_reason_name"
-                                    : "eos_reason_other_lan",
-                                valueField: "eos_reson_id",
-                                data: this.props.eosReasons,
-                              },
-                              onChange: (e) => {
-                                this.setState({ eos_id: e.value });
-                                this.props.EmpMasterIOputs.updateEmployeeTabs({
-                                  eos_id: e.value,
-                                });
-                              },
-
-                              onClear: () => {
-                                this.setState({
-                                  eos_id: undefined,
-                                });
-                                this.props.EmpMasterIOputs.updateEmployeeTabs({
-                                  eos_id: undefined,
-                                });
-                              },
-                            }}
-                          />
-                        )}
-                    </React.Fragment>
-                  ) : null}
+                    )}
+                  </React.Fragment>
+                ) : null}
               </div>
               {/* <h5>
                 <span>Accomodation Details</span>
@@ -984,7 +985,7 @@ function mapStateToProps(state) {
     branches: state.branches,
     depservices: state.depservices,
     eosReasons: state.eosReasons,
-    agency_list: state.agency_list
+    agency_list: state.agency_list,
   };
 }
 
@@ -1000,7 +1001,7 @@ function mapDispatchToProps(dispatch) {
       getOrganizations: AlgaehActions,
       getDepServices: AlgaehActions,
       getEosReasons: AlgaehActions,
-      getAgency: AlgaehActions
+      getAgency: AlgaehActions,
     },
     dispatch
   );
