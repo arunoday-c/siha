@@ -111,7 +111,7 @@
                 </tr>
                 <tr class="footerTotalUp">
                     <td class="numberFld">Loan Due Amt</td>
-                    <td class="numberFld" colspan="3">-{{loan_due_amount}}</td>
+                    <td class="numberFld" colspan="3">(-) {{loan_due_amount}}</td>
                 </tr>
                 <tr class="footerTotalDown">
                     <td class="numberFld">Net Pay</td>
@@ -127,7 +127,7 @@
         <section>
             <table class="tableForLabelSignature labelBlock" cell-padding="0">
                 <tr>
-                    <td width="30%">
+                    <td width="50%">
                         <p>I hereby confirm the above to be correct and have no claim on my availed leave salary.</p>
                         <span>{{full_name}}</span>
                         <span>{{employee_code}}</span>
@@ -135,18 +135,14 @@
                         <br />
                         <b class="signArea"></b>
                     </td>
-                    {{!-- {{#each detail}}
-                    <td><b class="signArea"></b>
-                        <small>{{desc1}}:{{value1}}</small>
-                        <span>{{desc2}}:{{value2}}</span>
-                        <small>{{desc3}}:{{value3}}</small>
-                    </td>{{/each }} --}}
-
-                    {{!-- <td><b class="signArea"></b>
-                        <small>Paid By</small>
-                        <span>{{posted_by}}</span>
-                        <small>{{payment_date}}</small>
-                    </td> --}}
+                    <td width="50%" class="numberFld">
+                        <p>أؤكد بموجب ما سبق انه صحيح وليس لدي اي مطالبة على راتب اجازتي</p>
+                        <span>{{arabic_name}}</span>
+                        <span>{{employee_code}}</span>
+                        <small>{{designation}}</small>
+                        <br />
+                        <b class="signArea"></b>
+                    </td>
                 </tr>
 
 

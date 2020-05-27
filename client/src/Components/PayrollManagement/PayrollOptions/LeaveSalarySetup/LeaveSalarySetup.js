@@ -18,7 +18,8 @@ export default class LeaveSalarySetup extends Component {
       airfare_percentage: 0,
       hims_d_hrms_options_id: null,
       annual_leave_calculation: null,
-      airfair_booking: "C"
+      airfair_booking: "C",
+      leave_salary_payment_days: "P",
     };
 
     this.getLeaveSalaryOptions();
@@ -55,7 +56,8 @@ export default class LeaveSalarySetup extends Component {
           annual_leave_process_separately: this.state
             .annual_leave_process_separately,
           annual_leave_calculation: this.state.annual_leave_calculation,
-          airfair_booking: this.state.airfair_booking
+          airfair_booking: this.state.airfair_booking,
+          leave_salary_payment_days: this.state.leave_salary_payment_days,
         },
         method: "POST",
         onSuccess: (res) => {
@@ -85,7 +87,8 @@ export default class LeaveSalarySetup extends Component {
             .annual_leave_process_separately,
           hims_d_hrms_options_id: this.state.hims_d_hrms_options_id,
           annual_leave_calculation: this.state.annual_leave_calculation,
-          airfair_booking: this.state.airfair_booking
+          airfair_booking: this.state.airfair_booking,
+          leave_salary_payment_days: this.state.leave_salary_payment_days,
         },
         method: "PUT",
         onSuccess: (res) => {
@@ -152,12 +155,12 @@ export default class LeaveSalarySetup extends Component {
       case "airfare_factor":
         e.target.value === "FI"
           ? this.setState({
-            [e.target.name]: e.target.value,
-            airfare_percentage: null,
-          })
+              [e.target.name]: e.target.value,
+              airfare_percentage: null,
+            })
           : this.setState({
-            [e.target.name]: e.target.value,
-          });
+              [e.target.name]: e.target.value,
+            });
 
         break;
 
@@ -240,9 +243,9 @@ export default class LeaveSalarySetup extends Component {
                       <input
                         type="radio"
                         value="P"
-                        name="leave_salary_calendar"
-                      // checked={this.state.salary_calendar === "P"}
-                      // onChange={this.textHandler.bind(this)}
+                        name="leave_salary_payment_days"
+                        checked={this.state.leave_salary_payment_days === "P"}
+                        onChange={this.textHandler.bind(this)}
                       />
                       <span>Periodical</span>
                     </label>
@@ -251,9 +254,9 @@ export default class LeaveSalarySetup extends Component {
                       <input
                         type="radio"
                         value="F"
-                        name="leave_salary_calendar"
-                      // checked={this.state.salary_calendar === "F"}
-                      // onChange={this.textHandler.bind(this)}
+                        name="leave_salary_payment_days"
+                        checked={this.state.leave_salary_payment_days === "F"}
+                        onChange={this.textHandler.bind(this)}
                       />
                       <span>Fixed</span>
                     </label>

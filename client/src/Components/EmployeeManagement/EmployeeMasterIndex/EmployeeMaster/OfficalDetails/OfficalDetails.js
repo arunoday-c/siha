@@ -58,6 +58,21 @@ class OfficalDetails extends Component {
         });
       }
 
+      if (
+        this.props.agency_list === undefined ||
+        this.props.agency_list.length === 0
+      ) {
+        this.props.getAgency({
+          uri: "/hrsettings/getAgency",
+          module: "hrManagement",
+          method: "GET",
+          redux: {
+            type: "AGENCY_LIST",
+            mappingName: "agency_list",
+          },
+        });
+      }
+
       if (this.props.banks === undefined || this.props.banks.length === 0) {
         this.props.getBanks({
           uri: "/bankmaster/getBank",
@@ -253,13 +268,43 @@ class OfficalDetails extends Component {
                     onClear: () => {
                       this.setState({
                         appointment_type: null,
+                        agency_id: null,
                       });
                       this.props.EmpMasterIOputs.updateEmployeeTabs({
                         appointment_type: null,
+                        agency_id: null,
                       });
                     },
                   }}
-                />{" "}
+                />
+                {this.state.appointment_type === "A" ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col form-group" }}
+                    label={{
+                      forceLabel: "Agency Name",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "agency_id",
+                      className: "select-fld",
+                      value: this.state.agency_id,
+                      dataSource: {
+                        textField: "agency_name",
+                        valueField: "hims_d_agency_id",
+                        data: this.props.agency_list,
+                      },
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          agency_id: null,
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          agency_id: null,
+                        });
+                      },
+                    }}
+                  />
+                ) : null}
                 <AlagehAutoComplete
                   div={{ className: "col mandatory form-group" }}
                   label={{
@@ -288,7 +333,7 @@ class OfficalDetails extends Component {
                       });
                     },
                   }}
-                />{" "}
+                />
                 <AlgaehDateHandler
                   div={{ className: "col mandatory form-group" }}
                   label={{
@@ -467,8 +512,8 @@ class OfficalDetails extends Component {
                     <h6>
                       {this.state.monthly_accrual_days === null ||
                       this.state.monthly_accrual_days === undefined
-                        ? "0 Days"
-                        : this.state.monthly_accrual_days + "Days"}
+                        ? "0 days"
+                        : this.state.monthly_accrual_days + " days"}
                     </h6>
                   </div>
                 ) : null}
@@ -940,6 +985,7 @@ function mapStateToProps(state) {
     branches: state.branches,
     depservices: state.depservices,
     eosReasons: state.eosReasons,
+    agency_list: state.agency_list,
   };
 }
 
@@ -955,6 +1001,7 @@ function mapDispatchToProps(dispatch) {
       getOrganizations: AlgaehActions,
       getDepServices: AlgaehActions,
       getEosReasons: AlgaehActions,
+      getAgency: AlgaehActions,
     },
     dispatch
   );

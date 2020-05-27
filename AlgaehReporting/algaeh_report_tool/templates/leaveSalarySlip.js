@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,\
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,\
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,\
-          E.employee_code, E.full_name, E.date_of_joining, E.exit_date,DE.designation,H.hospital_name,\
+          E.employee_code, E.full_name,E.arabic_name, E.date_of_joining, E.exit_date,DE.designation,H.hospital_name,\
           COALESCE(GP.payable_amount,0) as gratuity_amount,\
           COALESCE(LS.balance_leave_days,0) as annual_leave_days,\
           COALESCE(LS.balance_leave_salary_amount,0) as annual_leave_salary_amount,\
@@ -124,12 +124,15 @@ const executePDF = function executePDFMethod(options) {
                 department_name: employe[0].department_name,
                 employee_code: employe[0].employee_code,
                 full_name: employe[0].full_name,
+                arabic_name: employe[0].arabic_name,
 
                 DOJ: moment(employe[0].date_of_joining, "YYYY-MM-DD").format(
                   "DD-MM-YYYY"
                 ),
 
-                DOE: employe[0].exit_date,
+                DOE: moment(employe[0].exit_date, "YYYY-MM-DD").format(
+                  "DD-MM-YYYY"
+                ),
                 designation: employe[0].designation,
                 hospital_name: employe[0].hospital_name,
                 emp_earnings: emp_earnings,

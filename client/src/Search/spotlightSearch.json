@@ -842,6 +842,10 @@
       {
         "fieldName": "group_description",
         "label": "Item Category"
+      },
+      {
+        "fieldName": "item_code",
+        "label": "Item Code"
       }
     ]
   },
