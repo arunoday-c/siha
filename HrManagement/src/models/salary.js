@@ -304,10 +304,10 @@ export default {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
 
-                      if (results[8][0].salary_calendar == "F") {
-                        empResult[i]["total_days"] =
-                          results[8][0].salary_calendar_fixed_days;
-                      }
+                      // if (results[8][0].salary_calendar == "F") {
+                      //   empResult[i]["total_days"] =
+                      //     results[8][0].salary_calendar_fixed_days;
+                      // }
                       getEarningComponents({
                         earnings: _earnings,
                         empResult: empResult[i],
@@ -3829,30 +3829,10 @@ function getEarningComponents(options) {
 
           let annual_per_day_sal = 0;
 
+          console.log("total_days", empResult["total_days"])
+          console.log("leave_salary", leave_salary)
           if (leave_salary == null || leave_salary == undefined) {
-            // if (hrms_option[0].salary_calendar == "F") {
-            //   current_earning_per_day_salary = parseFloat(
-            //     obj["amount"] /
-            //       parseFloat(hrms_option[0].salary_calendar_fixed_days)
-            //   );
 
-            //   if (
-            //     empResult["from_normal_salary"] === "Y" &&
-            //     obj.annual_salary_comp === "Y"
-            //   ) {
-            //     annual_per_day_sal =
-            //       current_earning_per_day_salary * leave_period;
-            //   }
-            //   let days =
-            //     parseFloat(empResult["unpaid_leave"]) +
-            //     parseFloat(empResult["absent_days"]) +
-            //     parseFloat(empResult["pending_unpaid_leave"]) +
-            //     leave_period;
-
-            //   let amount = current_earning_per_day_salary * days;
-            //   current_earning_amt = obj["amount"] - amount;
-            //   current_earning_amt = current_earning_amt + annual_per_day_sal;
-            // } else {
             let total_paid_days =
               parseFloat(empResult["total_paid_days"]) - leave_period;
             current_earning_per_day_salary = parseFloat(
@@ -3865,33 +3845,21 @@ function getEarningComponents(options) {
               annual_per_day_sal =
                 current_earning_per_day_salary * leave_period;
             }
-            // console.log("total_days", empResult["total_days"])
-            // console.log("total_paid_days", total_paid_days)
-            // console.log("current_earning_per_day_salary", current_earning_per_day_salary)
             current_earning_amt =
               current_earning_per_day_salary * total_paid_days;
 
             current_earning_amt = current_earning_amt + annual_per_day_sal;
-            // }
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_earning_amt) > parseFloat(obj["limit_amount"])
             ) {
               current_earning_amt = obj["limit_amount"];
             }
-            // console.log("current_earning_amt", current_earning_amt)
+
           } else if (leave_salary == "N") {
             leave_salary_days =
               parseFloat(empResult["total_days"]) -
               parseFloat(empResult["paid_leave"]);
-
-            // if (
-            //   empResult["from_normal_salary"] === "Y" &&
-            //   obj.annual_salary_comp === "Y"
-            // ) {
-            //   annual_per_day_sal =
-            //     current_earning_per_day_salary * leave_period;
-            // }
 
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
