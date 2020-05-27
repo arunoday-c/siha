@@ -3133,6 +3133,7 @@ let addSickLeave = (req, res, next) => {
 
 //created by irfan: to add  physical_examination_details
 let getSickLeave = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
     // if (req.db == null) {
     //   next(httpStatus.dataBaseNotInitilizedError());
