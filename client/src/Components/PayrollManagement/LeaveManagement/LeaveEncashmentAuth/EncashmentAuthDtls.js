@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 
 import "./LeaveEncashmentAuth.scss";
-import { AuthorizeLEaveEncash, getHrmsOptions } from "./LeaveEncashmentAuthEvents.js";
+import {
+  AuthorizeLEaveEncash,
+  getHrmsOptions,
+} from "./LeaveEncashmentAuthEvents.js";
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -18,15 +21,12 @@ export default class EncashmentAuthDtls extends Component {
       leave_days: null,
       total_amount: null,
       leave_encash_level: null,
-      hims_f_leave_encash_header_id: null
+      hims_f_leave_encash_header_id: null,
     };
-    getHrmsOptions(this)
+    getHrmsOptions(this);
   }
 
-
-
   UNSAFE_componentWillReceiveProps(newProps) {
-
     this.setState({ ...newProps.EncashDetailPer });
   }
 
@@ -36,7 +36,7 @@ export default class EncashmentAuthDtls extends Component {
         class="leaveEncashAuthModal"
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
         title="Encashment Request Details"
       >
@@ -46,7 +46,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Encashment Date"
+                    forceLabel: "Encashment Date",
                   }}
                 />
                 <h6>{this.state.encashment_date}</h6>
@@ -54,7 +54,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Encashment No."
+                    forceLabel: "Encashment No.",
                   }}
                 />
                 <h6>{this.state.encashment_number}</h6>
@@ -62,7 +62,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Employee Code"
+                    forceLabel: "Employee Code",
                   }}
                 />
                 <h6>{this.state.employee_code}</h6>
@@ -70,7 +70,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Employee Name"
+                    forceLabel: "Employee Name",
                   }}
                 />
                 <h6>{this.state.full_name}</h6>
@@ -78,7 +78,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Leave Description"
+                    forceLabel: "Leave Description",
                   }}
                 />
                 <h6>{this.state.leave_description}</h6>
@@ -86,7 +86,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Applied Days"
+                    forceLabel: "Applied Days",
                   }}
                 />
                 <h6>{this.state.leave_days}</h6>
@@ -94,7 +94,7 @@ export default class EncashmentAuthDtls extends Component {
               <div className="col-6 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Encashment Amount"
+                    forceLabel: "Encashment Amount",
                   }}
                 />
                 <h6>{GetAmountFormart(this.state.total_amount)}</h6>
@@ -112,7 +112,7 @@ export default class EncashmentAuthDtls extends Component {
             </button>
             <button
               onClick={AuthorizeLEaveEncash.bind(this, this, "REJ")}
-              className="btn btn-default"
+              className="btn btn-danger"
             >
               Reject
             </button>
