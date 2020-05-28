@@ -323,7 +323,7 @@ let updateMedicinePreApproval = (req, res, next) => {
 let insertOrderedServices = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let input = { ...req.body };
+    let input = req.body;
 
     const IncludeValues = [
       "patient_id",
@@ -407,7 +407,7 @@ let insertOrderedServices = (req, res, next) => {
                   }
                 );
 
-                console.log("insert_order_services", insert_order_services);
+                // console.log("insert_order_services", insert_order_services);
                 if (insert_order_services.length > 0) {
                   _mysql
                     .executeQuery({
@@ -530,56 +530,82 @@ let insertOrderedServices = (req, res, next) => {
                   }
                 })
                   .then((result) => {
-                    let servicesForPreAproval = [];
-                    let patient_id;
-                    let doctor_id;
-                    let visit_id;
+                    // let servicesForPreAproval = [];
+                    let patient_id = input["patient_id"];
+                    let doctor_id = input["doctor_id"];
+                    let visit_id = input["visit_id"];
 
-                    let services = new LINQ(req.body.billdetails)
-                      .Select((s) => {
-                        patient_id = s.patient_id;
-                        doctor_id = s.doctor_id;
-                        visit_id = s.visit_id;
-                        return s.services_id;
-                      })
-                      .ToArray();
+                    let services = [];
+                    input["billdetails"].forEach((e) => {
+                      if (e.pre_approval == "Y") {
+                        services.push(e.services_id);
+                      }
+                    });
+
+                    // let services = new LINQ(req.body.billdetails)
+                    //   .Select((s) => {
+                    //     patient_id = s.patient_id;
+                    //     doctor_id = s.doctor_id;
+                    //     visit_id = s.visit_id;
+                    //     return s.services_id;
+                    //   })
+                    //   .ToArray();
 
                     if (services.length > 0) {
-                      servicesForPreAproval.push(patient_id);
-                      servicesForPreAproval.push(doctor_id);
-                      servicesForPreAproval.push(visit_id);
-                      servicesForPreAproval.push(services);
-
+                      // servicesForPreAproval.push(patient_id);
+                      // servicesForPreAproval.push(doctor_id);
+                      // servicesForPreAproval.push(visit_id);
+                      // servicesForPreAproval.push(services);
+                      let delete_str = ` delete from hims_f_service_approval where visit_id=${visit_id} and doctor_id=${doctor_id}  and patient_id=${patient_id} ;`;
                       _mysql
                         .executeQuery({
                           query:
+                            delete_str +
                             "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
                               OS.test_type, S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
-                              inner join hims_d_services S where S.hims_d_services_id = OS.services_id and `patient_id`=? and \
-                              `doctor_id`=? and `visit_id`=? and `services_id` in (?);",
-                          values: servicesForPreAproval,
+                              inner join hims_d_services S on  S.hims_d_services_id = OS.services_id where `patient_id`=? and \
+                              `doctor_id`=? and `visit_id`=? and `services_id` in (?)  ;",
+                          values: [patient_id, doctor_id, visit_id, services],
                           printQuery: true,
                         })
                         .then((ResultOfFetchOrderIds) => {
-                          let detailsPush = new LINQ(req.body.billdetails)
-                            .Where((g) => g.pre_approval == "Y")
-                            .Select((s) => {
-                              return {
-                                ...s,
-                                ...{
-                                  hims_f_ordered_services_id: new LINQ(
-                                    ResultOfFetchOrderIds
-                                  )
-                                    .Where(
-                                      (w) => w.services_id == s.services_id
-                                    )
-                                    .FirstOrDefault()
-                                    .hims_f_ordered_services_id,
-                                },
-                              };
-                            })
-                            .ToArray();
+                          // let detailsPush = new LINQ(req.body.billdetails)
+                          //   .Where((g) => g.pre_approval == "Y")
+                          //   .Select((s) => {
+                          //     return {
+                          //       ...s,
+                          //       ...{
+                          //         hims_f_ordered_services_id: new LINQ(
+                          //           ResultOfFetchOrderIds
+                          //         )
+                          //           .Where(
+                          //             (w) => w.services_id == s.services_id
+                          //           )
+                          //           .FirstOrDefault()
+                          //           .hims_f_ordered_services_id,
+                          //       },
+                          //     };
+                          //   })
+                          //   .ToArray();
                           // console.log("detailsPush.length", detailsPush.length);
+
+                          let detailsPush = [];
+
+                          input["billdetails"].forEach((item) => {
+                            let os_data = ResultOfFetchOrderIds[1].find((f) => {
+                              return (
+                                item.pre_approval == "Y" &&
+                                item.services_id == f.services_id
+                              );
+                            });
+                            if (os_data) {
+                              detailsPush.push({
+                                ...item,
+                                ...os_data,
+                              });
+                            }
+                          });
+
                           if (detailsPush.length > 0) {
                             // console.log("detailsPush", detailsPush);
                             const insurtCols = [
@@ -597,14 +623,11 @@ let insertOrderedServices = (req, res, next) => {
                               "net_amout",
                               "services_id",
                             ];
-                            console.log(
-                              "detailsPush",
-                              detailsPush[0].gross_amount
-                            );
+                            // console.log("detailsPush", detailsPush);
                             _mysql
                               .executeQuery({
                                 query:
-                                  "INSERT INTO hims_f_service_approval(??) VALUES ?",
+                                  " INSERT INTO hims_f_service_approval(??) VALUES ?",
                                 values: detailsPush,
                                 includeValues: insurtCols,
                                 replcaeKeys: {
@@ -628,7 +651,8 @@ let insertOrderedServices = (req, res, next) => {
                               .then((resultPreAprvl) => {
                                 req.records = {
                                   resultPreAprvl,
-                                  ResultOfFetchOrderIds,
+                                  ResultOfFetchOrderIds:
+                                    ResultOfFetchOrderIds[1],
                                 };
                                 next();
                               })
@@ -640,7 +664,7 @@ let insertOrderedServices = (req, res, next) => {
                           } else {
                             req.records = {
                               resultOrder,
-                              ResultOfFetchOrderIds,
+                              ResultOfFetchOrderIds: ResultOfFetchOrderIds[1],
                             };
                             next();
                             // console.log("else detailsPush");
