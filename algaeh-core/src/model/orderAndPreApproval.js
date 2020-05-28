@@ -2311,7 +2311,7 @@ function deleteOrderServices(options) {
             [lab_order_ids]
           );
         } else {
-          strQuery += "SELECT 1;";
+          strQuery += "select 1 where 1=2;";
         }
 
         // console.log("strQuery", strQuery)
@@ -2328,22 +2328,24 @@ function deleteOrderServices(options) {
               return o.hims_f_ordered_services_id;
             });
 
-            let first_result = result[0];
-            // console.log("order_ids", order_ids)
-            // console.log("hims_f_lab_order_id:", first_result.hims_f_lab_order_id)
+            let hims_f_lab_order_ids = [];
+            result.forEach((element) => {
+              hims_f_lab_order_ids.push(element.hims_f_lab_order_id);
+            });
+
             strQry += _mysql.mysqlQueryFormat(
               "DELETE FROM hims_f_service_approval where ordered_services_id in (?);",
               [order_ids]
             );
 
-            if (lab_order_services.length > 0) {
+            if (hims_f_lab_order_ids.length > 0) {
               strQry += _mysql.mysqlQueryFormat(
                 "DELETE FROM hims_f_ord_analytes where order_id in (?); DELETE FROM hims_f_lab_sample where order_id in (?);\
-                      DELETE FROM hims_f_lab_order where hims_f_lab_order_id in (?);",
+                        DELETE FROM hims_f_lab_order where hims_f_lab_order_id in (?);",
                 [
-                  first_result.hims_f_lab_order_id,
-                  first_result.hims_f_lab_order_id,
-                  first_result.hims_f_lab_order_id,
+                  hims_f_lab_order_ids,
+                  hims_f_lab_order_ids,
+                  hims_f_lab_order_ids,
                 ]
               );
             }
