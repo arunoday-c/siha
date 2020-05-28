@@ -556,15 +556,16 @@ let insertOrderedServices = (req, res, next) => {
                       // servicesForPreAproval.push(doctor_id);
                       // servicesForPreAproval.push(visit_id);
                       // servicesForPreAproval.push(services);
-                      let delete_str = ` delete from hims_f_service_approval where visit_id=${visit_id} and doctor_id=${doctor_id}  and patient_id=${patient_id} ;`;
+                      // let delete_str = ` delete from hims_f_service_approval where visit_id=${visit_id} and doctor_id=${doctor_id}  and patient_id=${patient_id} ;`;
                       _mysql
                         .executeQuery({
                           query:
-                            delete_str +
+                            // delete_str +
                             "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, \
                               OS.test_type, S.physiotherapy_service, S.service_name from hims_f_ordered_services OS \
-                              inner join hims_d_services S on  S.hims_d_services_id = OS.services_id where `patient_id`=? and \
-                              `doctor_id`=? and `visit_id`=? and `services_id` in (?)  ;",
+                              inner join hims_d_services S on  S.hims_d_services_id = OS.services_id\
+                              left join hims_f_service_approval SA on SA.ordered_services_id=OS.hims_f_ordered_services_id\
+                             where   OS.patient_id=? and OS.doctor_id=? and OS.visit_id=? and OS.services_id in (?)  and hims_f_service_approval_id is null ;",
                           values: [patient_id, doctor_id, visit_id, services],
                           printQuery: true,
                         })
@@ -592,7 +593,7 @@ let insertOrderedServices = (req, res, next) => {
                           let detailsPush = [];
 
                           input["billdetails"].forEach((item) => {
-                            let os_data = ResultOfFetchOrderIds[1].find((f) => {
+                            let os_data = ResultOfFetchOrderIds.find((f) => {
                               return (
                                 item.pre_approval == "Y" &&
                                 item.services_id == f.services_id
@@ -651,8 +652,7 @@ let insertOrderedServices = (req, res, next) => {
                               .then((resultPreAprvl) => {
                                 req.records = {
                                   resultPreAprvl,
-                                  ResultOfFetchOrderIds:
-                                    ResultOfFetchOrderIds[1],
+                                  ResultOfFetchOrderIds: ResultOfFetchOrderIds,
                                 };
                                 next();
                               })
@@ -664,7 +664,7 @@ let insertOrderedServices = (req, res, next) => {
                           } else {
                             req.records = {
                               resultOrder,
-                              ResultOfFetchOrderIds: ResultOfFetchOrderIds[1],
+                              ResultOfFetchOrderIds: ResultOfFetchOrderIds,
                             };
                             next();
                             // console.log("else detailsPush");
