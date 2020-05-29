@@ -120,11 +120,11 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
       ...new Set(
         new LINQ(Services)
           .Where(
-            w =>
+            (w) =>
               w.service_type_id ==
               appsettings.hims_d_service_type.service_type_id.Lab
           )
-          .Select(s => {
+          .Select((s) => {
             return {
               ordered_services_id: s.hims_f_ordered_services_id || null,
               patient_id: req.body.patient_id,
@@ -133,11 +133,11 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
               service_id: s.services_id,
               billed: req.body.billed,
               ordered_date: s.created_date,
-              test_type: s.test_type
+              test_type: s.test_type,
             };
           })
           .ToArray()
-      )
+      ),
     ];
 
     const IncludeValues = [
@@ -148,7 +148,7 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
       "service_id",
       "billed",
       "ordered_date",
-      "test_type"
+      "test_type",
     ];
 
     // utilities.logger().log("labServices: ", labServices.length);
@@ -161,14 +161,14 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
           extraValues: {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
+            hospital_id: req.userIdentity.hospital_id,
           },
           bulkInsertOrUpdate: true,
-          printQuery: true
+          printQuery: true,
         })
-        .then(insert_lab_order => {
+        .then((insert_lab_order) => {
           const get_services_id = new LINQ(labServices)
-            .Select(s => {
+            .Select((s) => {
               return s.service_id;
             })
             .ToArray();
@@ -186,11 +186,11 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                 req.body.date_of_birth,
                 req.body.date_of_birth,
                 req.body.date_of_birth,
-                req.body.date_of_birth
+                req.body.date_of_birth,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(results => {
+            .then((results) => {
               let investigation_test = results[0];
               const age_data = results[1][0];
               const age_type = age_data["age_type"];
@@ -209,7 +209,7 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
               }
 
               const test_id = new LINQ(investigation_test)
-                .Select(s => {
+                .Select((s) => {
                   return s.hims_d_investigation_test_id;
                 })
                 .ToArray();
@@ -232,11 +232,11 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                     test_id,
                     req.body.gender,
                     age_type,
-                    age
+                    age,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(specimentRecords => {
+                .then((specimentRecords) => {
                   if (
                     specimentRecords[0] == null ||
                     specimentRecords[0].length == 0
@@ -252,12 +252,12 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                   }
 
                   const insertedLabSample = new LINQ(specimentRecords[0])
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         order_id: new LINQ(specimentRecords[1])
-                          .Where(w => w.service_id == s.services_id)
+                          .Where((w) => w.service_id == s.services_id)
                           .FirstOrDefault().hims_f_lab_order_id,
-                        sample_id: s.specimen_id
+                        sample_id: s.specimen_id,
                       };
                     })
                     .ToArray();
@@ -272,12 +272,12 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                       includeValues: sample,
                       extraValues: {
                         created_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_by: req.userIdentity.algaeh_d_app_user_id
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(insert_lab_sample => {
+                    .then((insert_lab_sample) => {
                       if (
                         specimentRecords[2] == null &&
                         specimentRecords[2].length == 0
@@ -300,22 +300,22 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                         "critical_low",
                         "critical_high",
                         "normal_low",
-                        "normal_high"
+                        "normal_high",
                       ];
 
                       const labAnalytes = new LINQ(specimentRecords[2])
-                        .Select(s => {
+                        .Select((s) => {
                           return {
                             analyte_id: s.analyte_id,
                             order_id: new LINQ(specimentRecords[1])
-                              .Where(w => w.service_id == s.services_id)
+                              .Where((w) => w.service_id == s.services_id)
                               .FirstOrDefault().hims_f_lab_order_id,
                             analyte_type: s.analyte_type,
                             result_unit: s.result_unit,
                             critical_low: s.critical_low,
                             critical_high: s.critical_high,
                             normal_low: s.normal_low,
-                            normal_high: s.normal_high
+                            normal_high: s.normal_high,
                           };
                         })
                         .ToArray();
@@ -329,12 +329,12 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                             includeValues: analyts,
                             extraValues: {
                               created_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_by: req.userIdentity.algaeh_d_app_user_id
+                              updated_by: req.userIdentity.algaeh_d_app_user_id,
                             },
                             bulkInsertOrUpdate: true,
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(ord_analytes => {
+                          .then((ord_analytes) => {
                             if (req.connection == null) {
                               // _mysql.commitTransaction(() => {
                               //   _mysql.releaseConnection();
@@ -345,7 +345,7 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                               next();
                             }
                           })
-                          .catch(e => {
+                          .catch((e) => {
                             _mysql.rollBackTransaction(() => {
                               next(e);
                             });
@@ -362,25 +362,25 @@ let insertLadOrderedServices_BKP_JAN_30_2020 = (req, res, next) => {
                         }
                       }
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -408,9 +408,9 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
         : req.records.ResultOfFetchOrderIds;
 
     const labServices = Services.filter(
-      f =>
+      (f) =>
         f.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
-    ).map(s => {
+    ).map((s) => {
       return {
         ordered_services_id: s.hims_f_ordered_services_id || null,
         patient_id: req.body.patient_id,
@@ -419,7 +419,7 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
         service_id: s.services_id,
         billed: req.body.billed,
         ordered_date: s.created_date,
-        test_type: s.test_type
+        test_type: s.test_type,
       };
     });
 
@@ -432,7 +432,7 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
         "service_id",
         "billed",
         "ordered_date",
-        "test_type"
+        "test_type",
       ];
 
       _mysql
@@ -443,13 +443,13 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
           extraValues: {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
+            hospital_id: req.userIdentity.hospital_id,
           },
           bulkInsertOrUpdate: true,
-          printQuery: true
+          printQuery: true,
         })
-        .then(insert_lab_order => {
-          const get_services_id = labServices.map(s => {
+        .then((insert_lab_order) => {
+          const get_services_id = labServices.map((s) => {
             return s.service_id;
           });
           _mysql
@@ -457,10 +457,10 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
               query:
                 "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?); ",
               values: [get_services_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(investigation_test => {
-              const test_id = investigation_test.map(s => {
+            .then((investigation_test) => {
+              const test_id = investigation_test.map((s) => {
                 return s.hims_d_investigation_test_id;
               });
 
@@ -474,21 +474,21 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
                   and visit_id =? and service_id in (?); \
                   ",
                   values: [test_id, req.body.visit_id, get_services_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(specimentRecords => {
+                .then((specimentRecords) => {
                   if (specimentRecords[0].length > 0) {
                     const inserteLabSample = [];
 
-                    specimentRecords[1].forEach(ord => {
+                    specimentRecords[1].forEach((ord) => {
                       let temp = specimentRecords[0]
-                        .filter(f => {
+                        .filter((f) => {
                           return f.services_id == ord.service_id;
                         })
-                        .map(m => {
+                        .map((m) => {
                           return {
                             sample_id: m.specimen_id,
-                            order_id: ord.hims_f_lab_order_id
+                            order_id: ord.hims_f_lab_order_id,
                           };
                         });
                       inserteLabSample.push(...temp);
@@ -504,12 +504,12 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
                         includeValues: sample,
                         extraValues: {
                           created_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(insert_lab_sample => {
+                      .then((insert_lab_sample) => {
                         if (req.connection == null) {
                           req.records = insert_lab_sample;
                           next();
@@ -517,7 +517,7 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
                           next();
                         }
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -533,19 +533,19 @@ let insertLadOrderedServicesBKP_31_JAN_2020 = (req, res, next) => {
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -571,9 +571,9 @@ let insertLadOrderedServices = (req, res, next) => {
         : req.records.ResultOfFetchOrderIds;
 
     const labServices = Services.filter(
-      f =>
+      (f) =>
         f.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
-    ).map(s => {
+    ).map((s) => {
       return {
         ordered_services_id: s.hims_f_ordered_services_id || null,
         patient_id: req.body.patient_id,
@@ -582,7 +582,7 @@ let insertLadOrderedServices = (req, res, next) => {
         service_id: s.services_id,
         billed: req.body.billed,
         ordered_date: s.created_date,
-        test_type: s.test_type
+        test_type: s.test_type,
       };
     });
 
@@ -595,7 +595,7 @@ let insertLadOrderedServices = (req, res, next) => {
         "service_id",
         "billed",
         "ordered_date",
-        "test_type"
+        "test_type",
       ];
 
       _mysql
@@ -606,13 +606,13 @@ let insertLadOrderedServices = (req, res, next) => {
           extraValues: {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity.hospital_id
+            hospital_id: req.userIdentity.hospital_id,
           },
           bulkInsertOrUpdate: true,
-          printQuery: true
+          printQuery: true,
         })
-        .then(insert_lab_order => {
-          const get_services_id = labServices.map(s => {
+        .then((insert_lab_order) => {
+          const get_services_id = labServices.map((s) => {
             return s.service_id;
           });
           _mysql
@@ -633,12 +633,12 @@ let insertLadOrderedServices = (req, res, next) => {
                 req.body.date_of_birth,
                 req.body.date_of_birth,
                 req.body.date_of_birth,
-                req.body.date_of_birth
+                req.body.date_of_birth,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(investigation_test => {
-              const no_analyte = investigation_test[0].find(f => {
+            .then((investigation_test) => {
+              const no_analyte = investigation_test[0].find((f) => {
                 return f.test_section != "M" && f.analyte_id == null;
               });
               if (no_analyte) {
@@ -651,7 +651,7 @@ let insertLadOrderedServices = (req, res, next) => {
                   );
                 });
               } else {
-                const test_id = investigation_test[0].map(s => {
+                const test_id = investigation_test[0].map((s) => {
                   return s.hims_d_investigation_test_id;
                 });
 
@@ -694,27 +694,27 @@ let insertLadOrderedServices = (req, res, next) => {
                       req.body.gender,
                       age_type,
                       age,
-                      test_id
+                      test_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(specimentRecords => {
+                  .then((specimentRecords) => {
                     if (specimentRecords[0].length > 0) {
                       const specimen_list = specimentRecords[0];
                       const lab_orders = specimentRecords[1];
                       const all_analytes = specimentRecords[2];
                       const inserteLabSample = [];
 
-                      lab_orders.forEach(ord => {
+                      lab_orders.forEach((ord) => {
                         let temp = specimen_list
-                          .filter(f => {
+                          .filter((f) => {
                             return f.services_id == ord.service_id;
                           })
-                          .map(m => {
+                          .map((m) => {
                             return {
                               sample_id: m.specimen_id,
                               test_id: m.test_id,
-                              order_id: ord.hims_f_lab_order_id
+                              order_id: ord.hims_f_lab_order_id,
                             };
                           });
                         inserteLabSample.push(...temp);
@@ -730,17 +730,19 @@ let insertLadOrderedServices = (req, res, next) => {
                           includeValues: sample,
                           extraValues: {
                             created_by: req.userIdentity.algaeh_d_app_user_id,
-                            updated_by: req.userIdentity.algaeh_d_app_user_id
+                            updated_by: req.userIdentity.algaeh_d_app_user_id,
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(insert_lab_sample => {
+                        .then((insert_lab_sample) => {
                           if (all_analytes.length > 0) {
-                            all_analytes.map(item => {
-                              const order_dtails = inserteLabSample.find(f => {
-                                return item.test_id == f.test_id;
-                              });
+                            all_analytes.map((item) => {
+                              const order_dtails = inserteLabSample.find(
+                                (f) => {
+                                  return item.test_id == f.test_id;
+                                }
+                              );
 
                               item["order_id"] = order_dtails.order_id;
                             });
@@ -755,7 +757,7 @@ let insertLadOrderedServices = (req, res, next) => {
                               "normal_low",
                               "normal_high",
                               "text_value",
-                              "normal_qualitative_value"
+                              "normal_qualitative_value",
                             ];
                             _mysql
                               .executeQuery({
@@ -767,12 +769,12 @@ let insertLadOrderedServices = (req, res, next) => {
                                   created_by:
                                     req.userIdentity.algaeh_d_app_user_id,
                                   updated_by:
-                                    req.userIdentity.algaeh_d_app_user_id
+                                    req.userIdentity.algaeh_d_app_user_id,
                                 },
                                 bulkInsertOrUpdate: true,
-                                printQuery: true
+                                printQuery: true,
                               })
-                              .then(ord_analytes => {
+                              .then((ord_analytes) => {
                                 if (req.connection == null) {
                                   req.records = insert_lab_sample;
                                   next();
@@ -780,7 +782,7 @@ let insertLadOrderedServices = (req, res, next) => {
                                   next();
                                 }
                               })
-                              .catch(e => {
+                              .catch((e) => {
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -794,7 +796,7 @@ let insertLadOrderedServices = (req, res, next) => {
                             }
                           }
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
@@ -810,20 +812,20 @@ let insertLadOrderedServices = (req, res, next) => {
                       });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
                   });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -847,7 +849,7 @@ let updateLabOrderServices = (req, res, next) => {
     if (error) {
       next(error);
     }
-    connection.beginTransaction(error => {
+    connection.beginTransaction((error) => {
       if (error) {
         connection.rollback(() => {
           releaseDBConnection(db, connection);
@@ -869,7 +871,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
             req.userIdentity.algaeh_d_app_user_id,
             req.body.hims_d_lab_sample_id,
             req.body.service_id,
-            req.body.hims_d_hospital_id
+            req.body.hims_d_hospital_id,
           ],
           (error, result) => {
             if (error) {
@@ -884,7 +886,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
           }
         );
       })
-        .then(result => {
+        .then((result) => {
           if (result != null) {
             const _date = new Date();
             return new Promise((resolve, reject) => {
@@ -900,7 +902,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                   }
                 }
               );
-            }).then(record => {
+            }).then((record) => {
               let query = "";
               let condition = [];
               let padNum = "";
@@ -912,7 +914,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                 condition = [
                   _newNumber,
                   record.hims_m_hospital_container_mapping_id,
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ];
                 query =
                   "Update hims_m_hospital_container_mapping set number =?,updated_by=?,updated_date=now() where hims_m_hospital_container_mapping_id =?";
@@ -924,8 +926,8 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                     _date,
                     1,
                     req.userIdentity.algaeh_d_app_user_id,
-                    req.userIdentity.algaeh_d_app_user_id
-                  ]
+                    req.userIdentity.algaeh_d_app_user_id,
+                  ],
                 ];
 
                 query =
@@ -958,7 +960,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                       next(error);
                     });
                   } else {
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -968,7 +970,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
                       req.records = {
                         collected: req.body.collected,
                         collected_by: req.userIdentity.algaeh_d_app_user_id,
-                        collected_date: new Date()
+                        collected_date: new Date(),
                       };
                       releaseDBConnection(db, connection);
                       next();
@@ -979,7 +981,7 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
             next(error);
@@ -1047,7 +1049,7 @@ let updateLabSampleStatus = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1065,7 +1067,7 @@ let updateLabSampleStatus = (req, res, next) => {
           input.remarks,
           new Date(),
           input.updated_by,
-          input.hims_d_lab_sample_id
+          input.hims_d_lab_sample_id,
         ];
 
         connection.query(queryBuilder, inputs, (error, results) => {
@@ -1088,7 +1090,7 @@ let updateLabSampleStatus = (req, res, next) => {
                   });
                 }
 
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -1102,7 +1104,7 @@ let updateLabSampleStatus = (req, res, next) => {
               }
             );
           } else {
-            connection.commit(error => {
+            connection.commit((error) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -1135,7 +1137,7 @@ let updateLabResultEntry = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1149,23 +1151,23 @@ let updateLabResultEntry = (req, res, next) => {
         let amended = "";
 
         let status_C = new LINQ(inputParam)
-          .Where(w => w.status == "C")
+          .Where((w) => w.status == "C")
           .ToArray().length;
         let status_V = new LINQ(inputParam)
-          .Where(w => w.status == "V")
+          .Where((w) => w.status == "V")
           .ToArray().length;
 
         let status_N = new LINQ(inputParam)
-          .Where(w => w.status == "N")
+          .Where((w) => w.status == "N")
           .ToArray().length;
 
         let status_E = new LINQ(inputParam)
-          .Where(w => w.status == "E")
+          .Where((w) => w.status == "E")
           .ToArray().length;
 
         let runtype = new LINQ(inputParam)
-          .Where(w => w.run_type != null)
-          .Select(s => s.run_type)
+          .Where((w) => w.run_type != null)
+          .Select((s) => s.run_type)
           .ToArray();
 
         let ref = null;
@@ -1247,7 +1249,7 @@ let updateLabResultEntry = (req, res, next) => {
               moment().format("YYYY-MM-DD HH:mm"),
               user_id.updated_by,
               inputParam[i].order_id,
-              inputParam[i].hims_f_ord_analytes_id
+              inputParam[i].hims_f_ord_analytes_id,
             ]
           );
           // qry +=
@@ -1331,7 +1333,7 @@ let updateLabResultEntry = (req, res, next) => {
                   });
                 }
 
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -1343,14 +1345,14 @@ let updateLabResultEntry = (req, res, next) => {
                     results,
                     entered_by: entered_by,
                     confirmed_by: confirmed_by,
-                    validated_by: validated_by
+                    validated_by: validated_by,
                   };
                   next();
                 });
               }
             );
           } else {
-            connection.commit(error => {
+            connection.commit((error) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -1362,7 +1364,7 @@ let updateLabResultEntry = (req, res, next) => {
                 results,
                 entered_by: entered_by,
                 confirmed_by: confirmed_by,
-                validated_by: validated_by
+                validated_by: validated_by,
               };
               next();
             });
@@ -1382,16 +1384,16 @@ let updateLabOrderedBilled = (req, res, next) => {
   debugLog("Bill Data: ", req.body.billdetails);
   let OrderServices = new LINQ(req.body.billdetails)
     .Where(
-      w =>
+      (w) =>
         w.hims_f_ordered_services_id != null &&
         w.service_type_id == appsettings.hims_d_service_type.service_type_id.Lab
     )
-    .Select(s => {
+    .Select((s) => {
       return {
         ordered_services_id: s.hims_f_ordered_services_id,
         billed: "Y",
         updated_date: new Date(),
-        updated_by: req.userIdentity.algaeh_d_app_user_id
+        updated_by: req.userIdentity.algaeh_d_app_user_id,
       };
     })
     .ToArray();
@@ -1413,7 +1415,7 @@ let updateLabOrderedBilled = (req, res, next) => {
           OrderServices[i].billed,
           moment().format("YYYY-MM-DD HH:mm"),
           OrderServices[i].updated_by,
-          OrderServices[i].ordered_services_id
+          OrderServices[i].ordered_services_id,
         ]
       );
       // qry +=
@@ -1454,5 +1456,5 @@ export default {
   updateLabOrderServices,
   updateLabSampleStatus,
   updateLabResultEntry,
-  updateLabOrderedBilled
+  updateLabOrderedBilled,
 };
