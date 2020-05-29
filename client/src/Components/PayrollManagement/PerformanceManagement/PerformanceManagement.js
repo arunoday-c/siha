@@ -4,6 +4,7 @@ import PerformanceReview from "./PerformanceReview/PerformanceReview";
 import SalaryApprisal from "./SalaryApprisal/SalaryApprisal";
 import AppraisalMatrixMaster from "./AppraisalMatrixMaster/AppraisalMatrixMaster";
 import PerfoParaMaster from "./PerfoParaMaster/PerfoParaMaster";
+
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
 
@@ -55,6 +56,18 @@ class PerformanceManagement extends Component {
               children: <PerfoParaMaster />,
               componentCode: "PER_QST_MST",
             },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Performance Review",
+                  }}
+                />
+              ),
+              children: <PerformanceReview />,
+              componentCode: "PER_PER_REV",
+            },
+
             {
               title: (
                 <AlgaehLabel

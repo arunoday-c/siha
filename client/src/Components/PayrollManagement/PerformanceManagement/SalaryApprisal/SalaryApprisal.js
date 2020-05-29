@@ -4,28 +4,89 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./salary_apprsl.scss";
+
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { MainContext } from "algaeh-react-components/context";
 import {
   AlagehFormGroup,
-  AlgaehLabel,
-  AlgaehDateHandler,
   AlagehAutoComplete,
+  AlgaehLabel,
   AlgaehDataGrid,
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { employeeSearch } from "./SalaryApprisalEvent";
 
+import Enumerable from "linq";
+import moment from "moment";
 class SalaryApprisal extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hospital_id: null,
       employee_name: null,
       earningComponents: [],
       deductioncomponents: [],
       contributioncomponents: [],
     };
+    this.getHospitals();
+    this.getEmployees();
   }
 
+  getEmployees() {
+    algaehApiCall({
+      uri: "/employee/get",
+      module: "hrManagement",
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            employees: res.data.records,
+          });
+        }
+      },
+
+      onFailure: (err) => {},
+    });
+  }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records,
+          });
+        }
+      },
+
+      onFailure: (err) => {},
+    });
+  }
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value,
+    });
+  }
+
+  clearState() {
+    this.setState({
+      hims_d_employee_id: null,
+      employee_name: null,
+      employee_id: null,
+    });
+  }
+
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     if (
       this.props.payrollcomponents === undefined ||
       this.props.payrollcomponents.length === 0
@@ -46,41 +107,36 @@ class SalaryApprisal extends Component {
     return (
       <div className="SalaryApprisalWrapper">
         <div className="row  inner-top-search">
-          <div className="col-3" style={{ marginTop: 10 }}>
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0,
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>
-                  {this.state.employee_name
-                    ? this.state.employee_name
-                    : "------"}
-                </h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer",
-                  }}
-                  onClick={employeeSearch.bind(this, this)}
-                />
-              </div>
-            </div>
+          {" "}
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Branch",
+              isImp: true,
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals,
+              },
+              onChange: this.dropDownHandler.bind(this),
+            }}
+            showLoading={true}
+          />
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={employeeSearch.bind(this, this)}>
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
           </div>
           {/* Employee Global Search End here */}
-
           <div className="col form-group">
             <button style={{ marginTop: 19 }} className="btn btn-default">
               Clear
