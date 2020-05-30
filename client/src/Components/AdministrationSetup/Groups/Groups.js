@@ -10,7 +10,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { GROUP_TYPE } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
-import { AlgaehFormGroup } from "algaeh-react-components";
 class Groups extends Component {
   constructor(props) {
     super(props);
@@ -185,12 +184,6 @@ class Groups extends Component {
     return (
       <div className="groups">
         <div className="row inner-top-search">
-          <AlgaehFormGroup
-            div={{ className: "col-2  mandatory form-group" }}
-            label={{ forceLabel: "Arabic" }}
-            textBox={{ className: "txt-fld", name: "arabic" }}
-            target={{ tElement: "" }}
-          />
           <AlagehFormGroup
             div={{ className: "col-2  mandatory form-group" }}
             label={{
