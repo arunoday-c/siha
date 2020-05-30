@@ -12,12 +12,14 @@ export default class OrgChart extends Component {
     this.state = {
       pageDisplay: "DepartmentView",
       allBranches: [],
-      reqDepts: []
+      reqDepts: [],
+      employeesReportingTo: [],
     };
   }
 
   componentDidMount() {
     this.getBranchMaster();
+    this.getEmployeeReportingTo();
   }
 
   getBranchMaster() {
@@ -25,24 +27,24 @@ export default class OrgChart extends Component {
       uri: "/branchMaster/getDepartmentsChart",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allBranches: response.data.records
+            allBranches: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -52,26 +54,26 @@ export default class OrgChart extends Component {
       method: "GET",
       module: "masterSettings",
       data: {
-        hospital_id: id
+        hospital_id: id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            reqDepts: res.data.records
+            reqDepts: res.data.records,
           });
         } else {
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -84,26 +86,61 @@ export default class OrgChart extends Component {
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState(
       {
-        pageDisplay: specified
+        pageDisplay: specified,
       },
       () => {
-        if (this.state.pageDisplay !== "Department View") {
+        if (this.state.pageDisplay !== "DepartmentView") {
           this.clearState("deptData");
         }
       }
     );
   }
 
-  clearState = name => {
+  clearState = (name) => {
     this.setState({
-      [name]: []
+      [name]: [],
     });
   };
+  clearState1 = (name) => {
+    this.setState({
+      [name]: [],
+    });
+  };
+  chartFuncs1 = () => ({
+    clearState: this.clearState1.bind(this),
+    getEmployeeReportingTo: this.getEmployeeReportingTo.bind(this),
+  });
 
   chartFuncs = () => ({
     clearState: this.clearState.bind(this),
-    getDeptForBranch: this.getDeptForBranch.bind(this)
+    getDeptForBranch: this.getDeptForBranch.bind(this),
   });
+  getEmployeeReportingTo() {
+    algaehApiCall({
+      uri: "/branchMaster/getEmployeeReportingTo",
+      method: "GET",
+      module: "masterSettings",
+
+      onSuccess: (res) => {
+        if (res.data.success) {
+          this.setState({
+            employeesReportingTo: [res.data.records],
+          });
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning",
+          });
+        }
+      },
+      onError: (err) => {
+        swalMessage({
+          title: err.message,
+          type: "error",
+        });
+      },
+    });
+  }
 
   render() {
     return (
@@ -115,7 +152,7 @@ export default class OrgChart extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Department View"
+                    forceLabel: "Department View",
                   }}
                 />
               ),
@@ -126,19 +163,23 @@ export default class OrgChart extends Component {
                   api={this.chartFuncs()}
                 />
               ),
-              componentCode: "ORG_DEP_VEW"
+              componentCode: "ORG_DEP_VEW",
             },
             {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Employee View"
+                    forceLabel: "Employee View",
                   }}
                 />
               ),
-              children: <EmployeeView />,
-              componentCode: "ORG_EMP_VEW"
-            }
+              children: (
+                <EmployeeView
+                  employeesReportingTo={this.state.employeesReportingTo}
+                />
+              ),
+              componentCode: "ORG_EMP_VEW",
+            },
           ]}
           renderClass="orgChartSection"
         />

@@ -170,6 +170,7 @@ export function Organization(props) {
         callBack(text);
       },
       onRowSelect: (row) => {
+        setFullName(row.full_name);
         setEmployeeId(row.hims_d_employee_id);
         setOrganisation((state) => {
           return {

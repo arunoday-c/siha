@@ -495,9 +495,9 @@ export default {
               if (employees[parent.hims_d_employee_id]) {
                 const childs = employees[parent.hims_d_employee_id];
                 parent["count"] = childs.length;
-                parent["employees"] = childs;
-                for (let i = 0, len = parent.employees.length; i < len; ++i) {
-                  findReportingEmployees(parent.employees[i]);
+                parent["children"] = childs;
+                for (let i = 0, len = parent.children.length; i < len; ++i) {
+                  findReportingEmployees(parent.children[i]);
                 }
               }
             };

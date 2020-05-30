@@ -146,7 +146,7 @@ const updateOrganization = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `update hims_d_organization set organization_name=?,business_registration_number=?,
-        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=?, ${updateProduct} where hims_d_organization_id=?`,
+        fiscal_period=?,fiscal_quarters=?,tax_number=?,country_id=?,phone1=?,email=?,address1=?,address2=?,hims_d_head_of_organization_id=? ${updateProduct} where hims_d_organization_id=?`,
         values: [
           organization_name,
           business_registration_number,
@@ -159,7 +159,6 @@ const updateOrganization = (req, res, next) => {
           address1,
           address2,
           hims_d_head_of_organization_id,
-
           hims_d_organization_id,
         ],
         printQuery: true,
