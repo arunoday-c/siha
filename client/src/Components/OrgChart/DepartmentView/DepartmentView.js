@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./DepartmentView.scss";
 
-export default class DepartmentView extends Component {
+export class DepartmentView extends Component {
   constructor(props) {
     super(props);
     this.deptHeight = 0;

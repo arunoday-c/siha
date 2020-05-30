@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./OrgChart.scss";
-import { EmployeeView, DepartmentView } from ".";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehTabs } from "algaeh-react-components";
-
+import { DepartmentView } from "./DepartmentView/DepartmentView";
+import { EmployeeOrgChart } from "./EmployeeOrgChart/EmployeeOrgChart";
 export default class OrgChart extends Component {
   constructor(props) {
     super(props);
@@ -19,7 +19,6 @@ export default class OrgChart extends Component {
 
   componentDidMount() {
     this.getBranchMaster();
-    this.getEmployeeReportingTo();
   }
 
   getBranchMaster() {
@@ -101,46 +100,11 @@ export default class OrgChart extends Component {
       [name]: [],
     });
   };
-  clearState1 = (name) => {
-    this.setState({
-      [name]: [],
-    });
-  };
-  chartFuncs1 = () => ({
-    clearState: this.clearState1.bind(this),
-    getEmployeeReportingTo: this.getEmployeeReportingTo.bind(this),
-  });
 
   chartFuncs = () => ({
     clearState: this.clearState.bind(this),
     getDeptForBranch: this.getDeptForBranch.bind(this),
   });
-  getEmployeeReportingTo() {
-    algaehApiCall({
-      uri: "/branchMaster/getEmployeeReportingTo",
-      method: "GET",
-      module: "masterSettings",
-
-      onSuccess: (res) => {
-        if (res.data.success) {
-          this.setState({
-            employeesReportingTo: [res.data.records],
-          });
-        } else {
-          swalMessage({
-            title: res.data.records.message,
-            type: "warning",
-          });
-        }
-      },
-      onError: (err) => {
-        swalMessage({
-          title: err.message,
-          type: "error",
-        });
-      },
-    });
-  }
 
   render() {
     return (
@@ -173,11 +137,7 @@ export default class OrgChart extends Component {
                   }}
                 />
               ),
-              children: (
-                <EmployeeView
-                  employeesReportingTo={this.state.employeesReportingTo}
-                />
-              ),
+              children: <EmployeeOrgChart />,
               componentCode: "ORG_EMP_VEW",
             },
           ]}
