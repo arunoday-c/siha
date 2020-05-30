@@ -1,6 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import swal from "sweetalert2";
-// import Enumerable from "linq";
+import Enumerable from "linq";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -49,6 +49,21 @@ export default function ProjectPayrollEvents() {
         }
       });
     },
+    openSalaryComponents: ($this, row) => {
+      debugger
+      const salaryprocess_Earning = Enumerable.from(
+        $this.state.project_payroll_detail
+      )
+        .where((w) => w.project_wise_payroll_id === row.hims_f_project_wise_payroll_id)
+        .toArray();
+
+      row.earning_details = salaryprocess_Earning
+
+      $this.setState({
+        isOpen: !$this.state.isOpen,
+        selected_employee: row
+      });
+    },
     LoadProjectDetails: $this => {
       if ($this.state.project_id === null && $this.state.employee_id === null) {
         swalMessage({
@@ -79,7 +94,7 @@ export default function ProjectPayrollEvents() {
           onSuccess: response => {
             if (response.data.records.project_wise_payroll.length > 0) {
               // let data = response.data.records.result;
-
+              debugger
               $this.setState({
                 ...response.data.records,
                 lbl_total: lbl_total

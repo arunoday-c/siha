@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
+import _ from "lodash";
 
 export function getSalesQuotation(req, res, next) {
   const _mysql = new algaehMysql();
@@ -271,43 +272,219 @@ export function updateSalesQuotation(req, res, next) {
 
     let strQuery = ""
 
-    if (req.body.cancelled === "Y") {
-      strQuery += mysql.format(
-        "UPDATE hims_f_sales_quotation set qotation_status='CL', updated_by=?, updated_date=? \
-          WHERE hims_f_sales_quotation_id=?",
-        [
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.body.hims_f_sales_quotation_id
-        ]
-      );
-    } else {
-      strQuery += mysql.format(
-        "UPDATE hims_f_sales_quotation set comments=? , updated_by=?, updated_date=? \
-          WHERE hims_f_sales_quotation_id=?",
-        [
-          req.body.comments,
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.body.hims_f_sales_quotation_id
-        ]
-      );
-    }
-    _mysql
-      .executeQuery({
-        query: strQuery,
-        printQuery: true
-      })
-      .then(headerResult => {
+    const inputParam = req.body;
+    if (inputParam.update_type === "ED") {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_sales_quotation SET quote_validity=?, sales_man=?, \
+                  payment_terms=?, sales_person_id=?, narration=?, delivery_date=?, no_of_days_followup=?, \
+                  terms_conditions=?, updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+          values: [
+            inputParam.quote_validity,
+            inputParam.sales_man,
+            inputParam.payment_terms,
+            inputParam.sales_person_id,
+            inputParam.narration,
+            inputParam.delivery_date,
+            inputParam.no_of_days_followup,
+            inputParam.terms_conditions,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_f_sales_quotation_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
 
-        _mysql.releaseConnection();
-        req.records = headerResult;
-        next();
-      })
-      .catch(error => {
-        _mysql.releaseConnection();
-        next(error);
-      });
+          let items_data = []
+          let services_data = []
+          if (inputParam.sales_quotation_items.length > 0) {
+            // items_data = inputParam.sales_quotation_items.filter(f => f.hims_f_sales_quotation_items_id === undefined);
+            items_data = _.filter(
+              inputParam.sales_quotation_items,
+              (f) => {
+                return (
+                  f.hims_f_sales_quotation_items_id === null ||
+                  f.hims_f_sales_quotation_items_id === undefined
+                );
+              }
+            );
+          }
+          if (inputParam.sales_quotation_services.length > 0) {
+            // services_data = inputParam.sales_quotation_services.filter(f => f.hims_f_sales_quotation_items_id === null);
+            services_data = _.filter(
+              inputParam.sales_quotation_services,
+              (f) => {
+                return (
+                  f.hims_f_sales_quotation_services_id === null ||
+                  f.hims_f_sales_quotation_services_id === undefined
+                );
+              }
+            );
+          }
+
+          let strQry = ""
+
+          if (inputParam.detele_services.length > 0) {
+            strQry += mysql.format(
+              "DELETE FROM hims_f_sales_quotation_services where hims_f_sales_quotation_services_id in (?);",
+              [inputParam.detele_services]
+            );
+          }
+          if (inputParam.detele_items.length > 0) {
+            strQry += mysql.format(
+              "DELETE FROM hims_f_sales_quotation_items where hims_f_sales_quotation_items_id in (?);",
+              [inputParam.detele_items]
+            );
+          }
+
+          if (items_data.length > 0) {
+            UpdateItemServiceComb({
+              sales_quotation_items: items_data,
+              sales_quotation_services: services_data,
+              hims_f_sales_quotation_id: inputParam.hims_f_sales_quotation_id,
+              _mysql: _mysql,
+              strQry: strQry,
+              next: next
+            })
+              .then(insert_item_list => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    sales_quotation_number: inputParam.sales_quotation_number,
+                    hims_f_sales_quotation_id: inputParam.hims_f_sales_quotation_id
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else if (services_data.length > 0) {
+            let IncludeValues = [
+              "services_id",
+              "service_frequency",
+              "unit_cost",
+              "quantity",
+              "extended_cost",
+              "discount_percentage",
+              "discount_amount",
+              "net_extended_cost",
+              "tax_percentage",
+              "tax_amount",
+              "total_amount"
+            ];
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?;" + strQry,
+                values: services_data,
+                includeValues: IncludeValues,
+                extraValues: {
+                  sales_quotation_id: inputParam.hims_f_sales_quotation_id
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    sales_quotation_number: inputParam.sales_quotation_number,
+                    hims_f_sales_quotation_id: inputParam.hims_f_sales_quotation_id
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            if (strQry === "") {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = {
+                  sales_quotation_number: inputParam.sales_quotation_number,
+                  hims_f_sales_quotation_id: inputParam.hims_f_sales_quotation_id
+                };
+                next();
+              });
+              return
+            }
+            _mysql
+              .executeQuery({
+                query: strQry,
+                printQuery: true
+              })
+              .then(headerResult => {
+
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    sales_quotation_number: inputParam.sales_quotation_number,
+                    hims_f_sales_quotation_id: inputParam.hims_f_sales_quotation_id
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } else {
+      if (inputParam.cancelled === "Y") {
+        strQuery += mysql.format(
+          "UPDATE hims_f_sales_quotation set qotation_status='CL', updated_by=?, updated_date=? \
+          WHERE hims_f_sales_quotation_id=?",
+          [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_f_sales_quotation_id
+          ]
+        );
+      } else {
+        strQuery += mysql.format(
+          "UPDATE hims_f_sales_quotation set comments=? , updated_by=?, updated_date=? \
+          WHERE hims_f_sales_quotation_id=?",
+          [
+            inputParam.comments,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_f_sales_quotation_id
+          ]
+        );
+      }
+      _mysql
+        .executeQuery({
+          query: strQuery,
+          printQuery: true
+        })
+        .then(headerResult => {
+
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    }
+
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -401,6 +578,93 @@ function InsertSalesItemService(options) {
                 includeValues: IncludeValues,
                 extraValues: {
                   sales_quotation_id: headerResult.insertId
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(detailResult => {
+                resolve();
+              })
+              .catch(error => {
+                reject(error);
+              });
+          } else {
+            resolve();
+          }
+
+        })
+        .catch(error => {
+          reject(error);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
+
+function UpdateItemServiceComb(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      console.log("UpdateItemServiceComb")
+      const sales_quotation_services = options.sales_quotation_services;
+      const sales_quotation_items = options.sales_quotation_items;
+      const hims_f_sales_quotation_id = options.hims_f_sales_quotation_id;
+      let _mysql = options._mysql;
+      let strQry = options.strQry
+
+      let IncludeValues = [];
+      IncludeValues = [
+        "item_id",
+        "uom_id",
+        "unit_cost",
+        "quantity",
+        "extended_cost",
+        "discount_percentage",
+        "discount_amount",
+        "net_extended_cost",
+        "tax_percentage",
+        "tax_amount",
+        "total_amount"
+      ];
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO hims_f_sales_quotation_items(??) VALUES ?;" + strQry,
+          values: sales_quotation_items,
+          includeValues: IncludeValues,
+          extraValues: {
+            sales_quotation_id: hims_f_sales_quotation_id
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(detailResult => {
+          if (sales_quotation_services.length > 0) {
+            IncludeValues = [
+              "services_id",
+              "service_frequency",
+              "unit_cost",
+              "quantity",
+              "extended_cost",
+              "discount_percentage",
+              "discount_amount",
+              "net_extended_cost",
+              "tax_percentage",
+              "tax_amount",
+              "total_amount"
+            ];
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_sales_quotation_services(??) VALUES ?",
+                values: sales_quotation_services,
+                includeValues: IncludeValues,
+                extraValues: {
+                  sales_quotation_id: hims_f_sales_quotation_id
                 },
                 bulkInsertOrUpdate: true,
                 printQuery: true

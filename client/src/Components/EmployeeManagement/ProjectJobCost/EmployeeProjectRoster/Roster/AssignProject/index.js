@@ -40,20 +40,21 @@ export default function (props) {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [checkAllEmployees, setCheckAllEmployees] = useState(false);
   const [loadingProcess, setLoadingProcess] = useState(false);
+  const [selectHospitalId, setHospitalId] = useState(false);
   const [changeState, setChangeState] = useState(false);
 
   let from_dt =
     from_date === "" && isEditing !== undefined
       ? isEditing.attendance_date
       : from_date === "" && isEditing === undefined
-      ? fromDate
-      : from_date;
+        ? fromDate
+        : from_date;
   let to_dt =
     to_date === "" && isEditing !== undefined
       ? isEditing.attendance_date
       : to_date === "" && isEditing === undefined
-      ? toDate
-      : to_date;
+        ? toDate
+        : to_date;
   const employeeShow = filterTrue === false ? employees : filterEmployees;
   function processAsssignProject(data) {
     const {
@@ -61,8 +62,8 @@ export default function (props) {
       selectedEmployees,
       from_date,
       to_date,
-      hospital_id,
       isEditing,
+      selectHospitalId
     } = data;
 
     return new Promise((resolve, reject) => {
@@ -79,10 +80,15 @@ export default function (props) {
         }
         let rosters = selectedEmployees;
         let projectID = selectedProjectID;
+        let hospitalID = selectHospitalId;
+        debugger
         if (isEditing !== undefined) {
           rosters = [isEditing.hims_d_employee_id];
           projectID =
             selectedProjectID === "" ? isEditing.project_id : selectedProjectID;
+
+          hospitalID =
+            selectHospitalId === "" ? isEditing.hospital_id : selectHospitalId;
         }
 
         algaehApiCall({
@@ -94,7 +100,7 @@ export default function (props) {
             to_date: to_date,
             project_id: projectID,
             roster: rosters,
-            hospital_id: hospital_id,
+            hospital_id: hospitalID,
           },
           onSuccess: (res) => {
             const { success, records } = res.data;
@@ -215,45 +221,48 @@ export default function (props) {
               {loadingProjects ? (
                 <p>Please wait loading Project's</p>
               ) : (
-                <ul className="projectList">
-                  {projects.map((data) => {
-                    if (
-                      data.project_desc
-                        .toLowerCase()
-                        .indexOf(searchProject.toLowerCase()) === -1
-                    ) {
-                      return null;
-                    }
-                    return (
-                      <li key={data.project_id}>
-                        <input
-                          id={data.project_id}
-                          name="hims_d_project_id"
-                          checked={
-                            selectedProjectID === "" && isEditing !== undefined
-                              ? isEditing.project_id === data.project_id
-                              : selectedProjectID === data.project_id
-                              ? true
-                              : false
-                          }
-                          onChange={(e) => {
-                            setSelectedProjectID(data.project_id);
-                          }}
-                          type="radio"
-                        />
-                        <label
-                          htmlFor={data.project_id}
-                          style={{
-                            width: "80%",
-                          }}
-                        >
-                          <span>{data.project_desc}</span>
-                        </label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                  <ul className="projectList">
+                    {projects.map((data) => {
+                      if (
+                        data.project_desc
+                          .toLowerCase()
+                          .indexOf(searchProject.toLowerCase()) === -1
+                      ) {
+                        return null;
+                      }
+                      debugger
+                      return (
+                        <li key={data.project_id}>
+                          <input
+                            id={data.project_id}
+                            name="hims_d_project_id"
+                            checked={
+                              selectedProjectID === "" && isEditing !== undefined
+                                ? isEditing.project_id === data.project_id && isEditing.hospital_id === data.hospital_id
+                                : selectedProjectID === data.project_id && selectHospitalId === data.hospital_id
+                                  ? true
+                                  : false
+                            }
+                            onChange={(e) => {
+                              debugger
+                              setSelectedProjectID(data.project_id);
+                              setHospitalId(data.hospital_id);
+                            }}
+                            type="radio"
+                          />
+                          <label
+                            htmlFor={data.project_id}
+                            style={{
+                              width: "80%",
+                            }}
+                          >
+                            <span>{data.project_desc + " / " + data.hospital_name}</span>
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
             </div>
 
             <div className="col-8">
@@ -349,23 +358,23 @@ export default function (props) {
                     );
                   })
                 ) : (
-                  <li>
-                    <span>
-                      <input
-                        id={isEditing.employee_code}
-                        type="checkbox"
-                        checked={true}
-                        disabled
-                      />
-                    </span>
-                    <p>
-                      <label htmlFor={isEditing.employee_code}>
-                        <small>{isEditing.employee_code}</small>
-                        <b>{isEditing.employee_name}</b>
-                      </label>
-                    </p>
-                  </li>
-                )}
+                    <li>
+                      <span>
+                        <input
+                          id={isEditing.employee_code}
+                          type="checkbox"
+                          checked={true}
+                          disabled
+                        />
+                      </span>
+                      <p>
+                        <label htmlFor={isEditing.employee_code}>
+                          <small>{isEditing.employee_code}</small>
+                          <b>{isEditing.employee_name}</b>
+                        </label>
+                      </p>
+                    </li>
+                  )}
               </ul>
             </div>
           </div>
@@ -386,26 +395,27 @@ export default function (props) {
                     from_date === "" && isEditing !== undefined
                       ? isEditing.attendance_date
                       : from_date === "" && isEditing === undefined
-                      ? fromDate
-                      : from_date;
+                        ? fromDate
+                        : from_date;
                   let to_dt =
                     to_date === "" && isEditing !== undefined
                       ? isEditing.attendance_date
                       : to_date === "" && isEditing === undefined
-                      ? toDate
-                      : to_date;
+                        ? toDate
+                        : to_date;
 
                   processAsssignProject({
                     selectedProjectID,
                     selectedEmployees,
                     from_date: from_dt,
                     to_date: to_dt,
-                    hospital_id: inputs.hospital_id,
+                    selectHospitalId,
                     isEditing,
                   })
                     .then(() => {
                       setLoadingProcess(false);
                       setSelectedProjectID("");
+                      setHospitalId("");
                       setSelectedEmployees([]);
                       setCheckAllEmployees(false);
                       setFromDate("");
@@ -425,6 +435,7 @@ export default function (props) {
               <button
                 onClick={() => {
                   setSelectedProjectID("");
+                  setHospitalId("");
                   setSelectedEmployees([]);
                   setCheckAllEmployees(false);
                   setFromDate("");

@@ -246,7 +246,7 @@ class SalesListItems extends Component {
                                         />
 
 
-                                       
+
                                         <div className="col-6 form-group mandatory">
                                             <AlgaehLabel
                                                 label={{
@@ -332,7 +332,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.dataExists === true ? parseFloat(row.quantity) : (
+                                                            return this.state.dataExists === true || this.state.edit_mode === true ? parseFloat(row.quantity) : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{
@@ -409,7 +409,7 @@ class SalesListItems extends Component {
                                                             />
                                                         ),
                                                         displayTemplate: row => {
-                                                            return this.state.dataExists === true ? row.discount_percentage : (
+                                                            return this.state.dataExists === true || this.state.edit_mode === true ? row.discount_percentage : (
                                                                 <AlagehFormGroup
                                                                     div={{}}
                                                                     textBox={{

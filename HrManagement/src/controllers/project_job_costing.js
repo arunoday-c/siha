@@ -18,7 +18,8 @@ const {
   updateActivity,
   updateSubActivity,
   getNoEmployeesProjectWise,
-  getNoEmployeesDesgnationWise
+  getNoEmployeesDesgnationWise,
+  getProjectAndDivision
 } = project_job_costing;
 
 export default () => {
@@ -199,6 +200,16 @@ export default () => {
   api.get(
     "/getNoEmployeesDesgnationWise",
     getNoEmployeesDesgnationWise,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get(
+    "/getProjectAndDivision",
+    getProjectAndDivision,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
