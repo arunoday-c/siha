@@ -1207,46 +1207,86 @@ let updateUser = (req, res, next) => {
                 input.algaeh_m_role_user_mappings_id,
               ]
             );
-            if (input.delete_branch_data.length > 0) {
-              let user_employee_id = _.map(input.delete_branch_data, (o) => {
-                return o.hims_m_user_employee_id;
-              });
+            //  console.log("input.delete_branch_data", input.delete_branch_data);
+            // if (input.delete_branch_data.length > 0) {
+            //   let user_employee_id = _.map(input.delete_branch_data, (o) => {
+            //     return o.hims_m_user_employee_id;
+            //   });
 
-              strQry += mysql.format(
-                "DELETE FROM hims_m_user_employee where hims_m_user_employee_id in (?);",
-                [user_employee_id]
-              );
-            }
+            //   strQry += mysql.format(
+            //     "DELETE FROM hims_m_user_employee where hims_m_user_employee_id in (?);",
+            //     [user_employee_id]
+            //   );
+            // }
 
-            const insurtColumns = ["hospital_id"];
+            strQry += mysql.format(
+              `DELETE FROM hims_m_user_employee where user_id =? and login_user = 'N';
+              select hospital_id from hims_m_user_employee where user_id =? and login_user = 'Y';`,
+              [input.algaeh_d_app_user_id, input.algaeh_d_app_user_id]
+            );
             _mysql
-              .executeQuery({
-                query:
-                  "INSERT INTO hims_m_user_employee (??) VALUES ? ; " + strQry,
-                values: input.branch_data,
-                includeValues: insurtColumns,
-                extraValues: {
-                  user_id: input.algaeh_d_app_user_id,
-                  created_by: req.userIdentity.algaeh_d_app_user_id,
-                  created_date: new Date(),
-                  updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date(),
-                },
-                bulkInsertOrUpdate: true,
-                printQuery: true,
+              .executeQuery({ query: strQry })
+              .then((defaultHospital) => {
+                let branches_toInsert = input.branch_data;
+
+                if (
+                  defaultHospital.length > 0 &&
+                  defaultHospital[2].length > 0
+                ) {
+                  const defHospitalId = defaultHospital[2][0]["hospital_id"];
+                  branches_toInsert = branches_toInsert.filter(
+                    (f) => f.hims_d_hospital_id !== defHospitalId
+                  );
+                }
+                console.log(
+                  "defaultHospital[2][0]",
+                  defaultHospital[2][0]["hospital_id"]
+                );
+                console.log("branches_toInsert", branches_toInsert);
+                if (branches_toInsert.length > 0) {
+                  const insurtColumns = ["hospital_id"];
+                  _mysql
+                    .executeQuery({
+                      query: `INSERT INTO hims_m_user_employee (??) VALUES ? ; `,
+                      values: branches_toInsert,
+                      includeValues: insurtColumns,
+                      extraValues: {
+                        employee_id: input.employee_id,
+                        user_id: input.algaeh_d_app_user_id,
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        created_date: new Date(),
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_date: new Date(),
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true,
+                    })
+                    .then((user_employee_res) => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = user_employee_res;
+                        next();
+                      });
+                    })
+                    .catch((e) => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = { done: "success" };
+                    next();
+                  });
+                }
               })
-              .then((user_employee_res) => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = user_employee_res;
-                  next();
-                });
-              })
-              .catch((e) => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
-                  next(e);
+                  next(error);
                 });
               });
+
             // _mysql
             //   .executeQuery({
             //     query:

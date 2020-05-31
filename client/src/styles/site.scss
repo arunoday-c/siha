@@ -27,13 +27,19 @@ body {
 .subMenuSearchFld {
   border-radius: 0 !important;
   border: none !important;
-  background: none !important;
+  background: lighten($color-black, 10%) !important;
   border-right: 1px solid #505050 !important;
   width: 80% !important;
   color: #fff !important;
   font-size: 1em !important;
   &::placeholder {
     color: rgb(180, 180, 180) !important;
+  }
+  &:focus {
+    border: none !important;
+    border-right: 1px dashed lighten($color-black, 50%) !important;
+    background-color: $color-black !important;
+    outline: none;
   }
 }
 .btn {

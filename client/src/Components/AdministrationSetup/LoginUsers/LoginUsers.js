@@ -5,7 +5,7 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
@@ -14,7 +14,7 @@ import {
   HIMS_HR_USER_TYPE,
   HIMS_USER_TYPE,
   HR_USER_TYPE,
-  FORMAT_STATUS
+  FORMAT_STATUS,
 } from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
@@ -46,7 +46,7 @@ class LoginUsers extends Component {
       suggesteedUserNames: [],
       checkavilablity: false,
       employee_code: "",
-      loaduserNameCheck: false
+      loaduserNameCheck: false,
     };
     this.userNameIntervalId = undefined;
   }
@@ -69,27 +69,27 @@ class LoginUsers extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
 
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     let USER_TYPE =
       HIMS_Active === true && HRMS_Active === true
         ? HIMS_HR_USER_TYPE
         : HIMS_Active === true
-          ? HIMS_USER_TYPE
-          : HRMS_Active === true
-            ? HR_USER_TYPE
-            : [];
+        ? HIMS_USER_TYPE
+        : HRMS_Active === true
+        ? HR_USER_TYPE
+        : [];
     if (userToken.user_type !== "SU") {
-      USER_TYPE = USER_TYPE.filter(f => f.value !== "AD");
+      USER_TYPE = USER_TYPE.filter((f) => f.value !== "AD");
     }
     if (userToken.product_type === undefined) {
       USER_TYPE = HIMS_HR_USER_TYPE;
@@ -98,13 +98,13 @@ class LoginUsers extends Component {
     }
     this.setState({
       PR_USER_TYPE: USER_TYPE,
-      current_user_type: userToken.user_type
+      current_user_type: userToken.user_type,
     });
   }
   onSuggestionClick(e) {
     this.setState({
       username: e.target.innerText,
-      checkavilablity: true
+      checkavilablity: true,
     });
   }
   searchSelect(data) {
@@ -112,8 +112,8 @@ class LoginUsers extends Component {
       data.work_email !== null && data.work_email !== ""
         ? data.work_email
         : data.email !== null && data.email !== ""
-          ? data.email
-          : "";
+        ? data.email
+        : "";
     const username = data.full_name.split(" ")[0].toLowerCase();
 
     this.setState(
@@ -125,24 +125,24 @@ class LoginUsers extends Component {
         username: username,
         password_email: email,
         verify_password: email === "" ? true : false,
-        employee_code: data.employee_code
+        employee_code: data.employee_code,
       },
       () => {
         this.getVerifyUser(username, data.hims_d_employee_id)
-          .then(result => {
+          .then((result) => {
             if (result === false) {
               const dtl = data.employee_code.replace(/" "/g, "");
               const suggestiveName = dtl.substring(dtl.length - 4);
               this.setState({
                 enableSuggestions: true,
                 suggesteedUserNames: [suggestiveName, data.work_email],
-                checkavilablity: false
+                checkavilablity: false,
               });
             } else {
               this.setState({
                 enableSuggestions: false,
                 suggesteedUserNames: [],
-                checkavilablity: false
+                checkavilablity: false,
               });
             }
           })
@@ -175,7 +175,7 @@ class LoginUsers extends Component {
       suggesteedUserNames: [],
       checkavilablity: false,
       employee_code: "",
-      loaduserNameCheck: false
+      loaduserNameCheck: false,
     });
     this.getBranchDetail();
   }
@@ -189,7 +189,7 @@ class LoginUsers extends Component {
 
   onClearBranch() {
     this.setState({
-      hospital_id: undefined
+      hospital_id: undefined,
     });
   }
 
@@ -198,25 +198,25 @@ class LoginUsers extends Component {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
           this.setState({
             hospitals: response.data.records,
-            hospital_id: response.data.records[0].hims_d_hospital_id
+            hospital_id: response.data.records[0].hims_d_hospital_id,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         this.setState({
           branch: {
-            loader: false
-          }
+            loader: false,
+          },
         });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -225,31 +225,31 @@ class LoginUsers extends Component {
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
-          const data = response.data.records.map(item => {
+          const data = response.data.records.map((item) => {
             return {
               checked: false,
               login_user: "N",
-              ...item
+              ...item,
             };
           });
           this.setState({
-            branch_detail: data
+            branch_detail: data,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         this.setState({
           branch: {
-            loader: false
-          }
+            loader: false,
+          },
         });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -258,7 +258,7 @@ class LoginUsers extends Component {
     algaehApiCall({
       uri: "/algaehappuser/getLoginUserMaster",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
           let login_users = Enumerable.from(response.data.records)
             .groupBy("$.hims_d_employee_id", null, (k, g) => {
@@ -281,19 +281,19 @@ class LoginUsers extends Component {
                 hospital_id: firstRecordSet.hospital_id,
                 algaeh_m_role_user_mappings_id:
                   firstRecordSet.algaeh_m_role_user_mappings_id,
-                hims_d_employee_id: firstRecordSet.hims_d_employee_id
+                hims_d_employee_id: firstRecordSet.hims_d_employee_id,
               };
             })
             .toArray();
           this.setState({ login_users: login_users });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getVerifyUser(username, hims_d_employee_id) {
@@ -302,17 +302,17 @@ class LoginUsers extends Component {
         uri: "/algaehappuser/verifyUserNameExists",
         method: "GET",
         data: { username: username, hims_d_employee_id: hims_d_employee_id },
-        onSuccess: response => {
+        onSuccess: (response) => {
           const { success } = response.data;
           resolve(success);
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject();
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     });
   }
@@ -327,7 +327,7 @@ class LoginUsers extends Component {
     this.setState(
       {
         ...showLoading,
-        username: value
+        username: value,
       },
       () => {
         const dtl = this.state.employee_code.replace(/" "/g, "");
@@ -337,7 +337,7 @@ class LoginUsers extends Component {
             loaduserNameCheck: false,
             enableSuggestions: true,
             suggesteedUserNames: [suggestiveName, this.state.password_email],
-            checkavilablity: false
+            checkavilablity: false,
           });
           return;
         }
@@ -345,7 +345,7 @@ class LoginUsers extends Component {
         clearInterval(this.userNameIntervalId);
         this.userNameIntervalId = setInterval(() => {
           this.getVerifyUser(e.target.value.trim(), hims_d_employee_id)
-            .then(result => {
+            .then((result) => {
               // const dtl = this.state.employee_code.replace(/" "/g, "");
               // const suggestiveName = dtl.substring(dtl.length - 4);
               if (result === false) {
@@ -355,9 +355,9 @@ class LoginUsers extends Component {
                   enableSuggestions: true,
                   suggesteedUserNames: [
                     suggestiveName,
-                    this.state.password_email
+                    this.state.password_email,
                   ],
-                  checkavilablity: false
+                  checkavilablity: false,
                 });
               } else {
                 this.setState({
@@ -366,15 +366,15 @@ class LoginUsers extends Component {
                   checkavilablity: true,
                   suggesteedUserNames: [
                     suggestiveName,
-                    this.state.password_email
-                  ]
+                    this.state.password_email,
+                  ],
                 });
               }
             })
             .catch(() => {
               this.setState({
                 loaduserNameCheck: false,
-                checkavilablity: false
+                checkavilablity: false,
               });
             });
           clearInterval(this.userNameIntervalId);
@@ -403,17 +403,17 @@ class LoginUsers extends Component {
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
           this.setState({ groups: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -423,25 +423,25 @@ class LoginUsers extends Component {
       uri: "/algaehappuser/selectRoles",
       method: "GET",
       data: {
-        algaeh_d_app_group_id: group_id
+        algaeh_d_app_group_id: group_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
           this.setState({ roles: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -450,12 +450,12 @@ class LoginUsers extends Component {
       case "app_group_id":
         this.getRoles(value.value);
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
     }
   }
@@ -465,7 +465,7 @@ class LoginUsers extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         // debugger;
-      }
+      },
     });
   }
 
@@ -474,11 +474,11 @@ class LoginUsers extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         if (this.state.algaeh_d_app_user_id === null) {
-          let branch_data = _.filter(this.state.branch_detail, f => {
+          let branch_data = _.filter(this.state.branch_detail, (f) => {
             return f.checked === true;
           });
           const selectedData = this.state.branch_detail.find(
-            f => f.hims_d_hospital_id === this.state.hospital_id
+            (f) => f.hims_d_hospital_id === this.state.hospital_id
           );
           selectedData.login_user = "Y";
           branch_data.push(selectedData);
@@ -498,13 +498,13 @@ class LoginUsers extends Component {
               employee_id: this.state.employee_id,
               sub_department_id: this.state.sub_department_id,
               hospital_id: this.state.hospital_id,
-              branch_data: branch_data
+              branch_data: branch_data,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record added successfully",
-                  type: "success"
+                  type: "success",
                 });
 
                 this.getLoginUsers();
@@ -513,26 +513,28 @@ class LoginUsers extends Component {
               } else if (!response.data.success) {
                 swalMessage({
                   title: response.data.records.message,
-                  type: "warning"
+                  type: "warning",
                 });
               }
             },
-            onError: error => { }
+            onError: (error) => {},
           });
         } else {
-          let branch_data = _.filter(
-            this.state.branch_detail,
-            f =>
-              (f.checked === true &&
-                (f.hims_m_user_employee_id === null ||
-                  f.hims_m_user_employee_id === undefined)) ||
-              f.hims_d_hospital_id === this.state.hospital_id
+          // let branch_data = _.filter(
+          //   this.state.branch_detail,
+          //   (f) =>
+          //     (f.checked === true &&
+          //       (f.hims_m_user_employee_id === null ||
+          //         f.hims_m_user_employee_id === undefined)) ||
+          //     f.hims_d_hospital_id === this.state.hospital_id
+          // );
+
+          // const delete_branch_data = _.filter(this.state.branch_detail, f => {
+          //   return f.checked === false && f.hims_m_user_employee_id !== null;
+          // });
+          let branch_data = this.state.branch_detail.filter(
+            (f) => f.checked === true
           );
-
-          const delete_branch_data = _.filter(this.state.branch_detail, f => {
-            return f.checked === false && f.hims_m_user_employee_id !== null;
-          });
-
           algaehApiCall({
             uri: "/algaehappuser/updateUser",
             method: "PUT",
@@ -546,13 +548,14 @@ class LoginUsers extends Component {
                 .algaeh_m_role_user_mappings_id,
               user_status: this.state.user_status,
               branch_data: branch_data,
-              delete_branch_data: delete_branch_data
+              employee_id: this.state.employee_id,
+              // delete_branch_data: delete_branch_data
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 swalMessage({
                   title: "Record updated successfully",
-                  type: "success"
+                  type: "success",
                 });
 
                 this.getLoginUsers();
@@ -560,19 +563,19 @@ class LoginUsers extends Component {
               } else if (!response.data.success) {
                 swalMessage({
                   title: response.data.records.message,
-                  type: "error"
+                  type: "error",
                 });
               }
             },
-            onCatch: error => {
+            onCatch: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
   apiConfiguration(row, e) {
@@ -581,7 +584,7 @@ class LoginUsers extends Component {
       uri: "/apiAuth/getAPI",
       method: "GET",
       data: { username: username, item_id: hospital_id },
-      onSuccess: response => {
+      onSuccess: (response) => {
         const { data } = response;
         const { success, records } = data;
         if (success) {
@@ -590,11 +593,11 @@ class LoginUsers extends Component {
             selectedUSer: {
               "x-api-token": records["x-api-token"],
               username,
-              full_name: row.full_name
-            }
+              full_name: row.full_name,
+            },
           });
         }
-      }
+      },
     });
   }
   RemoveApiPermission(e) {
@@ -603,36 +606,35 @@ class LoginUsers extends Component {
       uri: "/apiAuth/removeAPI",
       method: "PUT",
       data: { username: username },
-      onSuccess: response => {
+      onSuccess: (response) => {
         const { data } = response;
         const { success, message } = data;
         if (success) {
           this.setState({
             apiConfig: false,
-            selectedUSer: {}
+            selectedUSer: {},
           });
           swalMessage({
             type: "success",
-            title: message
+            title: message,
           });
         }
-      }
+      },
     });
   }
 
   selectAll(e) {
-    let branch_detail = this.state.branch_detail.map(m => {
-      m.checked = e.target.checked
-      return (m)
+    let branch_detail = this.state.branch_detail.map((m) => {
+      m.checked = e.target.checked;
+      return m;
     });
     this.setState({ branch_detail: branch_detail });
-
   }
   selectBranch(data, e) {
     let branch_detail = this.state.branch_detail;
     let selecte_branch = _.find(
       branch_detail,
-      f => f.hims_d_hospital_id === data.hims_d_hospital_id
+      (f) => f.hims_d_hospital_id === data.hims_d_hospital_id
     );
     const _index = branch_detail.indexOf(selecte_branch);
     selecte_branch.checked = e.target.checked;
@@ -646,7 +648,7 @@ class LoginUsers extends Component {
     for (let i = 0; i < row.branch_data.length; i++) {
       let selecte_branch = _.find(
         branch_detail,
-        f => f.hims_d_hospital_id === row.branch_data[i].hospital_id
+        (f) => f.hims_d_hospital_id === row.branch_data[i].hospital_id
       );
       const _index = branch_detail.indexOf(selecte_branch);
       selecte_branch.checked = true;
@@ -658,8 +660,8 @@ class LoginUsers extends Component {
     const email = !!row.work_email
       ? row.work_email
       : !!row.email
-        ? row.email
-        : "";
+      ? row.email
+      : "";
     this.setState({
       algaeh_d_app_user_id: row.algaeh_d_app_user_id,
       username: row.username,
@@ -678,14 +680,14 @@ class LoginUsers extends Component {
       editData: true,
       enableSuggestions: false,
       checkavilablity: false,
-      suggesteedUserNames: []
+      suggesteedUserNames: [],
       // branch_data: branch_data
     });
   }
 
   getHospitalShortDesc() {
     const detail = this.state.hospitals.find(
-      f => f.hims_d_hospital_id === this.state.hospital_id
+      (f) => f.hims_d_hospital_id === this.state.hospital_id
     );
     if (detail !== undefined) return "@" + detail.hospital_code.toLowerCase();
 
@@ -696,7 +698,7 @@ class LoginUsers extends Component {
     if (this.state.password_email === "") {
       swalMessage({
         title: "Please provide email address.",
-        type: "info"
+        type: "info",
       });
       return;
     }
@@ -706,23 +708,23 @@ class LoginUsers extends Component {
         method: "POST",
         data: {
           email_id: this.state.password_email,
-          hims_d_employee_id: this.state.employee_id
+          hims_d_employee_id: this.state.employee_id,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           this.setState({ load_verify_email: false, verify_password: false });
           const { success, message } = response.data;
           swalMessage({
             title: message,
-            type: success === true ? "success" : "error"
+            type: success === true ? "success" : "error",
           });
         },
-        onCatch: error => {
+        onCatch: (error) => {
           const { message } = error.response.data;
           swalMessage({
             title: message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     });
   }
@@ -741,7 +743,7 @@ class LoginUsers extends Component {
       enableSuggestions: false,
       suggesteedUserNames: [],
       checkavilablity: false,
-      algaeh_d_app_user_id: null
+      algaeh_d_app_user_id: null,
     });
   }
 
@@ -755,7 +757,7 @@ class LoginUsers extends Component {
           onClose={() => {
             this.setState({
               apiConfig: false,
-              selectedUSer: {}
+              selectedUSer: {},
             });
           }}
         >
@@ -779,7 +781,7 @@ class LoginUsers extends Component {
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "branch",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "hospital_id",
@@ -788,27 +790,27 @@ class LoginUsers extends Component {
                       dataSource: {
                         textField: "hospital_name",
                         valueField: "hims_d_hospital_id",
-                        data: this.state.hospitals
+                        data: this.state.hospitals,
                       },
                       others: {
                         disabled:
                           this.state.algaeh_d_app_user_id === null
                             ? false
-                            : true
+                            : true,
                       },
                       onChange: this.dropDownHandler.bind(this),
-                      onClear: this.onClearBranch.bind(this)
+                      onClear: this.onClearBranch.bind(this),
                     }}
                   />
                   <AlgaehAutoSearch
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Select Employee",
-                      isImp: true
+                      isImp: true,
                     }}
                     title="Search Employees"
                     id="item_id_search"
-                    template={result => {
+                    template={(result) => {
                       return (
                         <section className="resultSecStyles">
                           <div className="row">
@@ -827,11 +829,11 @@ class LoginUsers extends Component {
                     value={this.state.full_name}
                     searchName="admin_employee_search"
                     extraParameters={{
-                      hospital_id: this.state.hospital_id
+                      hospital_id: this.state.hospital_id,
                     }}
                     others={{
                       disabled:
-                        this.state.algaeh_d_app_user_id === null ? false : true
+                        this.state.algaeh_d_app_user_id === null ? false : true,
                     }}
                     onClick={this.searchSelect.bind(this)}
                     onClear={this.onSearchClear.bind(this)}
@@ -841,19 +843,19 @@ class LoginUsers extends Component {
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Enter Email Address",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "password_email",
                       value: this.state.password_email,
                       events: {
-                        onChange: this.changeTexts.bind(this)
+                        onChange: this.changeTexts.bind(this),
                       },
                       others: {
                         disabled: !this.state.verify_password,
-                        placeholder: "For sending auto generated password"
-                      }
+                        placeholder: "For sending auto generated password",
+                      },
                     }}
                   />
                   {!this.state.verify_password ? (
@@ -911,10 +913,10 @@ class LoginUsers extends Component {
                                 This username is taken, Try Another.
                               </span>
                             ) : (
-                                <span className=" badge badge-success">
-                                  This username is available.
+                              <span className=" badge badge-success">
+                                This username is available.
                               </span>
-                              )}
+                            )}
                           </div>
                           <div className="col-12 form-group userSuggcntr">
                             <p>Suggested Username</p>
@@ -926,7 +928,7 @@ class LoginUsers extends Component {
                                       style={{
                                         textDecoration: "underline",
                                         cursor: "pointer",
-                                        color: "blue"
+                                        color: "blue",
                                       }}
                                       onClick={this.onSuggestionClick.bind(
                                         this
@@ -949,41 +951,41 @@ class LoginUsers extends Component {
                       ) : null}
 
                       {this.state.user_type === "AD" &&
-                        this.state.current_user_type !== "SU" &&
-                        this.state.editData === true ? (
-                          <div className="col-6 form-group">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "User Type"
-                              }}
-                            />
-                            <h6>Admin</h6>
-                          </div>
-                        ) : (
-                          <AlagehAutoComplete
-                            div={{ className: "col-6 form-group" }}
+                      this.state.current_user_type !== "SU" &&
+                      this.state.editData === true ? (
+                        <div className="col-6 form-group">
+                          <AlgaehLabel
                             label={{
                               forceLabel: "User Type",
-                              isImp: true
-                            }}
-                            selector={{
-                              name: "user_type",
-                              className: "select-fld",
-                              value: this.state.user_type,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: this.state.PR_USER_TYPE
-                              },
-                              onChange: this.dropDownHandler.bind(this)
                             }}
                           />
-                        )}
+                          <h6>Admin</h6>
+                        </div>
+                      ) : (
+                        <AlagehAutoComplete
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "User Type",
+                            isImp: true,
+                          }}
+                          selector={{
+                            name: "user_type",
+                            className: "select-fld",
+                            value: this.state.user_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: this.state.PR_USER_TYPE,
+                            },
+                            onChange: this.dropDownHandler.bind(this),
+                          }}
+                        />
+                      )}
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
                           fieldName: "group",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "app_group_id",
@@ -992,7 +994,7 @@ class LoginUsers extends Component {
                           dataSource: {
                             textField: "app_group_name",
                             valueField: "algaeh_d_app_group_id",
-                            data: this.state.groups
+                            data: this.state.groups,
                           },
                           // others: {
                           //   disabled:
@@ -1000,14 +1002,14 @@ class LoginUsers extends Component {
                           //       ? false
                           //       : true
                           // },
-                          onChange: this.dropDownHandler.bind(this)
+                          onChange: this.dropDownHandler.bind(this),
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group" }}
                         label={{
                           fieldName: "role",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "role_id",
@@ -1016,7 +1018,7 @@ class LoginUsers extends Component {
                           dataSource: {
                             textField: "role_name",
                             valueField: "app_d_app_roles_id",
-                            data: this.state.roles
+                            data: this.state.roles,
                           },
                           // others: {
                           //   disabled:
@@ -1024,7 +1026,7 @@ class LoginUsers extends Component {
                           //       ? false
                           //       : true
                           // },
-                          onChange: this.dropDownHandler.bind(this)
+                          onChange: this.dropDownHandler.bind(this),
                         }}
                       />
                       {this.state.algaeh_d_app_user_id !== null ? (
@@ -1032,7 +1034,7 @@ class LoginUsers extends Component {
                           div={{ className: "col-6 form-group" }}
                           label={{
                             forceLabel: "User Status",
-                            isImp: true
+                            isImp: true,
                           }}
                           selector={{
                             name: "user_status",
@@ -1041,10 +1043,10 @@ class LoginUsers extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: FORMAT_STATUS
+                              data: FORMAT_STATUS,
                             },
 
-                            onChange: this.dropDownHandler.bind(this)
+                            onChange: this.dropDownHandler.bind(this),
                           }}
                         />
                       ) : null}
@@ -1086,15 +1088,15 @@ class LoginUsers extends Component {
                                     name="modules"
                                     checked={
                                       this.state.hospital_id ===
-                                        data.hims_d_hospital_id
+                                      data.hims_d_hospital_id
                                         ? true
                                         : data.checked === undefined
-                                          ? false
-                                          : data.checked
+                                        ? false
+                                        : data.checked
                                     }
                                     disabled={
                                       this.state.hospital_id ===
-                                        data.hims_d_hospital_id
+                                      data.hims_d_hospital_id
                                         ? true
                                         : false
                                     }
@@ -1118,7 +1120,7 @@ class LoginUsers extends Component {
                         >
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Clear"
+                              forceLabel: "Clear",
                             }}
                           />
                         </button>
@@ -1131,16 +1133,16 @@ class LoginUsers extends Component {
                           {this.state.algaeh_d_app_user_id === null ? (
                             <AlgaehLabel
                               label={{
-                                fieldName: "add_to_list"
+                                fieldName: "add_to_list",
                               }}
                             />
                           ) : (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Update"
-                                }}
-                              />
-                            )}
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Update",
+                              }}
+                            />
+                          )}
                         </button>
                       </div>
                     </>
@@ -1185,7 +1187,7 @@ class LoginUsers extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "action" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 <i
@@ -1199,29 +1201,29 @@ class LoginUsers extends Component {
                             maxWidth: 65,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
-                        {
-                          fieldName: "none",
-                          label: "API",
-                          others: {
-                            filterable: false,
-                            show:
-                              this.state.current_user_type === "SU"
-                                ? true
-                                : false
+                            style: { textAlign: "center" },
                           },
-                          displayTemplate: row => {
-                            return (
-                              <button
-                                onClick={this.apiConfiguration.bind(this, row)}
-                              >
-                                Config
-                              </button>
-                            );
-                          }
                         },
+                        // {
+                        //   fieldName: "none",
+                        //   label: "API",
+                        //   others: {
+                        //     filterable: false,
+                        //     show:
+                        //       this.state.current_user_type === "SU"
+                        //         ? true
+                        //         : false
+                        //   },
+                        //   displayTemplate: row => {
+                        //     return (
+                        //       <button
+                        //         onClick={this.apiConfiguration.bind(this, row)}
+                        //       >
+                        //         Config
+                        //       </button>
+                        //     );
+                        //   }
+                        // },
                         {
                           fieldName: "full_name",
                           label: (
@@ -1229,8 +1231,8 @@ class LoginUsers extends Component {
                           ),
                           others: {
                             disabled: true,
-                            minWidth: 200
-                          }
+                            minWidth: 200,
+                          },
                         },
                         {
                           fieldName: "employee_code",
@@ -1240,8 +1242,8 @@ class LoginUsers extends Component {
                             />
                           ),
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         },
                         {
                           fieldName: "username",
@@ -1249,8 +1251,8 @@ class LoginUsers extends Component {
                             <AlgaehLabel label={{ fieldName: "username" }} />
                           ),
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         },
                         {
                           fieldName: "user_type",
@@ -1258,52 +1260,52 @@ class LoginUsers extends Component {
                             <AlgaehLabel label={{ forceLabel: "User Type" }} />
                           ),
 
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let x =
                               row.user_type !== "AD"
                                 ? Enumerable.from(this.state.PR_USER_TYPE)
-                                  .where(w => w.value === row.user_type)
-                                  .firstOrDefault()
+                                    .where((w) => w.value === row.user_type)
+                                    .firstOrDefault()
                                 : { name: "Admin" };
                             return (
                               <span>
                                 {x !== undefined ? x.name : "Unknown user"}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "app_group_name",
-                          label: <AlgaehLabel label={{ fieldName: "group" }} />
+                          label: <AlgaehLabel label={{ fieldName: "group" }} />,
                         },
                         {
                           fieldName: "role_name",
-                          label: <AlgaehLabel label={{ fieldName: "role" }} />
+                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
                         },
                         {
                           fieldName: "user_status",
                           label: <label className="style_Label">Status</label>,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.user_status === "A"
                               ? "Active"
                               : row.user_status === "I"
-                                ? "Inactive"
-                                : "----------";
-                          }
-                        }
+                              ? "Inactive"
+                              : "----------";
+                          },
+                        },
                       ]}
                       keyId="algaeh_d_app_user_id"
                       dataSource={{
-                        data: this.state.login_users
+                        data: this.state.login_users,
                       }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       actions={{
-                        allowDelete: false
+                        allowDelete: false,
                       }}
                       events={{
-                        onDone: this.updateLoginUser.bind(this)
+                        onDone: this.updateLoginUser.bind(this),
                       }}
                     />
                   </div>
