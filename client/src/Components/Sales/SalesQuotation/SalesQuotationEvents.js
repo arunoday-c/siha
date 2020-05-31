@@ -84,39 +84,124 @@ const ClearData = ($this, e) => {
 
 const SaveSalesQuotation = $this => {
   if ($this.state.hims_f_sales_quotation_id !== null) {
-    if ($this.state.comments === null || $this.state.comments === "") {
-      swalMessage({
-        type: "warning",
-        title: "To update comments is mandatory"
-      });
-      return;
-    }
-    AlgaehLoader({ show: true });
-    let inputObj = {
-      hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
-      comments: $this.state.comments
-    };
-    algaehApiCall({
-      uri: "/SalesQuotation/updateSalesQuotation",
-      module: "sales",
-      method: "PUT",
-      data: inputObj,
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            type: "success",
-            title: "Updated successfully ..."
-          });
-          AlgaehLoader({ show: false });
-        } else {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            type: "error",
-            title: response.data.records.message
+    if ($this.state.edit_mode === true) {
+      AlgaehValidation({
+        querySelector: "data-validate='HeaderDiv'",
+        alertTypeIcon: "warning",
+        onSuccess: () => {
+          if ($this.HRMNGMT_Active && $this.state.sales_person_id === null) {
+            swalMessage({
+              type: "warning",
+              title: "Please select Sales Person"
+            });
+            return;
+          }
+
+          let qty_exists = Enumerable.from($this.state.sales_quotation_items).any(
+            w => parseFloat(w.quantity) === 0 || w.quantity === ""
+          );
+          if (qty_exists === true) {
+            swalMessage({
+              title: "Please enter Quantity In Item list.",
+              type: "warning"
+            });
+            return;
+          }
+          qty_exists = Enumerable.from($this.state.sales_quotation_services).any(
+            w => parseFloat(w.quantity) === 0 || w.quantity === ""
+          );
+
+          if (qty_exists === true) {
+            swalMessage({
+              title: "Please enter Quantity In Service list.",
+              type: "warning"
+            });
+            return;
+          }
+
+          $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
+          $this.state.quote_items_status =
+            $this.state.sales_quotation_items.length > 0 ? "G" : "N";
+          $this.state.quote_services_status =
+            $this.state.sales_quotation_services.length > 0 ? "G" : "N";
+
+          $this.state.update_type = "ED"
+          AlgaehLoader({ show: true });
+          debugger
+          algaehApiCall({
+            uri: "/SalesQuotation/updateSalesQuotation",
+            module: "sales",
+            method: "PUT",
+            data: $this.state,
+            onSuccess: response => {
+              if (response.data.success) {
+                $this.setState({
+                  sales_quotation_number:
+                    response.data.records.sales_quotation_number,
+                  hims_f_sales_quotation_id:
+                    response.data.records.hims_f_sales_quotation_id,
+                  saveEnable: true,
+                  dataExists: true
+                });
+                swalMessage({
+                  type: "success",
+                  title: "Saved successfully ..."
+                });
+                AlgaehLoader({ show: false });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  type: "error",
+                  title: response.data.records.message
+                });
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
           });
         }
+      });
+    }
+    else {
+      if ($this.state.comments === null || $this.state.comments === "") {
+        swalMessage({
+          type: "warning",
+          title: "To update comments is mandatory"
+        });
+        return;
       }
-    });
+      AlgaehLoader({ show: true });
+      let inputObj = {
+        hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
+        comments: $this.state.comments
+      };
+      algaehApiCall({
+        uri: "/SalesQuotation/updateSalesQuotation",
+        module: "sales",
+        method: "PUT",
+        data: inputObj,
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              type: "success",
+              title: "Updated successfully ..."
+            });
+            AlgaehLoader({ show: false });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message
+            });
+          }
+        }
+      });
+    }
   } else {
     AlgaehValidation({
       querySelector: "data-validate='HeaderDiv'",

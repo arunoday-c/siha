@@ -11,7 +11,7 @@ const { whereCondition, releaseDBConnection, selectStatement } = utils;
 
 let selectAppUsers = (req, res, next) => {
   let labSection = {
-    algaeh_d_app_user_id: "ALL"
+    algaeh_d_app_user_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -32,13 +32,13 @@ let selectAppUsers = (req, res, next) => {
           condition.condition +
           " order by algaeh_d_app_user_id desc " +
           pagePaging,
-        values: condition.values
+        values: condition.values,
       },
-      result => {
+      (result) => {
         req.records = result;
         next();
       },
-      error => {
+      (error) => {
         next(error);
       },
       true
@@ -51,7 +51,7 @@ let selectAppUsers = (req, res, next) => {
 //created by irfan: to
 let getLoginUserMasterOLD = (req, res, next) => {
   let selectWhere = {
-    algaeh_m_role_user_mappings_id: "ALL"
+    algaeh_m_role_user_mappings_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -126,21 +126,21 @@ let getLoginUserMaster = (req, res, next) => {
             where E.record_status='A' and U.record_status='A' " +
             adminUSer +
             " order by  algaeh_d_app_user_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -179,21 +179,21 @@ let selectLoginUser = (req, res, next) => {
             adminUSer +
             algaeh_d_app_user_id +
             " order by algaeh_d_app_user_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -226,21 +226,21 @@ let selectAppGroup = (req, res, next) => {
             adminUSer +
             algaeh_d_app_group_id +
             " order by algaeh_d_app_group_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -322,21 +322,21 @@ let selectRoles = (req, res, next) => {
             inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
             where R.record_status='A'   and  role_type <>'SU' ${group_id}            ${adminUSer} \
             order by app_d_app_roles_id desc`,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -411,12 +411,12 @@ let createUserLogin_OLD = (req, res, next) => {
       if (req.userIdentity.user_type == "AD" && input.user_type != "AD") {
         req.records = {
           validUser: false,
-          message: "You don't have rights to add this user"
+          message: "You don't have rights to add this user",
         };
         next();
       } else {
         if (req.userIdentity.role_type != "GN") {
-          connection.beginTransaction(error => {
+          connection.beginTransaction((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -435,7 +435,7 @@ let createUserLogin_OLD = (req, res, next) => {
                 new Date(),
                 input.created_by,
                 new Date(),
-                input.updated_by
+                input.updated_by,
               ],
               (error, result) => {
                 if (error) {
@@ -455,7 +455,7 @@ let createUserLogin_OLD = (req, res, next) => {
                       new Date(),
                       input.created_by,
                       new Date(),
-                      input.updated_by
+                      input.updated_by,
                     ],
                     (error, pwdResult) => {
                       if (error) {
@@ -475,7 +475,7 @@ let createUserLogin_OLD = (req, res, next) => {
                             new Date(),
                             input.created_by,
                             new Date(),
-                            input.updated_by
+                            input.updated_by,
                           ],
                           (error, finalResult) => {
                             if (error) {
@@ -501,7 +501,7 @@ let createUserLogin_OLD = (req, res, next) => {
                                   input.created_by,
                                   new Date(),
                                   input.updated_by,
-                                  new Date()
+                                  new Date(),
                                 ],
                                 (error, user_employee_res) => {
                                   if (error) {
@@ -510,7 +510,7 @@ let createUserLogin_OLD = (req, res, next) => {
                                       next(error);
                                     });
                                   }
-                                  connection.commit(error => {
+                                  connection.commit((error) => {
                                     if (error) {
                                       connection.rollback(() => {
                                         releaseDBConnection(db, connection);
@@ -531,7 +531,7 @@ let createUserLogin_OLD = (req, res, next) => {
                               });
                               req.records = {
                                 validUser: false,
-                                message: "Please Select a employee"
+                                message: "Please Select a employee",
                               };
                               next();
                             }
@@ -545,7 +545,7 @@ let createUserLogin_OLD = (req, res, next) => {
                         });
                         req.records = {
                           validUser: false,
-                          message: "Please Select a Role"
+                          message: "Please Select a Role",
                         };
                         next();
                       }
@@ -558,7 +558,7 @@ let createUserLogin_OLD = (req, res, next) => {
                   });
                   req.records = {
                     validUser: false,
-                    message: "Please enter valid password"
+                    message: "Please enter valid password",
                   };
                   next();
                 }
@@ -568,7 +568,7 @@ let createUserLogin_OLD = (req, res, next) => {
         } else {
           req.records = {
             validUser: false,
-            message: "You don't have Admin Privilege"
+            message: "You don't have Admin Privilege",
           };
           next();
         }
@@ -599,12 +599,12 @@ let createUserLogin_old = (req, res, next) => {
       if (req.userIdentity.user_type == "AD" && input.user_type == "AD") {
         req.records = {
           validUser: false,
-          message: "You don't have rights to add this user"
+          message: "You don't have rights to add this user",
         };
         next();
       } else {
         if (req.userIdentity.role_type != "GN") {
-          connection.beginTransaction(error => {
+          connection.beginTransaction((error) => {
             if (error) {
               connection.rollback(() => {
                 releaseDBConnection(db, connection);
@@ -623,7 +623,7 @@ let createUserLogin_old = (req, res, next) => {
                 new Date(),
                 input.created_by,
                 new Date(),
-                input.updated_by
+                input.updated_by,
               ],
               (error, result) => {
                 if (error) {
@@ -648,7 +648,7 @@ let createUserLogin_old = (req, res, next) => {
                       new Date(),
                       input.created_by,
                       new Date(),
-                      input.updated_by
+                      input.updated_by,
                     ],
                     (error, pwdResult) => {
                       if (error) {
@@ -668,7 +668,7 @@ let createUserLogin_old = (req, res, next) => {
                             new Date(),
                             input.created_by,
                             new Date(),
-                            input.updated_by
+                            input.updated_by,
                           ],
                           (error, finalResult) => {
                             if (error) {
@@ -696,7 +696,7 @@ let createUserLogin_old = (req, res, next) => {
                                   new Date(),
                                   input.updated_by,
                                   new Date(),
-                                  input.employee_id
+                                  input.employee_id,
                                 ],
                                 (error, user_employee_res) => {
                                   if (error) {
@@ -717,14 +717,14 @@ let createUserLogin_old = (req, res, next) => {
                                       "",
                                       user_employee_res[1][0]["email"]
                                     )
-                                      .then(rs => {
+                                      .then((rs) => {
                                         console.log("resultemail:", rs);
                                       })
-                                      .catch(e => {
+                                      .catch((e) => {
                                         console.log("resultemail:", e);
                                       });
 
-                                    connection.commit(error => {
+                                    connection.commit((error) => {
                                       if (error) {
                                         connection.rollback(() => {
                                           releaseDBConnection(db, connection);
@@ -739,7 +739,7 @@ let createUserLogin_old = (req, res, next) => {
                                   } else {
                                     console.log("new_password:", new_password);
 
-                                    connection.commit(error => {
+                                    connection.commit((error) => {
                                       if (error) {
                                         connection.rollback(() => {
                                           releaseDBConnection(db, connection);
@@ -760,7 +760,7 @@ let createUserLogin_old = (req, res, next) => {
                               });
                               req.records = {
                                 validUser: false,
-                                message: "Please Select a employee"
+                                message: "Please Select a employee",
                               };
                               next();
                             }
@@ -774,7 +774,7 @@ let createUserLogin_old = (req, res, next) => {
                         });
                         req.records = {
                           validUser: false,
-                          message: "Please Select a Role"
+                          message: "Please Select a Role",
                         };
                         next();
                       }
@@ -787,7 +787,7 @@ let createUserLogin_old = (req, res, next) => {
                   });
                   req.records = {
                     validUser: false,
-                    message: "Please enter valid password"
+                    message: "Please enter valid password",
                   };
                   next();
                 }
@@ -797,7 +797,7 @@ let createUserLogin_old = (req, res, next) => {
         } else {
           req.records = {
             validUser: false,
-            message: "You don't have Admin Privilege"
+            message: "You don't have Admin Privilege",
           };
           next();
         }
@@ -816,7 +816,7 @@ let createUserLogin = (req, res, next) => {
     if (req.userIdentity.user_type == "AD" && input.user_type == "AD") {
       req.records = {
         validUser: false,
-        message: "You don't have rights to add this user"
+        message: "You don't have rights to add this user",
       };
       next();
     } else {
@@ -837,11 +837,11 @@ let createUserLogin = (req, res, next) => {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             if (result.insertId != null && result.insertId != undefined) {
               let new_password = generatePwd(input.username); //"12345";
               // if (process.env.NODE_ENV == "production") {
@@ -859,11 +859,11 @@ let createUserLogin = (req, res, next) => {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    req.userIdentity.algaeh_d_app_user_id
+                    req.userIdentity.algaeh_d_app_user_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(pwdResult => {
+                .then((pwdResult) => {
                   if (pwdResult.insertId > 0 && input.role_id > 0) {
                     _mysql
                       .executeQuery({
@@ -876,11 +876,11 @@ let createUserLogin = (req, res, next) => {
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
-                          req.userIdentity.algaeh_d_app_user_id
+                          req.userIdentity.algaeh_d_app_user_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(finalResult => {
+                      .then((finalResult) => {
                         if (finalResult.insertId > 0 && input.employee_id > 0) {
                           const insurtColumns = ["login_user", "hospital_id"];
                           // let strGrnQry = mysql.format(
@@ -903,12 +903,12 @@ let createUserLogin = (req, res, next) => {
                                 created_date: new Date(),
                                 updated_by:
                                   req.userIdentity.algaeh_d_app_user_id,
-                                updated_date: new Date()
+                                updated_date: new Date(),
                               },
                               bulkInsertOrUpdate: true,
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(user_employee_res => {
+                            .then((user_employee_res) => {
                               const email = input.password_email;
                               process.env.NODE_ENV === "production"
                                 ? input.password_email
@@ -923,13 +923,13 @@ let createUserLogin = (req, res, next) => {
                                   .subject("Login Credentials")
                                   .templateHbs("userWelcome.hbs", {
                                     name: input.username,
-                                    Password: new_password
+                                    Password: new_password,
                                   })
                                   .send()
-                                  .then(result => {
+                                  .then((result) => {
                                     console.log("Email sent : ", result);
                                   })
-                                  .catch(error => {
+                                  .catch((error) => {
                                     console.error("Email error", error);
                                   });
 
@@ -962,7 +962,7 @@ let createUserLogin = (req, res, next) => {
                                 });
                               }
                             })
-                            .catch(e => {
+                            .catch((e) => {
                               _mysql.rollBackTransaction(() => {
                                 next(e);
                               });
@@ -971,13 +971,13 @@ let createUserLogin = (req, res, next) => {
                           _mysql.rollBackTransaction(() => {
                             req.records = {
                               validUser: false,
-                              message: "Please Select a employee"
+                              message: "Please Select a employee",
                             };
                             next();
                           });
                         }
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -986,13 +986,13 @@ let createUserLogin = (req, res, next) => {
                     _mysql.rollBackTransaction(() => {
                       req.records = {
                         validUser: false,
-                        message: "Please Select a Role"
+                        message: "Please Select a Role",
                       };
                       next();
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -1001,13 +1001,13 @@ let createUserLogin = (req, res, next) => {
               _mysql.rollBackTransaction(() => {
                 req.records = {
                   validUser: false,
-                  message: "Please enter valid password"
+                  message: "Please enter valid password",
                 };
                 next();
               });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -1015,7 +1015,7 @@ let createUserLogin = (req, res, next) => {
       } else {
         req.records = {
           validUser: false,
-          message: "You don't have Admin Privilege"
+          message: "You don't have Admin Privilege",
         };
         next();
       }
@@ -1034,12 +1034,12 @@ let verifyUserNameExists = (req, res, next) => {
       .executeQuery({
         query: `select employee_id,username from algaeh_d_app_user where LOWER(username) = LOWER(?)`,
         values: [username],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         const record = result.find(
-          f => String(f.employee_id) === hims_d_employee_id
+          (f) => String(f.employee_id) === hims_d_employee_id
         );
         console.log("record", record);
         req.records =
@@ -1050,7 +1050,7 @@ let verifyUserNameExists = (req, res, next) => {
             : false;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1062,74 +1062,117 @@ let verifyUserNameExists = (req, res, next) => {
 
 //created by irfan: to
 let changePassword = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
+    _mysql
+      .executeQuery({
+        query: `select algaeh_d_app_password_id from algaeh_d_app_password  where userid=? and  password=md5(?);`,
+        values: [req.userIdentity.algaeh_d_app_user_id, req.body.oldPassword],
+      })
+      .then((result) => {
+        if (result.length > 0) {
+          _mysql
+            .executeQuery({
+              query: `update algaeh_d_app_password set password=md5(?),updated_by=?,\
+          updated_date=? where userid=?`,
+              values: [
+                req.body.password,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+              ],
+            })
+            .then((records) => {
+              _mysql.releaseConnection();
+              if (records.affectedRows > 0) {
+                req.records = records;
+                next();
+              } else {
+                req.records = {
+                  validUser: false,
+                  message: "Please Provide valid user id",
+                };
+                next();
+              }
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+        }
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    let db = req.db;
+    // let db = req.db;
+    // console.log("Here im", db);
+    // db.getConnection((error, connection) => {
+    //   if (req.userIdentity.algaeh_d_app_user_id > 0) {
+    //     connection.query(
+    //       "select algaeh_d_app_password_id from algaeh_d_app_password  where userid=? and  password=md5(?);",
+    //       [req.userIdentity.algaeh_d_app_user_id, req.body.oldPassword],
+    //       (error, result) => {
+    //         if (error) {
+    //           releaseDBConnection(db, connection);
+    //           next(error);
+    //         }
+    //         // req.records = result;
+    //         // next();
+    //         if (result.length > 0) {
+    //           connection.query(
+    //             "update algaeh_d_app_password set password=md5(?),updated_by=?,\
+    //             updated_date=? where userid=?",
+    //             [
+    //               req.body.password,
+    //               req.userIdentity.algaeh_d_app_user_id,
+    //               new Date(),
+    //               req.userIdentity.algaeh_d_app_user_id,
+    //             ],
+    //             (error, result) => {
+    //               releaseDBConnection(db, connection);
+    //               if (error) {
+    //                 next(error);
+    //               }
+    //               // req.records = result;
+    //               // next();
 
-    db.getConnection((error, connection) => {
-      if (req.userIdentity.algaeh_d_app_user_id > 0) {
-        connection.query(
-          "select algaeh_d_app_password_id from algaeh_d_app_password  where userid=? and  password=md5(?);",
-          [req.userIdentity.algaeh_d_app_user_id, req.body.oldPassword],
-          (error, result) => {
-            if (error) {
-              releaseDBConnection(db, connection);
-              next(error);
-            }
-            // req.records = result;
-            // next();
-            if (result.length > 0) {
-              connection.query(
-                "update algaeh_d_app_password set password=md5(?),updated_by=?,\
-                updated_date=? where userid=?",
-                [
-                  req.body.password,
-                  req.userIdentity.algaeh_d_app_user_id,
-                  new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
-                ],
-                (error, result) => {
-                  releaseDBConnection(db, connection);
-                  if (error) {
-                    next(error);
-                  }
-                  // req.records = result;
-                  // next();
+    //               if (result.affectedRows > 0) {
+    //                 req.records = result;
+    //                 next();
+    //               } else {
+    //                 req.records = {
+    //                   validUser: false,
+    //                   message: "Please Provide valid user id",
+    //                 };
+    //                 next();
+    //               }
+    //             }
+    //           );
+    //         } else {
+    //           releaseDBConnection(db, connection);
+    //           req.records = {
+    //             validUser: false,
+    //             message: "Current password doesn't match",
+    //           };
+    //           next();
+    //         }
+    //       }
+    //     );
 
-                  if (result.affectedRows > 0) {
-                    req.records = result;
-                    next();
-                  } else {
-                    req.records = {
-                      validUser: false,
-                      message: "Please Provide valid user id"
-                    };
-                    next();
-                  }
-                }
-              );
-            } else {
-              releaseDBConnection(db, connection);
-              req.records = {
-                validUser: false,
-                message: "Current password doesn't match"
-              };
-              next();
-            }
-          }
-        );
-
-        ///------------------
-      } else {
-        req.records = {
-          validUser: false,
-          message: "You are not a valid user id"
-        };
-        next();
-      }
-    });
+    //     ///------------------
+    //   } else {
+    //     req.records = {
+    //       validUser: false,
+    //       message: "You are not a valid user id",
+    //     };
+    //     next();
+    //   }
+    // });
   } catch (e) {
     next(e);
   }
@@ -1148,11 +1191,11 @@ let updateUser = (req, res, next) => {
             input.user_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.algaeh_d_app_user_id
+            input.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result.affectedRows > 0) {
             let strQry = mysql.format(
               "update algaeh_m_role_user_mappings set role_id=?, updated_date=?, updated_by=? \
@@ -1161,11 +1204,11 @@ let updateUser = (req, res, next) => {
                 input.role_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                input.algaeh_m_role_user_mappings_id
+                input.algaeh_m_role_user_mappings_id,
               ]
             );
             if (input.delete_branch_data.length > 0) {
-              let user_employee_id = _.map(input.delete_branch_data, o => {
+              let user_employee_id = _.map(input.delete_branch_data, (o) => {
                 return o.hims_m_user_employee_id;
               });
 
@@ -1187,19 +1230,19 @@ let updateUser = (req, res, next) => {
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date()
+                  updated_date: new Date(),
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(user_employee_res => {
+              .then((user_employee_res) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = user_employee_res;
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -1238,19 +1281,19 @@ let updateUser = (req, res, next) => {
             _mysql.releaseConnection();
             req.records = {
               validUser: false,
-              message: "Please Provide valid user id"
+              message: "Please Provide valid user id",
             };
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "Please Provide valid user id"
+        message: "Please Provide valid user id",
       };
       next();
     }
@@ -1320,9 +1363,9 @@ let verifyEmployeeEmailID = (req, res, next) => {
       .executeQuery({
         query: `select employee_code,full_name from hims_d_employee
       where email=? or work_email=?`,
-        values: [email_id, email_id]
+        values: [email_id, email_id],
       })
-      .then(result => {
+      .then((result) => {
         if (result.length > 0) {
           _mysql.releaseConnection();
           const { full_name, employee_code } = result[0];
@@ -1336,18 +1379,18 @@ let verifyEmployeeEmailID = (req, res, next) => {
         _mysql
           .executeQuery({
             query: `update hims_d_employee set work_email=? where hims_d_employee_id =?`,
-            values: [email_id, hims_d_employee_id]
+            values: [email_id, hims_d_employee_id],
           })
-          .then(data => {
+          .then((data) => {
             _mysql.releaseConnection();
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1367,14 +1410,11 @@ export default {
   changePassword,
   updateUser,
   verifyEmployeeEmailID,
-  verifyUserNameExists
+  verifyUserNameExists,
 };
 
 function generatePwd(userName) {
-  const first = userName
-    .trim()
-    .substring(0, 4)
-    .toLowerCase();
+  const first = userName.trim().substring(0, 4).toLowerCase();
   const mmyy = moment().format("MMYY");
   return `${first}${mmyy}`;
   // return Math.random()
@@ -1388,7 +1428,7 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
     const hbs = require("nodemailer-express-handlebars");
     const mydata = {
       name: n_name,
-      Password: n_Password
+      Password: n_Password,
     };
     const proxy =
       process.env.EMAIL_PROXY === undefined
@@ -1406,8 +1446,8 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       port: 465,
       auth: {
         user: "we@algaeh.com",
-        pass: pass
-      }
+        pass: pass,
+      },
     });
 
     transporter.use(
@@ -1417,9 +1457,9 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
           extName: ".handlebars",
           partialsDir: "./src/model/views/",
           layoutsDir: "./src/model/views/",
-          defaultLayout: "index.handlebars"
+          defaultLayout: "index.handlebars",
         },
-        viewPath: "./src/model/views/"
+        viewPath: "./src/model/views/",
       })
     );
 
@@ -1430,24 +1470,24 @@ function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
       template: "index",
       context: {
         name: mydata.name,
-        Password: mydata.Password
-      }
+        Password: mydata.Password,
+      },
     };
 
-    transporter.sendMail(mailOptions, function(e, r) {
+    transporter.sendMail(mailOptions, function (e, r) {
       transporter.close();
       if (e) {
         console.log(e);
         const data = {
           error: true,
-          message: e
+          message: e,
         };
         reject(data);
       } else {
         //console.log(r);
         const data = {
           error: false,
-          message: "Password is sent to your email"
+          message: "Password is sent to your email",
         };
 
         resolve(data);

@@ -16,6 +16,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
+import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup"
 
 class ProjectPayroll extends Component {
   constructor(props) {
@@ -34,7 +35,8 @@ class ProjectPayroll extends Component {
       employee_name: null,
       total_cost: 0,
       lbl_total: "Total Employees",
-      decimal_places: 0
+      decimal_places: 0,
+      isOpen: false
     };
     this.baseState = this.state;
   }
@@ -44,6 +46,14 @@ class ProjectPayroll extends Component {
   }
   LoadData() {
     ProjectPayrollEvents().LoadProjectDetails(this);
+  }
+  openSalaryComponents(row) {
+    ProjectPayrollEvents().openSalaryComponents(this, row);
+  }
+  closeSalaryComponents() {
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
   }
   clearState() {
     this.setState(this.baseState);
@@ -163,7 +173,7 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Filter by Branch",
@@ -185,7 +195,7 @@ class ProjectPayroll extends Component {
                 });
               },
             }}
-          />
+          /> */}
 
           <AlagehAutoComplete
             div={{ className: "col form-group mandatory" }}
@@ -300,6 +310,33 @@ class ProjectPayroll extends Component {
                       datavalidate="projectPayrollGrid"
                       columns={[
                         {
+                          fieldName: "Action",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Action",
+                              }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-eye"
+                                  aria-hidden="true"
+                                  onClick={this.openSalaryComponents.bind(this, row)}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 50,
+                            filterable: false,
+                            sortable: false,
+                          },
+                        },
+
+                        {
                           fieldName: "project_desc",
                           label: (
                             <AlgaehLabel
@@ -348,64 +385,64 @@ class ProjectPayroll extends Component {
                           ),
                         },
 
-                        {
-                          fieldName: "total_working_hours",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Basic Working Hrs" }}
-                            />
-                          ),
-                          others: {
-                            maxWidth: 150,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "project_cost",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              (parseFloat(row.project_cost) -
-                                parseFloat(row.ot_amount)).toFixed(this.state.decimal_places)
-                            );
-                          },
-                          others: {
-                            maxWidth: 150,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "ot_work",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "OT Working Hrs" }}
-                            />
-                          ),
-                          others: {
-                            maxWidth: 150,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "ot_amount",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                          ),
-                          others: {
-                            maxWidth: 150,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
+                        // {
+                        //   fieldName: "total_working_hours",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Basic Working Hrs" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 150,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "project_cost",
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return (
+                        //       (parseFloat(row.project_cost) -
+                        //         parseFloat(row.ot_amount)).toFixed(this.state.decimal_places)
+                        //     );
+                        //   },
+                        //   others: {
+                        //     maxWidth: 150,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "ot_work",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "OT Working Hrs" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 150,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "ot_amount",
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 150,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
                         {
                           fieldName: "complete_hours",
                           label: (
@@ -486,6 +523,11 @@ class ProjectPayroll extends Component {
             </div>
           </div>
         </div>
+        <ProjectPayrollSalaryBreakup
+          open={this.state.isOpen}
+          onClose={this.closeSalaryComponents.bind(this)}
+          selectedEmployee={this.state.selected_employee}
+        />
       </div>
     );
   }

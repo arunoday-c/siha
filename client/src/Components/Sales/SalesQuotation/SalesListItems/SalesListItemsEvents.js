@@ -289,14 +289,21 @@ const AddItems = ($this, context) => {
 };
 
 const deleteSalesDetail = ($this, context, row) => {
+    let detele_items = $this.state.detele_items;
     let sales_quotation_items = $this.state.sales_quotation_items;
     const _index = sales_quotation_items.indexOf(row);
     sales_quotation_items.splice(_index, 1);
+
+    debugger
+    if (row.hims_f_sales_quotation_items_id !== undefined && row.hims_f_sales_quotation_items_id !== null) {
+        detele_items.push(row.hims_f_sales_quotation_items_id)
+    }
 
     if (sales_quotation_items.length === 0) {
         if (context !== undefined) {
             context.updateState({
                 sales_quotation_items: sales_quotation_items,
+                detele_items: detele_items,
                 discount_amount: 0,
                 sub_total: 0,
                 total_tax: 0,
@@ -330,7 +337,7 @@ const deleteSalesDetail = ($this, context, row) => {
         if (context !== undefined) {
             context.updateState({
                 sales_quotation_items: sales_quotation_items,
-
+                detele_items: detele_items,
                 sub_total: sub_total,
                 discount_amount: discount_amount,
                 net_total: net_total,

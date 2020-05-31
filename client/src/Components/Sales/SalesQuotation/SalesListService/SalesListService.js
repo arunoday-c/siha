@@ -298,7 +298,7 @@ class SalesListService extends Component {
                               <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                             ),
                             displayTemplate: (row) => {
-                              return this.state.dataExists === true ? (
+                              return this.state.dataExists === true || this.state.edit_mode === true ? (
                                 parseFloat(row.quantity)
                               ) : (
                                   <AlagehFormGroup
@@ -386,7 +386,7 @@ class SalesListService extends Component {
                               />
                             ),
                             displayTemplate: (row) => {
-                              return this.state.dataExists === true ? (
+                              return this.state.dataExists === true || this.state.edit_mode === true ? (
                                 row.discount_percentage
                               ) : (
                                   <AlagehFormGroup

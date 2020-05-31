@@ -36,6 +36,7 @@ export default function EmpProjectRoster(props) {
   // const [filterLoading, setFilterLoading] = useState(false);
   const tableRef = createRef();
   function editingProjectRoster(data) {
+    debugger
     setShowPopup(true);
     setIsEditing(data);
 
@@ -207,8 +208,8 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table ref={tableRef} editing={editingProjectRoster} />
-                  )}
+                      <Table ref={tableRef} editing={editingProjectRoster} />
+                    )}
                 </div>
               </div>
             </div>
@@ -225,18 +226,18 @@ export default function EmpProjectRoster(props) {
                 setIsEditing(undefined);
                 setShowPopup(true);
 
-                if (projects.length === 0) {
-                  setLoadingProjects(true);
-                  getProjects(inputs.hospital_id)
-                    .then((result) => {
-                      setLoadingProjects(false);
-                      setProjects(result);
-                    })
-                    .catch((error) => {
-                      setProjects([]);
-                      setLoadingProjects(false);
-                    });
-                }
+                // if (projects.length === 0) {
+                setLoadingProjects(true);
+                getProjects(inputs.hospital_id)
+                  .then((result) => {
+                    setLoadingProjects(false);
+                    setProjects(result);
+                  })
+                  .catch((error) => {
+                    setProjects([]);
+                    setLoadingProjects(false);
+                  });
+                // }
               }}
             >
               Assign New Project

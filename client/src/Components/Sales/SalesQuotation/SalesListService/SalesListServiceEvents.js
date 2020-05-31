@@ -227,14 +227,21 @@ const AddSerices = ($this, context) => {
 };
 
 const deleteSalesDetail = ($this, context, row) => {
+    debugger
+    let detele_services = $this.state.detele_services;
     let sales_quotation_services = $this.state.sales_quotation_services;
     const _index = sales_quotation_services.indexOf(row);
     sales_quotation_services.splice(_index, 1);
 
+    if (row.hims_f_sales_quotation_services_id !== undefined && row.hims_f_sales_quotation_services_id !== null) {
+        detele_services.push(row.hims_f_sales_quotation_services_id)
+    }
     if (sales_quotation_services.length === 0) {
         if (context !== undefined) {
             context.updateState({
+
                 sales_quotation_services: sales_quotation_services,
+                detele_services: detele_services,
                 discount_amount: 0,
                 sub_total: 0,
                 total_tax: 0,
@@ -268,7 +275,7 @@ const deleteSalesDetail = ($this, context, row) => {
         if (context !== undefined) {
             context.updateState({
                 sales_quotation_services: sales_quotation_services,
-
+                detele_services: detele_services,
                 sub_total: sub_total,
                 discount_amount: discount_amount,
                 net_total: net_total,

@@ -83,7 +83,10 @@ class SalesQuotation extends Component {
       qotation_status: "G",
       log_sales_person_id: null,
       log_employee_name: null,
-      cancelEnable: true
+      cancelEnable: true,
+      detele_services: [],
+      detele_items: [],
+      edit_mode: false
     };
     getSalesOptions(this, this);
   }
@@ -157,6 +160,15 @@ class SalesQuotation extends Component {
     ) {
       getCtrlCode(this, this.props.sales_quotation_number);
     }
+  }
+
+  EditQuotation(e) {
+    this.setState({
+      dataExists: false,
+      saveEnable: false,
+      edit_mode: true,
+      cancelEnable: true
+    })
   }
 
   render() {
@@ -333,7 +345,7 @@ class SalesQuotation extends Component {
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExists,
+                      disabled: this.state.dataExists === false ? this.state.edit_mode : true,
                     },
                   }}
                 />
@@ -719,11 +731,26 @@ class SalesQuotation extends Component {
                       className="btn btn-default"
                       onClick={SaveSalesQuotation.bind(this, this)}
                       disabled={
-                        this.state.qotation_status === "G" ? false : true
+                        this.state.qotation_status === "G" ? this.state.edit_mode : true
                       }
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Update", returnText: true }}
+                      />
+                    </button>
+                  ) : null}
+
+                  {this.props.requisition_auth ? (
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={this.EditQuotation.bind(this, this)}
+                      disabled={
+                        this.state.edit_mode === true ? true : false
+                      }
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Edit", returnText: true }}
                       />
                     </button>
                   ) : null}

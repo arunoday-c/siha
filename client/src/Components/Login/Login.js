@@ -783,6 +783,7 @@ function Login(props) {
                                 className="btn btn-lg btn-secondary btn-block sign-btn"
                                 type="submit"
                                 tabIndex="4"
+                                disabled={rspLoader}
                                 onClick={submitLogin}
                               >
                                 Login

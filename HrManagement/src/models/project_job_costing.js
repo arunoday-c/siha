@@ -20,9 +20,10 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_m_division_project_id, division_id, project_id, d_p_status, DP.inactive_date, \
-            P.start_date, P.end_date, P.project_desc,P.hims_d_project_id from hims_m_division_project DP, \
-            hims_d_project P where DP.project_id=P.hims_d_project_id " +
+            "select hims_m_division_project_id, division_id as hospital_id, project_id, d_p_status, DP.inactive_date, \
+            P.start_date, P.end_date, P.project_desc,P.hims_d_project_id, H.hospital_name from hims_m_division_project DP \
+            inner join hims_d_project P on DP.project_id=P.hims_d_project_id \
+            inner join hims_d_hospital H on DP.division_id = H.hims_d_hospital_id where  1=1 " +
             _strQuery +
             " order by hims_m_division_project_id desc;",
           printQuery: true,
@@ -421,7 +422,7 @@ export default {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select PR.hims_f_project_roster_id, E.hims_d_employee_id as employee_id,PR.attendance_date,P.abbreviation,E.employee_code,E.full_name,E.sub_department_id,
+          query: `select PR.hims_f_project_roster_id, PR.hospital_id, E.hims_d_employee_id as employee_id,PR.attendance_date,P.abbreviation,E.employee_code,E.full_name,E.sub_department_id,
         E.religion_id,E.exit_date, E.date_of_joining,PR.project_id,P.project_desc,D.designation
         from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
         and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
@@ -437,9 +438,9 @@ export default {
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
         where    E.hospital_id=?    ${strQry.replace(
-          /PR/gi,
-          "LA"
-        )} and (status= 'APR' or status= 'PEN' ) and
+            /PR/gi,
+            "LA"
+          )} and (status= 'APR' or status= 'PEN' ) and
           (    (  date(?)>=date(from_date) and	date(?)<=date(to_date)) or
           ( date(?)>=date(from_date) and   date(?)<=date(to_date))
         or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
@@ -510,6 +511,7 @@ export default {
                         date_of_joining: employ.date_of_joining,
                         project_id: null,
                         project_desc: null,
+                        hospital_id: null,
                         abbreviation: null,
                         designation: employ.designation,
                         exit_date: employ.exit_date,
@@ -534,6 +536,7 @@ export default {
                         date_of_joining: emp[0].date_of_joining,
                         project_id: null,
                         project_desc: null,
+                        hospital_id: null,
                         abbreviation: null,
                         designation: emp[0].designation,
                         exit_date: emp[0].exit_date,
@@ -587,6 +590,7 @@ export default {
                         employee_id: row.employee_id,
                         project_id: row.project_id,
                         project_desc: row.project_desc,
+                        hospital_id: row.hospital_id,
                         full_name: row.full_name,
                         sub_department_id: row.sub_department_id,
                         employee_code: row.employee_code,
@@ -625,6 +629,7 @@ export default {
                     hims_f_project_roster_id: row.hims_f_project_roster_id,
                     project_id: row.project_id,
                     project_desc: row.project_desc,
+                    hospital_id: row.hospital_id,
                     abbreviation: row.abbreviation,
                     attendance_date: leave.attendance_date,
                     status: leave.status,
@@ -635,6 +640,7 @@ export default {
                       hims_f_project_roster_id: row.hims_f_project_roster_id,
                       project_id: row.project_id,
                       project_desc: row.project_desc,
+                      hospital_id: row.hospital_id,
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
 
@@ -645,6 +651,7 @@ export default {
                       hims_f_project_roster_id: row.hims_f_project_roster_id,
                       project_id: row.project_id,
                       project_desc: row.project_desc,
+                      hospital_id: row.hospital_id,
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
 
@@ -655,6 +662,7 @@ export default {
                       hims_f_project_roster_id: row.hims_f_project_roster_id,
                       project_id: row.project_id,
                       project_desc: row.project_desc,
+                      hospital_id: row.hospital_id,
                       abbreviation: row.abbreviation,
                       attendance_date: row["attendance_date"],
                       status: row.project_id > 0 ? "PA" : "N",
@@ -665,6 +673,7 @@ export default {
                     hims_f_project_roster_id: row.hims_f_project_roster_id,
                     project_id: row.project_id,
                     project_desc: row.project_desc,
+                    hospital_id: row.hospital_id,
                     abbreviation: row.abbreviation,
                     attendance_date: row["attendance_date"],
                     status: row.project_id > 0 ? "PA" : "N",
@@ -803,10 +812,10 @@ export default {
             _days.map((date) => {
               if (
                 moment(date).format("YYYYMMDD") >=
-                  moment(employee["date_of_joining"]).format("YYYYMMDD") &&
+                moment(employee["date_of_joining"]).format("YYYYMMDD") &&
                 (employee["exit_date"] == null ||
                   moment(employee["exit_date"]).format("YYYYMMDD") <
-                    moment(date).format("YYYYMMDD"))
+                  moment(date).format("YYYYMMDD"))
               ) {
                 const week_off_Data = _.find(empHoliday, (f) => {
                   return (
@@ -990,7 +999,7 @@ export default {
               .executeQuery({
                 query:
                   "INSERT INTO hims_f_project_roster (??) VALUES ? \
-              ON DUPLICATE KEY UPDATE project_id= values(project_id); ",
+              ON DUPLICATE KEY UPDATE project_id= values(project_id), hospital_id= values(hospital_id); ",
                 values: insertArray,
                 bulkInsertOrUpdate: true,
                 printQuery: false,
@@ -1089,62 +1098,80 @@ export default {
           left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id\
           inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id \
-          inner join hims_f_salary SAL on SAL.employee_id = PWP.employee_id and  SAL.month = PWP.month and \
+          left join hims_f_salary SAL on SAL.employee_id = PWP.employee_id and  SAL.month = PWP.month and \
           SAL.year = PWP.year left join \
           (select ER.*,ERD.component_type from  hims_f_salary_earnings ER \
           inner join hims_d_earning_deduction ERD on ER.earnings_id=ERD.hims_d_earning_deduction_id \
           and ERD.component_type='OV') as SE on SAL.hims_f_salary_id=SE.salary_header_id \
-          where PWP.hospital_id=? \
-          and PWP.year=? and PWP.month=?  ${employee} ${project} group by ${groupBy} ;`,
-          values: [input.hospital_id, input.year, input.month],
+          where  PWP.year=? and PWP.month=?  ${employee} ${project} group by ${groupBy} ;`,
+          values: [input.year, input.month],
           printQuery: true,
         })
         .then((result) => {
-          _mysql.releaseConnection();
-          // req.records = result;
-          // next();
-          let total_worked_hours = 0;
-          let minutes = 0;
-          let total_cost = 0;
-          // if (input.project_id > 0) {
-          //ST---COST calculation
+          const _project_wise_payroll_id = result.map((item) => {
+            return item.hims_f_project_wise_payroll_id;
+          });
+          _mysql
+            .executeQuery({
+              query:
+                "select project_wise_payroll_id, earning_deduction_description,amount from hims_f_project_wise_earnings PW \
+                inner join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = PW.earnings_id \
+                where project_wise_payroll_id in (?);",
+              values: [_project_wise_payroll_id],
+              printQuery: true,
+            })
+            .then((component_data) => {
+              _mysql.releaseConnection();
+              // req.records = result;
+              // next();
+              let total_worked_hours = 0;
+              let minutes = 0;
+              let total_cost = 0;
+              // if (input.project_id > 0) {
+              //ST---COST calculation
 
-          let outputArray = [];
-          for (let i = 0; i < result.length; i++) {
-            let complete_hours = parseInt(result[i]["worked_hours"]);
+              let outputArray = [];
+              for (let i = 0; i < result.length; i++) {
+                let complete_hours = parseInt(result[i]["worked_hours"]);
 
-            let worked_minutes = result[i]["worked_minutes"];
+                let worked_minutes = result[i]["worked_minutes"];
 
-            complete_hours += parseInt(worked_minutes / 60);
-            let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-            outputArray.push({
-              ...result[i],
-              complete_hours: complete_hours + "." + mins,
+                complete_hours += parseInt(worked_minutes / 60);
+                let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+                outputArray.push({
+                  ...result[i],
+                  complete_hours: complete_hours + "." + mins,
+                });
+              }
+
+              total_cost = new LINQ(result).Sum((s) => parseFloat(s.project_cost));
+
+              //ST---time calculation
+
+              total_worked_hours = new LINQ(result).Sum((s) =>
+                parseInt(s.worked_hours)
+              );
+
+              let worked_minutes = new LINQ(result).Sum((s) =>
+                parseInt(s.worked_minutes)
+              );
+
+              total_worked_hours += parseInt(worked_minutes / 60);
+              minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+
+              req.records = {
+                project_wise_payroll: outputArray,
+                project_payroll_detail: component_data,
+                total_worked_hours: total_worked_hours + "." + minutes,
+                noEmployees: result.length,
+                total_cost: total_cost,
+              };
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
             });
-          }
-
-          total_cost = new LINQ(result).Sum((s) => parseFloat(s.project_cost));
-
-          //ST---time calculation
-
-          total_worked_hours = new LINQ(result).Sum((s) =>
-            parseInt(s.worked_hours)
-          );
-
-          let worked_minutes = new LINQ(result).Sum((s) =>
-            parseInt(s.worked_minutes)
-          );
-
-          total_worked_hours += parseInt(worked_minutes / 60);
-          minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-
-          req.records = {
-            project_wise_payroll: outputArray,
-            total_worked_hours: total_worked_hours + "." + minutes,
-            noEmployees: result.length,
-            total_cost: total_cost,
-          };
-          next();
           // } else {
           //   _mysql.releaseConnection();
           //   req.records = result;
@@ -1447,6 +1474,64 @@ export default {
         });
     } else {
       next(new Error("Please provide valid input"));
+    }
+  },
+
+  getProjectAndDivision: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      let _strQuery = "";
+      if (req.query.division_id != null) {
+        _strQuery = "and division_id = " + req.query.division_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_division_project_id, division_id, project_id, d_p_status, DP.inactive_date, \
+            P.start_date, P.end_date, P.project_desc,P.hims_d_project_id from hims_m_division_project DP, \
+            hims_d_project P where DP.project_id=P.hims_d_project_id " +
+            _strQuery +
+            " order by hims_m_division_project_id desc;",
+          printQuery: true,
+        })
+        .then((result) => {
+
+          // const outputArray = _.chain(result)
+          //   .groupBy((g) => g.project_id)
+          //   .map(function (detail, key) {
+          //     // const find = _.find(dtl, f => f.service_type === key);
+          //     return {
+          //       // project_desc: detail[0].project_desc,
+          //       // project_id: detail[0].project_id,
+          //       division_data: detail,
+          //     };
+          //   })
+          //   .value();
+
+          const outputArray = _.chain(result)
+            .groupBy((g) => g.project_id)
+            .map(m => {
+              // console.log("M", m)
+              return {
+                project_desc: m[0].project_desc,
+                project_id: m[0].project_id,
+                division_data: m
+              };
+            })
+            .value();
+
+          console.log("outputArray", outputArray)
+          _mysql.releaseConnection();
+          req.records = outputArray;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
     }
   },
 };

@@ -64,9 +64,11 @@ export function getProjects(hospital_id) {
         uri: "/projectjobcosting/getDivisionProject",
         module: "hrManagement",
         method: "GET",
-        data: { division_id: hospital_id },
+        // data: { division_id: hospital_id },
         onSuccess: response => {
+
           const { success, records, message } = response.data;
+          debugger
           if (success === true) {
             resolve(records);
           } else {
