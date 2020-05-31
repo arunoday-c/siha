@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import "./MonthlyModify.scss";
 import {
   AlgaehModalPopUp,
   AlagehFormGroup,
   AlgaehLabel,
+  AlgaehDataGrid,
 } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
@@ -70,76 +72,78 @@ class MonthlyModify extends Component {
         }}
       >
         <div className="popupInner">
-          <div className="col-12 margin-top-15">
+          <div className="col">
             <div className="row">
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Employee Code",
-                  }}
-                />
-                <h6>{this.state.employee_code}</h6>
-              </div>{" "}
-              <div className="col form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Employee Name",
-                  }}
-                />
-                <h6>{this.state.employee_name}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Year",
-                  }}
-                />
-                <h6>{this.state.year}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Month",
-                  }}
-                />
-                <h6>{moment(this.state.month, "M").format("MMMM")}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Days",
-                  }}
-                />
-                <h6>{this.state.total_days}</h6>
-              </div>{" "}
-            </div>{" "}
-            <hr></hr>
-            <div className="row">
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Work Days",
-                  }}
-                />
-                <h6>{this.state.total_work_days}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Present Days",
-                  }}
-                />
-                <h6>{this.state.display_present_days}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Absent Days",
-                  }}
-                />
-                <h6>{this.state.absent_days}</h6>
-              </div>{" "}
-              {/* <div className="col-2 form-group">
+              <div className="col margin-top-15">
+                <div className="row">
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Employee Code",
+                      }}
+                    />
+                    <h6>{this.state.employee_code}</h6>
+                  </div>{" "}
+                  <div className="col form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Employee Name",
+                      }}
+                    />
+                    <h6>{this.state.employee_name}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Year",
+                      }}
+                    />
+                    <h6>{this.state.year}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Month",
+                      }}
+                    />
+                    <h6>{moment(this.state.month, "M").format("MMMM")}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Days",
+                      }}
+                    />
+                    <h6>{this.state.total_days}</h6>
+                  </div>{" "}
+                </div>{" "}
+                <hr></hr>
+                <div className="row">
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Work Days",
+                      }}
+                    />
+                    <h6>{this.state.total_work_days}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Present Days",
+                      }}
+                    />
+                    <h6>{this.state.display_present_days}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Absent Days",
+                      }}
+                    />
+                    <h6>{this.state.absent_days}</h6>
+                  </div>{" "}
+                  {/* <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Work Days"
@@ -147,128 +151,186 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_work_days}</h6>
               </div>{" "} */}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Weekoff Days",
-                  }}
-                />
-                <h6>{this.state.total_weekoff_days}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Holidays",
-                  }}
-                />
-                <h6>{this.state.total_holidays}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Leave(s)",
-                  }}
-                />
-                <h6>{this.state.total_leave}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Paid Leave(s)",
-                  }}
-                />
-                <h6>{this.state.paid_leave}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Unpaid Leave(s)",
-                  }}
-                />
-                <h6>{this.state.unpaid_leave}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Paid Days",
-                  }}
-                />
-                <h6>{this.state.total_paid_days}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Pending Unpaid Leave(s)",
-                  }}
-                />
-                <h6>{this.state.pending_unpaid_leave}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Hours",
-                  }}
-                />
-                <h6>{this.state.total_hours}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Total Working Hours",
-                  }}
-                />
-                <h6>{this.state.total_working_hours}</h6>
-              </div>{" "}
-              <div className="col-2 form-group">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "OT Weekoff Hours",
-                  }}
-                />
-                <h6>
-                  {this.state.ot_weekoff_hours
-                    ? this.state.ot_weekoff_hours
-                    : 0}
-                </h6>
-              </div>{" "}
-              <AlagehFormGroup
-                div={{ className: "col-2 form-group form-group" }}
-                label={{
-                  forceLabel: "Shortage Hours",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "shortage_hours",
-                  value: this.state.shortage_hours,
-                  events: {
-                    onChange: this.textHandle.bind(this),
-                  },
-                  decimal: {
-                    allowNegative: false,
-                    thousandSeparator: ",",
-                  },
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-2 form-group form-group" }}
-                label={{
-                  forceLabel: "OT Work Hours",
-                  isImp: true,
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "ot_work_hours",
-                  value: this.state.ot_work_hours,
-                  events: {
-                    onChange: this.textHandle.bind(this),
-                  },
-                  decimal: {
-                    allowNegative: false,
-                    thousandSeparator: ",",
-                  },
-                }}
-              />
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Weekoff Days",
+                      }}
+                    />
+                    <h6>{this.state.total_weekoff_days}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Holidays",
+                      }}
+                    />
+                    <h6>{this.state.total_holidays}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Leave(s)",
+                      }}
+                    />
+                    <h6>{this.state.total_leave}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Paid Leave(s)",
+                      }}
+                    />
+                    <h6>{this.state.paid_leave}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Unpaid Leave(s)",
+                      }}
+                    />
+                    <h6>{this.state.unpaid_leave}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Paid Days",
+                      }}
+                    />
+                    <h6>{this.state.total_paid_days}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Pending Unpaid Leave(s)",
+                      }}
+                    />
+                    <h6>{this.state.pending_unpaid_leave}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Hours",
+                      }}
+                    />
+                    <h6>{this.state.total_hours}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Working Hours",
+                      }}
+                    />
+                    <h6>{this.state.total_working_hours}</h6>
+                  </div>{" "}
+                  <div className="col-2 form-group">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "OT Weekoff Hours",
+                      }}
+                    />
+                    <h6>
+                      {this.state.ot_weekoff_hours
+                        ? this.state.ot_weekoff_hours
+                        : 0}
+                    </h6>
+                  </div>{" "}
+                  <AlagehFormGroup
+                    div={{ className: "col-2 form-group form-group" }}
+                    label={{
+                      forceLabel: "Shortage Hours",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "shortage_hours",
+                      value: this.state.shortage_hours,
+                      events: {
+                        onChange: this.textHandle.bind(this),
+                      },
+                      decimal: {
+                        allowNegative: false,
+                        thousandSeparator: ",",
+                      },
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-2 form-group form-group" }}
+                    label={{
+                      forceLabel: "OT Work Hours",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "ot_work_hours",
+                      value: this.state.ot_work_hours,
+                      events: {
+                        onChange: this.textHandle.bind(this),
+                      },
+                      decimal: {
+                        allowNegative: false,
+                        thousandSeparator: ",",
+                      },
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="col-4 margin-top-15">
+                <div className="row">
+                  <div className="col-12" id="projectOvertimeGrid_Cntr">
+                    <h6>Enter Project OT</h6>
+                    <AlgaehDataGrid
+                      id="projectOvertimeGrid"
+                      columns={[
+                        {
+                          fieldName: "projectName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Project Name" }}
+                            />
+                          ),
+                        },
+                        {
+                          fieldName: "project_ot_hr",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Project OT Hour" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "kpi_comments_fld",
+                                  value: "",
+                                  events: {
+                                    // onChange: this.textHandler.bind(this),
+                                  },
+                                  others: {
+                                    type: "text",
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                          others: {
+                            maxWidth: 150,
+                          },
+                        },
+                      ]}
+                      keyId=""
+                      dataSource={{}}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                      others={{}}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
