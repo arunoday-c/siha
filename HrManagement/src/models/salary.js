@@ -4460,7 +4460,7 @@ function UpdateProjectWisePayroll(options) {
                     VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE amount = ?;`,
                       [
                         deduction_result[y].project_wise_payroll_id,
-                        deduction_result[y].earnings_id,
+                        deduction_result[y].deductions_id,
                         deduction_result[y].amount,
                         deduction_result[y].amount
                       ]);
