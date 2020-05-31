@@ -1,15 +1,18 @@
 import io from "socket.io-client";
+import config from "./utils/config.json";
+
+const { sockets } = config.routersAndPorts;
 
 function createSockets() {
   const _localaddress =
-    window.location.protocol + "//" + window.location.hostname + ":";
-  const PORT = "3019";
+    window.location.protocol + "//" + window.location.hostname;
+  const PORT = window.location.port ? `:${sockets.port}` : sockets.path;
   const URI = `${_localaddress}${PORT}`;
   return io.connect(URI, {
     reconnection: true,
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
-    reconnectionAttempts: 5
+    reconnectionAttempts: 5,
   });
 }
 

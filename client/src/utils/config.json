@@ -102,6 +102,12 @@
       "url": "",
       "path": "/sales",
       "name": "Sales"
+    },
+    "sockets": {
+      "port": 3019,
+      "url": "",
+      "path": "/sockets",
+      "name": "Sales"
     }
   },
   "apiAuth": {
