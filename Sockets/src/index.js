@@ -1,5 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+import process from 'process'
 import http from "http";
 import cors from "cors";
 import keys from "algaeh-keys";
@@ -35,8 +36,12 @@ db.once("open", function () {
   // exp.use(bodyParser())
 
   const app = http.createServer(exp);
-
-  const io = socketIO(app);
+  const options = {}
+  if(process.env.NODE_ENV === 'production'){
+    options.path = '/'
+    options.transports = [ 'websocket' ]
+  }
+  const io = socketIO(app, options);
 
   io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
 

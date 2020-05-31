@@ -4,16 +4,23 @@ import config from "./utils/config.json";
 const { sockets } = config.routersAndPorts;
 
 function createSockets() {
-  const _localaddress =
+  let _localaddress =
     window.location.protocol + "//" + window.location.hostname;
-  const PORT = window.location.port ? `:${sockets.port}` : sockets.path;
-  const URI = `${_localaddress}${PORT}`;
-  return io.connect(URI, {
+  // const PORT = window.location.port ? `:${sockets.port}` : "";
+  // const URI = `${_localaddress}${PORT}`;
+  const options = {
     reconnection: true,
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
     reconnectionAttempts: 5,
-  });
+  }
+  if(window.location.port){
+    _localaddress = _localaddress + `:${sockets.port}`
+  } else {
+    options.path = sockets.path
+  }
+  options.transports = ['websocket']
+  return io.connect(_localaddress, options);
 }
 
 const socket = createSockets();
