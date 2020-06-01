@@ -9,7 +9,7 @@ import "../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import HospitalServices from "./HospitalServices/HospitalServices";
@@ -20,7 +20,7 @@ import Options from "../../Options.json";
 import {
   getCookie,
   algaehApiCall,
-  swalMessage
+  swalMessage,
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { texthandle, getHospotalServices } from "./HospitalServiceSetupEvents";
@@ -39,7 +39,7 @@ class HospitalServiceSetup extends Component {
       hospital_id: null,
       service_type_id: null,
 
-      service_name: null
+      service_name: null,
       // ServiceNames: []
     };
   }
@@ -48,7 +48,7 @@ class HospitalServiceSetup extends Component {
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     this.props.getServices({
@@ -57,8 +57,8 @@ class HospitalServiceSetup extends Component {
       method: "GET",
       redux: {
         type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      }
+        mappingName: "hospitalservices",
+      },
     });
 
     this.props.getServiceTypes({
@@ -67,8 +67,8 @@ class HospitalServiceSetup extends Component {
       method: "GET",
       redux: {
         type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "servicetype"
-      }
+        mappingName: "servicetype",
+      },
     });
 
     this.props.getSubDepatments({
@@ -77,8 +77,8 @@ class HospitalServiceSetup extends Component {
       method: "GET",
       redux: {
         type: "SERVIES_TYPES_GET_DATA",
-        mappingName: "subdepartments"
-      }
+        mappingName: "subdepartments",
+      },
     });
 
     this.props.getHospitalDetails({
@@ -86,8 +86,8 @@ class HospitalServiceSetup extends Component {
       method: "GET",
       redux: {
         type: "HOSPITAL_DETAILS_GET_DATA",
-        mappingName: "hospitaldetails"
-      }
+        mappingName: "hospitaldetails",
+      },
     });
   }
 
@@ -95,7 +95,7 @@ class HospitalServiceSetup extends Component {
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen,
-      servicePop: {}
+      servicePop: {},
     });
   }
 
@@ -103,7 +103,7 @@ class HospitalServiceSetup extends Component {
     this.setState(
       {
         ...this.state,
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
       },
       () => {
         if (e === true) {
@@ -113,15 +113,15 @@ class HospitalServiceSetup extends Component {
             method: "GET",
             redux: {
               type: "SERVICES_GET_DATA",
-              mappingName: "hospitalservices"
-            }
+              mappingName: "hospitalservices",
+            },
           });
         }
       }
     );
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -129,17 +129,17 @@ class HospitalServiceSetup extends Component {
 
   setUpdateComponent(row, e) {
     this.setState({
-      isOpen: true
+      isOpen: true,
     });
   }
 
   EditItemMaster(row) {
-    if (row.cpt_code !== null) {
+    if (row.cpt_code) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
         method: "GET",
         data: { hims_d_cpt_code_id: row.cpt_code },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.length !== undefined && data.length !== 0) {
@@ -149,39 +149,39 @@ class HospitalServiceSetup extends Component {
               this.setState({
                 isOpen: !this.state.isOpen,
                 servicePop: row,
-                addNew: false
+                addNew: false,
               });
             } else {
               row.addNew = false;
               this.setState({
                 isOpen: !this.state.isOpen,
                 servicePop: row,
-                addNew: false
+                addNew: false,
               });
             }
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           if (error.response.data.message === "No records found") {
             this.setState({
               isOpen: !this.state.isOpen,
               servicePop: row,
-              addNew: false
+              addNew: false,
             });
           } else {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
           }
-        }
+        },
       });
     } else {
       row.addNew = false;
       this.setState({
         isOpen: !this.state.isOpen,
         servicePop: row,
-        addNew: false
+        addNew: false,
       });
     }
   }
@@ -192,7 +192,7 @@ class HospitalServiceSetup extends Component {
         service_name: null,
         sub_department_id: null,
         hospital_id: null,
-        service_type_id: null
+        service_type_id: null,
       },
       () => {
         getHospotalServices(this, this);
@@ -206,7 +206,7 @@ class HospitalServiceSetup extends Component {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
         return {
           service_name: firstRecordSet.service_name,
-          hims_d_services_id: firstRecordSet.hims_d_services_id
+          hims_d_services_id: firstRecordSet.hims_d_services_id,
         };
       })
       .toArray();
@@ -221,7 +221,7 @@ class HospitalServiceSetup extends Component {
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  fieldName: "service_name"
+                  fieldName: "service_name",
                 }}
                 selector={{
                   name: "service_name",
@@ -230,16 +230,16 @@ class HospitalServiceSetup extends Component {
                   dataSource: {
                     textField: "service_name",
                     valueField: "hims_d_services_id",
-                    data: _ServiceNames
+                    data: _ServiceNames,
                   },
-                  onChange: texthandle.bind(this, this)
+                  onChange: texthandle.bind(this, this),
                 }}
               />
 
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  fieldName: "sub_department_id"
+                  fieldName: "sub_department_id",
                 }}
                 selector={{
                   name: "sub_department_id",
@@ -251,16 +251,16 @@ class HospitalServiceSetup extends Component {
                         ? "sub_department_name"
                         : "arabic_sub_department_name",
                     valueField: "hims_d_sub_department_id",
-                    data: this.props.subdepartments
+                    data: this.props.subdepartments,
                   },
-                  onChange: texthandle.bind(this, this)
+                  onChange: texthandle.bind(this, this),
                 }}
               />
 
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  fieldName: "hospital_id"
+                  fieldName: "hospital_id",
                 }}
                 selector={{
                   name: "hospital_id",
@@ -272,16 +272,16 @@ class HospitalServiceSetup extends Component {
                         ? "hospital_name"
                         : "arabic_hospital_name",
                     valueField: "hims_d_hospital_id",
-                    data: this.props.hospitaldetails
+                    data: this.props.hospitaldetails,
                   },
-                  onChange: texthandle.bind(this, this)
+                  onChange: texthandle.bind(this, this),
                 }}
               />
 
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  fieldName: "service_type_id"
+                  fieldName: "service_type_id",
                 }}
                 selector={{
                   name: "service_type_id",
@@ -293,9 +293,9 @@ class HospitalServiceSetup extends Component {
                         ? "service_type"
                         : "arabic_service_type",
                     valueField: "hims_d_service_type_id",
-                    data: this.props.servicetype
+                    data: this.props.servicetype,
                   },
-                  onChange: texthandle.bind(this, this)
+                  onChange: texthandle.bind(this, this),
                 }}
               />
               <div className="col">
@@ -329,7 +329,7 @@ class HospitalServiceSetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "hospital_services",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -348,7 +348,7 @@ class HospitalServiceSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -360,8 +360,8 @@ class HospitalServiceSetup extends Component {
                       },
                       others: {
                         maxWidth: 55,
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "service_code",
@@ -369,29 +369,29 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "service_code" }} />
                       ),
                       others: {
-                        maxWidth: 200
-                      }
+                        maxWidth: 200,
+                      },
                     },
                     {
                       fieldName: "service_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_name" }} />
-                      )
+                      ),
                     },
                     {
                       fieldName: "service_type_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "service_type_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
-                              f =>
-                                f.hims_d_service_type_id ===
-                                row.service_type_id
-                            );
+                                (f) =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                         return (
                           <span>
@@ -404,8 +404,8 @@ class HospitalServiceSetup extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 150
-                      }
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "standard_fee",
@@ -413,20 +413,20 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "standard_fee" }} />
                       ),
                       others: {
-                        maxWidth: 150
-                      }
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "vat_applicable",
                       label: (
                         <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.vat_applicable === "Y" ? "Yes" : "No";
                       },
                       others: {
-                        maxWidth: 150
-                      }
+                        maxWidth: 150,
+                      },
                     },
                     {
                       fieldName: "vat_percent",
@@ -434,16 +434,16 @@ class HospitalServiceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "vat_percent" }} />
                       ),
                       others: {
-                        maxWidth: 150
-                      }
-                    }
+                        maxWidth: 150,
+                      },
+                    },
                   ]}
                   keyId="service_code"
                   dataSource={{
                     data:
                       this.props.hospitalservices === undefined
                         ? []
-                        : this.props.hospitalservices
+                        : this.props.hospitalservices,
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 20 }}
@@ -463,7 +463,7 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
     hospitaldetails: state.hospitaldetails,
-    cptcodes: state.cptcodes
+    cptcodes: state.cptcodes,
   };
 }
 
@@ -474,7 +474,7 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
       getHospitalDetails: AlgaehActions,
-      getCptCodes: AlgaehActions
+      getCptCodes: AlgaehActions,
     },
     dispatch
   );
