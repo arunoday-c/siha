@@ -418,11 +418,11 @@ export default {
                       executablePath: process.env.CHROME_BIN || null,
                       args: process.env.CHROME_BIN
                         ? [
-                          "--no-sandbox",
-                          "--headless",
-                          "--disable-gpu",
-                          "--disable-dev-shm-usage",
-                        ]
+                            "--no-sandbox",
+                            "--headless",
+                            "--disable-gpu",
+                            "--disable-dev-shm-usage",
+                          ]
                         : [],
                     });
                     const page = await browser.newPage();
@@ -448,6 +448,7 @@ export default {
                       _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
                         top: "150px",
+                        ..._inputParam.headerProps,
                       };
                     }
                     if (
@@ -466,6 +467,7 @@ export default {
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
                         bottom: "100px",
+                        ..._inputParam.footerProps,
                       };
                     } else {
                       _pdfTemplating[
@@ -481,9 +483,11 @@ export default {
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies.</span>
                     </div>`;
+
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
                         bottom: "50px",
+                        ..._inputParam.footerProps,
                       };
                     }
 
@@ -498,8 +502,8 @@ export default {
                       _inputParam.pageOrentation == null
                         ? {}
                         : _inputParam.pageOrentation == "landscape"
-                          ? { landscape: true }
-                          : {};
+                        ? { landscape: true }
+                        : {};
 
                     let pageSize =
                       _inputParam.pageSize == null
@@ -641,7 +645,7 @@ export default {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch((error) => { });
+                      .catch((error) => {});
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -740,11 +744,11 @@ export default {
                         process.cwd(),
                         "algaeh_report_tool/templates/Output",
                         resourceTemplate.report_name +
-                        moment().format("YYYYMMDDHHmmss") +
-                        "_" +
-                        i +
-                        "_" +
-                        p
+                          moment().format("YYYYMMDDHHmmss") +
+                          "_" +
+                          i +
+                          "_" +
+                          p
                       );
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
@@ -754,11 +758,11 @@ export default {
                           executablePath: process.env.CHROME_BIN || null,
                           args: process.env.CHROME_BIN
                             ? [
-                              "--no-sandbox",
-                              "--headless",
-                              "--disable-gpu",
-                              "--disable-dev-shm-usage",
-                            ]
+                                "--no-sandbox",
+                                "--headless",
+                                "--disable-gpu",
+                                "--disable-dev-shm-usage",
+                              ]
                             : [],
                         });
                         const page = await browser.newPage();
@@ -832,8 +836,8 @@ export default {
                           _inputParam.pageOrentation == null
                             ? {}
                             : _inputParam.pageOrentation == "landscape"
-                              ? { landscape: true }
-                              : {};
+                            ? { landscape: true }
+                            : {};
                         const pageSize =
                           _inputParam.pageSize == null
                             ? { format: "A4" }
@@ -882,7 +886,7 @@ export default {
                             result = resultReq;
                             startGenerate();
                           })
-                          .catch((error) => { });
+                          .catch((error) => {});
                       } else {
                         if (
                           resourceTemplate.data_manupulation != null &&
@@ -1539,7 +1543,7 @@ export default {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch((error) => { });
+                      .catch((error) => {});
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -1612,8 +1616,8 @@ export default {
           _inputParam.pageOrentation == null
             ? {}
             : _inputParam.pageOrentation == "landscape"
-              ? { landscape: true }
-              : { landscape: true };
+            ? { landscape: true }
+            : { landscape: true };
         const pageSize =
           _inputParam.pageSize == null
             ? { format: "A3" }
