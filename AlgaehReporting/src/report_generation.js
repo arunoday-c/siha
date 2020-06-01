@@ -36,6 +36,7 @@ const compile = async function (templateName, data) {
       `${templateName}.hbs`
     );
     const html = await fs.readFile(filePath, "utf-8");
+
     return await hbs.compile(html)(data);
   } catch (error) {
     console.error("Compile Data error,changing to No Records Found : ", error);
