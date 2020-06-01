@@ -15,7 +15,7 @@ const writeOffhandle = ($this, context, ctrl, e) => {
       value = 0;
       swalMessage({
         title: "Write off amount cannot be greater than Receipt amount",
-        type: "error"
+        type: "error",
       });
     }
   } else {
@@ -24,29 +24,30 @@ const writeOffhandle = ($this, context, ctrl, e) => {
 
   $this.setState({
     [name]: value,
-    recievable_amount: recievable_amount
+    recievable_amount: recievable_amount,
   });
   if (context !== null) {
     context.updateState({
       [name]: value,
       recievable_amount: recievable_amount,
       unbalanced_amount: recievable_amount,
-      cash_amount: $this.state.default_pay_type === "CH" ? recievable_amount : 0,
-      card_amount: $this.state.default_pay_type === "CD" ? recievable_amount : 0,
+      cash_amount:
+        $this.state.default_pay_type === "CH" ? recievable_amount : 0,
+      card_amount:
+        $this.state.default_pay_type === "CD" ? recievable_amount : 0,
       // unbalanced_amount: 0
     });
   }
 };
 
 const updateCridetSettlement = ($this, context) => {
-
   let saveEnable = true;
 
   let receipt_amount = Enumerable.from($this.state.criedtdetails)
     .where("!!$.receipt_amount") // don't be afraid, meet $ aka lambda selector from Linq, lookup the docs.
-    .sum(w => parseFloat(w.receipt_amount));
+    .sum((w) => parseFloat(w.receipt_amount));
 
-  let selected_data = _.filter($this.state.criedtdetails, f => {
+  let selected_data = _.filter($this.state.criedtdetails, (f) => {
     return f.include === "Y";
   });
   if (selected_data.length > 0) {
@@ -59,7 +60,7 @@ const updateCridetSettlement = ($this, context) => {
       receipt_amount: receipt_amount,
       write_off_amount: 0,
       recievable_amount: receipt_amount,
-      unbalanced_amount: receipt_amount,
+      unbalanced_amount: $this.state.default_pay_type ? 0 : receipt_amount,
       cash_amount: $this.state.default_pay_type === "CH" ? receipt_amount : 0,
       card_amount: $this.state.default_pay_type === "CD" ? receipt_amount : 0,
       cheque_amount: 0,
@@ -95,7 +96,7 @@ const includeHandler = ($this, context, row, e) => {
   }
 
   let listOfinclude = Enumerable.from(_criedtdetails)
-    .where(w => w.include === "Y")
+    .where((w) => w.include === "Y")
     .toArray();
   if (listOfinclude.length > 0) {
     saveEnable = false;
@@ -109,7 +110,7 @@ const includeHandler = ($this, context, row, e) => {
       write_off_amount: 0,
       include: include,
       criedtdetails: _criedtdetails,
-      saveEnable: saveEnable
+      saveEnable: saveEnable,
     },
     updateCridetSettlement($this, context) // to calculate total receipt amount
   );
@@ -128,7 +129,7 @@ const onchangegridcol = ($this, context, row, e) => {
   if (balance_amount < 0) {
     swalMessage({
       title: "Receipt Amount cannot be greater than Previous Balance",
-      type: "error"
+      type: "error",
     });
     row["balance_amount"] = row["previous_balance"];
     row[name] = 0;
@@ -145,7 +146,7 @@ const onchangegridcol = ($this, context, row, e) => {
 
   $this.setState(
     {
-      criedtdetails: _criedtdetails
+      criedtdetails: _criedtdetails,
     },
     updateCridetSettlement($this, context) // calling update to calculate total of all receipt amounts
   );
@@ -155,5 +156,5 @@ export {
   writeOffhandle,
   updateCridetSettlement,
   includeHandler,
-  onchangegridcol
+  onchangegridcol,
 };
