@@ -47,14 +47,14 @@ export default function (props) {
     from_date === "" && isEditing !== undefined
       ? isEditing.attendance_date
       : from_date === "" && isEditing === undefined
-        ? fromDate
-        : from_date;
+      ? fromDate
+      : from_date;
   let to_dt =
     to_date === "" && isEditing !== undefined
       ? isEditing.attendance_date
       : to_date === "" && isEditing === undefined
-        ? toDate
-        : to_date;
+      ? toDate
+      : to_date;
   const employeeShow = filterTrue === false ? employees : filterEmployees;
   function processAsssignProject(data) {
     const {
@@ -63,7 +63,7 @@ export default function (props) {
       from_date,
       to_date,
       isEditing,
-      selectHospitalId
+      selectHospitalId,
     } = data;
 
     return new Promise((resolve, reject) => {
@@ -81,7 +81,7 @@ export default function (props) {
         let rosters = selectedEmployees;
         let projectID = selectedProjectID;
         let hospitalID = selectHospitalId;
-        debugger
+
         if (isEditing !== undefined) {
           rosters = [isEditing.hims_d_employee_id];
           projectID =
@@ -128,7 +128,31 @@ export default function (props) {
       }
     });
   }
-
+  function searchProjectHandler(e) {
+    setSearchProject(e.target.value);
+  }
+  function projectSarchFilterResult() {
+    if (searchProject === "") {
+      return projects;
+    } else {
+      return projects.filter((f) =>
+        f.project_desc.toLowerCase().includes(searchProject.toLowerCase())
+      );
+    }
+  }
+  function employeeSearchFilterResult() {
+    if (searchEmployee === "") {
+      return employeeShow;
+    } else {
+      return employeeShow.filter(
+        (f) =>
+          f.employee_code
+            .toLowerCase()
+            .includes(searchEmployee.toLowerCase()) ||
+          f.employee_name.toLowerCase().includes(searchEmployee.toLowerCase())
+      );
+    }
+  }
   return (
     <AlgaehModalPopUp
       className="col-lg-12 ShiftAssign"
@@ -205,9 +229,10 @@ export default function (props) {
                     name: "searchProjects",
                     value: searchProject,
                     events: {
-                      onChange: (e) => {
-                        setSearchProject(e.target.value);
-                      },
+                      onChange: searchProjectHandler,
+                      // (e) => {
+                      //   setSearchProject(e.target.value);
+                      // },
                     },
                     option: {
                       type: "text",
@@ -221,48 +246,43 @@ export default function (props) {
               {loadingProjects ? (
                 <p>Please wait loading Project's</p>
               ) : (
-                  <ul className="projectList">
-                    {projects.map((data) => {
-                      if (
-                        data.project_desc
-                          .toLowerCase()
-                          .indexOf(searchProject.toLowerCase()) === -1
-                      ) {
-                        return null;
-                      }
-                      debugger
-                      return (
-                        <li key={data.project_id}>
-                          <input
-                            id={data.project_id}
-                            name="hims_d_project_id"
-                            checked={
-                              selectedProjectID === "" && isEditing !== undefined
-                                ? isEditing.project_id === data.project_id && isEditing.hospital_id === data.hospital_id
-                                : selectedProjectID === data.project_id && selectHospitalId === data.hospital_id
-                                  ? true
-                                  : false
-                            }
-                            onChange={(e) => {
-                              debugger
-                              setSelectedProjectID(data.project_id);
-                              setHospitalId(data.hospital_id);
-                            }}
-                            type="radio"
-                          />
-                          <label
-                            htmlFor={data.project_id}
-                            style={{
-                              width: "80%",
-                            }}
-                          >
-                            <span>{data.project_desc + " / " + data.hospital_name}</span>
-                          </label>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                )}
+                <ul className="projectList">
+                  {projectSarchFilterResult().map((data, index) => {
+                    return (
+                      <li key={index}>
+                        <input
+                          id={`${data.project_id}_${index}`}
+                          name="hims_d_project_id"
+                          checked={
+                            selectedProjectID === "" && isEditing !== undefined
+                              ? isEditing.project_id === data.project_id &&
+                                isEditing.hospital_id === data.hospital_id
+                              : selectedProjectID === data.project_id &&
+                                selectHospitalId === data.hospital_id
+                              ? true
+                              : false
+                          }
+                          onChange={(e) => {
+                            setSelectedProjectID(data.project_id);
+                            setHospitalId(data.hospital_id);
+                          }}
+                          type="radio"
+                        />
+                        <label
+                          htmlFor={`${data.project_id}_${index}`}
+                          style={{
+                            width: "80%",
+                          }}
+                        >
+                          <span>
+                            {data.project_desc + " / " + data.hospital_name}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </div>
 
             <div className="col-8">
@@ -283,7 +303,7 @@ export default function (props) {
                       type: "text",
                     },
                     others: {
-                      placeholder: "Search employee by code only",
+                      placeholder: "Search employee by code / name ",
 
                       //disabled: this.state.allChecked
                     },
@@ -314,17 +334,17 @@ export default function (props) {
                   <p>Employee Codes & Names</p>
                 </li>
                 {isEditing === undefined ? (
-                  employeeShow.map((data) => {
-                    if (
-                      data.employee_code
-                        .toLowerCase()
-                        .indexOf(searchEmployee.toLowerCase()) === -1
-                    ) {
-                      return null;
-                    }
+                  employeeSearchFilterResult().map((data, index) => {
+                    // if (
+                    //   data.employee_code
+                    //     .toLowerCase()
+                    //     .indexOf(searchEmployee.toLowerCase()) === -1
+                    // ) {
+                    //   return null;
+                    // }
 
                     return (
-                      <li key={data.hims_d_employee_id}>
+                      <li key={index}>
                         <span>
                           <input
                             id={data.employee_code}
@@ -358,23 +378,23 @@ export default function (props) {
                     );
                   })
                 ) : (
-                    <li>
-                      <span>
-                        <input
-                          id={isEditing.employee_code}
-                          type="checkbox"
-                          checked={true}
-                          disabled
-                        />
-                      </span>
-                      <p>
-                        <label htmlFor={isEditing.employee_code}>
-                          <small>{isEditing.employee_code}</small>
-                          <b>{isEditing.employee_name}</b>
-                        </label>
-                      </p>
-                    </li>
-                  )}
+                  <li>
+                    <span>
+                      <input
+                        id={isEditing.employee_code}
+                        type="checkbox"
+                        checked={true}
+                        disabled
+                      />
+                    </span>
+                    <p>
+                      <label htmlFor={isEditing.employee_code}>
+                        <small>{isEditing.employee_code}</small>
+                        <b>{isEditing.employee_name}</b>
+                      </label>
+                    </p>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -395,14 +415,14 @@ export default function (props) {
                     from_date === "" && isEditing !== undefined
                       ? isEditing.attendance_date
                       : from_date === "" && isEditing === undefined
-                        ? fromDate
-                        : from_date;
+                      ? fromDate
+                      : from_date;
                   let to_dt =
                     to_date === "" && isEditing !== undefined
                       ? isEditing.attendance_date
                       : to_date === "" && isEditing === undefined
-                        ? toDate
-                        : to_date;
+                      ? toDate
+                      : to_date;
 
                   processAsssignProject({
                     selectedProjectID,
