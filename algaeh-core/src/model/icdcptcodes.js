@@ -164,42 +164,6 @@ let deleteIcdcptCodes = (req, res, next) => {
 
 //Cpt Code
 
-let selectCptCodesBCKP = (req, res, next) => {
-  let whereStatement = {
-    hims_d_cpt_code_id: "ALL",
-    cpt_code: "ALL",
-    cpt_desc: "ALL",
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let where = whereCondition(extend(whereStatement, req.query));
-      connection.query(
-        "SELECT * FROM `hims_d_cpt_code`  \
-       WHERE record_status='A' AND " +
-          where.condition,
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
-  } catch (e) {
-    next(e);
-  }
-};
-
 let selectCptCodes = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -236,118 +200,102 @@ let selectCptCodes = (req, res, next) => {
 };
 
 let insertCptCodes = (req, res, next) => {
-  let Icdcpts = {
-    hims_d_cpt_code_id: null,
-    cpt_code: null,
-    cpt_desc: null,
-    long_cpt_desc: null,
-    prefLabel: null,
-    cpt_status: "A",
-    created_by: req.userIdentity.algaeh_d_app_user_id,
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let inputParam = req.body;
 
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
-    let inputParam = extend(Icdcpts, req.body);
-    connection.query(
-      "INSERT INTO `hims_d_cpt_code` (`cpt_code`, `cpt_desc`,`long_cpt_desc`, `prefLabel`, `cpt_status` \
-      , `created_by` ,`created_date`) \
-   VALUES ( ?, ?, ?, ?, ?, ?, ?)",
-      [
-        inputParam.cpt_code,
-        inputParam.cpt_desc,
-        inputParam.long_cpt_desc,
-        inputParam.prefLabel,
-        inputParam.cpt_status,
-        inputParam.created_by,
-        new Date(),
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_cpt_code` (`cpt_code`, `cpt_desc`,`long_cpt_desc`, `prefLabel`,   \
+         `created_by` ,`created_date`) VALUES ( ?, ?, ?, ?, ?,  ?)",
+        values: [
+          inputParam.cpt_code,
+          inputParam.cpt_desc,
+          inputParam.long_cpt_desc,
+          inputParam.prefLabel,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+        ],
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      }
-    );
-  });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
 };
 
 let updateCptCodes = (req, res, next) => {
-  let Icdcpts = {
-    hims_d_cpt_code_id: null,
-    cpt_code: null,
-    cpt_desc: null,
-    long_cpt_desc: null,
-    prefLabel: null,
-    cpt_status: "A",
-    updated_by: req.userIdentity.algaeh_d_app_user_id,
-  };
-  if (req.db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-  }
-  let db = req.db;
-  db.getConnection((error, connection) => {
-    if (error) {
-      next(error);
-    }
-    let inputParam = extend(Icdcpts, req.body);
-    connection.query(
-      "UPDATE `hims_d_cpt_code` \
-     SET `cpt_code`=?,  `cpt_desc`=?,`long_cpt_desc`=?, `prefLabel`=?,`cpt_status`=?, \
-     `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_d_cpt_code_id`=?",
-      [
-        inputParam.cpt_code,
-        inputParam.cpt_desc,
-        inputParam.long_cpt_desc,
-        inputParam.prefLabel,
-        inputParam.cpt_status,
-        inputParam.updated_by,
-        new Date(),
-        inputParam.hims_d_cpt_code_id,
-      ],
-      (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let inputParam = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_cpt_code` \
+        SET `cpt_code`=?,  `cpt_desc`=?,`long_cpt_desc`=?, `prefLabel`=?,`cpt_status`=?, \
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `hims_d_cpt_code_id`=?",
+        values: [
+          inputParam.cpt_code,
+          inputParam.cpt_desc,
+          inputParam.long_cpt_desc,
+          inputParam.prefLabel,
+          inputParam.cpt_status,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_d_cpt_code_id,
+        ],
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      }
-    );
-  });
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
 };
+
 let deleteCptCodes = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    deleteRecord(
-      {
-        db: req.db,
-        tableName: "hims_d_cpt_code",
-        id: req.body.hims_d_cpt_code_id,
+    let inputParam = req.body;
+
+    _mysql
+      .executeQuery({
         query:
           "UPDATE hims_d_cpt_code SET  record_status='I', \
-         updated_by=?,updated_date=? WHERE hims_d_cpt_code_id=?",
-        values: [req.body.updated_by, new Date(), req.body.hims_d_cpt_code_id],
-      },
-      (result) => {
+        updated_by=?,updated_date=? WHERE hims_d_cpt_code_id=?",
+        values: [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          inputParam.hims_d_cpt_code_id,
+        ],
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      },
-      (error) => {
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      },
-      true
-    );
+      });
   } catch (e) {
     next(e);
   }
