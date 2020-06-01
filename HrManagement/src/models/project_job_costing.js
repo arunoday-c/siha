@@ -1108,6 +1108,15 @@ export default {
           printQuery: true,
         })
         .then((result) => {
+          console.log("result", result)
+          if (result.length === 0) {
+            _mysql.releaseConnection();
+            req.records = {
+              project_wise_payroll: []
+            }
+            next();
+            return
+          }
           const _project_wise_payroll_id = result.map((item) => {
             return item.hims_f_project_wise_payroll_id;
           });

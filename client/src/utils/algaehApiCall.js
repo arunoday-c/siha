@@ -22,7 +22,7 @@ export function algaehApiCall(options) {
       imageUrl: "images/nointernet.png",
       imageHeight: 30,
       position: "center",
-      timer: 4000
+      timer: 4000,
     });
 
     return false;
@@ -36,14 +36,14 @@ export function algaehApiCall(options) {
         imageUrl: "images/nointernet.png",
         imageHeight: 30,
         position: "top",
-        timer: 4000
+        timer: 4000,
       });
     }
   }
 
   let collection = options.notoken === undefined ? [getItem("token")] : [];
   Promise.all(collection)
-    .then(detailResult => {
+    .then((detailResult) => {
       const myIP = getNewLocalIp();
       const headerToken = detailResult.length > 0 ? detailResult[0] : "";
       const userTokenDetails =
@@ -62,7 +62,7 @@ export function algaehApiCall(options) {
           isfetch: false,
           cancelRequestId: null,
           module: null,
-          skipParse: false
+          skipParse: false,
         },
         options
       );
@@ -132,11 +132,11 @@ export function algaehApiCall(options) {
       let cancelRequest = {};
       if (settings.cancelRequestId !== null) {
         axiosCancel(axios, {
-          debug: false
+          debug: false,
         });
 
         cancelRequest = {
-          requestId: settings.cancelRequestId
+          requestId: settings.cancelRequestId,
         };
       }
       const _contentType = settings.header !== undefined ? settings.header : {};
@@ -148,8 +148,9 @@ export function algaehApiCall(options) {
       const timmer =
         settings.timerNotRequired === undefined
           ? {
-            timeout: settings.timeout !== undefined ? settings.timeout : 60000
-          }
+              timeout:
+                settings.timeout !== undefined ? settings.timeout : 60000,
+            }
           : {};
       axios({
         method: settings.method,
@@ -159,23 +160,23 @@ export function algaehApiCall(options) {
           // "x-app-user-identity": x_app_user_identity,
           "x-client-ip": myIP,
           "x-branch": x_branch,
-          ..._contentType
+          ..._contentType,
         },
         httpAgent: new Agent({
           maxSockets: 100,
           timeout: 60000, // active socket keepalive for 60 seconds
-          freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
+          freeSocketTimeout: 30000, // free socket keepalive for 30 seconds
         }), //new http.Agent({ keepAlive: true }),
         ...settings.others,
         ...Params,
         ...timmer,
-        ...cancelRequest
+        ...cancelRequest,
       })
-        .then(response => {
+        .then((response) => {
           if (typeof settings.onSuccess === "function")
             settings.onSuccess(response);
         })
-        .catch(err => {
+        .catch((err) => {
           if (typeof settings.onCatch === "function") {
             settings.onCatch(err);
             return;
@@ -207,9 +208,9 @@ export function algaehApiCall(options) {
             if (process.env.NODE_ENV === "development") {
               console.error(
                 "Error Message : \n" +
-                err.message +
-                " \n Detail Info : \n" +
-                JSON.stringify(err)
+                  err.message +
+                  " \n Detail Info : \n" +
+                  JSON.stringify(err)
               );
             }
           } else {
@@ -235,7 +236,7 @@ export function algaehApiCall(options) {
                     routers[settings.module]["name"] +
                     "' module is not yet started",
                   type: "info",
-                  position: "top"
+                  position: "top",
                 });
               } else {
                 reader.readAsText(err.response.data);
@@ -249,7 +250,7 @@ export function algaehApiCall(options) {
                 swalMessage({
                   title: reader.result,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               };
               reader.readAsText(err.response.data);
@@ -265,13 +266,13 @@ export function algaehApiCall(options) {
                     routers[settings.module]["name"] +
                     "' module is not yet started",
                   type: "info",
-                  position: "top"
+                  position: "top",
                 });
               }
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===
-              "application/json; charset=utf-8"
+                "application/json; charset=utf-8"
             ) {
               if (
                 err.response.data !== undefined &&
@@ -280,329 +281,23 @@ export function algaehApiCall(options) {
                 swalMessage({
                   title: err.response.data.message,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               } else {
                 swalMessage({
                   title: err.response.statusText,
                   type: "error",
-                  position: "top"
+                  position: "top",
                 });
               }
             }
           }
         });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("error", error);
     });
 }
-// new Promise((resolve, reject) => {
-//   getLocalIP(myIP => {
-//     if (myIP !== undefined) {
-//       resolve(myIP);
-//     }
-//   });
-// }).then(myIP => {
-//   // var settings = extend(
-//   //   {
-//   //     uri: null,
-//   //     data: null,
-//   //     method: "POST",
-//   //     token: null,
-//   //     onSuccess: null,
-//   //     onFailure: null,
-//   //     baseUrl: config.baseUrl,
-//   //     printInput: false,
-//   //     isfetch: false,
-//   //     cancelRequestId: null,
-//   //     module: null,
-//   //     skipParse: false
-//   //   },
-//   //   options
-//   // );
-
-//   // if (settings.uri === null) {
-//   //   return;
-//   // }
-
-//   // let _baseUrl = settings.baseUrl;
-//   // const _localaddress =
-//   //   window.location.protocol + "//" + window.location.hostname; //+ ":";
-
-//   // const isProxy = window.location.port === "";
-
-//   // if (settings.module === null || settings.module === "") {
-//   //   const _defRoute = config.routersAndPorts.default;
-//   //   const _url =
-//   //     _defRoute.url === undefined || _defRoute.url === ""
-//   //       ? _localaddress
-//   //       : _defRoute.url;
-//   //   const _baseurlInner =
-//   //     _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
-
-//   //   settings.baseUrl =
-//   //     _url +
-//   //     (isProxy ? _defRoute.path : `:${_defRoute.port}`) +
-//   //     _baseurlInner;
-//   // } else {
-//   //   const _myRouter = config.routersAndPorts[settings.module];
-//   //   const _url =
-//   //     _myRouter.url === undefined || _myRouter.url === ""
-//   //       ? _localaddress
-//   //       : _myRouter.url;
-//   //   const _baseurlInner =
-//   //     _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
-//   //   settings.baseUrl =
-//   //     _url +
-//   //     (isProxy ? _myRouter.path : `:${_myRouter.port}`) +
-//   //     _baseurlInner;
-//   // }
-
-//   // let queryParametres = "";
-
-//   // if (settings.skipParse === false) {
-//   //   settings.data = JSON.parse(
-//   //     JSON.stringify(settings.data, function(k, v) {
-//   //       return v === undefined ? null : v;
-//   //     }),
-//   //     valueReviver
-//   //   );
-//   // }
-
-//   // if (String(settings.method).toUpperCase() === "GET") {
-//   //   let str = [];
-//   //   for (let p in settings.data) {
-//   //     if (settings.data.hasOwnProperty(p)) {
-//   //       if (settings.data[p] !== undefined) {
-//   //         let _newData = settings.data[p];
-//   //         if (typeof _newData === "object") {
-//   //           _newData = JSON.stringify(_newData);
-//   //         }
-//   //         str.push(
-//   //           encodeURIComponent(p) + "=" + encodeURIComponent(_newData)
-//   //         );
-//   //       }
-//   //     }
-//   //   }
-//   //   settings.data = {};
-//   //   queryParametres = "?" + str.join("&");
-//   //   if (settings.printInput) {
-//   //     console.log(
-//   //       "Input data :",
-//   //       settings.baseUrl + settings.uri + queryParametres
-//   //     );
-//   //   }
-//   // }
-//   // if (settings.printInput) {
-//   //   console.log("Input data next :", settings.data);
-//   // }
-//   // let cancelRequest = {};
-
-//   // if (settings.cancelRequestId !== null) {
-//   //   axiosCancel(axios, {
-//   //     debug: false
-//   //   });
-
-//   //   cancelRequest = {
-//   //     requestId: settings.cancelRequestId
-//   //   };
-//   // }
-//   // const _contentType = settings.header !== undefined ? settings.header : {};
-//   // debugger;
-//   // const headerToken = getItem("token");
-//   // (async () => {
-//   //   return await getToken();
-//   // })();
-//   // const x_app_user_identity = getCookie("keyResources");
-//   // const x_branch = getCookie("HospitalId");
-//   if (settings.uri !== undefined || settings.uri !== "") {
-//     if (settings.isfetch) {
-//       return fetch(settings.baseUrl + settings.uri + queryParametres, {
-//         method: settings.method,
-//         headers: {
-//           "x-api-key": headerToken,
-//           "x-app-user-identity": x_app_user_identity,
-//           "x-client-ip": myIP,
-//           "x-branch": x_branch,
-//           ..._contentType
-//         },
-//         httpAgent: new Agent({
-//           maxSockets: 100,
-//           timeout: 60000, // active socket keepalive for 60 seconds
-//           freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
-//         }), //new http.Agent({ keepAlive: true }),
-//         ...settings.others,
-//         body: JSON.stringify(settings.data),
-//         ...cancelRequest
-//       })
-//         .then(response => {
-//           if (response.status >= 200 && response.status < 300) {
-//             if (typeof settings.onSuccess === "function")
-//               settings.onSuccess(response);
-//           } else {
-//             const error = new Error(response.statusText);
-//             error.response = response;
-//             if (typeof settings.onFailure === "function")
-//               settings.onFailure(error);
-//             throw error;
-//           }
-//         })
-//         .catch(error => {
-//           console.error("request failed", error);
-//         });
-//     }
-//     const timmer =
-//       settings.timerNotRequired === undefined
-//         ? {
-//             timeout: settings.timeout !== undefined ? settings.timeout : 60000
-//           }
-//         : {};
-//     axios({
-//       method: settings.method,
-//       url: settings.baseUrl + settings.uri + queryParametres,
-//       headers: {
-//         "x-api-key": headerToken,
-//         "x-app-user-identity": x_app_user_identity,
-//         "x-client-ip": myIP,
-//         "x-branch": x_branch,
-//         ..._contentType
-//       },
-//       httpAgent: new Agent({
-//         maxSockets: 100,
-//         timeout: 60000, // active socket keepalive for 60 seconds
-//         freeSocketTimeout: 30000 // free socket keepalive for 30 seconds
-//       }), //new http.Agent({ keepAlive: true }),
-//       ...settings.others,
-//       data: settings.data,
-//       ...timmer,
-//       ...cancelRequest
-//     })
-//       .then(response => {
-//         if (typeof settings.onSuccess === "function")
-//           settings.onSuccess(response);
-//       })
-//       .catch(err => {
-//         AlgaehLoader({ show: false });
-//         if (!showOtherPopup) {
-//           return;
-//         }
-//         if (
-//           settings.cancelRequestId !== undefined ||
-//           settings.cancelRequestId !== null ||
-//           settings.cancelRequestId !== ""
-//         ) {
-//           if (axios.isCancel(err)) {
-//             if (process.env.NODE_ENV === "development")
-//               console.warn("Request canceled :", err.message);
-//           }
-//         }
-
-//         if (err.response !== undefined) {
-//           const { status, data } = err.response;
-//           if (status === 423) {
-//             showOtherPopup = false;
-//             reLoginPopup(data);
-//             return;
-//           }
-//         }
-
-//         if (err.code === "ECONNABORTED") {
-//           if (process.env.NODE_ENV === "development") {
-//             console.error(
-//               "Error Message : \n" +
-//                 err.message +
-//                 " \n Detail Info : \n" +
-//                 JSON.stringify(err)
-//             );
-//           }
-//         } else {
-//           if (settings.module === "documentManagement") {
-//             const reader = new FileReader();
-//             reader.onload = function() {
-//               if (settings.onFileFailure === "function") {
-//                 settings.onFileFailure(reader.result);
-//                 return;
-//               } else {
-//                 console.error(reader.result);
-//               }
-//             };
-//             if (
-//               err.response === undefined &&
-//               err.message === "Network Error"
-//             ) {
-//               const routers = config.routersAndPorts;
-
-//               swalMessage({
-//                 title:
-//                   "'" +
-//                   routers[settings.module]["name"] +
-//                   "' module is not yet started",
-//                 type: "info",
-//                 position: "top"
-//               });
-//             } else {
-//               reader.readAsText(err.response.data);
-//             }
-//           } else if (
-//             err.response !== undefined &&
-//             err.response.headers["content-type"] === "text/plain"
-//           ) {
-//             const reader = new FileReader();
-//             reader.onload = function() {
-//               swalMessage({
-//                 title: reader.result,
-//                 type: "error",
-//                 position: "top"
-//               });
-//             };
-//             reader.readAsText(err.response.data);
-//           } else if (
-//             err.response === undefined &&
-//             err.message === "Network Error"
-//           ) {
-//             const routers = config.routersAndPorts;
-//             if (routers[settings.module] !== undefined) {
-//               swalMessage({
-//                 title:
-//                   "'" +
-//                   routers[settings.module]["name"] +
-//                   "' module is not yet started",
-//                 type: "info",
-//                 position: "top"
-//               });
-//             }
-//           } else if (
-//             err.response !== undefined &&
-//             err.response.headers["content-type"] ===
-//               "application/json; charset=utf-8"
-//           ) {
-//             if (
-//               err.response.data !== undefined &&
-//               err.response.data.success !== undefined
-//             ) {
-//               swalMessage({
-//                 title: err.response.data.message,
-//                 type: "error",
-//                 position: "top"
-//               });
-//             } else {
-//               swalMessage({
-//                 title: err.response.statusText,
-//                 type: "error",
-//                 position: "top"
-//               });
-//             }
-//           }
-//         }
-
-//         if (typeof settings.onCatch === "function") {
-//           settings.onCatch(err);
-//         }
-//       });
-//   }
-// });
-//}
 
 export function reLoginPopup({ message, username }) {
   if (username === undefined) {
@@ -623,10 +318,10 @@ export function reLoginPopup({ message, username }) {
       inputPlaceholder: "Re-enter your password",
       inputAttributes: {
         autocapitalize: "off",
-        autocorrect: "off"
-      }
+        autocorrect: "off",
+      },
     })
-    .then(rest => {
+    .then((rest) => {
       const { value, dismiss } = rest;
       showOtherPopup = true;
       if (dismiss === "cancel") {
@@ -635,13 +330,13 @@ export function reLoginPopup({ message, username }) {
       }
       if (value !== undefined && value !== "") {
         const item_id = getCookie("HospitalId");
-        getLocalIP(identity => {
+        getLocalIP((identity) => {
           const dataSent = encrypter(
             JSON.stringify({
               username: username,
               password: value,
               item_id: item_id,
-              identity: identity
+              identity: identity,
             })
           );
 
@@ -649,33 +344,16 @@ export function reLoginPopup({ message, username }) {
             uri: "/apiAuth/relogin",
             data: { post: dataSent },
             method: "POST",
-            onSuccess: response => {
+            onSuccess: (response) => {
               const { success, message } = response.data;
               if (success === true) {
-                // setCookie("userName", records.user_display_name);
-                // setCookie("keyResources", records.keyResources, 30);
-                // setCookie("authToken", records.token);
-                // sessionStorage.setItem(
-                //   "keyData",
-                //   AlgaehCloseContainer(JSON.stringify(records.keyData))
-                // );
-                // sessionStorage.setItem(
-                //   "CurrencyDetail",
-                //   AlgaehCloseContainer(JSON.stringify(records.hospitalDetails))
-                // );
-
-                // sessionStorage.setItem("appRole",
-                //  records.app_d_app_roles_id);
                 swalMessage({ type: "success", title: "Continue" });
               } else {
                 swalMessage({ type: "warning", title: message });
               }
-            }
+            },
           });
         });
-
-        //  window.location.href = window.location.origin + "/#";
-        //  window.location.reload();
       } else {
         window.location.reload();
       }
@@ -688,7 +366,7 @@ export function swalMessage(options) {
     showConfirmButton: false,
     timer: 4000,
     toast: true,
-    ...options
+    ...options,
   };
   const toast = swal.mixin(settings);
   let title = settings.title;
@@ -717,7 +395,7 @@ export function SelectFiledData(options) {
       textField: "",
       valueField: "",
       selectedFiled: "",
-      payload: null
+      payload: null,
     },
     options
   );
@@ -728,7 +406,7 @@ export function SelectFiledData(options) {
       let row = settings.payload[i];
       Data.push({
         name: row[settings.textField],
-        value: row[settings.valueField]
+        value: row[settings.valueField],
       });
     }
   }
@@ -795,49 +473,24 @@ export function valueReviver(key, value) {
 
 export function collectIP() {
   const identity = window.localStorage.getItem("identity");
-  var findIP = new Promise(r => {
+  var findIP = new Promise((r) => {
     if (identity !== null) {
       r(identity);
       return;
     }
     axios
       .get("http://localhost:1212/machineinfo")
-      .then(response => {
+      .then((response) => {
         let machineInfo = JSON.stringify(response.data);
         r(machineInfo);
       })
-      .catch(error => {
+      .catch((error) => {
         const autoIP = new IDGenerator().generate();
         r(autoIP);
       });
-    // }
-
-    // var w = window,
-    //   a = new (w.RTCPeerConnection ||
-    //     w.mozRTCPeerConnection ||
-    //     w.webkitRTCPeerConnection)({ iceServers: [] }),
-    //   b = () => {};
-
-    // a.createDataChannel("");
-    // a.createOffer(c => a.setLocalDescription(c, b, b), b);
-    // if (a.onicecandidate === null) {
-    //   r(autoIP);
-    //   return;
-    // }
-    // a.onicecandidate = c => {
-    //   try {
-    //     c.candidate.candidate
-    //       .match(
-    //         /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g
-    //       )
-    //       .forEach(r);
-    //   } catch (e) {
-    //     r(autoIP);
-    //   }
-    // };
   });
   if (identity === null) {
-    findIP.then(ip => {
+    findIP.then((ip) => {
       window.localStorage.setItem("identity", ip);
     });
   }
@@ -845,7 +498,7 @@ export function collectIP() {
 }
 
 export function getLocalIP(callback) {
-  collectIP().then(IP => {
+  collectIP().then((IP) => {
     callback(IP);
   });
 }
@@ -861,53 +514,6 @@ export function getNewLocalIp() {
     return identity;
   }
 }
-// if (window.myIP !== undefined && window.myIP !== "") {
-//   callback(window.myIP);
-//   return;
-// }
-// return new Promise((resolve, reject) => {
-//   window.RTCPeerConnection =
-//     /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
-//     window.mozRTCPeerConnection;
-//
-//   if (!window.RTCPeerConnection) {
-//     reject("Your browser does not support this API");
-//   }
-//
-//   let pc = new RTCPeerConnection({ iceServers: [] }),
-//     noop = function(myIP) {
-//       if (myIP !== undefined) {
-//         window.myIP = myIP;
-//         resolve(myIP);
-//       }
-//     };
-//   pc.createDataChannel(""); //create a bogus data channel
-//   pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-//   pc.onicecandidate = function(ice) {
-//     if (ice && ice.candidate && ice.candidate.candidate) {
-//       let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-//         ice.candidate.candidate
-//       );
-//       if (myIP === null) {
-//         const generator = new IDGenerator();
-//         const _IdGen = generator.generate();
-//         window.myIP = _IdGen;
-//         callback(_IdGen);
-//       } else {
-//         pc.onicecandidate = noop(myIP[1]);
-//       }
-//     }
-//   };
-// })
-//   .then(myIP => {
-//     callback(myIP);
-//   })
-//   .catch(e => {
-//     const generator = new IDGenerator();
-//     const _IdGen = generator.generate();
-//     window.myIP = _IdGen;
-//     callback(_IdGen);
-//   });
 
 function IDGenerator() {
   this.length = 9;
