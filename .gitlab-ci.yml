@@ -1,4 +1,8 @@
 # gitlab ci/cd to build docker images
+before_script:
+  - export PATH="/home/algaeh/.nvm/versions/node/v12.16.3/bin/:$PATH"
+
+
 build_image:
   only:
     refs:
