@@ -18,7 +18,7 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
+                        {{!-- <th>Sl No.</th> --}}
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Designation</th>
@@ -57,7 +57,7 @@
                     </tr> --}}
                     {{#each employees}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        {{!-- <td>{{inc @index}}</td> --}}
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{designation}}</td>
