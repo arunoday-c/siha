@@ -113,68 +113,68 @@ process.on("unhandledRejection", (reason, promise) => {
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
-  if (req.db != null) {
-    let connection = req.connection;
-    if (connection != null) {
-      if (req.db._freeConnections.indexOf(connection) === -1) {
-        if (typeof connection.rollback === "function") {
-          connection.rollback(() => {
-            if (typeof connection.release === "function") connection.release();
+  // if (req.db != null) {
+  //   let connection = req.connection;
+  //   if (connection != null) {
+  //     if (req.db._freeConnections.indexOf(connection) === -1) {
+  //       if (typeof connection.rollback === "function") {
+  //         connection.rollback(() => {
+  //           if (typeof connection.release === "function") connection.release();
 
-            res
-              .status(error.status)
-              .json({
-                success: false,
-                message:
-                  error.sqlMessage != null ? error.sqlMessage : error.message,
-                isSql: error.sqlMessage != null ? true : false,
-              })
-              .end();
-          });
-        } else {
-          if (typeof connection.release === "function") connection.release();
-          res
-            .status(error.status)
-            .json({
-              success: false,
-              message:
-                error.sqlMessage != null ? error.sqlMessage : error.message,
-              isSql: error.sqlMessage != null ? true : false,
-            })
-            .end();
-        }
-      } else {
-        res
-          .status(error.status)
-          .json({
-            success: false,
-            message:
-              error.sqlMessage != null ? error.sqlMessage : error.message,
-            isSql: error.sqlMessage != null ? true : false,
-          })
-          .end();
-      }
-    } else {
-      console.log("Here is an error", error);
-      res
-        .status(error.status)
-        .json({
-          success: false,
-          message: error.sqlMessage != null ? error.sqlMessage : error.message,
-          isSql: error.sqlMessage != null ? true : false,
-        })
-        .end();
-    }
-  } else {
-    res
-      .status(error.status)
-      .json({
-        success: false,
-        message: error.sqlMessage != null ? error.sqlMessage : error.message,
-        isSql: error.sqlMessage != null ? true : false,
-      })
-      .end();
-  }
+  //           res
+  //             .status(error.status)
+  //             .json({
+  //               success: false,
+  //               message:
+  //                 error.sqlMessage != null ? error.sqlMessage : error.message,
+  //               isSql: error.sqlMessage != null ? true : false,
+  //             })
+  //             .end();
+  //         });
+  //       } else {
+  //         if (typeof connection.release === "function") connection.release();
+  //         res
+  //           .status(error.status)
+  //           .json({
+  //             success: false,
+  //             message:
+  //               error.sqlMessage != null ? error.sqlMessage : error.message,
+  //             isSql: error.sqlMessage != null ? true : false,
+  //           })
+  //           .end();
+  //       }
+  //     } else {
+  //       res
+  //         .status(error.status)
+  //         .json({
+  //           success: false,
+  //           message:
+  //             error.sqlMessage != null ? error.sqlMessage : error.message,
+  //           isSql: error.sqlMessage != null ? true : false,
+  //         })
+  //         .end();
+  //     }
+  //   } else {
+  //     console.log("Here is an error", error);
+  //     res
+  //       .status(error.status)
+  //       .json({
+  //         success: false,
+  //         message: error.sqlMessage != null ? error.sqlMessage : error.message,
+  //         isSql: error.sqlMessage != null ? true : false,
+  //       })
+  //       .end();
+  //   }
+  // } else {
+  //   res
+  //     .status(error.status)
+  //     .json({
+  //       success: false,
+  //       message: error.sqlMessage != null ? error.sqlMessage : error.message,
+  //       isSql: error.sqlMessage != null ? true : false,
+  //     })
+  //     .end();
+  // }
 
   const _error = {
     source: req.originalUrl,
@@ -183,6 +183,14 @@ app.use((error, req, res, next) => {
     errorDescription: error,
   };
   logger.log("error", "unhandlerd", _error);
+  res
+    .status(error.status)
+    .json({
+      success: false,
+      message: error.sqlMessage != null ? error.sqlMessage : error.message,
+      isSql: error.sqlMessage != null ? true : false,
+    })
+    .end();
 });
 
 app.server.listen(_port);
