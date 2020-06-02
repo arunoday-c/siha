@@ -123,7 +123,7 @@ class ItemLocationReorder extends Component {
 
   render() {
     return (
-      <div className="ReorderQtyMasterPharmacyScreen" style={{ marginTop: 43 }}>
+      <div className="ReorderQtyMasterPharmacyScreen">
         <AlgaehModalPopUp
           events={{
             onClose: this.onClose.bind(this),
