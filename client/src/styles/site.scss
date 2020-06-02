@@ -2040,3 +2040,11 @@ input.autoselect-input:disabled {
     }
   }
 }
+.ant-modal-root {
+  .ant-modal-mask {
+    z-index: 99999 !important;
+  }
+  .ant-modal-wrap {
+    z-index: 99999 !important;
+  }
+}
