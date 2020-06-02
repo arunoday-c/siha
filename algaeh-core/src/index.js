@@ -120,7 +120,7 @@ app.use((error, req, res, next) => {
   };
   logger.log("error", "unhandlerd", _error);
   res
-    .status(error.status)
+    .status(error.status || 400)
     .json({
       success: false,
       message: error.sqlMessage != null ? error.sqlMessage : error.message,

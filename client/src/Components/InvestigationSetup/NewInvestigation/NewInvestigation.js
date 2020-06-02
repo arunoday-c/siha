@@ -9,12 +9,12 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
   InsertLabTest,
-  CptCodesSearch
+  CptCodesSearch,
 } from "./NewInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -29,13 +29,13 @@ class NewInvestigation extends PureComponent {
     this.state = {
       open: false,
 
-      InvestigationtypeEnable: false
+      InvestigationtypeEnable: false,
     };
   }
 
   componentDidMount() {
     let IOputs = InvestigationIOputs.inputParam();
-    this.setState({ ...this.state, ...IOputs });
+    this.setState({ ...IOputs });
     if (
       this.props.ingservices === undefined ||
       this.props.ingservices.length === 0
@@ -46,8 +46,8 @@ class NewInvestigation extends PureComponent {
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
-          mappingName: "ingservices"
-        }
+          mappingName: "ingservices",
+        },
       });
     }
   }
@@ -66,7 +66,7 @@ class NewInvestigation extends PureComponent {
         let IOputs = props.InvestigationPop;
         IOputs.InvestigationtypeEnable = true;
         return { ...state, ...IOputs };
-      } else {
+      } else if (!props.open) {
         let IOputs = InvestigationIOputs.inputParam();
         IOputs.InvestigationtypeEnable = false;
         return { ...state, ...IOputs };
@@ -86,7 +86,7 @@ class NewInvestigation extends PureComponent {
   //   }
   // }
 
-  onClose = e => {
+  onClose = (e) => {
     let IOputs = InvestigationIOputs.inputParam();
     IOputs.InvestigationtypeEnable = false;
     this.setState({ ...this.state, ...IOputs }, () => {
@@ -104,7 +104,7 @@ class NewInvestigation extends PureComponent {
         <div className="hptl-phase1-add-investigation-form">
           <AlgaehModalPopUp
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             title={this.props.HeaderCaption}
             openPopup={this.props.open}
@@ -118,7 +118,7 @@ class NewInvestigation extends PureComponent {
                         div={{ className: "col-6 mandatory form-group" }}
                         label={{
                           fieldName: "investigation_type",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "investigation_type",
@@ -130,13 +130,13 @@ class NewInvestigation extends PureComponent {
                                 ? "name"
                                 : "arabic_name",
                             valueField: "value",
-                            data: variableJson.FORMAT_LAB_RAD
+                            data: variableJson.FORMAT_LAB_RAD,
                           },
                           others: {
                             disabled: this.state.InvestigationtypeEnable,
-                            tabIndex: "1"
+                            tabIndex: "1",
                           },
-                          onChange: texthandle.bind(this, this)
+                          onChange: texthandle.bind(this, this),
                         }}
                       />
                     </div>
@@ -145,25 +145,25 @@ class NewInvestigation extends PureComponent {
                         div={{ className: "col-12 mandatory form-group" }}
                         label={{
                           fieldName: "test_name",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "description",
                           value: this.state.description,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           others: {
-                            tabIndex: "2"
-                          }
+                            tabIndex: "2",
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-6 mandatory" }}
                         label={{
                           fieldName: "services_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "services_id",
@@ -175,19 +175,19 @@ class NewInvestigation extends PureComponent {
                                 ? "service_name"
                                 : "arabic_service_name",
                             valueField: "hims_d_services_id",
-                            data: this.props.ingservices
+                            data: this.props.ingservices,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "3"
-                          }
+                            tabIndex: "3",
+                          },
                         }}
                       />{" "}
                       <AlagehAutoComplete
                         div={{ className: "col-6 mandatory form-group" }}
                         label={{
                           fieldName: "category_id",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "category_id",
@@ -196,12 +196,12 @@ class NewInvestigation extends PureComponent {
                           dataSource: {
                             textField: "category_name",
                             valueField: "hims_d_test_category_id",
-                            data: this.props.testcategory
+                            data: this.props.testcategory,
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "4"
-                          }
+                            tabIndex: "4",
+                          },
                         }}
                       />
                       <div className="col-6 globalSearchCntr">
@@ -243,18 +243,18 @@ class NewInvestigation extends PureComponent {
                         div={{ className: "col-6 form-group" }}
                         label={{
                           forceLabel: "Test Code",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "test_code",
                           value: this.state.test_code,
                           events: {
-                            onChange: texthandle.bind(this, this)
+                            onChange: texthandle.bind(this, this),
                           },
                           others: {
-                            tabIndex: "2"
-                          }
+                            tabIndex: "2",
+                          },
                         }}
                       />
                       {/*<AlagehAutoComplete
@@ -304,16 +304,16 @@ class NewInvestigation extends PureComponent {
                     <MyContext.Provider
                       value={{
                         state: this.state,
-                        updateState: obj => {
+                        updateState: (obj) => {
                           this.setState({ ...obj });
-                        }
+                        },
                       }}
                     >
                       {this.state.investigation_type === "L" ? (
                         <LabInvestigation InvestigationIOputs={this.state} />
                       ) : (
-                          <RadInvestigation InvestigationIOputs={this.state} />
-                        )}
+                        <RadInvestigation InvestigationIOputs={this.state} />
+                      )}
                     </MyContext.Provider>
                   </div>
                 </div>
@@ -332,11 +332,11 @@ class NewInvestigation extends PureComponent {
                           {this.state.hims_d_investigation_test_id === null ? (
                             <AlgaehLabel label={{ fieldName: "btnSave" }} />
                           ) : (
-                              <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                            )}
+                            <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                          )}
                         </button>
                         <button
-                          onClick={e => {
+                          onClick={(e) => {
                             this.onClose(e);
                           }}
                           type="button"
@@ -360,7 +360,7 @@ class NewInvestigation extends PureComponent {
 function mapStateToProps(state) {
   return {
     ingservices: state.ingservices,
-    testcategory: state.testcategory
+    testcategory: state.testcategory,
   };
 }
 
@@ -368,7 +368,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServices: AlgaehActions,
-      getTestCategory: AlgaehActions
+      getTestCategory: AlgaehActions,
     },
     dispatch
   );

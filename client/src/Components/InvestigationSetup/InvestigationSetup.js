@@ -11,7 +11,7 @@ import { AlgaehActions } from "../../actions/algaehActions";
 
 import {
   getInvestigations,
-  EditInvestigationTest
+  EditInvestigationTest,
 } from "./InvestigationSetupEvent";
 
 import moment from "moment";
@@ -38,7 +38,7 @@ class InvestigationSetup extends Component {
       isCommentsOpen: false,
       investigation_test_id: null,
       test_name: null,
-      comments_data: []
+      comments_data: [],
     };
   }
 
@@ -53,8 +53,8 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "INVTESTCATEGORY_GET_DATA",
-          mappingName: "invtestcategory"
-        }
+          mappingName: "invtestcategory",
+        },
       });
     }
     if (
@@ -67,8 +67,8 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
-          mappingName: "labspecimen"
-        }
+          mappingName: "labspecimen",
+        },
       });
     }
     if (
@@ -81,8 +81,8 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",
-          mappingName: "labsection"
-        }
+          mappingName: "labsection",
+        },
       });
     }
     getInvestigations(this, this);
@@ -90,9 +90,8 @@ class InvestigationSetup extends Component {
 
   ShowModel(e) {
     this.setState({
-      ...this.state,
       isOpen: !this.state.isOpen,
-      InvestigationPop: {}
+      InvestigationPop: {},
     });
 
     this.props.getTestCategory({
@@ -102,8 +101,8 @@ class InvestigationSetup extends Component {
       data: { investigation_type: "L" },
       redux: {
         type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
+        mappingName: "testcategory",
+      },
     });
   }
 
@@ -111,7 +110,7 @@ class InvestigationSetup extends Component {
     this.setState(
       {
         ...this.state,
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
       },
       () => {
         if (e === true) {
@@ -126,7 +125,7 @@ class InvestigationSetup extends Component {
       isCommentsOpen: !this.state.isCommentsOpen,
       investigation_test_id: null,
       test_name: null,
-      comments_data: []
+      comments_data: [],
     });
   }
 
@@ -136,23 +135,23 @@ class InvestigationSetup extends Component {
       module: "laboratory",
       data: {
         investigation_test_id: row.hims_d_investigation_test_id,
-        comment_status: "A"
+        comment_status: "A",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           this.setState({
             isCommentsOpen: !this.state.isCommentsOpen,
             investigation_test_id: row.hims_d_investigation_test_id,
             test_name: row.description,
-            comments_data: response.data.records
+            comments_data: response.data.records,
           });
         }
-      }
+      },
     });
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -160,7 +159,7 @@ class InvestigationSetup extends Component {
 
   setUpdateComponent(row, e) {
     this.setState({
-      isOpen: true
+      isOpen: true,
     });
   }
 
@@ -171,7 +170,7 @@ class InvestigationSetup extends Component {
         investigation_type: null,
         category_id: null,
         lab_section_id: null,
-        specimen_id: null
+        specimen_id: null,
       },
       () => {
         getInvestigations(this, this);
@@ -234,7 +233,7 @@ class InvestigationSetup extends Component {
                     <AlgaehLabel
                       label={{
                         fieldName: "investigation_setup",
-                        align: "ltr"
+                        align: "ltr",
                       }}
                     />
                   }
@@ -249,7 +248,7 @@ class InvestigationSetup extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Test Comments",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -270,7 +269,7 @@ class InvestigationSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -287,7 +286,7 @@ class InvestigationSetup extends Component {
                                 pointerEvents:
                                   row.investigation_type === "R" ? "none" : "",
                                 opacity:
-                                  row.investigation_type === "R" ? "0.1" : ""
+                                  row.investigation_type === "R" ? "0.1" : "",
                               }}
                               onClick={this.OpenComments.bind(this, row)}
                             />
@@ -298,8 +297,8 @@ class InvestigationSetup extends Component {
                         maxWidth: 90,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "investigation_type",
@@ -308,15 +307,15 @@ class InvestigationSetup extends Component {
                           label={{ fieldName: "investigation_type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.investigation_type === "L"
                           ? "Lab"
                           : "Radiology";
-                      }
+                      },
                     },
                     {
                       fieldName: "description",
-                      label: <AlgaehLabel label={{ fieldName: "test_name" }} />
+                      label: <AlgaehLabel label={{ fieldName: "test_name" }} />,
                     },
                     {
                       fieldName: "category_id",
@@ -324,14 +323,14 @@ class InvestigationSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "category_id" }} />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                              f =>
-                                f.hims_d_test_category_id === row.category_id
-                            );
+                                (f) =>
+                                  f.hims_d_test_category_id === row.category_id
+                              );
 
                         return (
                           <span>
@@ -342,21 +341,21 @@ class InvestigationSetup extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "specimen_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "specimen_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                              f =>
-                                f.hims_d_lab_specimen_id === row.specimen_id
-                            );
+                                (f) =>
+                                  f.hims_d_lab_specimen_id === row.specimen_id
+                              );
 
                         return (
                           <span>
@@ -365,12 +364,12 @@ class InvestigationSetup extends Component {
                               : ""}
                           </span>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="investigation_code"
                   dataSource={{
-                    data: this.state.investigations_data
+                    data: this.state.investigations_data,
                   }}
                   // isEditable={true}
                   filter={true}
@@ -391,7 +390,7 @@ function mapStateToProps(state) {
     invtestcategory: state.invtestcategory,
     labspecimen: state.labspecimen,
     labsection: state.labsection,
-    testcategory: state.testcategory
+    testcategory: state.testcategory,
   };
 }
 
@@ -401,7 +400,7 @@ function mapDispatchToProps(dispatch) {
       getInvestigationDetails: AlgaehActions,
       getTestCategory: AlgaehActions,
       getLabSpecimen: AlgaehActions,
-      getLabsection: AlgaehActions
+      getLabsection: AlgaehActions,
     },
     dispatch
   );
