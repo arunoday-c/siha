@@ -18,7 +18,7 @@ build_image:
     - algaeh-cli build -a
     - pm2 delete all
     - algaeh-cli start -a
-    - cd client/build && serve -s -l 5001
+    - cd client/build && tmux new -d 'serve -s -l 5001'
 
 # build_docker:
 #   only:
