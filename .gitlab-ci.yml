@@ -16,7 +16,9 @@ build_image:
     - echo $PATH
     - node -v
     - algaeh-cli build -a
-    - algeah-cli start -a
+    - pm2 delete all
+    - algaeh-cli start -a
+    - cd client/build && serve -s -l 5001
 
 # build_docker:
 #   only:
