@@ -5,7 +5,7 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../Wrapper/algaehWrapper";
 export default class ReorderQtyMasterPharmacy extends Component {
   render() {
@@ -25,11 +25,11 @@ export default class ReorderQtyMasterPharmacy extends Component {
                 <div className="row">
                   <AlagehAutoComplete
                     div={{
-                      className: "col-12 form-group mandatory"
+                      className: "col-12 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Select Store",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "",
@@ -38,8 +38,8 @@ export default class ReorderQtyMasterPharmacy extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: []
-                      }
+                        data: [],
+                      },
                     }}
                   />
                   <div className="col-4">
@@ -53,17 +53,17 @@ export default class ReorderQtyMasterPharmacy extends Component {
                   </div>
                   <AlagehFormGroup
                     div={{
-                      className: "col-4 mandatory"
+                      className: "col-4 mandatory",
                     }}
                     label={{
                       forceLabel: "Reorder Qty",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "",
                       value: "",
-                      events: {}
+                      events: {},
                     }}
                   />
                 </div>
@@ -80,7 +80,7 @@ export default class ReorderQtyMasterPharmacy extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Select" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span style={{ padding: 6 }}>
                                 <input type="checkbox" />
@@ -89,15 +89,15 @@ export default class ReorderQtyMasterPharmacy extends Component {
                           },
                           others: {
                             maxWidth: 50,
-                            filterable: false
-                          }
+                            filterable: false,
+                          },
                         },
                         {
                           fieldName: "abc",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -106,22 +106,22 @@ export default class ReorderQtyMasterPharmacy extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   events: {},
-                                  others: {}
+                                  others: {},
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "abc",
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Reorder Qty"
+                                forceLabel: "Reorder Qty",
                               }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -130,16 +130,16 @@ export default class ReorderQtyMasterPharmacy extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   events: {},
-                                  others: {}
+                                  others: {},
                                 }}
                               />
                             );
                           },
                           others: {
                             maxWidth: 100,
-                            filterable: false
-                          }
-                        }
+                            filterable: false,
+                          },
+                        },
                       ]}
                       keyId=""
                       dataSource=""
@@ -177,28 +177,28 @@ export default class ReorderQtyMasterPharmacy extends Component {
                           fieldName: "abc",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                          )
+                          ),
                         },
                         {
                           fieldName: "abc",
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Store Name"
-                              }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "abc",
-                          label: (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Reorder Qty"
+                                forceLabel: "Store Name",
                               }}
                             />
                           ),
-                          displayTemplate: row => {
+                        },
+                        {
+                          fieldName: "abc",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Reorder Qty",
+                              }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -207,16 +207,16 @@ export default class ReorderQtyMasterPharmacy extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   events: {},
-                                  others: {}
+                                  others: {},
                                 }}
                               />
                             );
                           },
                           others: {
                             maxWidth: 100,
-                            filterable: false
-                          }
-                        }
+                            filterable: false,
+                          },
+                        },
                       ]}
                       keyId=""
                       dataSource=""

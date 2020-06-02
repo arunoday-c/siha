@@ -1,4 +1,9 @@
 # gitlab ci/cd to build docker images
+before_script:
+  - export PATH="/home/algaeh/.nvm/versions/node/v12.16.3/bin/:$PATH"
+  - tmux kill-server
+  - pkill node
+
 build_image:
   only:
     refs:
@@ -9,8 +14,12 @@ build_image:
   script:
     - cd /home/algaeh/algaeh-monorepo
     - git pull
+    - echo $PATH
+    - node -v
     - algaeh-cli build -a
-    - algeah-cli start -a
+    - pm2 delete all
+    - algaeh-cli start -a
+    - cd client/build && tmux new -d 'serve -s -l 5001'
 
 # build_docker:
 #   only:

@@ -197,7 +197,7 @@ class PersonalDetails extends Component {
                       }}
                     />
 
-                    <AlgaehFormGroup
+                    <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12 mandatory" }}
                       label={{
                         fieldName: "full_name",
@@ -214,15 +214,15 @@ class PersonalDetails extends Component {
                           tabIndex: "2",
                         },
                       }}
-                      target={{
-                        tElement: (text) => {
-                          const arabic =
-                            this.state.arabic_name !== undefined
-                              ? this.state.arabic_name + " " + text
-                              : text;
-                          this.setState({ arabic_name: arabic });
-                        },
-                      }}
+                      // target={{
+                      //   tElement: (text) => {
+                      //     const arabic =
+                      //       this.state.arabic_name !== undefined
+                      //         ? this.state.arabic_name + " " + text
+                      //         : text;
+                      //     this.setState({ arabic_name: arabic });
+                      //   },
+                      // }}
                     />
 
                     <AlagehFormGroup

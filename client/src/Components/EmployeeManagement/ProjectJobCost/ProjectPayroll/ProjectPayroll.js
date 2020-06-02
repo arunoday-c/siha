@@ -16,7 +16,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
-import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup"
+import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup";
 
 class ProjectPayroll extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class ProjectPayroll extends Component {
       total_cost: 0,
       lbl_total: "Total Employees",
       decimal_places: 0,
-      isOpen: false
+      isOpen: false,
     };
     this.baseState = this.state;
   }
@@ -64,7 +64,7 @@ class ProjectPayroll extends Component {
     const userToken = this.context.userToken;
     this.setState({
       hospital_id: userToken.hims_d_hospital_id,
-      decimal_places: userToken.decimal_places
+      decimal_places: userToken.decimal_places,
     });
     if (
       this.props.organizations === undefined ||
@@ -117,8 +117,8 @@ class ProjectPayroll extends Component {
       this.props.projects === undefined
         ? []
         : this.props.projects.filter(
-          (f) => f.hims_d_project_id === this.state.project_id
-        );
+            (f) => f.hims_d_project_id === this.state.project_id
+          );
 
     return (
       <div className="projectPayrollScreen">
@@ -324,7 +324,10 @@ class ProjectPayroll extends Component {
                                 <i
                                   className="fas fa-eye"
                                   aria-hidden="true"
-                                  onClick={this.openSalaryComponents.bind(this, row)}
+                                  onClick={this.openSalaryComponents.bind(
+                                    this,
+                                    row
+                                  )}
                                 />
                               </span>
                             );
@@ -523,6 +526,29 @@ class ProjectPayroll extends Component {
             </div>
           </div>
         </div>
+
+        {/* <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              {this.state.net_amount != null ? (
+              <button
+                type="button"
+                className="btn btn-other"
+                onClick={this.clearState.bind(this)}
+                onClick={this.generateFinalSettlementSlip.bind(this)}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Generate Settlement Slip",
+                    returnText: true,
+                  }}
+                />
+              </button>
+              ) : null}
+            </div>
+          </div>
+        </div> */}
+
         <ProjectPayrollSalaryBreakup
           open={this.state.isOpen}
           onClose={this.closeSalaryComponents.bind(this)}
