@@ -12,7 +12,7 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Enter Chief Complaint. Atlest 4 letter"
+      title: "Enter Chief Complaint. Atlest 4 letter",
     });
 
     return isError;
@@ -25,7 +25,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Enter Significant Signs. Atlest 4 letter"
+      title: "Enter Significant Signs. Atlest 4 letter",
     });
 
     return isError;

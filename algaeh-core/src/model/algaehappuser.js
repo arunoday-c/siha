@@ -10,40 +10,66 @@ import algaehMail from "algaeh-utilities/mail-send";
 const { whereCondition, releaseDBConnection, selectStatement } = utils;
 
 let selectAppUsers = (req, res, next) => {
-  let labSection = {
-    algaeh_d_app_user_id: "ALL",
-  };
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    let condition = whereCondition(extend(labSection, req.query));
-    selectStatement(
-      {
-        db: req.db,
-        query:
-          "SELECT * FROM `algaeh_d_app_user` WHERE `record_status`='A' AND " +
-          condition.condition +
-          " order by algaeh_d_app_user_id desc " +
-          pagePaging,
-        values: condition.values,
-      },
-      (result) => {
+  try {
+    let labSection = {
+      //  algaeh_d_app_user_id: "ALL",
+      ...req.query,
+    };
+    _mysql
+      .executeQuery({
+        query: `SELECT algaeh_d_app_user_id,user_display_name,user_status,user_type,username,employee_id FROM algaeh_d_app_user WHERE record_status='A' 
+        ${
+          labSection.algaeh_d_app_user_id !== undefined
+            ? " AND algaeh_d_app_user_id=?"
+            : ""
+        }
+      order by algaeh_d_app_user_id desc`,
+        values: [labSection.algaeh_d_app_user_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      },
-      (error) => {
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      },
-      true
-    );
+      });
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let pagePaging = "";
+    // if (req.paging != null) {
+    //   let Page = paging(req.paging);
+    //   pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
+    // }
+
+    // let condition = whereCondition(extend(labSection, req.query));
+    // console.log("condition", condition);
+    // selectStatement(
+    //   {
+    //     db: req.db,
+    //     query:
+    //       "SELECT * FROM `algaeh_d_app_user` WHERE `record_status`='A' AND " +
+    //       condition.condition +
+    //       " order by algaeh_d_app_user_id desc " +
+    //       pagePaging,
+    //     values: condition.values,
+    //   },
+    //   (result) => {
+    //     req.records = result;
+    //     next();
+    //   },
+    //   (error) => {
+    //     next(error);
+    //   },
+    //   true
+    // );
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
