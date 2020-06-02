@@ -1,7 +1,9 @@
 # gitlab ci/cd to build docker images
 before_script:
-  - export DOCKER_HOST=tcp://localhost:2375
-  - export PATH="/home/algaeh/.nvm/versions/node/v12.11.1/bin/:$PATH"
+  - export PATH="/home/algaeh/.nvm/versions/node/v12.16.3/bin/:$PATH"
+  - tmux kill-server
+  - pkill node
+
 build_image:
   only:
     refs:
@@ -10,31 +12,35 @@ build_image:
     - build
     - hims
   script:
-    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
+    - cd /home/algaeh/algaeh-monorepo
     - git pull
     - echo $PATH
+    - node -v
     - algaeh-cli build -a
+    - pm2 delete all
+    - algaeh-cli start -a
+    - cd client/build && tmux new -d 'serve -s -l 5001'
 
-build_docker:
-  only:
-    refs:
-      - schedules
-  tags:
-    - build
-    - hims
-  script:
-    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker-compose -f docker-compose.yml build
-    - docker-compose -f docker-compose.yml push
+# build_docker:
+#   only:
+#     refs:
+#       - schedules
+#   tags:
+#     - build
+#     - hims
+#   script:
+#     - cd /home/algaeh/algaeh-monorepo
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#     - docker-compose -f docker-compose.yml build
+#     - docker-compose -f docker-compose.yml push
 
-start_stack:
-  only:
-    refs:
-      - schedules
-  tags:
-    - build
-    - hims
-  script:
-    - cd /f/LOCAL\ DEV/newrepository/algaeh-monorepo/
-    - docker stack deploy --compose-file=docker-compose.deploy.yml algaeh --with-registry-auth
+# start_stack:
+#   only:
+#     refs:
+#       - schedules
+#   tags:
+#     - build
+#     - hims
+#   script:
+#     - cd /home/algaeh/algaeh-monorepo
+#     - docker stack deploy --compose-file=docker-compose.deploy.yml algaeh --with-registry-auth
