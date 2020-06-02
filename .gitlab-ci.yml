@@ -9,6 +9,8 @@ build_image:
   script:
     - cd /home/algaeh/algaeh-monorepo
     - git pull
+    - echo $PATH
+    - node -v
     - algaeh-cli build -a
     - algeah-cli start -a
 
