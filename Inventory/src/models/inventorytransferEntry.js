@@ -86,25 +86,22 @@ export default {
         _mysql
           .executeQuery({
             query: `SELECT * from  hims_f_inventory_transfer_header \
-          where hospital_id=? and from_location_id=? and to_location_id=? ${strQty};
+          where from_location_id=? and to_location_id=? ${strQty};
           select D.*,IM.item_description, IU.uom_description from  hims_f_inventory_transfer_header H inner join \
           hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id = D.transfer_header_id \
           inner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id \
-          inner join hims_d_inventory_uom IU on D.uom_transferred_id=IU.hims_d_inventory_uom_id where hospital_id=?
-          and H.from_location_id=? and H.to_location_id=? ${strQty};
+          inner join hims_d_inventory_uom IU on D.uom_transferred_id=IU.hims_d_inventory_uom_id where 
+          H.from_location_id=? and H.to_location_id=? ${strQty};
           select S.* from  hims_f_inventory_transfer_header H
           inner join  hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id=D.transfer_header_id
           inner join hims_f_inventory_transfer_batches S on D.hims_f_inventory_transfer_detail_id=S.transfer_detail_id
-          where hospital_id=? and H.from_location_id=? and H.to_location_id=? ${strQty};
+          where H.from_location_id=? and H.to_location_id=? ${strQty};
            `,
             values: [
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id,
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id,
-              req.userIdentity.hospital_id,
               input.from_location_id,
               input.to_location_id
             ],

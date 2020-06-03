@@ -76,10 +76,10 @@ let getLabOrderedServices = (req, res, next) => {
       inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
       left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
       left join hims_d_title as T on T.his_d_title_id = E.title_id   WHERE " +
-          whereOrder +
-          (where.condition == ""
-            ? "" + " order by hims_f_lab_order_id desc"
-            : " AND " + where.condition),
+        whereOrder +
+        (where.condition == ""
+          ? "" + " order by hims_f_lab_order_id desc"
+          : " AND " + where.condition),
         where.values
       );
 
@@ -581,7 +581,7 @@ let insertLadOrderedServices = (req, res, next) => {
         visit_id: req.body.visit_id,
         service_id: s.services_id,
         billed: req.body.billed,
-        ordered_date: s.created_date,
+        ordered_date: new Date(),
         test_type: s.test_type,
       };
     });
@@ -948,10 +948,10 @@ SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
               debugLog("condition: ", condition);
               connection.query(
                 query +
-                  ";update hims_f_lab_order set lab_id_number ='" +
-                  labIdNumber +
-                  "',status='CL' where hims_f_lab_order_id=" +
-                  req.body.hims_f_lab_order_id,
+                ";update hims_f_lab_order set lab_id_number ='" +
+                labIdNumber +
+                "',status='CL' where hims_f_lab_order_id=" +
+                req.body.hims_f_lab_order_id,
                 condition,
                 (error, returns) => {
                   if (error) {
@@ -1010,7 +1010,7 @@ let getTestAnalytes = (req, res, next) => {
       db.query(
         "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
         and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND" +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -1304,26 +1304,26 @@ let updateLabResultEntry = (req, res, next) => {
           if (results != null && ref != null) {
             connection.query(
               "update hims_f_lab_order set `status`='" +
-                ref +
-                "',entered_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',entered_by= '" +
-                user_id.updated_by +
-                "',confirmed_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',confirmed_by= '" +
-                user_id.updated_by +
-                "',validated_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',validated_by= '" +
-                user_id.updated_by +
-                "',updated_date= '" +
-                moment().format("YYYY-MM-DD HH:mm") +
-                "',run_type='" +
-                runtype[0] +
-                "',updated_by='" +
-                user_id.updated_by +
-                "' where hims_f_lab_order_id=? ",
+              ref +
+              "',entered_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',entered_by= '" +
+              user_id.updated_by +
+              "',confirmed_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',confirmed_by= '" +
+              user_id.updated_by +
+              "',validated_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',validated_by= '" +
+              user_id.updated_by +
+              "',updated_date= '" +
+              moment().format("YYYY-MM-DD HH:mm") +
+              "',run_type='" +
+              runtype[0] +
+              "',updated_by='" +
+              user_id.updated_by +
+              "' where hims_f_lab_order_id=? ",
               [inputParam[0].order_id],
               (error, result) => {
                 if (error) {
