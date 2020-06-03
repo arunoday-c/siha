@@ -249,7 +249,7 @@ class ItemLocationReorder extends Component {
                         others: {
                           minWidth: 150,
                           filterable: true,
-                          disabled: true,
+                          editable: false,
                         },
                       },
                       {
