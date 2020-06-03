@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./EmployeeView.scss";
 import { AlgaehMessagePop } from "algaeh-react-components";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 function ChartEntry({ data = [], toggle = true }) {
   const [childArr, setChildArr] = useState(null);
@@ -72,14 +72,14 @@ export function EmployeeOrgChart() {
         if (res.data.success) {
           setEmployees([res.data.records]);
         } else {
-          AlgaehMessagePop({
-            title: res.data.records.message,
+          swalMessage({
+            title: res.data.message,
             type: "warning",
           });
         }
       },
       onError: (err) => {
-        AlgaehMessagePop({
+        swalMessage({
           title: err.message,
           type: "error",
         });
