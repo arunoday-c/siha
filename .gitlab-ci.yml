@@ -1,8 +1,6 @@
 # gitlab ci/cd to build docker images
 before_script:
   - export PATH="/home/algaeh/.nvm/versions/node/v12.16.3/bin/:$PATH"
-  - tmux kill-server
-  - pkill node
 
 build_image:
   only:
@@ -19,7 +17,6 @@ build_image:
     - algaeh-cli build -a
     - pm2 delete all
     - algaeh-cli start -a
-    - cd client/build && tmux new -d 'serve -s -l 5001'
 
 # build_docker:
 #   only:
