@@ -7,6 +7,10 @@ import Enumerable from "linq";
 const getPurchaseRequestList = $this => {
     let inpObj = { request_from: $this.state.request_from };
 
+    if ($this.state.category_id !== null) {
+        inpObj.category_id = $this.state.category_id;
+    }
+
     if ($this.state.from_date !== null) {
         inpObj.from_date = $this.state.from_date;
     }
@@ -14,14 +18,13 @@ const getPurchaseRequestList = $this => {
         inpObj.to_date = $this.state.to_date;
     }
 
+
     algaehApiCall({
         uri: "/PurchaseOrderEntry/getraiseRequestForPO",
         module: "procurement",
         method: "GET",
         data: inpObj,
-
         onSuccess: response => {
-            debugger
             if (response.data.success) {
                 let data = response.data.records;
                 $this.setState({ purchase_request_list: data });
@@ -33,6 +36,19 @@ const getPurchaseRequestList = $this => {
                 type: "error"
             });
         }
+    });
+};
+
+
+const texthandle = ($this, ctrl, e) => {
+    e = e || ctrl;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    $this.setState({
+        [name]: value
+    }, () => {
+        getPurchaseRequestList($this)
     });
 };
 
@@ -139,6 +155,7 @@ const RequestForQuotation = ($this) => {
 }
 
 export {
+    texthandle,
     dateFormater,
     poforhandle,
     datehandle,

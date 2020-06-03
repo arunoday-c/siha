@@ -77,7 +77,10 @@ export default {
       InvoiceEnable: false,
       OTItemAddDis: false,
       authorizeBtn: false,
-      dataFinder: false
+      dataFinder: false,
+      is_posted: "N",
+      dataPosted: true,
+      delete_stock_detail: []
     };
     return output;
   }

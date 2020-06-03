@@ -1,13 +1,20 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { AlgaehActions } from "../../../actions/algaehActions";
 
 import "./PurchaseRequestList.scss";
 import "./../../../styles/site.scss";
 import {
+    texthandle,
     getPurchaseRequestList,
     RequestForQuotation
 } from "./PurchaseRequestListEvent";
 
 import {
+    AlagehAutoComplete,
     AlgaehDataGrid,
     AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
@@ -15,7 +22,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
 
-export default class PurchaseRequestList extends Component {
+class PurchaseRequestList extends Component {
     constructor(props) {
         super(props);
         let month = moment().format("MM");
@@ -26,10 +33,19 @@ export default class PurchaseRequestList extends Component {
             po_from: null,
             to_location_id: null,
             purchase_list: [],
-
+            category_id: null,
             request_button: true
         };
         getPurchaseRequestList(this)
+        this.props.getItemCategory({
+            uri: "/inventory/getItemCategory",
+            module: "inventory",
+            method: "GET",
+            redux: {
+                type: "ITEM_CATEGORY_GET_DATA",
+                mappingName: "poitemcategory"
+            }
+        });
     }
 
     onCheckChangeRow(row, e) {
@@ -57,13 +73,13 @@ export default class PurchaseRequestList extends Component {
         return (
             <React.Fragment>
                 <div className="hptl-phase1-purchase-list-form">
-                    {/* <div
+                    <div
                         className="row inner-top-search"
-                        style={{ marginTop: "75px", paddingBottom: "10px" }}
+                        style={{ paddingBottom: "10px" }}
                     >
                         <div className="col-lg-12">
                             <div className="row">
-                                <AlgaehDateHandler
+                                {/* <AlgaehDateHandler
                                     div={{ className: "col" }}
                                     label={{ forceLabel: "From Date" }}
                                     textBox={{ className: "txt-fld", name: "from_date" }}
@@ -80,28 +96,31 @@ export default class PurchaseRequestList extends Component {
                                         onChange: datehandle.bind(this, this)
                                     }}
                                     value={this.state.to_date}
-                                />
+                                /> */}
 
                                 <AlagehAutoComplete
                                     div={{ className: "col-3" }}
-                                    label={{ forceLabel: "Request From" }}
+                                    label={{ forceLabel: "Select Category" }}
                                     selector={{
-                                        name: "request_from",
+                                        name: "category_id",
                                         className: "select-fld",
-                                        value: this.state.request_from,
+                                        value: this.state.category_id,
                                         dataSource: {
-                                            textField: "name",
-                                            valueField: "value",
-                                            data: GlobalVariables.PO_FROM
+                                            textField: "category_desc",
+                                            valueField: "hims_d_inventory_tem_category_id",
+                                            data: this.props.poitemcategory
                                         },
-
-                                        onChange: poforhandle.bind(this, this),
-                                        onClear: poforhandle.bind(this, this)
+                                        onChange: texthandle.bind(this, this),
+                                        onClear: () => {
+                                            this.setState({ category_id: null }, () => {
+                                                getPurchaseRequestList(this)
+                                            });
+                                        }
                                     }}
                                 />
                             </div>
                         </div>
-                    </div> */}
+                    </div>
 
                     <div className="row">
                         <div className="col-lg-12">
@@ -240,24 +259,24 @@ export default class PurchaseRequestList extends Component {
     }
 }
 
-// function mapStateToProps(state) {
-//     return {
-//         polocations: state.polocations
-//     };
-// }
+function mapStateToProps(state) {
+    return {
+        poitemcategory: state.poitemcategory,
+    };
+}
 
-// function mapDispatchToProps(dispatch) {
-//     return bindActionCreators(
-//         {
-//             getLocation: AlgaehActions
-//         },
-//         dispatch
-//     );
-// }
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(
+        {
+            getItemCategory: AlgaehActions,
+        },
+        dispatch
+    );
+}
 
-// export default withRouter(
-//     connect(
-//         mapStateToProps,
-//         mapDispatchToProps
-//     )(PurchaseRequestList)
-// );
+export default withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps
+    )(PurchaseRequestList)
+);

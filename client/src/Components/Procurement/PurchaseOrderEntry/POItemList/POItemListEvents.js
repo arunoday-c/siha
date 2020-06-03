@@ -415,6 +415,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     completed: "N",
     addedItem: true,
     saveEnable: stock_detail.length > 0 ? false : true,
+    dataPosted: $this.state.hims_f_procurement_po_header_id !== null && stock_detail.length > 0 ? false : true,
     phar_item_category: null,
     phar_item_group: null,
     phar_item_id: null,
@@ -458,6 +459,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       [assignData]: stock_detail,
       addedItem: true,
       saveEnable: stock_detail.length > 0 ? false : true,
+      dataPosted: $this.state.hims_f_procurement_po_header_id !== null && stock_detail.length > 0 ? false : true,
       completed: "N",
       phar_item_category: null,
       phar_item_group: null,
@@ -506,6 +508,10 @@ const deletePODetail = ($this, context, row) => {
   let total_tax = 0;
   let detail_discount = 0;
 
+  let delete_stock_detail = []
+  if (row.hims_f_procurement_po_detail_id !== null) {
+    delete_stock_detail.push(row.hims_f_procurement_po_detail_id)
+  }
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
@@ -541,6 +547,7 @@ const deletePODetail = ($this, context, row) => {
       if (context !== undefined) {
         context.updateState({
           pharmacy_stock_detail: pharmacy_stock_detail,
+          delete_stock_detail: delete_stock_detail,
           sub_total: sub_total,
           net_total: net_total,
           net_payable: net_payable,
@@ -585,6 +592,7 @@ const deletePODetail = ($this, context, row) => {
       if (context !== undefined) {
         context.updateState({
           inventory_stock_detail: inventory_stock_detail,
+          delete_stock_detail: delete_stock_detail,
           sub_total: sub_total,
           net_total: net_total,
           net_payable: net_payable,
@@ -598,8 +606,10 @@ const deletePODetail = ($this, context, row) => {
 
 const updatePODetail = ($this, context, row) => {
   let saveEnable = false;
-  if ($this.state.hims_f_procurement_po_header_id !== null) {
+  let dataPosted = $this.state.hims_f_procurement_po_header_id === null ? true : false;
+  if ($this.state.hims_f_procurement_po_header_id !== null && $this.state.is_posted === "Y") {
     saveEnable = true;
+    dataPosted = true
   }
 
   if ($this.state.po_from === "PHR") {
@@ -645,6 +655,7 @@ const updatePODetail = ($this, context, row) => {
         total_tax: total_tax,
         detail_discount: detail_discount,
         saveEnable: saveEnable,
+        dataPosted: dataPosted,
         authorizeBtn: false
       });
     }
@@ -691,6 +702,7 @@ const updatePODetail = ($this, context, row) => {
         total_tax: total_tax,
         detail_discount: detail_discount,
         saveEnable: saveEnable,
+        dataPosted: dataPosted,
         authorizeBtn: false
       });
     }
@@ -843,6 +855,7 @@ const EditGrid = ($this, context, cancelRow) => {
   if (context !== null) {
     context.updateState({
       saveEnable: true,
+      dataPosted: true,
       authorizeBtn: true
     });
   }
@@ -850,6 +863,7 @@ const EditGrid = ($this, context, cancelRow) => {
 
 const CancelGrid = ($this, context, cancelRow) => {
   let saveEnable = false;
+  let dataPosted = $this.state.hims_f_procurement_po_header_id === null ? true : false;
   let authorizeBtn = true;
 
   let _pharmacy_stock_detail =
@@ -869,14 +883,16 @@ const CancelGrid = ($this, context, cancelRow) => {
     }
   }
 
-  if ($this.state.hims_f_procurement_po_header_id !== null) {
+  if ($this.state.hims_f_procurement_po_header_id !== null && $this.state.is_posted === "Y") {
     saveEnable = true;
+    dataPosted = true;
     authorizeBtn = false;
   }
 
   if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
+      dataPosted: dataPosted,
       addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail,
       inventory_stock_detail: _inventory_stock_detail,

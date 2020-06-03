@@ -50,8 +50,8 @@ let getRadOrderedServices = (req, res, next) => {
         PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
         from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
-          whereOrder +
-          (where.condition == "" ? "" : " AND " + where.condition),
+        whereOrder +
+        (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -101,7 +101,7 @@ let insertRadOrderedServices = (req, res, next) => {
           visit_id: req.body.visit_id,
           service_id: s.services_id,
           billed: req.body.billed,
-          ordered_date: s.created_date,
+          ordered_date: new Date(),
           ordered_by: s.ordered_by,
           test_type: s.test_type
         };
@@ -193,8 +193,8 @@ let insertRadOrderedServicesBackUp = (req, res, next) => {
     debugLog("radServices", radServices);
     connection.query(
       "INSERT INTO hims_f_rad_order(" +
-        insurtColumns.join(",") +
-        ",created_by,updated_by)  VALUES ?",
+      insurtColumns.join(",") +
+      ",created_by,updated_by)  VALUES ?",
       [
         jsonArrayToObject({
           sampleInputObject: insurtColumns,
@@ -328,7 +328,7 @@ let getRadTemplateList = (req, res, next) => {
         "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,TD.hims_d_rad_template_detail_id \
          FROM hims_d_investigation_test IT, \
         hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -355,7 +355,7 @@ let updateRadOrderedBilled = (req, res, next) => {
       w =>
         w.hims_f_ordered_services_id != null &&
         w.service_type_id ==
-          appsettings.hims_d_service_type.service_type_id.Radiology
+        appsettings.hims_d_service_type.service_type_id.Radiology
     )
     .Select(s => {
       return {

@@ -144,18 +144,20 @@ class PurchaseOrderEntry extends Component {
                     }}
                   />
                   <h6>
-                    {this.state.authorize1 === "Y" &&
+                    {this.state.is_posted === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : this.state.authorize1 === "Y" &&
                       this.state.authorize2 === "Y" ? (
-                        <span className="badge badge-success">Authorized</span>
-                      ) : this.state.authorize1 === "Y" &&
-                        this.state.authorize2 === "N" ? (
-                          <span className="badge badge-danger">Pending</span>
-                        ) : this.state.authorize1 === "N" &&
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
                           this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">Pending</span>
-                          ) : (
-                            <span className="badge badge-danger">Pending</span>
-                          )}
+                            <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                            ) : (
+                              <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                            )}
                   </h6>
                 </div>
               ) : null}
@@ -411,12 +413,26 @@ class PurchaseOrderEntry extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={SavePOEnrty.bind(this, this)}
+                  onClick={SavePOEnrty.bind(this, this, "S")}
                   disabled={this.state.saveEnable}
                 >
                   <AlgaehLabel
                     label={{
                       forceLabel: "Save Order",
+                      returnText: true
+                    }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.dataPosted}
+                  onClick={SavePOEnrty.bind(this, this, "P")}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Post",
                       returnText: true
                     }}
                   />
@@ -441,8 +457,7 @@ class PurchaseOrderEntry extends Component {
                       disabled={
                         this.state.authBtnEnable === true
                           ? true
-                          : this.state.authorize1 === "Y" &&
-                            this.state.authorize2 === "Y"
+                          : this.state.authorize1 === "Y"
                             ? true
                             : false
                       }
@@ -454,12 +469,36 @@ class PurchaseOrderEntry extends Component {
                     >
                       <AlgaehLabel
                         label={{
-                          forceLabel:
-                            this.state.authorize1 === "N"
-                              ? "Authorize 1"
-                              : this.state.po_auth_level === "2"
-                                ? "Authorize 2"
-                                : "Authorize 1",
+                          forceLabel: "Authorize 1",
+                          returnText: true
+                        }}
+                      />
+                    </button>
+                  ) :
+                    null}
+                </AlgaehSecurityComponent>
+                <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH2">
+                  {this.props.purchase_auth === true ? (
+
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize2 === "Y"
+                            ? true
+                            : false
+                      }
+                      onClick={AuthorizePOEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N" ? "authorize1" : "authorize2"
+                      )}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize 2",
                           returnText: true
                         }}
                       />
