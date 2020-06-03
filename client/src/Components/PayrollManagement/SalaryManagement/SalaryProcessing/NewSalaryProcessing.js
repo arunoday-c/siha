@@ -11,6 +11,7 @@ import {
   openSalaryComponents,
   closeSalaryComponents,
   getOptions,
+  generateMonthlyLoanReport,
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
 const STATUS = {
@@ -109,12 +110,16 @@ class NewSalaryProcessing extends Component {
           : "UNCHECK",
     });
   }
+
   render() {
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
           <EmployeeFilter
-            loadFunc={(inputs) => SalaryProcess(this, inputs, "load")}
+            loadFunc={(inputs) => {
+              this.setState({ ...inputs });
+              SalaryProcess(this, inputs, "load");
+            }}
           />
           <div className="row" style={{ marginBottom: 40 }}>
             <div className="col-12">
@@ -423,7 +428,6 @@ class NewSalaryProcessing extends Component {
                     }}
                   />
                 </button>
-
                 <button
                   type="button"
                   className="btn btn-default"
@@ -431,6 +435,23 @@ class NewSalaryProcessing extends Component {
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+                {/* this.state.salaryprocess_header */}
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  // onClick={this.clearState.bind(this)}
+                  onClick={generateMonthlyLoanReport.bind(this, this)}
+                  disabled={
+                    this.state.salaryprocess_header.length === 0 ? true : false
+                  }
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Monthly Loan Report",
+                      returnText: true,
+                    }}
                   />
                 </button>
               </div>
