@@ -54,6 +54,7 @@ import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
+
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
