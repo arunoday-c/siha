@@ -1108,7 +1108,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
           .then((resultd) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
-              req.records = resultd;
+              req.records = { encounter_id: currentEncounterNo };
               next();
             });
           })
