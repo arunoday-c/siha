@@ -18,7 +18,7 @@
   "author": "Algaeh technologies private limited.",
   "license": "ISC",
   "dependencies": {
-    "algaeh-mysql": "^1.4.1",
+    "algaeh-mysql": "^1.4.2",
     "base64-img": "^1.0.4",
     "body-parser": "^1.18.2",
     "concurrently": "^3.5.1",
