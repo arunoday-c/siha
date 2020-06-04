@@ -998,7 +998,7 @@ export default {
   },
 
   //created by irfan: to get doctors Schedule list
-  getDoctorsScheduledList: (req, res, next) => {
+  getDoctorsScheduledListBKP_04_06_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     let outputArray = [];
@@ -1056,6 +1056,7 @@ export default {
                   ")" +
                   selectDoctor +
                   " group by  provider_id;",
+                printQuery: true,
               })
               .then((results) => {
                 result[i]["doctorsList"] = results;
@@ -1082,6 +1083,78 @@ export default {
         next(e);
       });
   },
+
+  //created by irfan: to get doctors Schedule list
+  getDoctorsScheduledList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.query;
+    let str = "";
+    if (input.month > 0) {
+      str += ` and month=${input.month}`;
+    }
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description,\
+            month, year,from_date,to_date, from_work_hr,\
+             to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+          to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+           from hims_d_appointment_schedule_header where record_status='A' AND sub_dept_id=?\
+            and year=? and hospital_id=? " +
+          str,
+        values: [input.sub_dept_id, input.year, req.userIdentity.hospital_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        let header_ids = result.map((m) => {
+          return m.hims_d_appointment_schedule_header_id;
+        });
+
+        if (result.length > 0) {
+          _mysql
+            .executeQuery({
+              query: `select distinct provider_id,appointment_schedule_header_id,E.full_name from 
+                        hims_d_appointment_schedule_detail D inner join  hims_d_employee E
+                        on D.provider_id=E.hims_d_employee_id  
+                        where appointment_schedule_header_id in (${header_ids} ) and D.record_status='A' and E.record_status='A';`,
+              printQuery: true,
+            })
+            .then((results) => {
+              _mysql.releaseConnection();
+              let doctors = _.chain(results)
+                .groupBy((g) => g.appointment_schedule_header_id)
+                .value();
+
+              const outputArray = [];
+              result.forEach((item) => {
+                outputArray.push({
+                  ...item,
+                  doctorsList:
+                    doctors[item["hims_d_appointment_schedule_header_id"]],
+                });
+              });
+
+              req.records = outputArray;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        }
+      })
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
   //created by irfan:to get Doctor Schedule Date Wise
   getDoctorScheduleDateWise: (req, res, next) => {
     //const _mysql = new algaehMysql();
@@ -2334,7 +2407,7 @@ export default {
           req.userIdentity.hospital_id,
           input.providers,
         ],
-        printQuery: false,
+        printQuery: true,
       })
       .then((result) => {
         // _mysql.releaseConnection();
