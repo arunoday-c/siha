@@ -286,16 +286,29 @@ const ClearData = ($this, e) => {
   getPOOptions($this);
 };
 
-const SavePOEnrty = $this => {
+const SavePOEnrty = ($this, from) => {
   AlgaehLoader({ show: true });
+  debugger
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
     $this.state.po_entry_detail = $this.state.inventory_stock_detail;
   }
+  let strUri = "";
+  let strMessage = "Saved successfully . .";
 
+  if (from === "P") {
+    $this.state.is_posted = "Y";
+    strMessage = "Posted successfully . ."
+  }
+
+  if ($this.state.hims_f_procurement_po_header_id !== null) {
+    strUri = "/PurchaseOrderEntry/postPurchaseOrderEntry"
+  } else {
+    strUri = "/PurchaseOrderEntry/addPurchaseOrderEntry"
+  }
   algaehApiCall({
-    uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
+    uri: strUri,
     module: "procurement",
     data: $this.state,
     onSuccess: response => {
@@ -304,14 +317,15 @@ const SavePOEnrty = $this => {
           purchase_number: response.data.records.purchase_number,
           hims_f_procurement_po_header_id:
             response.data.records.hims_f_procurement_po_header_id,
-          saveEnable: true,
-          dataExitst: true,
-          dataFinder: true
+          saveEnable: $this.state.is_posted === "Y" ? true : false,
+          dataExitst: $this.state.is_posted === "Y" ? true : false,
+          dataFinder: true,
+          dataPosted: false
         });
 
         swalMessage({
           type: "success",
-          title: "Saved successfully . ."
+          title: strMessage
         });
       }
       AlgaehLoader({ show: false });
@@ -363,9 +377,19 @@ const getCtrlCode = ($this, docNumber) => {
                 parseFloat(data.po_entry_detail[i].authorize_quantity);
             }
           }
-          data.saveEnable = true;
-          data.dataExitst = true;
+
           data.dataFinder = true;
+
+          debugger
+          if (data.is_posted === "Y") {
+            data.dataPosted = true;
+            data.saveEnable = true;
+            data.dataExitst = true;
+          } else {
+            data.dataPosted = false;
+            data.saveEnable = false;
+            data.dataExitst = false;
+          }
 
           if (data.po_from === "PHR") {
             $this.state.pharmacy_stock_detail = data.po_entry_detail;

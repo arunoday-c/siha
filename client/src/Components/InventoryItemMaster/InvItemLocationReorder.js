@@ -24,13 +24,16 @@ class ItemLocationReorder extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.item_id !== undefined) {
       this.setState({ reorder_locations: newProps.reorder_locations });
     }
   }
 
-  textHandeler(ctrl, e) {
+  textHandeler(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+  dropDownHandler(ctrl, e) {
     e = e || ctrl;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -47,7 +50,6 @@ class ItemLocationReorder extends Component {
   }
 
   addLocationWiseReorder(e) {
-    debugger;
     let reorder_locations = this.state.reorder_locations;
 
     let location_Exists = reorder_locations.find(
@@ -167,7 +169,7 @@ class ItemLocationReorder extends Component {
                       autoComplete: "off",
                     },
 
-                    onChange: this.textHandeler.bind(this),
+                    onChange: this.dropDownHandler.bind(this),
                   }}
                 />
                 <AlagehFormGroup
@@ -250,7 +252,7 @@ class ItemLocationReorder extends Component {
                         others: {
                           minWidth: 150,
                           filterable: true,
-                          disabled: true,
+                          editable: false,
                         },
                       },
                       {

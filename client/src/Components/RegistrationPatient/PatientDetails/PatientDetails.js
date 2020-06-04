@@ -19,7 +19,7 @@ export default class PatientDetails extends PureComponent {
 
     this.state = {
       actionPatientDesign: true,
-      actionInformationDesign: true
+      actionInformationDesign: true,
     };
   }
 
@@ -32,12 +32,12 @@ export default class PatientDetails extends PureComponent {
     if (dataValue === "patient-details") {
       this.setState({
         actionPatientDesign: true,
-        actionInformationDesign: true
+        actionInformationDesign: true,
       });
     } else if (dataValue === "other-information") {
       this.setState({
         actionInformationDesign: false,
-        actionPatientDesign: false
+        actionPatientDesign: false,
       });
     }
   }
@@ -48,7 +48,7 @@ export default class PatientDetails extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
               <div className="col-12 patIDCard">
                 <div className="row cardHeader">
@@ -99,14 +99,14 @@ export default class PatientDetails extends PureComponent {
                       "patient-details",
                       context
                     )}
-                    ref={patientForm => {
+                    ref={(patientForm) => {
                       this.patientForm = patientForm;
                     }}
                   >
                     {
                       <AlgaehLabel
                         label={{
-                          fieldName: "tab_patdtls"
+                          fieldName: "tab_patdtls",
                         }}
                       />
                     }
@@ -119,14 +119,14 @@ export default class PatientDetails extends PureComponent {
                       "other-information",
                       context
                     )}
-                    ref={otherInFormation => {
+                    ref={(otherInFormation) => {
                       this.otherInFormation = otherInFormation;
                     }}
                   >
                     {
                       <AlgaehLabel
                         label={{
-                          fieldName: "tab_othinf"
+                          fieldName: "tab_othinf",
                         }}
                       />
                     }
@@ -152,9 +152,9 @@ export default class PatientDetails extends PureComponent {
                                 this.patientForm.classList.add("d-none");
                               }
                             );
-                          }
-                        }
-                      ]
+                          },
+                        },
+                      ],
                     }}
                   >
                     <PatientForm

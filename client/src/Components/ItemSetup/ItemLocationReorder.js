@@ -29,7 +29,11 @@ class ItemLocationReorder extends Component {
     }
   }
 
-  textHandeler(ctrl, e) {
+  textHandeler(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+  dropDownHandler(ctrl, e) {
     e = e || ctrl;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -123,7 +127,7 @@ class ItemLocationReorder extends Component {
 
   render() {
     return (
-      <div className="ReorderQtyMasterPharmacyScreen" style={{ marginTop: 43 }}>
+      <div className="ReorderQtyMasterPharmacyScreen">
         <AlgaehModalPopUp
           events={{
             onClose: this.onClose.bind(this),
@@ -161,7 +165,7 @@ class ItemLocationReorder extends Component {
                       autoComplete: "off",
                     },
 
-                    onChange: this.textHandeler.bind(this),
+                    onChange: this.dropDownHandler.bind(this),
                   }}
                 />
                 <AlagehFormGroup
@@ -172,13 +176,14 @@ class ItemLocationReorder extends Component {
                   }}
                   textBox={{
                     number: {
-                      allowNegative: false,
+                      // allowNegative: false,
                       thousandSeparator: ",",
                     },
+                    type: "number",
                     className: "txt-fld",
                     name: "reorder_qty",
                     value: this.state.reorder_qty,
-                    dontAllowKeys: ["-", "e", "."],
+                    // dontAllowKeys: ["-", "e", "."],
                     events: {
                       onChange: this.textHandeler.bind(this),
                     },
@@ -244,7 +249,7 @@ class ItemLocationReorder extends Component {
                         others: {
                           minWidth: 150,
                           filterable: true,
-                          disabled: true,
+                          editable: false,
                         },
                       },
                       {

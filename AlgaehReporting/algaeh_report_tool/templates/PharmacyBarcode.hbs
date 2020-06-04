@@ -1,11 +1,15 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
 
-{{#each header}}
-<div class="barcodeLine">
- <small class="small-top-left">{{item_description}}</small>
-  <img src={{barcode "code128" print_barcode false }} />
- <small class="small-left"><b>{{sales_price}}</b></small>
-  <small class="small-right">{{print_barcode}}</small>
-  {{!-- <hr/>  --}}
-</div>
+<body>
+  <div class="print-body" style="page-break-before: always; page-break-after: always; margin-right:15px">
+    {{#each header}}
+    <div class="barcodeLine">
+      <small class="small-top-left">{{item_description}}</small>
+      <img src={{barcode "code128" print_barcode false }} />
+      <small class="small-left"><b>{{sales_price}}</b></small>
+      <small class="small-right">{{print_barcode}}</small>
+      {{!-- <hr/>  --}}
+    </div>
+  </div>
+</body>
 {{/each }}

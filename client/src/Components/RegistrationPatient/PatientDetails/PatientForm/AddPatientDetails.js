@@ -2,7 +2,7 @@ import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import {
   saveImageOnServer,
-  SetBulkState
+  SetBulkState,
 } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -12,7 +12,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -21,7 +21,7 @@ const handlePrimaryId = ($this, e) => {
   let value = e.value || e.target.value;
   if (/^[A-Z0-9]+$/i.test(value) || !value) {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   } else {
     return;
@@ -43,22 +43,22 @@ const countryStatehandle = ($this, e) => {
           $this.setState({
             state_id: null,
             city_id: null,
-            countrystates: e.selected.states
+            countrystates: e.selected.states,
           });
         } else if (e.name === "state_id") {
           name = e.name;
           value = e.value;
           $this.setState({
             city_id: null,
-            cities: e.selected.cities
+            cities: e.selected.cities,
           });
         }
       }
 
       $this.setState({
-        [name]: value
+        [name]: value,
       });
-    }
+    },
   });
 };
 
@@ -69,7 +69,7 @@ const titlehandle = ($this, e) => {
   if (e.value === undefined) {
     $this.setState({
       gender: setGender,
-      [e]: null
+      [e]: null,
     });
   } else {
     if (e.selected.title === "Mr" || e.selected.title === "Master") {
@@ -83,7 +83,7 @@ const titlehandle = ($this, e) => {
     }
     $this.setState({
       gender: setGender,
-      [e.name]: e.value
+      [e.name]: e.value,
     });
   }
 };
@@ -101,7 +101,7 @@ const calculateAge = ($this, e) => {
       age: years,
       AGEMM: months,
       AGEDD: days,
-      date_of_birth: moment(e)._d
+      date_of_birth: moment(e)._d,
     });
   } else {
     years = 0;
@@ -111,7 +111,7 @@ const calculateAge = ($this, e) => {
       age: years,
       AGEMM: months,
       AGEDD: days,
-      date_of_birth: moment(e)._d
+      date_of_birth: moment(e)._d,
     });
   }
 };
@@ -125,7 +125,7 @@ const setAge = ($this, e) => {
     if (e.target.value < 0) {
       swalMessage({
         title: "Negative values are not allowed",
-        type: "error"
+        type: "error",
       });
       return;
     }
@@ -133,7 +133,7 @@ const setAge = ($this, e) => {
     if (e.target.name === "AGEMM" && parseFloat(e.target.value) > 11) {
       swalMessage({
         title: "Age in months cannot be greater than 11.",
-        type: "error"
+        type: "error",
       });
       return;
       // $this.setState({
@@ -143,7 +143,7 @@ const setAge = ($this, e) => {
     if (e.target.name === "AGEDD" && parseFloat(e.target.value) > 30) {
       swalMessage({
         title: "Age in days cannot be greater than 30.",
-        type: "error"
+        type: "error",
       });
       return;
       // $this.setState({
@@ -159,7 +159,7 @@ const setAge = ($this, e) => {
 
       $this.setState({
         date_of_birth: d._d,
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
     }
   }
@@ -167,7 +167,7 @@ const setAge = ($this, e) => {
 
 const onDrop = ($this, file, fileType) => {
   saveImageOnServer({
-    fileControl: fileType[0].preview
+    fileControl: fileType[0].preview,
   });
 };
 
@@ -179,7 +179,7 @@ const nationalityhandle = ($this, context, e) => {
       let value = e.value || e.target.value;
 
       let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
-        .where(w => w.hims_d_hospital_id === $this.state.hospital_id)
+        .where((w) => w.hims_d_hospital_id === $this.state.hospital_id)
         .firstOrDefault();
 
       let vat_applicable = "Y";
@@ -194,7 +194,7 @@ const nationalityhandle = ($this, context, e) => {
       $this.setState(
         {
           [name]: value,
-          vat_applicable: vat_applicable
+          vat_applicable: vat_applicable,
         },
         () => {
           if (
@@ -204,7 +204,7 @@ const nationalityhandle = ($this, context, e) => {
             if (context !== undefined) {
               context.updateState({
                 [name]: value,
-                vat_applicable: vat_applicable
+                vat_applicable: vat_applicable,
               });
             }
             // $this.processInsurance.Click();
@@ -212,13 +212,13 @@ const nationalityhandle = ($this, context, e) => {
           } else {
             if (context !== undefined) {
               context.updateState({
-                ...$this.state
+                ...$this.state,
               });
             }
           }
         }
       );
-    }
+    },
   });
 };
 
@@ -241,8 +241,8 @@ const generateBillDetails = ($this, context) => {
           secondary_insurance_provider_id:
             $this.state.secondary_insurance_provider_id,
           secondary_network_id: $this.state.secondary_network_id,
-          secondary_network_office_id: $this.state.secondary_network_office_id
-        }
+          secondary_network_office_id: $this.state.secondary_network_office_id,
+        },
       ];
       AlgaehLoader({ show: true });
 
@@ -251,7 +251,7 @@ const generateBillDetails = ($this, context) => {
         module: "billing",
         method: "POST",
         data: serviceInput,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             if (context !== null) {
               context.updateState({ ...response.data.records });
@@ -262,11 +262,12 @@ const generateBillDetails = ($this, context) => {
               module: "billing",
               method: "POST",
               data: response.data.records,
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
                   if ($this.state.default_pay_type === "CD") {
-                    response.data.records.card_amount = response.data.records.receiveable_amount
-                    response.data.records.cash_amount = 0
+                    response.data.records.card_amount =
+                      response.data.records.receiveable_amount;
+                    response.data.records.cash_amount = 0;
                   }
 
                   if (context !== null) {
@@ -275,25 +276,25 @@ const generateBillDetails = ($this, context) => {
                 }
                 AlgaehLoader({ show: false });
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -310,17 +311,46 @@ const validateAge = ($this, e) => {
         date_of_birth: null,
         age: null,
         AGEMM: null,
-        AGEDD: null
+        AGEDD: null,
       },
       () => {
         swalMessage({
           title: "Date of Birth must be a Past date",
-          type: "warning"
+          type: "warning",
         });
       }
     );
   }
 };
+export function hijriOnChange($this, e) {
+  const { gregorianDate } = e.target;
+  if (gregorianDate === undefined || gregorianDate === "") {
+    return;
+  }
+  const gDate = parseInt(moment(gregorianDate).format("YYYYMMDD"));
+  const cDate = parseInt(moment().format("YYYYMMDD"));
+  if (gDate > cDate) {
+    swalMessage({
+      title: "Date can not be grater than todays date",
+      type: "warning",
+    });
+    return;
+  }
+
+  let fromDate = moment(gregorianDate);
+  let toDate = new Date();
+  let years = moment(toDate).diff(fromDate, "year");
+  fromDate.add(years, "years");
+  let months = moment(toDate).diff(fromDate, "months");
+  fromDate.add(months, "months");
+  let days = moment(toDate).diff(fromDate, "days");
+  $this.setState({
+    date_of_birth: gregorianDate,
+    age: years,
+    AGEMM: months,
+    AGEDD: days,
+  });
+}
 
 export {
   texthandle,
@@ -332,5 +362,5 @@ export {
   countryStatehandle,
   nationalityhandle,
   generateBillDetails,
-  validateAge
+  validateAge,
 };

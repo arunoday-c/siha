@@ -1,7 +1,7 @@
 import {
   swalMessage,
   algaehApiCall,
-  getCookie
+  getCookie,
 } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -15,7 +15,7 @@ const LoadSalaryPayment = ($this, inputs) => {
     onSuccess: () => {
       AlgaehLoader({ show: true });
       $this.setState(
-        prevState => {
+        (prevState) => {
           return { inputs: !inputs ? prevState.inputs : inputs };
         },
         () => {
@@ -23,7 +23,7 @@ const LoadSalaryPayment = ($this, inputs) => {
           let inputObj = {
             year: inputs.year,
             month: inputs.month,
-            hospital_id: inputs.hospital_id
+            hospital_id: inputs.hospital_id,
           };
 
           if (inputs.hims_d_employee_id !== null) {
@@ -46,45 +46,45 @@ const LoadSalaryPayment = ($this, inputs) => {
             module: "hrManagement",
             data: inputObj,
             method: "GET",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.result.length > 0) {
                 $this.setState({
                   salary_payment: response.data.result,
                   checkAll: false,
-                  checkAllPayslip: false
+                  checkAllPayslip: false,
                   // paysalaryBtn: false
                 });
               } else {
                 $this.setState({
                   salary_payment: [],
                   checkAll: false,
-                  checkAllPayslip: false
+                  checkAllPayslip: false,
                 });
                 swalMessage({
                   title: `Salary Not Finalized for ${moment(
                     "1-" + inputs.month + "-" + inputs.year,
                     "DD-MM-YYYY"
                   ).format("MMMM")} ${inputs.year}`,
-                  type: "warning"
+                  type: "warning",
                 });
               }
               AlgaehLoader({ show: false });
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               swalMessage({
                 title: error.message || error.response.data.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       );
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     year: moment().year(),
     month: moment(new Date()).format("M"),
@@ -96,20 +96,20 @@ const ClearData = $this => {
     paysalaryBtn: true,
     generatePayslip: true,
     checkAll: false,
-    checkAllPayslip: false
+    checkAllPayslip: false,
   });
 };
 
-const PaySalary = $this => {
+const PaySalary = ($this) => {
   let _salarypayment = Enumerable.from($this.state.salary_payment)
-    .where(w => w.select_to_pay === "Y")
+    .where((w) => w.select_to_pay === "Y")
     .toArray();
 
   let inputObj = {
     year: $this.state.inputs.year,
     month: $this.state.inputs.month,
     salary_payment: _salarypayment,
-    ScreenCode: getCookie("ScreenCode")
+    ScreenCode: getCookie("ScreenCode"),
   };
   AlgaehLoader({ show: true });
   const settings = { header: undefined, footer: undefined };
@@ -121,28 +121,28 @@ const PaySalary = $this => {
     method: "PUT",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
-          paysalaryBtn: true
+          paysalaryBtn: true,
         });
         AlgaehLoader({ show: false });
         swalMessage({
           title: "Salary Payment Done...",
-          type: "success"
+          type: "success",
         });
         LoadSalaryPayment($this, null);
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message || error.response.data.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -163,14 +163,14 @@ const selectToPay = ($this, row, e) => {
   // }
 
   let listOfinclude = Enumerable.from(_salarypayment)
-    .where(w => w.select_to_pay === "Y")
+    .where((w) => w.select_to_pay === "Y")
     .toArray();
   if (listOfinclude.length > 0) {
     paysalaryBtn = false;
   }
   $this.setState({
     paysalaryBtn: paysalaryBtn,
-    salary_payment: _salarypayment
+    salary_payment: _salarypayment,
   });
 };
 
@@ -182,19 +182,19 @@ const selectAll = ($this, e) => {
   const newData = data.map((item, index) => {
     return {
       ...item,
-      select_to_pay: item.salary_paid === "Y" ? "N" : isChecked ? "Y" : "N"
+      select_to_pay: item.salary_paid === "Y" ? "N" : isChecked ? "Y" : "N",
     };
   });
 
   let listOfinclude = Enumerable.from(newData)
-    .where(w => w.select_to_pay === "Y")
+    .where((w) => w.select_to_pay === "Y")
     .toArray();
   let paysalaryBtn = listOfinclude.length > 0 ? false : true;
 
   $this.setState({
     salary_payment: newData,
     checkAll: isChecked,
-    paysalaryBtn: paysalaryBtn
+    paysalaryBtn: paysalaryBtn,
   });
 };
 
@@ -206,19 +206,19 @@ const selectAllPaySlip = ($this, e) => {
   const newData = data.map((item, index) => {
     return {
       ...item,
-      generate_pay_slip: isChecked ? "Y" : "N"
+      generate_pay_slip: isChecked ? "Y" : "N",
     };
   });
 
   let listOfinclude = Enumerable.from(newData)
-    .where(w => w.generate_pay_slip === "Y")
+    .where((w) => w.generate_pay_slip === "Y")
     .toArray();
   let generatePayslip = listOfinclude.length > 0 ? false : true;
 
   $this.setState({
     salary_payment: newData,
     checkAllPayslip: isChecked,
-    generatePayslip: generatePayslip
+    generatePayslip: generatePayslip,
   });
 };
 
@@ -236,7 +236,7 @@ const generatePaySlip = ($this, inputs) => {
   if (input_array.length <= 0) {
     swalMessage({
       title: "Select atleast one employee for pay slip",
-      type: "warning"
+      type: "warning",
     });
   }
   algaehApiCall({
@@ -244,7 +244,7 @@ const generatePaySlip = ($this, inputs) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -253,12 +253,12 @@ const generatePaySlip = ($this, inputs) => {
         reportParams: {
           employees: input_array,
           year: $this.state.inputs.year,
-          month: $this.state.inputs.month
+          month: $this.state.inputs.month,
         },
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -272,13 +272,13 @@ const generatePaySlip = ($this, inputs) => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
       window.open(origin);
       // window.document.title = "Salary Slip";
-    }
+    },
   });
 };
 
 const selectToGeneratePaySlip = ($this, row, e) => {
   let _salarypayment = Enumerable.from($this.state.salary_payment)
-    .where(w => w.salary_paid === "Y")
+    .where((w) => w.salary_paid === "Y")
     .toArray();
   // let _salarypayment = $this.state.salary_payment;
   let _index = _salarypayment.indexOf(row);
@@ -292,14 +292,14 @@ const selectToGeneratePaySlip = ($this, row, e) => {
   _salarypayment[_index] = row;
 
   let listOfinclude = Enumerable.from(_salarypayment)
-    .where(w => w.generate_pay_slip === "Y")
+    .where((w) => w.generate_pay_slip === "Y")
     .toArray();
   if (listOfinclude.length > 0) {
     generatePayslip = false;
   }
   $this.setState({
     generatePayslip: generatePayslip,
-    salary_payment: _salarypayment
+    salary_payment: _salarypayment,
   });
 };
 
@@ -311,5 +311,5 @@ export {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip
+  selectAllPaySlip,
 };

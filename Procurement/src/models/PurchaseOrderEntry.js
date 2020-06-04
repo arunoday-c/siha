@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   getPurchaseOrderEntry: (req, res, next) => {
@@ -109,8 +110,6 @@ export default {
     try {
       let input = { ...req.body };
       let purchase_number = "";
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addDeliveryNoteEntry: ");
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -174,8 +173,6 @@ export default {
                 isTransactionConnection: _mysql.isTransactionConnection,
                 pool: _mysql.pool
               };
-
-              utilities.logger().log("headerResult: ", headerResult.insertId);
               let IncludeValues = [
                 "phar_item_category",
                 "phar_item_group",
@@ -219,17 +216,16 @@ export default {
                   printQuery: true
                 })
                 .then(detailResult => {
-                  utilities.logger().log("detailResult: ", detailResult);
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = {
-                    purchase_number: purchase_number
+                    purchase_number: purchase_number,
+                    hims_f_procurement_po_header_id: headerResult.insertId
                   };
                   next();
                   // });
                 })
                 .catch(error => {
-                  utilities.logger().log("erroe: ", error);
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -240,6 +236,180 @@ export default {
                 next(e);
               });
             });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  postPurchaseOrderEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      // const utilities = new algaehUtilities();
+
+      // let today = moment().format("YYYY-MM-DD");
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_f_procurement_po_header` SET is_posted= ?, sub_total =? , detail_discount =?, extended_total =?,\
+                sheet_level_discount_percent = ?, sheet_level_discount_amount = ?, net_total = ?, total_tax = ?, \
+                net_payable=?, updated_by=?,updated_date=? where hims_f_procurement_po_header_id=?;",
+          values: [
+            input.is_posted,
+            input.sub_total,
+            input.detail_discount,
+            input.extended_total,
+            input.sheet_level_discount_percent,
+            input.sheet_level_discount_amount,
+            input.net_total,
+            input.total_tax,
+            input.net_payable,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.hims_f_procurement_po_header_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          let strQuery = ""
+
+          if (input.delete_stock_detail.length > 0) {
+            strQuery += mysql.format(
+              "DELETE FROM hims_f_procurement_po_detail where hims_f_procurement_po_detail_id in (?);",
+              [input.delete_stock_detail]
+            );
+          }
+          const update_po_detail = _.filter(
+            input.po_entry_detail,
+            (f) => {
+              return (
+                f.hims_f_procurement_po_detail_id !== null &&
+                f.hims_f_procurement_po_detail_id !== undefined
+              );
+            }
+          );
+
+
+          if (update_po_detail.length > 0) {
+            for (let i = 0; i < update_po_detail.length; i++) {
+              strQuery += mysql.format(
+                "UPDATE hims_f_procurement_po_detail set extended_price=?,sub_discount_percentage=?, \
+                sub_discount_amount=?,extended_cost=?,net_extended_cost=?,unit_cost=?,\
+                tax_amount=?,total_amount=? where hims_f_procurement_po_detail_id=?;",
+                [
+                  update_po_detail[i].extended_price,
+                  update_po_detail[i].sub_discount_percentage,
+                  update_po_detail[i].sub_discount_amount,
+                  update_po_detail[i].extended_cost,
+                  update_po_detail[i].net_extended_cost,
+                  update_po_detail[i].unit_cost,
+                  update_po_detail[i].tax_amount,
+                  update_po_detail[i].total_amount,
+                  update_po_detail[i].hims_f_procurement_po_detail_id,
+                ]
+              );
+            }
+          }
+
+          const insert_po_detail = _.filter(
+            input.po_entry_detail,
+            (f) => {
+              return (
+                f.hims_f_procurement_po_detail_id === null ||
+                f.hims_f_procurement_po_detail_id === undefined
+              );
+            }
+          );
+
+          if (insert_po_detail.length > 0) {
+            let IncludeValues = [
+              "phar_item_category",
+              "phar_item_group",
+              "phar_item_id",
+              "inv_item_category_id",
+              "inv_item_group_id",
+              "inv_item_id",
+              "order_quantity",
+              "total_quantity",
+              "pharmacy_uom_id",
+              "inventory_uom_id",
+              "unit_price",
+              "extended_price",
+              "sub_discount_percentage",
+              "sub_discount_amount",
+              "extended_cost",
+              "net_extended_cost",
+              "unit_cost",
+              "expected_arrival_date",
+              "pharmacy_requisition_id",
+              "inventory_requisition_id",
+              "authorize_quantity",
+              "tax_percentage",
+              "tax_amount",
+              "total_amount",
+              "item_type",
+              "quantity_outstanding",
+              "rejected_quantity"
+            ];
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " + strQuery,
+                values: insert_po_detail,
+                includeValues: IncludeValues,
+                extraValues: {
+                  procurement_header_id: input.hims_f_procurement_po_header_id
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    purchase_number: input.purchase_number,
+                    hims_f_procurement_po_header_id: input.hims_f_procurement_po_header_id
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query: strQuery,
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    purchase_number: input.purchase_number,
+                    hims_f_procurement_po_header_id: input.hims_f_procurement_po_header_id
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -368,7 +538,7 @@ export default {
       // }
 
       let strQuery =
-        "SELECT * from  hims_f_procurement_po_header\
+        "SELECT PO.*,V.vendor_name from  hims_f_procurement_po_header PO inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           where cancelled='N' ";
 
       if (req.query.from_date != null) {
@@ -401,7 +571,7 @@ export default {
         strQuery += "";
       } else if (inputParam.status == "1") {
         //Pending To Authorize 1
-        strQuery += " and authorize1 = 'N'";
+        strQuery += " and is_posted = 'Y' and authorize1 = 'N'";
       } else if (inputParam.status == "2") {
         //Pending To Authorize 2
         strQuery += " and authorize1 = 'Y' and authorize2 = 'N'";
@@ -732,6 +902,11 @@ export default {
   getraiseRequestForPO: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let strQuery = ""
+      if (req.query.category_id != null) {
+        strQuery +=
+          " and category_id = " + req.query.category_id;
+      }
       _mysql
         .executeQuery({
           query:
@@ -739,7 +914,7 @@ export default {
             IM.category_id as inv_item_category_id, IM.group_id as inv_item_group_id, IM.purchase_uom_id as inventory_uom_id, \
             PR.request_qty as quantity from hims_f_procurement_purchase_request PR \
             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = PR.item_id\
-            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location;",
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location where 1=1"+ strQuery,
           printQuery: true
         })
         .then(headerResult => {

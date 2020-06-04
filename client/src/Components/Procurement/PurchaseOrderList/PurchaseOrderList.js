@@ -11,7 +11,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {
   LocationchangeTexts,
-  dateFormater,  
+  dateFormater,
   poforhandle,
   datehandle,
   changeEventHandaler
@@ -233,6 +233,17 @@ class PurchaseOrderList extends Component {
                         }
                       },
                       {
+                        fieldName: "vendor_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Vendor Name" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "po_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "PO Date" }} />
@@ -260,21 +271,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      f =>
-                                        f.hims_d_pharmacy_location_id ===
-                                        row.pharmcy_location_id
-                                    ))
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  f =>
+                                    f.hims_d_pharmacy_location_id ===
+                                    row.pharmcy_location_id
+                                ))
                             : (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      f =>
-                                        f.hims_d_inventory_location_id ===
-                                        row.inventory_location_id
-                                    ));
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  f =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                ));
 
                           return (
                             <span>

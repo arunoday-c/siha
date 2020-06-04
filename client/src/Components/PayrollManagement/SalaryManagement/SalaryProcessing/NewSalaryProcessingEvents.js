@@ -11,6 +11,8 @@ import _ from "lodash";
 import swal from "sweetalert2";
 
 const SalaryProcess = ($this, inputs, from) => {
+  console.log("inputs", inputs);
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadSalary'",
@@ -329,6 +331,65 @@ const getOptions = ($this) => {
   });
 };
 
+const generateMonthlyLoanReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "monthlyLoanReport",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.year,
+          },
+          {
+            name: "month",
+            value: $this.state.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.designation_id,
+          },
+          {
+            name: "group_id",
+            value: $this.state.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report`;
+      window.open(origin);
+    },
+  });
+};
+
 export {
   SalaryProcess,
   FinalizeSalary,
@@ -336,4 +397,5 @@ export {
   openSalaryComponents,
   closeSalaryComponents,
   getOptions,
+  generateMonthlyLoanReport,
 };

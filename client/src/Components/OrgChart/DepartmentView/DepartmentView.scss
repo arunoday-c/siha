@@ -1,5 +1,5 @@
 .DepartmentOrgView {
-  padding-top: 15px;
+  // padding-top: 15px;
   .eachShelf {
     margin: 0;
     padding: 0;
@@ -20,14 +20,14 @@
       margin: 0;
       list-style: none;
       position: relative;
-      width: 300px;
+      width: 280px;
       padding: 10px;
       border-radius: 30px;
       margin-bottom: 10px;
       border: 2px solid #d6d6d6;
       background: #fff;
       line-height: 19px;
-      height: 110px;
+      height: 60px;
       .childCount {
         position: absolute;
         top: 0;

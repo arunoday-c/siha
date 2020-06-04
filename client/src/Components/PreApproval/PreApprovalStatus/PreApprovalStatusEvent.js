@@ -10,7 +10,7 @@ const UpdatePreApproval = ($this, e) => {
       if (inputObj[i].approved_no === null || inputObj[i].approved_no === "") {
         swalMessage({
           title: "Please enter Authorized Number.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -21,7 +21,7 @@ const UpdatePreApproval = ($this, e) => {
     ) {
       swalMessage({
         title: "Please enter the quantity properly.",
-        type: "warning"
+        type: "warning",
       });
       return;
     }
@@ -31,32 +31,32 @@ const UpdatePreApproval = ($this, e) => {
       uri: "/orderAndPreApproval/updatePreApproval",
       data: inputObj,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           $this.props.onClose && $this.props.onClose(e);
         }
-      }
+      },
     });
   } else if ($this.props.openFrom === "M") {
     algaehApiCall({
       uri: "/orderAndPreApproval/updateMedicinePreApproval",
       data: inputObj,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           $this.props.onClose && $this.props.onClose(e);
         }
-      }
+      },
     });
   }
 };
@@ -71,7 +71,7 @@ const texthandle = ($this, row, context, e) => {
   row[name] = value;
   services_details[_index] = row;
   $this.setState({
-    services_details: services_details
+    services_details: services_details,
   });
 };
 

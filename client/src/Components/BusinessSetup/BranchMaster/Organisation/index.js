@@ -318,7 +318,7 @@ export function Organization(props) {
                     }}
                   />
                   <AlgaehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col-5 form-group mandatory" }}
                     label={{ forceLabel: "Product Type", isImp: true }}
                     selector={{
                       name: "product_type",

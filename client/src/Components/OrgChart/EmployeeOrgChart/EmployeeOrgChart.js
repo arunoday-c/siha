@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import "./EmployeeView.scss";
 import { AlgaehMessagePop } from "algaeh-react-components";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 function ChartEntry({ data = [], toggle = true }) {
   const [childArr, setChildArr] = useState(null);
@@ -23,35 +24,30 @@ function ChartEntry({ data = [], toggle = true }) {
 
   return (
     <>
-      <div>
-        <ul
-          style={{
-            minHeight: toggle ? "85vh" : "0",
-          }}
-          className="eachShelf"
-        >
-          {data.map((item) => {
-            return (
-              <li
-                id="sub-child"
-                onClick={(e) => toggleChild(item, e)}
-                className={`eachChild animated slideInLeft faster ${
-                  current === item.hims_d_employee_id ? "clickedLi" : ""
-                }`}
-              >
-                <span className="childCount">{item.count || 0}</span>
-
-                <span className="contentSection">
-                  <p>{item.employee_name}</p>
-                  <p>{item.designation}</p>
-                  <p>Employee Code:{item.employee_code}</p>
-                  <p> Department:{item.sub_department_name}</p>
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <ul className="flex-container">
+        {data.map((item) => {
+          return (
+            <li
+              id="sub-child"
+              onClick={(e) => toggleChild(item, e)}
+              className={`flex-item animated slideInLeft faster ${
+                current === item.hims_d_employee_id ? "clickedLi" : ""
+              }`}
+            >
+              <span className="childCount">{item.count || 0}</span>
+              <span className="imgSection">
+                <img src="" />
+              </span>
+              <span className="contentSection">
+                <small>{item.employee_code}</small>
+                <h1>{item.employee_name}</h1>
+                <p>{item.designation}</p>
+                <p>{item.sub_department_name}</p>
+              </span>
+            </li>
+          );
+        })}
+      </ul>
       {childArr && childToggle ? (
         <ChartEntry
           data={childArr}
@@ -76,14 +72,14 @@ export function EmployeeOrgChart() {
         if (res.data.success) {
           setEmployees([res.data.records]);
         } else {
-          AlgaehMessagePop({
-            title: res.data.records.message,
+          swalMessage({
+            title: res.data.message,
             type: "warning",
           });
         }
       },
       onError: (err) => {
-        AlgaehMessagePop({
+        swalMessage({
           title: err.message,
           type: "error",
         });
@@ -92,7 +88,7 @@ export function EmployeeOrgChart() {
   }, []);
 
   return (
-    <div className="DepartmentOrgView">
+    <div className="EmployeeOrgViewFlex">
       <ChartEntry data={employees} toggle={true} />
     </div>
   );

@@ -15,12 +15,13 @@ const {
   getVendorQuotation,
   raiseRequestForPO,
   getraiseRequestForPO,
+  postPurchaseOrderEntry,
   releaseDB
 } = purchaseModels;
 
 export default () => {
   const api = Router();
-  const utilities = new algaehUtilities();
+
 
   api.get("/getPurchaseOrderEntry", getPurchaseOrderEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -98,6 +99,16 @@ export default () => {
   api.put(
     "/updatePurchaseOrderEntry",
     updatePurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/postPurchaseOrderEntry",
+    postPurchaseOrderEntry,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
