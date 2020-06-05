@@ -2,7 +2,7 @@ exports.default = {
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000,
   port: 3002,
-  bodyLimit: "900kb",
+  bodyLimit: "15MB",
 
   mysqlDb: {
     connectionLimit: 50,

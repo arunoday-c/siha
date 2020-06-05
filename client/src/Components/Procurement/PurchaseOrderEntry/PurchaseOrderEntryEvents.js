@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -27,7 +27,7 @@ const loctexthandle = ($this, e) => {
   }
   $this.setState({
     [name]: value,
-    ReqData: ReqData
+    ReqData: ReqData,
   });
 };
 
@@ -46,7 +46,7 @@ const vendortexthandle = ($this, e) => {
     [name]: value,
     vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
-    ReqData: ReqData
+    ReqData: ReqData,
   });
 };
 
@@ -58,7 +58,7 @@ const poforhandle = ($this, e) => {
   $this.setState({
     [name]: value,
     pharmcy_location_id: null,
-    inventory_location_id: null
+    inventory_location_id: null,
   });
 };
 
@@ -78,18 +78,18 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
+      sheet_discount_amount: sheet_discount_amount,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -102,12 +102,12 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({ [name]: value });
@@ -116,7 +116,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -126,14 +126,14 @@ const numberchangeTexts = ($this, context, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.RequisitionEntry.ReqEntry
+      columns: spotlightSearch.RequisitionEntry.ReqEntry,
     },
     searchName: $this.state.po_from === "PHR" ? "PhrPOEntry" : "InvPOEntry",
     uri: "/gloabelSearch/get",
@@ -141,7 +141,7 @@ const RequisitionSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri:
@@ -150,10 +150,10 @@ const RequisitionSearch = ($this, e) => {
             : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
         module: "procurement",
         data: {
-          material_requisition_number: row.material_requisition_number
+          material_requisition_number: row.material_requisition_number,
         },
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             let data = response.data.records;
             if (data !== null && data !== undefined) {
@@ -232,25 +232,25 @@ const RequisitionSearch = ($this, e) => {
                   data.po_entry_detail[i].tax_amount;
               }
 
-              let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
+              let sub_total = Enumerable.from(data.po_entry_detail).sum((s) =>
                 parseFloat(s.extended_price)
               );
 
-              let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
+              let net_total = Enumerable.from(data.po_entry_detail).sum((s) =>
                 parseFloat(s.net_extended_cost)
               );
 
-              let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
+              let net_payable = Enumerable.from(data.po_entry_detail).sum((s) =>
                 parseFloat(s.total_amount)
               );
 
-              let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
+              let total_tax = Enumerable.from(data.po_entry_detail).sum((s) =>
                 parseFloat(s.tax_amount)
               );
 
               let detail_discount = Enumerable.from(
                 data.po_entry_detail
-              ).sum(s => parseFloat(s.sub_discount_amount));
+              ).sum((s) => parseFloat(s.sub_discount_amount));
 
               data.sub_total = sub_total;
               data.net_total = net_total;
@@ -271,9 +271,9 @@ const RequisitionSearch = ($this, e) => {
             }
           }
           AlgaehLoader({ show: false });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -288,7 +288,6 @@ const ClearData = ($this, e) => {
 
 const SavePOEnrty = ($this, from) => {
   AlgaehLoader({ show: true });
-  debugger
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
@@ -299,19 +298,50 @@ const SavePOEnrty = ($this, from) => {
 
   if (from === "P") {
     $this.state.is_posted = "Y";
-    strMessage = "Posted successfully . ."
+    strMessage = "Posted successfully . .";
   }
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
-    strUri = "/PurchaseOrderEntry/postPurchaseOrderEntry"
+    strUri = "/PurchaseOrderEntry/postPurchaseOrderEntry";
   } else {
-    strUri = "/PurchaseOrderEntry/addPurchaseOrderEntry"
+    strUri = "/PurchaseOrderEntry/addPurchaseOrderEntry";
   }
+  const procumentInputs = [
+    "po_type",
+    "po_from",
+    "pharmcy_location_id",
+    "inventory_location_id",
+    "inventory_location_id",
+    "location_type",
+    "vendor_id",
+    "expected_date",
+    "on_hold",
+    "inv_requisition_id",
+    "requisition_id",
+    "vendor_quotation_header_id",
+    "from_multiple_requisition",
+    "payment_terms",
+    "comment",
+    "sub_total",
+    "detail_discount",
+    "extended_total",
+    "sheet_level_discount_percent",
+    "sheet_level_discount_amount",
+    "description",
+    "net_total",
+    "total_tax",
+    "net_payable",
+    "po_entry_detail",
+  ];
+  let sendJsonBody = {};
+  procumentInputs.forEach((item) => {
+    sendJsonBody[item] = $this.state[item];
+  });
   algaehApiCall({
     uri: strUri,
     module: "procurement",
-    data: $this.state,
-    onSuccess: response => {
+    data: sendJsonBody, //$this.state,
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           purchase_number: response.data.records.purchase_number,
@@ -320,23 +350,23 @@ const SavePOEnrty = ($this, from) => {
           saveEnable: $this.state.is_posted === "Y" ? true : false,
           dataExitst: $this.state.is_posted === "Y" ? true : false,
           dataFinder: true,
-          dataPosted: false
+          dataPosted: false,
         });
 
         swalMessage({
           type: "success",
-          title: strMessage
+          title: strMessage,
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -351,7 +381,7 @@ const getCtrlCode = ($this, docNumber) => {
       module: "procurement",
       method: "GET",
       data: { purchase_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           getData($this, data.po_from);
@@ -380,7 +410,7 @@ const getCtrlCode = ($this, docNumber) => {
 
           data.dataFinder = true;
 
-          debugger
+          debugger;
           if (data.is_posted === "Y") {
             data.dataPosted = true;
             data.saveEnable = true;
@@ -405,13 +435,13 @@ const getCtrlCode = ($this, docNumber) => {
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
     // $this.props.getPurchaseOrderEntry({
     //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
@@ -439,8 +469,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -448,12 +478,12 @@ const getData = ($this, po_from) => {
       module: "pharmacy",
       method: "GET",
       data: {
-        location_status: "A"
+        location_status: "A",
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
+        mappingName: "polocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -462,8 +492,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
-      }
+        mappingName: "poitemcategory",
+      },
     });
 
     $this.props.getItemGroup({
@@ -472,8 +502,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -482,8 +512,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   } else if (po_from === "INV") {
     $this.props.getItems({
@@ -493,8 +523,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -502,12 +532,12 @@ const getData = ($this, po_from) => {
       module: "inventory",
       method: "GET",
       data: {
-        location_status: "A"
+        location_status: "A",
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "polocations"
-      }
+        mappingName: "polocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -516,9 +546,9 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
+        mappingName: "poitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -527,8 +557,8 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -537,20 +567,20 @@ const getData = ($this, po_from) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   }
 };
 
-const generatePOReceipt = data => {
+const generatePOReceipt = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -562,31 +592,31 @@ const generatePOReceipt = data => {
         reportParams: [
           {
             name: "purchase_number",
-            value: data.purchase_number
-          }
+            value: data.purchase_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.purchase_number}-Purchase Order Receipt`
+      const reportName = `${data.purchase_number}-Purchase Order Receipt`;
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Purchase Order Receipt";
-    }
+    },
   });
 };
 
-const generatePOReceiptNoPrice = data => {
+const generatePOReceiptNoPrice = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -598,20 +628,20 @@ const generatePOReceiptNoPrice = data => {
         reportParams: [
           {
             name: "purchase_number",
-            value: data.purchase_number
-          }
+            value: data.purchase_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.purchase_number}-Purchase Order Receipt`
+      const reportName = `${data.purchase_number}-Purchase Order Receipt`;
 
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName} `;
       window.open(origin);
       // window.document.title = "Purchase Order Receipt";
-    }
+    },
   });
 };
 
@@ -623,16 +653,16 @@ const AuthorizePOEntry = ($this, authorize) => {
   if (stock_detail.length === 0) {
     swalMessage({
       title: "Atleast One item is required to Authorize PO.",
-      type: "warning"
+      type: "warning",
     });
   }
   let auth_qty = Enumerable.from(stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === ""
+    (w) => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === ""
   );
   if (auth_qty === true) {
     swalMessage({
       title: "Please enter Authorize Quantity.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     AlgaehLoader({ show: true });
@@ -668,31 +698,31 @@ const AuthorizePOEntry = ($this, authorize) => {
       module: "procurement",
       data: $this.state,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           $this.setState({
             authorize1: authorize1,
-            authorize2: authorize2
+            authorize2: authorize2,
           });
           swalMessage({
             title: "Authorized successfully . .",
-            type: "success"
+            type: "success",
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 };
 
-const getVendorMaster = $this => {
+const getVendorMaster = ($this) => {
   $this.props.getVendorMaster({
     uri: "/vendor/getVendorMaster",
     module: "masterSettings",
@@ -700,57 +730,57 @@ const getVendorMaster = $this => {
     data: { vendor_status: "A" },
     redux: {
       type: "VENDORS_GET_DATA",
-      mappingName: "povendors"
-    }
+      mappingName: "povendors",
+    },
   });
 };
 
-const clearItemDetails = $this => {
+const clearItemDetails = ($this) => {
   $this.props.getItems({
     redux: {
       type: "ITEM_GET_DATA",
       mappingName: "poitemlist",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getLocation({
     redux: {
       type: "LOCATIONS_GET_DATA",
       mappingName: "polocations",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemCategory({
     redux: {
       type: "ITEM_CATEGORY_GET_DATA",
       mappingName: "poitemcategory",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemGroup({
     redux: {
       type: "ITEM_GROUP_GET_DATA",
       mappingName: "poitemgroup",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemUOM({
     redux: {
       type: "ITEM_UOM_GET_DATA",
       mappingName: "poitemuom",
-      data: []
-    }
+      data: [],
+    },
   });
 };
 
-const VendorQuotationSearch = $this => {
+const VendorQuotationSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Purchase.VendorQuotation
+      columns: spotlightSearch.Purchase.VendorQuotation,
     },
     searchName: "VendorQuotation",
     uri: "/gloabelSearch/get",
@@ -758,13 +788,13 @@ const VendorQuotationSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       algaehApiCall({
         uri: "/VendorsQuotation/getVendorQuotation",
         module: "procurement",
         method: "GET",
         data: { vendor_quotation_number: row.vendor_quotation_number },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             let data = response.data.records;
             data.po_entry_detail = data.quotation_detail;
@@ -833,25 +863,25 @@ const VendorQuotationSearch = $this => {
             }
             data.saveEnable = false;
 
-            let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
+            let sub_total = Enumerable.from(data.po_entry_detail).sum((s) =>
               parseFloat(s.extended_price)
             );
 
-            let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
+            let net_total = Enumerable.from(data.po_entry_detail).sum((s) =>
               parseFloat(s.net_extended_cost)
             );
 
-            let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
+            let net_payable = Enumerable.from(data.po_entry_detail).sum((s) =>
               parseFloat(s.total_amount)
             );
 
-            let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
+            let total_tax = Enumerable.from(data.po_entry_detail).sum((s) =>
               parseFloat(s.tax_amount)
             );
 
-            let detail_discount = Enumerable.from(data.po_entry_detail).sum(s =>
-              parseFloat(s.sub_discount_amount)
-            );
+            let detail_discount = Enumerable.from(
+              data.po_entry_detail
+            ).sum((s) => parseFloat(s.sub_discount_amount));
 
             data.sub_total = sub_total;
             data.net_total = net_total;
@@ -867,28 +897,28 @@ const VendorQuotationSearch = $this => {
             AlgaehLoader({ show: false });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
 
-const getPOOptions = $this => {
+const getPOOptions = ($this) => {
   algaehApiCall({
     uri: "/POSettings/getPOOptions",
     method: "GET",
     module: "procurement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
         $this.setState({ po_auth_level: res.data.records[0].po_auth_level });
       }
-    }
+    },
   });
 };
 
@@ -910,5 +940,5 @@ export {
   generatePOReceiptNoPrice,
   clearItemDetails,
   VendorQuotationSearch,
-  getPOOptions
+  getPOOptions,
 };
