@@ -330,7 +330,6 @@ export default {
   postPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-    utilities.logger().log("postPurchaseOrderEntry: ");
     try {
       let inputParam = { ...req.body };
 
@@ -372,7 +371,7 @@ export default {
             })
             .then(detailResult => {
               // _mysql.releaseConnection();
-              // req.records = headerResult;
+              req.records = { purchase_number: inputParam.purchase_number };
               next();
             })
             .catch(e => {

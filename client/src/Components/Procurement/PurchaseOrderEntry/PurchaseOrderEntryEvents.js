@@ -308,6 +308,7 @@ const SavePOEnrty = ($this, from) => {
   }
   const procumentInputs = [
     "hims_f_procurement_po_header_id",
+    "purchase_number",
     "po_type",
     "po_from",
     "pharmcy_location_id",
@@ -346,22 +347,14 @@ const SavePOEnrty = ($this, from) => {
     data: sendJsonBody, //$this.state,
     onSuccess: (response) => {
       if (response.data.success === true) {
-        $this.setState({
-          purchase_number: response.data.records.purchase_number,
-          hims_f_procurement_po_header_id:
-            response.data.records.hims_f_procurement_po_header_id,
-          saveEnable: $this.state.is_posted === "Y" ? true : false,
-          dataExitst: $this.state.is_posted === "Y" ? true : false,
-          dataFinder: true,
-          dataPosted: $this.state.is_posted === "Y" ? true : false
-        });
+        getCtrlCode($this, response.data.records.purchase_number)
 
         swalMessage({
           type: "success",
           title: strMessage,
         });
       }
-      AlgaehLoader({ show: false });
+      // AlgaehLoader({ show: false });
     },
     onFailure: (error) => {
       AlgaehLoader({ show: false });
