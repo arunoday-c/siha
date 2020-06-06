@@ -51,7 +51,7 @@ export default {
                     where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
                    and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.stocking_uom_id = STOCK_UOM.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id\
                    and procurement_header_id=?" +
-                  strCondition,
+                strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             } else if (headerResult[0].po_from == "PHR") {
@@ -68,7 +68,7 @@ export default {
                 from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and procurement_header_id=?" +
-                  strCondition,
+                strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             }
@@ -282,18 +282,23 @@ export default {
         .then((headerResult) => {
           let strQuery = "";
 
+          console.log("length")
+          console.log("delete_stock_detail", input.delete_stock_detail)
+
           if (input.delete_stock_detail.length > 0) {
             strQuery += mysql.format(
               "DELETE FROM hims_f_procurement_po_detail where hims_f_procurement_po_detail_id in (?);",
               [input.delete_stock_detail]
             );
           }
+          console.log("length 1")
           const update_po_detail = _.filter(input.po_entry_detail, (f) => {
             return (
               f.hims_f_procurement_po_detail_id !== null &&
               f.hims_f_procurement_po_detail_id !== undefined
             );
           });
+          console.log("length 2")
 
           if (update_po_detail.length > 0) {
             for (let i = 0; i < update_po_detail.length; i++) {

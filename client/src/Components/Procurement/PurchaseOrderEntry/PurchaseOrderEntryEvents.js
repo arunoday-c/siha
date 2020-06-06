@@ -332,6 +332,7 @@ const SavePOEnrty = ($this, from) => {
     "total_tax",
     "net_payable",
     "po_entry_detail",
+    "delete_stock_detail",
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -548,7 +549,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => {},
+      afterSuccess: (data) => { },
     });
 
     $this.props.getItemGroup({
