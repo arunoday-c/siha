@@ -307,6 +307,7 @@ const SavePOEnrty = ($this, from) => {
     strUri = "/PurchaseOrderEntry/addPurchaseOrderEntry";
   }
   const procumentInputs = [
+    "hims_f_procurement_po_header_id",
     "po_type",
     "po_from",
     "pharmcy_location_id",
@@ -333,6 +334,7 @@ const SavePOEnrty = ($this, from) => {
     "net_payable",
     "po_entry_detail",
     "delete_stock_detail",
+    "is_posted"
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -351,7 +353,7 @@ const SavePOEnrty = ($this, from) => {
           saveEnable: $this.state.is_posted === "Y" ? true : false,
           dataExitst: $this.state.is_posted === "Y" ? true : false,
           dataFinder: true,
-          dataPosted: false,
+          dataPosted: $this.state.is_posted === "Y" ? true : false
         });
 
         swalMessage({
