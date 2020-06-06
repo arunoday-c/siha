@@ -531,6 +531,7 @@ let insertOrderedServices = (req, res, next) => {
                   }
                 })
                   .then((result) => {
+
                     // let servicesForPreAproval = [];
                     let patient_id = input["patient_id"];
                     let doctor_id = input["doctor_id"];
@@ -543,21 +544,7 @@ let insertOrderedServices = (req, res, next) => {
                       }
                     });
 
-                    // let services = new LINQ(req.body.billdetails)
-                    //   .Select((s) => {
-                    //     patient_id = s.patient_id;
-                    //     doctor_id = s.doctor_id;
-                    //     visit_id = s.visit_id;
-                    //     return s.services_id;
-                    //   })
-                    //   .ToArray();
-
                     if (services.length > 0) {
-                      // servicesForPreAproval.push(patient_id);
-                      // servicesForPreAproval.push(doctor_id);
-                      // servicesForPreAproval.push(visit_id);
-                      // servicesForPreAproval.push(services);
-                      // let delete_str = ` delete from hims_f_service_approval where visit_id=${visit_id} and doctor_id=${doctor_id}  and patient_id=${patient_id} ;`;
                       _mysql
                         .executeQuery({
                           query:
@@ -571,25 +558,6 @@ let insertOrderedServices = (req, res, next) => {
                           printQuery: true,
                         })
                         .then((ResultOfFetchOrderIds) => {
-                          // let detailsPush = new LINQ(req.body.billdetails)
-                          //   .Where((g) => g.pre_approval == "Y")
-                          //   .Select((s) => {
-                          //     return {
-                          //       ...s,
-                          //       ...{
-                          //         hims_f_ordered_services_id: new LINQ(
-                          //           ResultOfFetchOrderIds
-                          //         )
-                          //           .Where(
-                          //             (w) => w.services_id == s.services_id
-                          //           )
-                          //           .FirstOrDefault()
-                          //           .hims_f_ordered_services_id,
-                          //       },
-                          //     };
-                          //   })
-                          //   .ToArray();
-                          // console.log("detailsPush.length", detailsPush.length);
 
                           let detailsPush = [];
 
@@ -609,7 +577,6 @@ let insertOrderedServices = (req, res, next) => {
                           });
 
                           if (detailsPush.length > 0) {
-                            // console.log("detailsPush", detailsPush);
                             const insurtCols = [
                               "hims_f_ordered_services_id",
                               "visit_id",
@@ -625,7 +592,6 @@ let insertOrderedServices = (req, res, next) => {
                               "net_amout",
                               "services_id",
                             ];
-                            // console.log("detailsPush", detailsPush);
                             _mysql
                               .executeQuery({
                                 query:
@@ -651,6 +617,7 @@ let insertOrderedServices = (req, res, next) => {
                                 printQuery: true,
                               })
                               .then((resultPreAprvl) => {
+
                                 req.records = {
                                   resultPreAprvl,
                                   ResultOfFetchOrderIds: ResultOfFetchOrderIds,
@@ -663,12 +630,13 @@ let insertOrderedServices = (req, res, next) => {
                                 });
                               });
                           } else {
+
                             req.records = {
                               resultOrder,
                               ResultOfFetchOrderIds: ResultOfFetchOrderIds,
                             };
                             next();
-                            // console.log("else detailsPush");
+
                           }
                         })
                         .catch((error) => {
@@ -677,8 +645,39 @@ let insertOrderedServices = (req, res, next) => {
                           });
                         });
                     } else {
-                      req.records = resultOrder;
-                      next();
+
+
+                      services = new LINQ(req.body.billdetails)
+                        .Select(s => {
+                          patient_id = s.patient_id;
+                          doctor_id = s.doctor_id;
+                          visit_id = s.visit_id;
+                          return s.services_id;
+                        })
+                        .ToArray();
+
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                              where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+                          values: [patient_id, doctor_id, visit_id, services],
+                          printQuery: true,
+                        })
+                        .then((ResultOfFetchOrderIds) => {
+                          req.records = {
+                            resultOrder,
+                            ResultOfFetchOrderIds: ResultOfFetchOrderIds,
+                          };
+                          next();
+                        })
+                        .catch((error) => {
+                          _mysql.rollBackTransaction(() => {
+                            next(error);
+                          });
+                        });
+
                     }
                   })
                   .catch((e) => {
@@ -1221,7 +1220,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-          where.condition,
+        where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1862,7 +1861,7 @@ let addPackage = (req, res, next) => {
           printQuery: true,
         })
         .then((headerRes) => {
-          console.log("headerRes:", headerRes);
+
 
           _mysql
             .executeQuery({
@@ -1872,7 +1871,7 @@ let addPackage = (req, res, next) => {
               printQuery: true,
             })
             .then((headder) => {
-              console.log("headder:", headder);
+
 
               const detailsInsert = [];
               input.forEach((pack) => {
@@ -1888,7 +1887,7 @@ let addPackage = (req, res, next) => {
                 });
               });
 
-              console.log("detailsInsert:", detailsInsert);
+
 
               const insrtColumns = [
                 "package_header_id",

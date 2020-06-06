@@ -23,9 +23,9 @@ export default {
             left join hims_f_procurement_vendor_quotation_header VQH on VQH.hims_f_procurement_vendor_quotation_header_id = PH.vendor_quotation_header_id \
             where purchase_number=?",
           values: [req.query.purchase_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let strQuery = "";
 
@@ -75,17 +75,17 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -95,7 +95,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -108,15 +108,15 @@ export default {
   addPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let input = { ...req.body };
+      let input = req.body;
       let purchase_number = "";
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["PO_NUM"],
-          table_name: "hims_f_procurement_numgen"
+          table_name: "hims_f_procurement_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           purchase_number = generatedNumbers.PO_NUM;
 
           // let today = moment().format("YYYY-MM-DD");
@@ -163,15 +163,15 @@ export default {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               req.connection = {
                 connection: _mysql.connection,
                 isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
+                pool: _mysql.pool,
               };
               let IncludeValues = [
                 "phar_item_category",
@@ -200,7 +200,7 @@ export default {
                 "total_amount",
                 "item_type",
                 "quantity_outstanding",
-                "rejected_quantity"
+                "rejected_quantity",
               ];
 
               _mysql
@@ -210,34 +210,34 @@ export default {
                   values: input.po_entry_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    procurement_header_id: headerResult.insertId
+                    procurement_header_id: headerResult.insertId,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = {
                     purchase_number: purchase_number,
-                    hims_f_procurement_po_header_id: headerResult.insertId
+                    hims_f_procurement_po_header_id: headerResult.insertId,
                   };
                   next();
                   // });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -275,12 +275,15 @@ export default {
             input.net_payable,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.hims_f_procurement_po_header_id
+            input.hims_f_procurement_po_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
-          let strQuery = ""
+        .then((headerResult) => {
+          let strQuery = "";
+
+          console.log("length")
+          console.log("delete_stock_detail", input.delete_stock_detail)
 
           if (input.delete_stock_detail.length > 0) {
             strQuery += mysql.format(
@@ -288,16 +291,14 @@ export default {
               [input.delete_stock_detail]
             );
           }
-          const update_po_detail = _.filter(
-            input.po_entry_detail,
-            (f) => {
-              return (
-                f.hims_f_procurement_po_detail_id !== null &&
-                f.hims_f_procurement_po_detail_id !== undefined
-              );
-            }
-          );
-
+          console.log("length 1")
+          const update_po_detail = _.filter(input.po_entry_detail, (f) => {
+            return (
+              f.hims_f_procurement_po_detail_id !== null &&
+              f.hims_f_procurement_po_detail_id !== undefined
+            );
+          });
+          console.log("length 2")
 
           if (update_po_detail.length > 0) {
             for (let i = 0; i < update_po_detail.length; i++) {
@@ -320,15 +321,12 @@ export default {
             }
           }
 
-          const insert_po_detail = _.filter(
-            input.po_entry_detail,
-            (f) => {
-              return (
-                f.hims_f_procurement_po_detail_id === null ||
-                f.hims_f_procurement_po_detail_id === undefined
-              );
-            }
-          );
+          const insert_po_detail = _.filter(input.po_entry_detail, (f) => {
+            return (
+              f.hims_f_procurement_po_detail_id === null ||
+              f.hims_f_procurement_po_detail_id === undefined
+            );
+          });
 
           if (insert_po_detail.length > 0) {
             let IncludeValues = [
@@ -358,32 +356,34 @@ export default {
               "total_amount",
               "item_type",
               "quantity_outstanding",
-              "rejected_quantity"
+              "rejected_quantity",
             ];
 
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " + strQuery,
+                  "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " +
+                  strQuery,
                 values: insert_po_detail,
                 includeValues: IncludeValues,
                 extraValues: {
-                  procurement_header_id: input.hims_f_procurement_po_header_id
+                  procurement_header_id: input.hims_f_procurement_po_header_id,
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = {
                     purchase_number: input.purchase_number,
-                    hims_f_procurement_po_header_id: input.hims_f_procurement_po_header_id
+                    hims_f_procurement_po_header_id:
+                      input.hims_f_procurement_po_header_id,
                   };
                   next();
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -392,26 +392,27 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = {
                     purchase_number: input.purchase_number,
-                    hims_f_procurement_po_header_id: input.hims_f_procurement_po_header_id
+                    hims_f_procurement_po_header_id:
+                      input.hims_f_procurement_po_header_id,
                   };
                   next();
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -444,15 +445,15 @@ export default {
             inputParam.authorize2,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_po_header_id
+            inputParam.hims_f_procurement_po_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           utilities.logger().log("headerResult: ");
           if (headerResult != null) {
@@ -471,7 +472,7 @@ export default {
                   details[i].rejected_quantity,
                   details[i].quantity_recieved,
                   details[i].quantity_outstanding,
-                  details[i].hims_f_procurement_po_detail_id
+                  details[i].hims_f_procurement_po_detail_id,
                 ]
               );
 
@@ -485,16 +486,16 @@ export default {
               _mysql
                 .executeQuery({
                   query: qry,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = detailResult;
                     next();
                   });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -507,7 +508,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -599,14 +600,14 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -624,9 +625,9 @@ export default {
           query:
             "SELECT * from  hims_f_pharamcy_material_header where material_requisition_number=?",
           values: [req.query.material_requisition_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -634,17 +635,17 @@ export default {
                   "select * from hims_f_pharmacy_material_detail p left outer join hims_d_item_master l \
                 on l.hims_d_item_master_id =p.item_id where pharmacy_header_id=?",
                 values: [headerResult[0].hims_f_pharamcy_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -654,7 +655,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -672,9 +673,9 @@ export default {
           query:
             "SELECT * from  hims_f_inventory_material_header where material_requisition_number=?",
           values: [req.query.material_requisition_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -682,17 +683,17 @@ export default {
                   "select * from hims_f_inventory_material_detail p left outer join hims_d_inventory_item_master l \
                 on l.hims_d_inventory_item_master_id =p.item_id where inventory_header_id=?",
                 values: [headerResult[0].hims_f_inventory_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -702,7 +703,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -745,28 +746,27 @@ export default {
           [
             new Date(),
             details[i].total_quantity,
-            details[i].pharmacy_requisition_id
+            details[i].pharmacy_requisition_id,
           ]
         );
       }
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: true
+          printQuery: true,
         })
-        .then(detailResult => {
+        .then((detailResult) => {
           // _mysql.commitTransaction(() => {
           //   _mysql.releaseConnection();
           req.data = req.records.purchase_number;
           next();
           // });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -791,29 +791,27 @@ export default {
           [
             new Date(),
             details[i].total_quantity,
-            details[i].inventory_requisition_id
+            details[i].inventory_requisition_id,
           ]
         );
       }
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: true
+          printQuery: true,
         })
-        .then(detailResult => {
+        .then((detailResult) => {
           // _mysql.commitTransaction(() => {
           //   _mysql.releaseConnection();
           req.data = req.records.purchase_number;
           next();
           // });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
         });
-
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -829,26 +827,28 @@ export default {
           query:
             "SELECT * from  hims_f_procurement_vendor_quotation_header where vendor_quotation_number=?",
           values: [req.query.vendor_quotation_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
                 query:
                   "select * from hims_f_procurement_vendor_quotation_detail vendor_quotation_header_id=?",
-                values: [headerResult[0].hims_f_procurement_vendor_quotation_header_id],
-                printQuery: true
+                values: [
+                  headerResult[0].hims_f_procurement_vendor_quotation_header_id,
+                ],
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -858,7 +858,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -883,14 +883,14 @@ export default {
             req.body.request_qty,
             new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -902,10 +902,9 @@ export default {
   getraiseRequestForPO: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let strQuery = ""
+      let strQuery = "";
       if (req.query.category_id != null) {
-        strQuery +=
-          " and category_id = " + req.query.category_id;
+        strQuery += " and category_id = " + req.query.category_id;
       }
       _mysql
         .executeQuery({
@@ -914,15 +913,16 @@ export default {
             IM.category_id as inv_item_category_id, IM.group_id as inv_item_group_id, IM.purchase_uom_id as inventory_uom_id, \
             PR.request_qty as quantity from hims_f_procurement_purchase_request PR \
             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = PR.item_id\
-            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location where 1=1"+ strQuery,
-          printQuery: true
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location where 1=1" +
+            strQuery,
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           _mysql.releaseConnection();
           req.records = headerResult;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -930,5 +930,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

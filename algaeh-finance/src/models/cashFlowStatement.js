@@ -128,7 +128,7 @@ export default {
               break;
             default:
               _mysql.releaseConnection();
-              next(new Error("Please select coulmns to display"));
+              next(new Error("Please select columns to display"));
           }
 
           // next();
@@ -262,7 +262,7 @@ function cashFlow_TotalsOnly(options) {
 
           // let len = parseInt(result.length) - 5;
 
-          let coulmns = [
+          let columns = [
             {
               label: "Totals",
               colum_id: "total",
@@ -326,7 +326,7 @@ function cashFlow_TotalsOnly(options) {
           let net_financing = {};
           // comparission in done one time b/w 2 things so lenth-1
           for (let i = 0, lenth = dataArray.length; i < lenth - 1; i++) {
-            let colum_id = coulmns[i]["colum_id"];
+            let colum_id = columns[i]["colum_id"];
 
             let operating_amount = 0;
             let investing_amount = 0;
@@ -444,7 +444,7 @@ function cashFlow_TotalsOnly(options) {
             net_operating,
             net_investing,
             net_financing,
-            coulmns,
+            columns,
           });
         })
         .catch((e) => {

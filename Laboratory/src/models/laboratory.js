@@ -51,7 +51,7 @@ export default {
           query:
             " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
             group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, \
-            concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, \
+            E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
             LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
             concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
             lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  \
@@ -501,7 +501,7 @@ export default {
                       httpStatus.generateError(
                         httpStatus.forbidden,
                         "Analytes not deifined for the test :" +
-                          no_analyte["description"]
+                        no_analyte["description"]
                       )
                     );
                   });
@@ -1361,7 +1361,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {

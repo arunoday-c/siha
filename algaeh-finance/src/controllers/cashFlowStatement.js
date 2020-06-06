@@ -21,7 +21,7 @@ export default () => {
       .status(utlities.AlgaehUtilities().httpStatus().ok)
       .json({
         success: true,
-        result: req.records,
+        records: req.records,
       })
       .end();
     // }
