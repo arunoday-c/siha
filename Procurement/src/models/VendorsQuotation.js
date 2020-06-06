@@ -72,8 +72,6 @@ export default {
         try {
             let input = { ...req.body };
             let vendor_quotation_number = "";
-            const utilities = new algaehUtilities();
-            utilities.logger().log("addDeliveryNoteEntry: ");
             _mysql
                 .generateRunningNumber({
                     user_id: req.userIdentity.algaeh_d_app_user_id,

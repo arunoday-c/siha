@@ -341,10 +341,16 @@ const SavePOEnrty = ($this, from) => {
   procumentInputs.forEach((item) => {
     sendJsonBody[item] = $this.state[item];
   });
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: strUri,
+    skipParse: true,
+    data: Buffer.from(JSON.stringify(sendJsonBody), "utf8"),
     module: "procurement",
-    data: sendJsonBody, //$this.state,
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
     onSuccess: (response) => {
       if (response.data.success === true) {
         getCtrlCode($this, response.data.records.purchase_number)

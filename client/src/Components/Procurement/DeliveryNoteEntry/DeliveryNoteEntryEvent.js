@@ -314,6 +314,13 @@ const SaveDNEnrty = $this => {
         }
       }
     }
+    InputObj.po_entry_detail[j].expiry_date =
+      InputObj.po_entry_detail[j].expiry_date !== null
+        ? moment(
+          InputObj.po_entry_detail[j].expiry_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
+        : null;
   }
 
   let po_entry_detail = _.filter(InputObj.po_entry_detail, f => {
@@ -325,7 +332,11 @@ const SaveDNEnrty = $this => {
   InputObj.posted = "Y";
   InputObj.transaction_type = "DNA";
   // $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
-  InputObj.transaction_date = $this.state.dn_date;
+  InputObj.transaction_date = moment(
+    $this.state.dn_date,
+    "YYYY-MM-DD"
+  ).format("YYYY-MM-DD")
+
 
   if (InputObj.dn_from === "PHR") {
     for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
@@ -354,6 +365,13 @@ const SaveDNEnrty = $this => {
 
       InputObj.pharmacy_stock_detail[i].net_total =
         InputObj.pharmacy_stock_detail[i].net_extended_cost;
+      InputObj.pharmacy_stock_detail[i].expiry_date =
+        InputObj.pharmacy_stock_detail[i].expiry_date !== null
+          ? moment(
+            InputObj.pharmacy_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
+          : null;
       InputObj.pharmacy_stock_detail[i].operation = "+";
     }
   } else if (InputObj.dn_from === "INV") {
@@ -382,6 +400,15 @@ const SaveDNEnrty = $this => {
 
       InputObj.inventory_stock_detail[i].net_total =
         InputObj.inventory_stock_detail[i].net_extended_cost;
+
+
+      InputObj.inventory_stock_detail[i].expiry_date =
+        InputObj.inventory_stock_detail[i].expiry_date !== null
+          ? moment(
+            InputObj.inventory_stock_detail[i].expiry_date,
+            "YYYY-MM-DD"
+          ).format("YYYY-MM-DD")
+          : null;
       InputObj.inventory_stock_detail[i].operation = "+";
     }
   }
@@ -457,11 +484,18 @@ const SaveDNEnrty = $this => {
 
   delete InputObj.dn_entry_detail;
 
+  const settings = { header: undefined, footer: undefined };
+
   if (batchExpiryDate.length === 0) {
     algaehApiCall({
       uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(InputObj), "utf8"),
       module: "procurement",
-      data: InputObj,
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings
+      },
       onSuccess: response => {
         if (response.data.success === true) {
           // $this.setState({
@@ -522,7 +556,7 @@ const generateDeliveryNoteReceipt = data => {
     },
     onSuccess: res => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${ data.delivery_note_number}-Delivery Note Receipt`
+      const reportName = `${data.delivery_note_number}-Delivery Note Receipt`
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Delivery Note Receipt";
@@ -678,7 +712,7 @@ const getData = $this => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "dnitemcategory"
       },
-      afterSuccess: data => {}
+      afterSuccess: data => { }
     });
 
     $this.props.getItemGroup({

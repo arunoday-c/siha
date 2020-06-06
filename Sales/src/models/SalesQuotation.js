@@ -73,8 +73,7 @@ export function addSalesQuotation(req, res, next) {
   try {
     let input = req.body;
     let sales_quotation_number = "";
-    // const utilities = new algaehUtilities();
-    // utilities.logger().log("addDeliveryNoteEntry: ");
+
 
     _mysql
       .generateRunningNumber({

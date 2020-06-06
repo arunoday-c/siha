@@ -127,7 +127,6 @@ const SaveSalesQuotation = $this => {
 
           $this.state.update_type = "ED"
           AlgaehLoader({ show: true });
-          debugger
           algaehApiCall({
             uri: "/SalesQuotation/updateSalesQuotation",
             module: "sales",
