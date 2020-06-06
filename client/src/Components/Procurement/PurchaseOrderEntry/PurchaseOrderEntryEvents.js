@@ -689,10 +689,46 @@ const AuthorizePOEntry = ($this, authorize) => {
       }
     }
 
+    const procumentInputs = [
+      "hims_f_procurement_po_header_id",
+      "purchase_number",
+      "po_type",
+      "po_from",
+      "pharmcy_location_id",
+      "inventory_location_id",
+      "inventory_location_id",
+      "location_type",
+      "vendor_id",
+      "expected_date",
+      "on_hold",
+      "inv_requisition_id",
+      "requisition_id",
+      "vendor_quotation_header_id",
+      "from_multiple_requisition",
+      "payment_terms",
+      "comment",
+      "sub_total",
+      "detail_discount",
+      "extended_total",
+      "sheet_level_discount_percent",
+      "sheet_level_discount_amount",
+      "description",
+      "net_total",
+      "total_tax",
+      "net_payable",
+      "po_entry_detail",
+      "authorize1",
+      "authorize2"
+    ];
+    let sendJsonBody = {};
+    procumentInputs.forEach((item) => {
+      sendJsonBody[item] = $this.state[item];
+    });
+
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
       module: "procurement",
-      data: $this.state,
+      data: sendJsonBody,//$this.state,
       method: "PUT",
       onSuccess: (response) => {
         if (response.data.success === true) {
