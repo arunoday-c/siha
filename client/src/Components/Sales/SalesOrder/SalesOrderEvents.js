@@ -394,12 +394,28 @@ const SaveSalesOrderEnrty = $this => {
         });
         return;
       }
+      $this.state.quote_validity = moment(
+        $this.state.quote_validity,
+        "YYYY-MM-DD"
+      ).format("YYYY-MM-DD")
+
+      $this.state.delivery_date = moment(
+        $this.state.delivery_date,
+        "YYYY-MM-DD"
+      ).format("YYYY-MM-DD")
+      const settings = { header: undefined, footer: undefined };
+
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/SalesOrder/addSalesOrder",
+        skipParse: true,
+        data: Buffer.from(JSON.stringify($this.state), "utf8"),
         module: "sales",
         method: "POST",
-        data: $this.state,
+        header: {
+          "content-type": "application/octet-stream",
+          ...settings
+        },
         onSuccess: response => {
           if (response.data.success) {
             $this.setState({
@@ -450,7 +466,7 @@ const getCtrlCode = ($this, docNumber) => {
         let data = response.data.records;
 
         data.grid_edit = true;
-
+        debugger
         if (
           $this.props.sales_order_number !== undefined &&
           $this.props.sales_order_number.length !== 0
@@ -658,11 +674,17 @@ const AuthorizeOrderEntry = ($this, authorize) => {
     }
   }
 
+  const settings = { header: undefined, footer: undefined };
   algaehApiCall({
     uri: "/SalesOrder/updateSalesOrderEntry",
     module: "sales",
-    data: $this.state,
     method: "PUT",
+    skipParse: true,
+    data: Buffer.from(JSON.stringify($this.state), "utf8"),
+    header: {
+      "content-type": "application/octet-stream",
+      ...settings
+    },
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({

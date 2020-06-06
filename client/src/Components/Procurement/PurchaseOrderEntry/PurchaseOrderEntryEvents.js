@@ -979,4 +979,5 @@ export {
   clearItemDetails,
   VendorQuotationSearch,
   getPOOptions,
+  getData
 };

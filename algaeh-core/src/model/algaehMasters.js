@@ -522,7 +522,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
           SELECT algaeh_d_app_scrn_elements_id,screen_element_code,
 '' as props_type,'H' as ele_view_previlage FROM algaeh_d_app_scrn_elements
 where record_status='I';`
-      }`;
+        }`;
     } else {
       strQuery = `select m.algaeh_d_module_id,m.module_code,m.module_name,m.icons,m.display_order,m.other_language,
       s.algaeh_app_screens_id,s.screen_code,s.screen_name,s.page_to_redirect,s.redirect_url,
@@ -651,11 +651,12 @@ where record_status='I';`
                   } = sec;
 
                   const listItems = () => {
-                    return _.chain(screens)
+                    const co = _.chain(screens)
                       .filter((f) => f.algaeh_d_app_component_id !== null)
                       .groupBy((c) => c.algaeh_d_app_component_id)
                       .map((comp) => {
                         const third = _.head(comp);
+                        // console.log("third", third)
                         const {
                           algaeh_d_app_component_id,
                           component_code,
@@ -676,6 +677,7 @@ where record_status='I';`
                         };
                       })
                       .value();
+                    return co;
                   };
 
                   let componentsDetails = [];
@@ -1286,7 +1288,7 @@ let getAlgaehScreens = (req, res, next) => {
       if (req.query.module_id != undefined && req.query.module_id != null) {
         module_id = `${wherecondition === "" ? " where " : ""} module_id=${
           req.query.module_id
-        } `;
+          } `;
       }
       _mysql
         .executeQuery({
@@ -2243,7 +2245,7 @@ let assignScreens = (req, res, next) => {
                     " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                     [
                       input.update_screens[i][
-                        "algaeh_m_module_role_privilage_mapping_id"
+                      "algaeh_m_module_role_privilage_mapping_id"
                       ],
                       input.update_screens[i]["insert_screens"][k],
                       req.userIdentity.algaeh_d_app_user_id,
@@ -2935,12 +2937,12 @@ const getScreensWithComponents = (req, res, next) => {
                       extraPropsList:
                         extra_props !== null && extra_props !== ""
                           ? extra_props.split(",").map((m, index) => {
-                              return {
-                                label: m,
-                                value: index,
-                                checked: false,
-                              };
-                            })
+                            return {
+                              label: m,
+                              value: index,
+                              checked: false,
+                            };
+                          })
                           : [],
                     };
                   })

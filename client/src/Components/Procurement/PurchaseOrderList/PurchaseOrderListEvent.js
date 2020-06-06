@@ -211,5 +211,7 @@ export {
   texthandle,
   poforhandle,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
+  getPurchaseOrderList,
+  getData
 };

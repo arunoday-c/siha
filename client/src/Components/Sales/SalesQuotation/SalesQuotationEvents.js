@@ -83,6 +83,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveSalesQuotation = $this => {
+  const settings = { header: undefined, footer: undefined };
   if ($this.state.hims_f_sales_quotation_id !== null) {
     if ($this.state.edit_mode === true) {
       AlgaehValidation({
@@ -131,7 +132,12 @@ const SaveSalesQuotation = $this => {
             uri: "/SalesQuotation/updateSalesQuotation",
             module: "sales",
             method: "PUT",
-            data: $this.state,
+            skipParse: true,
+            data: Buffer.from(JSON.stringify($this.state), "utf8"),
+            header: {
+              "content-type": "application/octet-stream",
+              ...settings
+            },
             onSuccess: response => {
               if (response.data.success) {
                 $this.setState({
@@ -183,7 +189,12 @@ const SaveSalesQuotation = $this => {
         uri: "/SalesQuotation/updateSalesQuotation",
         module: "sales",
         method: "PUT",
-        data: inputObj,
+        skipParse: true,
+        data: Buffer.from(JSON.stringify(inputObj), "utf8"),
+        header: {
+          "content-type": "application/octet-stream",
+          ...settings
+        },
         onSuccess: response => {
           if (response.data.success) {
             swalMessage({
@@ -242,12 +253,27 @@ const SaveSalesQuotation = $this => {
         $this.state.quote_services_status =
           $this.state.sales_quotation_services.length > 0 ? "G" : "N";
 
+        $this.state.quote_validity = moment(
+          $this.state.quote_validity,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
+
+        $this.state.delivery_date = moment(
+          $this.state.delivery_date,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD")
         AlgaehLoader({ show: true });
+
         algaehApiCall({
           uri: "/SalesQuotation/addSalesQuotation",
           module: "sales",
           method: "POST",
-          data: $this.state,
+          skipParse: true,
+          data: Buffer.from(JSON.stringify($this.state), "utf8"),
+          header: {
+            "content-type": "application/octet-stream",
+            ...settings
+          },
           onSuccess: response => {
             if (response.data.success) {
               $this.setState({
@@ -313,13 +339,7 @@ const getCtrlCode = ($this, docNumber) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        // data.sales_quotation_items = data.qutation_detail[0]
-        // data.sales_quotation_services = data.qutation_detail[1]
-        // if (data.sales_quotation_mode === "I") {
 
-        // } else {
-
-        // }
         data.comment_list =
           data.terms_conditions !== null
             ? data.terms_conditions.split("<br/>")
@@ -327,12 +347,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.saveEnable = true;
         data.dataExists = true;
         data.cancelEnable = data.qotation_status === "G" ? false : true;
-
-        // if ($this.state.qotation_status === "G") {
-        //   data.cancelEnable = false;
-        // } else {
-        //   data.cancelEnable = true;
-        // }
+        data.edit_mode = data.qotation_status === "CL" ? true : false;
 
         data.addedItem = true;
         $this.setState(data);
@@ -482,11 +497,17 @@ const CancelQuotation = ($this) => {
         hims_f_sales_quotation_id: $this.state.hims_f_sales_quotation_id,
         cancelled: "Y"
       };
+      const settings = { header: undefined, footer: undefined };
       algaehApiCall({
         uri: "/SalesQuotation/updateSalesQuotation",
         module: "sales",
         method: "PUT",
-        data: inputObj,
+        skipParse: true,
+        data: Buffer.from(JSON.stringify(inputObj), "utf8"),
+        header: {
+          "content-type": "application/octet-stream",
+          ...settings
+        },
         onSuccess: response => {
           if (response.data.success) {
             swalMessage({
