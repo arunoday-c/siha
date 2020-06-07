@@ -218,6 +218,7 @@ let userCheck = (req, res, next) => {
         printQuery: true,
       })
       .then((result) => {
+        _mysql.releaseConnection();
         if (result.length > 0) {
           const {
             date_of_birth,
@@ -339,12 +340,15 @@ const changePasswordRequest = (req, res, next) => {
               values: [newPassword, algaeh_d_app_user_id],
             })
             .then(() => {
+              _mysql.releaseConnection();
               next();
             })
             .catch((error) => {
+              _mysql.releaseConnection();
               next(error);
             });
         } else {
+          _mysql.releaseConnection();
           next(new Error("There is no user to change password"));
         }
       })
