@@ -284,7 +284,7 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
   clearItemDetails($this);
   getPOOptions($this);
-  $this.setState({ po_from });
+  // $this.setState({ po_from });
 };
 
 const SavePOEnrty = ($this, from) => {
