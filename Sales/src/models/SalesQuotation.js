@@ -98,8 +98,9 @@ export function addSalesQuotation(req, res, next) {
                 "INSERT INTO hims_f_sales_quotation (sales_quotation_number, sales_quotation_date, \
                       sales_quotation_mode, reference_number, customer_id, quote_validity, sales_man, \
                       payment_terms, sales_person_id, narration, delivery_date, no_of_days_followup, \
-                      terms_conditions, quote_items_status, quote_services_status, created_date, created_by, updated_date, updated_by, hospital_id)\
-              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      terms_conditions, quote_items_status, quote_services_status, total_item_amount, total_service_amount, \
+                      net_payable, created_date, created_by, updated_date, updated_by, hospital_id)\
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 sales_quotation_number,
                 new Date(),
@@ -117,6 +118,9 @@ export function addSalesQuotation(req, res, next) {
                 input.terms_conditions,
                 input.quote_items_status,
                 input.quote_services_status,
+                input.total_item_amount,
+                input.total_service_amount,
+                input.net_payable,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -293,7 +297,8 @@ export function updateSalesQuotation(req, res, next) {
             query:
               "UPDATE hims_f_sales_quotation SET quote_validity=?, sales_man=?, \
                   payment_terms=?, sales_person_id=?, narration=?, delivery_date=?, no_of_days_followup=?, \
-                  terms_conditions=?, updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
+                  terms_conditions=?, total_item_amount=?, total_service_amount=?, \
+                  net_payable=?, updated_date=?, updated_by=? where hims_f_sales_quotation_id=?",
             values: [
               inputParam.quote_validity,
               inputParam.sales_man,
@@ -303,6 +308,9 @@ export function updateSalesQuotation(req, res, next) {
               inputParam.delivery_date,
               inputParam.no_of_days_followup,
               inputParam.terms_conditions,
+              inputParam.total_item_amount,
+              inputParam.total_service_amount,
+              inputParam.net_payable,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.hims_f_sales_quotation_id

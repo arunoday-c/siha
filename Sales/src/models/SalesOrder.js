@@ -329,7 +329,8 @@ export function getSalesQuotationForOrder(req, res, next) {
 
                     if (req.query.sales_order_mode == "I") {
                         strQuery = mysql.format(
-                            "select QI.*, IM.item_description, IU.uom_description, 0 as quantity_outstanding from hims_f_sales_quotation_items QI \
+                            "select QI.*, IM.item_description, IU.uom_description, 0 as quantity_outstanding \
+                            from hims_f_sales_quotation_items QI \
                             inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
                             inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id \
                             where sales_quotation_id=?",

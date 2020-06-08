@@ -44,7 +44,7 @@ const ClearData = ($this, e) => {
     discount_amount: null,
     net_total: null,
     total_tax: null,
-    net_payable: null,
+    net_payable: 0,
     narration: null,
     tax_percentage: null,
     delivery_date: null,
@@ -76,7 +76,9 @@ const ClearData = ($this, e) => {
     service_name: "",
     services_id: null,
     service_frequency: null,
-    cancelEnable: true
+    cancelEnable: true,
+    total_item_amount: 0,
+    total_service_amount: 0
   };
 
   $this.setState(IOputs);
