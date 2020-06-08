@@ -24,6 +24,7 @@ import excelFile from "../controllers/excel_file";
 import projectjobcosting from "../controllers/project_job_costing";
 import openingBalanceUpload from "../controllers/openingBalanceUpload";
 import salarypayment from "../controllers/salarypayment";
+import performanceManagement from "../controllers/performanceMangement";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -51,5 +52,6 @@ router.use("/excel", excelFile());
 router.use("/projectjobcosting", projectjobcosting());
 router.use("/openingBalanceUpload", openingBalanceUpload());
 router.use("/salarypayment", salarypayment());
+router.use("/performanceManagement", performanceManagement());
 
 export default router;
