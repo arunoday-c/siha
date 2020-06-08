@@ -8,7 +8,7 @@ import { Notifications } from "../Notifications";
 import Items from "./item";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
-
+import localSrc from "./algaehlogo.png";
 function NavBars(props) {
   const {
     userLanguage,
@@ -78,6 +78,9 @@ function NavBars(props) {
       },
     });
   }
+  function addDefaultSrc(e) {
+    e.target.src = localSrc;
+  }
   const { product_type } = userToken;
   return (
     <>
@@ -107,6 +110,7 @@ function NavBars(props) {
                 userToken.organization_id
               }&logo_type=APP`}
               alt="client logo"
+              onError={addDefaultSrc}
             />
             {/* load client logo here  */}
           </span>
