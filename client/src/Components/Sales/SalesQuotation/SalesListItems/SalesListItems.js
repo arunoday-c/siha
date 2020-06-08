@@ -108,404 +108,419 @@ class SalesListItems extends Component {
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="row">
-                    <AlgaehAutoSearch
-                      div={{ className: "col-12 form-group mandatory" }}
-                      label={{ forceLabel: "Item Name" }}
-                      title="Search Items"
-                      id="item_id_search"
-                      template={(result) => {
-                        return (
-                          <section className="resultSecStyles">
-                            <div className="row">
-                              <div className="col-12">
-                                <h4 className="title">
-                                  {result.item_description}
-                                </h4>
-                                <small>{result.uom_description}</small>
-                              </div>
-                            </div>
-                          </section>
-                        );
-                      }}
-                      name="item_id"
-                      columns={spotlightSearch.Items.Invitemmaster}
-                      displayField="item_description"
-                      value={this.state.item_description}
-                      searchName="salesitemmaster"
-                      onClick={itemchangeText.bind(this, this)}
-                      ref={(attReg) => {
-                        this.attReg = attReg;
-                      }}
-                      others={{
-                        disabled: this.state.dataExists,
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-3 form-group mandatory" }}
-                      label={{ forceLabel: "UOM", isImp: true }}
-                      selector={{
-                        name: "uom_id",
-                        className: "select-fld",
-                        value: this.state.uom_id,
-                        dataSource: {
-                          textField: "uom_description",
-                          valueField: "uom_id",
-                          data: this.state.ItemUOM,
-                        },
-                        onChange: UomchangeTexts.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            uom_id: null,
-                          });
-                        },
-                        others: {
-                          disabled: this.state.dataExitst,
-                          tabIndex: "2",
-                        },
-                      }}
-                    />{" "}
-                    <AlagehFormGroup
-                      div={{ className: "col-3 form-group mandatory" }}
-                      label={{
-                        forceLabel: "Unit Cost",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "unit_cost",
-                        value: this.state.unit_cost,
-                        events: {
-                          onChange: numberchangeTexts.bind(this, this, context),
-                        },
-                        others: {
-                          tabIndex: "4",
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3 form-group mandatory" }}
-                      label={{
-                        forceLabel: "Quantity",
-                      }}
-                      textBox={{
-                        number: {
-                          allowNegative: false,
-                          thousandSeparator: ",",
-                        },
-                        className: "txt-fld",
-                        name: "quantity",
-                        value: this.state.quantity,
-                        dontAllowKeys: ["-", "e", "."],
-                        events: {
-                          onChange: numberchangeTexts.bind(this, this, context),
-                        },
-                        others: {
-                          disabled: this.state.dataExitst,
-                          tabIndex: "3",
-                        },
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3 form-group" }}
-                      label={{
-                        forceLabel: "Discount (%)",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "discount_percentage",
-                        value: this.state.discount_percentage,
-                        events: {
-                          onChange: numberchangeTexts.bind(this, this, context),
-                        },
-                        others: {
-                          tabIndex: "4",
-                        },
-                      }}
-                    />
-                    <div className="col-3 mandatory">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Tax %",
-                        }}
-                      />
-                      <h6>
-                        {this.state.tax_percentage
-                          ? this.state.tax_percentage
-                          : "-----------"}
-                      </h6>
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Add Items</h3>
                     </div>
-                    <div className="col-3">
-                      <button
-                        className="btn btn-primary"
-                        onClick={AddItems.bind(this, this, context)}
-                        disabled={this.state.addItemButton}
-                        tabIndex="5"
-                        style={{ marginTop: 19 }}
-                      >
-                        Add Item
-                      </button>
-                    </div>
+                    <div className="actions" />
                   </div>
-                </div>
-              </div>
-
-              <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="row">
-                    <div className="col-12" id="SaleQuotationGrid_Cntr">
-                      <AlgaehDataGrid
-                        id="SaleQuotationGrid"
-                        columns={[
-                          {
-                            fieldName: "actions",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Action" }} />
-                            ),
-                            displayTemplate: (row) => {
-                              return (
-                                <span
-                                  onClick={deleteSalesDetail.bind(
-                                    this,
-                                    this,
-                                    context,
-                                    row
-                                  )}
-                                >
-                                  <i
-                                    style={{
-                                      pointerEvents: this.state.dataExists
-                                        ? "none"
-                                        : "",
-                                      opacity: this.state.dataExists
-                                        ? "0.1"
-                                        : "",
-                                    }}
-                                    className="fas fa-trash-alt"
-                                  />
-                                </span>
-                              );
-                            },
-                          },
-                          {
-                            fieldName: "item_description",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Name" }}
-                              />
-                            ),
-                            disabled: true,
-                            others: {
-                              minWidth: 200,
-                            },
-                          },
-                          {
-                            fieldName: "quantity",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                            ),
-                            displayTemplate: (row) => {
-                              return this.state.dataExists === true ||
-                                this.state.edit_mode === true ? (
-                                parseFloat(row.quantity)
-                              ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    number: {
-                                      allowNegative: false,
-                                      thousandSeparator: ",",
-                                    },
-                                    value: row.quantity,
-                                    className: "txt-fld",
-                                    name: "quantity",
-                                    events: {
-                                      onChange: qtyonchangegridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      onFocus: (e) => {
-                                        e.target.oldvalue = e.target.value;
-                                      },
-                                    },
-                                  }}
-                                />
-                              );
-                            },
-                            others: {
-                              minWidth: 90,
-                            },
-                          },
-                          {
-                            fieldName: "uom_description",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "UOM" }} />
-                            ),
-                            disabled: true,
-                            others: {
-                              minWidth: 90,
-                            },
-                          },
-                          {
-                            fieldName: "unit_cost",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Unit Cost" }}
-                              />
-                            ),
-                            disabled: true,
-                            others: {
-                              minWidth: 90,
-                            },
-                          },
-
-                          {
-                            fieldName: "extended_cost",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Ext. Cost" }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "discount_percentage",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "discount %",
-                                }}
-                              />
-                            ),
-                            displayTemplate: (row) => {
-                              return this.state.dataExists === true ||
-                                this.state.edit_mode === true ? (
-                                row.discount_percentage
-                              ) : (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    decimal: { allowNegative: false },
-                                    value: row.discount_percentage,
-                                    className: "txt-fld",
-                                    name: "discount_percentage",
-                                    events: {
-                                      onChange: onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        context,
-                                        row
-                                      ),
-                                    },
-                                    others: {
-                                      onFocus: (e) => {
-                                        e.target.value =
-                                          e.target.value === undefined
-                                            ? 0
-                                            : e.target.value;
-                                      },
-                                    },
-                                  }}
-                                />
-                              );
-                            },
-                          },
-                          {
-                            fieldName: "discount_amount",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "discount Amt.",
-                                }}
-                              />
-                            ),
-                            // displayTemplate: row => {
-                            //     return (
-                            //         <AlagehFormGroup
-                            //             div={{}}
-                            //             textBox={{
-                            //                 decimal: { allowNegative: false },
-                            //                 value: row.discount_amount,
-                            //                 className: "txt-fld",
-                            //                 name: "discount_amount",
-                            //                 events: {
-                            //                     onChange: onchangegridcol.bind(
-                            //                         this,
-                            //                         this,
-                            //                         context,
-                            //                         row
-                            //                     )
-                            //                 },
-                            //                 others: {
-                            //                     onFocus: e => {
-                            //                         e.target.oldvalue =
-                            //                             e.target.value;
-                            //                     }
-                            //                 }
-                            //             }}
-                            //         />
-                            //     );
-                            // }
-                          },
-
-                          {
-                            fieldName: "net_extended_cost",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Net Ext. Cost",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "tax_percentage",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Tax %",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "tax_amount",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Tax Amount",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                          {
-                            fieldName: "total_amount",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Total Amount",
-                                }}
-                              />
-                            ),
-                            disabled: true,
-                          },
-                        ]}
-                        keyId="service_type_id"
-                        dataSource={{
-                          data: this.state.sales_quotation_items,
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlgaehAutoSearch
+                        div={{ className: "col-12 form-group mandatory" }}
+                        label={{ forceLabel: "Item Name" }}
+                        title="Search Items"
+                        id="item_id_search"
+                        template={(result) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-12">
+                                  <h4 className="title">
+                                    {result.item_description}
+                                  </h4>
+                                  <small>{result.uom_description}</small>
+                                </div>
+                              </div>
+                            </section>
+                          );
                         }}
-                        paging={{ page: 0, rowsPerPage: 10 }}
+                        name="item_id"
+                        columns={spotlightSearch.Items.Invitemmaster}
+                        displayField="item_description"
+                        value={this.state.item_description}
+                        searchName="salesitemmaster"
+                        onClick={itemchangeText.bind(this, this)}
+                        ref={(attReg) => {
+                          this.attReg = attReg;
+                        }}
+                        others={{
+                          disabled: this.state.dataExists,
+                        }}
                       />
+                      <AlagehAutoComplete
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{ forceLabel: "UOM", isImp: true }}
+                        selector={{
+                          name: "uom_id",
+                          className: "select-fld",
+                          value: this.state.uom_id,
+                          dataSource: {
+                            textField: "uom_description",
+                            valueField: "uom_id",
+                            data: this.state.ItemUOM,
+                          },
+                          onChange: UomchangeTexts.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              uom_id: null,
+                            });
+                          },
+                          others: {
+                            disabled: this.state.dataExitst,
+                            tabIndex: "2",
+                          },
+                        }}
+                      />{" "}
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Unit Cost",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "unit_cost",
+                          value: this.state.unit_cost,
+                          events: {
+                            onChange: numberchangeTexts.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                          },
+                          others: {
+                            tabIndex: "4",
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{
+                          forceLabel: "Quantity",
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ",",
+                          },
+                          className: "txt-fld",
+                          name: "quantity",
+                          value: this.state.quantity,
+                          dontAllowKeys: ["-", "e", "."],
+                          events: {
+                            onChange: numberchangeTexts.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                          },
+                          others: {
+                            disabled: this.state.dataExitst,
+                            tabIndex: "3",
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group" }}
+                        label={{
+                          forceLabel: "Discount (%)",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "discount_percentage",
+                          value: this.state.discount_percentage,
+                          events: {
+                            onChange: numberchangeTexts.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                          },
+                          others: {
+                            tabIndex: "4",
+                          },
+                        }}
+                      />
+                      <div className="col-3 mandatory">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Tax %",
+                          }}
+                        />
+                        <h6>
+                          {this.state.tax_percentage
+                            ? this.state.tax_percentage
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      <div className="col-3">
+                        <button
+                          className="btn btn-primary"
+                          onClick={AddItems.bind(this, this, context)}
+                          disabled={this.state.addItemButton}
+                          tabIndex="5"
+                          style={{ marginTop: 19 }}
+                        >
+                          Add Item
+                        </button>
+                      </div>
+                      <div className="col-12" id="SaleQuotationGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="SaleQuotationGrid"
+                          columns={[
+                            {
+                              fieldName: "actions",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
+                              ),
+                              displayTemplate: (row) => {
+                                return (
+                                  <span
+                                    onClick={deleteSalesDetail.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    )}
+                                  >
+                                    <i
+                                      style={{
+                                        pointerEvents: this.state.dataExists
+                                          ? "none"
+                                          : "",
+                                        opacity: this.state.dataExists
+                                          ? "0.1"
+                                          : "",
+                                      }}
+                                      className="fas fa-trash-alt"
+                                    />
+                                  </span>
+                                );
+                              },
+                            },
+                            {
+                              fieldName: "item_description",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Item Name" }}
+                                />
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 200,
+                              },
+                            },
+                            {
+                              fieldName: "quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity" }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                return this.state.dataExists === true ||
+                                  this.state.edit_mode === true ? (
+                                  parseFloat(row.quantity)
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ",",
+                                      },
+                                      value: row.quantity,
+                                      className: "txt-fld",
+                                      name: "quantity",
+                                      events: {
+                                        onChange: qtyonchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.oldvalue = e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
+                              },
+                              others: {
+                                minWidth: 90,
+                              },
+                            },
+                            {
+                              fieldName: "uom_description",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "UOM" }} />
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 90,
+                              },
+                            },
+                            {
+                              fieldName: "unit_cost",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Unit Cost" }}
+                                />
+                              ),
+                              disabled: true,
+                              others: {
+                                minWidth: 90,
+                              },
+                            },
+
+                            {
+                              fieldName: "extended_cost",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Ext. Cost" }}
+                                />
+                              ),
+                              disabled: true,
+                            },
+                            {
+                              fieldName: "discount_percentage",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "discount %",
+                                  }}
+                                />
+                              ),
+                              displayTemplate: (row) => {
+                                return this.state.dataExists === true ||
+                                  this.state.edit_mode === true ? (
+                                  row.discount_percentage
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      decimal: { allowNegative: false },
+                                      value: row.discount_percentage,
+                                      className: "txt-fld",
+                                      name: "discount_percentage",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        ),
+                                      },
+                                      others: {
+                                        onFocus: (e) => {
+                                          e.target.value =
+                                            e.target.value === undefined
+                                              ? 0
+                                              : e.target.value;
+                                        },
+                                      },
+                                    }}
+                                  />
+                                );
+                              },
+                            },
+                            {
+                              fieldName: "discount_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "discount Amt.",
+                                  }}
+                                />
+                              ),
+                              // displayTemplate: row => {
+                              //     return (
+                              //         <AlagehFormGroup
+                              //             div={{}}
+                              //             textBox={{
+                              //                 decimal: { allowNegative: false },
+                              //                 value: row.discount_amount,
+                              //                 className: "txt-fld",
+                              //                 name: "discount_amount",
+                              //                 events: {
+                              //                     onChange: onchangegridcol.bind(
+                              //                         this,
+                              //                         this,
+                              //                         context,
+                              //                         row
+                              //                     )
+                              //                 },
+                              //                 others: {
+                              //                     onFocus: e => {
+                              //                         e.target.oldvalue =
+                              //                             e.target.value;
+                              //                     }
+                              //                 }
+                              //             }}
+                              //         />
+                              //     );
+                              // }
+                            },
+
+                            {
+                              fieldName: "net_extended_cost",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Net Ext. Cost",
+                                  }}
+                                />
+                              ),
+                              disabled: true,
+                            },
+                            {
+                              fieldName: "tax_percentage",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Tax %",
+                                  }}
+                                />
+                              ),
+                              disabled: true,
+                            },
+                            {
+                              fieldName: "tax_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Tax Amount",
+                                  }}
+                                />
+                              ),
+                              disabled: true,
+                            },
+                            {
+                              fieldName: "total_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Total Amount",
+                                  }}
+                                />
+                              ),
+                              disabled: true,
+                            },
+                          ]}
+                          keyId="service_type_id"
+                          dataSource={{
+                            data: this.state.sales_quotation_items,
+                          }}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
