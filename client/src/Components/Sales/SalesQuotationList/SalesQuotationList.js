@@ -175,7 +175,7 @@ class SalesQuotationList extends Component {
                               checked={this.state.checkSelf}
                               onChange={selectCheckBox.bind(this, this)}
                             />
-                            <span>Myself</span>
+                            <span>My Quotations</span>
                           </label>
                           <label
                             className="checkbox inline"
@@ -187,7 +187,7 @@ class SalesQuotationList extends Component {
                               checked={this.state.checkAll}
                               onChange={selectCheckBox.bind(this, this)}
                             />
-                            <span>All Employee</span>
+                            <span>All Quotations</span>
                           </label>
 
                           <label className="checkbox inline">
@@ -197,12 +197,12 @@ class SalesQuotationList extends Component {
                               checked={this.state.checkUserWise}
                               onChange={selectCheckBox.bind(this, this)}
                             />
-                            <span>Filter by Employee</span>
+                            <span>Quotations by Sales Person</span>
                           </label>
                         </div>
                       </div>
                       {this.state.checkUserWise === true ? (
-                        <div className={"col globalSearchCntr"}>
+                        <div className={"col-3 globalSearchCntr"}>
                           <AlgaehLabel
                             label={{ forceLabel: "Search by Sales Person" }}
                           />
