@@ -4,10 +4,8 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^5.4.0",
-    "@dabeng/react-orgchart": "^1.0.0",
     "@toast-ui/react-image-editor": "^1.0.0",
     "agentkeepalive": "^4.0.0",
-    "algaeh-mysql": "^1.4.0",
     "algaeh-react-components": "^2.1.1",
     "axios": "^0.18.0",
     "axios-cancel": "^0.2.2",
@@ -49,7 +47,6 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "semantic-ui-react": "^0.84.0",
-    "serve": "^11.3.0",
     "socket.io-client": "^2.2.0",
     "sweetalert2": "^7.28.4",
     "xlsx": "^0.14.1"
