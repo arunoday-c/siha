@@ -111,12 +111,12 @@ class BasicSubjective extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-          isPregnancy: true
-        })
+        isPregnancy: true
+      })
       : this.setState({
-          isPregnancy: false,
-          lmp_days: ""
-        });
+        isPregnancy: false,
+        lmp_days: ""
+      });
   }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
@@ -543,7 +543,7 @@ class BasicSubjective extends Component {
                             <textarea
                               value={
                                 this.state.chief_complaint === null ||
-                                this.state.chief_complaint === undefined
+                                  this.state.chief_complaint === undefined
                                   ? ""
                                   : this.state.chief_complaint
                               }
@@ -676,7 +676,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.significant_signs === null ||
-                            this.state.significant_signs === undefined
+                              this.state.significant_signs === undefined
                               ? ""
                               : this.state.significant_signs
                           }
@@ -711,7 +711,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.other_signs === null ||
-                            this.state.other_signs === undefined
+                              this.state.other_signs === undefined
                               ? ""
                               : this.state.other_signs
                           }
@@ -805,8 +805,7 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: true,
-                              others: { maxWidth: 70, align: "center" }
+                              others: { disabled: true, maxWidth: 70, align: "center" }
                             },
                             {
                               fieldName: "icd_description",
@@ -817,8 +816,9 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: true
+                              others: { disabled: true }
                             }
+
                           ]}
                           keyId="code"
                           dataSource={{
@@ -829,7 +829,7 @@ class BasicSubjective extends Component {
                           paging={{ page: 0, rowsPerPage: 5 }}
                           events={{
                             onDelete: this.deleteFinalDiagnosis.bind(this),
-                            onEdit: row => {},
+                            onEdit: row => { },
 
                             onDone: this.updateDiagnosis.bind(this)
                           }}
@@ -865,49 +865,49 @@ class BasicSubjective extends Component {
                           <Loader inline="centered">Loading</Loader>
                         </Dimmer>
                       ) : (
-                        <React.Fragment>
-                          {recentMediction.map((item, index) => (
-                            <div key={index} className="activeMedDateList">
-                              <div className="medcineDate">
-                                <span>{item.month}</span>
-                                <h3>{item.day}</h3>
-                                <span>{item.year}</span>
+                          <React.Fragment>
+                            {recentMediction.map((item, index) => (
+                              <div key={index} className="activeMedDateList">
+                                <div className="medcineDate">
+                                  <span>{item.month}</span>
+                                  <h3>{item.day}</h3>
+                                  <span>{item.year}</span>
 
-                                <div className="printOnHover">
-                                  <i className="fas fa-print" />
+                                  <div className="printOnHover">
+                                    <i className="fas fa-print" />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="medcineList">
-                                <ul>
-                                  {item.details.map((medicine, indexD) => (
-                                    <li key={indexD}>
-                                      <b>
-                                        {medicine.item_description !== undefined
-                                          ? medicine.item_description.replace(
+                                <div className="medcineList">
+                                  <ul>
+                                    {item.details.map((medicine, indexD) => (
+                                      <li key={indexD}>
+                                        <b>
+                                          {medicine.item_description !== undefined
+                                            ? medicine.item_description.replace(
                                               /\w+/g,
                                               _.capitalize
                                             )
-                                          : medicine.item_description}
-                                      </b>
-                                      {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
-                                      <small>{medicine.instructions}</small>
-                                      <small>
-                                        Medicine end date :{" "}
-                                        {moment(medicine.enddate).format(
-                                          "DD dddd MMMM YYYY"
-                                        )}
-                                      </small>
-                                      <div className="reOrderOnHover">
-                                        <i className="fas fa-retweet" />
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
+                                            : medicine.item_description}
+                                        </b>
+                                        {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                        <small>{medicine.instructions}</small>
+                                        <small>
+                                          Medicine end date :{" "}
+                                          {moment(medicine.enddate).format(
+                                            "DD dddd MMMM YYYY"
+                                          )}
+                                        </small>
+                                        <div className="reOrderOnHover">
+                                          <i className="fas fa-retweet" />
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </React.Fragment>
-                      )}
+                            ))}
+                          </React.Fragment>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -995,13 +995,13 @@ class BasicSubjective extends Component {
                       openData="Investigation"
                       chief_complaint={
                         this.state.chief_complaint === null ||
-                        this.state.chief_complaint.length < 4
+                          this.state.chief_complaint.length < 4
                           ? true
                           : false
                       }
                       significant_signs={
                         this.state.significant_signs === null ||
-                        this.state.significant_signs.length < 4
+                          this.state.significant_signs.length < 4
                           ? true
                           : false
                       }
