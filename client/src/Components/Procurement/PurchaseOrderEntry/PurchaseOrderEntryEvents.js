@@ -298,7 +298,7 @@ const SavePOEnrty = ($this, from) => {
 
   if (from === "P") {
     $this.state.is_posted = "Y";
-    strMessage = "Posted successfully . .";
+    strMessage = "Send for authorizatoin successfully";
   }
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
@@ -335,7 +335,7 @@ const SavePOEnrty = ($this, from) => {
     "net_payable",
     "po_entry_detail",
     "delete_stock_detail",
-    "is_posted"
+    "is_posted",
   ];
   let sendJsonBody = {};
   procumentInputs.forEach((item) => {
@@ -349,11 +349,11 @@ const SavePOEnrty = ($this, from) => {
     module: "procurement",
     header: {
       "content-type": "application/octet-stream",
-      ...settings
+      ...settings,
     },
     onSuccess: (response) => {
       if (response.data.success === true) {
-        getCtrlCode($this, response.data.records.purchase_number)
+        getCtrlCode($this, response.data.records.purchase_number);
 
         swalMessage({
           type: "success",
@@ -550,7 +550,7 @@ const getData = ($this, po_from) => {
         type: "ITEM_CATEGORY_GET_DATA",
         mappingName: "poitemcategory",
       },
-      afterSuccess: (data) => { },
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -724,7 +724,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       "net_payable",
       "po_entry_detail",
       "authorize1",
-      "authorize2"
+      "authorize2",
     ];
     let sendJsonBody = {};
     procumentInputs.forEach((item) => {
@@ -738,7 +738,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       skipParse: true,
       data: Buffer.from(JSON.stringify(sendJsonBody), "utf8"),
       module: "procurement",
-      data: sendJsonBody,//$this.state,
+      data: sendJsonBody, //$this.state,
       method: "PUT",
       header: {
         "content-type": "application/octet-stream",
@@ -987,5 +987,5 @@ export {
   clearItemDetails,
   VendorQuotationSearch,
   getPOOptions,
-  getData
+  getData,
 };
