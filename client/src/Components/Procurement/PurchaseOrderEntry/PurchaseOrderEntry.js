@@ -445,7 +445,7 @@ class PurchaseOrderEntry extends Component {
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Save PO",
+                      forceLabel: "Save Purchase Order",
                       returnText: true,
                     }}
                   />
