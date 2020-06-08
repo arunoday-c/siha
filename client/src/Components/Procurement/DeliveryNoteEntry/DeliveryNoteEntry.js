@@ -276,7 +276,7 @@ class DeliveryNoteEntry extends Component {
 
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-other"
                   onClick={printBulkBarcode.bind(this, this)}
                   disabled={this.state.printBarcode}
                 >

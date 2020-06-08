@@ -313,7 +313,7 @@ class PurchaseOrderList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" },
+                          style: { textAlign: "left" },
                         },
                       },
                       {
