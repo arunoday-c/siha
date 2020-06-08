@@ -338,123 +338,61 @@ class ProjectPayroll extends Component {
                             sortable: false,
                           },
                         },
-
-                        {
-                          fieldName: "project_desc",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Project Name" }}
-                            />
-                          ),
-                        },
                         {
                           fieldName: "employee_code",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Code" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
                           ),
+                          others: {
+                            maxWidth: 80,
+                          },
                         },
                         {
                           fieldName: "full_name",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Name" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Emp. Name" }} />
                           ),
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
+                          },
                         },
-                        {
-                          fieldName: "department_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Department Name" }}
-                            />
-                          ),
-                        },
-                        {
-                          fieldName: "sub_department_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Sub Depart. Name" }}
-                            />
-                          ),
-                        },
+                        // {
+                        //   fieldName: "department_name",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Department Name" }}
+                        //     />
+                        //   ),
+                        // },
+                        // {
+                        //   fieldName: "sub_department_name",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Sub Depart. Name" }}
+                        //     />
+                        //   ),
+                        // },
                         {
                           fieldName: "designation",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Employee Designation " }}
-                            />
-                          ),
-                        },
-
-                        // {
-                        //   fieldName: "total_working_hours",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Basic Working Hrs" }}
-                        //     />
-                        //   ),
-                        //   others: {
-                        //     maxWidth: 150,
-                        //     resizable: false,
-                        //     filterable: false,
-                        //     style: { textAlign: "center" },
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "project_cost",
-                        //   label: (
-                        //     <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                        //   ),
-                        //   displayTemplate: (row) => {
-                        //     return (
-                        //       (parseFloat(row.project_cost) -
-                        //         parseFloat(row.ot_amount)).toFixed(this.state.decimal_places)
-                        //     );
-                        //   },
-                        //   others: {
-                        //     maxWidth: 150,
-                        //     resizable: false,
-                        //     filterable: false,
-                        //     style: { textAlign: "center" },
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "ot_work",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "OT Working Hrs" }}
-                        //     />
-                        //   ),
-                        //   others: {
-                        //     maxWidth: 150,
-                        //     resizable: false,
-                        //     filterable: false,
-                        //     style: { textAlign: "center" },
-                        //   },
-                        // },
-                        // {
-                        //   fieldName: "ot_amount",
-                        //   label: (
-                        //     <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                        //   ),
-                        //   others: {
-                        //     maxWidth: 150,
-                        //     resizable: false,
-                        //     filterable: false,
-                        //     style: { textAlign: "center" },
-                        //   },
-                        // },
-                        {
-                          fieldName: "complete_hours",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Total Worked Hrs" }}
+                              label={{ forceLabel: "Designation " }}
                             />
                           ),
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 130,
+                          },
+                        },
+
+                        {
+                          fieldName: "total_working_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Basic Hrs" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
@@ -463,16 +401,82 @@ class ProjectPayroll extends Component {
                         {
                           fieldName: "project_cost",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Project Cost" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
-
+                          displayTemplate: (row) => {
+                            return (
+                              parseFloat(row.project_cost) -
+                              parseFloat(row.ot_amount)
+                            ).toFixed(this.state.decimal_places);
+                          },
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "ot_work",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "OT Hrs" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "ot_amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "complete_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "project_cost",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
+                          ),
+
+                          others: {
+                            maxWidth: 100,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+
+                        {
+                          fieldName: "project_desc",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Project Name" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
                           },
                         },
                       ]}
