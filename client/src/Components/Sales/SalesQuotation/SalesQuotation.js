@@ -22,7 +22,7 @@ import {
   addToTermCondition,
   deleteComment,
   generateSalesQuotation,
-  CancelQuotation
+  CancelQuotation,
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -86,7 +86,7 @@ class SalesQuotation extends Component {
       cancelEnable: true,
       detele_services: [],
       detele_items: [],
-      edit_mode: false
+      edit_mode: false,
     };
     getSalesOptions(this, this);
   }
@@ -101,14 +101,14 @@ class SalesQuotation extends Component {
       sales_person_id: userToken.employee_id,
       employee_name: userToken.full_name,
       log_sales_person_id: userToken.employee_id,
-      log_employee_name: userToken.full_name
+      log_employee_name: userToken.full_name,
     });
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -167,8 +167,8 @@ class SalesQuotation extends Component {
       dataExists: false,
       saveEnable: false,
       edit_mode: true,
-      cancelEnable: true
-    })
+      cancelEnable: true,
+    });
   }
 
   render() {
@@ -233,8 +233,8 @@ class SalesQuotation extends Component {
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -252,16 +252,14 @@ class SalesQuotation extends Component {
                           Quotation Generated
                         </span>
                       ) : this.state.qotation_status === "O" ? (
-                        <span className="badge badge-info">
-                          Order Created
-                        </span>
+                        <span className="badge badge-info">Order Created</span>
                       ) : this.state.qotation_status === "CL" ? (
                         <span className="badge badge-danger">
                           Quotation Cancelled
                         </span>
                       ) : (
-                              <span className="badge badge-success">Closed</span>
-                            )}
+                        <span className="badge badge-success">Closed</span>
+                      )}
                     </h6>
                   </div>
                 ) : null}
@@ -270,17 +268,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Quotation",
-                      events: {
-                        onClick: () => {
-                          generateSalesQuotation(this, this.state);
+                    menuitems: [
+                      {
+                        label: "Print Quotation",
+                        events: {
+                          onClick: () => {
+                            generateSalesQuotation(this, this.state);
+                          },
                         },
                       },
-                    },
-                  ],
-                }
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -345,7 +343,10 @@ class SalesQuotation extends Component {
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExists === false ? this.state.edit_mode : true,
+                      disabled:
+                        this.state.dataExists === false
+                          ? this.state.edit_mode
+                          : true,
                     },
                   }}
                 />
@@ -366,25 +367,25 @@ class SalesQuotation extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: changeTexts.bind(this, this),
-                        },
-                        others: {
-                          disabled: this.state.dataExists,
-                        },
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: changeTexts.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "quote validity", isImp: true }}
@@ -488,6 +489,38 @@ class SalesQuotation extends Component {
 
           <div className="">
             <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="row">
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Item Amount
+                            </label>
+                            <h6>0.00</h6>
+                          </div>{" "}
+                          <i className="fas fa-plus calcSybmbol"></i>{" "}
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Service Amount
+                            </label>
+                            <h6>0.00</h6>
+                          </div>{" "}
+                          <i className="fas fa-equals calcSybmbol"></i>{" "}
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Quotation Amount
+                            </label>
+                            <h6>0.00</h6>
+                          </div>{" "}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <MyContext.Provider
                 value={{
                   state: this.state,
@@ -501,6 +534,7 @@ class SalesQuotation extends Component {
                   <SalesListService SALESIOputs={this.state} />
                 ) : null}
               </MyContext.Provider>
+
               <div className="col-12">
                 <div
                   className="portlet portlet-bordered margin-bottom-15"
@@ -568,24 +602,24 @@ class SalesQuotation extends Component {
                       <ol className="ViewTC">
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  {this.state.dataExists ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                              return (
+                                <React.Fragment key={index}>
+                                  <li key={index}>
+                                    <span>{row}</span>
+                                    {this.state.dataExists ? null : (
+                                      <i
+                                        className="fas fa-times"
+                                        onClick={deleteComment.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      ></i>
+                                    )}
+                                  </li>
+                                </React.Fragment>
+                              );
+                            })
                           : null}
                       </ol>
                     </div>
@@ -698,8 +732,6 @@ class SalesQuotation extends Component {
                     />
                   </button>
 
-
-
                   <button
                     type="button"
                     className="btn btn-default"
@@ -731,7 +763,9 @@ class SalesQuotation extends Component {
                       className="btn btn-default"
                       onClick={SaveSalesQuotation.bind(this, this)}
                       disabled={
-                        this.state.qotation_status === "G" ? this.state.edit_mode : true
+                        this.state.qotation_status === "G"
+                          ? this.state.edit_mode
+                          : true
                       }
                     >
                       <AlgaehLabel
@@ -745,9 +779,7 @@ class SalesQuotation extends Component {
                       type="button"
                       className="btn btn-default"
                       onClick={this.EditQuotation.bind(this, this)}
-                      disabled={
-                        this.state.edit_mode === true ? true : false
-                      }
+                      disabled={this.state.edit_mode === true ? true : false}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Edit", returnText: true }}
