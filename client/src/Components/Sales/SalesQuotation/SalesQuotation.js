@@ -742,6 +742,19 @@ class SalesQuotation extends Component {
                       }}
                     />
                   </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={CancelQuotation.bind(this, this)}
+                    disabled={this.state.cancelEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
 
                   <button
                     type="button"
@@ -751,20 +764,6 @@ class SalesQuotation extends Component {
                   >
                     <AlgaehLabel
                       label={{ forceLabel: "Clear", returnText: true }}
-                    />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={CancelQuotation.bind(this, this)}
-                    disabled={this.state.cancelEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Cancel",
-                        returnText: true,
-                      }}
                     />
                   </button>
 
