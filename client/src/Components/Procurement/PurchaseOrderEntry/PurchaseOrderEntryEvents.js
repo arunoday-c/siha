@@ -279,11 +279,12 @@ const RequisitionSearch = ($this, e) => {
 
 const ClearData = ($this, e) => {
   let IOputs = POEntry.inputParam();
-
+  const { po_from } = $this.state;
   IOputs.dataExitst = false;
   $this.setState(IOputs);
   clearItemDetails($this);
   getPOOptions($this);
+  $this.setState({ po_from });
 };
 
 const SavePOEnrty = ($this, from) => {
@@ -742,7 +743,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       method: "PUT",
       header: {
         "content-type": "application/octet-stream",
-        ...settings
+        ...settings,
       },
       onSuccess: (response) => {
         if (response.data.success === true) {
