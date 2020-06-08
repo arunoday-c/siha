@@ -130,7 +130,7 @@ class ItemLocationReorder extends Component {
     return (
       <div
         className="ReorderQtyMasterinventoryScreen"
-        style={{ marginTop: 43 }}
+        // style={{ marginTop: 10 }}
       >
         <AlgaehModalPopUp
           events={{

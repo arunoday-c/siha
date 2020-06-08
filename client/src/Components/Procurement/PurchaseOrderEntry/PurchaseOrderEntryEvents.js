@@ -284,6 +284,7 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
   clearItemDetails($this);
   getPOOptions($this);
+  $this.setState({ po_from });
 };
 
 const SavePOEnrty = ($this, from) => {
@@ -298,7 +299,7 @@ const SavePOEnrty = ($this, from) => {
 
   if (from === "P") {
     $this.state.is_posted = "Y";
-    strMessage = "Posted successfully . .";
+    strMessage = "Send for authorizatoin successfully";
   }
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {

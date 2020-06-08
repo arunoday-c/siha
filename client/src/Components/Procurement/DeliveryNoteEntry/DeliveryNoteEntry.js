@@ -15,7 +15,7 @@ import {
   getCtrlCode,
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
-  printBulkBarcode
+  printBulkBarcode,
 } from "./DeliveryNoteEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import DNEntry from "../../../Models/DNEntry";
@@ -32,7 +32,7 @@ class DeliveryNoteEntry extends Component {
     super(props);
     this.state = {
       fromPurList: false,
-      decimal_places: ""
+      decimal_places: "",
     };
   }
 
@@ -45,7 +45,7 @@ class DeliveryNoteEntry extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      decimal_places: userToken.decimal_places
+      decimal_places: userToken.decimal_places,
     });
     this.props.getVendorMaster({
       uri: "/vendor/getVendorMaster",
@@ -54,8 +54,8 @@ class DeliveryNoteEntry extends Component {
       data: { vendor_status: "A" },
       redux: {
         type: "VENDORS_GET_DATA",
-        mappingName: "dnvendors"
-      }
+        mappingName: "dnvendors",
+      },
     });
 
     if (
@@ -91,18 +91,18 @@ class DeliveryNoteEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Delivery Note", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -113,20 +113,20 @@ class DeliveryNoteEntry extends Component {
             value: this.state.delivery_note_number,
             selectValue: "delivery_note_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Delivery.DNEntry"
+              fieldName: "Delivery.DNEntry",
             },
-            searchName: "DNEntry"
+            searchName: "DNEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Delivery Date"
+                    forceLabel: "Delivery Date",
                   }}
                 />
                 <h6>
@@ -140,17 +140,17 @@ class DeliveryNoteEntry extends Component {
           printArea={
             this.state.hims_f_inventory_consumption_header_id !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateDeliveryNoteReceipt(this.state);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateDeliveryNoteReceipt(this.state);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -249,9 +249,9 @@ class DeliveryNoteEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <DNItemList DNEntry={this.state} />
@@ -268,22 +268,22 @@ class DeliveryNoteEntry extends Component {
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Save",
-                      returnText: true
+                      forceLabel: "Send for Deliviery",
+                      returnText: true,
                     }}
                   />
                 </button>
 
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-other"
                   onClick={printBulkBarcode.bind(this, this)}
                   disabled={this.state.printBarcode}
                 >
                   <AlgaehLabel
                     label={{
                       forceLabel: "Print All Barcode",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -318,7 +318,7 @@ function mapStateToProps(state) {
     dnitemuom: state.dnitemuom,
     dnvendors: state.dnvendors,
     dnrequisitionentry: state.dnrequisitionentry,
-    purchaseorderentry: state.purchaseorderentry
+    purchaseorderentry: state.purchaseorderentry,
   };
 }
 
@@ -331,7 +331,7 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getPurchaseOrderEntry: AlgaehActions
+      getPurchaseOrderEntry: AlgaehActions,
     },
     dispatch
   );
