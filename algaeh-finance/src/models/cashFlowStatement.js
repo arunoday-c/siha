@@ -64,7 +64,17 @@ export default {
         select H.finance_account_head_id,H.account_code,H.account_name,       
         H.parent_acc_id from finance_account_head H  
         inner join cte on H.parent_acc_id = cte.finance_account_head_id  
-        )select * from cte ;`,
+        )select * from cte ;
+        
+        with recursive cte as (
+          select finance_account_head_id,account_code,account_name,       
+          parent_acc_id from finance_account_head   where  account_code='1.2.4' 
+          union                 
+          select H.finance_account_head_id,H.account_code,H.account_name,       
+          H.parent_acc_id from finance_account_head H  
+          inner join cte on H.parent_acc_id = cte.finance_account_head_id  
+          )select * from cte ;
+        `,
       })
       .then((result) => {
         //operating Activities
@@ -83,6 +93,10 @@ export default {
         //Financing Activities
 
         const Fixed_Liability = result[5].map((m) => m.finance_account_head_id);
+
+        //cash and cash equivalent
+
+        const cash = result[6].map((m) => m.finance_account_head_id);
 
         console.log("PL:", PL);
 
@@ -107,6 +121,7 @@ export default {
                 Current_Liability,
                 Fixed_Asset,
                 Fixed_Liability,
+                cash,
                 decimal_places,
                 from_date: input.from_date,
                 to_date: input.to_date,
@@ -156,6 +171,7 @@ function cashFlow_TotalsOnly(options) {
         Current_Liability,
         Fixed_Asset,
         Fixed_Liability,
+        cash,
         decimal_places,
         from_date,
         to_date,
@@ -201,7 +217,9 @@ function cashFlow_TotalsOnly(options) {
                     where finance_account_head_id in(${Fixed_Liability}) group by H.finance_account_head_id ;
 
 
-
+                    select  'Cash and cash eqv' as name ,ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as 
+                    closing_bal from finance_voucher_details where head_id in(${cash}) and auth_status='A'
+                    and payment_date < date('${from_date}');
 
 
 
@@ -243,7 +261,12 @@ function cashFlow_TotalsOnly(options) {
                     ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
                     from finance_account_head H left join finance_voucher_details VD on 
                     VD.head_id=H.finance_account_head_id and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-                    where finance_account_head_id in(${Fixed_Liability}) group by H.finance_account_head_id ;    `;
+                    where finance_account_head_id in(${Fixed_Liability}) group by H.finance_account_head_id ;   
+                    
+                    
+                    select  'Cash and cash eqv' as name, ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as 
+                    closing_bal from finance_voucher_details where head_id in(${cash}) and auth_status='A'
+                    and payment_date <=date('${to_date}');`;
 
       _mysql
         .executeQuery({
@@ -275,6 +298,7 @@ function cashFlow_TotalsOnly(options) {
           let t_cl = 3;
           let t_fa = 4;
           let t_fl = 5;
+          let t_cash = 6;
 
           const dataArray = [
             {
@@ -284,18 +308,20 @@ function cashFlow_TotalsOnly(options) {
               Current_Liability: result[3],
               Fixed_Asset: result[4],
               Fixed_Liability: result[5],
+              cash: result[6],
             },
           ];
 
           let len = 2;
 
           for (let i = 0; i < len - 1; i++) {
-            t_pl = parseInt(t_pl) + 6;
-            t_ar = parseInt(t_ar) + 6;
-            t_ca = parseInt(t_ca) + 6;
-            t_cl = parseInt(t_cl) + 6;
-            t_fa = parseInt(t_fa) + 6;
-            t_fl = parseInt(t_fl) + 6;
+            t_pl = parseInt(t_pl) + 7;
+            t_ar = parseInt(t_ar) + 7;
+            t_ca = parseInt(t_ca) + 7;
+            t_cl = parseInt(t_cl) + 7;
+            t_fa = parseInt(t_fa) + 7;
+            t_fl = parseInt(t_fl) + 7;
+            t_cash = parseInt(t_cash) + 7;
             dataArray.push({
               PL: result[t_pl],
               AR: result[t_ar],
@@ -303,6 +329,7 @@ function cashFlow_TotalsOnly(options) {
               Current_Liability: result[t_cl],
               Fixed_Asset: result[t_fa],
               Fixed_Liability: result[t_fl],
+              cash: result[t_cash],
             });
           }
 
@@ -324,6 +351,12 @@ function cashFlow_TotalsOnly(options) {
           let net_operating = {};
           let net_investing = {};
           let net_financing = {};
+          let adjustments = {};
+          let netCashIncrease = {};
+
+          let cash_at_begining = {};
+          let cash_at_end = {};
+
           // comparission in done one time b/w 2 things so lenth-1
           for (let i = 0, lenth = dataArray.length; i < lenth - 1; i++) {
             let colum_id = columns[i]["colum_id"];
@@ -332,6 +365,9 @@ function cashFlow_TotalsOnly(options) {
             let investing_amount = 0;
             let financing_amount = 0;
 
+            let non_cash_adjustment = 0;
+
+            //ST-Profit and loss
             let pl_amount =
               parseFloat(dataArray[i + 1]["PL"][0]["closing_bal"]) -
               parseFloat(dataArray[i]["PL"][0]["closing_bal"]);
@@ -341,6 +377,9 @@ function cashFlow_TotalsOnly(options) {
             operating_amount =
               parseFloat(operating_amount) + parseFloat(pl_amount);
 
+            //END-Profit and loss
+
+            //ST-Account receivables
             let ar_amount =
               parseFloat(dataArray[i]["AR"][0]["closing_bal"]) -
               parseFloat(dataArray[i + 1]["AR"][0]["closing_bal"]);
@@ -350,6 +389,12 @@ function cashFlow_TotalsOnly(options) {
             operating_amount =
               parseFloat(operating_amount) + parseFloat(ar_amount);
 
+            non_cash_adjustment =
+              parseFloat(non_cash_adjustment) + parseFloat(ar_amount);
+
+            //END-Account receivables
+
+            //ST-Current Asset
             _Current_Asset.forEach((item) => {
               let A = dataArray[i]["Current_Asset"].find((f) => {
                 return f.child_id == item.child_id;
@@ -366,8 +411,12 @@ function cashFlow_TotalsOnly(options) {
 
               operating_amount =
                 parseFloat(operating_amount) + parseFloat(ca_amount);
+
+              non_cash_adjustment =
+                parseFloat(non_cash_adjustment) + parseFloat(ca_amount);
             });
 
+            //END-Current Asset
             _Current_Liability.forEach((item) => {
               let A = dataArray[i]["Current_Liability"].find((f) => {
                 return f.child_id == item.child_id;
@@ -385,8 +434,12 @@ function cashFlow_TotalsOnly(options) {
 
               operating_amount =
                 parseFloat(operating_amount) + parseFloat(cl_amount);
+
+              non_cash_adjustment =
+                parseFloat(non_cash_adjustment) + parseFloat(cl_amount);
             });
 
+            //ST-FIXED Asset
             _Fixed_Asset.forEach((item) => {
               let A = dataArray[i]["Fixed_Asset"].find((f) => {
                 return (
@@ -407,7 +460,9 @@ function cashFlow_TotalsOnly(options) {
               investing_amount =
                 parseFloat(investing_amount) + parseFloat(fa_amount);
             });
+            //END-FIXED Asset
 
+            //ST-Current Liability
             _Fixed_Liability.forEach((item) => {
               let A = dataArray[i]["Fixed_Liability"].find((f) => {
                 return (
@@ -429,22 +484,36 @@ function cashFlow_TotalsOnly(options) {
               financing_amount =
                 parseFloat(financing_amount) + parseFloat(fl_amount);
             });
+            //END-Current Liability
 
             net_operating[colum_id] = operating_amount;
             net_investing[colum_id] = investing_amount;
             net_financing[colum_id] = financing_amount;
+            adjustments[colum_id] = non_cash_adjustment;
+
+            netCashIncrease[colum_id] =
+              parseFloat(operating_amount) +
+              parseFloat(investing_amount) +
+              parseFloat(financing_amount);
+
+            cash_at_begining[colum_id] = dataArray[i]["cash"][0]["closing_bal"];
+            cash_at_end[colum_id] = dataArray[i + 1]["cash"][0]["closing_bal"];
           }
 
           // resolve(dataArray);
 
           resolve({
+            columns,
             O: [_PL, _AR, ..._Current_Asset, ..._Current_Liability],
             I: _Fixed_Asset,
             F: _Fixed_Liability,
             net_operating,
             net_investing,
             net_financing,
-            columns,
+            adjustments,
+            netCashIncrease,
+            cash_at_begining,
+            cash_at_end,
           });
         })
         .catch((e) => {
