@@ -38,7 +38,7 @@ class PerformanceManagement extends Component {
               title: (
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Appraisal Matrix Master",
+                    forceLabel: "KPI & Matrix Master",
                   }}
                 />
               ),
