@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import "./filter.html.scss";
 import {
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../Wrapper/algaehWrapper";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import { getYears } from "../../../../../utils/GlobalFunctions";
@@ -15,12 +15,12 @@ import {
   getBranchWiseDepartments,
   getEmpGroups,
   UploadTimesheet,
-  getPreview
+  getPreview,
 } from "./filter.events";
 import moment from "moment";
 import spotlightSearch from "../../../../../Search/spotlightSearch.json";
 import { MainContext } from "algaeh-react-components/context";
-
+import { AlgaehSecurityElement } from "algaeh-react-components";
 export default function Filter(props) {
   let fileInput = React.createRef();
   const { userToken } = useContext(MainContext);
@@ -59,14 +59,14 @@ export default function Filter(props) {
   useEffect(() => {
     setLoadYear(getYears());
     setSelYear(parseInt(moment().format("YYYY")));
-    getHospitals(data => {
+    getHospitals((data) => {
       setHospitals(data);
     });
   }, []);
 
   useEffect(() => {
     if (hospitalID !== "") {
-      getAttendanceDates(data => {
+      getAttendanceDates((data) => {
         if (data.length > 0) {
           const firstRecord = data[0];
           setATStartType(firstRecord.attendance_starts);
@@ -75,13 +75,13 @@ export default function Filter(props) {
           // dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date, undefined);
         }
       });
-      getDivisionProject({ division_id: hospitalID }, data => {
+      getDivisionProject({ division_id: hospitalID }, (data) => {
         setProjects(data);
       });
-      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+      getBranchWiseDepartments({ hospital_id: hospitalID }, (data) => {
         setDepartment(data);
       });
-      getEmpGroups(data => {
+      getEmpGroups((data) => {
         setEmpGroups(data);
       });
     }
@@ -89,7 +89,6 @@ export default function Filter(props) {
 
   useEffect(() => {
     const dateCalcl = () => {
-
       let maxDate, minDate;
       if (atStartType === "FE") {
         const parsedMonth = parseInt(month) - 1;
@@ -107,8 +106,8 @@ export default function Filter(props) {
         const searchYear =
           month === "01"
             ? moment(`01-01-${selYear}`, "DD-MM-YYYY")
-              .add(-1, "year")
-              .format("YYYY")
+                .add(-1, "year")
+                .format("YYYY")
             : selYear;
         maxDate = `${selYear}-${month}-${endDt}`;
         let prevMonths = moment(maxDate, "YYYY-MM-DD")
@@ -130,22 +129,19 @@ export default function Filter(props) {
   }, [atStartType, month, selYear, startDt, endDt]);
 
   function employeeSearch() {
-    if (
-      hospitalID === null ||
-      hospitalID === undefined
-    ) {
+    if (hospitalID === null || hospitalID === undefined) {
       swalMessage({
         title: "Please Select Branch",
-        type: "warning"
+        type: "warning",
       });
       document.querySelector("[name='hospital_id']").focus();
-      return
+      return;
     }
 
     let input_data = " hospital_id=" + hospitalID;
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       inputs: input_data,
       searchName: "employee",
@@ -153,11 +149,11 @@ export default function Filter(props) {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         setEmployeeId(row.hims_d_employee_id);
         setFullName(row.full_name);
         setHospitalID(row.hospital_id);
-      }
+      },
     });
   }
 
@@ -167,7 +163,7 @@ export default function Filter(props) {
         div={{ className: "col-2 form-group mandatory" }}
         label={{
           forceLabel: "Branch",
-          isImp: true
+          isImp: true,
         }}
         selector={{
           name: "hospital_id",
@@ -176,16 +172,16 @@ export default function Filter(props) {
           dataSource: {
             textField: "hospital_name",
             valueField: "hims_d_hospital_id",
-            data: hospitals
+            data: hospitals,
           },
-          onChange: e => {
+          onChange: (e) => {
             setHospitalID(e.value);
           },
           onClear: () => {
             setFromDate("");
             setToDate("");
             setHospitalID("");
-          }
+          },
         }}
         showLoading={true}
       />
@@ -193,7 +189,7 @@ export default function Filter(props) {
         div={{ className: "col-1 form-group mandatory" }}
         label={{
           forceLabel: "Select Year",
-          isImp: true
+          isImp: true,
         }}
         selector={{
           name: "year",
@@ -202,9 +198,9 @@ export default function Filter(props) {
           dataSource: {
             textField: "name",
             valueField: "value",
-            data: loadYear
+            data: loadYear,
           },
-          onChange: e => {
+          onChange: (e) => {
             setMonth("");
             setFromDate(undefined);
             setToDate(undefined);
@@ -213,13 +209,13 @@ export default function Filter(props) {
           },
           onClear: () => {
             setSelYear("");
-          }
+          },
         }}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group mandatory" }}
         label={{
-          forceLabel: "Select Month"
+          forceLabel: "Select Month",
         }}
         selector={{
           sort: "off",
@@ -241,16 +237,16 @@ export default function Filter(props) {
               { name: "09", text: "September" },
               { name: "10", text: "October" },
               { name: "11", text: "November" },
-              { name: "12", text: "December" }
-            ]
+              { name: "12", text: "December" },
+            ],
           },
-          onChange: e => {
+          onChange: (e) => {
             if (selYear === undefined || selYear === "") {
               setFromDate("");
               setToDate("");
               swalMessage({
                 type: "error",
-                title: "Please select year fist"
+                title: "Please select year fist",
               });
               return;
             }
@@ -258,7 +254,7 @@ export default function Filter(props) {
           },
           onClear: () => {
             setMonth("");
-          }
+          },
         }}
         showLoading={true}
       />
@@ -276,7 +272,7 @@ export default function Filter(props) {
             max={fromMax}
             value={fromDate}
             disabled={month === "" ? true : false}
-            onChange={e => {
+            onChange={(e) => {
               setFromDate(e.target.value);
               setToMin(moment(e.target.value).format("YYYY-MM-DD"));
             }}
@@ -297,7 +293,7 @@ export default function Filter(props) {
             max={toMax}
             value={toDate}
             disabled={month === "" ? true : false}
-            onChange={e => {
+            onChange={(e) => {
               setToDate(e.target.value);
             }}
           />
@@ -306,7 +302,7 @@ export default function Filter(props) {
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
         label={{
-          forceLabel: "Project"
+          forceLabel: "Project",
         }}
         selector={{
           name: "project_id",
@@ -315,14 +311,14 @@ export default function Filter(props) {
           dataSource: {
             textField: "project_desc",
             valueField: "project_id",
-            data: projects
+            data: projects,
           },
-          onChange: e => {
+          onChange: (e) => {
             setProjectID(e.value);
           },
           onClear: () => {
             setProjectID("");
-          }
+          },
         }}
         showLoading={true}
       />{" "}
@@ -336,14 +332,14 @@ export default function Filter(props) {
           dataSource: {
             textField: "group_description",
             valueField: "hims_d_employee_group_id",
-            data: empGroups
+            data: empGroups,
           },
-          onChange: e => {
+          onChange: (e) => {
             setEmpGroupId(e.value);
           },
           onClear: () => {
             setEmpGroupId("");
-          }
+          },
         }}
       />
       <AlagehAutoComplete
@@ -356,9 +352,9 @@ export default function Filter(props) {
           dataSource: {
             textField: "department_name",
             valueField: "hims_d_department_id",
-            data: department
+            data: department,
           },
-          onChange: e => {
+          onChange: (e) => {
             setDepartmenID(e.value);
             setSubDepartments(e.selected.subDepts);
           },
@@ -366,7 +362,7 @@ export default function Filter(props) {
             setDepartmenID("");
             setSubDepartments("");
             setSubDepartmentID("");
-          }
+          },
         }}
       />
       <AlagehAutoComplete
@@ -379,14 +375,14 @@ export default function Filter(props) {
           dataSource: {
             textField: "sub_department_name",
             valueField: "hims_d_sub_department_id",
-            data: subDepartments
+            data: subDepartments,
           },
-          onChange: e => {
+          onChange: (e) => {
             setSubDepartmentID(e.value);
           },
           onClear: () => {
             setSubDepartmentID("");
-          }
+          },
         }}
       />
       <div className="col-2 globalSearchCntr">
@@ -397,21 +393,28 @@ export default function Filter(props) {
         </h6>
       </div>
       <div className="col" style={{ paddingTop: 19 }}>
-        <div className="uploadManualDiv   btn-with-icon">
-          <input
-            className="inputfile"
-            type="file"
-            name="manualTimeSheet"
-            ref={fileInput}
-            onChange={e => {
-              if (e.target.files.length > 0)
-                UploadTimesheet(e.target.files, props);
-            }}
-          />
-          <label onClick={() => fileInput.current.click()}>
-            <i className="fas fa-file-upload"></i> Upload
-          </label>
-        </div>
+        <AlgaehSecurityElement
+          elementCode="READ_ONLY_ACCESS"
+          render={(data) => {
+            return (
+              <div className="uploadManualDiv   btn-with-icon">
+                <input
+                  className="inputfile"
+                  type="file"
+                  name="manualTimeSheet"
+                  ref={fileInput}
+                  onChange={(e) => {
+                    if (e.target.files.length > 0)
+                      UploadTimesheet(e.target.files, props);
+                  }}
+                />
+                <label onClick={() => fileInput.current.click()}>
+                  <i className="fas fa-file-upload"></i> Upload
+                </label>
+              </div>
+            );
+          }}
+        />
         <button
           onClick={() => {
             if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
@@ -425,12 +428,12 @@ export default function Filter(props) {
                 employee_id: employeeID,
                 employee_group_id: empGroupId,
                 month: month,
-                year: selYear //moment().format("YYYY")
+                year: selYear, //moment().format("YYYY")
               });
             } else {
               swalMessage({
                 title: "Branch,from data and to date are mandatory",
-                type: "error"
+                type: "error",
               });
             }
           }}
@@ -443,8 +446,8 @@ export default function Filter(props) {
               <i className="fas fa-file-download"></i> Download
             </span>
           ) : (
-              <i className="fas fa-spinner fa-spin" />
-            )}
+            <i className="fas fa-spinner fa-spin" />
+          )}
         </button>
         <button
           onClick={() => {
@@ -460,7 +463,7 @@ export default function Filter(props) {
                 employee_group_id: empGroupId,
                 month: month,
                 year: selYear, //moment().format("YYYY"),
-                upload: upload
+                upload: upload,
               },
               props
             );
@@ -474,8 +477,8 @@ export default function Filter(props) {
               <i className="fas fa-eye"></i> Preview
             </span>
           ) : (
-              <i className="fas fa-spinner fa-spin" />
-            )}
+            <i className="fas fa-spinner fa-spin" />
+          )}
         </button>
 
         <button
