@@ -190,11 +190,6 @@ let getMedicationAprovalList = (req, res, next) => {
 //created by irfan:UPDATE PREAPPROVAL
 let updatePreApproval = (req, res, next) => {
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
     const _mysql = new algaehMysql();
     let inputParam = extend({}, req.body);
 
@@ -261,61 +256,58 @@ let updatePreApproval = (req, res, next) => {
 //created by irfan:UPDATE PREAPPROVAL
 let updateMedicinePreApproval = (req, res, next) => {
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
+    const _mysql = new algaehMysql();
 
-      let inputParam = extend({}, req.body);
+    let inputParam = extend({}, req.body);
 
-      let qry = "";
+    let qry = "";
 
-      for (let i = 0; i < req.body.length; i++) {
-        let _appDate =
-          inputParam[i].apprv_date != null ? inputParam[i].apprv_date : null;
+    for (let i = 0; i < req.body.length; i++) {
+      let _appDate =
+        inputParam[i].apprv_date != null ? inputParam[i].apprv_date : null;
 
-        let _requested_date =
-          inputParam[i].requested_date != null
-            ? inputParam[i].requested_date
-            : null;
-        qry += mysql.format(
-          "UPDATE `hims_f_medication_approval` SET requested_date=?,\
+      let _requested_date =
+        inputParam[i].requested_date != null
+          ? inputParam[i].requested_date
+          : null;
+      qry += mysql.format(
+        "UPDATE `hims_f_medication_approval` SET requested_date=?,\
           requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
           apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, approved_no=?, updated_date=?, updated_by=? \
           where hims_f_medication_approval_id=?;",
-          [
-            _requested_date,
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam[i].requested_mode,
-            inputParam[i].requested_quantity,
-            inputParam[i].submission_type,
-            inputParam[i].refer_no,
-            inputParam[i].approved_amount,
-            inputParam[i].apprv_remarks,
-            _appDate,
-            inputParam[i].rejected_reason,
-            inputParam[i].apprv_status,
-            inputParam[i].approved_no,
-            moment().format("YYYY-MM-DD HH:mm"),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam[i].hims_f_medication_approval_id,
-          ]
-        );
-      }
+        [
+          _requested_date,
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam[i].requested_mode,
+          inputParam[i].requested_quantity,
+          inputParam[i].submission_type,
+          inputParam[i].refer_no,
+          inputParam[i].approved_amount,
+          inputParam[i].apprv_remarks,
+          _appDate,
+          inputParam[i].rejected_reason,
+          inputParam[i].apprv_status,
+          inputParam[i].approved_no,
+          moment().format("YYYY-MM-DD HH:mm"),
+          req.userIdentity.algaeh_d_app_user_id,
+          inputParam[i].hims_f_medication_approval_id,
+        ]
+      );
+    }
 
-      connection.query(qry, (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    _mysql
+      .executeQuery({
+        query: qry,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
     next(e);
   }
@@ -531,7 +523,6 @@ let insertOrderedServices = (req, res, next) => {
                   }
                 })
                   .then((result) => {
-
                     // let servicesForPreAproval = [];
                     let patient_id = input["patient_id"];
                     let doctor_id = input["doctor_id"];
@@ -558,7 +549,6 @@ let insertOrderedServices = (req, res, next) => {
                           printQuery: true,
                         })
                         .then((ResultOfFetchOrderIds) => {
-
                           let detailsPush = [];
 
                           input["billdetails"].forEach((item) => {
@@ -617,7 +607,6 @@ let insertOrderedServices = (req, res, next) => {
                                 printQuery: true,
                               })
                               .then((resultPreAprvl) => {
-
                                 req.records = {
                                   resultPreAprvl,
                                   ResultOfFetchOrderIds: ResultOfFetchOrderIds,
@@ -630,13 +619,11 @@ let insertOrderedServices = (req, res, next) => {
                                 });
                               });
                           } else {
-
                             req.records = {
                               resultOrder,
                               ResultOfFetchOrderIds: ResultOfFetchOrderIds,
                             };
                             next();
-
                           }
                         })
                         .catch((error) => {
@@ -645,17 +632,14 @@ let insertOrderedServices = (req, res, next) => {
                           });
                         });
                     } else {
-
-
                       services = new LINQ(req.body.billdetails)
-                        .Select(s => {
+                        .Select((s) => {
                           patient_id = s.patient_id;
                           doctor_id = s.doctor_id;
                           visit_id = s.visit_id;
                           return s.services_id;
                         })
                         .ToArray();
-
 
                       _mysql
                         .executeQuery({
@@ -677,7 +661,6 @@ let insertOrderedServices = (req, res, next) => {
                             next(error);
                           });
                         });
-
                     }
                   })
                   .catch((e) => {
@@ -1220,7 +1203,7 @@ let getOrderServices = (req, res, next) => {
       connection.query(
         "SELECT  * FROM `hims_f_ordered_services` \
        WHERE `record_status`='A' AND " +
-        where.condition,
+          where.condition,
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1861,8 +1844,6 @@ let addPackage = (req, res, next) => {
           printQuery: true,
         })
         .then((headerRes) => {
-
-
           _mysql
             .executeQuery({
               query: ` select hims_f_package_header_id,package_id from hims_f_package_header
@@ -1871,8 +1852,6 @@ let addPackage = (req, res, next) => {
               printQuery: true,
             })
             .then((headder) => {
-
-
               const detailsInsert = [];
               input.forEach((pack) => {
                 let data = headder.find((f) => {
@@ -1886,8 +1865,6 @@ let addPackage = (req, res, next) => {
                   });
                 });
               });
-
-
 
               const insrtColumns = [
                 "package_header_id",

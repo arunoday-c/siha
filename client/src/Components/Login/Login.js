@@ -274,6 +274,7 @@ function Login(props) {
         algaehApiCall({
           uri: "/getPreferences/",
           method: "POST",
+          timeout: 20000,
           data: input,
           module: "documentManagement",
           onSuccess: (response) => {

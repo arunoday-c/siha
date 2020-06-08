@@ -19,7 +19,7 @@ const texthandle = ($this, e) => {
     let value = e.value || e.target.value;
 
     $this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -36,7 +36,7 @@ const loctexthandle = ($this, e) => {
     // }
     $this.setState({
       [name]: value,
-      ReqData: false
+      ReqData: false,
     });
   }
 };
@@ -59,7 +59,7 @@ const vendortexthandle = ($this, e) => {
       [name]: value,
       payment_terms: e.selected.payment_terms,
       tax_percentage: e.selected.vat_percentage,
-      ReqData: ReqData
+      ReqData: ReqData,
     });
   }
 };
@@ -70,7 +70,7 @@ const poforhandle = ($this, e) => {
 
   $this.setState(
     {
-      [name]: value
+      [name]: value,
     },
     () => {
       getData($this);
@@ -94,18 +94,18 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({
       sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
+      sheet_discount_amount: sheet_discount_amount,
     });
 
     if (context !== null) {
       context.updateState({
         sheet_discount_percentage: sheet_discount_percentage,
-        sheet_discount_amount: sheet_discount_amount
+        sheet_discount_amount: sheet_discount_amount,
       });
     }
   }
@@ -118,12 +118,12 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
       title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
+      type: "warning",
     });
   } else {
     $this.setState({ [name]: value });
@@ -132,7 +132,7 @@ const numberchangeTexts = ($this, context, e) => {
     texthandlerInterval = setInterval(() => {
       if (context !== undefined) {
         context.updateState({
-          [name]: value
+          [name]: value,
         });
       }
       clearInterval(texthandlerInterval);
@@ -142,7 +142,7 @@ const numberchangeTexts = ($this, context, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -158,7 +158,7 @@ const PurchaseOrderSearch = ($this, e) => {
 
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Purchase.POEntry
+      columns: spotlightSearch.Purchase.POEntry,
     },
     searchName: "POEntryGetDN",
     uri: "/gloabelSearch/get",
@@ -166,9 +166,9 @@ const PurchaseOrderSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       getPurchaseDetails($this, row);
-    }
+    },
   });
 };
 
@@ -180,9 +180,9 @@ const getPurchaseDetails = ($this, row) => {
     method: "GET",
     data: {
       purchase_number: row.purchase_number,
-      from: "DN"
+      from: "DN",
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data !== null && data !== undefined) {
@@ -247,13 +247,13 @@ const getPurchaseDetails = ($this, row) => {
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -263,11 +263,21 @@ const ClearData = ($this, e) => {
   IOputs.dataExitst = false;
   $this.setState(IOputs);
 };
-
-const SaveDNEnrty = $this => {
+function checkValidDate(date, format) {
+  const validDate = new Date(date) instanceof Date && !isNaN(new Date(date));
+  if (validDate === true) {
+    if (format !== undefined) {
+      return moment(date).format(format);
+    }
+    return date;
+  } else {
+    return null;
+  }
+}
+const SaveDNEnrty = ($this) => {
   AlgaehLoader({ show: true });
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
-    .where(w => w.expiry_date === null)
+    .where((w) => w.expiry_date === null)
     .toArray();
 
   var InputObj = { ...$this.state };
@@ -314,16 +324,21 @@ const SaveDNEnrty = $this => {
         }
       }
     }
-    InputObj.po_entry_detail[j].expiry_date =
-      InputObj.po_entry_detail[j].expiry_date !== null
-        ? moment(
-          InputObj.po_entry_detail[j].expiry_date,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD")
-        : null;
+
+    // InputObj.po_entry_detail[j].expiry_date =
+    //   InputObj.po_entry_detail[j].expiry_date !== null
+    //     ? moment(
+    //       InputObj.po_entry_detail[j].expiry_date,
+    //       "YYYY-MM-DD"
+    //     ).format("YYYY-MM-DD")
+    //     : null;
+    InputObj.po_entry_detail[j].expiry_date = checkValidDate(
+      InputObj.po_entry_detail[j].expiry_date,
+      "YYYY-MM-DD"
+    );
   }
 
-  let po_entry_detail = _.filter(InputObj.po_entry_detail, f => {
+  let po_entry_detail = _.filter(InputObj.po_entry_detail, (f) => {
     return f.removed === "N";
   });
 
@@ -332,11 +347,10 @@ const SaveDNEnrty = $this => {
   InputObj.posted = "Y";
   InputObj.transaction_type = "DNA";
   // $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
-  InputObj.transaction_date = moment(
-    $this.state.dn_date,
-    "YYYY-MM-DD"
-  ).format("YYYY-MM-DD")
-
+  InputObj.transaction_date = checkValidDate($this.state.dn_date, "YYYY-MM-DD");
+  //  moment($this.state.dn_date, "YYYY-MM-DD").format(
+  //   "YYYY-MM-DD"
+  // );
 
   if (InputObj.dn_from === "PHR") {
     for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
@@ -365,13 +379,17 @@ const SaveDNEnrty = $this => {
 
       InputObj.pharmacy_stock_detail[i].net_total =
         InputObj.pharmacy_stock_detail[i].net_extended_cost;
-      InputObj.pharmacy_stock_detail[i].expiry_date =
-        InputObj.pharmacy_stock_detail[i].expiry_date !== null
-          ? moment(
-            InputObj.pharmacy_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
-          : null;
+      InputObj.pharmacy_stock_detail[i].expiry_date = checkValidDate(
+        InputObj.pharmacy_stock_detail[i].expiry_date,
+        "YYYY-MM-DD"
+      );
+      // InputObj.pharmacy_stock_detail[i].expiry_date =
+      // InputObj.pharmacy_stock_detail[i].expiry_date !== null
+      //   ? moment(
+      //     InputObj.pharmacy_stock_detail[i].expiry_date,
+      //     "YYYY-MM-DD"
+      //   ).format("YYYY-MM-DD")
+      //   : null;
       InputObj.pharmacy_stock_detail[i].operation = "+";
     }
   } else if (InputObj.dn_from === "INV") {
@@ -400,15 +418,18 @@ const SaveDNEnrty = $this => {
 
       InputObj.inventory_stock_detail[i].net_total =
         InputObj.inventory_stock_detail[i].net_extended_cost;
+      InputObj.inventory_stock_detail[i].expiry_date = checkValidDate(
+        InputObj.inventory_stock_detail[i].expiry_date,
+        "YYYY-MM-DD"
+      );
 
-
-      InputObj.inventory_stock_detail[i].expiry_date =
-        InputObj.inventory_stock_detail[i].expiry_date !== null
-          ? moment(
-            InputObj.inventory_stock_detail[i].expiry_date,
-            "YYYY-MM-DD"
-          ).format("YYYY-MM-DD")
-          : null;
+      // InputObj.inventory_stock_detail[i].expiry_date =
+      //   InputObj.inventory_stock_detail[i].expiry_date !== null
+      //     ? moment(
+      //       InputObj.inventory_stock_detail[i].expiry_date,
+      //       "YYYY-MM-DD"
+      //     ).format("YYYY-MM-DD")
+      //     : null;
       InputObj.inventory_stock_detail[i].operation = "+";
     }
   }
@@ -423,17 +444,17 @@ const SaveDNEnrty = $this => {
     for (var k = 0; k < item_grp.length; k++) {
       const pharmacy_stock_detail = _.filter(
         InputObj.pharmacy_stock_detail,
-        f => {
+        (f) => {
           return f.item_id === parseInt(item_grp[k]);
         }
       );
-      let total_recived_qty = _.sumBy(pharmacy_stock_detail, s =>
+      let total_recived_qty = _.sumBy(pharmacy_stock_detail, (s) =>
         parseFloat(s.dn_quantity)
       );
       total_recived_qty =
         total_recived_qty +
-        _.sumBy(pharmacy_stock_detail, s => parseFloat(s.free_qty));
-      let net_extended_cost = _.sumBy(pharmacy_stock_detail, s =>
+        _.sumBy(pharmacy_stock_detail, (s) => parseFloat(s.free_qty));
+      let net_extended_cost = _.sumBy(pharmacy_stock_detail, (s) =>
         parseFloat(s.net_extended_cost)
       );
       let average_cost = (
@@ -455,18 +476,18 @@ const SaveDNEnrty = $this => {
     for (var l = 0; l < item_grp.length; l++) {
       const inventory_stock_detail = _.filter(
         InputObj.inventory_stock_detail,
-        f => {
+        (f) => {
           return f.item_id === parseInt(item_grp[l]);
         }
       );
 
-      let total_recived_qty = _.sumBy(inventory_stock_detail, s =>
+      let total_recived_qty = _.sumBy(inventory_stock_detail, (s) =>
         parseFloat(s.dn_quantity)
       );
       total_recived_qty =
         total_recived_qty +
-        _.sumBy(inventory_stock_detail, s => parseFloat(s.free_qty));
-      let net_extended_cost = _.sumBy(inventory_stock_detail, s =>
+        _.sumBy(inventory_stock_detail, (s) => parseFloat(s.free_qty));
+      let net_extended_cost = _.sumBy(inventory_stock_detail, (s) =>
         parseFloat(s.net_extended_cost)
       );
       let average_cost = (
@@ -494,9 +515,9 @@ const SaveDNEnrty = $this => {
       module: "procurement",
       header: {
         "content-type": "application/octet-stream",
-        ...settings
+        ...settings,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           // $this.setState({
           //   delivery_note_number: response.data.records.delivery_note_number,
@@ -508,35 +529,35 @@ const SaveDNEnrty = $this => {
           getCtrlCode($this, response.data.records.delivery_note_number);
           swalMessage({
             type: "success",
-            title: "Saved successfully . ."
+            title: "Saved successfully . .",
           });
         }
         AlgaehLoader({ show: false });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   } else {
     AlgaehLoader({ show: false });
     swalMessage({
       title: "Please enter Expiry Date.",
-      type: "warning"
+      type: "warning",
     });
   }
 };
 
-const generateDeliveryNoteReceipt = data => {
+const generateDeliveryNoteReceipt = (data) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -548,19 +569,19 @@ const generateDeliveryNoteReceipt = data => {
         reportParams: [
           {
             name: "delivery_note_number",
-            value: data.delivery_note_number
-          }
+            value: data.delivery_note_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.delivery_note_number}-Delivery Note Receipt`
+      const reportName = `${data.delivery_note_number}-Delivery Note Receipt`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Delivery Note Receipt";
-    }
+    },
   });
 };
 
@@ -576,7 +597,7 @@ const getCtrlCode = ($this, docNumber, row) => {
       module: "procurement",
       method: "GET",
       data: { delivery_note_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           let dn_entry_detail = [];
@@ -619,18 +640,18 @@ const getCtrlCode = ($this, docNumber, row) => {
           AlgaehLoader({ show: false });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
 
-const getData = $this => {
+const getData = ($this) => {
   if ($this.state.dn_from === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
@@ -639,8 +660,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "dnitemlist"
-      }
+        mappingName: "dnitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -649,8 +670,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "dnlocations"
-      }
+        mappingName: "dnlocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -659,8 +680,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "dnitemcategory"
-      }
+        mappingName: "dnitemcategory",
+      },
     });
 
     $this.props.getItemGroup({
@@ -669,8 +690,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "dnitemgroup"
-      }
+        mappingName: "dnitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -679,8 +700,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "dnitemuom"
-      }
+        mappingName: "dnitemuom",
+      },
     });
   } else if ($this.state.dn_from === "INV") {
     $this.props.getItems({
@@ -690,8 +711,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "dnitemlist"
-      }
+        mappingName: "dnitemlist",
+      },
     });
 
     $this.props.getLocation({
@@ -700,8 +721,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
-        mappingName: "dnlocations"
-      }
+        mappingName: "dnlocations",
+      },
     });
 
     $this.props.getItemCategory({
@@ -710,9 +731,9 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "dnitemcategory"
+        mappingName: "dnitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -721,8 +742,8 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "dnitemgroup"
-      }
+        mappingName: "dnitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -731,19 +752,19 @@ const getData = $this => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "dnitemuom"
-      }
+        mappingName: "dnitemuom",
+      },
     });
   }
 };
 
-const printBulkBarcode = $this => {
+const printBulkBarcode = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -751,7 +772,7 @@ const printBulkBarcode = $this => {
         others: {
           width: "50mm",
           height: "20mm",
-          showHeaderFooter: false
+          showHeaderFooter: false,
         },
         reportName:
           $this.state.dn_from === "INV"
@@ -760,13 +781,13 @@ const printBulkBarcode = $this => {
         reportParams: [
           {
             name: "hims_f_procurement_dn_header_id",
-            value: $this.state.hims_f_procurement_dn_header_id
-          }
+            value: $this.state.hims_f_procurement_dn_header_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -780,7 +801,7 @@ const printBulkBarcode = $this => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
       window.open(origin);
       // window.document.title = "Item Barcode";
-    }
+    },
   });
 };
 export {
@@ -797,5 +818,5 @@ export {
   loctexthandle,
   getPurchaseDetails,
   generateDeliveryNoteReceipt,
-  printBulkBarcode
+  printBulkBarcode,
 };

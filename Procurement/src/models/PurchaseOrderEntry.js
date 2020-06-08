@@ -438,89 +438,98 @@ export default {
     const utilities = new algaehUtilities();
     utilities.logger().log("updatePurchaseOrderEntry: ");
     try {
-      req.mySQl = _mysql;
-      let inputParam = { ...req.body };
-      utilities.logger().log("inputParam: ", inputParam);
-      _mysql
-        .executeQueryWithTransaction({
-          query:
-            "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
+      let buffer = "";
+      req.on("data", chunk => {
+        buffer += chunk.toString();
+      });
+
+      req.on("end", () => {
+        let inputParam = JSON.parse(buffer);
+        req.body = inputParam
+        req.mySQl = _mysql;
+        // let inputParam = { ...req.body };
+        utilities.logger().log("inputParam: ", inputParam);
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
             `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
-          values: [
-            inputParam.authorize1,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.authorize2,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_po_header_id,
-          ],
-          printQuery: true,
-        })
-        .then((headerResult) => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool,
-          };
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.po_entry_detail;
+            values: [
+              inputParam.authorize1,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.authorize2,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.hims_f_procurement_po_header_id,
+            ],
+            printQuery: true,
+          })
+          .then((headerResult) => {
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool,
+            };
+            utilities.logger().log("headerResult: ");
+            if (headerResult != null) {
+              let details = inputParam.po_entry_detail;
 
-            let qry = "";
+              let qry = "";
 
-            for (let i = 0; i < details.length; i++) {
-              utilities.logger().log("details: ");
-              qry += mysql.format(
-                "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
+              for (let i = 0; i < details.length; i++) {
+                utilities.logger().log("details: ");
+                qry += mysql.format(
+                  "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
                 quantity_recieved=?, quantity_outstanding=?\
               where `hims_f_procurement_po_detail_id`=?;",
-                [
-                  details[i].authorize_quantity,
-                  details[i].rejected_quantity,
-                  details[i].quantity_recieved,
-                  details[i].quantity_outstanding,
-                  details[i].hims_f_procurement_po_detail_id,
-                ]
-              );
+                  [
+                    details[i].authorize_quantity,
+                    details[i].rejected_quantity,
+                    details[i].quantity_recieved,
+                    details[i].quantity_outstanding,
+                    details[i].hims_f_procurement_po_detail_id,
+                  ]
+                );
 
-              if (i == details.length - 1) {
-                utilities.logger().log("if Data: ");
-                qryExecute = true;
+                if (i == details.length - 1) {
+                  utilities.logger().log("if Data: ");
+                  qryExecute = true;
+                }
               }
-            }
-            utilities.logger().log("qryExecute: ", qryExecute);
-            if (qryExecute == true) {
-              _mysql
-                .executeQuery({
-                  query: qry,
-                  printQuery: true,
-                })
-                .then((detailResult) => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = detailResult;
-                    next();
+              utilities.logger().log("qryExecute: ", qryExecute);
+              if (qryExecute == true) {
+                _mysql
+                  .executeQuery({
+                    query: qry,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = detailResult;
+                      next();
+                    });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
                   });
-                })
-                .catch((e) => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
+              }
+            } else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {};
+                next();
+              });
             }
-          } else {
+          })
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
+              next(e);
             });
-          }
-        })
-        .catch((e) => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
