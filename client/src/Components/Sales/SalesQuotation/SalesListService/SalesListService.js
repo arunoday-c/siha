@@ -243,7 +243,7 @@ class SalesListService extends Component {
                             onClick={AddSerices.bind(this, this, context)}
                             disabled={this.state.addItemButton}
                             tabIndex="5"
-                            style={{ marginTop: 29 }}
+                            style={{ marginTop: 27 }}
                           >
                             Add Service
                           </button>
