@@ -1057,7 +1057,7 @@ class NurseWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {Enumerable.from(this.state.data)
+                    {/* {Enumerable.from(this.state.data)
                       .where(w => w.status === "V" && w.nurse_examine === "N")
                       .toArray().length !== 0 ? (
                         Enumerable.from(this.state.data)
@@ -1101,6 +1101,50 @@ class NurseWorkbench extends Component {
                             </li>
                           ))
                       ) : (
+                        <div className="col noPatientDiv">                          
+                          <p>No Patients Available</p>
+                        </div>
+                      )} */}
+                    {this.state.data.length !== 0 ? (
+                      this.state.data
+                        .map((data, index) => (
+                          <li
+                            nursing_pat={index}
+                            key={index}
+                            onClick={this.moveToStation.bind(this, data)}
+                          >
+                            <span className="op-sec-1">
+                              <i
+                                className={
+                                  data.appointment_patient === "Y"
+                                    ? "appointment-icon"
+                                    : "walking-icon"
+                                }
+                              />
+                              <span className="opTime">
+                                {moment(data.encountered_date).format(
+                                  "HH:mm A"
+                                )}
+                              </span>
+                            </span>
+                            <span className="op-sec-2">
+                              <span className="opPatientName">
+                                {data.full_name}
+                              </span>
+                              <span className="opStatus nursing">
+                                {data.nurse_examine === "Y"
+                                  ? "Nursing Done"
+                                  : "Nursing Pending"}
+                              </span>
+                            </span>
+                            <span className="op-sec-3">
+                              <span className="opPatientStatus newVisit">
+                                New Visit
+                              </span>
+                            </span>
+                          </li>
+                        ))
+                    ) : (
                         <div className="col noPatientDiv">
                           {/* <h4>Relax</h4> */}
                           <p>No Patients Available</p>
