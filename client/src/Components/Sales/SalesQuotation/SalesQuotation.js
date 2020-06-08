@@ -521,19 +521,30 @@ class SalesQuotation extends Component {
                   </div>
                 </div>
               </div>
-              <MyContext.Provider
-                value={{
-                  state: this.state,
-                  updateState: (obj) => {
-                    this.setState({ ...obj });
-                  },
-                }}
-              >
-                <SalesListItems SALESIOputs={this.state} />
-                {this.state.services_required === "Y" ? (
-                  <SalesListService SALESIOputs={this.state} />
-                ) : null}
-              </MyContext.Provider>
+              <div className="col-12">
+                <div className="row">
+                  {" "}
+                  <MyContext.Provider
+                    value={{
+                      state: this.state,
+                      updateState: (obj) => {
+                        this.setState({ ...obj });
+                      },
+                    }}
+                  >
+                    <div className="col-6">
+                      {" "}
+                      <SalesListItems SALESIOputs={this.state} />
+                    </div>
+                    <div className="col-6">
+                      {" "}
+                      {this.state.services_required === "Y" ? (
+                        <SalesListService SALESIOputs={this.state} />
+                      ) : null}
+                    </div>
+                  </MyContext.Provider>
+                </div>
+              </div>
 
               <div className="col-12">
                 <div

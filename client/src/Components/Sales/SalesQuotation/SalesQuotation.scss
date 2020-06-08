@@ -1,13 +1,14 @@
-#SaleQuotationGrid {
-  .ReactTable {
-    max-height: 34.8vh !important;
-  }
-}
+#SaleQuotationGrid,
 #SaleQuotationServiceGrid {
   .ReactTable {
-    max-height: 58.8vh !important;
+    max-height: 50vh !important;
   }
 }
+// #SaleQuotationServiceGrid {
+//   .ReactTable {
+//     max-height: 58.8vh !important;
+//   }
+// }
 .textAreaLeft {
   text-align: left;
   margin-bottom: 50px;
