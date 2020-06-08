@@ -12,7 +12,85 @@ export default class AppraisalMatrixMaster extends Component {
   render() {
     return (
       <div className="row AppraisalMatrixMaster">
-        <div className="col-12">
+        <div className="col-4">
+          <div className="portlet portlet-bordered margin-top-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">KPI Master</h3>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
+                {/* <AlagehAutoComplete
+                  div={{ className: "col-3 form-group mandatory" }}
+                  label={{ forceLabel: "Select Group", isImp: true }}
+                  selector={{
+                    name: "",
+                    value: "",
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "",
+                      valueField: "",
+                      // data: "",
+                    },
+                    //onChange: this.dropDownHandler.bind(this),
+                  }}
+                /> */}
+                <AlagehFormGroup
+                  div={{ className: "col form-group mandatory" }}
+                  label={{
+                    forceLabel: "KPI Name",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "kpi_name_fld",
+                    value: "",
+                    events: {
+                      // onChange: this.textHandler.bind(this),
+                    },
+                    others: {
+                      type: "text",
+                    },
+                  }}
+                />
+                <div className="col-2 align-middle" style={{ paddingTop: 19 }}>
+                  <button className="btn btn-primary">Add</button>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-12" id="QuestionnaireMasterGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="QuestionnaireMasterGrid"
+                    columns={[
+                      {
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: (row) => {
+                          return <i className="fas fa-trash-alt" />;
+                        },
+                        others: { maxWidth: 70 },
+                      },
+                      {
+                        fieldName: "kpiNameFld",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "KPI Name" }} />
+                        ),
+                      },
+                    ]}
+                    keyId=""
+                    dataSource={{}}
+                    isEditable={false}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{}}
+                    others={{}}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-8">
           <div className="portlet portlet-bordered margin-top-15">
             <div className="portlet-title">
               <div className="caption">
