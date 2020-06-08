@@ -172,29 +172,29 @@ class ProjectMapping extends Component {
                           },
                         },
                         {
-                          fieldName: "division_id",
+                          fieldName: "hospital_name",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Branch Name" }}
                             />
                           ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.organizations === undefined
-                                ? []
-                                : this.props.organizations.filter(
-                                    (f) =>
-                                      f.hims_d_hospital_id === row.division_id
-                                  );
+                          // displayTemplate: (row) => {
+                          //   let display =
+                          //     this.props.organizations === undefined
+                          //       ? []
+                          //       : this.props.organizations.filter(
+                          //           (f) =>
+                          //             f.hims_d_hospital_id === row.division_id
+                          //         );
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].hospital_name
-                                  : ""}
-                              </span>
-                            );
-                          },
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? display[0].hospital_name
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
                           others: {
                             maxWidth: 250,
                           },

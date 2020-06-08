@@ -61,23 +61,23 @@ let addAlgaehGroupMAster = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
-          ]
+            input.updated_by,
+          ],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -105,23 +105,23 @@ let updateAlgaehGroupMAster = (req, res, next) => {
             input.group_type,
             input.updated_by,
             new Date(),
-            input.algaeh_d_app_group_id
+            input.algaeh_d_app_group_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -141,21 +141,21 @@ let deleteAlgaehGroupMAster = (req, res, next) => {
         .executeQuery({
           query:
             "update algaeh_d_app_group set record_status='I', updated_by=?,updated_date=? where algaeh_d_app_group_id=?",
-          values: [input.updated_by, new Date(), input.algaeh_d_app_group_id]
+          values: [input.updated_by, new Date(), input.algaeh_d_app_group_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -173,7 +173,7 @@ let addAlgaehRoleMAster = (req, res, next) => {
       if (req.userIdentity.role_type == "AD" && input.role_type == "AD") {
         req.records = {
           validUser: false,
-          message: "You cant add another Admin"
+          message: "You cant add another Admin",
         };
         next();
       } else {
@@ -195,16 +195,16 @@ let addAlgaehRoleMAster = (req, res, next) => {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
-            ]
+              req.userIdentity.algaeh_d_app_user_id,
+            ],
             // printQuery: true
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
@@ -212,7 +212,7 @@ let addAlgaehRoleMAster = (req, res, next) => {
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -230,7 +230,7 @@ let updateAlgaehRoleMAster = (req, res, next) => {
       if (req.userIdentity.role_type == "AD" && input.role_type == "AD") {
         req.records = {
           validUser: false,
-          message: "You cant add another Admin"
+          message: "You cant add another Admin",
         };
         next();
       } else {
@@ -249,16 +249,16 @@ let updateAlgaehRoleMAster = (req, res, next) => {
               input.edit_monthly_attendance,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              input.app_d_app_roles_id
-            ]
+              input.app_d_app_roles_id,
+            ],
             // printQuery: true
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
@@ -266,7 +266,7 @@ let updateAlgaehRoleMAster = (req, res, next) => {
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -290,22 +290,22 @@ let deleteAlgaehRoleMAster = (req, res, next) => {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.app_d_app_roles_id
-          ]
+            input.app_d_app_roles_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -337,22 +337,22 @@ let deleteUserLogin = (req, res, next) => {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.user_id
-          ]
+            input.user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -386,9 +386,9 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
                 "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
               where  record_status='A'" +
                 superUser +
-                " order by display_order "
+                " order by display_order ",
             })
-            .then(result => {
+            .then((result) => {
               let outputArray = [];
               if (result.length > 0) {
                 for (let i = 0; i < result.length; i++) {
@@ -397,12 +397,12 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
                       query:
                         "select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,other_language, module_id\
                     from algaeh_d_app_screens where record_status='A' and  module_id=?",
-                      values: [result[i].algaeh_d_module_id]
+                      values: [result[i].algaeh_d_module_id],
                     })
-                    .then(screenResult => {
+                    .then((screenResult) => {
                       const obj = {
                         ...result[i],
-                        ...{ ScreenList: screenResult }
+                        ...{ ScreenList: screenResult },
                       };
 
                       outputArray.push(obj);
@@ -412,14 +412,14 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
                         next();
                       }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.releaseConnection();
                       next(error);
                     });
                 }
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
               next(error);
             });
@@ -429,7 +429,7 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
       } catch (e) {
         reject(e);
       }
-    }).then(modifyRes => {
+    }).then((modifyRes) => {
       _mysql
         .executeQuery({
           query:
@@ -437,9 +437,9 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
           from algaeh_m_module_role_privilage_mapping MRP\
           inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
           where MRP.record_status='A' and M.record_status='A' and MRP.role_id=?  order by display_order ",
-          values: [req.userIdentity.role_id]
+          values: [req.userIdentity.role_id],
         })
-        .then(result => {
+        .then((result) => {
           let outputArray = [];
 
           debugLog("userIdentity:", req.userIdentity);
@@ -454,12 +454,12 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
                   algaeh_m_screen_role_privilage_mapping SRM inner join algaeh_d_app_screens S \
                   on SRM.screen_id=S.algaeh_app_screens_id\
                   where SRM.record_status='A' and S.record_status='A' and module_role_map_id=?",
-                  values: [result[i].algaeh_m_module_role_privilage_mapping_id]
+                  values: [result[i].algaeh_m_module_role_privilage_mapping_id],
                 })
-                .then(screenResult => {
+                .then((screenResult) => {
                   const obj = {
                     ...result[i],
-                    ...{ ScreenList: screenResult }
+                    ...{ ScreenList: screenResult },
                   };
 
                   outputArray.push(obj);
@@ -469,14 +469,14 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
                     next();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   next(error);
                 });
             }
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -539,7 +539,7 @@ where record_status='I';`
       left join algaeh_d_app_component as c on c.algaeh_d_app_component_id =cs.component_id
       left join screen_element_scren_module_mapping as se on 
       se.role_id = mr.role_id
-      left join algaeh_d_app_scrn_elements as e on e.component_id = c.algaeh_d_app_component_id 
+      left join algaeh_d_app_scrn_elements as e on e.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id 
       where mr.role_id=${_roleId} and mr.record_status ='A'  and m.access_by <> 'SU'; select algaeh_d_app_component_id,screen_id as algaeh_app_screens_id,component_code,
       component_name,'H' as comp_view_previlage,'' as algaeh_m_screen_role_privilage_mapping_id
       from algaeh_d_app_component where record_status='I';SELECT algaeh_d_app_scrn_elements_id,screen_element_code,
@@ -550,9 +550,9 @@ where record_status='I';`
     _mysql
       .executeQuery({
         query: strQuery,
-        printQuery: true
+        printQuery: true,
       })
-      .then(responseData => {
+      .then((responseData) => {
         _mysql.releaseConnection();
 
         const result = responseData[0];
@@ -563,22 +563,23 @@ where record_status='I';`
           return;
         }
         const elementsInactive = responseData[2];
+
         let elements = _.chain(result)
-          .groupBy(g => g.algaeh_d_app_scrn_elements_id)
-          .map(element => {
+          .groupBy((g) => g.algaeh_d_app_scrn_elements_id)
+          .map((element) => {
             const {
               algaeh_d_app_scrn_elements_id,
               ele_extra_props,
               ele_view_previlage,
               screen_element_code,
               props_type,
-              extra_props
+              extra_props,
             } = _.head(element);
             let stages = [];
 
             if (role_type !== "SU") {
               const elefilters = elementsInactive.find(
-                f =>
+                (f) =>
                   f.algaeh_d_app_scrn_elements_id ===
                   algaeh_d_app_scrn_elements_id
               );
@@ -593,11 +594,11 @@ where record_status='I';`
               const userStage =
                 ele_extra_props !== null ? ele_extra_props.split(",") : [];
               original.forEach((st, stIdx) => {
-                const hasStage = userStage.find(t => t === st);
+                const hasStage = userStage.find((t) => t === st);
                 if (hasStage === undefined) {
                   stages.push({
                     value: stIdx,
-                    text: st
+                    text: st,
                   });
                 }
               });
@@ -606,18 +607,20 @@ where record_status='I';`
             return {
               screen_element_code,
               props_type,
-              ele_view_previlage,
-              stages
+              ele_view_previlage:
+                ele_view_previlage === null ? "H" : ele_view_previlage,
+              stages,
             };
           })
           .filter(
-            f => f.screen_element_code !== null && f.screen_element_code !== ""
+            (f) =>
+              f.screen_element_code !== null && f.screen_element_code !== ""
           )
           .value();
 
         const records = _.chain(result)
-          .groupBy(g => g.algaeh_d_module_id)
-          .map(function(detail, key) {
+          .groupBy((g) => g.algaeh_d_module_id)
+          .map(function (detail, key) {
             const first = _.head(detail);
             return {
               module_id: key,
@@ -628,8 +631,8 @@ where record_status='I';`
               other_language: first.other_language,
               module_plan: first.module_plan,
               ScreenList: _.chain(detail)
-                .groupBy(sg => sg.algaeh_app_screens_id)
-                .map(screens => {
+                .groupBy((sg) => sg.algaeh_app_screens_id)
+                .map((screens) => {
                   const sec = _.head(screens);
                   const {
                     algaeh_d_module_id,
@@ -644,15 +647,16 @@ where record_status='I';`
                     screen_id,
                     redirect_url,
                     algaeh_d_app_scrn_elements_id,
-                    child_pages
+                    child_pages,
                   } = sec;
 
                   const listItems = () => {
-                    return _.chain(screens)
-                      .filter(f => f.algaeh_d_app_component_id !== null)
-                      .groupBy(c => c.algaeh_d_app_component_id)
-                      .map(comp => {
+                    const co = _.chain(screens)
+                      .filter((f) => f.algaeh_d_app_component_id !== null)
+                      .groupBy((c) => c.algaeh_d_app_component_id)
+                      .map((comp) => {
                         const third = _.head(comp);
+                        // console.log("third", third)
                         const {
                           algaeh_d_app_component_id,
                           component_code,
@@ -660,7 +664,7 @@ where record_status='I';`
                           comp_view_previlage,
                           algaeh_app_screens_id,
                           algaeh_d_module_id,
-                          algaeh_m_screen_role_privilage_mapping_id
+                          algaeh_m_screen_role_privilage_mapping_id,
                         } = third;
                         return {
                           algaeh_d_app_component_id,
@@ -669,16 +673,17 @@ where record_status='I';`
                           comp_view_previlage,
                           algaeh_app_screens_id,
                           algaeh_d_module_id,
-                          algaeh_m_screen_role_privilage_mapping_id
+                          algaeh_m_screen_role_privilage_mapping_id,
                         };
                       })
                       .value();
+                    return co;
                   };
 
                   let componentsDetails = [];
                   if (role_type !== "SU") {
                     componentsDetails = componentsInactiveList.filter(
-                      f => f.algaeh_app_screens_id === algaeh_app_screens_id
+                      (f) => f.algaeh_app_screens_id === algaeh_app_screens_id
                     );
 
                     if (componentsDetails.length === 0) {
@@ -708,9 +713,9 @@ where record_status='I';`
                     child_pages:
                       child_pages !== null ? child_pages.split(",") : [],
                     other_language: sec.s_other_language,
-                    components: componentsDetails
+                    components: componentsDetails,
                   };
-                })
+                }),
               //   detail.map(m => {
               //   return {
               //     ...m,
@@ -726,7 +731,7 @@ where record_status='I';`
         req.records = { result: records, elements };
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -898,9 +903,9 @@ let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
               inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
           where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
           and  S.record_status='A' and M.record_status='A' and CRM.role_id=?",
-        values: [role_id, role_id]
+        values: [role_id, role_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         let components = result[0];
         let elements = result[1];
@@ -909,24 +914,24 @@ let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
           if (components[i]["view_privilege"] == "Y") {
             let screenElementsToHide = new LINQ(elements)
               .Where(
-                w =>
+                (w) =>
                   w.component_role_map_id ==
                   components[i]["algaeh_m_component_role_privilage_mapping_id"]
               )
-              .Select(s => {
+              .Select((s) => {
                 return {
                   screen_element_code: s.screen_element_code,
                   screen_element_name: s.screen_element_name,
                   component_code: s.component_code,
                   screen_code: s.screen_code,
-                  module_code: s.module_code
+                  module_code: s.module_code,
                 };
               })
               .ToArray();
 
             outputArray.push({
               ...components[i],
-              screenElementsToHide: screenElementsToHide
+              screenElementsToHide: screenElementsToHide,
             });
           } else {
             outputArray.push(components[i]);
@@ -936,7 +941,7 @@ let getRoleBaseInActiveComponents_OLD = (req, res, next) => {
         req.records = outputArray;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -976,9 +981,9 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
               inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
           where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
           and  S.record_status='A' and M.record_status='A' and CRM.role_id=?",
-        values: [role_id, role_id]
+        values: [role_id, role_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         let components = result[0];
         let elements = result[1];
@@ -987,24 +992,24 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
           if (components[i]["view_privilege"] == "Y") {
             let screenElementsToHide = new LINQ(elements)
               .Where(
-                w =>
+                (w) =>
                   w.component_role_map_id ==
                   components[i]["algaeh_m_component_role_privilage_mapping_id"]
               )
-              .Select(s => {
+              .Select((s) => {
                 return {
                   screen_element_code: s.screen_element_code,
                   screen_element_name: s.screen_element_name,
                   component_code: s.component_code,
                   screen_code: s.screen_code,
-                  module_code: s.module_code
+                  module_code: s.module_code,
                 };
               })
               .ToArray();
 
             outputArray.push({
               ...components[i],
-              screenElementsToHide: screenElementsToHide
+              screenElementsToHide: screenElementsToHide,
             });
           } else {
             outputArray.push(components[i]);
@@ -1014,7 +1019,7 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
         req.records = outputArray;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1049,22 +1054,22 @@ let addAlgaehModule = (req, res, next) => {
             new Date(),
             algaeh_d_app_user_id,
             new Date(),
-            algaeh_d_app_user_id
-          ]
+            algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1084,9 +1089,9 @@ let deleteAlgaehModule = (req, res, next) => {
         .executeQuery({
           query: `select M.module_name,S.screen_name from algaeh_d_app_module as M left join algaeh_d_app_screens as S 
             on M.algaeh_d_module_id = S.module_id where M.algaeh_d_module_id=?;`,
-          values: [input.algaeh_d_module_id]
+          values: [input.algaeh_d_module_id],
         })
-        .then(result => {
+        .then((result) => {
           if (result.length > 1) {
             _mysql.releaseConnection();
             const { screen_name } = result[0];
@@ -1099,26 +1104,26 @@ let deleteAlgaehModule = (req, res, next) => {
             _mysql
               .executeQuery({
                 query: `delete from algaeh_d_app_module where algaeh_d_module_id=?`,
-                values: [input.algaeh_d_module_id]
+                values: [input.algaeh_d_module_id],
               })
-              .then(deleted => {
+              .then((deleted) => {
                 _mysql.releaseConnection();
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1144,21 +1149,21 @@ let getAlgaehModules = (req, res, next) => {
             "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language, module_plan,licence_key,record_status  from algaeh_d_app_module\
           where  1=1 " +
             superUser +
-            " order by algaeh_d_module_id desc"
+            " order by algaeh_d_module_id desc",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1192,23 +1197,23 @@ let updateAlgaehModules = (req, res, next) => {
             input.licence_key,
             input.record_status,
             req.userIdentity.algaeh_d_app_user_id,
-            input.algaeh_d_module_id
+            input.algaeh_d_module_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1242,22 +1247,22 @@ let addAlgaehScreen = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
-          ]
+            input.updated_by,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1294,14 +1299,14 @@ let getAlgaehScreens = (req, res, next) => {
             wherecondition +
             module_id +
             "  order by algaeh_app_screens_id desc ",
-          printQuery: true
+          printQuery: true,
         })
         // .executeQuery({
         //   query: `select M.module_name,M.module_code,M.algaeh_d_module_id,M.module_name,S.screen_name,
         //   S.other_language,S.algaeh_app_screens_id from algaeh_d_app_module as M inner join
         //   algaeh_d_app_screens as S on M.algaeh_d_module_id = S.module_id where M.algaeh_d_module_id = S.module_id`
         // })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           // const createGroup = _.chain(result)
           //   .groupBy(g => g.algaeh_d_module_id)
@@ -1322,14 +1327,14 @@ let getAlgaehScreens = (req, res, next) => {
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1359,17 +1364,17 @@ let getAlgaehScreensWithModules = (req, res, next) => {
         .executeQuery({
           query: `select M.module_name,M.module_code,M.algaeh_d_module_id,M.module_name,S.screen_name as label,
           S.other_language,S.algaeh_app_screens_id from algaeh_d_app_module as M inner join
-          algaeh_d_app_screens as S on M.algaeh_d_module_id = S.module_id ${module_id};`
+          algaeh_d_app_screens as S on M.algaeh_d_module_id = S.module_id ${module_id};`,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           const createGroup = _.chain(result)
-            .groupBy(g => g.algaeh_d_module_id)
-            .map(detail => {
+            .groupBy((g) => g.algaeh_d_module_id)
+            .map((detail) => {
               const {
                 algaeh_d_module_id,
                 module_code,
-                module_name
+                module_name,
               } = detail[0];
               return {
                 algaeh_d_module_id: algaeh_d_module_id,
@@ -1377,21 +1382,21 @@ let getAlgaehScreensWithModules = (req, res, next) => {
                 module_code: module_code,
                 disabled: true,
                 module_name: module_name,
-                children: detail
+                children: detail,
               };
             })
             .value();
           req.records = createGroup;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1420,23 +1425,23 @@ let updateAlgaehScreen = (req, res, next) => {
             new Date(),
             input.record_status,
             req.userIdentity.algaeh_d_app_user_id,
-            input.algaeh_app_screens_id
+            input.algaeh_app_screens_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1456,21 +1461,21 @@ let deleteAlgaehScreen = (req, res, next) => {
         .executeQuery({
           query:
             "update algaeh_d_app_screens set record_status='I', updated_by=?,updated_date=? where algaeh_app_screens_id=?",
-          values: [input.updated_by, new Date(), input.algaeh_app_screens_id]
+          values: [input.updated_by, new Date(), input.algaeh_app_screens_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1501,22 +1506,22 @@ let addAlgaehComponent = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
-          ]
+            input.updated_by,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1543,22 +1548,22 @@ let updateAlgaehComponent = (req, res, next) => {
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.algaeh_d_app_component_id
-          ]
+            input.algaeh_d_app_component_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1582,21 +1587,21 @@ let getAlgaehComponents = (req, res, next) => {
           query: `select  algaeh_d_app_component_id, screen_id,S.screen_name, component_code, component_name ,C.record_status
             from algaeh_d_app_component as C inner join algaeh_d_app_screens S 
             on C.screen_id = S.algaeh_app_screens_id
-            ${screen_id} order by algaeh_d_app_component_id desc `
+            ${screen_id} order by algaeh_d_app_component_id desc `,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1617,33 +1622,33 @@ let getAlgaehComponentsWithScreens = (req, res, next) => {
           from algaeh_d_app_module as M inner join algaeh_d_app_screens as S
           on M.algaeh_d_module_id = S.module_id inner join algaeh_d_app_component as C
           on S.algaeh_app_screens_id = C.screen_id where M.record_status ='A' and S.record_status='A'
-          and C.record_status='A' order by C.algaeh_d_app_component_id desc;`
+          and C.record_status='A' order by C.algaeh_d_app_component_id desc;`,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           const data = _.chain(result)
-            .groupBy(g => g.algaeh_d_module_id)
-            .map(detail => {
+            .groupBy((g) => g.algaeh_d_module_id)
+            .map((detail) => {
               const {
                 algaeh_d_module_id,
                 module_code,
-                module_name
+                module_name,
               } = detail[0];
               const screens = _.chain(detail)
-                .groupBy(g => g.algaeh_app_screens_id)
-                .map(scr => {
+                .groupBy((g) => g.algaeh_app_screens_id)
+                .map((scr) => {
                   const {
                     screen_name,
                     algaeh_app_screens_id,
                     screen_code,
-                    redirect_url
+                    redirect_url,
                   } = scr[0];
                   return {
                     label: screen_name,
                     disabled: true,
                     algaeh_app_screens_id: algaeh_app_screens_id,
                     screen_code: screen_code,
-                    children: scr
+                    children: scr,
                   };
                 });
               return {
@@ -1652,20 +1657,20 @@ let getAlgaehComponentsWithScreens = (req, res, next) => {
                 disabled: true,
                 label: module_name,
                 module_name: module_name,
-                children: screens
+                children: screens,
               };
             });
           req.records = data;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1698,22 +1703,22 @@ let addAlgaehScreenElement = (req, res, next) => {
             new Date(),
             input.updated_by,
             input.extra_props,
-            input.props_type
-          ]
+            input.props_type,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1738,21 +1743,21 @@ let getAlgaehScreenElement = (req, res, next) => {
            screen_element_name, c.component_name  
           from algaeh_d_app_scrn_elements as e inner join algaeh_d_app_component as c 
           on c.algaeh_d_app_component_id = e.component_id
-                   where  e.record_status='A' ${component_id} order by algaeh_d_app_scrn_elements_id desc`
+                   where  e.record_status='A' ${component_id} order by algaeh_d_app_scrn_elements_id desc`,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1769,14 +1774,14 @@ let getFormulas = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select algaeh_d_formulas_id, formula_for, formula from algaeh_d_formulas "
+          "select algaeh_d_formulas_id, formula_for, formula from algaeh_d_formulas ",
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1796,14 +1801,14 @@ let addFormula = (req, res, next) => {
         query:
           "INSERT INTO `algaeh_d_formulas` (algaeh_d_formulas_id, formula_for, formula)\
         VALUE(?,?,?)",
-        value: [input.algaeh_d_formulas_id, input.formula_for, input.formula]
+        value: [input.algaeh_d_formulas_id, input.formula_for, input.formula],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1827,15 +1832,15 @@ let updateFormula = (req, res, next) => {
           input.algaeh_d_formulas_id,
           input.formula_for,
           input.formula,
-          input.old_formulas_id
-        ]
+          input.old_formulas_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1853,14 +1858,14 @@ let deleteFormula = (req, res, next) => {
     _mysql
       .executeQuery({
         query: "DELETE FROM algaeh_d_formulas WHERE algaeh_d_formulas_id = ?;",
-        value: [input.algaeh_d_formulas_id]
+        value: [input.algaeh_d_formulas_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -1882,9 +1887,9 @@ let deleteScreenForRole = (req, res, next) => {
           query:
             "delete from algaeh_m_screen_role_privilage_mapping where\
         algaeh_m_screen_role_privilage_mapping_id=?",
-          value: [input.algaeh_m_screen_role_privilage_mapping_id]
+          value: [input.algaeh_m_screen_role_privilage_mapping_id],
         })
-        .then(result => {
+        .then((result) => {
           if (result.affectedRows > 0) {
             req.records = result;
             next();
@@ -1892,7 +1897,7 @@ let deleteScreenForRole = (req, res, next) => {
             _mysql.releaseConnection();
             req.records = {
               validUser: false,
-              message: "invalid input"
+              message: "invalid input",
             };
             next();
           }
@@ -1900,7 +1905,7 @@ let deleteScreenForRole = (req, res, next) => {
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1908,7 +1913,7 @@ let deleteScreenForRole = (req, res, next) => {
       _mysql.releaseConnection();
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -1928,18 +1933,18 @@ let deleteModuleForRole = (req, res, next) => {
         .executeQueryWithTransaction({
           query:
             "delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id=?",
-          value: [input.algaeh_m_module_role_privilage_mapping_id]
+          value: [input.algaeh_m_module_role_privilage_mapping_id],
         })
-        .then(result => {
+        .then((result) => {
           if (result.affectedRows > 0) {
             _mysql
               .executeQuery({
                 query:
                   "delete from algaeh_m_module_role_privilage_mapping where\
                 algaeh_m_module_role_privilage_mapping_id=?",
-                value: [input.algaeh_m_module_role_privilage_mapping_id]
+                value: [input.algaeh_m_module_role_privilage_mapping_id],
               })
-              .then(result => {
+              .then((result) => {
                 if (moduleResult.affectedRows > 0) {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
@@ -1950,13 +1955,13 @@ let deleteModuleForRole = (req, res, next) => {
                   _mysql.rollBackTransaction(() => {
                     req.records = {
                       validUser: false,
-                      message: "invalid input"
+                      message: "invalid input",
                     };
                     next();
                   });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -1965,13 +1970,13 @@ let deleteModuleForRole = (req, res, next) => {
             _mysql.rollBackTransaction(() => {
               req.records = {
                 validUser: false,
-                message: "invalid input"
+                message: "invalid input",
               };
               next();
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -1980,7 +1985,7 @@ let deleteModuleForRole = (req, res, next) => {
       _mysql.releaseConnection();
       req.records = {
         validUser: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -2008,16 +2013,16 @@ let assignScreensBAckup = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              new Date()
+              new Date(),
             ]
           );
         }
 
         _mysql
           .executeQueryWithTransaction({
-            query: execute_query
+            query: execute_query,
           })
-          .then(headerResult => {
+          .then((headerResult) => {
             let execute_detail_query = "";
             if (headerResult.length > 0) {
               for (let k = 0; k < headerResult.length; k++) {
@@ -2030,23 +2035,23 @@ let assignScreensBAckup = (req, res, next) => {
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ]
                   );
                 }
               }
               _mysql
                 .executeQueryWithTransaction({
-                  query: execute_detail_query
+                  query: execute_detail_query,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = detailResult[0];
                     next();
                   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -2059,13 +2064,13 @@ let assignScreensBAckup = (req, res, next) => {
               });
               req.records = {
                 invalid_input: true,
-                message: "insertion error ,send valid input"
+                message: "insertion error ,send valid input",
               };
               next();
               return;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -2073,7 +2078,7 @@ let assignScreensBAckup = (req, res, next) => {
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please send valid input"
+          message: "Please send valid input",
         };
         next();
         return;
@@ -2081,7 +2086,7 @@ let assignScreensBAckup = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -2109,12 +2114,12 @@ const moduleScreenAssignment = (req, res, next) => {
         .executeQueryWithTransaction({
           query: `select algaeh_m_module_role_privilage_mapping_id from algaeh_m_module_role_privilage_mapping
         where role_id =?`,
-          values: [role_id]
+          values: [role_id],
         })
-        .then(result => {
+        .then((result) => {
           console.log("result", result);
           const module_privilage_map = result.map(
-            item => item.algaeh_m_module_role_privilage_mapping_id
+            (item) => item.algaeh_m_module_role_privilage_mapping_id
           );
           _mysql
             .executeQuery({
@@ -2122,12 +2127,12 @@ const moduleScreenAssignment = (req, res, next) => {
               delete from algaeh_m_module_role_privilage_mapping where algaeh_m_module_role_privilage_mapping_id in (?);`,
               values: [
                 module_privilage_map.length === 0 ? null : module_privilage_map,
-                module_privilage_map.length === 0 ? null : module_privilage_map
-              ]
+                module_privilage_map.length === 0 ? null : module_privilage_map,
+              ],
             })
-            .then(deleted => {
+            .then((deleted) => {
               let query_module_insertion = "";
-              module_screen.forEach(element => {
+              module_screen.forEach((element) => {
                 query_module_insertion += _mysql.mysqlQueryFormat(
                   `insert into algaeh_m_module_role_privilage_mapping 
             (module_id,role_id,created_by,updated_by) value(?,?,?,?);`,
@@ -2135,15 +2140,15 @@ const moduleScreenAssignment = (req, res, next) => {
                     element.module_id,
                     role_id,
                     algaeh_d_app_user_id,
-                    algaeh_d_app_user_id
+                    algaeh_d_app_user_id,
                   ]
                 );
               });
               _mysql
                 .executeQuery({
-                  query: query_module_insertion
+                  query: query_module_insertion,
                 })
-                .then(modulesInserted => {
+                .then((modulesInserted) => {
                   let query_insert = "";
                   for (let m = 0; m < modulesInserted.length; m++) {
                     const module = module_screen[m];
@@ -2155,40 +2160,40 @@ const moduleScreenAssignment = (req, res, next) => {
                           modulesInserted[m]["insertId"],
                           module.ScreenList[s]["screen_id"],
                           algaeh_d_app_user_id,
-                          algaeh_d_app_user_id
+                          algaeh_d_app_user_id,
                         ]
                       );
                     }
                   }
                   _mysql
                     .executeQuery({
-                      query: query_insert
+                      query: query_insert,
                     })
-                    .then(detailInsert => {
+                    .then((detailInsert) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         next();
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -2246,7 +2251,7 @@ let assignScreens = (req, res, next) => {
                       req.userIdentity.algaeh_d_app_user_id,
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ]
                   );
                 }
@@ -2256,12 +2261,12 @@ let assignScreens = (req, res, next) => {
             _mysql
               .executeQueryWithTransaction({
                 query: qry,
-                printQuery: true
+                printQuery: true,
               })
-              .then(deleteResult => {
+              .then((deleteResult) => {
                 resolve(deleteResult);
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -2272,7 +2277,7 @@ let assignScreens = (req, res, next) => {
         } catch (e) {
           reject(e);
         }
-      }).then(delRes => {
+      }).then((delRes) => {
         //-------------------------
 
         let modules = req.body.inputs;
@@ -2286,16 +2291,16 @@ let assignScreens = (req, res, next) => {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
               ]
             );
           }
 
           _mysql
             .executeQueryWithTransaction({
-              query: execute_query
+              query: execute_query,
             })
-            .then(firstRes => {
+            .then((firstRes) => {
               let execute_detail_query = "";
               let headerResult = [];
               if (firstRes.affectedRows > 0) {
@@ -2315,7 +2320,7 @@ let assignScreens = (req, res, next) => {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        new Date()
+                        new Date(),
                       ]
                     );
                   }
@@ -2323,16 +2328,16 @@ let assignScreens = (req, res, next) => {
                 _mysql
                   .executeQueryWithTransaction({
                     query: execute_detail_query,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(detailResult => {
+                  .then((detailResult) => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = detailResult;
                       next();
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
@@ -2345,13 +2350,13 @@ let assignScreens = (req, res, next) => {
                 });
                 req.records = {
                   invalid_input: true,
-                  message: "insertion error ,send valid input"
+                  message: "insertion error ,send valid input",
                 };
                 next();
                 return;
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -2371,7 +2376,7 @@ let assignScreens = (req, res, next) => {
 
           req.records = {
             invalid_input: true,
-            message: "Please send valid input"
+            message: "Please send valid input",
           };
           next();
           return;
@@ -2380,7 +2385,7 @@ let assignScreens = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -2408,16 +2413,16 @@ let assignComponents = (req, res, next) => {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              new Date()
+              new Date(),
             ]
           );
         }
 
         _mysql
           .executeQueryWithTransaction({
-            query: execute_query
+            query: execute_query,
           })
-          .then(headerResult => {
+          .then((headerResult) => {
             let execute_detail_query = "";
 
             if (headerResult.length > 0) {
@@ -2436,7 +2441,7 @@ let assignComponents = (req, res, next) => {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        new Date()
+                        new Date(),
                       ]
                     );
                   }
@@ -2444,16 +2449,16 @@ let assignComponents = (req, res, next) => {
               }
               _mysql
                 .executeQueryWithTransaction({
-                  query: execute_detail_query
+                  query: execute_detail_query,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = detailResult[0];
                     next();
                   });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -2466,13 +2471,13 @@ let assignComponents = (req, res, next) => {
               });
               req.records = {
                 invalid_input: true,
-                message: "insertion error ,send valid input"
+                message: "insertion error ,send valid input",
               };
               next();
               return;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -2480,7 +2485,7 @@ let assignComponents = (req, res, next) => {
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please send valid input"
+          message: "Please send valid input",
         };
         next();
         return;
@@ -2488,7 +2493,7 @@ let assignComponents = (req, res, next) => {
     } else {
       req.records = {
         invalid_input: false,
-        message: "you dont have admin privilege"
+        message: "you dont have admin privilege",
       };
       next();
     }
@@ -2509,17 +2514,17 @@ let getHrmsAuthLevels = (req, res, next) => {
           " select TABLE_NAME from information_schema.TABLES\
         where table_schema = ? and  TABLE_NAME='hims_d_hrms_options'",
         values: [curr_db],
-        printQuery: true
+        printQuery: true,
       })
-      .then(dbExist => {
+      .then((dbExist) => {
         if (dbExist.length > 0) {
           _mysql
             .executeQuery({
               query:
                 " select  leave_level,loan_level from hims_d_hrms_options;",
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               _mysql.releaseConnection();
               if (result.length > 0) {
                 const leave_levels = [];
@@ -2620,12 +2625,12 @@ let getHrmsAuthLevels = (req, res, next) => {
               } else {
                 req.records = {
                   leave_levels: [{ name: "None", value: "N" }],
-                  loan_levels: [{ name: "None", value: "N" }]
+                  loan_levels: [{ name: "None", value: "N" }],
                 };
                 next();
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -2633,19 +2638,19 @@ let getHrmsAuthLevels = (req, res, next) => {
           _mysql.releaseConnection();
           req.records = {
             leave_levels: [{ name: "None", value: "N" }],
-            loan_levels: [{ name: "None", value: "N" }]
+            loan_levels: [{ name: "None", value: "N" }],
           };
           next();
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
   } else {
     req.records = {
       validUser: false,
-      message: "you dont have admin privilege"
+      message: "you dont have admin privilege",
     };
     next();
   }
@@ -2687,16 +2692,16 @@ let addLisMachineConfiguration = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
-        ]
+          input.updated_by,
+        ],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2713,14 +2718,14 @@ let getLisMachineConfiguration = (req, res, next) => {
       .executeQuery({
         query:
           "SELECT LC.*, H.hospital_name FROM hims_d_lis_configuration LC \
-          inner join hims_d_hospital H on H.hims_d_hospital_id = LC.hospital_id"
+          inner join hims_d_hospital H on H.hims_d_hospital_id = LC.hospital_id",
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2764,16 +2769,16 @@ let updateLisMachineConfiguration = (req, res, next) => {
           input.hospital_id,
           new Date(),
           input.updated_by,
-          input.hims_d_lis_configuration_id
-        ]
+          input.hims_d_lis_configuration_id,
+        ],
         // printQuery: true
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2800,14 +2805,14 @@ let getComponentsForScreen = (req, res, next) => {
     _mysql
       .executeQuery({
         query: `select component_name,algaeh_d_app_component_id from algaeh_d_app_component where screen_id=? and record_status='A';`,
-        values: [screen_id]
+        values: [screen_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2822,7 +2827,7 @@ const assignComponentScreenPermissions = (req, res, next) => {
   try {
     const {
       algaeh_m_screen_role_privilage_mapping_id,
-      compoment_list
+      compoment_list,
     } = req.body;
     if (!Array.isArray(compoment_list)) {
       next(new Error("Please provide proper components in list"));
@@ -2848,20 +2853,20 @@ const assignComponentScreenPermissions = (req, res, next) => {
           algaeh_d_app_user_id,
           new Date(),
           algaeh_d_app_user_id,
-          new Date()
+          new Date(),
         ]
       );
     }
     _mysql
       .executeQuery({
         query: query,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -2888,40 +2893,40 @@ const getScreensWithComponents = (req, res, next) => {
         // algaeh_d_app_component C on S.algaeh_app_screens_id=C.screen_id and C.record_status='A'\
         // where S.module_id=? and  S.record_status='A'; ",
         values: [req.query.module_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         const createGroup = _.chain(result)
-          .groupBy(g => g.algaeh_app_screens_id)
-          .map(screen => {
+          .groupBy((g) => g.algaeh_app_screens_id)
+          .map((screen) => {
             const {
               algaeh_app_screens_id,
               screen_name,
-              screen_code
+              screen_code,
             } = screen[0];
 
             const compo = _.chain(screen)
-              .filter(f => f.algaeh_d_app_component_id !== null)
-              .groupBy(g => g.algaeh_d_app_component_id)
-              .map(component => {
+              .filter((f) => f.algaeh_d_app_component_id !== null)
+              .groupBy((g) => g.algaeh_d_app_component_id)
+              .map((component) => {
                 const {
                   algaeh_d_app_component_id,
                   screen_id,
                   component_name,
                   component_code,
-                  screen_code
+                  screen_code,
                 } = component[0];
                 const elem = _.chain(component)
-                  .filter(f => f.algaeh_d_app_scrn_elements_id !== null)
-                  .groupBy(g => g.algaeh_d_app_scrn_elements_id)
-                  .map(elements => {
+                  .filter((f) => f.algaeh_d_app_scrn_elements_id !== null)
+                  .groupBy((g) => g.algaeh_d_app_scrn_elements_id)
+                  .map((elements) => {
                     const {
                       extra_props,
                       props_type,
                       screen_element_name,
-                      algaeh_d_app_scrn_elements_id
+                      algaeh_d_app_scrn_elements_id,
                     } = elements[0];
 
                     return {
@@ -2935,10 +2940,10 @@ const getScreensWithComponents = (req, res, next) => {
                               return {
                                 label: m,
                                 value: index,
-                                checked: false
+                                checked: false,
                               };
                             })
-                          : []
+                          : [],
                     };
                   })
                   .value();
@@ -2948,7 +2953,7 @@ const getScreensWithComponents = (req, res, next) => {
                   component_name,
                   component_code,
                   screen_code,
-                  elements: elem
+                  elements: elem,
                 };
               })
               .value();
@@ -2970,7 +2975,7 @@ const getScreensWithComponents = (req, res, next) => {
               algaeh_app_screens_id: algaeh_app_screens_id,
               screen_name: screen_name,
               screen_code: screen_code,
-              componentList: compo
+              componentList: compo,
             };
           })
           .value();
@@ -2979,7 +2984,7 @@ const getScreensWithComponents = (req, res, next) => {
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3009,14 +3014,14 @@ const addScreensAndComponents = (req, res, next) => {
           query: `delete from algaeh_m_module_role_privilage_mapping where 
         algaeh_m_module_role_privilage_mapping_id=?`,
           values: [input.algaeh_m_module_role_privilage_mapping_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -3033,16 +3038,16 @@ const addScreensAndComponents = (req, res, next) => {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
-          ]
+            new Date(),
+          ],
           // printQuery: true
         })
-        .then(result => {
+        .then((result) => {
           if (result.insertId > 0) {
             module_role_map_id = result.insertId;
           }
 
-          input.screen_list.forEach(f => {
+          input.screen_list.forEach((f) => {
             if (f.checked == true) {
               screenList.push({
                 module_role_map_id: module_role_map_id,
@@ -3050,13 +3055,13 @@ const addScreensAndComponents = (req, res, next) => {
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
-                updated_date: new Date()
+                updated_date: new Date(),
               });
-              f.componentList.forEach(comp => {
+              f.componentList.forEach((comp) => {
                 if (comp.checked == undefined || comp.checked == false) {
                   componentList.push({
                     algaeh_d_app_component_id: comp.algaeh_d_app_component_id,
-                    screen_id: comp.screen_id
+                    screen_id: comp.screen_id,
                   });
                 } else if (
                   comp.checked == true &&
@@ -3087,7 +3092,7 @@ const addScreensAndComponents = (req, res, next) => {
             "created_by",
             "created_date",
             "updated_by",
-            "updated_date"
+            "updated_date",
           ];
 
           _mysql
@@ -3097,9 +3102,9 @@ const addScreensAndComponents = (req, res, next) => {
               values: screenList,
               includeValues: insurtColumns,
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(screenRes => {
+            .then((screenRes) => {
               _mysql
                 .executeQuery({
                   query:
@@ -3107,12 +3112,12 @@ const addScreensAndComponents = (req, res, next) => {
                     algaeh_m_screen_role_privilage_mapping where module_role_map_id=?;" +
                     qryStr,
                   values: [module_role_map_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(mappedScreen => {
+                .then((mappedScreen) => {
                   const insertCopmonent = [];
-                  mappedScreen[0].forEach(item => {
-                    componentList.forEach(f => {
+                  mappedScreen[0].forEach((item) => {
+                    componentList.forEach((f) => {
                       if (item.screen_id == f.screen_id) {
                         insertCopmonent.push({
                           component_id: f.algaeh_d_app_component_id,
@@ -3121,7 +3126,7 @@ const addScreensAndComponents = (req, res, next) => {
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           created_date: new Date(),
                           updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date()
+                          updated_date: new Date(),
                         });
                       }
                     });
@@ -3134,7 +3139,7 @@ const addScreensAndComponents = (req, res, next) => {
                       "created_by",
                       "created_date",
                       "updated_by",
-                      "updated_date"
+                      "updated_date",
                     ];
                     _mysql
                       .executeQueryWithTransaction({
@@ -3143,16 +3148,16 @@ const addScreensAndComponents = (req, res, next) => {
                         values: insertCopmonent,
                         includeValues: insertColumns,
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(compRes => {
+                      .then((compRes) => {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = compRes;
                           next();
                         });
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -3165,19 +3170,19 @@ const addScreensAndComponents = (req, res, next) => {
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -3207,14 +3212,14 @@ const addScreensAndComponents_new = (req, res, next) => {
         .executeQuery({
           query: `delete from algaeh_m_module_role_privilage_mapping where 
         algaeh_m_module_role_privilage_mapping_id=?`,
-          values: [input.algaeh_m_module_role_privilage_mapping_id]
+          values: [input.algaeh_m_module_role_privilage_mapping_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -3230,16 +3235,16 @@ const addScreensAndComponents_new = (req, res, next) => {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           if (result.insertId > 0) {
             module_role_map_id = result.insertId;
           }
 
-          input.screen_list.forEach(f => {
+          input.screen_list.forEach((f) => {
             if (f.checked == true) {
               screenList.push({
                 module_role_map_id: module_role_map_id,
@@ -3247,13 +3252,13 @@ const addScreensAndComponents_new = (req, res, next) => {
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
-                updated_date: new Date()
+                updated_date: new Date(),
               });
-              f.componentList.forEach(comp => {
+              f.componentList.forEach((comp) => {
                 if (comp.checked == undefined || comp.checked == false) {
                   componentList.push({
                     algaeh_d_app_component_id: comp.algaeh_d_app_component_id,
-                    screen_id: comp.screen_id
+                    screen_id: comp.screen_id,
                   });
                 } else if (
                   comp.checked == true &&
@@ -3285,7 +3290,7 @@ const addScreensAndComponents_new = (req, res, next) => {
             "created_by",
             "created_date",
             "updated_by",
-            "updated_date"
+            "updated_date",
           ];
 
           _mysql
@@ -3295,9 +3300,9 @@ const addScreensAndComponents_new = (req, res, next) => {
               values: screenList,
               includeValues: insurtColumns,
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(screenRes => {
+            .then((screenRes) => {
               _mysql
                 .executeQuery({
                   query:
@@ -3305,12 +3310,12 @@ const addScreensAndComponents_new = (req, res, next) => {
                     algaeh_m_screen_role_privilage_mapping where module_role_map_id=?;" +
                     qryStr,
                   values: [module_role_map_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(mappedScreen => {
+                .then((mappedScreen) => {
                   const insertCopmonent = [];
-                  mappedScreen[0].forEach(item => {
-                    componentList.forEach(f => {
+                  mappedScreen[0].forEach((item) => {
+                    componentList.forEach((f) => {
                       if (item.screen_id == f.screen_id) {
                         insertCopmonent.push({
                           component_id: f.algaeh_d_app_component_id,
@@ -3319,7 +3324,7 @@ const addScreensAndComponents_new = (req, res, next) => {
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           created_date: new Date(),
                           updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date()
+                          updated_date: new Date(),
                         });
                       }
                     });
@@ -3332,7 +3337,7 @@ const addScreensAndComponents_new = (req, res, next) => {
                       "created_by",
                       "created_date",
                       "updated_by",
-                      "updated_date"
+                      "updated_date",
                     ];
                     _mysql
                       .executeQueryWithTransaction({
@@ -3341,16 +3346,16 @@ const addScreensAndComponents_new = (req, res, next) => {
                         values: insertCopmonent,
                         includeValues: insertColumns,
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(compRes => {
+                      .then((compRes) => {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = compRes;
                           next();
                         });
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         _mysql.rollBackTransaction(() => {
                           next(e);
                         });
@@ -3363,19 +3368,19 @@ const addScreensAndComponents_new = (req, res, next) => {
                     });
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -3405,32 +3410,32 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
           S.algaeh_m_screen_role_privilage_mapping_id=C.algaeh_m_screen_role_privilage_mapping_id
           where M.role_id=? and M.module_id=? `,
           values: [req.query.role_id, req.query.module_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           if (result.length > 0) {
             const createGroup = _.chain(result)
-              .groupBy(g => g.screen_id)
-              .map(screen => {
+              .groupBy((g) => g.screen_id)
+              .map((screen) => {
                 const {
                   algaeh_m_screen_role_privilage_mapping_id,
                   module_role_map_id,
-                  screen_id
+                  screen_id,
                 } = screen[0];
 
                 const compo = screen
                   .filter(
-                    f => f.algaeh_m_component_screen_privilage_mapping_id > 0
+                    (f) => f.algaeh_m_component_screen_privilage_mapping_id > 0
                   )
-                  .map(m => {
+                  .map((m) => {
                     return {
                       screen_role_map_id: m.screen_role_map_id,
                       algaeh_d_app_component_id: m.component_id,
                       algaeh_m_component_screen_privilage_mapping_id:
                         m.algaeh_m_component_screen_privilage_mapping_id,
-                      checked: false
+                      checked: false,
                     };
                   });
 
@@ -3439,7 +3444,7 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
                   module_role_map_id: module_role_map_id,
                   algaeh_app_screens_id: screen_id,
                   checked: true,
-                  componentList: compo
+                  componentList: compo,
                 };
               })
               .value();
@@ -3449,21 +3454,21 @@ const getCurrentAssignedScreenAndComponent = (req, res, next) => {
               module_id: result[0]["module_id"],
               algaeh_m_module_role_privilage_mapping_id:
                 result[0]["algaeh_m_module_role_privilage_mapping_id"],
-              screen_list: createGroup
+              screen_list: createGroup,
             };
           } else {
             req.records = {};
           }
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "Please select Role and Module "
+        message: "Please select Role and Module ",
       };
       next();
     }
@@ -3488,14 +3493,14 @@ const getAllAssignedScrens = (req, res, next) => {
         and mr.record_status ='A' inner join  algaeh_d_app_roles as r 
         on r.app_d_app_roles_id = mr.role_id and r.record_status='A'
          where mr.role_id=?;`,
-        values: [role_id]
+        values: [role_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3515,13 +3520,13 @@ const updateLandingScreen = (req, res, next) => {
         query: `update algaeh_d_app_roles set default_land_screen_id=?,
         updated_by=?,updated_date=? 
         where app_d_app_roles_id=?`,
-        values: [landing_page, algaeh_d_app_user_id, new Date(), role_id]
+        values: [landing_page, algaeh_d_app_user_id, new Date(), role_id],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3548,27 +3553,27 @@ const getScreenElementsRoles = (req, res, next) => {
         on esm.algaeh_d_app_scrn_elements_id = se.algaeh_d_app_scrn_elements_id
         where  (esm.role_Id=? or esm.role_Id is null);`,
         values: [role_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         const rest = _.chain(result)
-          .groupBy(g => g.algaeh_app_screens_id)
-          .map(m => {
+          .groupBy((g) => g.algaeh_app_screens_id)
+          .map((m) => {
             const first = m[0];
             const { screen_name, algaeh_app_screens_id } = first;
             return {
               screen_name,
               algaeh_app_screens_id,
               component: _.chain(m)
-                .groupBy(g => g.component_code)
-                .map(c => {
+                .groupBy((g) => g.component_code)
+                .map((c) => {
                   const comp = c[0];
                   const {
                     component_name,
                     component_code,
                     algaeh_app_screens_id,
-                    algaeh_d_app_scrn_elements_id
+                    algaeh_d_app_scrn_elements_id,
                   } = comp;
                   return {
                     component_name,
@@ -3576,8 +3581,8 @@ const getScreenElementsRoles = (req, res, next) => {
                     algaeh_app_screens_id,
                     algaeh_d_app_scrn_elements_id,
                     elements: _.chain(c)
-                      .groupBy(g => g.algaeh_d_app_scrn_elements_id)
-                      .map(e => {
+                      .groupBy((g) => g.algaeh_d_app_scrn_elements_id)
+                      .map((e) => {
                         const ele = e[0];
                         const {
                           algaeh_d_app_scrn_elements_id,
@@ -3587,7 +3592,7 @@ const getScreenElementsRoles = (req, res, next) => {
                           props_type,
                           user_extra_props,
                           checked,
-                          screen_element_scren_module_mapping_id
+                          screen_element_scren_module_mapping_id,
                         } = ele;
                         let stages = [];
                         if (props_type === "S" && extra_props !== "") {
@@ -3597,18 +3602,14 @@ const getScreenElementsRoles = (req, res, next) => {
                               : [];
                           stages = extra_props.split(",").map((item, idx) => {
                             const hasItem = userStage.find(
-                              f =>
-                                String(f)
-                                  .toLowerCase()
-                                  .trim() ===
-                                String(item)
-                                  .toLowerCase()
-                                  .trim()
+                              (f) =>
+                                String(f).toLowerCase().trim() ===
+                                String(item).toLowerCase().trim()
                             );
                             let interner = {
                               checked: true,
                               value: idx + 1,
-                              text: item
+                              text: item,
                             };
                             if (hasItem !== undefined) {
                               interner["checked"] = false;
@@ -3624,20 +3625,20 @@ const getScreenElementsRoles = (req, res, next) => {
                           screen_element_scren_module_mapping_id,
                           isStaged: stages.length === 0 ? false : true,
                           stages,
-                          checked: checked === "1" ? true : false
+                          checked: checked === "1" ? true : false,
                         };
                       })
-                      .value()
+                      .value(),
                   };
                 })
-                .value()
+                .value(),
             };
           })
           .value();
         req.records = rest; //result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -3661,7 +3662,7 @@ const updateScreenElementRoles = (req, res, next) => {
             stages,
             checked,
             screen_element_scren_module_mapping_id,
-            algaeh_d_app_scrn_elements_id
+            algaeh_d_app_scrn_elements_id,
           } = elements[e];
           if (screen_element_scren_module_mapping_id !== null) {
             removeItem += _mysql.mysqlQueryFormat(
@@ -3682,7 +3683,7 @@ const updateScreenElementRoles = (req, res, next) => {
             }
           } else {
             let extraProps = "";
-            const allCheck = stages.filter(f => f.checked === false);
+            const allCheck = stages.filter((f) => f.checked === false);
             for (let a = 0; a < allCheck.length; a++) {
               const { text } = allCheck[a];
               if (allCheck.length - 1 !== a) {
@@ -3707,17 +3708,17 @@ const updateScreenElementRoles = (req, res, next) => {
       _mysql
         .executeQuery({
           query: removeItem + accessItem,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = {
             success: true,
-            message: "Successully Updated"
+            message: "Successully Updated",
           };
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -3725,7 +3726,7 @@ const updateScreenElementRoles = (req, res, next) => {
       _mysql.releaseConnection();
       req.records = {
         success: true,
-        message: "Nothing Updated"
+        message: "Nothing Updated",
       };
       next();
     }
@@ -3781,5 +3782,5 @@ export default {
   getAllAssignedScrens,
   updateLandingScreen,
   getScreenElementsRoles,
-  updateAlgaehComponent
+  updateAlgaehComponent,
 };

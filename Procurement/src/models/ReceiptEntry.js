@@ -1,7 +1,5 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
-import { LINQ } from "node-linq";
-import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
 export default {
@@ -99,8 +97,7 @@ export default {
     try {
       let input = { ...req.body };
       let grn_number = "";
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addReceiptEntry: ");
+
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
@@ -171,7 +168,6 @@ export default {
                 pool: _mysql.pool
               };
 
-              utilities.logger().log("headerResult: ", headerResult.insertId);
               let IncludeValues = [
                 "dn_header_id",
                 "extended_cost",
@@ -195,7 +191,6 @@ export default {
                   printQuery: true
                 })
                 .then(detailResult => {
-                  utilities.logger().log("detailResult: ", detailResult);
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = {
@@ -208,7 +203,6 @@ export default {
                   // });
                 })
                 .catch(error => {
-                  utilities.logger().log("erroe: ", error);
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -316,13 +310,11 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      const utilities = new algaehUtilities();
-      utilities.logger().log("updateDNEntry: ");
+
       let inputParam = { ...req.body };
 
       let complete = "Y";
 
-      utilities.logger().log("headerResult: ");
 
       let details = inputParam.receipt_entry_detail;
 

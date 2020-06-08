@@ -25,23 +25,41 @@ import {
   generatePOReceiptNoPrice,
   clearItemDetails,
   VendorQuotationSearch,
-  getPOOptions
+  getPOOptions,
+  getData
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
 import { MainContext } from "algaeh-react-components/context";
-import { AlgaehSecurityComponent } from "algaeh-react-components";
+import {
+  AlgaehSecurityComponent,
+  RawSecurityElement,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      decimal_places: null
+      decimal_places: null,
       // po_auth_level: "1"
     };
     getVendorMaster(this, this);
     getPOOptions(this, this);
+    RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then((result) => {
+      if (result === "show") {
+        getData(this, "INV")
+        this.setState({ po_from: "INV" })
+      }
+    });
+
+    RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
+      if (result === "show") {
+        getData(this, "PHR")
+        this.setState({ po_from: "PHR" })
+      }
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -53,7 +71,7 @@ class PurchaseOrderEntry extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      decimal_places: userToken.decimal_places
+      decimal_places: userToken.decimal_places,
     });
     if (
       this.props.purchase_number !== undefined &&
@@ -68,7 +86,7 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-          .where(w => w.location_type === "WH")
+          .where((w) => w.location_type === "WH")
           .toArray();
 
     const class_finder =
@@ -92,18 +110,18 @@ class PurchaseOrderEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Purchase Order Entry", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -114,20 +132,20 @@ class PurchaseOrderEntry extends Component {
             value: this.state.purchase_number,
             selectValue: "purchase_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Purchase.POEntry"
+              fieldName: "Purchase.POEntry",
             },
-            searchName: "POEntry"
+            searchName: "POEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "PO Date"
+                    forceLabel: "PO Date",
                   }}
                 />
                 <h6>
@@ -140,7 +158,7 @@ class PurchaseOrderEntry extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "PO Status"
+                      forceLabel: "PO Status",
                     }}
                   />
                   <h6>
@@ -151,12 +169,18 @@ class PurchaseOrderEntry extends Component {
                           <span className="badge badge-success">Authorized</span>
                         ) : this.state.authorize1 === "Y" &&
                           this.state.authorize2 === "N" ? (
-                            <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                            <span className="badge badge-danger">
+                              Posted/Pending For Authorize
+                      </span>
                           ) : this.state.authorize1 === "N" &&
                             this.state.authorize2 === "N" ? (
-                              <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                              <span className="badge badge-danger">
+                                Posted/Pending For Authorize
+                      </span>
                             ) : (
-                              <span className="badge badge-danger">Posted/Pending For Authorize</span>
+                              <span className="badge badge-danger">
+                                Posted/Pending For Authorize
+                      </span>
                             )}
                   </h6>
                 </div>
@@ -172,18 +196,18 @@ class PurchaseOrderEntry extends Component {
                     events: {
                       onClick: () => {
                         generatePOReceipt(this.state);
-                      }
-                    }
+                      },
+                    },
                   },
                   {
                     label: "Receipt for Vendor",
                     events: {
                       onClick: () => {
                         generatePOReceiptNoPrice(this.state);
-                      }
-                    }
-                  }
-                ]
+                      },
+                    },
+                  },
+                ],
               }
               : ""
           }
@@ -206,18 +230,18 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_TYPE
+                      data: GlobalVariables.PO_TYPE,
                     },
                     others: {
                       disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        po_type: "D"
+                        po_type: "D",
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -231,11 +255,10 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false
+                      disabled: true
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
@@ -244,9 +267,9 @@ class PurchaseOrderEntry extends Component {
                         po_from: null,
                         ReqData: true,
                         pharmcy_location_id: null,
-                        inventory_location_id: null
+                        inventory_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -269,18 +292,18 @@ class PurchaseOrderEntry extends Component {
                         this.state.po_from === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
-                      data: _mainStore
+                      data: _mainStore,
                     },
                     others: {
                       disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        location_description: null
+                        location_description: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -294,18 +317,18 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
-                      data: this.props.povendors
+                      data: this.props.povendors,
                     },
                     others: {
                       disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        vendor_id: null
+                        vendor_id: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -345,18 +368,18 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
                       disabled:
-                        this.state.po_entry_detail.length > 0 ? true : false
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        payment_terms: null
+                        payment_terms: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -397,9 +420,9 @@ class PurchaseOrderEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <POItemList POEntry={this.state} />
@@ -419,7 +442,7 @@ class PurchaseOrderEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Save Order",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -433,7 +456,7 @@ class PurchaseOrderEntry extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Post",
-                      returnText: true
+                      returnText: true,
                     }}
                   />
                 </button>
@@ -450,7 +473,6 @@ class PurchaseOrderEntry extends Component {
                 </button>
                 <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH1">
                   {this.props.purchase_auth === true ? (
-
                     <button
                       type="button"
                       className="btn btn-other"
@@ -464,22 +486,22 @@ class PurchaseOrderEntry extends Component {
                       onClick={AuthorizePOEntry.bind(
                         this,
                         this,
-                        this.state.authorize1 === "N" ? "authorize1" : "authorize2"
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
                       )}
                     >
                       <AlgaehLabel
                         label={{
                           forceLabel: "Authorize 1",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
-                  ) :
-                    null}
+                  ) : null}
                 </AlgaehSecurityComponent>
                 <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH2">
                   {this.props.purchase_auth === true ? (
-
                     <button
                       type="button"
                       className="btn btn-other"
@@ -493,18 +515,19 @@ class PurchaseOrderEntry extends Component {
                       onClick={AuthorizePOEntry.bind(
                         this,
                         this,
-                        this.state.authorize1 === "N" ? "authorize1" : "authorize2"
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
                       )}
                     >
                       <AlgaehLabel
                         label={{
                           forceLabel: "Authorize 2",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
-                  ) :
-                    null}
+                  ) : null}
                 </AlgaehSecurityComponent>
               </div>
             </div>
@@ -523,7 +546,7 @@ function mapStateToProps(state) {
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
     povendors: state.povendors,
-    purchaseorderentry: state.purchaseorderentry
+    purchaseorderentry: state.purchaseorderentry,
   };
 }
 
@@ -536,7 +559,7 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getPurchaseOrderEntry: AlgaehActions
+      getPurchaseOrderEntry: AlgaehActions,
     },
     dispatch
   );

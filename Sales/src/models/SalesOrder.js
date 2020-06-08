@@ -83,207 +83,216 @@ export function addSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
 
     try {
-        let input = req.body;
-        let sales_order_number = "";
-        // const utilities = new algaehUtilities();
-        // utilities.logger().log("addSalesOrder: ");
+        let buffer = "";
+        req.on("data", chunk => {
+            buffer += chunk.toString();
+        });
 
-        _mysql
-            .generateRunningNumber({
-                user_id: req.userIdentity.algaeh_d_app_user_id,
-                numgen_codes: ["SALES_ORDER"],
-                table_name: "hims_f_sales_numgen"
-            })
-            .then(generatedNumbers => {
-                sales_order_number = generatedNumbers.SALES_ORDER;
+        req.on("end", () => {
+            let input = JSON.parse(buffer);
+            req.body = input
+            // let input = req.body;
+            let sales_order_number = "";
+            // const utilities = new algaehUtilities();
+            // utilities.logger().log("addSalesOrder: ");
 
-                _mysql
-                    .executeQuery({
-                        query:
-                            "INSERT INTO hims_f_sales_order (sales_order_number, sales_order_date, sales_order_mode, \
+            _mysql
+                .generateRunningNumber({
+                    user_id: req.userIdentity.algaeh_d_app_user_id,
+                    numgen_codes: ["SALES_ORDER"],
+                    table_name: "hims_f_sales_numgen"
+                })
+                .then(generatedNumbers => {
+                    sales_order_number = generatedNumbers.SALES_ORDER;
+
+                    _mysql
+                        .executeQuery({
+                            query:
+                                "INSERT INTO hims_f_sales_order (sales_order_number, sales_order_date, sales_order_mode, \
                                 sales_quotation_id, contract_id, reference_number, customer_id, sales_man, \
                                   payment_terms, delivery_date, sales_person_id, sub_total, discount_amount, net_total, \
                                   total_tax, net_payable, narration, project_id, customer_po_no, created_date, \
                                   created_by, updated_date, updated_by, hospital_id)\
                           values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                        values: [
-                            sales_order_number,
-                            new Date(),
-                            input.sales_order_mode,
-                            input.sales_quotation_id,
-                            input.contract_id,
-                            input.reference_number,
-                            input.customer_id,
-                            input.sales_man,
-                            input.payment_terms,
-                            input.delivery_date,
-                            input.sales_person_id,
-                            input.sub_total,
-                            input.discount_amount,
-                            input.net_total,
-                            input.total_tax,
-                            input.net_payable,
-                            input.narration,
-                            input.project_id,
-                            input.customer_po_no,
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            input.hospital_id
-                        ],
-                        printQuery: true
-                    })
-                    .then(headerResult => {
-                        console.log("headerResult", headerResult);
-                        let IncludeValues = [];
-                        if (input.sales_order_items.length > 0) {
-                            IncludeValues = [
-                                "item_id",
-                                "uom_id",
-                                "unit_cost",
-                                "quantity",
-                                "extended_cost",
-                                "discount_percentage",
-                                "discount_amount",
-                                "net_extended_cost",
-                                "tax_percentage",
-                                "tax_amount",
-                                "total_amount"
-                            ];
+                            values: [
+                                sales_order_number,
+                                new Date(),
+                                input.sales_order_mode,
+                                input.sales_quotation_id,
+                                input.contract_id,
+                                input.reference_number,
+                                input.customer_id,
+                                input.sales_man,
+                                input.payment_terms,
+                                input.delivery_date,
+                                input.sales_person_id,
+                                input.sub_total,
+                                input.discount_amount,
+                                input.net_total,
+                                input.total_tax,
+                                input.net_payable,
+                                input.narration,
+                                input.project_id,
+                                input.customer_po_no,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                input.hospital_id
+                            ],
+                            printQuery: true
+                        })
+                        .then(headerResult => {
+                            console.log("headerResult", headerResult);
+                            let IncludeValues = [];
+                            if (input.sales_order_items.length > 0) {
+                                IncludeValues = [
+                                    "item_id",
+                                    "uom_id",
+                                    "unit_cost",
+                                    "quantity",
+                                    "extended_cost",
+                                    "discount_percentage",
+                                    "discount_amount",
+                                    "net_extended_cost",
+                                    "tax_percentage",
+                                    "tax_amount",
+                                    "total_amount"
+                                ];
 
-                            _mysql
-                                .executeQuery({
-                                    query:
-                                        "INSERT INTO hims_f_sales_order_items(??) VALUES ?",
-                                    values: input.sales_order_items,
-                                    includeValues: IncludeValues,
-                                    extraValues: {
-                                        sales_order_id: headerResult.insertId
-                                    },
-                                    bulkInsertOrUpdate: true,
-                                    printQuery: true
-                                })
-                                .then(detailResult => {
+                                _mysql
+                                    .executeQuery({
+                                        query:
+                                            "INSERT INTO hims_f_sales_order_items(??) VALUES ?",
+                                        values: input.sales_order_items,
+                                        includeValues: IncludeValues,
+                                        extraValues: {
+                                            sales_order_id: headerResult.insertId
+                                        },
+                                        bulkInsertOrUpdate: true,
+                                        printQuery: true
+                                    })
+                                    .then(detailResult => {
 
-                                    if (input.sales_quotation_id !== null) {
-                                        updateSalesQuotation({
-                                            input: input,
-                                            _mysql: _mysql,
-                                            next: next,
-                                            req: req
-                                        })
-                                            .then(update_sales_quotation => {
-                                                _mysql.commitTransaction(() => {
-                                                    _mysql.releaseConnection();
-                                                    req.records = {
-                                                        sales_order_number: sales_order_number,
-                                                        hims_f_sales_order_id: headerResult.insertId
-                                                    };
-                                                    return next();
-                                                });
+                                        if (input.sales_quotation_id !== null) {
+                                            updateSalesQuotation({
+                                                input: input,
+                                                _mysql: _mysql,
+                                                next: next,
+                                                req: req
                                             })
-                                            .catch(error => {
-                                                _mysql.rollBackTransaction(() => {
-                                                    next(error);
+                                                .then(update_sales_quotation => {
+                                                    _mysql.commitTransaction(() => {
+                                                        _mysql.releaseConnection();
+                                                        req.records = {
+                                                            sales_order_number: sales_order_number,
+                                                            hims_f_sales_order_id: headerResult.insertId
+                                                        };
+                                                        return next();
+                                                    });
+                                                })
+                                                .catch(error => {
+                                                    _mysql.rollBackTransaction(() => {
+                                                        next(error);
+                                                    });
                                                 });
+                                        } else {
+                                            _mysql.commitTransaction(() => {
+                                                _mysql.releaseConnection();
+                                                req.records = {
+                                                    sales_order_number: sales_order_number,
+                                                    hims_f_sales_order_id: headerResult.insertId
+                                                };
+                                                return next();
                                             });
-                                    } else {
-                                        _mysql.commitTransaction(() => {
-                                            _mysql.releaseConnection();
-                                            req.records = {
-                                                sales_order_number: sales_order_number,
-                                                hims_f_sales_order_id: headerResult.insertId
-                                            };
-                                            return next();
+                                        }
+                                    })
+                                    .catch(error => {
+                                        _mysql.rollBackTransaction(() => {
+                                            next(error);
                                         });
-                                    }
-                                })
-                                .catch(error => {
-                                    _mysql.rollBackTransaction(() => {
-                                        next(error);
                                     });
-                                });
-                        } else if (input.sales_order_services.length > 0) {
-                            IncludeValues = [
-                                "services_id",
-                                "service_frequency",
-                                "unit_cost",
-                                "quantity",
-                                "extended_cost",
-                                "discount_percentage",
-                                "discount_amount",
-                                "net_extended_cost",
-                                "tax_percentage",
-                                "tax_amount",
-                                "total_amount",
-                                "comments"
-                            ];
+                            } else if (input.sales_order_services.length > 0) {
+                                IncludeValues = [
+                                    "services_id",
+                                    "service_frequency",
+                                    "unit_cost",
+                                    "quantity",
+                                    "extended_cost",
+                                    "discount_percentage",
+                                    "discount_amount",
+                                    "net_extended_cost",
+                                    "tax_percentage",
+                                    "tax_amount",
+                                    "total_amount",
+                                    "comments"
+                                ];
 
-                            _mysql
-                                .executeQuery({
-                                    query:
-                                        "INSERT INTO hims_f_sales_order_services(??) VALUES ?",
-                                    values: input.sales_order_services,
-                                    includeValues: IncludeValues,
-                                    extraValues: {
-                                        sales_order_id: headerResult.insertId
-                                    },
-                                    bulkInsertOrUpdate: true,
-                                    printQuery: true
-                                })
-                                .then(detailResult => {
-                                    if (input.sales_quotation_id !== null) {
-                                        updateSalesQuotation({
-                                            input: input,
-                                            _mysql: _mysql,
-                                            next: next,
-                                            req: req
-                                        })
-                                            .then(update_sales_quotation => {
-                                                _mysql.commitTransaction(() => {
-                                                    _mysql.releaseConnection();
-                                                    req.records = {
-                                                        sales_order_number: sales_order_number,
-                                                        hims_f_sales_order_id: headerResult.insertId
-                                                    };
-                                                    return next();
-                                                });
+                                _mysql
+                                    .executeQuery({
+                                        query:
+                                            "INSERT INTO hims_f_sales_order_services(??) VALUES ?",
+                                        values: input.sales_order_services,
+                                        includeValues: IncludeValues,
+                                        extraValues: {
+                                            sales_order_id: headerResult.insertId
+                                        },
+                                        bulkInsertOrUpdate: true,
+                                        printQuery: true
+                                    })
+                                    .then(detailResult => {
+                                        if (input.sales_quotation_id !== null) {
+                                            updateSalesQuotation({
+                                                input: input,
+                                                _mysql: _mysql,
+                                                next: next,
+                                                req: req
                                             })
-                                            .catch(error => {
-                                                _mysql.rollBackTransaction(() => {
-                                                    next(error);
+                                                .then(update_sales_quotation => {
+                                                    _mysql.commitTransaction(() => {
+                                                        _mysql.releaseConnection();
+                                                        req.records = {
+                                                            sales_order_number: sales_order_number,
+                                                            hims_f_sales_order_id: headerResult.insertId
+                                                        };
+                                                        return next();
+                                                    });
+                                                })
+                                                .catch(error => {
+                                                    _mysql.rollBackTransaction(() => {
+                                                        next(error);
+                                                    });
                                                 });
+                                        } else {
+                                            _mysql.commitTransaction(() => {
+                                                _mysql.releaseConnection();
+                                                req.records = {
+                                                    sales_order_number: sales_order_number,
+                                                    hims_f_sales_order_id: headerResult.insertId
+                                                };
+                                                return next();
                                             });
-                                    } else {
-                                        _mysql.commitTransaction(() => {
-                                            _mysql.releaseConnection();
-                                            req.records = {
-                                                sales_order_number: sales_order_number,
-                                                hims_f_sales_order_id: headerResult.insertId
-                                            };
-                                            return next();
+                                        }
+                                    })
+                                    .catch(error => {
+                                        _mysql.rollBackTransaction(() => {
+                                            next(error);
                                         });
-                                    }
-                                })
-                                .catch(error => {
-                                    _mysql.rollBackTransaction(() => {
-                                        next(error);
                                     });
-                                });
-                        }
-                    })
-                    .catch(e => {
-                        _mysql.rollBackTransaction(() => {
-                            next(e);
+                            }
+                        })
+                        .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                                next(e);
+                            });
                         });
+                })
+                .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                        next(e);
                     });
-            })
-            .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                    next(e);
                 });
-            });
+        });
     } catch (e) {
         _mysql.rollBackTransaction(() => {
             next(e);
@@ -439,113 +448,121 @@ export function updateSalesOrderEntry(req, res, next) {
     const _mysql = new algaehMysql();
     let qryExecute = false;
 
-    console.log("updateSalesOrderEntry: ");
     try {
-        req.mySQl = _mysql;
-        let inputParam = { ...req.body };
+        let buffer = "";
+        req.on("data", chunk => {
+            buffer += chunk.toString();
+        });
 
-        _mysql
-            .executeQueryWithTransaction({
-                query:
-                    "UPDATE `hims_f_sales_order` SET `authorize1`=?, `authorize1_by_date`=?, `authorize1_by`=?, \
+        req.on("end", () => {
+            let inputParam = JSON.parse(buffer);
+            req.body = inputParam
+            req.mySQl = _mysql;
+            // let inputParam = { ...req.body };
+
+            _mysql
+                .executeQueryWithTransaction({
+                    query:
+                        "UPDATE `hims_f_sales_order` SET `authorize1`=?, `authorize1_by_date`=?, `authorize1_by`=?, \
             `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_sales_order_id`=?",
-                values: [
-                    inputParam.authorize1,
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
-                    inputParam.authorize2,
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
-                    inputParam.hims_f_sales_order_id
-                ],
-                printQuery: true
-            })
-            .then(headerResult => {
-                if (headerResult != null) {
-                    let details = [];
+                    values: [
+                        inputParam.authorize1,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        inputParam.authorize2,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        inputParam.hims_f_sales_order_id
+                    ],
+                    printQuery: true
+                })
+                .then(headerResult => {
+                    if (headerResult != null) {
+                        let details = [];
 
-                    let qry = "";
+                        let qry = "";
 
-                    if (inputParam.sales_order_mode === "I") {
-                        details = inputParam.sales_order_items;
-                        console.log("details", details)
-                        for (let i = 0; i < details.length; i++) {
-                            qry += mysql.format(
-                                "UPDATE hims_f_sales_order_items SET `quantity`=?, extended_cost = ?, \
+                        if (inputParam.sales_order_mode === "I") {
+                            details = inputParam.sales_order_items;
+                            console.log("details", details)
+                            for (let i = 0; i < details.length; i++) {
+                                qry += mysql.format(
+                                    "UPDATE hims_f_sales_order_items SET `quantity`=?, extended_cost = ?, \
                                 discount_percentage= ?,discount_amount= ?, net_extended_cost= ?, tax_amount= ?,\
                                 total_amount=?, quantity_outstanding=? where `hims_f_sales_order_items_id`=?;",
-                                [
-                                    details[i].quantity,
-                                    details[i].extended_cost,
-                                    details[i].discount_percentage,
-                                    details[i].discount_amount,
-                                    details[i].net_extended_cost,
-                                    details[i].tax_amount,
-                                    details[i].total_amount,
-                                    details[i].quantity_outstanding,
-                                    details[i].hims_f_sales_order_items_id
-                                ]
-                            );
+                                    [
+                                        details[i].quantity,
+                                        details[i].extended_cost,
+                                        details[i].discount_percentage,
+                                        details[i].discount_amount,
+                                        details[i].net_extended_cost,
+                                        details[i].tax_amount,
+                                        details[i].total_amount,
+                                        details[i].quantity_outstanding,
+                                        details[i].hims_f_sales_order_items_id
+                                    ]
+                                );
 
-                            if (i == details.length - 1) {
-                                qryExecute = true;
+                                if (i == details.length - 1) {
+                                    qryExecute = true;
+                                }
                             }
-                        }
-                    } else {
-                        details = inputParam.sales_order_services;
-                        for (let i = 0; i < details.length; i++) {
-                            qry += mysql.format(
-                                "UPDATE hims_f_sales_order_services SET `quantity`=?, extended_cost = ?, \
+                        } else {
+                            details = inputParam.sales_order_services;
+                            for (let i = 0; i < details.length; i++) {
+                                qry += mysql.format(
+                                    "UPDATE hims_f_sales_order_services SET `quantity`=?, extended_cost = ?, \
                                 discount_percentage=?, discount_amount= ?, net_extended_cost= ?, tax_amount= ?,\
                                 total_amount=? where `hims_f_sales_order_services_id`=?;",
-                                [
-                                    details[i].quantity,
-                                    details[i].extended_cost,
-                                    details[i].discount_percentage,
-                                    details[i].discount_amount,
-                                    details[i].net_extended_cost,
-                                    details[i].tax_amount,
-                                    details[i].total_amount,
-                                    details[i].hims_f_sales_order_services_id
-                                ]
-                            );
+                                    [
+                                        details[i].quantity,
+                                        details[i].extended_cost,
+                                        details[i].discount_percentage,
+                                        details[i].discount_amount,
+                                        details[i].net_extended_cost,
+                                        details[i].tax_amount,
+                                        details[i].total_amount,
+                                        details[i].hims_f_sales_order_services_id
+                                    ]
+                                );
 
-                            if (i == details.length - 1) {
-                                qryExecute = true;
+                                if (i == details.length - 1) {
+                                    qryExecute = true;
+                                }
                             }
                         }
-                    }
-                    if (qryExecute == true) {
-                        _mysql
-                            .executeQuery({
-                                query: qry,
-                                printQuery: true
-                            })
-                            .then(detailResult => {
-                                _mysql.commitTransaction(() => {
-                                    _mysql.releaseConnection();
-                                    req.records = detailResult;
-                                    next();
+                        if (qryExecute == true) {
+                            _mysql
+                                .executeQuery({
+                                    query: qry,
+                                    printQuery: true
+                                })
+                                .then(detailResult => {
+                                    _mysql.commitTransaction(() => {
+                                        _mysql.releaseConnection();
+                                        req.records = detailResult;
+                                        next();
+                                    });
+                                })
+                                .catch(e => {
+                                    _mysql.rollBackTransaction(() => {
+                                        next(e);
+                                    });
                                 });
-                            })
-                            .catch(e => {
-                                _mysql.rollBackTransaction(() => {
-                                    next(e);
-                                });
-                            });
+                        }
+                    } else {
+                        _mysql.rollBackTransaction(() => {
+                            req.records = {};
+                            next();
+                        });
                     }
-                } else {
+                })
+                .catch(e => {
                     _mysql.rollBackTransaction(() => {
-                        req.records = {};
-                        next();
+                        next(e);
                     });
-                }
-            })
-            .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                    next(e);
                 });
-            });
+        });
     } catch (e) {
         _mysql.rollBackTransaction(() => {
             next(e);

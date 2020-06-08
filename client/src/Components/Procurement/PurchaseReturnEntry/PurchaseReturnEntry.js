@@ -21,14 +21,15 @@ import {
   PostPOReturnEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice
+  generatePOReceiptNoPrice,
+  getData
 } from "./PurchaseReturnEntryEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POReturnEntry from "../../../Models/POReturnEntry";
 import Enumerable from "linq";
 import POReturnItemList from "./POReturnItemList/POReturnItemList";
 import { MainContext } from "algaeh-react-components/context";
-import { AlgaehSecurityComponent } from "algaeh-react-components";
+import { AlgaehSecurityComponent, RawSecurityComponent } from "algaeh-react-components";
 
 class PurchaseReturnEntry extends Component {
   constructor(props) {
@@ -37,6 +38,20 @@ class PurchaseReturnEntry extends Component {
       decimal_places: null
     };
     getVendorMaster(this, this);
+
+    RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then((result) => {
+      if (result === "show") {
+        getData(this, "INV")
+        this.setState({ po_return_from: "INV" })
+      }
+    });
+
+    RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then((result) => {
+      if (result === "show") {
+        getData(this, "PHR")
+        this.setState({ po_return_from: "PHR" })
+      }
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -181,7 +196,7 @@ class PurchaseReturnEntry extends Component {
                       data: GlobalVariables.PO_FROM
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: true
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {

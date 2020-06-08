@@ -14,7 +14,9 @@ import {
   dateFormater,
   poforhandle,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
+  getPurchaseOrderList,
+  getData
 } from "./PurchaseOrderListEvent";
 
 import {
@@ -25,6 +27,9 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import {
+  RawSecurityComponent
+} from "algaeh-react-components";
 
 class PurchaseOrderList extends Component {
   constructor(props) {
@@ -42,6 +47,28 @@ class PurchaseOrderList extends Component {
       poSelected: true,
       status: "1"
     };
+
+    RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          po_from: "INV", poSelected: false
+        }, () => {
+          getData(this);
+          getPurchaseOrderList(this);
+        })
+      }
+    });
+
+    RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then((result) => {
+      if (result === "show") {
+        this.setState({
+          po_from: "PHR", poSelected: false
+        }, () => {
+          getData(this);
+          getPurchaseOrderList(this);
+        })
+      }
+    });
   }
 
   render() {
@@ -115,7 +142,9 @@ class PurchaseOrderList extends Component {
                       valueField: "value",
                       data: GlobalVariables.PO_FROM
                     },
-
+                    others: {
+                      disabled: true
+                    },
                     onChange: poforhandle.bind(this, this),
                     onClear: poforhandle.bind(this, this)
                   }}

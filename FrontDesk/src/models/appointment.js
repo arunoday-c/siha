@@ -1573,7 +1573,7 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "UPDATE `hims_d_appointment_schedule_header` SET `sub_dept_id`=?, `schedule_status`=?,\
+          "UPDATE `hims_d_appointment_schedule_header` SET `sub_dept_id`=?,  \
         `schedule_description`=?, `month`=?, `year`=?, `from_date`=?, `to_date`=?, \
         `from_work_hr`=?, `to_work_hr`=?, `work_break1`=?, `from_break_hr1`=?, \
         `to_break_hr1`=?, `work_break2`=?, `from_break_hr2`=?, `to_break_hr2`=?,\
@@ -1583,7 +1583,7 @@ export default {
 
         values: [
           input.sub_dept_id,
-          input.schedule_status,
+
           input.schedule_description,
           input.month,
           input.year,

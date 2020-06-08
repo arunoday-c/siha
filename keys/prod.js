@@ -2,7 +2,7 @@ exports.default = {
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
   TOKENTIME: 2592000,
   port: 3002,
-  bodyLimit: "900kb",
+  bodyLimit: "15MB",
 
   mysqlDb: {
     connectionLimit: 50,
@@ -45,5 +45,9 @@ exports.default = {
     headless: true,
     executablePath:
       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  },
+  okaDoc: {
+    enabled: false,
+    url: "https://service.okadoc.co/appointment/v1/3rdparty",
   },
 };

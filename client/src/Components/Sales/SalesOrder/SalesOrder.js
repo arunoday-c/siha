@@ -134,20 +134,6 @@ class SalesOrder extends Component {
       });
     }
 
-    // this.props.getDivisionProject({
-    //   uri: "/projectjobcosting/getDivisionProject",
-    //   module: "hrManagement",
-    //   method: "GET",
-    //   data: {
-    //     division_id: userToken.hims_d_hospital_id
-    //   },
-    //   method: "GET",
-    //   redux: {
-    //     type: "PROJECT_GET_DATA",
-    //     mappingName: "projects"
-    //   }
-    // });
-
     getCostCenters(this);
     if (
       this.props.sales_order_number !== undefined &&
