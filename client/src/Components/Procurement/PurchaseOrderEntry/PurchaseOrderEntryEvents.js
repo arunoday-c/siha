@@ -731,11 +731,19 @@ const AuthorizePOEntry = ($this, authorize) => {
       sendJsonBody[item] = $this.state[item];
     });
 
+    const settings = { header: undefined, footer: undefined };
+
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
+      skipParse: true,
+      data: Buffer.from(JSON.stringify(sendJsonBody), "utf8"),
       module: "procurement",
       data: sendJsonBody,//$this.state,
       method: "PUT",
+      header: {
+        "content-type": "application/octet-stream",
+        ...settings
+      },
       onSuccess: (response) => {
         if (response.data.success === true) {
           $this.setState({
