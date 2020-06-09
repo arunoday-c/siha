@@ -10,9 +10,39 @@ import {
   addQuestionaries,
   getQuestionaries,
   deleteQuestionaries,
+  addKpiName,
+  getKpiName,
+  deleteKpiName,
 } from "../models/performanceManagement";
 export default () => {
   const api = Router();
+  api.post("/addKpiName", addKpiName, (req, res) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        result: req.records,
+      })
+      .end();
+  });
+  api.get("/getKpiName", getKpiName, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records: req.records,
+      })
+      .end();
+  });
+  api.put("/deleteKpiName", deleteKpiName, (req, res, next) => {
+    res
+      .status(utlities.AlgaehUtilities().httpStatus().ok)
+      .json({
+        success: true,
+        records: req.records,
+      })
+      .end();
+  });
   api.post(
     "/insertApprisalMatrixRange",
     insertApprisalMatrixRange,

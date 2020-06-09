@@ -83,6 +83,7 @@ export default function PerfoParaMaster() {
           });
         }
         getGroupName();
+        clearState();
       },
       onError: (err) => {
         swalMessage({
@@ -117,6 +118,7 @@ export default function PerfoParaMaster() {
           });
         }
         getQuestionaries();
+        clearState();
       },
       onError: (err) => {
         swalMessage({
@@ -210,6 +212,11 @@ export default function PerfoParaMaster() {
     setInputs((result) => {
       return { ...result, [name]: value };
     });
+  }
+  function clearState() {
+    setGroupName("");
+    setInputs("");
+    setQuestionaries("");
   }
 
   return (

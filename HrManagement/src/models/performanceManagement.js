@@ -3,6 +3,86 @@ import algaehMysql from "algaeh-mysql";
 // import algaehUtilities from "algaeh-utilities/utilities";
 // import _ from "lodash";
 
+export function addKpiName(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    const input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: `INSERT INTO hrms_d_kpi_master
+          (kpi_name,created_date,created_by,updated_date,updated_by)
+          values(?,?,?,?,?)`,
+        values: [
+          input.kpi_name,
+          new Date(),
+          algaeh_d_app_user_id,
+          new Date(),
+          algaeh_d_app_user_id,
+        ],
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+}
+export function getKpiName(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    _mysql
+      .executeQuery({
+        query: `select hrms_d_kpi_master_id,kpi_name from hrms_d_kpi_master 
+       WHERE record_status='A'`,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+}
+export function deleteKpiName(req, res, next) {
+  const _mysql = new algaehMysql();
+  try {
+    const { algaeh_d_app_user_id } = req.userIdentity;
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query: `update hrms_d_kpi_master set record_status='I',updated_by=?,updated_date=? where hrms_d_kpi_master_id=?`,
+        values: [algaeh_d_app_user_id, new Date(), input.hrms_d_kpi_master_id],
+        printQuery: true,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+}
 export function insertApprisalMatrixRange(req, res, next) {
   const _mysql = new algaehMysql();
   try {

@@ -650,7 +650,9 @@ export default {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch((error) => {});
+                      .catch((error) => {
+                        console.log("error in report generation : ", error);
+                      });
                   } else {
                     if (
                       _data.data_manupulation != null &&
