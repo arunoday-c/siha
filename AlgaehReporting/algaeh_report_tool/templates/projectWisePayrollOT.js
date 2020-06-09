@@ -48,7 +48,7 @@ const executePDF = function executePDFMethod(options) {
           (select ER.*,ERD.component_type from  hims_f_salary_earnings ER 
           inner join hims_d_earning_deduction ERD on ER.earnings_id=ERD.hims_d_earning_deduction_id 
           and ERD.component_type='OV') as SE on SAL.hims_f_salary_id=SE.salary_header_id 
-          where  PWP.year=? and PWP.month=? ${strData} ${groupBy};`,
+          where  PWP.year=? and PWP.month=? and PWP.hospital_id=? ${strData} ${groupBy};`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true,
         })
