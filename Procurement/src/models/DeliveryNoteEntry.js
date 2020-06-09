@@ -566,9 +566,9 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updatePOEntry: ");
+      // utilities.logger().log("updatePOEntry: ");
       let inputParam = { ...req.body };
-
+      console.log("inputParam", inputParam);
       let complete = "Y";
 
       let dn_entry_detail = [];

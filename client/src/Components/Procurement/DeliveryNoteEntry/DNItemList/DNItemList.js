@@ -2,16 +2,15 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import { debounce } from "lodash";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
-
 import {
   deleteDNDetail,
   updateDNDetail,
@@ -31,15 +30,26 @@ import {
   numberEventHandaler,
   dateValidate,
   discounthandle,
-  AssignData
+  AssignData,
 } from "./DNItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
-
+import { Input, Badge } from "algaeh-react-components";
 class DNItemList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { searchText: "", filterList: [], po_entry_detail: [] };
+    this.searchTextRef = undefined;
+    this.handleSearch = debounce(() => {
+      const value = this.searchTextRef.state.value;
+      let filterd = [];
+      if (value !== "") {
+        filterd = this.state.po_entry_detail.filter((f) =>
+          f.item_description.toLowerCase().includes(value.toLowerCase())
+        );
+      }
+      this.setState({ searchText: value, filterList: filterd });
+    }, 500);
   }
 
   UNSAFE_componentWillMount() {
@@ -58,14 +68,21 @@ class DNItemList extends Component {
       parseFloat(item.dn_quantity) -
       parseFloat(item.quantity_recieved_todate);
 
-    let extended_price =
-      (parseFloat(item_details.unit_price) * parseFloat(dn_quantity)).toFixed(this.state.decimal_places);
-    let discount_amount =
-      ((parseFloat(extended_price) * parseFloat(item_details.discount_percentage)) / 100).toFixed(this.state.decimal_places);
+    let extended_price = (
+      parseFloat(item_details.unit_price) * parseFloat(dn_quantity)
+    ).toFixed(this.state.decimal_places);
+    let discount_amount = (
+      (parseFloat(extended_price) *
+        parseFloat(item_details.discount_percentage)) /
+      100
+    ).toFixed(this.state.decimal_places);
 
-    let extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
-    let tax_amount =
-      ((parseFloat(extended_cost) * parseFloat(item_details.tax_percentage)) / 100).toFixed(this.state.decimal_places);
+    let extended_cost =
+      parseFloat(extended_price) - parseFloat(discount_amount);
+    let tax_amount = (
+      (parseFloat(extended_cost) * parseFloat(item_details.tax_percentage)) /
+      100
+    ).toFixed(this.state.decimal_places);
 
     item_details["extended_price"] = parseFloat(extended_price);
     item_details["extended_cost"] = parseFloat(extended_cost);
@@ -82,14 +99,16 @@ class DNItemList extends Component {
 
     item_details.free_qty = 0;
     item_details.dn_quantity = dn_quantity;
-    item_details.unit_price = parseFloat(item_details.unit_price).toFixed(this.state.decimal_places);
+    item_details.unit_price = parseFloat(item_details.unit_price).toFixed(
+      this.state.decimal_places
+    );
     this.setState({
       selected_row_index: index,
       item_details: item_details,
       dn_quantity: dn_quantity,
       free_qty: 0,
       addItemButton: false,
-      itemEnter: false
+      itemEnter: false,
     });
 
     context.updateState({
@@ -98,7 +117,7 @@ class DNItemList extends Component {
       free_qty: 0,
       addItemButton: false,
       itemEnter: false,
-      expiry_date: null
+      expiry_date: null,
     });
   }
 
@@ -129,20 +148,36 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? ""
         : this.state.item_details.stock_uom_description === undefined
-          ? "-----"
-          : this.state.item_details.stock_uom_description;
+        ? "-----"
+        : this.state.item_details.stock_uom_description;
+    const itemListArray =
+      this.state.searchText === ""
+        ? this.state.po_entry_detail
+        : this.state.filterList;
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hims-delivery-note-entry">
               <div className="row">
                 <div className="col-3">
-                  <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
+                  <h4 style={{ marginBottom: 4 }}>
+                    Requested Items Records {this.state.filterList.length}/
+                    {this.state.po_entry_detail.length}
+                  </h4>
+                  <Input
+                    placeholder="Search"
+                    defaultValue={this.state.searchText}
+                    onChange={this.handleSearch.bind(this)}
+                    ref={(c) => {
+                      this.searchTextRef = c;
+                    }}
+                  />
                   <ul className="reqTransList">
-                    {this.state.po_entry_detail.map((item, index) => {
+                    {itemListArray.map((item, index) => {
                       return (
                         <li>
+                          {/* <Badge dot> */}
                           <div className="itemReq">
                             <h6>
                               {item.item_description} ({item.uom_description})
@@ -181,7 +216,7 @@ class DNItemList extends Component {
                                       ? "none"
                                       : "",
                                   opacity:
-                                    this.state.cannotEdit === true ? "0.1" : ""
+                                    this.state.cannotEdit === true ? "0.1" : "",
                                 }}
                                 onClick={this.AddItemDelivered.bind(
                                   this,
@@ -192,6 +227,7 @@ class DNItemList extends Component {
                               />
                             </span>
                           </div>
+                          {/* </Badge> */}
                         </li>
                       );
                     })}
@@ -217,7 +253,7 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Purchase Cost",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -232,20 +268,20 @@ class DNItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
                             disabled:
                               this.state.posted === "Y"
                                 ? true
-                                : this.state.itemEnter
-                          }
+                                : this.state.itemEnter,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Vendor Batch No"
+                          forceLabel: "Vendor Batch No",
                         }}
                         textBox={{
                           value: this.state.vendor_batchno,
@@ -256,14 +292,14 @@ class DNItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
                             disabled:
                               this.state.posted === "Y"
                                 ? true
-                                : this.state.itemEnter
-                          }
+                                : this.state.itemEnter,
+                          },
                         }}
                       />
                     </div>
@@ -272,11 +308,11 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Expiry Date",
-                          isImp: required_batchno === "Y" ? true : false
+                          isImp: required_batchno === "Y" ? true : false,
                         }}
                         textBox={{
                           className: "txt-fld hidden",
-                          name: "expiry_date"
+                          name: "expiry_date",
                         }}
                         minDate={new Date()}
                         disabled={
@@ -290,7 +326,7 @@ class DNItemList extends Component {
                             this,
                             context
                           ),
-                          onBlur: dateValidate.bind(this, this, context)
+                          onBlur: dateValidate.bind(this, this, context),
                         }}
                         value={this.state.expiry_date}
                       />
@@ -303,7 +339,7 @@ class DNItemList extends Component {
                             "(" +
                             stock_uom_description.toString() +
                             ")",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -318,26 +354,26 @@ class DNItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
                             disabled:
                               this.state.posted === "Y"
                                 ? true
-                                : this.state.itemEnter
-                          }
+                                : this.state.itemEnter,
+                          },
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Delivery Qty."
+                          forceLabel: "Delivery Qty.",
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           value: this.state.dn_quantity,
                           className: "txt-fld",
@@ -348,50 +384,51 @@ class DNItemList extends Component {
                               this,
                               this,
                               context
-                            )
-                          },
-                          others: {
-                            disabled:
-                              this.state.posted === "Y"
-                                ? true
-                                : this.state.itemEnter
-                          }
-                        }}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Discount %"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.item_details === null
-                            ? null
-                            : this.state.item_details.discount_percentage,
-                          className: "txt-fld",
-                          name: "discount_percentage",
-                          events: {
-                            onChange: discounthandle.bind(this, this, context)
+                            ),
                           },
                           others: {
                             disabled:
                               this.state.posted === "Y"
                                 ? true
                                 : this.state.itemEnter,
-                            onBlur: AssignData.bind(this, this)
-                          }
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Discount %",
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value:
+                            this.state.item_details === null
+                              ? null
+                              : this.state.item_details.discount_percentage,
+                          className: "txt-fld",
+                          name: "discount_percentage",
+                          events: {
+                            onChange: discounthandle.bind(this, this, context),
+                          },
+                          others: {
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter,
+                            onBlur: AssignData.bind(this, this),
+                          },
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Bonus Qty."
+                          forceLabel: "Bonus Qty.",
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           value: this.state.free_qty,
                           className: "txt-fld",
@@ -402,14 +439,14 @@ class DNItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
                             disabled:
                               this.state.posted === "Y"
                                 ? true
-                                : this.state.itemEnter
-                          }
+                                : this.state.itemEnter,
+                          },
                         }}
                       />
 
@@ -417,7 +454,7 @@ class DNItemList extends Component {
                         <button
                           className="btn btn-default"
                           style={{
-                            marginTop: 19
+                            marginTop: 19,
                           }}
                           onClick={AddtoList.bind(this, this, context)}
                           disabled={this.state.addItemButton}
@@ -439,7 +476,7 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Action" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return this.state.saveEnable === true ? (
                                     <span
                                       onClick={printBarcode.bind(
@@ -451,17 +488,17 @@ class DNItemList extends Component {
                                       <i className="fas fa-barcode" />
                                     </span>
                                   ) : (
-                                      <span
-                                        onClick={deleteDNDetail.bind(
-                                          this,
-                                          this,
-                                          row,
-                                          context
-                                        )}
-                                      >
-                                        <i className="fas fa-trash-alt" />
-                                      </span>
-                                    );
+                                    <span
+                                      onClick={deleteDNDetail.bind(
+                                        this,
+                                        this,
+                                        row,
+                                        context
+                                      )}
+                                    >
+                                      <i className="fas fa-trash-alt" />
+                                    </span>
+                                  );
                                 },
 
                                 disabled: true,
@@ -470,8 +507,8 @@ class DNItemList extends Component {
                                   resizable: false,
                                   filterable: false,
                                   style: { textAlign: "center" },
-                                  fixed: "left"
-                                }
+                                  fixed: "left",
+                                },
                               },
                               {
                                 fieldName:
@@ -483,67 +520,67 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Item Name" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_item_master_id ===
-                                            row.phar_item_id
-                                        ))
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              (f) =>
+                                                f.hims_d_item_master_id ===
+                                                row.phar_item_id
+                                            ))
                                     : (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_master_id ===
-                                            row.inv_item_id
-                                        ));
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_item_master_id ===
+                                                row.inv_item_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].item_description
                                         : ""}
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_item_master_id ===
-                                            row.phar_item_id
-                                        ))
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              (f) =>
+                                                f.hims_d_item_master_id ===
+                                                row.phar_item_id
+                                            ))
                                     : (display =
-                                      this.props.dnitemlist === undefined
-                                        ? []
-                                        : this.props.dnitemlist.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_master_id ===
-                                            row.inv_item_id
-                                        ));
+                                        this.props.dnitemlist === undefined
+                                          ? []
+                                          : this.props.dnitemlist.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_item_master_id ===
+                                                row.inv_item_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].item_description
                                         : ""}
                                     </span>
                                   );
                                 },
-                                others: { minWidth: 150 }
+                                others: { minWidth: 150 },
                               },
 
                               {
@@ -556,67 +593,67 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Item Category" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              (f) =>
+                                                f.hims_d_item_category_id ===
+                                                row.phar_item_category
+                                            ))
                                     : (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_tem_category_id ===
+                                                row.inv_item_category_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].category_desc
                                         : ""}
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_item_category_id ===
-                                            row.phar_item_category
-                                        ))
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              (f) =>
+                                                f.hims_d_item_category_id ===
+                                                row.phar_item_category
+                                            ))
                                     : (display =
-                                      this.props.dnitemcategory === undefined
-                                        ? []
-                                        : this.props.dnitemcategory.filter(
-                                          f =>
-                                            f.hims_d_inventory_tem_category_id ===
-                                            row.inv_item_category_id
-                                        ));
+                                        this.props.dnitemcategory === undefined
+                                          ? []
+                                          : this.props.dnitemcategory.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_tem_category_id ===
+                                                row.inv_item_category_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].category_desc
                                         : ""}
                                     </span>
                                   );
                                 },
-                                others: { minWidth: 250 }
+                                others: { minWidth: 250 },
                               },
                               {
                                 fieldName:
@@ -628,67 +665,67 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Item Group" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              (f) =>
+                                                f.hims_d_item_group_id ===
+                                                row.phar_item_group
+                                            ))
                                     : (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_item_group_id ===
+                                                row.inv_item_group_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].group_description
                                         : ""}
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   let display;
 
                                   this.state.dn_from === "PHR"
                                     ? (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_item_group_id ===
-                                            row.phar_item_group
-                                        ))
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              (f) =>
+                                                f.hims_d_item_group_id ===
+                                                row.phar_item_group
+                                            ))
                                     : (display =
-                                      this.props.dnitemgroup === undefined
-                                        ? []
-                                        : this.props.dnitemgroup.filter(
-                                          f =>
-                                            f.hims_d_inventory_item_group_id ===
-                                            row.inv_item_group_id
-                                        ));
+                                        this.props.dnitemgroup === undefined
+                                          ? []
+                                          : this.props.dnitemgroup.filter(
+                                              (f) =>
+                                                f.hims_d_inventory_item_group_id ===
+                                                row.inv_item_group_id
+                                            ));
 
                                   return (
                                     <span>
                                       {display !== undefined &&
-                                        display.length !== 0
+                                      display.length !== 0
                                         ? display[0].group_description
                                         : ""}
                                     </span>
                                   );
                                 },
-                                others: { minWidth: 150 }
+                                others: { minWidth: 150 },
                               },
 
                               {
@@ -698,7 +735,7 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Vend. Batch  No." }}
                                   />
                                 ),
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   return (
                                     <AlagehFormGroup
                                       div={{}}
@@ -711,22 +748,22 @@ class DNItemList extends Component {
                                             this,
                                             this,
                                             row
-                                          )
+                                          ),
                                         },
                                         others: {
                                           disabled:
                                             this.state.posted === "Y"
                                               ? true
-                                              : false
-                                        }
+                                              : false,
+                                        },
                                       }}
                                     />
                                   );
                                 },
                                 others: {
                                   minWidth: 150,
-                                  resizable: false
-                                }
+                                  resizable: false,
+                                },
                               },
                               {
                                 fieldName: "expiry_date",
@@ -735,20 +772,20 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Expiry Date" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {changeDateFormat(row.expiry_date)}
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   return (
                                     <AlgaehDateHandler
                                       div={{}}
                                       textBox={{
                                         className: "txt-fld hidden",
-                                        name: "expiry_date"
+                                        name: "expiry_date",
                                       }}
                                       minDate={new Date()}
                                       disabled={
@@ -759,7 +796,7 @@ class DNItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       }}
                                       value={row.expiry_date}
                                     />
@@ -767,8 +804,8 @@ class DNItemList extends Component {
                                 },
                                 others: {
                                   minWidth: 150,
-                                  resizable: false
-                                }
+                                  resizable: false,
+                                },
                               },
 
                               {
@@ -778,23 +815,23 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Sales Price" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.sales_price, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   return (
                                     <AlagehFormGroup
                                       div={{}}
                                       textBox={{
                                         number: {
                                           allowNegative: false,
-                                          thousandSeparator: ","
+                                          thousandSeparator: ",",
                                         },
                                         value: row.sales_price,
                                         className: "txt-fld",
@@ -804,12 +841,12 @@ class DNItemList extends Component {
                                             this,
                                             this,
                                             row
-                                          )
-                                        }
+                                          ),
+                                        },
                                       }}
                                     />
                                   );
-                                }
+                                },
                               },
 
                               {
@@ -819,19 +856,19 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Delivery Qty" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>{parseFloat(row.dn_quantity)}</span>
                                   );
                                 },
-                                editorTemplate: row => {
+                                editorTemplate: (row) => {
                                   return (
                                     <AlagehFormGroup
                                       div={{}}
                                       textBox={{
                                         number: {
                                           allowNegative: false,
-                                          thousandSeparator: ","
+                                          thousandSeparator: ",",
                                         },
                                         value: row.dn_quantity,
                                         className: "txt-fld",
@@ -841,7 +878,7 @@ class DNItemList extends Component {
                                             this,
                                             this,
                                             row
-                                          )
+                                          ),
                                         },
                                         others: {
                                           disabled: !this.state.authorizeEnable,
@@ -850,14 +887,14 @@ class DNItemList extends Component {
                                             this,
                                             row
                                           ),
-                                          onFocus: e => {
+                                          onFocus: (e) => {
                                             e.target.oldvalue = e.target.value;
-                                          }
-                                        }
+                                          },
+                                        },
                                       }}
                                     />
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "free_qty",
@@ -866,11 +903,11 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Free Qty" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>{parseFloat(row.free_qty)}</span>
                                   );
-                                }
+                                },
                               },
 
                               {
@@ -880,7 +917,7 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Discount %" }}
                                   />
                                 ),
-                                disabled: true
+                                disabled: true,
                               },
                               {
                                 fieldName: "discount_amount",
@@ -889,16 +926,16 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Discount Amt" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.discount_amount, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
-                                disabled: true
+                                disabled: true,
                               },
                               {
                                 fieldName: "net_extended_cost",
@@ -907,16 +944,16 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Net Ext Cost" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.net_extended_cost, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
-                                disabled: true
+                                disabled: true,
                               },
                               {
                                 fieldName: "unit_cost",
@@ -925,17 +962,17 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Unit Cost" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.unit_cost, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
 
-                                disabled: true
+                                disabled: true,
                               },
 
                               {
@@ -945,16 +982,16 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Tax Amt" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.tax_amount, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
-                                disabled: true
+                                disabled: true,
                               },
 
                               {
@@ -964,21 +1001,21 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Total Amt" }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {GetAmountFormart(row.total_amount, {
-                                        appendSymbol: false
+                                        appendSymbol: false,
                                       })}
                                     </span>
                                   );
                                 },
-                                disabled: true
-                              }
+                                disabled: true,
+                              },
                             ]}
                             keyId="hims_f_procurement_dn_detail_id"
                             dataSource={{
-                              data: this.state.dn_entry_detail
+                              data: this.state.dn_entry_detail,
                             }}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
@@ -991,7 +1028,7 @@ class DNItemList extends Component {
                               ),
                               onEdit: EditGrid.bind(this, this, context),
                               onCancel: CancelGrid.bind(this, this, context),
-                              onDone: updateDNDetail.bind(this, this, context)
+                              onDone: updateDNDetail.bind(this, this, context),
                             }}
                           />
                         </div>
@@ -1002,7 +1039,7 @@ class DNItemList extends Component {
                                 <div className="col-3">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Sub Total"
+                                      forceLabel: "Sub Total",
                                     }}
                                   />
                                   <h6>
@@ -1013,15 +1050,17 @@ class DNItemList extends Component {
                                 <div className="col-lg-3">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Tax"
+                                      forceLabel: "Tax",
                                     }}
                                   />
-                                  <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                                  <h6>
+                                    {GetAmountFormart(this.state.total_tax)}
+                                  </h6>
                                 </div>
                                 <div className="col-3">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Discount Amount"
+                                      forceLabel: "Discount Amount",
                                     }}
                                   />
                                   <h6>
@@ -1034,7 +1073,7 @@ class DNItemList extends Component {
                                 <div className="col-3">
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Net Payable"
+                                      forceLabel: "Net Payable",
                                     }}
                                   />
                                   <h6>
@@ -1063,7 +1102,7 @@ function mapStateToProps(state) {
     dnitemlist: state.dnitemlist,
     dnitemcategory: state.dnitemcategory,
     dnitemgroup: state.dnitemgroup,
-    dnitemuom: state.dnitemuom
+    dnitemuom: state.dnitemuom,
   };
 }
 
@@ -1074,7 +1113,7 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
