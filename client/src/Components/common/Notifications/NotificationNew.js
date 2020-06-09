@@ -35,6 +35,7 @@ export default function Notification({ open, handlePanel }) {
         return [...state];
       });
       if (!doNot) {
+        window.audio_feedback.play();
         notification.info({
           message: "Notification",
           description: notobj.message,
