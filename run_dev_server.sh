@@ -56,11 +56,11 @@ startServer () {
    startServer "./Radiology" "radiology_server" 
 
   # # # # # Pharmacy Modules # 
-   startServer "./Pharmacy" "pharmacy_server" 
-   startServer "./Procurement" "procurement_server"
+  #  startServer "./Pharmacy" "pharmacy_server" 
+  #  startServer "./Procurement" "procurement_server"
 
   # # # # Inventory Modules # 
-   startServer "./Inventory" "inventory_server" 
+  #  startServer "./Inventory" "inventory_server" 
    startServer "./Sales" "sales"  
 
   # Finance Modules # 

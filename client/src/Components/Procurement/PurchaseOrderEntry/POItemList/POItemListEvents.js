@@ -1,6 +1,7 @@
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
+import swal from "sweetalert2";
 // import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 
@@ -11,7 +12,7 @@ const texthandle = ($this, context, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 
   clearInterval(texthandlerInterval);
@@ -31,14 +32,13 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   if ($this.state.order_quantity <= 0) {
     $this.setState({
-      [name]: 0
+      [name]: 0,
     });
     swalMessage({
       title: "Please Enter Quantity",
-      type: "warning"
+      type: "warning",
     });
   } else {
-
     let sub_discount_percentage = 0;
     let sub_discount_amount = 0;
     let extended_cost = 0;
@@ -50,34 +50,46 @@ const discounthandle = ($this, context, ctrl, e) => {
       sub_discount_amount =
         value === ""
           ? 0
-          : ((parseFloat($this.state.extended_price) * sub_discount_percentage) /
-            100).toFixed($this.state.decimal_places);
+          : (
+              (parseFloat($this.state.extended_price) *
+                sub_discount_percentage) /
+              100
+            ).toFixed($this.state.decimal_places);
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-          100;
+            100;
 
-      sub_discount_percentage = sub_discount_percentage.toFixed($this.state.decimal_places);
+      sub_discount_percentage = sub_discount_percentage.toFixed(
+        $this.state.decimal_places
+      );
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
       $this.setState({
-        sub_discount_percentage: $this.state.sub_discount_percentage
+        sub_discount_percentage: $this.state.sub_discount_percentage,
       });
     } else {
-      extended_cost =
-        (parseFloat($this.state.extended_price) - parseFloat(sub_discount_amount)).toFixed($this.state.decimal_places);
-      unit_cost = (parseFloat(extended_cost) / parseFloat($this.state.order_quantity)).toFixed($this.state.decimal_places);
+      extended_cost = (
+        parseFloat($this.state.extended_price) - parseFloat(sub_discount_amount)
+      ).toFixed($this.state.decimal_places);
+      unit_cost = (
+        parseFloat(extended_cost) / parseFloat($this.state.order_quantity)
+      ).toFixed($this.state.decimal_places);
 
-      tax_amount =
-        ((parseFloat(extended_cost) * parseFloat($this.state.tax_percentage)) / 100).toFixed($this.state.decimal_places);
-      total_amount = (parseFloat(tax_amount) + parseFloat(extended_cost)).toFixed($this.state.decimal_places);
+      tax_amount = (
+        (parseFloat(extended_cost) * parseFloat($this.state.tax_percentage)) /
+        100
+      ).toFixed($this.state.decimal_places);
+      total_amount = (
+        parseFloat(tax_amount) + parseFloat(extended_cost)
+      ).toFixed($this.state.decimal_places);
 
       // sub_discount_amount = GetAmountFormart(sub_discount_amount, {
       //   appendSymbol: false
@@ -94,7 +106,7 @@ const discounthandle = ($this, context, ctrl, e) => {
         net_extended_cost: extended_cost,
         unit_cost: unit_cost,
         tax_amount: tax_amount,
-        total_amount: total_amount
+        total_amount: total_amount,
       });
 
       if (context !== null) {
@@ -105,7 +117,7 @@ const discounthandle = ($this, context, ctrl, e) => {
           net_extended_cost: extended_cost,
           unit_cost: unit_cost,
           tax_amount: tax_amount,
-          total_amount: total_amount
+          total_amount: total_amount,
         });
       }
     }
@@ -119,23 +131,22 @@ const numberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else {
-
     let extended_price = 0;
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
-      extended_price = (parseFloat(value) * parseFloat($this.state.unit_price)).toFixed(
-        $this.state.decimal_place
-      );
+      extended_price = (
+        parseFloat(value) * parseFloat($this.state.unit_price)
+      ).toFixed($this.state.decimal_place);
     }
     let unit_cost = (parseFloat(extended_price) / parseFloat(value)).toFixed(
       $this.state.decimal_place
     );
-    let tax_amount =
-      ((parseFloat(extended_price) * parseFloat($this.state.tax_percentage)) / 100).toFixed(
-        $this.state.decimal_place
-      );
+    let tax_amount = (
+      (parseFloat(extended_price) * parseFloat($this.state.tax_percentage)) /
+      100
+    ).toFixed($this.state.decimal_place);
     let total_amount = parseFloat(tax_amount) + parseFloat(extended_price);
     $this.setState({
       [name]: value,
@@ -144,7 +155,7 @@ const numberchangeTexts = ($this, context, e) => {
       net_extended_cost: extended_price,
       unit_cost: unit_cost,
       tax_amount: tax_amount,
-      total_amount: total_amount
+      total_amount: total_amount,
     });
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
@@ -156,7 +167,7 @@ const numberchangeTexts = ($this, context, e) => {
           net_extended_cost: extended_price,
           unit_cost: unit_cost,
           tax_amount: tax_amount,
-          total_amount: total_amount
+          total_amount: total_amount,
         });
       }
       clearInterval(texthandlerInterval);
@@ -171,7 +182,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
   if (value < 0) {
     swalMessage({
       title: "Cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let extended_price = 0;
@@ -192,7 +203,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
       net_extended_cost: extended_price,
       unit_cost: unit_cost,
       tax_amount: tax_amount,
-      total_amount: total_amount
+      total_amount: total_amount,
     });
     clearInterval(texthandlerInterval);
     texthandlerInterval = setInterval(() => {
@@ -204,7 +215,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
           net_extended_cost: extended_price,
           unit_cost: unit_cost,
           tax_amount: tax_amount,
-          total_amount: total_amount
+          total_amount: total_amount,
         });
       }
       clearInterval(texthandlerInterval);
@@ -230,12 +241,13 @@ const itemchangeText = ($this, context, e) => {
           unit_price:
             e.selected.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
+              : parseFloat(e.selected.purchase_cost).toFixed(
+                  $this.state.decimal_places
+                ),
 
           addItemButton: false,
-          tax_percentage: e.selected.vat_percent
+          tax_percentage: e.selected.vat_percent,
         });
-
 
         if (context !== undefined) {
           context.updateState({
@@ -247,14 +259,16 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
+                : parseFloat(e.selected.purchase_cost).toFixed(
+                    $this.state.decimal_places
+                  ),
 
             addItemButton: false,
             order_quantity: 0,
             extended_price: 0,
             sub_discount_percentage: 0,
             sub_discount_amount: 0,
-            extended_cost: 0
+            extended_cost: 0,
           });
         }
       } else {
@@ -266,9 +280,11 @@ const itemchangeText = ($this, context, e) => {
           unit_price:
             e.selected.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
+              : parseFloat(e.selected.purchase_cost).toFixed(
+                  $this.state.decimal_places
+                ),
 
-          addItemButton: false
+          addItemButton: false,
         });
 
         if (context !== undefined) {
@@ -280,26 +296,28 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed($this.state.decimal_places),
+                : parseFloat(e.selected.purchase_cost).toFixed(
+                    $this.state.decimal_places
+                  ),
 
             addItemButton: false,
             order_quantity: 0,
             extended_price: 0,
             sub_discount_percentage: 0,
             sub_discount_amount: 0,
-            extended_cost: 0
+            extended_cost: 0,
           });
         }
       }
     } else {
       $this.setState(
         {
-          [name]: null
+          [name]: null,
         },
         () => {
           swalMessage({
             title: "Please select Vendor.",
-            type: "warning"
+            type: "warning",
           });
         }
       );
@@ -307,12 +325,12 @@ const itemchangeText = ($this, context, e) => {
   } else {
     $this.setState(
       {
-        [name]: null
+        [name]: null,
       },
       () => {
         swalMessage({
           title: "Please select Location.",
-          type: "warning"
+          type: "warning",
         });
       }
     );
@@ -323,15 +341,14 @@ const AddItems = ($this, context) => {
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
-      type: "warning"
+      type: "warning",
     });
   } else if ($this.state.unit_price === 0) {
     swalMessage({
       title: "Please enter Unit Price .",
-      type: "warning"
+      type: "warning",
     });
   } else {
-
     let ItemInput = {
       completed: "N",
       phar_item_category: $this.state.phar_item_category,
@@ -364,11 +381,46 @@ const AddItems = ($this, context) => {
       tax_percentage: $this.state.tax_percentage,
       tax_amount: $this.state.tax_amount,
       total_amount: $this.state.total_amount,
-      item_type: $this.state.item_type
+      item_type: $this.state.item_type,
     };
 
     if ($this.state.po_from === "PHR") {
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      const hasPharItemExists = pharmacy_stock_detail.find(
+        (f) => f.phar_item_id === $this.state.phar_item_id
+      );
+      if (hasPharItemExists !== undefined) {
+        const index = pharmacy_stock_detail.indexOf(hasPharItemExists);
+        const toQty =
+          parseFloat(hasPharItemExists.total_quantity) +
+          parseFloat($this.state.order_quantity);
+        swal({
+          title: `Item already exists!`,
+          text: `The item you try to add is already exists at row ${
+            index + 1
+          }. Do you wish to update current Qty from ${
+            hasPharItemExists.total_quantity
+          } to ${toQty}.`,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+        }).then((hasValue) => {
+          if (hasValue.value === true) {
+            pharmacy_stock_detail[index]["total_quantity"] = toQty;
+            assignDataandclear(
+              $this,
+              context,
+              pharmacy_stock_detail,
+              "pharmacy_stock_detail"
+            );
+          }
+        });
+        return;
+      }
+
       pharmacy_stock_detail.push(ItemInput);
       assignDataandclear(
         $this,
@@ -378,6 +430,40 @@ const AddItems = ($this, context) => {
       );
     } else {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
+      const hasInvItemExists = inventory_stock_detail.find(
+        (f) => f.inv_item_id === $this.state.inv_item_id
+      );
+      if (hasInvItemExists !== undefined) {
+        const index = inventory_stock_detail.indexOf(hasInvItemExists);
+        const toQty =
+          parseFloat(hasInvItemExists.total_quantity) +
+          parseFloat($this.state.order_quantity);
+        swal({
+          title: `Item already exists!`,
+          text: `The item you try to add is already exists at row ${
+            index + 1
+          }. Do you wish to update current Qty from ${
+            hasInvItemExists.total_quantity
+          } to ${toQty}.`,
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No",
+        }).then((hasValue) => {
+          if (hasValue.value === true) {
+            inventory_stock_detail[index]["total_quantity"] = toQty;
+            assignDataandclear(
+              $this,
+              context,
+              inventory_stock_detail,
+              "inventory_stock_detail"
+            );
+          }
+        });
+        return;
+      }
       inventory_stock_detail.push(ItemInput);
       assignDataandclear(
         $this,
@@ -390,23 +476,23 @@ const AddItems = ($this, context) => {
 };
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
-  let sub_total = Enumerable.from(stock_detail).sum(s =>
+  let sub_total = Enumerable.from(stock_detail).sum((s) =>
     parseFloat(s.extended_price)
   );
 
-  let net_total = Enumerable.from(stock_detail).sum(s =>
+  let net_total = Enumerable.from(stock_detail).sum((s) =>
     parseFloat(s.net_extended_cost)
   );
 
-  let net_payable = Enumerable.from(stock_detail).sum(s =>
+  let net_payable = Enumerable.from(stock_detail).sum((s) =>
     parseFloat(s.total_amount)
   );
 
-  let total_tax = Enumerable.from(stock_detail).sum(s =>
+  let total_tax = Enumerable.from(stock_detail).sum((s) =>
     parseFloat(s.tax_amount)
   );
 
-  let detail_discount = Enumerable.from(stock_detail).sum(s =>
+  let detail_discount = Enumerable.from(stock_detail).sum((s) =>
     parseFloat(s.sub_discount_amount)
   );
 
@@ -415,7 +501,11 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     completed: "N",
     addedItem: true,
     saveEnable: stock_detail.length > 0 ? false : true,
-    dataPosted: $this.state.hims_f_procurement_po_header_id !== null && stock_detail.length > 0 ? false : true,
+    dataPosted:
+      $this.state.hims_f_procurement_po_header_id !== null &&
+      stock_detail.length > 0
+        ? false
+        : true,
     phar_item_category: null,
     phar_item_group: null,
     phar_item_id: null,
@@ -451,7 +541,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     total_tax: total_tax,
     detail_discount: detail_discount,
     addItemButton: true,
-    authorizeBtn: true
+    authorizeBtn: true,
   });
 
   if (context !== undefined) {
@@ -459,7 +549,11 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       [assignData]: stock_detail,
       addedItem: true,
       saveEnable: stock_detail.length > 0 ? false : true,
-      dataPosted: $this.state.hims_f_procurement_po_header_id !== null && stock_detail.length > 0 ? false : true,
+      dataPosted:
+        $this.state.hims_f_procurement_po_header_id !== null &&
+        stock_detail.length > 0
+          ? false
+          : true,
       completed: "N",
       phar_item_category: null,
       phar_item_group: null,
@@ -496,7 +590,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       total_tax: total_tax,
       detail_discount: detail_discount,
       addItemButton: true,
-      authorizeBtn: true
+      authorizeBtn: true,
     });
   }
 };
@@ -508,32 +602,32 @@ const deletePODetail = ($this, context, row) => {
   let total_tax = 0;
   let detail_discount = 0;
 
-  let delete_stock_detail = []
+  let delete_stock_detail = [];
   if (row.hims_f_procurement_po_detail_id !== null) {
-    delete_stock_detail.push(row.hims_f_procurement_po_detail_id)
+    delete_stock_detail.push(row.hims_f_procurement_po_detail_id);
   }
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
     pharmacy_stock_detail.splice(row.rowIdx, 1);
 
-    sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    sub_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.extended_price)
     );
 
-    net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    net_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.net_extended_cost)
     );
 
-    net_payable = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    net_payable = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.total_amount)
     );
 
-    total_tax = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    total_tax = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.tax_amount)
     );
 
-    detail_discount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    detail_discount = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.sub_discount_amount)
     );
     if (pharmacy_stock_detail.length === 0) {
@@ -552,7 +646,7 @@ const deletePODetail = ($this, context, row) => {
           net_total: net_total,
           net_payable: net_payable,
           total_tax: total_tax,
-          detail_discount: detail_discount
+          detail_discount: detail_discount,
         });
       }
     }
@@ -561,23 +655,23 @@ const deletePODetail = ($this, context, row) => {
 
     inventory_stock_detail.splice(row.rowIdx, 1);
 
-    sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+    sub_total = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.extended_price)
     );
 
-    net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+    net_total = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.net_extended_cost)
     );
 
-    net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
+    net_payable = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.total_amount)
     );
 
-    total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
+    total_tax = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.tax_amount)
     );
 
-    detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
+    detail_discount = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.sub_discount_amount)
     );
 
@@ -597,7 +691,7 @@ const deletePODetail = ($this, context, row) => {
           net_total: net_total,
           net_payable: net_payable,
           total_tax: total_tax,
-          detail_discount: detail_discount
+          detail_discount: detail_discount,
         });
       }
     }
@@ -606,10 +700,14 @@ const deletePODetail = ($this, context, row) => {
 
 const updatePODetail = ($this, context, row) => {
   let saveEnable = false;
-  let dataPosted = $this.state.hims_f_procurement_po_header_id === null ? true : false;
-  if ($this.state.hims_f_procurement_po_header_id !== null && $this.state.is_posted === "Y") {
+  let dataPosted =
+    $this.state.hims_f_procurement_po_header_id === null ? true : false;
+  if (
+    $this.state.hims_f_procurement_po_header_id !== null &&
+    $this.state.is_posted === "Y"
+  ) {
     saveEnable = true;
-    dataPosted = true
+    dataPosted = true;
   }
 
   if ($this.state.po_from === "PHR") {
@@ -617,23 +715,23 @@ const updatePODetail = ($this, context, row) => {
 
     pharmacy_stock_detail[row.rowIdx] = row;
 
-    let sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let sub_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.extended_price)
     );
 
-    let net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let net_total = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.net_extended_cost)
     );
 
-    let net_payable = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let net_payable = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.total_amount)
     );
 
-    let total_tax = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let total_tax = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.tax_amount)
     );
 
-    let detail_discount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+    let detail_discount = Enumerable.from(pharmacy_stock_detail).sum((s) =>
       parseFloat(s.sub_discount_amount)
     );
 
@@ -643,7 +741,7 @@ const updatePODetail = ($this, context, row) => {
       net_total: net_total,
       net_payable: net_payable,
       total_tax: total_tax,
-      detail_discount: detail_discount
+      detail_discount: detail_discount,
     });
 
     if (context !== undefined) {
@@ -656,7 +754,7 @@ const updatePODetail = ($this, context, row) => {
         detail_discount: detail_discount,
         saveEnable: saveEnable,
         dataPosted: dataPosted,
-        authorizeBtn: false
+        authorizeBtn: false,
       });
     }
   } else {
@@ -664,23 +762,23 @@ const updatePODetail = ($this, context, row) => {
 
     inventory_stock_detail[row.rowIdx] = row;
 
-    let sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+    let sub_total = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.extended_price)
     );
 
-    let net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+    let net_total = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.net_extended_cost)
     );
 
-    let net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
+    let net_payable = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.total_amount)
     );
 
-    let total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
+    let total_tax = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.tax_amount)
     );
 
-    let detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
+    let detail_discount = Enumerable.from(inventory_stock_detail).sum((s) =>
       parseFloat(s.sub_discount_amount)
     );
 
@@ -690,7 +788,7 @@ const updatePODetail = ($this, context, row) => {
       net_total: net_total,
       net_payable: net_payable,
       total_tax: total_tax,
-      detail_discount: detail_discount
+      detail_discount: detail_discount,
     });
 
     if (context !== undefined) {
@@ -703,7 +801,7 @@ const updatePODetail = ($this, context, row) => {
         detail_discount: detail_discount,
         saveEnable: saveEnable,
         dataPosted: dataPosted,
-        authorizeBtn: false
+        authorizeBtn: false,
       });
     }
   }
@@ -723,12 +821,12 @@ const onchangegridcol = ($this, row, e) => {
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
-      type: "warning"
+      type: "warning",
     });
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Authorize Quantity cannot be less than Zero.",
-      type: "warning"
+      type: "warning",
     });
   } else {
     if (value !== "") {
@@ -761,7 +859,8 @@ const onchhangegriddiscount = ($this, row, e) => {
   let discount_amount = 0;
 
   if (name === "sub_discount_percentage") {
-    sub_discount_percentage = value === "" || value === undefined ? null : parseFloat(value);
+    sub_discount_percentage =
+      value === "" || value === undefined ? null : parseFloat(value);
 
     sub_discount_amount =
       sub_discount_percentage === null
@@ -771,31 +870,34 @@ const onchhangegriddiscount = ($this, row, e) => {
     if (sub_discount_percentage > 100) {
       swalMessage({
         title: "Discount % cannot be greater than 100.",
-        type: "warning"
+        type: "warning",
       });
       // return
       sub_discount_percentage = 0;
       sub_discount_amount = 0;
-      discount_amount = 0
+      discount_amount = 0;
     }
   } else if (name === "sub_discount_amount") {
-    sub_discount_amount = value === "" || value === undefined ? null : parseFloat(value);
+    sub_discount_amount =
+      value === "" || value === undefined ? null : parseFloat(value);
     discount_amount = sub_discount_amount === null ? 0 : parseFloat(value);
     sub_discount_percentage =
       sub_discount_amount === null
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
-    sub_discount_percentage = sub_discount_percentage.toFixed($this.state.decimal_places);
+    sub_discount_percentage = sub_discount_percentage.toFixed(
+      $this.state.decimal_places
+    );
 
     if (parseFloat(discount_amount) > parseFloat(extended_price)) {
       swalMessage({
         title: "Discount Amount cannot be greater than Ext. Price.",
-        type: "warning"
+        type: "warning",
       });
       // return
       sub_discount_amount = 0;
       sub_discount_percentage = 0;
-      discount_amount = 0
+      discount_amount = 0;
     }
   } else {
     extended_price =
@@ -804,21 +906,27 @@ const onchhangegriddiscount = ($this, row, e) => {
 
     sub_discount_amount =
       (parseFloat(extended_price) * parseFloat(sub_discount_percentage)) / 100;
-    discount_amount = sub_discount_amount
+    discount_amount = sub_discount_amount;
   }
 
   //
 
-  extended_cost = (parseFloat(extended_price) - parseFloat(discount_amount)).toFixed($this.state.decimal_places);
+  extended_cost = (
+    parseFloat(extended_price) - parseFloat(discount_amount)
+  ).toFixed($this.state.decimal_places);
   row["unit_cost"] =
     $this.state.hims_f_procurement_po_header_id !== null
       ? parseFloat(extended_cost) / parseFloat(row.authorize_quantity)
       : parseFloat(extended_cost) / parseFloat(row.total_quantity);
 
-  tax_amount = ((parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100).toFixed($this.state.decimal_places);
+  tax_amount = (
+    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) /
+    100
+  ).toFixed($this.state.decimal_places);
 
   row["extended_cost"] = extended_cost;
-  row["tax_amount"] = (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
+  row["tax_amount"] =
+    (parseFloat(extended_cost) * parseFloat(row.tax_percentage)) / 100;
   row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
   row["sub_discount_percentage"] = sub_discount_percentage;
@@ -828,14 +936,14 @@ const onchhangegriddiscount = ($this, row, e) => {
   row.update();
 };
 
-const AssignData = $this => {
+const AssignData = ($this) => {
   if ($this.state.sub_discount_percentage === "") {
     $this.setState({
-      sub_discount_percentage: 0
+      sub_discount_percentage: 0,
     });
   } else if ($this.state.sub_discount_amount === "") {
     $this.setState({
-      sub_discount_amount: 0
+      sub_discount_amount: 0,
     });
   }
 };
@@ -856,14 +964,15 @@ const EditGrid = ($this, context, cancelRow) => {
     context.updateState({
       saveEnable: true,
       dataPosted: true,
-      authorizeBtn: true
+      authorizeBtn: true,
     });
   }
 };
 
 const CancelGrid = ($this, context, cancelRow) => {
   let saveEnable = false;
-  let dataPosted = $this.state.hims_f_procurement_po_header_id === null ? true : false;
+  let dataPosted =
+    $this.state.hims_f_procurement_po_header_id === null ? true : false;
   let authorizeBtn = true;
 
   let _pharmacy_stock_detail =
@@ -883,7 +992,10 @@ const CancelGrid = ($this, context, cancelRow) => {
     }
   }
 
-  if ($this.state.hims_f_procurement_po_header_id !== null && $this.state.is_posted === "Y") {
+  if (
+    $this.state.hims_f_procurement_po_header_id !== null &&
+    $this.state.is_posted === "Y"
+  ) {
     saveEnable = true;
     dataPosted = true;
     authorizeBtn = false;
@@ -896,7 +1008,7 @@ const CancelGrid = ($this, context, cancelRow) => {
       addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail,
       inventory_stock_detail: _inventory_stock_detail,
-      authorizeBtn: authorizeBtn
+      authorizeBtn: authorizeBtn,
     });
   }
 };
@@ -908,12 +1020,12 @@ const gridNumHandler = ($this, row, e) => {
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
-      type: "warning"
+      type: "warning",
     });
   } else if (value < 0) {
     swalMessage({
       title: "Authorize Quantity cannot be less than Zero",
-      type: "warning"
+      type: "warning",
     });
   } else {
     let extended_price = 0;
@@ -930,7 +1042,7 @@ const gridNumHandler = ($this, row, e) => {
       net_extended_cost: extended_price,
       unit_cost: unit_cost,
       tax_amount: tax_amount,
-      total_amount: total_amount
+      total_amount: total_amount,
     });
   }
 };
@@ -952,5 +1064,5 @@ export {
   GridAssignData,
   EditGrid,
   CancelGrid,
-  gridNumHandler
+  gridNumHandler,
 };

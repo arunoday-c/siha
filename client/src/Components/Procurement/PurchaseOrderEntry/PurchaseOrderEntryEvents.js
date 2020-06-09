@@ -1,7 +1,7 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-
+import { RawSecurityComponent } from "algaeh-react-components";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -279,11 +279,26 @@ const RequisitionSearch = ($this, e) => {
 
 const ClearData = ($this, e) => {
   let IOputs = POEntry.inputParam();
-
   IOputs.dataExitst = false;
+  delete IOputs.po_from;
   $this.setState(IOputs);
   clearItemDetails($this);
   getPOOptions($this);
+  RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+    (result) => {
+      if (result === "show") {
+        getData($this, "INV");
+        $this.setState({ po_from: "INV" });
+      }
+    }
+  );
+
+  RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then((result) => {
+    if (result === "show") {
+      getData($this, "PHR");
+      $this.setState({ po_from: "PHR" });
+    }
+  });
 };
 
 const SavePOEnrty = ($this, from) => {
@@ -412,7 +427,6 @@ const getCtrlCode = ($this, docNumber) => {
 
           data.dataFinder = true;
 
-          debugger;
           if (data.is_posted === "Y") {
             data.dataPosted = true;
             data.saveEnable = true;
@@ -742,7 +756,7 @@ const AuthorizePOEntry = ($this, authorize) => {
       method: "PUT",
       header: {
         "content-type": "application/octet-stream",
-        ...settings
+        ...settings,
       },
       onSuccess: (response) => {
         if (response.data.success === true) {

@@ -1953,14 +1953,13 @@ input.autoselect-input:disabled {
           font-size: 0.8em;
           text-transform: uppercase;
         }
-
-        .activeDate {
-          border-bottom: 4px solid yellow !important;
-          background: darken($primary-color, 10%);
-        }
-        .CurrentDate {
-          border-top: 2px solid yellow !important;
-        }
+      }
+      .activeDate {
+        border-bottom: 4px solid $secondary-color !important;
+        background: darken($primary-color, 10%);
+      }
+      .CurrentDate {
+        border-top: 2px solid $secondary-color !important;
       }
     }
   }

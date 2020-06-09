@@ -6,7 +6,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -32,7 +32,7 @@ class DeptMaster extends Component {
       chart_type: null,
       Inventory_Active: false,
       HIMS_Active: false,
-      hospital_id: ""
+      hospital_id: "",
     };
 
     this.getLocation();
@@ -43,19 +43,19 @@ class DeptMaster extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL"
         ? true
         : false;
     const inventoryactive =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
     this.setState({
       Inventory_Active: inventoryactive,
       HIMS_Active: active,
-      hospital_id: userToken.hospital_id
+      hospital_id: userToken.hospital_id,
     });
   }
   getLocation() {
@@ -68,13 +68,13 @@ class DeptMaster extends Component {
           uri: "/inventory/getInventoryLocation",
           module: "inventory",
           data: {
-            location_status: "A"
+            location_status: "A",
           },
           method: "GET",
           redux: {
             type: "LOCATIONS_GET_DATA",
-            mappingName: "inventorylocations"
-          }
+            mappingName: "inventorylocations",
+          },
         });
       }
     }
@@ -100,7 +100,7 @@ class DeptMaster extends Component {
       sub_department_code: "",
       sub_department_name: "",
       arabic_sub_department_name: "",
-      chart_type: null
+      chart_type: null,
     });
   }
 
@@ -112,37 +112,37 @@ class DeptMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/department/deleteDepartment",
           module: "masterSettings",
           data: {
-            hims_d_department_id: data.hims_d_department_id
+            hims_d_department_id: data.hims_d_department_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getAllDepartments();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -155,37 +155,37 @@ class DeptMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/department/deleteSubDepartment",
           module: "masterSettings",
           data: {
-            hims_d_sub_department_id: data.hims_d_sub_department_id
+            hims_d_sub_department_id: data.hims_d_sub_department_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getAllSubDepartments(this.state.hims_d_department_id);
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -194,122 +194,122 @@ class DeptMaster extends Component {
   updateDepartment(data) {
     data.department_status === "I"
       ? algaehApiCall({
-        uri: "/department/makeDepartmentInActive",
-        module: "masterSettings",
-        data: {
-          hims_d_department_id: data.hims_d_department_id
-        },
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.records.success) {
+          uri: "/department/makeDepartmentInActive",
+          module: "masterSettings",
+          data: {
+            hims_d_department_id: data.hims_d_department_id,
+          },
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getAllDepartments();
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getAllDepartments();
-          } else if (!response.data.records.success) {
-            swalMessage({
-              title: response.data.records.message,
-              type: "error"
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      })
+          },
+        })
       : algaehApiCall({
-        uri: "/department/updateDepartment",
-        data: {
-          department_name: data.department_name,
-          department_desc: data.department_name,
-          department_type: data.department_type,
-          arabic_department_name: data.arabic_department_name,
-          effective_start_date: data.effective_start_date,
-          hims_d_department_id: data.hims_d_department_id
-        },
-        method: "PUT",
-        module: "masterSettings",
-        onSuccess: response => {
-          if (response.data.success) {
+          uri: "/department/updateDepartment",
+          data: {
+            department_name: data.department_name,
+            department_desc: data.department_name,
+            department_type: data.department_type,
+            arabic_department_name: data.arabic_department_name,
+            effective_start_date: data.effective_start_date,
+            hims_d_department_id: data.hims_d_department_id,
+          },
+          method: "PUT",
+          module: "masterSettings",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getAllDepartments();
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getAllDepartments();
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
+          },
+        });
   }
 
   updateSubDepartment(data) {
     data.sub_department_status === "I"
       ? algaehApiCall({
-        uri: "/department/makeSubDepartmentInActive",
-        module: "masterSettings",
-        data: {
-          hims_d_sub_department_id: data.hims_d_sub_department_id
-        },
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.records.success) {
+          uri: "/department/makeSubDepartmentInActive",
+          module: "masterSettings",
+          data: {
+            hims_d_sub_department_id: data.hims_d_sub_department_id,
+          },
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.records.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getAllSubDepartments(data.department_id);
+            } else if (!response.data.records.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error",
+              });
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getAllSubDepartments(data.department_id);
-          } else if (!response.data.records.success) {
-            swalMessage({
-              title: response.data.records.message,
-              type: "error"
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      })
+          },
+        })
       : algaehApiCall({
-        uri: "/department/updateSubDepartment",
-        data: {
-          sub_department_name: data.sub_department_name,
-          sub_department_desc: data.sub_department_name,
-          arabic_sub_department_name: data.arabic_sub_department_name,
-          effective_start_date: data.effective_start_date,
-          chart_type: data.chart_type,
-          hims_d_sub_department_id: data.hims_d_sub_department_id,
-          vitals_mandatory: data.vitals_mandatory
-        },
-        module: "masterSettings",
-        method: "PUT",
-        onSuccess: response => {
-          if (response.data.success) {
+          uri: "/department/updateSubDepartment",
+          data: {
+            sub_department_name: data.sub_department_name,
+            sub_department_desc: data.sub_department_name,
+            arabic_sub_department_name: data.arabic_sub_department_name,
+            effective_start_date: data.effective_start_date,
+            chart_type: data.chart_type,
+            hims_d_sub_department_id: data.hims_d_sub_department_id,
+            vitals_mandatory: data.vitals_mandatory,
+          },
+          module: "masterSettings",
+          method: "PUT",
+          onSuccess: (response) => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success",
+              });
+              this.getAllSubDepartments(data.department_id);
+            }
+          },
+          onFailure: (error) => {
             swalMessage({
-              title: "Record updated successfully",
-              type: "success"
+              title: error.message,
+              type: "error",
             });
-            this.getAllSubDepartments(data.department_id);
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
+          },
+        });
   }
 
   getAllDepartments() {
@@ -317,17 +317,17 @@ class DeptMaster extends Component {
       uri: "/department/get",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ allDepartments: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -337,17 +337,17 @@ class DeptMaster extends Component {
       data: { department_id: id },
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ subDepartments: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -363,7 +363,7 @@ class DeptMaster extends Component {
     this.setState({
       showSubDeptModal: true,
       depNametoAdd: data.department_name,
-      hims_d_department_id: data.hims_d_department_id
+      hims_d_department_id: data.hims_d_department_id,
     });
   }
 
@@ -384,7 +384,7 @@ class DeptMaster extends Component {
           hospital_id: this.state.hospital_id, //hospital.hims_d_hospital_id,
           chart_type: this.state.chart_type,
           location_type: "SS",
-          Inventory_Active: this.state.Inventory_Active
+          Inventory_Active: this.state.Inventory_Active,
         };
 
         algaehApiCall({
@@ -392,38 +392,38 @@ class DeptMaster extends Component {
           module: "masterSettings",
           method: "POST",
           data: sen_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               if (this.state.Inventory_Active) {
                 this.props.getLocation({
                   uri: "/inventory/getInventoryLocation",
                   module: "inventory",
                   data: {
-                    location_status: "A"
+                    location_status: "A",
                   },
                   method: "GET",
                   redux: {
                     type: "LOCATIONS_GET_DATA",
-                    mappingName: "inventorylocations"
-                  }
+                    mappingName: "inventorylocations",
+                  },
                 });
               }
               swalMessage({
                 title: "Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getAllSubDepartments(this.state.hims_d_department_id);
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -439,7 +439,7 @@ class DeptMaster extends Component {
           arabic_department_name: this.state.department_name_arabic,
           department_desc: this.state.department_name,
           department_type: this.state.department_type,
-          effective_start_date: this.state.effective_start_date
+          effective_start_date: this.state.effective_start_date,
         };
 
         algaehApiCall({
@@ -447,24 +447,24 @@ class DeptMaster extends Component {
           method: "POST",
           data: send_data,
           module: "masterSettings",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getAllDepartments();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -477,7 +477,7 @@ class DeptMaster extends Component {
       <div className="dept">
         <AlgaehModalPopUp
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Add Sub Department"
           openPopup={this.state.showSubDeptModal}
@@ -489,18 +489,18 @@ class DeptMaster extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "head_department",
-                    isImp: false
+                    isImp: false,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "department_name",
                     value: this.state.depNametoAdd,
                     events: {
-                      onChange: () => { }
+                      onChange: () => {},
                     },
                     others: {
-                      disabled: true
-                    }
+                      disabled: true,
+                    },
                   }}
                 />
 
@@ -508,15 +508,15 @@ class DeptMaster extends Component {
                   div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_code",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "sub_department_code",
                     value: this.state.sub_department_code,
                     events: {
-                      onChange: this.textHandle.bind(this)
-                    }
+                      onChange: this.textHandle.bind(this),
+                    },
                   }}
                 />
 
@@ -524,15 +524,15 @@ class DeptMaster extends Component {
                   div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_name",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "sub_department_name",
                     value: this.state.sub_department_name,
                     events: {
-                      onChange: this.textHandle.bind(this)
-                    }
+                      onChange: this.textHandle.bind(this),
+                    },
                   }}
                 />
 
@@ -540,15 +540,15 @@ class DeptMaster extends Component {
                   div={{ className: "col arabic-txt-fld mandatory" }}
                   label={{
                     fieldName: "sub_department_name_arabic",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "arabic_sub_department_name",
                     value: this.state.arabic_sub_department_name,
                     events: {
-                      onChange: this.textHandle.bind(this)
-                    }
+                      onChange: this.textHandle.bind(this),
+                    },
                   }}
                 />
 
@@ -563,15 +563,15 @@ class DeptMaster extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.CHART_TYPE
+                        data: GlobalVariables.CHART_TYPE,
                       },
 
                       onChange: this.textHandle.bind(this),
                       onClear: () => {
                         this.setState({
-                          chart_type: null
+                          chart_type: null,
                         });
-                      }
+                      },
                     }}
                   />
                 ) : null}
@@ -583,13 +583,13 @@ class DeptMaster extends Component {
                     className: "txt-fld",
                     name: "effective_start_date",
                     error: this.state.effective_start_date_error,
-                    helperText: this.state.effective_start_date_error_text
+                    helperText: this.state.effective_start_date_error_text,
                   }}
                   maxDate={new Date()}
                   events={{
-                    onChange: date => {
+                    onChange: (date) => {
                       this.setState({ effective_start_date: date });
-                    }
+                    },
                   }}
                   value={this.state.effective_start_date}
                 />
@@ -622,7 +622,7 @@ class DeptMaster extends Component {
                             Sub Department Code
                           </label>
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "sub_department_name",
@@ -632,7 +632,7 @@ class DeptMaster extends Component {
                           </label>
                         ),
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -644,16 +644,16 @@ class DeptMaster extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Name - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "arabic_sub_department_name",
@@ -662,7 +662,7 @@ class DeptMaster extends Component {
                             Sub Department Arabic Name
                           </label>
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -674,31 +674,31 @@ class DeptMaster extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Arabic Name - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "inventory_location_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                                  (f) =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                );
 
                           return (
                             <span>
@@ -709,15 +709,15 @@ class DeptMaster extends Component {
                           );
                         },
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.inventorylocations === undefined
                               ? []
                               : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                                  (f) =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                );
 
                           return (
                             <span>
@@ -728,8 +728,8 @@ class DeptMaster extends Component {
                           );
                         },
                         others: {
-                          show: this.state.Inventory_Active
-                        }
+                          show: this.state.Inventory_Active,
+                        },
                       },
 
                       {
@@ -737,17 +737,28 @@ class DeptMaster extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Chart Type" }} />
                         ),
-                        displayTemplate: row => {
-                          return row.chart_type === "N"
-                            ? "None"
-                            : row.chart_type === "D"
-                              ? "Dentel"
-                              : row.chart_type === "O"
-                                ? "Optometry"
-                                : null;
+                        displayTemplate: (row) => {
+                          const filter = GlobalVariables.CHART_TYPE.find(
+                            (f) =>
+                              String(f.value).toLowerCase() ===
+                              String(row.chart_type).toLowerCase()
+                          );
+                          if (filter !== undefined) {
+                            return filter.name;
+                          } else {
+                            return null;
+                          }
+                          //  return row.chart_type === "N"
+                          //     ? "None"
+                          //     : row.chart_type === "D"
+                          //       ? "Dentel"
+                          //       : row.chart_type === "O"
+                          //         ? "Optometry":
+
+                          //         : null;
                         },
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -758,14 +769,17 @@ class DeptMaster extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.CHART_TYPE
+                                  data: GlobalVariables.CHART_TYPE,
                                 },
 
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "effective_start_date",
@@ -774,7 +788,7 @@ class DeptMaster extends Component {
                             Effective Start Date
                           </label>
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.effective_start_date).format(
@@ -783,7 +797,7 @@ class DeptMaster extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.effective_start_date).format(
@@ -791,7 +805,7 @@ class DeptMaster extends Component {
                               )}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "vitals_mandatory",
@@ -800,10 +814,10 @@ class DeptMaster extends Component {
                             Vitals Mandatory
                           </label>
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.vitals_mandatory === "Y" ? "Yes" : "No";
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           console.log("Row on edit", row);
                           return (
                             <AlagehAutoComplete
@@ -815,23 +829,26 @@ class DeptMaster extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "sub_department_status",
                         label: <label className="style_Label">Status</label>,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.sub_department_status === "A"
                             ? "Active"
                             : "Inactive";
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -842,29 +859,32 @@ class DeptMaster extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_STATUS
+                                  data: GlobalVariables.FORMAT_STATUS,
                                 },
                                 others: {
                                   errormessage: "Status - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_sub_department_id"
                     dataSource={{
-                      data: this.state.subDepartments
+                      data: this.state.subDepartments,
                     }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: this.deleteSubDepartment.bind(this),
-                      onEdit: row => { },
-                      onDone: this.updateSubDepartment.bind(this)
+                      onEdit: (row) => {},
+                      onDone: this.updateSubDepartment.bind(this),
                     }}
                   />
                 </div>
@@ -896,17 +916,17 @@ class DeptMaster extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "department_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "department_code",
               value: this.state.department_code,
               events: {
-                onChange: this.textHandle.bind(this)
+                onChange: this.textHandle.bind(this),
               },
               error: this.state.department_code_error,
-              helperText: this.state.department_code_error_text
+              helperText: this.state.department_code_error_text,
             }}
           />
 
@@ -914,17 +934,17 @@ class DeptMaster extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "department_name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "department_name",
               value: this.state.department_name,
               events: {
-                onChange: this.textHandle.bind(this)
+                onChange: this.textHandle.bind(this),
               },
               error: this.state.department_name_error,
-              helperText: this.state.department_name_error_text
+              helperText: this.state.department_name_error_text,
             }}
           />
 
@@ -932,24 +952,24 @@ class DeptMaster extends Component {
             div={{ className: "col form-group arabic-txt-fld mandatory" }}
             label={{
               fieldName: "department_name_arabic",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "department_name_arabic",
               value: this.state.department_name_arabic,
               events: {
-                onChange: this.textHandle.bind(this)
+                onChange: this.textHandle.bind(this),
               },
               error: this.state.department_name_arabic_error,
-              helperText: this.state.department_name_arabic_error_text
+              helperText: this.state.department_name_arabic_error_text,
             }}
           />
           {this.state.HIMS_Active === true ? (
             <AlagehAutoComplete
               div={{ className: "col form-group mandatory" }}
               label={{
-                fieldName: "department_type"
+                fieldName: "department_type",
               }}
               selector={{
                 name: "department_type",
@@ -958,9 +978,9 @@ class DeptMaster extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.DEPT_TYPE
+                  data: GlobalVariables.DEPT_TYPE,
                 },
-                onChange: this.dropDownHandle.bind(this)
+                onChange: this.dropDownHandle.bind(this),
               }}
             />
           ) : null}
@@ -972,13 +992,13 @@ class DeptMaster extends Component {
               className: "txt-fld",
               name: "effective_start_date",
               error: this.state.effective_start_date_error,
-              helperText: this.state.effective_start_date_error_text
+              helperText: this.state.effective_start_date_error_text,
             }}
             maxDate={new Date()}
             events={{
-              onChange: date => {
+              onChange: (date) => {
                 this.setState({ effective_start_date: date });
-              }
+              },
             }}
             value={this.state.effective_start_date}
           />
@@ -1013,7 +1033,7 @@ class DeptMaster extends Component {
                         <AlgaehLabel label={{ forceLabel: "Sub Dept." }} />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <i
                             className="fas fa-plus"
@@ -1021,7 +1041,7 @@ class DeptMaster extends Component {
                           />
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <i
                             className="fas fa-plus"
@@ -1031,26 +1051,26 @@ class DeptMaster extends Component {
                       },
                       others: {
                         style: {
-                          textAlign: "center"
-                        }
-                      }
+                          textAlign: "center",
+                        },
+                      },
                     },
                     {
                       fieldName: "department_code",
                       label: (
                         <AlgaehLabel label={{ fieldName: "department_code" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return <span>{row.department_code}</span>;
                       },
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "department_name",
                       label: (
                         <AlgaehLabel label={{ fieldName: "department_name" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -1059,16 +1079,19 @@ class DeptMaster extends Component {
                               name: "department_name",
                               value: row.department_name,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "arabic_department_name",
@@ -1077,7 +1100,7 @@ class DeptMaster extends Component {
                           label={{ fieldName: "department_name_arabic" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col " }}
@@ -1086,16 +1109,19 @@ class DeptMaster extends Component {
                               name: "arabic_department_name",
                               value: row.arabic_department_name,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Arabic Name - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
 
                     {
@@ -1103,7 +1129,7 @@ class DeptMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "department_type" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{ className: "col" }}
@@ -1114,17 +1140,17 @@ class DeptMaster extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.DEPT_TYPE
+                                data: GlobalVariables.DEPT_TYPE,
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
                             }}
                           />
                         );
                       },
                       disabled: true,
                       others: {
-                        show: this.state.HIMS_Active
-                      }
+                        show: this.state.HIMS_Active,
+                      },
                     },
                     {
                       fieldName: "effective_start_date",
@@ -1135,7 +1161,7 @@ class DeptMaster extends Component {
                         />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.effective_start_date).format(
@@ -1144,7 +1170,7 @@ class DeptMaster extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.effective_start_date).format(
@@ -1152,12 +1178,12 @@ class DeptMaster extends Component {
                             )}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "department_status",
                       label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.department_status === "A"
@@ -1166,7 +1192,7 @@ class DeptMaster extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{}}
@@ -1177,30 +1203,30 @@ class DeptMaster extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.FORMAT_STATUS
+                                data: GlobalVariables.FORMAT_STATUS,
                               },
                               others: {
                                 errormessage: "Status - cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   filter={true}
                   keyId="department_code"
                   dataSource={{
-                    data: this.state.allDepartments
+                    data: this.state.allDepartments,
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: this.deleteDepartment.bind(this),
-                    onEdit: row => { },
-                    onDone: this.updateDepartment.bind(this)
+                    onEdit: (row) => {},
+                    onDone: this.updateDepartment.bind(this),
                   }}
                 />
               </div>
@@ -1216,7 +1242,7 @@ function mapStateToProps(state) {
   return {
     departments: state.departments,
     subdepartments: state.subdepartments,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
   };
 }
 
@@ -1225,7 +1251,7 @@ function mapDispatchToProps(dispatch) {
     {
       getAllDepartments: AlgaehActions,
       getAllSubDepartments: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
     },
     dispatch
   );

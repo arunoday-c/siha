@@ -219,7 +219,7 @@ const AddItems = ($this, context) => {
             $this.state.decimal_place
         );
 
-        const total_amount = (parseFloat(net_extended_cost) + parseFloat(tax_amount)).toFixed(
+        const total_amount = (parseFloat(net_extended_cost)).toFixed(
             $this.state.decimal_place
         );
 
@@ -240,21 +240,21 @@ const AddItems = ($this, context) => {
         };
         sales_quotation_items.push(ItemInput);
 
-        const sub_total = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.extended_cost)
-        );
-        const h_discount_amount = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.discount_amount)
-        );
-        const net_total = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.net_extended_cost)
-        );
+        // const sub_total = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.extended_cost)
+        // );
+        // const h_discount_amount = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.discount_amount)
+        // );
+        // const net_total = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.net_extended_cost)
+        // );
 
-        const total_tax = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.tax_amount)
-        );
+        // const total_tax = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.tax_amount)
+        // );
 
-        const net_payable = _.sumBy(sales_quotation_items, s =>
+        const total_item_amount = _.sumBy(sales_quotation_items, s =>
             parseFloat(s.total_amount)
         );
 
@@ -274,15 +274,16 @@ const AddItems = ($this, context) => {
             tax_percent: 0
         });
 
+        // sub_total: sub_total,
+        //         discount_amount: h_discount_amount,
+        //         net_total: net_total,
+        //         total_tax: total_tax,
         if (context !== undefined) {
             context.updateState({
                 sales_quotation_items: sales_quotation_items,
                 saveEnable: false,
-                sub_total: sub_total,
-                discount_amount: h_discount_amount,
-                net_total: net_total,
-                total_tax: total_tax,
-                net_payable: net_payable
+                total_item_amount: total_item_amount,
+                net_payable: parseFloat($this.state.net_payable) + parseFloat(total_item_amount)
             });
         }
     }

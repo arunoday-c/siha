@@ -1,6 +1,6 @@
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const header = options.result[0].length > 0 ? options.result[0] : [{}];
       const detail = options.result[1];
@@ -11,7 +11,7 @@ const executePDF = function executePDFMethod(options) {
         header: { ...header[0], ...options.mainData[0] },
         detail: _.chain(detail)
           .groupBy(g => g.service_type)
-          .map(function(dtl, key) {
+          .map(function (dtl, key) {
             const find = _.find(dtl, f => f.service_type === key);
             return {
               service_type: key,
@@ -35,6 +35,13 @@ const executePDF = function executePDFMethod(options) {
           userObject,
           false
         ),
+        total_patient_payable: options.currencyFormat(
+          _.sumBy(detail, s => parseFloat(s.patient_payable)),
+          userObject,
+          false
+        ),
+
+
         // total_copay_amount: _.sumBy(detail, s => parseFloat(s.company_resp)),
         total_patient_tax: options.currencyFormat(
           _.sumBy(detail, s => parseFloat(s.patient_tax)),

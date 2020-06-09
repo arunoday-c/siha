@@ -22,7 +22,7 @@ import {
   addToTermCondition,
   deleteComment,
   generateSalesQuotation,
-  CancelQuotation
+  CancelQuotation,
 } from "./SalesQuotationEvents";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import "./SalesQuotation.scss";
@@ -36,6 +36,7 @@ import SalesListService from "./SalesListService/SalesListService";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
 import { MainContext } from "algaeh-react-components/context";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class SalesQuotation extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ class SalesQuotation extends Component {
       discount_amount: null,
       net_total: null,
       total_tax: null,
-      net_payable: null,
+      net_payable: 0,
       narration: null,
       delivery_date: null,
       no_of_days_followup: 0,
@@ -86,7 +87,9 @@ class SalesQuotation extends Component {
       cancelEnable: true,
       detele_services: [],
       detele_items: [],
-      edit_mode: false
+      edit_mode: false,
+      total_item_amount: 0,
+      total_service_amount: 0
     };
     getSalesOptions(this, this);
   }
@@ -101,7 +104,7 @@ class SalesQuotation extends Component {
       sales_person_id: userToken.employee_id,
       employee_name: userToken.full_name,
       log_sales_person_id: userToken.employee_id,
-      log_employee_name: userToken.full_name
+      log_employee_name: userToken.full_name,
     });
 
     this.HRMNGMT_Active =
@@ -167,8 +170,8 @@ class SalesQuotation extends Component {
       dataExists: false,
       saveEnable: false,
       edit_mode: true,
-      cancelEnable: true
-    })
+      cancelEnable: true,
+    });
   }
 
   render() {
@@ -252,9 +255,7 @@ class SalesQuotation extends Component {
                           Quotation Generated
                         </span>
                       ) : this.state.qotation_status === "O" ? (
-                        <span className="badge badge-info">
-                          Order Created
-                        </span>
+                        <span className="badge badge-info">Order Created</span>
                       ) : this.state.qotation_status === "CL" ? (
                         <span className="badge badge-danger">
                           Quotation Cancelled
@@ -345,7 +346,10 @@ class SalesQuotation extends Component {
                     },
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExists === false ? this.state.edit_mode : true,
+                      disabled:
+                        this.state.dataExists === false
+                          ? this.state.edit_mode
+                          : true,
                     },
                   }}
                 />
@@ -488,19 +492,63 @@ class SalesQuotation extends Component {
 
           <div className="">
             <div className="row">
-              <MyContext.Provider
-                value={{
-                  state: this.state,
-                  updateState: (obj) => {
-                    this.setState({ ...obj });
-                  },
-                }}
-              >
-                <SalesListItems SALESIOputs={this.state} />
-                {this.state.services_required === "Y" ? (
-                  <SalesListService SALESIOputs={this.state} />
-                ) : null}
-              </MyContext.Provider>
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12">
+                        <div className="row">
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Item Amount
+                            </label>
+                            <h6>{GetAmountFormart(this.state.total_item_amount)}</h6>
+                          </div>
+                          <i className="fas fa-plus calcSybmbol"></i>
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Service Amount
+                            </label>
+                            <h6>{GetAmountFormart(this.state.total_service_amount)}</h6>
+                          </div>
+                          <i className="fas fa-equals calcSybmbol"></i>
+                          <div className="col-3">
+                            <label className="style_Label ">
+                              Total Quotation Amount
+                            </label>
+                            <h6>{GetAmountFormart(this.state.net_payable)}</h6>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="row">
+
+                  <MyContext.Provider
+                    value={{
+                      state: this.state,
+                      updateState: (obj) => {
+                        this.setState({ ...obj });
+                      },
+                    }}
+                  >
+                    <div className="col-6">
+
+                      <SalesListItems SALESIOputs={this.state} />
+                    </div>
+                    <div className="col-6">
+
+                      {this.state.services_required === "Y" ? (
+                        <SalesListService SALESIOputs={this.state} />
+                      ) : null}
+                    </div>
+                  </MyContext.Provider>
+                </div>
+              </div>
+
               <div className="col-12">
                 <div
                   className="portlet portlet-bordered margin-bottom-15"
@@ -551,7 +599,7 @@ class SalesQuotation extends Component {
                         </div>
                         {this.state.dataExists ? null : (
                           <div className="col" style={{ textAlign: "right" }}>
-                            {" "}
+
                             <button
                               type="button"
                               className="btn btn-primary"
@@ -697,8 +745,19 @@ class SalesQuotation extends Component {
                       }}
                     />
                   </button>
-
-
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={CancelQuotation.bind(this, this)}
+                    disabled={this.state.cancelEnable}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Cancel",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
 
                   <button
                     type="button"
@@ -711,27 +770,15 @@ class SalesQuotation extends Component {
                     />
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={CancelQuotation.bind(this, this)}
-                    disabled={this.state.cancelEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Cancel",
-                        returnText: true,
-                      }}
-                    />
-                  </button>
-
                   {this.props.requisition_auth ? (
                     <button
                       type="button"
                       className="btn btn-default"
                       onClick={SaveSalesQuotation.bind(this, this)}
                       disabled={
-                        this.state.qotation_status === "G" ? this.state.edit_mode : true
+                        this.state.qotation_status === "G"
+                          ? this.state.edit_mode
+                          : true
                       }
                     >
                       <AlgaehLabel
@@ -745,9 +792,7 @@ class SalesQuotation extends Component {
                       type="button"
                       className="btn btn-default"
                       onClick={this.EditQuotation.bind(this, this)}
-                      disabled={
-                        this.state.edit_mode === true ? true : false
-                      }
+                      disabled={this.state.edit_mode === true ? true : false}
                     >
                       <AlgaehLabel
                         label={{ forceLabel: "Edit", returnText: true }}

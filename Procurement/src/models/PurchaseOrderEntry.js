@@ -51,7 +51,7 @@ export default {
                     where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
                    and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.stocking_uom_id = STOCK_UOM.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id\
                    and procurement_header_id=?" +
-                strCondition,
+                  strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             } else if (headerResult[0].po_from == "PHR") {
@@ -68,7 +68,7 @@ export default {
                 from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and procurement_header_id=?" +
-                strCondition,
+                  strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             }
@@ -109,13 +109,13 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
 
       req.on("end", () => {
         let input = JSON.parse(buffer);
-        req.body = input
+        req.body = input;
         let purchase_number = "";
         _mysql
           .generateRunningNumber({
@@ -259,13 +259,13 @@ export default {
     const _mysql = new algaehMysql();
     try {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
 
       req.on("end", () => {
         let input = JSON.parse(buffer);
-        req.body = input
+        req.body = input;
         // const utilities = new algaehUtilities();
 
         // let today = moment().format("YYYY-MM-DD");
@@ -374,7 +374,8 @@ export default {
                   values: insert_po_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    procurement_header_id: input.hims_f_procurement_po_header_id,
+                    procurement_header_id:
+                      input.hims_f_procurement_po_header_id,
                   },
                   bulkInsertOrUpdate: true,
                   printQuery: true,
@@ -439,13 +440,13 @@ export default {
     utilities.logger().log("updatePurchaseOrderEntry: ");
     try {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
 
       req.on("end", () => {
         let inputParam = JSON.parse(buffer);
-        req.body = inputParam
+        req.body = inputParam;
         req.mySQl = _mysql;
         // let inputParam = { ...req.body };
         utilities.logger().log("inputParam: ", inputParam);
@@ -556,7 +557,11 @@ export default {
       // }
 
       let strQuery =
-        "SELECT PO.*,V.vendor_name from  hims_f_procurement_po_header PO inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
+        "SELECT PO.*,V.vendor_name, case \
+when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
+when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
+when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
+when is_completed='Y'  then 'Delivery Completed' end status from  hims_f_procurement_po_header PO inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           where cancelled='N' ";
 
       if (req.query.from_date != null) {

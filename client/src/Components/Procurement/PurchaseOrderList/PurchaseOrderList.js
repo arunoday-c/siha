@@ -16,20 +16,18 @@ import {
   datehandle,
   changeEventHandaler,
   getPurchaseOrderList,
-  getData
+  getData,
 } from "./PurchaseOrderListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {
-  RawSecurityComponent
-} from "algaeh-react-components";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 class PurchaseOrderList extends Component {
   constructor(props) {
@@ -45,35 +43,47 @@ class PurchaseOrderList extends Component {
 
       authorize1: "Y",
       poSelected: true,
-      status: "1"
+      status: "1",
     };
 
-    RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then((result) => {
-      if (result === "show") {
-        this.setState({
-          po_from: "INV", poSelected: false
-        }, () => {
-          getData(this);
-          getPurchaseOrderList(this);
-        })
+    RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState(
+            {
+              po_from: "INV",
+              poSelected: false,
+            },
+            () => {
+              getData(this);
+              getPurchaseOrderList(this);
+            }
+          );
+        }
       }
-    });
+    );
 
-    RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then((result) => {
-      if (result === "show") {
-        this.setState({
-          po_from: "PHR", poSelected: false
-        }, () => {
-          getData(this);
-          getPurchaseOrderList(this);
-        })
+    RawSecurityComponent({ componentCode: "PUR_AUTH_PHARMACY" }).then(
+      (result) => {
+        if (result === "show") {
+          this.setState(
+            {
+              po_from: "PHR",
+              poSelected: false,
+            },
+            () => {
+              getData(this);
+              getPurchaseOrderList(this);
+            }
+          );
+        }
       }
-    });
+    );
   }
 
   render() {
     const _mainStore = Enumerable.from(this.props.polocations)
-      .where(w => w.location_type === "WH")
+      .where((w) => w.location_type === "WH")
       .toArray();
     return (
       <React.Fragment>
@@ -91,18 +101,18 @@ class PurchaseOrderList extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Home",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
-                )
+                ),
               },
               {
                 pageName: (
                   <AlgaehLabel
                     label={{ forceLabel: "Purchase Auth List", align: "ltr" }}
                   />
-                )
-              }
+                ),
+              },
             ]}
           />
           <div
@@ -116,7 +126,7 @@ class PurchaseOrderList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -125,7 +135,7 @@ class PurchaseOrderList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -140,13 +150,13 @@ class PurchaseOrderList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: true
+                      disabled: true,
                     },
                     onChange: poforhandle.bind(this, this),
-                    onClear: poforhandle.bind(this, this)
+                    onClear: poforhandle.bind(this, this),
                   }}
                 />
 
@@ -160,17 +170,17 @@ class PurchaseOrderList extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_STATUS
+                      data: GlobalVariables.PO_STATUS,
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        status: null
+                        status: null,
                       });
                     },
                     others: {
-                      disabled: this.state.poSelected
-                    }
+                      disabled: this.state.poSelected,
+                    },
                   }}
                 />
                 <AlagehAutoComplete
@@ -192,10 +202,10 @@ class PurchaseOrderList extends Component {
                         this.state.po_from === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
-                      data: _mainStore
+                      data: _mainStore,
                     },
                     onChange: LocationchangeTexts.bind(this, this),
-                    onClear: LocationchangeTexts.bind(this, this)
+                    onClear: LocationchangeTexts.bind(this, this),
                   }}
                 />
               </div>
@@ -212,15 +222,15 @@ class PurchaseOrderList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
-                                className="fas fa-check"
+                                className="fas fa-eye"
                                 onClick={() => {
                                   setGlobal({
                                     "RQ-STD": "PurchaseOrderEntry",
-                                    purchase_number: row.purchase_number
+                                    purchase_number: row.purchase_number,
                                   });
                                   document.getElementById("rq-router").click();
                                 }}
@@ -232,7 +242,7 @@ class PurchaseOrderList extends Component {
                                   onClick={() => {
                                     setGlobal({
                                       "RQ-STD": "DeliveryNoteEntry",
-                                      purchase_number: row.purchase_number
+                                      purchase_number: row.purchase_number,
                                     });
                                     document
                                       .getElementById("rq-router")
@@ -247,8 +257,37 @@ class PurchaseOrderList extends Component {
                           maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
+                      },
+                      {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: (row) => {
+                          return row.status === "Delivery Completed" ? (
+                            <span className="badge badge-success">
+                              Delivery Completed
+                            </span>
+                          ) : row.status === "Delivery Pending" ? (
+                            <span className="badge badge-warning">
+                              Delivery Pending
+                            </span>
+                          ) : row.status === "Autorization 1 Pending" ? (
+                            <span className="badge badge-danger">
+                              Auth 1 Pending
+                            </span>
+                          ) : row.status === "Final Autorization Pending" ? (
+                            <span className="badge badge-danger">
+                              Auth 2 Pending
+                            </span>
+                          ) : null;
+                        },
+
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "purchase_number",
@@ -258,8 +297,13 @@ class PurchaseOrderList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
+                        others: {
+                          maxWidth: 180,
+                          resizable: false,
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "vendor_name",
@@ -269,25 +313,25 @@ class PurchaseOrderList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "po_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "PO Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{dateFormater(this, row.po_date)}</span>;
                         },
 
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "left" },
-                          filterable: false
-                        }
+                          style: { textAlign: "center" },
+                          // filterable: false,
+                        },
                       },
                       {
                         fieldName: "location_id",
@@ -295,26 +339,26 @@ class PurchaseOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display;
 
                           this.state.po_from === "PHR"
                             ? (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  f =>
-                                    f.hims_d_pharmacy_location_id ===
-                                    row.pharmcy_location_id
-                                ))
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_pharmacy_location_id ===
+                                        row.pharmcy_location_id
+                                    ))
                             : (display =
-                              this.props.polocations === undefined
-                                ? []
-                                : this.props.polocations.filter(
-                                  f =>
-                                    f.hims_d_inventory_location_id ===
-                                    row.inventory_location_id
-                                ));
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      (f) =>
+                                        f.hims_d_inventory_location_id ===
+                                        row.inventory_location_id
+                                    ));
 
                           return (
                             <span>
@@ -326,16 +370,14 @@ class PurchaseOrderList extends Component {
                         },
                         disabled: true,
                         others: {
-                          maxWidth: 200,
                           resizable: false,
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="purchase_number"
                     dataSource={{
-                      data: this.state.purchase_list
+                      data: this.state.purchase_list,
                     }}
                     filter={true}
                     noDataText="No data available for location"
@@ -354,7 +396,7 @@ class PurchaseOrderList extends Component {
 function mapStateToProps(state) {
   return {
     polocations: state.polocations,
-    purchaseorderlist: state.purchaseorderlist
+    purchaseorderlist: state.purchaseorderlist,
   };
 }
 
@@ -362,15 +404,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getLocation: AlgaehActions,
-      getPurchaseOrderList: AlgaehActions
+      getPurchaseOrderList: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PurchaseOrderList)
+  connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderList)
 );

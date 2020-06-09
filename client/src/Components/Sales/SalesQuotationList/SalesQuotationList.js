@@ -15,21 +15,20 @@ import {
   employeeSearch,
   selectCheckBox,
   closeTransferPerson,
-  ShowTransferPopup
+  ShowTransferPopup,
 } from "./SalesQuotationListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   // AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { MainContext } from "algaeh-react-components/context";
 import { AlgaehSecurityComponent } from "algaeh-react-components";
-import SalesQuotationTransfer from "./SalesQuotationTransfer"
-
+import SalesQuotationTransfer from "./SalesQuotationTransfer";
 
 class SalesQuotationList extends Component {
   constructor(props) {
@@ -39,7 +38,7 @@ class SalesQuotationList extends Component {
       checkSelf: true,
       checkAll: false,
       checkUserWise: false,
-      transferPopup: false
+      transferPopup: false,
     };
   }
 
@@ -49,9 +48,9 @@ class SalesQuotationList extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP"
         ? true
         : false;
 
@@ -92,12 +91,12 @@ class SalesQuotationList extends Component {
       method: "GET",
       redux: {
         type: "CUSTOMER_GET_DATA",
-        mappingName: "customer_data"
-      }
+        mappingName: "customer_data",
+      },
     });
   }
 
-  ourOwnMiniNavigator = obj => {
+  ourOwnMiniNavigator = (obj) => {
     const { quotation_list, radioYes, authorize1, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
@@ -125,7 +124,7 @@ class SalesQuotationList extends Component {
                   label={{ forceLabel: "From Date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.from_date}
                 />
@@ -134,7 +133,7 @@ class SalesQuotationList extends Component {
                   label={{ forceLabel: "To Date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.to_date}
                 />
@@ -165,44 +164,47 @@ class SalesQuotationList extends Component {
 
                 <AlgaehSecurityComponent componentCode="SALE_QUO_LST_CHEK_LVL">
                   {this.HRMNGMT_Active ? (
-                    <div className="row">
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="checkSelf"
-                            checked={this.state.checkSelf}
-                            onChange={selectCheckBox.bind(this, this)}
-                          />
-                          <span>Self</span>
-                        </label>
-                        <label
-                          className="checkbox inline"
-                          style={{ marginRight: 20 }}
-                        >
-                          <input
-                            type="checkbox"
-                            name="checkAll"
-                            checked={this.state.checkAll}
-                            onChange={selectCheckBox.bind(this, this)}
-                          />
-                          <span>Select All</span>
-                        </label>
+                    <>
+                      <div className="col">
+                        <label>View Quotation List By</label>
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="checkSelf"
+                              checked={this.state.checkSelf}
+                              onChange={selectCheckBox.bind(this, this)}
+                            />
+                            <span>My Quotations</span>
+                          </label>
+                          <label
+                            className="checkbox inline"
+                            style={{ marginRight: 20 }}
+                          >
+                            <input
+                              type="checkbox"
+                              name="checkAll"
+                              checked={this.state.checkAll}
+                              onChange={selectCheckBox.bind(this, this)}
+                            />
+                            <span>All Quotations</span>
+                          </label>
 
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="checkUserWise"
-                            checked={this.state.checkUserWise}
-                            onChange={selectCheckBox.bind(this, this)}
-                          />
-                          <span>User Wise</span>
-                        </label>
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="checkUserWise"
+                              checked={this.state.checkUserWise}
+                              onChange={selectCheckBox.bind(this, this)}
+                            />
+                            <span>Quotations by Sales Person</span>
+                          </label>
+                        </div>
                       </div>
-                      {this.state.checkUserWise === true ?
-                        <div className={"col globalSearchCntr"}>
+                      {this.state.checkUserWise === true ? (
+                        <div className={"col-3 globalSearchCntr"}>
                           <AlgaehLabel
-                            label={{ forceLabel: "Sales Person Wise" }}
+                            label={{ forceLabel: "Search by Sales Person" }}
                           />
                           <h6
                             className="mandatory"
@@ -213,11 +215,11 @@ class SalesQuotationList extends Component {
                               : "Search Employee"}
                             <i className="fas fa-search fa-lg" />
                           </h6>
-                        </div> : null}
-                    </div>) : null}
+                        </div>
+                      ) : null}
+                    </>
+                  ) : null}
                 </AlgaehSecurityComponent>
-
-
               </div>
             </div>
           </div>
@@ -232,27 +234,31 @@ class SalesQuotationList extends Component {
                       {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ forceLabel: "action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
                                 style={{
                                   pointerEvents:
                                     row.cancel === "Y" ? "none" : "",
-                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                  opacity: row.cancel === "Y" ? "0.1" : "",
                                 }}
                                 className="fas fa-eye"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
                                     RQ_Screen: "SalesQuotation",
                                     sales_quotation_number:
-                                      row.sales_quotation_number
+                                      row.sales_quotation_number,
                                   });
                                 }}
                               />
                               <i
                                 className="fa fa-exchange-alt"
-                                onClick={ShowTransferPopup.bind(this, this, row)}
+                                onClick={ShowTransferPopup.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
                               />
                             </span>
                           );
@@ -262,13 +268,13 @@ class SalesQuotationList extends Component {
                           maxWidth: 100,
 
                           style: { textAlign: "center" },
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "qotation_status",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.qotation_status === "G" ? (
                             <span className="badge badge-warning">
                               Generated
@@ -282,14 +288,14 @@ class SalesQuotationList extends Component {
                               Cancelled
                             </span>
                           ) : (
-                                  <span className="badge badge-success">Closed</span>
-                                );
+                            <span className="badge badge-success">Closed</span>
+                          );
                         },
                         disabled: true,
                         others: {
                           maxWidth: 100,
-                          resizable: false
-                        }
+                          resizable: false,
+                        },
                       },
                       {
                         fieldName: "sales_quotation_number",
@@ -302,8 +308,8 @@ class SalesQuotationList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "sales_quotation_date",
@@ -312,7 +318,7 @@ class SalesQuotationList extends Component {
                             label={{ forceLabel: "Sales Quotation Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {dateFormaterTime(this, row.sales_quotation_date)}
@@ -324,8 +330,8 @@ class SalesQuotationList extends Component {
                         others: {
                           maxWidth: 150,
                           resizable: false,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "customer_name",
@@ -337,8 +343,8 @@ class SalesQuotationList extends Component {
                         disabled: true,
                         others: {
                           resizable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       // {
                       //   fieldName: "employee_name",
@@ -361,7 +367,7 @@ class SalesQuotationList extends Component {
                             label={{ forceLabel: "Validity Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {dateFormater(this, row.quote_validity)}
@@ -373,8 +379,8 @@ class SalesQuotationList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "delivery_date",
@@ -383,7 +389,7 @@ class SalesQuotationList extends Component {
                             label={{ forceLabel: "Delivery Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{dateFormater(this, row.delivery_date)}</span>
                           );
@@ -393,8 +399,8 @@ class SalesQuotationList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "comments",
@@ -405,14 +411,14 @@ class SalesQuotationList extends Component {
                         others: {
                           resizable: false,
                           style: { textAlign: "left" },
-                          filterable: false
-                        }
-                      }
+                          filterable: false,
+                        },
+                      },
                     ]}
                     keyId="sales_quotation_number"
                     filter={true}
                     dataSource={{
-                      data: this.state.quotation_list
+                      data: this.state.quotation_list,
                     }}
                     noDataText="No data available"
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -429,14 +435,14 @@ class SalesQuotationList extends Component {
 
 function mapStateToProps(state) {
   return {
-    customer_data: state.customer_data
+    customer_data: state.customer_data,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getCustomerMaster: AlgaehActions
+      getCustomerMaster: AlgaehActions,
     },
     dispatch
   );

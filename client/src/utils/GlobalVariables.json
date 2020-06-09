@@ -2531,6 +2531,10 @@
     {
       "name": "Optometry",
       "value": "O"
+    },
+    {
+      "name": "Sales",
+      "value": "S"
     }
   ],
   "POWER_GLASS_TYPE": [

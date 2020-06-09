@@ -1,13 +1,15 @@
-#SaleQuotationGrid {
-  .ReactTable {
-    max-height: 34.8vh !important;
-  }
-}
+#SaleQuotationGrid,
 #SaleQuotationServiceGrid {
+  margin-top: 20px;
   .ReactTable {
-    max-height: 58.8vh !important;
+    max-height: 50vh !important;
   }
 }
+// #SaleQuotationServiceGrid {
+//   .ReactTable {
+//     max-height: 58.8vh !important;
+//   }
+// }
 .textAreaLeft {
   text-align: left;
   margin-bottom: 50px;
@@ -70,4 +72,15 @@
       background: rgb(253, 251, 235);
     }
   }
+}
+.calcSybmbol {
+  border: 1px solid #000;
+  height: 19px;
+  width: 19px;
+  border-radius: 50%;
+  padding: 3px;
+  text-align: center;
+  margin-top: 11px;
+  font-size: 0.8rem;
+  margin-right: 10px;
 }

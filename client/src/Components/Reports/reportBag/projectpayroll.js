@@ -4,7 +4,7 @@ export default function ProjectPayroll({
   moment,
   allYears,
   MONTHS,
-  algaehApiCall
+  algaehApiCall,
 }) {
   return {
     name: "Project Payroll",
@@ -32,8 +32,8 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -49,11 +49,11 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -63,14 +63,14 @@ export default function ProjectPayroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -80,12 +80,12 @@ export default function ProjectPayroll({
             label: "Project",
             link: {
               uri: "/hrsettings/getProjects",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "project_desc",
-              valueField: "hims_d_project_id"
-            }
+              valueField: "hims_d_project_id",
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -99,12 +99,12 @@ export default function ProjectPayroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -115,12 +115,12 @@ export default function ProjectPayroll({
             label: "Department",
             link: {
               uri: "/department/get",
-              module: "masterSettings"
+              module: "masterSettings",
             },
             dataSource: {
               textField: "department_name",
               valueField: "hims_d_department_id",
-              data: undefined
+              data: undefined,
             },
             events: {
               onChange: (reportState, currentEvent) => {
@@ -131,20 +131,20 @@ export default function ProjectPayroll({
                   method: "GET",
                   data: { department_id: currentEvent.value },
 
-                  onSuccess: result => {
+                  onSuccess: (result) => {
                     reportState.setState({
-                      sub_department_id_list: result.data.records
+                      sub_department_id_list: result.data.records,
                     });
-                  }
+                  },
                 });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
                   [currentName]: undefined,
-                  sub_department_id_list: []
+                  sub_department_id_list: [],
                 });
-              }
-            }
+              },
+            },
           },
           {
             className: "col-2 form-group",
@@ -155,8 +155,8 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -168,10 +168,173 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+      },
+      {
+        subitem: "Project wise Payroll with OT",
+        //template_name: "ProjectPayroll/projectWisePayroll",
+        // reportQuery: "projectWisePayroll",
+        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        // module: "hrManagement",
+        reportName: "projectWisePayrollOT",
+        requireIframe: true,
+        pageSize: "A3",
+        componentCode: "RPT_PRO_PROJ_OT",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears,
+            },
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS,
+            },
+            others: {
+              sort: "off",
+            },
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id",
+            },
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id",
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings",
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined,
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: (result) => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records,
+                    });
+                  },
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: [],
+                });
+              },
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Employee Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
       },
       {
         subitem: "Designation Wise Project Payroll",
@@ -195,8 +358,8 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: allYears
-            }
+              data: allYears,
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -212,11 +375,11 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: MONTHS
+              data: MONTHS,
             },
             others: {
-              sort: "off"
-            }
+              sort: "off",
+            },
           },
           {
             className: "col-2 form-group mandatory",
@@ -226,14 +389,14 @@ export default function ProjectPayroll({
             isImp: true,
             label: "branch",
             link: {
-              uri: "/organization/getOrganizationByUser"
+              uri: "/organization/getOrganizationByUser",
             },
             value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
 
           {
@@ -245,13 +408,13 @@ export default function ProjectPayroll({
             label: "designation",
             link: {
               uri: "/hrsettings/getDesignations",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "designation",
               valueField: "hims_d_designation_id",
-              data: undefined
-            }
+              data: undefined,
+            },
           },
           {
             className: "col-2 form-group",
@@ -261,12 +424,12 @@ export default function ProjectPayroll({
             label: "Project",
             link: {
               uri: "/hrsettings/getProjects",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "project_desc",
-              valueField: "hims_d_project_id"
-            }
+              valueField: "hims_d_project_id",
+            },
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
@@ -280,12 +443,12 @@ export default function ProjectPayroll({
             label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              module: "hrManagement",
             },
             dataSource: {
               textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
+              valueField: "hims_d_employee_group_id",
+            },
           },
           {
             className: "col-2 form-group",
@@ -297,11 +460,11 @@ export default function ProjectPayroll({
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
-      }
-    ]
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+      },
+    ],
   };
 }
