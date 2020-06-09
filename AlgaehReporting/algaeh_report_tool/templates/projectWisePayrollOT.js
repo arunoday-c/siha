@@ -34,9 +34,9 @@ const executePDF = function executePDFMethod(options) {
           query: `select hims_f_project_wise_payroll_id, PWP.employee_id,E.employee_code,E.full_name,d.designation, 
           project_id, P.project_code,P.project_desc, PWP.month, PWP.year,sum(worked_hours) as worked_hours, 
           sum(worked_minutes) as worked_minutes, sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, 
-           DPT.department_name,coalesce(SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours,0)as ot_work, 
-           coalesce(SAL.total_working_hours,0) as total_working_hours, coalesce (SE.amount, 0) as ot_amount,SE.component_type,
-           (sum(cost)-coalesce (SE.amount, 0)) as project_cost_amount from hims_f_project_wise_payroll PWP 
+           DPT.department_name,coalesce(SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours,0)as ot_hr, 
+           coalesce(SAL.total_working_hours,0) as basic_hr,  coalesce (SE.amount, 0) as ot_amount,SE.component_type,
+           (sum(cost)-coalesce (SE.amount, 0)) as basic_amt from hims_f_project_wise_payroll PWP 
           inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
           inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
           left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
@@ -54,6 +54,8 @@ const executePDF = function executePDFMethod(options) {
         })
         .then((result) => {
           // console.log("resut", result);
+
+          const outputArray = [];
           resolve({ result });
         })
         .catch((error) => {
