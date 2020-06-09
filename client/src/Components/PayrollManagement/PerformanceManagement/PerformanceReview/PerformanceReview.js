@@ -20,6 +20,7 @@ export default class PerformanceReview extends Component {
     this.state = {
       open: false,
       hospital_id: null,
+      employee: [],
     };
     this.getHospitals();
     this.getEmployees();
@@ -37,6 +38,7 @@ export default class PerformanceReview extends Component {
       onRowSelect: (row) => {
         this.setState(
           {
+            employee: row,
             employee_name: row.full_name,
             employee_id: row.hims_d_employee_id,
           },
@@ -45,12 +47,17 @@ export default class PerformanceReview extends Component {
       },
     });
   }
+  loadEmployeeDetails() {
+    // console.log("affaf", this.state.employee);
+  }
 
   getEmployees() {
     algaehApiCall({
       uri: "/employee/get",
       module: "hrManagement",
+      data: { hospital_id: this.state.hospital_id },
       method: "GET",
+
       onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
@@ -86,7 +93,7 @@ export default class PerformanceReview extends Component {
   }
 
   render() {
-    let PerfRevData = "";
+    let PerfRevData = this.state.employee;
     return (
       <div className="performanceReviewScreen">
         <div className="row  inner-top-search">
@@ -127,9 +134,10 @@ export default class PerformanceReview extends Component {
             <button
               style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
+              onClick={this.loadEmployeeDetails.bind(this)}
             >
               Load
-            </button>{" "}
+            </button>
           </div>
         </div>
 
@@ -409,7 +417,7 @@ export default class PerformanceReview extends Component {
                                         div={{ className: "col" }}
                                         textBox={{
                                           className: "txt-fld",
-                                          name: "kpi_result_fld",
+                                          name: "kpi_result_fld_1",
                                           value: "",
                                           events: {
                                             // onChange: this.textHandler.bind(this),
@@ -436,7 +444,7 @@ export default class PerformanceReview extends Component {
                                         div={{ className: "col" }}
                                         textBox={{
                                           className: "txt-fld",
-                                          name: "kpi_result_fld",
+                                          name: "kpi_result_fld_2",
                                           value: "",
                                           events: {
                                             // onChange: this.textHandler.bind(this),
