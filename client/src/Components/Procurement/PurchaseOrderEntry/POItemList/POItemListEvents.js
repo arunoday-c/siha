@@ -395,11 +395,12 @@ const AddItems = ($this, context) => {
           parseFloat(hasPharItemExists.total_quantity) +
           parseFloat($this.state.order_quantity);
         swal({
-          title: `Item already exists at row ${
+          title: `Item already exists!`,
+          text: `The item you try to add is already exists at row ${
             index + 1
-          } Do you want to update quantity from ${
+          }. Do you wish to update current Qty from ${
             hasPharItemExists.total_quantity
-          } to ${toQty}`,
+          } to ${toQty}.`,
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -438,11 +439,12 @@ const AddItems = ($this, context) => {
           parseFloat(hasInvItemExists.total_quantity) +
           parseFloat($this.state.order_quantity);
         swal({
-          title: `Item already exists at row ${
+          title: `Item already exists!`,
+          text: `The item you try to add is already exists at row ${
             index + 1
-          } Do you want to update quantity from ${
+          }. Do you wish to update current Qty from ${
             hasInvItemExists.total_quantity
-          } to ${toQty}`,
+          } to ${toQty}.`,
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
