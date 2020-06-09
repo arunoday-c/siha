@@ -367,9 +367,11 @@ export default {
                 if (req.userIdentity.loan_authorize_privilege > 1) {
                   auth_level = " and authorized1='P'  ";
                 } else {
-                  auth_level =
-                    " and authorized1='P' AND E.reporting_to_id=" +
-                    req.userIdentity.employee_id;
+                  // auth_level =
+                  //   " and authorized1='P' AND E.reporting_to_id=" +
+                  //   req.userIdentity.employee_id;
+
+                  auth_level = " and authorized1='P'  ";
                 }
                 break;
               case "2":
