@@ -6,7 +6,7 @@ import {
   AlgaehDataGrid,
   AlgaehAutoComplete,
   AlgaehFormGroup,
-  AlgaehLabel,
+  // AlgaehLabel,
 } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import { addGroupName } from "../../../../../../HrManagement/src/models/performanceManagement";
@@ -21,6 +21,7 @@ export default function PerfoParaMaster() {
     getGroupName();
     getQuestionaries();
   }, []);
+
   function getGroupName() {
     algaehApiCall({
       uri: "/performanceManagement/getGroupName",
@@ -39,6 +40,7 @@ export default function PerfoParaMaster() {
       },
     });
   }
+
   function getQuestionaries() {
     algaehApiCall({
       uri: "/performanceManagement/getQuestionaries",
@@ -126,13 +128,13 @@ export default function PerfoParaMaster() {
   };
 
   function changeTexts(e) {
-    e.target.name = e.target.value;
     setGroupName(e.target.value);
   }
+
   function textHandler(e) {
-    e.target.name = e.target.value;
     setQuestionaries(e.target.value);
   }
+
   const deleteGroups = (data) => {
     algaehApiCall({
       uri: "/performanceManagement/deleteGroupName",
@@ -167,6 +169,7 @@ export default function PerfoParaMaster() {
       },
     });
   };
+
   const deleteQuestionaries = (data) => {
     algaehApiCall({
       uri: "/performanceManagement/deleteQuestionaries",
@@ -202,7 +205,8 @@ export default function PerfoParaMaster() {
       },
     });
   };
-  function dropDownHandler(selected, value, name) {
+
+  function dropDownHandler(_, value, name) {
     setInputs((result) => {
       return { ...result, [name]: value };
     });

@@ -3,7 +3,7 @@ import "./AppraisalMatrixMaster.scss";
 // import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import {
   AlgaehDataGrid,
-  AlgaehAutoComplete,
+  // AlgaehAutoComplete,
   AlgaehFormGroup,
 } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -11,12 +11,12 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default function AppraisalMatrixMaster() {
   const [input, setInput] = useState({});
-  const [toRange, setToRange] = useState(null);
   const [result, setResult] = useState([]);
-  const [increment, setIncreament] = useState(null);
+
   useEffect(() => {
     getApprisalMatrixRange();
   }, []);
+
   function getApprisalMatrixRange() {
     algaehApiCall({
       uri: "/performanceManagement/getApprisalMatrixRange",
@@ -71,6 +71,7 @@ export default function AppraisalMatrixMaster() {
       },
     });
   };
+
   function changeTexts(e) {
     const { name, value } = e.target;
 
@@ -78,6 +79,7 @@ export default function AppraisalMatrixMaster() {
       return { ...result, [name]: value };
     });
   }
+
   const deleteGroups = (data) => {
     algaehApiCall({
       uri: "/performanceManagement/deleteApprisalMatrixRange",
