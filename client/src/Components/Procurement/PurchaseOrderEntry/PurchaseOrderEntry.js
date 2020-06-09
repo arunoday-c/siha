@@ -34,7 +34,6 @@ import Enumerable from "linq";
 import { MainContext } from "algaeh-react-components/context";
 import {
   AlgaehSecurityComponent,
-  RawSecurityElement,
   RawSecurityComponent,
 } from "algaeh-react-components";
 
@@ -47,23 +46,6 @@ class PurchaseOrderEntry extends Component {
     };
     getVendorMaster(this, this);
     getPOOptions(this, this);
-    RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
-      (result) => {
-        if (result === "show") {
-          getData(this, "INV");
-          this.setState({ po_from: "INV" });
-        }
-      }
-    );
-
-    RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
-      (result) => {
-        if (result === "show") {
-          getData(this, "PHR");
-          this.setState({ po_from: "PHR" });
-        }
-      }
-    );
   }
 
   UNSAFE_componentWillMount() {
@@ -83,6 +65,23 @@ class PurchaseOrderEntry extends Component {
     ) {
       getCtrlCode(this, this.props.purchase_number);
     }
+    RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "INV");
+          this.setState({ po_from: "INV" });
+        }
+      }
+    );
+
+    RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "PHR");
+          this.setState({ po_from: "PHR" });
+        }
+      }
+    );
   }
 
   render() {

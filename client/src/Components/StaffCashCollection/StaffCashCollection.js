@@ -6,7 +6,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehFormGroup,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../Wrapper/algaehWrapper";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
@@ -30,7 +30,7 @@ class StaffCashCollection extends Component {
       difference_cheque: 0,
       cash_collection: [],
       previous_opend_shift: [],
-      cashHandoverDetails: []
+      cashHandoverDetails: [],
     };
     this.getShifts();
     this.getCashHandoverDetails();
@@ -55,7 +55,7 @@ class StaffCashCollection extends Component {
       shift_open_time: "--:-- --",
       shift_close_date: "DD-MM-YYYY",
       shift_close_time: "--:-- --",
-      remarks: ""
+      remarks: "",
     });
   }
 
@@ -65,7 +65,7 @@ class StaffCashCollection extends Component {
 
   loadDetails(value) {
     this.setState({
-      cashHandoverDetails: value.cashiers
+      cashHandoverDetails: value.cashiers,
     });
     // console.log("cashHandoverDetails:", this.state.cashHandoverDetails);
   }
@@ -91,7 +91,7 @@ class StaffCashCollection extends Component {
           cheque_status: this.state.cheque_status,
           remarks: this.state.remarks,
           hims_f_cash_handover_detail_id: this.state
-            .hims_f_cash_handover_detail_id
+            .hims_f_cash_handover_detail_id,
         };
 
         algaehApiCall({
@@ -99,29 +99,33 @@ class StaffCashCollection extends Component {
           module: "frontDesk",
           method: "PUT",
           data: send_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
             if (response.data.success) {
               swalMessage({
                 title: "Shift Closed",
-                type: "success"
+                type: "success",
               });
 
               this.getCashHandoverDetails();
               this.setState({
-                cashHandoverDetails: []
+                cashHandoverDetails: [],
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
+            let message = error.message;
+            if (error.message.startsWith("Incorrect decimal value")) {
+              message = "Please enter proper amount";
+            }
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: message,
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -133,7 +137,7 @@ class StaffCashCollection extends Component {
     let status_suffix = "_status";
 
     //getting the payment mode
-    const [ mode] = name.split("_");
+    const [mode] = name.split("_");
 
     if (value && value > 0) {
       let diff = this.state[exp_prefix + mode] - value;
@@ -141,13 +145,13 @@ class StaffCashCollection extends Component {
       this.setState({
         [name]: value,
         [diff_prefix + mode]: diff,
-        [mode + status_suffix]: status
+        [mode + status_suffix]: status,
       });
     } else {
       this.setState({
         [name]: "",
         [diff_prefix + mode]: 0,
-        [mode + status_suffix]: null
+        [mode + status_suffix]: null,
       });
     }
   }
@@ -165,7 +169,7 @@ class StaffCashCollection extends Component {
       actual_cheque,
       expected_card,
       expected_cash,
-      expected_cheque
+      expected_cheque,
     } = data;
     this.setState(
       {
@@ -194,18 +198,18 @@ class StaffCashCollection extends Component {
         shift_close_time: moment(data.close_date).isValid()
           ? moment(data.close_date).format("hh:mm A")
           : "--:-- --",
-        remarks: data.remarks
+        remarks: data.remarks,
       },
       () =>
         this.setState({
           cash_status: this.checkStatus(this.state.difference_cash),
           card_status: this.checkStatus(this.state.difference_card),
-          cheque_status: this.checkStatus(this.state.difference_cheque)
+          cheque_status: this.checkStatus(this.state.difference_cheque),
         })
     );
   }
 
-  disableBtn = btn => {
+  disableBtn = (btn) => {
     const { shift_status, hims_f_cash_handover_detail_id } = this.state;
     let status;
     if (btn === "C") {
@@ -227,26 +231,27 @@ class StaffCashCollection extends Component {
           module: "frontDesk",
           method: "GET",
           data: {
-            daily_handover_date: this.state.daily_handover_date
+            daily_handover_date: this.state.daily_handover_date,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
             if (response.data.success) {
               this.setState({
                 cash_collection: response.data.records.cash_collection,
-                previous_opend_shift: response.data.records.previous_opend_shift
+                previous_opend_shift:
+                  response.data.records.previous_opend_shift,
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -257,19 +262,19 @@ class StaffCashCollection extends Component {
       data: { shift_status: "A" },
       cancelRequestId: "getShiftMaster1",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            shifts: response.data.records
+            shifts: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -277,7 +282,7 @@ class StaffCashCollection extends Component {
     const { name, value } = e.target;
     this.setState(
       {
-        [name]: value
+        [name]: value,
       },
       () => console.log(this.state, "state from handle")
     );
@@ -319,18 +324,18 @@ class StaffCashCollection extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "front_desk",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ fieldName: "staff_cash_collection", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
         />
         <div className="row" style={{ marginTop: 90 }}>
@@ -345,20 +350,20 @@ class StaffCashCollection extends Component {
                     div={{ className: "col-8 form-group" }}
                     label={{
                       fieldName: "shift_date",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "daily_handover_date"
+                      name: "daily_handover_date",
                       // value: new Date()
                     }}
                     maxDate={new Date()}
                     events={{
-                      onChange: selDate => {
+                      onChange: (selDate) => {
                         this.setState({
-                          daily_handover_date: selDate
+                          daily_handover_date: selDate,
                         });
-                      }
+                      },
                     }}
                     value={this.state.daily_handover_date}
                   />
@@ -504,15 +509,15 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 130,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "employee_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Emp. Name" }} />
                           ),
-                          displayTemplate: data => {
+                          displayTemplate: (data) => {
                             return (
                               <span
                                 className="pat-code"
@@ -522,14 +527,14 @@ class StaffCashCollection extends Component {
                               </span>
                             );
                           },
-                          className: row => {
+                          className: (row) => {
                             return "greenCell";
                           },
                           others: {
                             minWidth: 200,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "shift_status",
@@ -538,7 +543,7 @@ class StaffCashCollection extends Component {
                               label={{ forceLabel: "Shift Status" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.shift_status === "O" ? (
                               <span className="badge badge-danger">Opened</span>
                             ) : row.shift_status === "C" ? (
@@ -556,25 +561,25 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "shift_id",
                           label: (
                             <AlgaehLabel label={{ fieldName: "shift_type" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let x = Enumerable.from(this.state.shifts)
-                              .where(w => w.hims_d_shift_id === row.shift_id)
+                              .where((w) => w.hims_d_shift_id === row.shift_id)
                               .firstOrDefault();
                             return <span>{x.shift_description}</span>;
                           },
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "expected_cash",
@@ -584,8 +589,8 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         // {
                         //   fieldName: "actual_cash",
@@ -605,15 +610,15 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "cash_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "cash_status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.cash_status === "T" ? (
                               <span className="badge badge-success">
                                 Tallied
@@ -633,14 +638,14 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "expected_card",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Exp. Card" }} />
-                          )
+                          ),
                         },
                         // {
                         //   fieldName: "actual_card",
@@ -660,15 +665,15 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "card_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "card_status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.card_status === "T" ? (
                               <span className="badge badge-success">
                                 Tallied
@@ -688,8 +693,8 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
 
                         {
@@ -702,8 +707,8 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         // {
                         //   fieldName: "actual_cheque",
@@ -727,8 +732,8 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 100,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "cheque_status",
@@ -737,7 +742,7 @@ class StaffCashCollection extends Component {
                               label={{ fieldName: "cheque_status" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.cheque_status === "T" ? (
                               <span className="badge badge-success">
                                 Tallied
@@ -757,13 +762,13 @@ class StaffCashCollection extends Component {
                           others: {
                             maxWidth: 105,
                             resizable: false,
-                            style: { textAlign: "center" }
-                          }
-                        }
+                            style: { textAlign: "center" },
+                          },
+                        },
                       ]}
                       keyId="hims_f_cash_handover_detail_id"
                       dataSource={{
-                        data: this.state.cashHandoverDetails
+                        data: this.state.cashHandoverDetails,
                       }}
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -786,7 +791,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "shift_open_date"
+                            fieldName: "shift_open_date",
                           }}
                         />
                         <h6>{this.state.shift_open_date}</h6>
@@ -795,7 +800,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "shift_open_time"
+                            fieldName: "shift_open_time",
                           }}
                         />
                         <h6>{this.state.shift_open_time}</h6>
@@ -805,7 +810,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "shift_close_date"
+                            fieldName: "shift_close_date",
                           }}
                         />
                         <h6>{this.state.shift_close_date}</h6>
@@ -814,7 +819,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "shift_close_time"
+                            fieldName: "shift_close_time",
                           }}
                         />
                         <h6>{this.state.shift_close_time}</h6>
@@ -825,7 +830,7 @@ class StaffCashCollection extends Component {
                       <div className="col-lg-12">
                         <AlgaehLabel
                           label={{
-                            fieldName: "closed_by"
+                            fieldName: "closed_by",
                           }}
                         />
                         <h6>Head of Department</h6>
@@ -834,7 +839,7 @@ class StaffCashCollection extends Component {
                         div={{ className: "col-lg-12" }}
                         label={{
                           fieldName: "remarks",
-                          isImp: false
+                          isImp: false,
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -843,11 +848,11 @@ class StaffCashCollection extends Component {
                           disabled: this.state.shift_status === "A",
                           others: {
                             multiline: true,
-                            rows: "3"
+                            rows: "3",
                           },
                           events: {
-                            onChange: this.changeTexts.bind(this)
-                          }
+                            onChange: this.changeTexts.bind(this),
+                          },
                         }}
                       />
                     </div>
@@ -861,7 +866,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Amount Received"
+                            forceLabel: "Amount Received",
                           }}
                         />
                         <h6>{this.state.collected_cash}</h6>
@@ -869,7 +874,7 @@ class StaffCashCollection extends Component {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Amount Refunded"
+                            forceLabel: "Amount Refunded",
                           }}
                         />
                         <h6>{this.state.refunded_cash}</h6>
@@ -897,7 +902,7 @@ class StaffCashCollection extends Component {
                                     div={{ className: "col" }}
                                     label={{
                                       fieldName: "&nbsp;",
-                                      isImp: false
+                                      isImp: false,
                                     }}
                                     textBox={{
                                       className: "txt-fld",
@@ -909,12 +914,12 @@ class StaffCashCollection extends Component {
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
-                                        )
+                                        ),
                                       },
                                       others: {
                                         type: "number",
-                                        min: 0
-                                      }
+                                        min: 0,
+                                      },
                                     }}
                                   />
                                 </span>
@@ -925,7 +930,7 @@ class StaffCashCollection extends Component {
                                     div={{ className: "col" }}
                                     label={{
                                       fieldName: "&nbsp;",
-                                      isImp: false
+                                      isImp: false,
                                     }}
                                     textBox={{
                                       className: "txt-fld",
@@ -937,12 +942,12 @@ class StaffCashCollection extends Component {
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
-                                        )
+                                        ),
                                       },
                                       others: {
                                         type: "number",
-                                        min: 0
-                                      }
+                                        min: 0,
+                                      },
                                     }}
                                   />
                                 </span>
@@ -953,7 +958,7 @@ class StaffCashCollection extends Component {
                                     div={{ className: "col" }}
                                     label={{
                                       fieldName: "asdasdf",
-                                      isImp: false
+                                      isImp: false,
                                     }}
                                     textBox={{
                                       className: "txt-fld",
@@ -965,12 +970,12 @@ class StaffCashCollection extends Component {
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
-                                        )
+                                        ),
                                       },
                                       others: {
                                         type: "number",
-                                        min: 0
-                                      }
+                                        min: 0,
+                                      },
                                     }}
                                   />
                                 </span>
