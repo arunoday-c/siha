@@ -93,7 +93,7 @@ class LoanAuthorization extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        auth_level: "AL" + this.state.auth_level,
+        auth_level: this.state.auth_level,
         employee_id: this.state.employee_id,
         hospital_id: this.state.hospital_id,
         from_date: this.state.from_date,
