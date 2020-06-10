@@ -40,6 +40,7 @@ import _ from "lodash";
 import sockets from "../../../../sockets";
 import FavouriteOrder from "../../../FavouriteOrderList/FavouriteOrder/FavouriteOrder";
 import ViewFavouriteOrder from "./ViewFavouriteOrder";
+import { MainContext } from "algaeh-react-components/context";
 
 class OrderingServices extends PureComponent {
   constructor(props) {
@@ -94,14 +95,19 @@ class OrderingServices extends PureComponent {
       all_favourites: [],
       deleteserviceInput: [],
       originalLength: 0,
+      service_dis_percentage: 0
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
     let prevLang = getCookie("Language");
 
     this.setState({
       selectedLang: prevLang,
+      service_dis_percentage: userToken.service_dis_percentage
     });
 
     if (

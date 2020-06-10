@@ -112,7 +112,7 @@ let authUser = (req, res, next) => {
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
      role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,finance_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect,E.full_name,E.arabic_name \
+      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect,E.full_name,E.arabic_name, E.service_dis_percentage \
      FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
      inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
      inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
@@ -167,7 +167,7 @@ let apiAuthentication = (req, res, next) => {
          password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
          role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
          algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-          U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect\
+          U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect, E.service_dis_percentage\
          FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
          inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
          inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\

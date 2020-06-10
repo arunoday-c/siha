@@ -72,6 +72,7 @@ class OPBilling extends Component {
     IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
     IOputs.default_pay_type = userToken.default_pay_type
     IOputs.userToken = this.context.userToken
+    IOputs.service_dis_percentage = userToken.service_dis_percentage;
 
     this.setState({ ...this.state, ...IOputs });
   }

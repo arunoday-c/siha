@@ -142,6 +142,20 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_percentage: $this.state.sheet_discount_percentage
       });
     }
+  } else if (sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)) {
+    swalMessage({
+      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+      type: "warning"
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
   } else if (sheet_discount_amount > parseFloat($this.state.patient_payable)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
@@ -262,6 +276,15 @@ const ondiscountgridcol = ($this, context, row, e) => {
         type: "warning"
       });
       // return;
+    } else if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
+      row[name] = 0;
+      row["discount_amout"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
+      swalMessage({
+        title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+        type: "warning"
+      });
     } else if (parseFloat(value) < 0) {
 
       row[name] = 0;
