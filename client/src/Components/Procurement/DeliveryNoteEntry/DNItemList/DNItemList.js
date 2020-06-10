@@ -161,78 +161,108 @@ class DNItemList extends Component {
             <div className="hims-delivery-note-entry">
               <div className="row">
                 <div className="col-3">
-                  <h4 style={{ marginBottom: 4 }}>
-                    Requested Items Records {this.state.filterList.length}/
-                    {this.state.po_entry_detail.length}
-                  </h4>
-                  <Input
-                    placeholder="Search"
-                    defaultValue={this.state.searchText}
-                    onChange={this.handleSearch.bind(this)}
-                    ref={(c) => {
-                      this.searchTextRef = c;
-                    }}
-                  />
-                  <ul className="reqTransList">
-                    {itemListArray.map((item, index) => {
-                      return (
-                        <li>
-                          {/* <Badge dot> */}
-                          <div className="itemReq">
-                            <h6>
-                              {item.item_description} ({item.uom_description})
-                            </h6>
+                  <div className="portlet portlet-bordered margin-bottom-15">
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Requested Items</h3>
+                      </div>
+                      <div className="actions">
+                        <small>
+                          {" "}
+                          Records {this.state.filterList.length}/
+                          {this.state.po_entry_detail.length}
+                        </small>
+                      </div>
+                    </div>
+                    <div className="portlet-body">
+                      <div className="row">
+                        <div className="col-12">
+                          {" "}
+                          <Input
+                            placeholder="Search"
+                            defaultValue={this.state.searchText}
+                            onChange={this.handleSearch.bind(this)}
+                            ref={(c) => {
+                              this.searchTextRef = c;
+                            }}
+                          />
+                        </div>
+                        <div className="col-12">
+                          {" "}
+                          <ul className="reqTransList">
+                            {itemListArray.map((item, index) => {
+                              return (
+                                <li>
+                                  {/* <Badge dot> */}
+                                  <div className="itemReq">
+                                    <h6>
+                                      {item.item_description} (
+                                      {item.uom_description})
+                                    </h6>
 
-                            <span>
-                              Purchased Qty:
-                              <span>{parseFloat(item.po_quantity)}</span>
-                            </span>
+                                    <span>
+                                      Purchased Qty:
+                                      <span>
+                                        {parseFloat(item.po_quantity)}
+                                      </span>
+                                    </span>
 
-                            <span>
-                              Deliverd Qty:
-                              <span>{parseFloat(item.dn_quantity)}</span>
-                            </span>
-                            <span>
-                              Qty Pending to Receive:
-                              <span>
-                                {parseFloat(item.quantity_outstanding)}
-                              </span>
-                            </span>
+                                    <span>
+                                      Deliverd Qty:
+                                      <span>
+                                        {parseFloat(item.dn_quantity)}
+                                      </span>
+                                    </span>
+                                    <span>
+                                      Qty Pending to Receive:
+                                      <span>
+                                        {parseFloat(item.quantity_outstanding)}
+                                      </span>
+                                    </span>
 
-                            <span>
-                              Qty. Received Till Date:
-                              <span>
-                                {parseFloat(item.quantity_recieved_todate)}
-                              </span>
-                            </span>
-                          </div>
-                          <div className="itemAction">
-                            <span>
-                              <i
-                                className="fas fa-pen"
-                                style={{
-                                  pointerEvents:
-                                    this.state.cannotEdit === true
-                                      ? "none"
-                                      : "",
-                                  opacity:
-                                    this.state.cannotEdit === true ? "0.1" : "",
-                                }}
-                                onClick={this.AddItemDelivered.bind(
-                                  this,
-                                  context,
-                                  item,
-                                  index
-                                )}
-                              />
-                            </span>
-                          </div>
-                          {/* </Badge> */}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                                    <span>
+                                      Qty. Received Till Date:
+                                      <span>
+                                        {parseFloat(
+                                          item.quantity_recieved_todate
+                                        )}
+                                      </span>
+                                    </span>
+                                  </div>
+                                  <div className="itemAction">
+                                    <span>
+                                      <i
+                                        className="fas fa-pen"
+                                        style={{
+                                          pointerEvents:
+                                            this.state.cannotEdit === true
+                                              ? "none"
+                                              : "",
+                                          opacity:
+                                            this.state.cannotEdit === true
+                                              ? "0.1"
+                                              : "",
+                                        }}
+                                        onClick={this.AddItemDelivered.bind(
+                                          this,
+                                          context,
+                                          item,
+                                          index
+                                        )}
+                                      />
+                                    </span>
+                                  </div>
+                                  {/* </Badge> */}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="col-lg-9" style={{ marginBottom: 50 }}>
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">

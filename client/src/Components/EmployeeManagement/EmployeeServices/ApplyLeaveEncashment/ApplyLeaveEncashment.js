@@ -581,11 +581,11 @@ class ApplyLeaveEncashment extends Component {
                           ),
                           displayTemplate: (row) => {
                             return row.authorized === "PEN" ? (
-                              <span className="badge badge-success">
+                              <span className="badge badge-warning">
                                 Pending
                               </span>
                             ) : row.authorized === "APR" ? (
-                              <span className="badge badge-danger">
+                              <span className="badge badge-success">
                                 Approved
                               </span>
                             ) : row.authorized === "REJ" ? (
