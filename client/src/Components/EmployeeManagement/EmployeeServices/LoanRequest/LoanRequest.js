@@ -44,7 +44,7 @@ class LoanRequest extends Component {
       deducting_month: moment().add(1, "months").format("M"), //parseInt(, 10) + 1
       // request_type: "LO"
       start_month: moment().add(1, "months").format("M"),
-      decimal_places: 0
+      decimal_places: 0,
     };
     this.getLoanMaster();
   }
@@ -120,6 +120,7 @@ class LoanRequest extends Component {
       },
       onSuccess: (res) => {
         if (res.data.success) {
+          console.log("dtaa", res.data.records);
           this.setState({
             employee_advance: res.data.records,
           });
@@ -154,11 +155,14 @@ class LoanRequest extends Component {
             reporting_to_id: row.reporting_to_id,
           },
           () => {
-            if (this.state.request_type === "AD") {
-              this.getEmployeeAdvances();
-            } else {
-              this.getLoanMaster();
-            }
+            this.state.request_type === "AD"
+              ? this.getEmployeeAdvances()
+              : this.getEmployeeLoans();
+            // if (this.state.request_type === "AD") {
+            //   this.getEmployeeAdvances();
+            // } else {
+            //   this.getLoanMaster();
+            // }
           }
         );
       },
@@ -175,6 +179,7 @@ class LoanRequest extends Component {
       },
       onSuccess: (res) => {
         if (res.data.success) {
+          console.log("data", res.data.records);
           this.setState({
             employee_loans: res.data.records,
           });
@@ -189,8 +194,9 @@ class LoanRequest extends Component {
     });
   }
 
-  clearState() {
-    this.setState({
+  clearState(exclude = []) {
+    exclude = exclude || [];
+    let items = {
       loan_description: null,
       loan_id: null,
       loan_limit: 0,
@@ -202,11 +208,17 @@ class LoanRequest extends Component {
       employee_name: null,
       employee_id: null,
       hims_d_employee_id: null,
+    };
+
+    exclude.map((item) => {
+      delete items[item];
     });
+    this.setState(items);
   }
 
-  clearAdvanceState() {
-    this.setState({
+  clearAdvanceState(exclude = []) {
+    exclude = exclude || [];
+    let items = {
       deducting_year: moment().year(),
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       advance_amount: null,
@@ -214,7 +226,11 @@ class LoanRequest extends Component {
       employee_name: null,
       employee_id: null,
       hims_d_employee_id: null,
+    };
+    exclude.map((item) => {
+      delete items[item];
     });
+    this.setState(items);
   }
 
   clearEmployee() {
@@ -251,7 +267,6 @@ class LoanRequest extends Component {
             type: "warning",
           });
         } else {
-
           algaehApiCall({
             uri: "/selfService/addEmployeeAdvance",
             module: "hrManagement",
@@ -277,8 +292,8 @@ class LoanRequest extends Component {
                     advance_amount,
                   });
                 }
-                this.clearAdvanceState();
                 this.getEmployeeAdvances();
+                this.clearAdvanceState(["employee_id", "hims_d_employee_id"]);
               }
             },
             onFailure: (err) => {
@@ -346,7 +361,14 @@ class LoanRequest extends Component {
                     loan_description,
                   });
                 }
-                this.clearState();
+
+                this.clearState([
+                  "start_year",
+                  "start_month",
+                  "employee_name",
+                  "employee_id",
+                  "hims_d_employee_id",
+                ]);
                 this.getEmployeeLoans();
               }
             },
@@ -366,7 +388,6 @@ class LoanRequest extends Component {
     switch (e.target.name) {
       case "loan_amount":
         if (e.target.value <= this.state.loan_limit) {
-
           this.setState({
             [e.target.name]: e.target.value,
 
@@ -441,9 +462,9 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: (parseFloat(this.state.loan_amount) / parseFloat(value.value)).toFixed(
-            this.state.decimal_places
-          )
+          installment_amount: (
+            parseFloat(this.state.loan_amount) / parseFloat(value.value)
+          ).toFixed(this.state.decimal_places),
         });
         break;
 
@@ -529,6 +550,7 @@ class LoanRequest extends Component {
           method: "PUT",
           data: {
             hims_f_employee_advance_id: row.hims_f_employee_advance_id,
+            // hims_d_employee_id: this.state.hims_d_employee_id,
           },
           onSuccess: (res) => {
             if (res.data.success) {
@@ -585,8 +607,8 @@ class LoanRequest extends Component {
                                 Issued
                               </span>
                             ) : (
-                                      "------"
-                                    )}
+                              "------"
+                            )}
                           </span>
                         );
                       },
@@ -632,8 +654,8 @@ class LoanRequest extends Component {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
+                          <span className="badge badge-success">Closed</span>
+                        );
                       },
                     },
 
@@ -708,7 +730,7 @@ class LoanRequest extends Component {
                       },
                     },
                     {
-                      fieldName: "loan_description",
+                      fieldName: "application_reason",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Reason For Loan" }}
@@ -726,9 +748,9 @@ class LoanRequest extends Component {
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => { },
-                    onDelete: () => { },
-                    onDone: () => { },
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {},
                   }}
                 />
               </div>
@@ -807,8 +829,8 @@ class LoanRequest extends Component {
                                 Cancelled
                               </span>
                             ) : (
-                                    "------"
-                                  )}
+                              "------"
+                            )}
                           </span>
                         );
                       },
@@ -857,9 +879,9 @@ class LoanRequest extends Component {
                           <span>
                             {moment(
                               "01-" +
-                              row.deducting_month +
-                              "-" +
-                              row.deducting_year,
+                                row.deducting_month +
+                                "-" +
+                                row.deducting_year,
                               "DD-MM-YYYY"
                             ).format("MMMM - YYYY")}
                           </span>
@@ -1158,7 +1180,7 @@ class LoanRequest extends Component {
                         onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                      //disabled={this.state.Request_enable}
+                        //disabled={this.state.Request_enable}
                       >
                         Request Loan
                       </button>
@@ -1259,7 +1281,7 @@ class LoanRequest extends Component {
                         onClick={this.applyAdvance.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                      //disabled={this.state.Request_enable}
+                        //disabled={this.state.Request_enable}
                       >
                         Request Advance
                       </button>
