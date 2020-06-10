@@ -3676,7 +3676,7 @@ const updateScreenElementRoles = (req, res, next) => {
             if (checked === false) {
               accessItem += _mysql.mysqlQueryFormat(
                 `insert ignore into screen_element_scren_module_mapping 
-                    (algaeh_d_app_scrn_elements_id,role_Id,view_type) value
+                    (algaeh_d_app_scrn_elements_id,role_Id,view_type) values
                     (?,?,?);`,
                 [algaeh_d_app_scrn_elements_id, role_id, "H"]
               );
@@ -3694,7 +3694,7 @@ const updateScreenElementRoles = (req, res, next) => {
             }
             accessItem += _mysql.mysqlQueryFormat(
               `insert ignore into screen_element_scren_module_mapping 
-                     (algaeh_d_app_scrn_elements_id,role_Id,extra_props) value
+                     (algaeh_d_app_scrn_elements_id,role_Id,extra_props) values
                      (?,?,?);`,
               [algaeh_d_app_scrn_elements_id, role_id, extraProps]
             );
@@ -3711,6 +3711,7 @@ const updateScreenElementRoles = (req, res, next) => {
           printQuery: true,
         })
         .then((result) => {
+          console.log("result", result);
           _mysql.releaseConnection();
           req.records = {
             success: true,
