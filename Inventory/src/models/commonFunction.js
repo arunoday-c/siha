@@ -4,10 +4,10 @@ import { LINQ } from "node-linq";
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-const createXmlString = Jobject => {
+const createXmlString = (Jobject) => {
   if (Jobject != null) {
     let stringObj = "";
-    Object.keys(Jobject).map(item => {
+    Object.keys(Jobject).map((item) => {
       if (Jobject[item] != null && Jobject[item] != undefined) {
         stringObj += "<" + item + ">" + Jobject[item] + "</" + item + ">";
       }
@@ -33,7 +33,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
       .log("updateIntoInvItemLocation: ", inputParam.inventory_stock_detail);
 
     new LINQ(inputParam.inventory_stock_detail)
-      .Select(s => {
+      .Select((s) => {
         let unit_cost =
           req.body.transaction_type == "DNA" ? s.average_cost : s.unit_cost;
         xmlQuery += "<hims_m_inventory_item_location>";
@@ -86,21 +86,25 @@ let updateIntoInvItemLocation = (req, res, next) => {
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation,
           hospital_id: req.userIdentity.hospital_id,
-          flag: req.flag || 0
+          flag: req.flag || 0,
         });
         xmlQuery += "</hims_m_inventory_item_location>";
       })
       .ToArray();
     // xmlQuery += "</hims_m_item_location>";
-    utilities.logger().log("xmlQuery: ", xmlQuery);
+    // utilities.logger().log("xmlQuery: ", xmlQuery);
     _mysql
       .executeQuery({
-        query: "call algaeh_proc_inv_item_location ('" + xmlQuery + "')",
-        printQuery: true
+        query:
+          "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'STRICT_TRANS_TABLES',''));call algaeh_proc_inv_item_location ('" +
+          xmlQuery +
+          "')",
+        printQuery: true,
       })
-      .then(result => {
-        utilities.logger().log("result: ", result);
-        utilities.logger().log("req.flag: ", req.flag);
+      .then((detailSql) => {
+        const result = detailSql[1];
+        // utilities.logger().log("result: ", result);
+        // utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
           if (result[0][0].Error != null) {
             const error = new Error();
@@ -110,7 +114,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
             });
           } else {
             if (req.flag == 1) {
-              utilities.logger().log("req.flag: ");
+              // utilities.logger().log("req.flag: ");
               for (let i = 0; i < req.body.inventory_stock_detail.length; i++) {
                 req.body.inventory_stock_detail[i].location_id =
                   req.body.git_location_id;
@@ -120,7 +124,8 @@ let updateIntoInvItemLocation = (req, res, next) => {
                 req.body.inventory_stock_detail[i].sales_uom =
                   req.body.inventory_stock_detail[i].uom_transferred_id;
 
-                req.body.inventory_stock_detail[i].operation = req.body.operation;
+                req.body.inventory_stock_detail[i].operation =
+                  req.body.operation;
                 req.body.inventory_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
@@ -134,7 +139,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           }
         } else {
           if (req.flag == 1) {
-            utilities.logger().log("req.flag: ");
+            // utilities.logger().log("req.flag: ");
             for (let i = 0; i < req.body.inventory_stock_detail.length; i++) {
               req.body.inventory_stock_detail[i].location_id =
                 req.body.git_location_id;
@@ -157,7 +162,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           }
         }
       })
-      .catch(e => {
+      .catch((e) => {
         utilities.logger().log("error: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
@@ -170,5 +175,5 @@ let updateIntoInvItemLocation = (req, res, next) => {
 };
 
 export default {
-  updateIntoInvItemLocation
+  updateIntoInvItemLocation,
 };
