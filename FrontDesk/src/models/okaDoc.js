@@ -42,25 +42,42 @@ export function sendPatientAppointment(req) {
     for (let i = 1; i < name.length; i++) {
       lastName += `${name[i]} `;
     }
-
+    console.log("from_time", from_time);
+    console.log("to_time", to_time);
+    console.log("doctorID", doctorID);
+    console.log("clinicID", clinicID);
     axios
-      .post(`${okaDocURL}/sync`, {
-        bookingID: bookingID,
-        doctorID: doctorID,
-        clinicID: clinicID,
-        serviceID: 1,
-        time: from_time,
-        end_time: to_time,
-        "Status of Appointment": status,
-        patient: {
-          gender: gender.toLowerCase(),
-          firstname: firstName,
-          lastname: lastName === "" ? " " : lastName,
-          email: email,
-          phone: contact_number,
-          dateofbirth: date_of_birth,
+      .post(
+        `${okaDocURL}/sync`,
+        {
+          bookingID: bookingID,
+          doctorID: doctorID,
+          clinicID: clinicID,
+          serviceID: 1,
+          time: from_time,
+          end_time: to_time,
+          "Status of Appointment": status,
+          patient: {
+            gender: gender.toLowerCase(),
+            firstname: firstName,
+            lastname: lastName === "" ? " " : lastName,
+            email: email,
+            phone: contact_number,
+            dateofbirth: date_of_birth,
+          },
         },
-      })
+        {
+          auth: {
+            username: koaDocKeys.username,
+            password: koaDocKeys.password,
+          },
+          // headers: {
+          //   Authorization: `Basic ${btoa(
+          //     `${koaDocKeys.username}:${koaDocKeys.password}`
+          //   )}`,
+          // },
+        }
+      )
       .then((result) => {
         console.log("Successfully sended to OKADOC :", result.data);
       })
@@ -97,13 +114,22 @@ export function updatePatientAppointment(req) {
     ).format("YYYY-MM-DD HH-mm-ss");
 
     axios
-      .post(`${okaDocURL}/update`, {
-        time: fromTime,
-        end_time: toTime,
-        newBookingID: bookingID,
-        cancel_reason: cancel_reason,
-        status: appointment_status,
-      })
+      .post(
+        `${okaDocURL}/update`,
+        {
+          time: fromTime,
+          end_time: toTime,
+          newBookingID: bookingID,
+          cancel_reason: cancel_reason,
+          status: appointment_status,
+        },
+        {
+          auth: {
+            username: koaDocKeys.username,
+            password: koaDocKeys.password,
+          },
+        }
+      )
       .then((response) => {
         console.log("Successfully Update", response.data);
       })

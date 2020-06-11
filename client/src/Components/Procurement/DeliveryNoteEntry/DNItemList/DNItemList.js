@@ -35,7 +35,7 @@ import {
 } from "./DNItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
-import { Input, Badge } from "algaeh-react-components";
+import { Input, Popover } from "algaeh-react-components";
 class DNItemList extends Component {
   constructor(props) {
     super(props);
@@ -194,17 +194,57 @@ class DNItemList extends Component {
                             {itemListArray.map((item, index) => {
                               return (
                                 <li>
-                                  {/* <Badge dot> */}
                                   <div className="itemReq">
                                     <h6>
                                       {item.item_description} (
                                       {item.uom_description})
                                     </h6>
-                                    <div className="progressCntr">
-                                      <p style={{ width: "25%" }}>
-                                        {parseFloat(item.quantity_outstanding)}
-                                      </p>
-                                    </div>
+                                    <Popover
+                                      content={
+                                        <div>
+                                          {" "}
+                                          <small>
+                                            Purchased Qty :
+                                            <strong>
+                                              {parseFloat(item.po_quantity)}
+                                            </strong>{" "}
+                                          </small>
+                                          <br />
+                                          <small>
+                                            Deliverd Qty :
+                                            <strong>
+                                              {parseFloat(item.dn_quantity)}
+                                            </strong>
+                                          </small>
+                                          <br />
+                                          <small>
+                                            Pending Qty :
+                                            <strong>
+                                              {parseFloat(
+                                                item.quantity_outstanding
+                                              )}
+                                            </strong>
+                                          </small>
+                                        </div>
+                                      }
+                                    >
+                                      <div className="progressCntr">
+                                        <p
+                                          style={{
+                                            width: `${
+                                              (parseFloat(item.dn_quantity) /
+                                                parseFloat(item.po_quantity)) *
+                                              100
+                                            }%`,
+                                          }}
+                                        >
+                                          Pending Qty -{" "}
+                                          {parseFloat(
+                                            item.quantity_outstanding
+                                          )}
+                                        </p>
+                                      </div>
+                                    </Popover>
                                     <div className="progressLegend">
                                       <small>
                                         Purchased Qty:
@@ -270,14 +310,7 @@ class DNItemList extends Component {
                                     >
                                       Edit
                                     </button>
-                                    {/* <span>
-                                      <i
-                                        className="fas fa-pen"
-                                    
-                                      />
-                                    </span> */}
                                   </div>
-                                  {/* </Badge> */}
                                 </li>
                               );
                             })}
