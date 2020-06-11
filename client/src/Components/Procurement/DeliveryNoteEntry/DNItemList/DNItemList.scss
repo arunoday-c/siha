@@ -1,4 +1,12 @@
+#DNGrid {
+  .ReactTable {
+    max-height: 32vh !important;
+  }
+}
+
 .reqTransList {
+  min-height: 49vh !important;
+  max-height: 49vh !important;
   li {
     margin: 0;
     padding: 8px 0 0 !important;
