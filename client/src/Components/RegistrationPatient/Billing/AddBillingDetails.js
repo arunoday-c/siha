@@ -200,6 +200,8 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
+  debugger
+
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage =
       e.target.value === "" ? "" : parseFloat(e.target.value);
@@ -212,7 +214,21 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "Warning"
+      type: "warning"
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)) {
+    swalMessage({
+      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+      type: "warning"
     });
     $this.setState({
       sheet_discount_percentage: $this.state.sheet_discount_percentage

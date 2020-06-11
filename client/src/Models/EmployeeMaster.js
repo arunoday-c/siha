@@ -105,7 +105,9 @@ export default {
       employee_category: null,
       gratuity_encash: 0,
       identity_type_id: null,
-      identity_no: null
+      identity_no: null,
+
+      service_dis_percentage: 100
     };
     return output;
   }

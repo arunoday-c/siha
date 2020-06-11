@@ -305,32 +305,33 @@ const deleteSalesDetail = ($this, context, row) => {
             context.updateState({
                 sales_quotation_items: sales_quotation_items,
                 detele_items: detele_items,
-                discount_amount: 0,
-                sub_total: 0,
-                total_tax: 0,
-                net_total: 0,
-                net_payable: 0,
+                total_item_amount: 0,
+                net_payable: $this.state.total_service_amount,
                 saveEnable: true
             });
         }
     } else {
 
-        const sub_total = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.extended_cost)
-        );
-        const discount_amount = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.discount_amount)
-        );
+        // const sub_total = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.extended_cost)
+        // );
+        // const discount_amount = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.discount_amount)
+        // );
 
-        const net_total = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.net_extended_cost)
-        );
+        // const net_total = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.net_extended_cost)
+        // );
 
-        const total_tax = _.sumBy(sales_quotation_items, s =>
-            parseFloat(s.tax_amount)
-        );
+        // const total_tax = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.tax_amount)
+        // );
 
-        const net_payable = _.sumBy(sales_quotation_items, s =>
+        // const net_payable = _.sumBy(sales_quotation_items, s =>
+        //     parseFloat(s.total_amount)
+        // );
+
+        const total_item_amount = sales_quotation_items.length === 0 ? 0 : _.sumBy(sales_quotation_items, s =>
             parseFloat(s.total_amount)
         );
 
@@ -339,11 +340,8 @@ const deleteSalesDetail = ($this, context, row) => {
             context.updateState({
                 sales_quotation_items: sales_quotation_items,
                 detele_items: detele_items,
-                sub_total: sub_total,
-                discount_amount: discount_amount,
-                net_total: net_total,
-                total_tax: total_tax,
-                net_payable: net_payable
+                total_item_amount: total_item_amount,
+                net_payable: parseFloat($this.state.net_payable) + parseFloat(total_item_amount)
             });
         }
     }
