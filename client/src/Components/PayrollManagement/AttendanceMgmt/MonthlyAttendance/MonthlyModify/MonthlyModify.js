@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 class MonthlyModify extends Component {
   constructor(props) {
     super(props);
@@ -341,13 +342,15 @@ class MonthlyModify extends Component {
               <div className="col-lg-4"> &nbsp;</div>
 
               <div className="col-lg-8">
-                <button
-                  onClick={this.updateMonthlyAttendance.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  UPDATE
-                </button>
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  <button
+                    onClick={this.updateMonthlyAttendance.bind(this)}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    UPDATE
+                  </button>
+                </AlgaehSecurityElement>
                 <button
                   onClick={this.props.onClose}
                   type="button"

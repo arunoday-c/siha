@@ -13,6 +13,7 @@ import {
   getCookie,
 } from "../../../../utils/algaehApiCall";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
@@ -626,37 +627,39 @@ class LeaveSalaryProcess extends Component {
           </div>
         </div>
 
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-default"
-                disabled={this.state.SaveBtn}
-                onClick={SaveLeaveSalary.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Send for Payment", returnText: true }}
-                />
-              </button>
-              {this.state.total_amount != null ? (
+        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
                 <button
                   type="button"
-                  className="btn btn-other"
-                  // onClick={this.clearState.bind(this)}
-                  onClick={this.generateLeaveSalarySlip.bind(this)}
+                  className="btn btn-default"
+                  disabled={this.state.SaveBtn}
+                  onClick={SaveLeaveSalary.bind(this, this)}
                 >
                   <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Leave Salary Slip",
-                      returnText: true,
-                    }}
+                    label={{ forceLabel: "Send for Payment", returnText: true }}
                   />
                 </button>
-              ) : null}
+                {this.state.total_amount != null ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    // onClick={this.clearState.bind(this)}
+                    onClick={this.generateLeaveSalarySlip.bind(this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate Leave Salary Slip",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+              </div>
             </div>
-          </div>
-        </div>
+          </div>{" "}
+        </AlgaehSecurityElement>
 
         <SalariesComponents
           open={this.state.isOpen}

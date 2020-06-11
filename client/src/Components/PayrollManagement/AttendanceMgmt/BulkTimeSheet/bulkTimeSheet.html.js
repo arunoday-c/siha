@@ -257,10 +257,10 @@ function BulkTimeSheet(props) {
         ) : null}
       </div>
 
-      <div className="hptl-phase1-footer">
-        <div className="row">
-          <div className="col-lg-12">
-            <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+      <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
               <button
                 disabled={process}
                 type="button"
@@ -314,10 +314,10 @@ function BulkTimeSheet(props) {
                   <i className="fas fa-spinner fa-spin" />
                 )}
               </button>{" "}
-            </AlgaehSecurityElement>
+            </div>
           </div>
         </div>
-      </div>
+      </AlgaehSecurityElement>
     </div>
   );
 }

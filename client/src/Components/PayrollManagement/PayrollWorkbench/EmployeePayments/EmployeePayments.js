@@ -28,7 +28,10 @@ import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 import Options from "../../../../Options.json";
 import moment from "moment";
-import { AlgaehTreeSearch } from "algaeh-react-components";
+import {
+  AlgaehTreeSearch,
+  AlgaehSecurityElement,
+} from "algaeh-react-components";
 
 class EmployeePayment extends Component {
   constructor(props) {
@@ -613,19 +616,21 @@ class EmployeePayment extends Component {
                             }}
                           />
                         ) : null}
-                      </div>
-                      <div className="row">
-                        <div className="col-12">
-                          <button
-                            type="button"
-                            className="btn btn-primary float-right"
-                            onClick={ProessEmpPayment.bind(this, this)}
-                            disabled={this.state.processBtn}
-                          >
-                            Process Payment
-                          </button>
-                        </div>
-                      </div>
+                      </div>{" "}
+                      <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                        <div className="row">
+                          <div className="col-12">
+                            <button
+                              type="button"
+                              className="btn btn-primary float-right"
+                              onClick={ProessEmpPayment.bind(this, this)}
+                              disabled={this.state.processBtn}
+                            >
+                              Process Payment
+                            </button>
+                          </div>
+                        </div>{" "}
+                      </AlgaehSecurityElement>
                     </div>
                   </div>
                 </div>

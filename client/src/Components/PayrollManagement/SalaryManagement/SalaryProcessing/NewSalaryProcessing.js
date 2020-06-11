@@ -14,6 +14,7 @@ import {
   generateMonthlyLoanReport,
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 const STATUS = {
   CHECK: true,
   UNCHECK: false,
@@ -412,51 +413,56 @@ class NewSalaryProcessing extends Component {
               </div>
             </div>
           </div>
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={FinalizeSalary.bind(this, this)}
-                  disabled={this.state.finalizeBtn}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Send for Payment",
-                      returnText: true,
-                    }}
-                  />
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
-                {/* this.state.salaryprocess_header */}
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  // onClick={this.clearState.bind(this)}
-                  onClick={generateMonthlyLoanReport.bind(this, this)}
-                  disabled={
-                    this.state.salaryprocess_header.length === 0 ? true : false
-                  }
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Monthly Loan Report",
-                      returnText: true,
-                    }}
-                  />
-                </button>
+
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={FinalizeSalary.bind(this, this)}
+                    disabled={this.state.finalizeBtn}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Send for Payment",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+                  {/* this.state.salaryprocess_header */}
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    // onClick={this.clearState.bind(this)}
+                    onClick={generateMonthlyLoanReport.bind(this, this)}
+                    disabled={
+                      this.state.salaryprocess_header.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Monthly Loan Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </AlgaehSecurityElement>
           <SalariesComponents
             open={this.state.isOpen}
             onClose={closeSalaryComponents.bind(this, this)}

@@ -4,7 +4,7 @@ import {
   AlgaehLabel,
   AlgaehModalPopUp,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../../Wrapper/algaehWrapper";
 
 import { MONTHS, NO_OF_EMI } from "../../../../../utils/GlobalVariables.json";
@@ -12,9 +12,10 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import {
   AlgaehValidation,
-  GetAmountFormart
+  GetAmountFormart,
 } from "../../../../../utils/GlobalFunctions";
 import Socket from "../../../../../sockets";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LoanModal extends Component {
   constructor(props) {
@@ -41,21 +42,21 @@ class LoanModal extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employee_loans: res.data.records
+            employee_loans: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -65,22 +66,22 @@ class LoanModal extends Component {
         if (e.target.value <= this.state.loan_amount) {
           this.setState({
             [e.target.name]: e.target.value,
-            installment_amount: e.target.value / this.state.loan_tenure
+            installment_amount: e.target.value / this.state.loan_tenure,
           });
         } else {
           swalMessage({
             title: "Approved Amount cannot be greater than requested amount",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            approved_amount: null
+            approved_amount: null,
           });
         }
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
         break;
     }
@@ -91,13 +92,13 @@ class LoanModal extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: this.state.approved_amount / value.value
+          installment_amount: this.state.approved_amount / value.value,
         });
         break;
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -112,7 +113,7 @@ class LoanModal extends Component {
         if (this.state.approved_amount <= 0 && type === "A") {
           swalMessage({
             title: "Please enter a proper approved amount",
-            type: "warning"
+            type: "warning",
           });
         } else {
           let data = {
@@ -124,19 +125,19 @@ class LoanModal extends Component {
             installment_amount: this.state.installment_amount,
             authorized: type,
             auth_level: this.props.auth_level,
-            approved_amount: this.state.approved_amount
+            approved_amount: this.state.approved_amount,
           };
           algaehApiCall({
             uri: "/loan/authorizeLoan",
             module: "hrManagement",
             method: "PUT",
             data: data,
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 if (type === "A") {
                   swalMessage({
                     title: "Loan Authorized Successfully",
-                    type: "success"
+                    type: "success",
                   });
                   if (isSockConnected) {
                     this.loadAuthSock.emit(
@@ -148,7 +149,7 @@ class LoanModal extends Component {
                 } else if (type === "R") {
                   swalMessage({
                     title: "Loan Rejected",
-                    type: "success"
+                    type: "success",
                   });
                   if (isSockConnected) {
                     this.loadAuthSock.emit(
@@ -173,15 +174,15 @@ class LoanModal extends Component {
                 document.getElementById("loan-reload").click();
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -190,8 +191,9 @@ class LoanModal extends Component {
       <AlgaehModalPopUp
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
+        title="Loan Request Details"
       >
         <div
           className="col-lg-12 popupInner"
@@ -227,7 +229,7 @@ class LoanModal extends Component {
               div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "EMI Start On",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 sort: "off",
@@ -237,34 +239,34 @@ class LoanModal extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: MONTHS
+                  data: MONTHS,
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-1 form-group" }}
               label={{
                 forceLabel: ".",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "start_year",
                 value: this.state.start_year,
                 events: {
-                  onChange: this.textHandle.bind(this)
+                  onChange: this.textHandle.bind(this),
                 },
                 others: {
-                  type: "number"
-                }
+                  type: "number",
+                },
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Approved Amount",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 decimal: { allowNegative: false },
@@ -272,15 +274,15 @@ class LoanModal extends Component {
                 name: "approved_amount",
                 value: this.state.approved_amount,
                 events: {
-                  onChange: this.textHandle.bind(this)
-                }
+                  onChange: this.textHandle.bind(this),
+                },
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col-1 form-group mandatory" }}
               label={{
                 forceLabel: "No. of EMI",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 sort: "off",
@@ -290,16 +292,16 @@ class LoanModal extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: NO_OF_EMI
+                  data: NO_OF_EMI,
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
               }}
             />
             <AlagehFormGroup
               div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "Instalment Amount",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 decimal: { allowNegative: false },
@@ -307,32 +309,34 @@ class LoanModal extends Component {
                 name: "installment_amount",
                 value: this.state.installment_amount,
                 events: {
-                  onChange: this.textHandle.bind(this)
+                  onChange: this.textHandle.bind(this),
                 },
                 others: {
-                  disabled: true
-                }
+                  disabled: true,
+                },
               }}
             />
 
-            <div className="col" style={{ paddingTop: 19 }}>
-              <button
-                onClick={this.authorizeLoan.bind(this, "A")}
-                type="button"
-                className="btn btn-primary"
-                style={{ float: "right", marginLeft: 10 }}
-              >
-                AUTHORIZE
-              </button>
-              <button
-                onClick={this.authorizeLoan.bind(this, "R")}
-                type="button"
-                className="btn btn-default"
-                style={{ float: "right" }}
-              >
-                REJECT
-              </button>
-            </div>
+            <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+              <div className="col" style={{ paddingTop: 19 }}>
+                <button
+                  onClick={this.authorizeLoan.bind(this, "A")}
+                  type="button"
+                  className="btn btn-primary"
+                  style={{ float: "right", marginLeft: 10 }}
+                >
+                  AUTHORIZE
+                </button>
+                <button
+                  onClick={this.authorizeLoan.bind(this, "R")}
+                  type="button"
+                  className="btn btn-default"
+                  style={{ float: "right" }}
+                >
+                  REJECT
+                </button>
+              </div>
+            </AlgaehSecurityElement>
           </div>
           <hr />
           <div className="row">
@@ -348,12 +352,12 @@ class LoanModal extends Component {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Application No." }} />
                     ),
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "loan_authorized",
                     label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.loan_authorized === "PEN" ? (
@@ -372,7 +376,7 @@ class LoanModal extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "loan_application_date",
@@ -381,7 +385,7 @@ class LoanModal extends Component {
                         label={{ forceLabel: "Loan Requested On" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {moment(row.loan_application_date).format(
@@ -390,21 +394,21 @@ class LoanModal extends Component {
                         </span>
                       );
                     },
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "loan_description",
-                    label: <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Loan Type" }} />,
                   },
                   {
                     fieldName: "loan_amount",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return <span>{GetAmountFormart(row.loan_amount)}</span>;
                     },
-                    others: { filterable: false }
+                    others: { filterable: false },
                     //disabled: true
                   },
                   {
@@ -412,7 +416,7 @@ class LoanModal extends Component {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Total No. of EMI" }} />
                     ),
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "installment_amount",
@@ -421,19 +425,19 @@ class LoanModal extends Component {
                         label={{ forceLabel: "Installment Amount" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>{GetAmountFormart(row.installment_amount)}</span>
                       );
                     },
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "application_reason",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Reason For Loan" }} />
                     ),
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "loan_tenure",
@@ -442,18 +446,18 @@ class LoanModal extends Component {
                         label={{ forceLabel: "No. of EMI Pending" }}
                       />
                     ),
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return <span>{row.loan_tenure}</span>;
                     },
-                    others: { filterable: false }
+                    others: { filterable: false },
                   },
                   {
                     fieldName: "pending_loan",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
                     ),
-                    others: { filterable: false }
-                  }
+                    others: { filterable: false },
+                  },
                 ]}
                 keyId=""
                 dataSource={{ data: this.state.employee_loans }}

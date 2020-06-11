@@ -6,6 +6,7 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehLoader from "../../../..//Wrapper/fullPageLoader";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
@@ -428,50 +429,34 @@ class LeaveAuthDetail extends Component {
                           </div>
                         </div>
                       </div>
-                      <div className="col-12 btnFooter">
-                        {this.props.type === undefined ? (
-                          <React.Fragment>
-                            {/* <ButtonType
-                              classname="btn btn-primary"
-                              loading={this.state.loading_Process}
-                              onClick={this.authorizeLeave.bind(this, "A")}
-                              label={{
-                                forceLabel: "Accept",
-                                returnText: true
-                              }}
-                            />
-                            <ButtonType
-                              classname="btn btn-danger"
-                              loading={this.state.loading_Process}
-                              onClick={this.authorizeLeave.bind(this, "R")}
-                              label={{
-                                forceLabel: "Reject",
-                                returnText: true
-                              }}
-                            /> */}
+                      <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                        <div className="col-12 btnFooter">
+                          {this.props.type === undefined ? (
+                            <React.Fragment>
+                              <button
+                                onClick={this.authorizeLeave.bind(this, "A")}
+                                className="btn btn-primary"
+                              >
+                                Accept
+                              </button>
+                              <button
+                                onClick={this.authorizeLeave.bind(this, "R")}
+                                className="btn btn-danger"
+                              >
+                                Reject
+                              </button>
+                            </React.Fragment>
+                          ) : null}
+                          {this.props.type === "C" ? (
                             <button
-                              onClick={this.authorizeLeave.bind(this, "A")}
-                              className="btn btn-primary"
-                            >
-                              Accept
-                            </button>
-                            <button
-                              onClick={this.authorizeLeave.bind(this, "R")}
+                              onClick={this.cancelLeave.bind(this, "R")}
                               className="btn btn-danger"
                             >
-                              Reject
+                              Cancel Leave
                             </button>
-                          </React.Fragment>
-                        ) : null}
-                        {this.props.type === "C" ? (
-                          <button
-                            onClick={this.cancelLeave.bind(this, "R")}
-                            className="btn btn-danger"
-                          >
-                            Cancel Leave
-                          </button>
-                        ) : null}
-                      </div>
+                          ) : null}
+                        </div>
+                      </AlgaehSecurityElement>
                     </div>
                   </div>
                 </div>
