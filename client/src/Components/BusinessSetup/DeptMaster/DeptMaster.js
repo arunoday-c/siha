@@ -43,13 +43,15 @@ class DeptMaster extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     const inventoryactive =
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "HIMS_CLINICAL" ||
-      userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.setState({

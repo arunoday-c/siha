@@ -64,7 +64,8 @@ class PersonalDetails extends Component {
     const userToken = this.context.userToken;
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 

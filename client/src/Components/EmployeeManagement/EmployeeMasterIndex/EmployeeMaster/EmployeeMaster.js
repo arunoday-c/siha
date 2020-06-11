@@ -17,9 +17,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import {
-  InsertUpdateEmployee  
-} from "./EmployeeMasterEvents";
+import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
@@ -32,7 +30,7 @@ class EmployeeMaster extends Component {
       department_and_other: {},
       payroll: {},
       HIMS_Active: false, //HIMS_Active.length > 0 ? true : false,
-      HRMS_Active: false //HRMS_Active.length > 0 ? true : false
+      HRMS_Active: false, //HRMS_Active.length > 0 ? true : false
     };
   }
   static contextType = MainContext;
@@ -54,16 +52,16 @@ class EmployeeMaster extends Component {
         e.currentTarget.classList.add("active");
 
         this.setState({
-          pageDisplay: specified
+          pageDisplay: specified,
         });
-      }
+      },
     });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
-        pageDisplay: "PersonalDetails"
+        pageDisplay: "PersonalDetails",
       },
       () => this.props.onClose && this.props.onClose(e)
     );
@@ -80,14 +78,16 @@ class EmployeeMaster extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_Finance"
         ? true
         : false;
     const HRMS_Active =
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "HRMS" ||
       userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -95,11 +95,11 @@ class EmployeeMaster extends Component {
       {
         personalDetails: {
           ...IOputs,
-          ...this.props.employeeDetailsPop
+          ...this.props.employeeDetailsPop,
         },
         HIMS_Active: HIMS_Active,
         HRMS_Active: HRMS_Active,
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       () => {
         if (
@@ -110,13 +110,13 @@ class EmployeeMaster extends Component {
             uri: "/department/get/subdepartment",
             module: "masterSettings",
             data: {
-              sub_department_status: "A"
+              sub_department_status: "A",
             },
             method: "GET",
             redux: {
               type: "SUB_DEPT_GET_DATA",
-              mappingName: "subdepartment"
-            }
+              mappingName: "subdepartment",
+            },
           });
         }
 
@@ -131,8 +131,8 @@ class EmployeeMaster extends Component {
               method: "GET",
               redux: {
                 type: "SERVIES_TYPES_GET_DATA",
-                mappingName: "empservicetype"
-              }
+                mappingName: "empservicetype",
+              },
             });
           }
           if (
@@ -145,8 +145,8 @@ class EmployeeMaster extends Component {
               method: "GET",
               redux: {
                 type: "SERVICES_GET_DATA",
-                mappingName: "empservices"
-              }
+                mappingName: "empservices",
+              },
             });
           }
         }
@@ -160,8 +160,8 @@ class EmployeeMaster extends Component {
             method: "GET",
             redux: {
               type: "CTRY_GET_DATA",
-              mappingName: "countries"
-            }
+              mappingName: "countries",
+            },
           });
         }
       }
@@ -176,20 +176,20 @@ class EmployeeMaster extends Component {
 
       if (IOputs.present_country_id === null) {
         this.setState({
-          personalDetails: { ...this.state.personalDetails, ...IOputs }
+          personalDetails: { ...this.state.personalDetails, ...IOputs },
         });
         return;
       }
       if (IOputs.present_country_id !== newProps.present_country_id) {
         let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id === IOputs.present_country_id)
+          .where((w) => w.hims_d_country_id === IOputs.present_country_id)
           .firstOrDefault();
 
         let states = country !== undefined ? country.states : [];
         if (this.props.countries !== undefined && states.length !== 0) {
           if (newProps.present_state_id !== IOputs.present_state_id) {
             let cities = Enumerable.from(states)
-              .where(w => w.hims_d_state_id === IOputs.present_state_id)
+              .where((w) => w.hims_d_state_id === IOputs.present_state_id)
               .firstOrDefault();
             if (IOputs.present_country_id === IOputs.permanent_country_id) {
               IOputs.countrystates = states;
@@ -212,7 +212,9 @@ class EmployeeMaster extends Component {
               // });
             } else {
               country = Enumerable.from(this.props.countries)
-                .where(w => w.hims_d_country_id === IOputs.permanent_country_id)
+                .where(
+                  (w) => w.hims_d_country_id === IOputs.permanent_country_id
+                )
                 .firstOrDefault();
 
               let pres_states = country !== undefined ? country.states : [];
@@ -222,7 +224,9 @@ class EmployeeMaster extends Component {
               ) {
                 if (newProps.permanent_state_id !== IOputs.permanent_state_id) {
                   let pres_cities = Enumerable.from(pres_states)
-                    .where(w => w.hims_d_state_id === IOputs.permanent_state_id)
+                    .where(
+                      (w) => w.hims_d_state_id === IOputs.permanent_state_id
+                    )
                     .firstOrDefault();
 
                   IOputs.countrystates = states;
@@ -261,11 +265,11 @@ class EmployeeMaster extends Component {
         }
       }
       this.setState({
-        personalDetails: { ...this.state.personalDetails, ...IOputs }
+        personalDetails: { ...this.state.personalDetails, ...IOputs },
       });
     } else {
       this.setState({
-        personalDetails: { ...EmpMasterIOputs.inputParam() }
+        personalDetails: { ...EmpMasterIOputs.inputParam() },
       });
     }
   }
@@ -273,8 +277,8 @@ class EmployeeMaster extends Component {
     this.setState({
       personalDetails: {
         ...this.state.personalDetails,
-        ...options
-      }
+        ...options,
+      },
     });
   }
 
@@ -284,7 +288,7 @@ class EmployeeMaster extends Component {
         <AlgaehModalPopUp
           open={this.props.open}
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
@@ -302,7 +306,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            fieldName: "personal_details"
+                            fieldName: "personal_details",
                           }}
                         />
                       }
@@ -316,7 +320,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Official Details"
+                            forceLabel: "Official Details",
                           }}
                         />
                       }
@@ -344,7 +348,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Payroll Details"
+                              forceLabel: "Payroll Details",
                             }}
                           />
                         }
@@ -359,7 +363,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              fieldName: "commission_setup"
+                              fieldName: "commission_setup",
                             }}
                           />
                         }
@@ -374,7 +378,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Family & Identification Details"
+                              forceLabel: "Family & Identification Details",
                             }}
                           />
                         }
@@ -390,7 +394,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Rules Details"
+                              forceLabel: "Rules Details",
                             }}
                           />
                         }
@@ -407,7 +411,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            fieldName: "personal_details"
+                            fieldName: "personal_details",
                           }}
                         />
                       }
@@ -421,7 +425,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Official Details"
+                            forceLabel: "Official Details",
                           }}
                         />
                       }
@@ -449,7 +453,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Payroll Details"
+                              forceLabel: "Payroll Details",
                             }}
                           />
                         }
@@ -464,7 +468,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              fieldName: "commission_setup"
+                              fieldName: "commission_setup",
                             }}
                           />
                         }
@@ -479,7 +483,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Family & Identification Details"
+                              forceLabel: "Family & Identification Details",
                             }}
                           />
                         }
@@ -495,7 +499,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Rules Details"
+                              forceLabel: "Rules Details",
                             }}
                           />
                         }
@@ -554,7 +558,7 @@ class EmployeeMaster extends Component {
                       )}
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -590,7 +594,7 @@ function mapStateToProps(state) {
     subdepartment: state.subdepartment,
     servTypeCommission: state.servTypeCommission,
     serviceComm: state.serviceComm,
-    countries: state.countries
+    countries: state.countries,
   };
 }
 
@@ -602,7 +606,7 @@ function mapDispatchToProps(dispatch) {
       getSubDepartment: AlgaehActions,
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
     },
     dispatch
   );

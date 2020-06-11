@@ -3,7 +3,7 @@ import "./ERPSettings.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables";
 import {
@@ -16,7 +16,7 @@ import {
   getInventoryOptions,
   getPOOptions,
   getSalesOptions,
-  checkBoxEvent
+  checkBoxEvent,
 } from "./ERPSettingsEvents";
 
 import { MainContext } from "algaeh-react-components/context";
@@ -43,7 +43,7 @@ export default class ERPSettings extends Component {
 
       hims_d_sales_options_id: null,
       sales_order_auth_level: "1",
-      services_required: "N"
+      services_required: "N",
     };
   }
   static contextType = MainContext;
@@ -53,29 +53,33 @@ export default class ERPSettings extends Component {
 
     this.PHCY_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "ONLY_PHARMACY" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.PROC_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "ONLY_PHARMACY" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.INVTRY_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "ONLY_PHARMACY" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.SALES_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "ONLY_PHARMACY"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "ONLY_PHARMACY" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -118,12 +122,12 @@ export default class ERPSettings extends Component {
                     div={{
                       className: "col-6",
                       others: {
-                        style: { paddingRight: 0 }
-                      }
+                        style: { paddingRight: 0 },
+                      },
                     }}
                     label={{
                       forceLabel: "Notify Expiry Before",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -131,17 +135,17 @@ export default class ERPSettings extends Component {
                       value: this.state.notification_before,
 
                       events: {
-                        onChange: changeTexts.bind(this, this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{
-                      className: "col-6"
+                      className: "col-6",
                     }}
                     label={{
                       forceLabel: ".",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "notification_type",
@@ -150,21 +154,21 @@ export default class ERPSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.NOTIFICATION_TYPE
+                        data: GlobalVariables.NOTIFICATION_TYPE,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          notification_type: null
+                          notification_type: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Requisition Auth level",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "requisition_auth_level",
@@ -173,14 +177,14 @@ export default class ERPSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.AUTH_LEVEL2
+                        data: GlobalVariables.AUTH_LEVEL2,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          requisition_auth_level: null
+                          requisition_auth_level: null,
                         });
-                      }
+                      },
                     }}
                   />{" "}
                   <div className="col-12">
@@ -192,7 +196,7 @@ export default class ERPSettings extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Save",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -224,7 +228,7 @@ export default class ERPSettings extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Requisition Auth level",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "inv_requisition_auth_level",
@@ -233,14 +237,14 @@ export default class ERPSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.AUTH_LEVEL2
+                        data: GlobalVariables.AUTH_LEVEL2,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          inv_requisition_auth_level: null
+                          inv_requisition_auth_level: null,
                         });
-                      }
+                      },
                     }}
                   />{" "}
                   <div className="col-12">
@@ -252,7 +256,7 @@ export default class ERPSettings extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Save",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -277,7 +281,7 @@ export default class ERPSettings extends Component {
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Purchase Order Auth level",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "po_auth_level",
@@ -286,14 +290,14 @@ export default class ERPSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.AUTH_LEVEL2
+                        data: GlobalVariables.AUTH_LEVEL2,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          po_auth_level: null
+                          po_auth_level: null,
                         });
-                      }
+                      },
                     }}
                   />
                   <div className="col-lg-12">
@@ -305,7 +309,7 @@ export default class ERPSettings extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Save",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
@@ -330,7 +334,7 @@ export default class ERPSettings extends Component {
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Sales Order Auth level",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       name: "sales_order_auth_level",
@@ -339,14 +343,14 @@ export default class ERPSettings extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.AUTH_LEVEL2
+                        data: GlobalVariables.AUTH_LEVEL2,
                       },
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          sales_order_auth_level: null
+                          sales_order_auth_level: null,
                         });
-                      }
+                      },
                     }}
                   />
 
@@ -367,7 +371,7 @@ export default class ERPSettings extends Component {
                       <span>
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Sales Services Required"
+                            forceLabel: "Sales Services Required",
                           }}
                         />
                       </span>
@@ -382,7 +386,7 @@ export default class ERPSettings extends Component {
                       <AlgaehLabel
                         label={{
                           forceLabel: "Save",
-                          returnText: true
+                          returnText: true,
                         }}
                       />
                     </button>
