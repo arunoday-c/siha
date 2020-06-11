@@ -243,8 +243,9 @@ hbs.registerHelper("imageUrl", function (
   filetype,
   reqHeader
 ) {
-  const host = reqHeader["host"].split(":")[0];
-
+  const host =
+    reqHeader === "none" ? "localhost" : reqHeader["host"].split(":")[0];
+  console.log(filename, name, filetype);
   if (Array.isArray(filename)) {
     if (filename.length > 0) {
       stringToappend = stringToappend || "";
@@ -263,9 +264,7 @@ hbs.registerHelper("imageUrl", function (
     }
   } else {
     return (
-      "http://" +
-      host +
-      ":3006/api/v1/Document/get?destinationName=" +
+      "http://localhost:3006/api/v1/Document/get?destinationName=" +
       filename +
       "&fileType=" +
       filetype

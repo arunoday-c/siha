@@ -19,6 +19,7 @@ import {
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
 import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
+import { AlgaehFormGroup } from "algaeh-react-components";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -256,8 +257,33 @@ class AddPatientForm extends Component {
                           },
                         }}
                       />
-
-                      <AlagehFormGroup
+                      <AlgaehFormGroup
+                        div={{ className: "col-lg-4 mandatory" }}
+                        label={{
+                          fieldName: "full_name",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "full_name",
+                          value: this.state.full_name,
+                        }}
+                        events={{
+                          onBlur: texthandle.bind(this, this),
+                        }}
+                        target={{
+                          tElement: (arabicText) => {
+                            const arabic_name = this.state.arabic_name;
+                            this.setState({
+                              arabic_name:
+                                arabic_name !== "" || arabic_name !== undefined
+                                  ? `${arabic_name} ${arabicText}`
+                                  : arabicText,
+                            });
+                          },
+                        }}
+                      />
+                      {/* <AlagehFormGroup
                         div={{ className: "col-lg-4 mandatory" }}
                         label={{
                           fieldName: "full_name",
@@ -277,7 +303,7 @@ class AddPatientForm extends Component {
                             placeholder: "Enter Full Name",
                           },
                         }}
-                      />
+                      /> */}
 
                       <AlagehFormGroup
                         div={{
