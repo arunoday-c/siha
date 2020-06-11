@@ -140,6 +140,7 @@ let authUser = (req, res, next) => {
       .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
+        req.hospital_id = inputData.item_id;
         next();
       })
       .catch((error) => {
