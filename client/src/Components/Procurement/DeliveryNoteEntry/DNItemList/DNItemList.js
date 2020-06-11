@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./DNItemList.scss";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -199,15 +200,33 @@ class DNItemList extends Component {
                                       {item.item_description} (
                                       {item.uom_description})
                                     </h6>
-
-                                    <span>
+                                    <div className="progressCntr">
+                                      <p style={{ width: "25%" }}>
+                                        {parseFloat(item.quantity_outstanding)}
+                                      </p>
+                                    </div>
+                                    <div className="progressLegend">
+                                      <small>
+                                        Purchased Qty:
+                                        <span>
+                                          {parseFloat(item.po_quantity)}
+                                        </span>
+                                      </small>
+                                      <small>
+                                        Deliverd Qty:
+                                        <span>
+                                          {parseFloat(item.dn_quantity)}
+                                        </span>
+                                      </small>
+                                    </div>
+                                    {/* <span>
                                       Purchased Qty:
                                       <span>
                                         {parseFloat(item.po_quantity)}
                                       </span>
-                                    </span>
+                                    </span> */}
 
-                                    <span>
+                                    {/* <span>
                                       Deliverd Qty:
                                       <span>
                                         {parseFloat(item.dn_quantity)}
@@ -227,30 +246,36 @@ class DNItemList extends Component {
                                           item.quantity_recieved_todate
                                         )}
                                       </span>
-                                    </span>
+                                    </span> */}
                                   </div>
                                   <div className="itemAction">
-                                    <span>
+                                    <button
+                                      className="btn btn-sm btn-edit-list"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.cannotEdit === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.cannotEdit === true
+                                            ? "0.1"
+                                            : "",
+                                      }}
+                                      onClick={this.AddItemDelivered.bind(
+                                        this,
+                                        context,
+                                        item,
+                                        index
+                                      )}
+                                    >
+                                      Edit
+                                    </button>
+                                    {/* <span>
                                       <i
                                         className="fas fa-pen"
-                                        style={{
-                                          pointerEvents:
-                                            this.state.cannotEdit === true
-                                              ? "none"
-                                              : "",
-                                          opacity:
-                                            this.state.cannotEdit === true
-                                              ? "0.1"
-                                              : "",
-                                        }}
-                                        onClick={this.AddItemDelivered.bind(
-                                          this,
-                                          context,
-                                          item,
-                                          index
-                                        )}
+                                    
                                       />
-                                    </span>
+                                    </span> */}
                                   </div>
                                   {/* </Badge> */}
                                 </li>
