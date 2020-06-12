@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -17,14 +17,14 @@ import {
   texthandle,
   numtexthandle,
   datehandle,
-  dateValidate
+  dateValidate,
 } from "./InsuranceProviderHandaler";
 
 import {
   FORMAT_INSURANCE_TYPE,
   FORMAT_SERVICE_PRICE,
   FORMAT_PACKAGE_CLAIM,
-  FORMAT_PAYMENT_TYPE
+  FORMAT_PAYMENT_TYPE,
 } from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import MyContext from "../../../utils/MyContext";
@@ -35,7 +35,7 @@ class InsuranceProvider extends PureComponent {
     super(props);
     this.initCall();
     this.state = {
-      mrn_num_sep_cop_client: "N"
+      mrn_num_sep_cop_client: "N",
     };
   }
 
@@ -47,17 +47,17 @@ class InsuranceProvider extends PureComponent {
       data: {
         fields: "service_code",
         tableName: "hims_d_services",
-        keyFieldName: "hims_d_services_id"
+        keyFieldName: "hims_d_services_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            service_code_placeHolder: placeHolder.service_code
+            service_code_placeHolder: placeHolder.service_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -81,16 +81,16 @@ class InsuranceProvider extends PureComponent {
         method: "GET",
         printInput: true,
         data: {
-          hims_d_insurance_provider_id: this.state.insurance_provider_id
+          hims_d_insurance_provider_id: this.state.insurance_provider_id,
         },
         redux: {
           type: "INSURANCE_GET_DATA",
-          mappingName: "insuranceprovider"
+          mappingName: "insuranceprovider",
         },
-        afterSuccess: data => {
-          data[0].mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
+        afterSuccess: (data) => {
+          data[0].mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client;
           this.setState(data[0]);
-        }
+        },
       });
     } else {
       if (
@@ -101,11 +101,13 @@ class InsuranceProvider extends PureComponent {
           redux: {
             type: "INSURANCE_INT_DATA",
             mappingName: "insuranceprovider",
-            data: []
-          }
+            data: [],
+          },
         });
       }
-      this.setState({ mrn_num_sep_cop_client: userToken.mrn_num_sep_cop_client });
+      this.setState({
+        mrn_num_sep_cop_client: userToken.mrn_num_sep_cop_client,
+      });
     }
   }
 
@@ -113,7 +115,7 @@ class InsuranceProvider extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div
               className="hptl-phase1-insurance-provider-form"
               data-validate="InsuranceProvider"
@@ -125,7 +127,7 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_provider_code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.insurance_provider_code,
@@ -133,15 +135,15 @@ class InsuranceProvider extends PureComponent {
                       name: "insurance_provider_code",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_provider_name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.insurance_provider_name,
@@ -149,8 +151,8 @@ class InsuranceProvider extends PureComponent {
                       name: "insurance_provider_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
 
@@ -158,7 +160,7 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "arabic_provider_name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.arabic_provider_name,
@@ -166,16 +168,16 @@ class InsuranceProvider extends PureComponent {
                       name: "arabic_provider_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col form-group mandatory" }}
                     label={{
                       fieldName: "insurance_type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "insurance_type",
@@ -188,19 +190,20 @@ class InsuranceProvider extends PureComponent {
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
-                        data: FORMAT_INSURANCE_TYPE
+                        data: FORMAT_INSURANCE_TYPE,
                       },
 
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: texthandle.bind(this, this, context),
                     }}
                   />
 
-                  {this.state.mrn_num_sep_cop_client === "Y" && this.state.insurance_type === "C" ?
+                  {this.state.mrn_num_sep_cop_client === "Y" &&
+                  this.state.insurance_type === "C" ? (
                     <AlagehFormGroup
-                      div={{ className: "col-3 form-group mandatory" }}
+                      div={{ className: "col-1 form-group mandatory" }}
                       label={{
                         fieldName: "prefix",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.prefix,
@@ -208,11 +211,11 @@ class InsuranceProvider extends PureComponent {
                         name: "prefix",
 
                         events: {
-                          onChange: texthandle.bind(this, this, context)
-                        }
+                          onChange: texthandle.bind(this, this, context),
+                        },
                       }}
                     />
-                    : null}
+                  ) : null}
                 </div>
 
                 <div className="row">
@@ -220,7 +223,7 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "company_service_price_type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "company_service_price_type",
@@ -232,9 +235,9 @@ class InsuranceProvider extends PureComponent {
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
-                        data: FORMAT_SERVICE_PRICE
+                        data: FORMAT_SERVICE_PRICE,
                       },
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: texthandle.bind(this, this, context),
                     }}
                   />
                   <AlgaehDateHandler
@@ -242,12 +245,12 @@ class InsuranceProvider extends PureComponent {
                     label={{ fieldName: "effective_start_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_start_date"
+                      name: "effective_start_date",
                     }}
                     maxDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context),
-                      onBlur: dateValidate.bind(this, this, context)
+                      onBlur: dateValidate.bind(this, this, context),
                     }}
                     value={this.state.effective_start_date}
                   />
@@ -257,18 +260,18 @@ class InsuranceProvider extends PureComponent {
                     label={{ fieldName: "effective_end_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_end_date"
+                      name: "effective_end_date",
                     }}
                     events={{
                       onChange: datehandle.bind(this, this, context),
-                      onBlur: dateValidate.bind(this, this, context)
+                      onBlur: dateValidate.bind(this, this, context),
                     }}
                     value={this.state.effective_end_date}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group " }}
                     label={{
-                      fieldName: "payer_id"
+                      fieldName: "payer_id",
                     }}
                     textBox={{
                       value: this.state.payer_id,
@@ -276,8 +279,8 @@ class InsuranceProvider extends PureComponent {
                       name: "payer_id",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
                 </div>
@@ -286,7 +289,7 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "credit_period",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -296,15 +299,15 @@ class InsuranceProvider extends PureComponent {
                       name: "credit_period",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "package_claim",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "package_claim",
@@ -316,9 +319,9 @@ class InsuranceProvider extends PureComponent {
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
-                        data: FORMAT_PACKAGE_CLAIM
+                        data: FORMAT_PACKAGE_CLAIM,
                       },
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: texthandle.bind(this, this, context),
                     }}
                   />
 
@@ -326,7 +329,7 @@ class InsuranceProvider extends PureComponent {
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "payment_type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "payment_type",
@@ -338,9 +341,9 @@ class InsuranceProvider extends PureComponent {
                             ? "name"
                             : "arabic_name",
                         valueField: "value",
-                        data: FORMAT_PAYMENT_TYPE
+                        data: FORMAT_PAYMENT_TYPE,
                       },
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: texthandle.bind(this, this, context),
                     }}
                   />
 
@@ -368,7 +371,7 @@ class InsuranceProvider extends PureComponent {
                   <div className="col-3">
                     <AlgaehLabel
                       label={{
-                        fieldName: "resubmit_all"
+                        fieldName: "resubmit_all",
                       }}
                     />
                     <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -385,7 +388,7 @@ class InsuranceProvider extends PureComponent {
                         <span>
                           <AlgaehLabel
                             label={{
-                              fieldName: "form_yes"
+                              fieldName: "form_yes",
                             }}
                           />
                         </span>
@@ -403,7 +406,7 @@ class InsuranceProvider extends PureComponent {
                         <span>
                           <AlgaehLabel
                             label={{
-                              fieldName: "form_no"
+                              fieldName: "form_no",
                             }}
                           />
                         </span>
@@ -436,7 +439,7 @@ class InsuranceProvider extends PureComponent {
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group " }}
                     label={{
-                      fieldName: "insurance_limit"
+                      fieldName: "insurance_limit",
                     }}
                     textBox={{
                       decimal: { allowNegative: false },
@@ -445,15 +448,15 @@ class InsuranceProvider extends PureComponent {
                       name: "insurance_limit",
 
                       events: {
-                        onChange: numtexthandle.bind(this, this, context)
-                      }
+                        onChange: numtexthandle.bind(this, this, context),
+                      },
                     }}
                   />
 
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group " }}
                     label={{
-                      fieldName: "preapp_valid_days"
+                      fieldName: "preapp_valid_days",
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -463,14 +466,14 @@ class InsuranceProvider extends PureComponent {
                       name: "preapp_valid_days",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group " }}
                     label={{
-                      fieldName: "claim_submit_days"
+                      fieldName: "claim_submit_days",
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -480,14 +483,14 @@ class InsuranceProvider extends PureComponent {
                       name: "claim_submit_days",
 
                       events: {
-                        onChange: texthandle.bind(this, this, context)
-                      }
+                        onChange: texthandle.bind(this, this, context),
+                      },
                     }}
                   />
                   <div className="col-3">
                     <AlgaehLabel
                       label={{
-                        fieldName: "cpt_mandate"
+                        fieldName: "cpt_mandate",
                       }}
                     />
                     <div className="customRadio" style={{ borderBottom: 0 }}>
@@ -504,7 +507,7 @@ class InsuranceProvider extends PureComponent {
                         <span>
                           <AlgaehLabel
                             label={{
-                              fieldName: "form_yes"
+                              fieldName: "form_yes",
                             }}
                           />
                         </span>
@@ -522,7 +525,7 @@ class InsuranceProvider extends PureComponent {
                         <span>
                           <AlgaehLabel
                             label={{
-                              fieldName: "form_no"
+                              fieldName: "form_no",
                             }}
                           />
                         </span>
@@ -561,7 +564,7 @@ class InsuranceProvider extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    insuranceprovider: state.insuranceprovider
+    insuranceprovider: state.insuranceprovider,
   };
 }
 
@@ -569,7 +572,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getInsuranceDetails: AlgaehActions,
-      initialStateInsurance: AlgaehActions
+      initialStateInsurance: AlgaehActions,
     },
     dispatch
   );
