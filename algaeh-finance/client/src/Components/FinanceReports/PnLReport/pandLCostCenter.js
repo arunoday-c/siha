@@ -1,11 +1,15 @@
 import React, { memo, useEffect, useState } from "react";
 import { AlgaehTable } from "algaeh-react-components";
+import moment from "moment";
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import jwtDecode from "jwt-decode";
 
 function PnLCostCenter({ data, layout }) {
   const [incomeExpenceData, setincomeExpence] = useState([]);
   const [totals, setTotals] = useState({});
   const [columns, setColumn] = useState([]);
   // const [loading, setLoading] = useState(false);
+  const [hospitalDetails, setHospitalDeytails] = useState([]);
 
   useEffect(() => {
     const { cost_centers, expense, income, totals } = data;
@@ -14,26 +18,35 @@ function PnLCostCenter({ data, layout }) {
       const { cost_center_id, cost_center } = column;
       return {
         fieldName: String(cost_center_id),
-        label: cost_center
+        label: cost_center,
       };
     });
     createColumns.unshift({
       fieldName: "label",
       label: "Ledger Name",
-      freezable: true
+      freezable: true,
       // filterable: true
     });
     setColumn(createColumns);
     setincomeExpence([income, expense]);
     setTotals(totals);
+    getItem("token").then((result) => {
+      const details = jwtDecode(result);
+      setHospitalDeytails(details);
+    });
   }, [data]);
 
   return (
     <>
       <div className="financeReportHeader">
-        <div>Twareat Medical Centre</div>
         <div>
-          Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+          {hospitalDetails.organization_name}
+          {/* Twareat Medical Centre */}
+        </div>
+        <div>
+          {hospitalDetails.hospital_address}
+
+          {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
         </div>
         <hr></hr>
         <h3>Profit & Loss - Cost Centre</h3>
@@ -44,7 +57,7 @@ function PnLCostCenter({ data, layout }) {
         columns={columns}
         data={incomeExpenceData}
         footer={true}
-        aggregate={field => {
+        aggregate={(field) => {
           return totals[field];
         }}
         expandAll={layout.expand}

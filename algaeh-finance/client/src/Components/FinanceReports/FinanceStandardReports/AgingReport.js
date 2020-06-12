@@ -7,6 +7,9 @@ import { AlgaehTable } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import moment from "moment";
+import jwtDecode from "jwt-decode";
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
@@ -16,8 +19,15 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
+  const [hospitalDetails, setHospitalDeytails] = useState([]);
+
   useEffect(() => {
     loadReport();
+    getItem("token").then((result) => {
+      const details = jwtDecode(result);
+      setHospitalDeytails(details);
+      console.log("dat", details);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, dates]);
 
@@ -75,14 +85,19 @@ export default function AgingReport({ style, result, layout, type, dates }) {
       <i className="fas fa-file-download" onClick={() => loadReport(true)} />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
-          <div>Twareat Medical Centre</div>
           <div>
-            Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            {hospitalDetails.organization_name}
+
+            {/* Twareat Medical Centre */}
+          </div>
+          <div>
+            {hospitalDetails.hospital_address}
+            {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>
           <h3>{`Account ${DIFF[type].title} Aging Report`}</h3>
           <p>
-            As on: <b>12/02/2020</b>
+            As on: <b>{moment(dates[1]).format("D/M/Y")}</b>
           </p>
         </div>
 

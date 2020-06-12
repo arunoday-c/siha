@@ -1,10 +1,23 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Row, Col } from "antd";
 // import ReactToPrint from "react-to-print";
 import { PlotUI } from "../FinanceStandardReports/plotui";
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import jwtDecode from "jwt-decode";
+import moment from "moment";
 
 export default function ProfitTree({ style, layout, data }) {
   const createPrintObject = useRef(undefined);
+  const [hospitalDetails, setHospitalDeytails] = useState([]);
+  useEffect(() => {
+    // loadBalanceSheet();
+    getItem("token").then((result) => {
+      const details = jwtDecode(result);
+      setHospitalDeytails(details);
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (data) {
     return (
       <>
@@ -28,14 +41,24 @@ export default function ProfitTree({ style, layout, data }) {
         /> */}
         <div ref={createPrintObject}>
           <div className="financeReportHeader">
-            <div>Twareat Medical Centre</div>
             <div>
-              Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+              {hospitalDetails.organization_name}
+
+              {/* Twareat Medical Centre */}
+            </div>
+            <div>
+              {hospitalDetails.hospital_address}
+
+              {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
             </div>
             <hr></hr>
             <h3>Profit and Loss</h3>
             <p>
-              As on: <b>12/02/2020</b>
+              As on:{" "}
+              <b>
+                {moment().format("D/M/Y")}
+                {/* 12/02/2020 */}
+              </b>
             </p>
           </div>
           <div className="reportBodyArea">
