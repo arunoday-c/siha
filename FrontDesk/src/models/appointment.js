@@ -1171,25 +1171,26 @@ export default {
 
       let selectDoctor = "";
 
-      if (input.provider_id != "null" && input.provider_id != null) {
+      if (input.provider_id > 0) {
         selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
         //provider_id = req.query.provider_id;
       }
 
       _mysql
         .executeQuery({
-          query: `select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
-        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
-        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
-         hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
-         ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
-         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
-         hims_d_appointment_clinic C,hims_d_appointment_room R,hims_d_sub_department SD where \
-         SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
-     and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
-         SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
-         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
-          and sub_dept_id= SD.hims_d_sub_department_id  and SH.hospital_id=?  ${selectDoctor} ${qry} `,
+          query: `select  hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,
+          from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,
+          to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,
+          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,
+          ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified 
+          from hims_d_appointment_schedule_header SH inner join  hims_d_appointment_schedule_detail ASD  on
+          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id 
+          and SH.record_status='A' and ASD.record_status='A'
+          inner join  hims_d_employee E  on ASD.provider_id=E.hims_d_employee_id and E.record_status='A'
+          left join hims_d_appointment_clinic C   on ASD.clinic_id=C.hims_d_appointment_clinic_id
+          left join hims_d_appointment_room R  on C.room_id=R.hims_d_appointment_room_id   
+          left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
+          SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
         })
         .then((result) => {
