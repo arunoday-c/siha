@@ -9546,7 +9546,23 @@ function processBulkAtt_Normal(data) {
                     .then((insertResult) => {
                       let projectQry = "";
                       if (options.attendance_type == "DMP") {
-                        projectQry = `select employee_id,project_id,DA.hospital_id,year,month,sum(hours)as worked_hours, sum(minutes) as worked_minutes\
+                        projectQry = `select employee_id,project_id,DA.hospital_id,year,month,
+                        COALESCE(sum(hours),0 )+ COALESCE( floor(sum(minutes)/60) ,0) as worked_hours,
+                        COALESCE(sum(minutes)%60,0) as worked_minutes,\
+
+                        COALESCE(sum(ot_work_hours),0 )+ COALESCE( floor(sum(ot_minutes)/60) ,0) as ot_hours,
+                        COALESCE(sum(ot_minutes)%60,0) as ot_minutes,
+                        COALESCE(sum(ot_weekoff_hours),0 )+ COALESCE( floor(sum(ot_weekoff_minutes)/60) ,0) as wot_hours,
+                        COALESCE(sum(ot_weekoff_minutes)%60,0) as wot_minutes ,
+                        COALESCE(sum(ot_holiday_hours),0 )+ COALESCE( floor(sum(ot_holiday_minutes)/60) ,0) as hot_hours,
+                        COALESCE(sum(ot_holiday_minutes)%60,0) as hot_minutes, 
+                         floor((((sum(hours)*60)+ sum(minutes) )-
+                        (COALESCE(sum(ot_work_hours)+sum(ot_weekoff_hours)+sum(ot_holiday_hours),0)*60
+                        +COALESCE(sum(ot_minutes)+sum(ot_weekoff_minutes)+sum(ot_holiday_minutes),0)))/60) basic_hours,
+                         COALESCE((((sum(hours)*60)+ sum(minutes) )-
+                        (COALESCE(sum(ot_work_hours)+sum(ot_weekoff_hours)+sum(ot_holiday_hours),0)*60
+                        +COALESCE(sum(ot_minutes)+sum(ot_weekoff_minutes)+sum(ot_holiday_minutes),0)))%60,0) basic_minutes
+
                 from hims_f_daily_attendance DA\
                 inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
@@ -9789,6 +9805,14 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   "project_id",
                                   "month",
                                   "year",
+                                  "basic_hours",
+                                  "basic_minutes",
+                                  "ot_hours",
+                                  "ot_minutes",
+                                  "wot_hours",
+                                  "wot_minutes",
+                                  "hot_hours",
+                                  "hot_minutes",
                                   "worked_hours",
                                   "worked_minutes",
                                   "hospital_id",
@@ -9798,7 +9822,10 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
                                   .executeQueryWithTransaction({
                                     query:
                                       " INSERT   INTO hims_f_project_wise_payroll(??) VALUES ?  ON DUPLICATE KEY UPDATE \
-                                   worked_hours=values(worked_hours),worked_minutes=values(worked_minutes)",
+                                      basic_hours=values(basic_hours),basic_minutes=values(basic_minutes),ot_hours=values(ot_hours),\
+                                      ot_minutes=values(ot_minutes),wot_hours=values(wot_hours),\
+                                      wot_minutes=values(wot_minutes),hot_hours=values(hot_hours),hot_minutes=values(hot_minutes),\
+                                       worked_hours=values(worked_hours),worked_minutes=values(worked_minutes)",
                                     values: projectWisePayroll,
                                     includeValues: insertCol,
                                     printQuery: false,
@@ -9867,7 +9894,6 @@ where month=? and year=? group by employee_id;  ${projectQry}       `,
     }
   });
 }
-
 //created by irfan :
 function processBulkAtt_with_cutoff(data) {
   const {
