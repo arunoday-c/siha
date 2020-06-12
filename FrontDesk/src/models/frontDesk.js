@@ -120,6 +120,13 @@ export default {
     const _mysql = new algaehMysql();
     try {
       req.mySQl = _mysql;
+      console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client)
+      console.log("insurance_type", req.body.insurance_type)
+      if (req.body.mrn_num_sep_cop_client === "Y" && req.body.insurance_type === "Y") {
+
+      } else {
+
+      }
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,

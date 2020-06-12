@@ -22,18 +22,21 @@ import {
 
 import {
   FORMAT_INSURANCE_TYPE,
-  FORMAT_SERVICE_PRICE,  
+  FORMAT_SERVICE_PRICE,
   FORMAT_PACKAGE_CLAIM,
   FORMAT_PAYMENT_TYPE
 } from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import MyContext from "../../../utils/MyContext";
+import { MainContext } from "algaeh-react-components/context";
 
 class InsuranceProvider extends PureComponent {
   constructor(props) {
     super(props);
     this.initCall();
-    this.state = {};
+    this.state = {
+      mrn_num_sep_cop_client: "N"
+    };
   }
 
   initCall() {
@@ -63,7 +66,9 @@ class InsuranceProvider extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     // console.log("Data : ", this.props.insuranceprovider);
 
     if (
@@ -83,6 +88,7 @@ class InsuranceProvider extends PureComponent {
           mappingName: "insuranceprovider"
         },
         afterSuccess: data => {
+          data[0].mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
           this.setState(data[0]);
         }
       });
@@ -99,6 +105,7 @@ class InsuranceProvider extends PureComponent {
           }
         });
       }
+      this.setState({ mrn_num_sep_cop_client: userToken.mrn_num_sep_cop_client });
     }
   }
 
@@ -187,6 +194,25 @@ class InsuranceProvider extends PureComponent {
                       onChange: texthandle.bind(this, this, context)
                     }}
                   />
+
+                  {this.state.mrn_num_sep_cop_client === "Y" && this.state.insurance_type === "C" ?
+                    <AlagehFormGroup
+                      div={{ className: "col-3 form-group mandatory" }}
+                      label={{
+                        fieldName: "prefix",
+                        isImp: true
+                      }}
+                      textBox={{
+                        value: this.state.prefix,
+                        className: "txt-fld arabicInput",
+                        name: "prefix",
+
+                        events: {
+                          onChange: texthandle.bind(this, this, context)
+                        }
+                      }}
+                    />
+                    : null}
                 </div>
 
                 <div className="row">

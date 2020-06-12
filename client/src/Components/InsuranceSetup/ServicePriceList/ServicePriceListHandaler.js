@@ -10,7 +10,7 @@ const texthandle = ($this, e) => {
 };
 
 const networkhandle = ($this, e) => {
-  
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -213,6 +213,9 @@ const getPriceList = $this => {
     redux: {
       type: "PRICE_LIST_GET_DATA",
       mappingName: "pricelist"
+    },
+    afterSuccess: data => {
+      $this.setState({ state_change: !$this.state.state_change })
     }
   });
 };
