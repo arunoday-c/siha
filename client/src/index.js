@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import "algaeh-react-components/translation/i18next";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 // import ContextBinding from "./contextCheck";
