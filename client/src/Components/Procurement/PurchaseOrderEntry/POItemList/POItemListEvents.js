@@ -224,42 +224,47 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  let name = e.name || e.target.name;
+  debugger;
+  let name = e.name;
+
   if (
     $this.state.pharmcy_location_id !== null ||
     $this.state.inventory_location_id !== null
   ) {
     if ($this.state.vendor_id !== null) {
-      let value = e.value || e.target.value;
+      // let value = e.value || e.target.value;
 
       if ($this.state.po_from === "PHR") {
         $this.setState({
-          [name]: value,
-          phar_item_category: e.selected.category_id,
-          pharmacy_uom_id: e.selected.purchase_uom_id,
-          phar_item_group: e.selected.group_id,
+          // [name]: value,
+
+          item_description: e.item_description,
+          phar_item_category: e.category_id,
+          pharmacy_uom_id: e.purchase_uom_id,
+          phar_item_group: e.group_id,
           unit_price:
-            e.selected.purchase_cost === null
+            e.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(
-                  $this.state.decimal_places
-                ),
+              : parseFloat(e.purchase_cost).toFixed($this.state.decimal_places),
 
           addItemButton: false,
-          tax_percentage: e.selected.vat_percent,
+          tax_percentage: e.vat_percent,
         });
 
         if (context !== undefined) {
           context.updateState({
-            [name]: value,
-            phar_item_category: e.selected.category_id,
-            pharmacy_uom_id: e.selected.purchase_uom_id,
-            phar_item_group: e.selected.group_id,
-            tax_percentage: e.selected.vat_percent,
+            // [name]: value,
+
+            item_description: e.item_description,
+            phar_item_id: e.hims_d_item_master_id,
+            phar_item_category: e.category_id,
+            pharmacy_uom_id: e.purchase_uom_id,
+            phar_item_group: e.group_id,
+            tax_percentage: e.vat_percent,
             unit_price:
-              e.selected.purchase_cost === null
+              e.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(
+                : parseFloat(e.purchase_cost).toFixed(
                     $this.state.decimal_places
                   ),
 
@@ -273,30 +278,33 @@ const itemchangeText = ($this, context, e) => {
         }
       } else {
         $this.setState({
-          [name]: value,
-          inv_item_category_id: e.selected.category_id,
-          inventory_uom_id: e.selected.purchase_uom_id,
-          inv_item_group_id: e.selected.group_id,
+          // [name]: value,
+
+          item_description: e.item_description,
+          inv_item_id: e.hims_d_inventory_item_master_id,
+          inv_item_category_id: e.category_id,
+          inventory_uom_id: e.purchase_uom_id,
+          inv_item_group_id: e.group_id,
           unit_price:
-            e.selected.purchase_cost === null
+            e.purchase_cost === null
               ? 0
-              : parseFloat(e.selected.purchase_cost).toFixed(
-                  $this.state.decimal_places
-                ),
+              : parseFloat(e.purchase_cost).toFixed($this.state.decimal_places),
 
           addItemButton: false,
         });
 
         if (context !== undefined) {
           context.updateState({
-            [name]: value,
-            inv_item_category_id: e.selected.category_id,
-            inventory_uom_id: e.selected.purchase_uom_id,
-            inv_item_group_id: e.selected.group_id,
+            // [name]: value,
+            item_description: e.item_description,
+            inv_item_category_id: e.category_id,
+            inv_item_id: e.hims_d_inventory_item_master_id,
+            inventory_uom_id: e.purchase_uom_id,
+            inv_item_group_id: e.group_id,
             unit_price:
-              e.selected.purchase_cost === null
+              e.purchase_cost === null
                 ? 0
-                : parseFloat(e.selected.purchase_cost).toFixed(
+                : parseFloat(e.purchase_cost).toFixed(
                     $this.state.decimal_places
                   ),
 
@@ -338,6 +346,7 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
+  // debugger;
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
@@ -382,6 +391,7 @@ const AddItems = ($this, context) => {
       tax_amount: $this.state.tax_amount,
       total_amount: $this.state.total_amount,
       item_type: $this.state.item_type,
+      item_description: $this.state.item_description,
     };
 
     if ($this.state.po_from === "PHR") {
@@ -414,6 +424,7 @@ const AddItems = ($this, context) => {
               $this,
               context,
               pharmacy_stock_detail,
+
               "pharmacy_stock_detail"
             );
           }
@@ -542,6 +553,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     detail_discount: detail_discount,
     addItemButton: true,
     authorizeBtn: true,
+    item_description: "",
   });
 
   if (context !== undefined) {
@@ -591,6 +603,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       detail_discount: detail_discount,
       addItemButton: true,
       authorizeBtn: true,
+      item_description: "",
     });
   }
 };
