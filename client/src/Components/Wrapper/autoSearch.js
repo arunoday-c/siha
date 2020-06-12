@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Search } from "semantic-ui-react";
 import _ from "lodash";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
-import Label from "./label";
+import { AlgaehLabel as Label } from "algaeh-react-component";
 // const style = {
 // 	clear: {
 // 		position: 'absolute',
@@ -25,14 +25,14 @@ export default class AlgaehAutoSearch extends Component {
       totalRecords: 0,
       minCharacters: 2,
       pageSize: 100,
-      pageNo: 0
+      pageNo: 0,
     };
     //  this.onResultSelectHandler = this.onResultSelectHandler.bind(this);
   }
 
   componentDidMount() {
     this.setState({
-      value: this.props.value
+      value: this.props.value,
     });
   }
 
@@ -40,7 +40,7 @@ export default class AlgaehAutoSearch extends Component {
     if (this.state.hasSecurity) return;
     if (props.value !== this.state.value) {
       this.setState({
-        value: props.value
+        value: props.value,
       });
     }
   }
@@ -50,7 +50,7 @@ export default class AlgaehAutoSearch extends Component {
       this.setState(
         {
           isLoading: true,
-          value
+          value,
         },
         () => {
           const that = this;
@@ -76,14 +76,14 @@ export default class AlgaehAutoSearch extends Component {
       );
     } catch (e) {
       this.setState({
-        isLoading: false
+        isLoading: false,
       });
     }
   };
   onResultSelectHandler(e, { result }) {
     this.setState(
       {
-        value: result[this.props.displayField]
+        value: result[this.props.displayField],
       },
       () => {
         if (typeof this.props.onClick === "function")
@@ -99,11 +99,11 @@ export default class AlgaehAutoSearch extends Component {
       columns,
       extraParameters,
       searchName,
-      directCondition
+      directCondition,
     } = this.props;
     const { pageSize, pageNo, value } = this.state;
     const _exParameters = extraParameters === undefined ? {} : extraParameters;
-    let _arrayParam = columns.map(f => {
+    let _arrayParam = columns.map((f) => {
       if (f.exclude === undefined || f.exclude !== true)
         return { [f.fieldName]: value };
     });
@@ -128,7 +128,7 @@ export default class AlgaehAutoSearch extends Component {
       searchName: searchName,
       pageSize: pageSize,
       pageNo: pageNo,
-      ..._directCondition
+      ..._directCondition,
     };
   }
 
@@ -142,7 +142,7 @@ export default class AlgaehAutoSearch extends Component {
       data: data,
       method: "POST",
       cancelRequestId: "autoSearch_" + this.props.searchName,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           if (response.data.records !== undefined) {
             const _records = response.data.records;
@@ -150,18 +150,18 @@ export default class AlgaehAutoSearch extends Component {
             this.setState({
               totalRecords: _records.totalPages,
               results: _recordData,
-              isLoading: false
+              isLoading: false,
             });
           }
         }
-      }
+      },
     });
   }
   onClearHandler(e) {
     this.setState(
       {
         value: "",
-        isLoading: false
+        isLoading: false,
       },
       () => {
         if (typeof this.props.onClear === "function") {
@@ -191,7 +191,7 @@ export default class AlgaehAutoSearch extends Component {
           loading={isLoading}
           results={results}
           onSearchChange={_.debounce(this.handleSearchChange, 500, {
-            leading: true
+            leading: true,
           })}
           placeholder={this.props.title}
           {..._fluid}

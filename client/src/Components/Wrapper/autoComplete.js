@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
-import Label from "./label";
+// import Label from "./label";
+import { AlgaehLabel as Label } from "algaeh-react-component";
 // import "../Wrapper/autoComplete.scss";
 // import Enumarable from "linq";
 import isEqual from "lodash/isEqual";
