@@ -27,16 +27,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -63,16 +63,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -92,14 +92,14 @@ export default {
           query:
             "select hims_d_counter_id,counter_code,counter_description,arabic_name,counter_status from \
           hims_d_counter where record_status='A' order by hims_d_counter_id desc;",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -136,14 +136,14 @@ export default {
             _strAppend +
             "order by hims_d_shift_id desc",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -181,16 +181,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.record_status,
-            inputParam.hims_d_shift_id
+            inputParam.hims_d_shift_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -217,16 +217,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam.record_status,
-            inputParam.hims_d_counter_id
+            inputParam.hims_d_counter_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -251,14 +251,14 @@ export default {
             and UM.hospital_id=? and  E.employee_status='A' and U.user_status='A' and U.user_type='C'\
             order by cashier_id desc;",
           values: [req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -276,7 +276,7 @@ export default {
         .executeQuery({
           query:
             "select hims_m_cashier_shift_id ,cashier_id,from_date,to_date \
- from hims_m_cashier_shift where cashier_id=? and shift_id=?   and \
+ from hims_m_cashier_shift where cashier_id=? and shift_id=? and record_status='A'  and \
 ((  date(?)>=date(from_date) and date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date))\
 or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=date(?) and date(to_date)<= date(?)) );",
           values: [
@@ -290,23 +290,20 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
             inputParam.from_date,
             inputParam.to_date,
             inputParam.from_date,
-            inputParam.to_date
+            inputParam.to_date,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(ExResult => {
+        .then((ExResult) => {
           // _mysql.releaseConnection();
           // req.records = result;
           // next();
 
           if (ExResult.length > 0) {
-            console.log("ExResult", ExResult);
             _mysql.releaseConnection();
             req.records = {
               invalid_input: true,
-              message: `cashier has shift from ${ExResult[0]["from_date"]} to ${
-                ExResult[0]["to_date"]
-              } `
+              message: `cashier has shift from ${ExResult[0]["from_date"]} to ${ExResult[0]["to_date"]} `,
             };
             next();
           } else {
@@ -324,22 +321,22 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -367,14 +364,14 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
           inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id\
           inner join hims_d_shift S on CS.shift_id=S.hims_d_shift_id\
           where CS.record_status='A' ${str}`,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -396,16 +393,16 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
             inputParam.shift_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_m_cashier_shift_id
+            inputParam.hims_m_cashier_shift_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -424,14 +421,14 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
           query:
             "UPDATE hims_m_cashier_shift SET  record_status='I' WHERE hims_m_cashier_shift_id=?",
           values: [inputParam.hims_m_cashier_shift_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -439,5 +436,5 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
