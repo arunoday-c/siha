@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Search } from "semantic-ui-react";
 import _ from "lodash";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
-import { AlgaehLabel as Label } from "algaeh-react-component";
+import { AlgaehLabel as Label } from "algaeh-react-components";
 // const style = {
 // 	clear: {
 // 		position: 'absolute',
