@@ -3,35 +3,160 @@ import "./business_setup.scss";
 import "../../styles/site.scss";
 import BranchMaster from "./BranchMaster/BranchMaster";
 import DeptMaster from "./DeptMaster/DeptMaster";
-import HolidayList from "./HolidayList/HolidayList";
-import Numbering from "./Numbering/Numbering";
-import Transaction from "./Transaction/Transaction";
 import Counter from "./Counter/Counter";
 import Currency from "./Currency/Currency";
 import Shift from "./Shift/Shift";
-import Category from "./Category/Category";
-import Speciality from "./Speciality/Speciality";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
-import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
+import ProjectMapping from "./ProjectMapping/ProjectMapping";
+import ProjectMaster from "./ProjectMaster/ProjectMaster";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
-import _ from "lodash";
+import { AlgaehTabs } from "algaeh-react-components";
+import { MainContext } from "algaeh-react-components/context";
 
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
     this.state = {
       pageDisplay: "BranchMaster",
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: false,
+      screens_data: [],
     };
+  }
+  static contextType = MainContext;
+
+  UNSAFE_componentWillMount() {
+    const userToken = this.context.userToken;
+    const active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
+    let screens_data = [
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "departments",
+            }}
+          />
+        ),
+        children: <DeptMaster />,
+        componentCode: "BUSS_DEPT",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "branch",
+            }}
+          />
+        ),
+        children: <BranchMaster />,
+        componentCode: "BUSS_BRNH",
+      },
+    ];
+
+    if (active) {
+      screens_data.push(
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                fieldName: "shift",
+              }}
+            />
+          ),
+          children: <Shift />,
+          componentCode: "BUSS_SHIFT",
+        },
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                fieldName: "users_shift",
+              }}
+            />
+          ),
+          children: <UserShiftMapping />,
+          componentCode: "BUSS_USERSHIFT",
+        },
+        {
+          title: (
+            <AlgaehLabel
+              label={{
+                fieldName: "counter",
+              }}
+            />
+          ),
+          children: <Counter />,
+          componentCode: "BUSS_COUNTER",
+        }
+      );
+    }
+    screens_data.push(
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "currency",
+            }}
+          />
+        ),
+        children: <Currency />,
+        componentCode: "BUSS_CURR",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "bank_master",
+            }}
+          />
+        ),
+        children: <BankMaster />,
+        componentCode: "BUSS_BANK",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              fieldName: "company_account",
+            }}
+          />
+        ),
+        children: <CompanyAccount />,
+        componentCode: "BUSS_COMPANY",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Project Master",
+            }}
+          />
+        ),
+        children: <ProjectMaster />,
+        componentCode: "BUSS_PRJ_MTR",
+      },
+      {
+        title: (
+          <AlgaehLabel
+            label={{
+              forceLabel: "Project Mapping",
+            }}
+          />
+        ),
+        children: <ProjectMapping />,
+        componentCode: "BUSS_PRJ_MAP",
+      }
+    );
+    this.setState({
+      HIMS_Active: active,
+      screens_data: screens_data,
+    });
   }
 
   openTab(e) {
@@ -42,206 +167,25 @@ class BusinessSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
   render() {
     return (
       <div className="business_setup">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"BranchMaster"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Branch"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"DeptMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "departments"
-                    }}
-                  />
-                }
-              </li>
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Speciality"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "speciality"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Category"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "category"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"CategorySpeciality"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "category_speciality_map"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              <li
-                algaehtabs={"Shift"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "shift"
-                    }}
-                  />
-                }
-              </li>
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"Counter"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "counter"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              {this.state.HIMS_Active === true ? (
-                <li
-                  algaehtabs={"UserShiftMapping"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "users_shift"
-                      }}
-                    />
-                  }
-                </li>
-              ) : null}
-              <li
-                algaehtabs={"Currency"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "currency"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"BankMaster"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Bank Master"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"CompanyAccount"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Company Account"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="business-section">
-          {this.state.pageDisplay === "BranchMaster" ? (
-            <BranchMaster />
-          ) : this.state.pageDisplay === "DeptMaster" ? (
-            <DeptMaster />
-          ) : this.state.pageDisplay === "Holiday" ? (
-            <HolidayList />
-          ) : this.state.pageDisplay === "Counter" ? (
-            <Counter />
-          ) : this.state.pageDisplay === "Shift" ? (
-            <Shift />
-          ) : this.state.pageDisplay === "Transaction" ? (
-            <Transaction />
-          ) : this.state.pageDisplay === "Numbering" ? (
-            <Numbering />
-          ) : this.state.pageDisplay === "UserShiftMapping" ? (
-            <UserShiftMapping />
-          ) : this.state.pageDisplay === "Currency" ? (
-            <Currency />
-          ) : this.state.pageDisplay === "Category" ? (
-            <Category />
-          ) : this.state.pageDisplay === "Speciality" ? (
-            <Speciality />
-          ) : this.state.pageDisplay === "BankMaster" ? (
-            <BankMaster />
-          ) : this.state.pageDisplay === "CompanyAccount" ? (
-            <CompanyAccount />
-          ) : this.state.pageDisplay === "CategorySpeciality" ? (
-            <CategorySpeciality />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={this.state.screens_data}
+          renderClass="BusSetupSection"
+        />
       </div>
     );
   }
 }
+
+// function ChildrenItem({ children }) {
+//   return <div className="bussiness-section">{children}</div>;
+// }
 
 export default BusinessSetup;

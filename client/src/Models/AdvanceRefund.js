@@ -1,5 +1,5 @@
 export default {
-  inputParam: function() {
+  inputParam: function () {
     var output;
 
     output = {
@@ -11,6 +11,12 @@ export default {
       //created_date: new Date(),
       // updated_by: null,
       update_date: 0,
+
+      Cashchecked: true,
+      Cardchecked: false,
+      Checkchecked: false,
+      lang_sets: "en_comp",
+      shift_id: null,
 
       pay_cash: "CA",
       pay_card: "CD",
@@ -31,12 +37,12 @@ export default {
       billing_header_id: null,
       total_amount: 0,
       counter_id: null,
-      shift_id: null,
       unbalanced_amount: 0,
 
       updated_date: null,
       pay_type: "R",
-      receiptdetails: []
+      receiptdetails: [],
+      bank_card_id: null
     };
     return output;
   }

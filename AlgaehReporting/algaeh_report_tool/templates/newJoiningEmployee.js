@@ -1,4 +1,4 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
@@ -6,7 +6,7 @@ const executePDF = function executePDFMethod(options) {
       const _ = options.loadash;
       const moment = options.moment;
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       let input = {};
 
       const params = options.args.reportParams;
@@ -15,7 +15,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       let strQuery = "";
 
@@ -80,7 +80,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: ` 
+          query: `
           select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
           select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'

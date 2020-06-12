@@ -24,10 +24,9 @@ import {
   updateSubInsurance,
   onchangegridcol,
   getSubInsuranceDetails,
-  dateValidate
+  dateValidate,loadAccounts
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
-
 import Options from "../../../Options.json";
 
 class SubInsurance extends PureComponent {
@@ -42,20 +41,32 @@ class SubInsurance extends PureComponent {
       card_format: null,
       effective_start_date: null,
       effective_end_date: null,
-      maxDate_end_date: null
+      maxDate_end_date: null,
+      accounts:[]
       // sub_insurance: []
       // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
   }
 
-  componentWillMount() {
+  loadAccounts(){
+    loadAccounts({finance_account_head_id:"1"}).then(result=>{
+      if(result.length >0){
+        this.setState({accounts:result[0].children});
+      }else{
+        this.setState({accounts:[]});
+      }
+    })
+  }
+
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.InsuranceSetup;
     InputOutput.maxDate_end_date = InputOutput.effective_end_date;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
+   // this.loadAccounts();
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
     }
@@ -235,7 +246,7 @@ class SubInsurance extends PureComponent {
                   <div className="col-lg-3">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 21 }}
+                      style={{ marginTop: 19 }}
                       onClick={saveSubInsurance.bind(this, this, context)}
                     >
                       Add
@@ -450,7 +461,8 @@ class SubInsurance extends PureComponent {
                             />
                           ),
                           disabled: true
-                        }
+                        },
+
                       ]}
                       keyId="insurance_sub_code"
                       dataSource={{

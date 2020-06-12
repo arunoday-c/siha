@@ -1,14 +1,24 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
-      utilities.logger().log("outpoy: ", options.result);
+      // utilities.logger().log("outpoy: ", options.result);
 
+      const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
+        options.result.map(item => {
+          item.total_quantity = parseFloat(item["total_quantity"]).toFixed(
+            decimal_places
+          );
+          return item;
+        });
+
         resolve({
-          net_payable: options.result[0]["net_payable"],
+          net_payable: parseFloat(options.result[0]["net_payable"]).toFixed(
+            decimal_places
+          ),
           purchase_number: options.result[0]["purchase_number"],
           po_date: options.result[0]["po_date"],
           location_description: options.result[0]["location_description"],

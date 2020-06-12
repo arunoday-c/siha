@@ -16,6 +16,8 @@ import InsuranceCardClass from "../controllers/InsuranceCardClass";
 import sfda from "../controllers/sfda";
 import branchMaster from "../controllers/branchMaster";
 import favouriteOrders from "../controllers/favouriteOrders";
+import customer from "../controllers/customer";
+import salseSetup from "../controllers/salseSetup";
 
 const router = express();
 router.use("/department", department());
@@ -35,5 +37,7 @@ router.use("/InsuranceCardClass", InsuranceCardClass());
 router.use("/sfda", sfda());
 router.use("/branchMaster", branchMaster());
 router.use("/favouriteOrders", favouriteOrders());
+router.use("/customer", customer());
+router.use("/salseSetup", salseSetup());
 
 export default router;

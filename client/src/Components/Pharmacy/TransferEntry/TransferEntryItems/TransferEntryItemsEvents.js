@@ -211,8 +211,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.itemlist === undefined
       ? []
       : $this.props.itemlist.filter(
-          f => f.hims_d_item_master_id === row.item_id
-        );
+        f => f.hims_d_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -407,6 +407,7 @@ const AddSelectedBatches = ($this, context) => {
     });
   } else {
     if (context !== null) {
+
       let saveEnable = true;
       let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let _stock_detail = $this.state.stock_detail;
@@ -424,6 +425,7 @@ const AddSelectedBatches = ($this, context) => {
 
       _stock_detail[_index].pharmacy_stock_detail = batches.map(
         (item, index) => {
+          item.sales_price = item.sale_price;
           return { ...item, ...details };
         }
       );
@@ -434,7 +436,8 @@ const AddSelectedBatches = ($this, context) => {
 
       for (let i = 0; i < remove_item.length; i++) {
         if (remove_item[i].item_id === details.item_id) {
-          _pharmacy_stock_detail.splice(remove_item[i], 1);
+          let remove_index = _pharmacy_stock_detail.indexOf(remove_item[i])
+          _pharmacy_stock_detail.splice(remove_index, 1);
         }
       }
 
@@ -444,6 +447,7 @@ const AddSelectedBatches = ($this, context) => {
           return { ...item, ...details };
         })
       );
+
       saveEnable = _pharmacy_stock_detail.length > 0 ? false : true;
       context.updateState({
         stock_detail: _stock_detail,
@@ -517,7 +521,9 @@ const itemchangeText = ($this, context, e, ctrl) => {
               uom_description: e.uom_description,
               stocking_uom: e.stocking_uom,
               conversion_factor: sales_conversion_factor.conversion_factor,
-              sales_qtyhand: sales_qtyhand
+              sales_qtyhand: sales_qtyhand,
+              sales_price: e.sale_price,
+              unit_cost: e.avgcost
             });
 
             if (context !== undefined) {
@@ -544,7 +550,9 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 uom_description: e.uom_description,
                 stocking_uom: e.stocking_uom,
                 conversion_factor: sales_conversion_factor.conversion_factor,
-                sales_qtyhand: sales_qtyhand
+                sales_qtyhand: sales_qtyhand,
+                sales_price: e.sale_price,
+                unit_cost: e.avgcost
               });
             }
           } else {
@@ -641,7 +649,7 @@ const CloseItemBatch = ($this, context, e) => {
   let expiry_date =
     e !== undefined
       ? e.selected === true
-        ? moment(e.expirydt)._d
+        ? e.expirydt !== null ? moment(e.expirydt)._d : null
         : $this.state.expiry_date
       : $this.state.expiry_date;
 
@@ -672,6 +680,18 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_price
       : $this.state.sales_price;
 
+  let barcode =
+    e !== undefined
+      ? e.selected === true
+        ? e.barcode
+        : $this.state.barcode
+      : $this.state.barcode;
+
+  let quantity = e !== undefined
+    ? e.selected === true
+      ? 0
+      : $this.state.quantity
+    : $this.state.quantity;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -680,7 +700,9 @@ const CloseItemBatch = ($this, context, e) => {
     grn_no: grn_no,
     qtyhand: qtyhand,
     unit_cost: unit_cost,
-    sales_price: sale_price
+    sales_price: sale_price,
+    barcode: barcode,
+    quantity: quantity
   });
 
   if (context !== null) {
@@ -690,7 +712,9 @@ const CloseItemBatch = ($this, context, e) => {
       grn_no: grn_no,
       qtyhand: qtyhand,
       unit_cost: unit_cost,
-      sales_price: sale_price
+      sales_price: sale_price,
+      barcode: barcode,
+      quantity: quantity
     });
   }
 };

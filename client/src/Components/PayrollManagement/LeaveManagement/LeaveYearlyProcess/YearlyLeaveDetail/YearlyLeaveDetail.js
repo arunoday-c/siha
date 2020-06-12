@@ -11,7 +11,7 @@ class YearlyLeaveDetail extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.year !== undefined && nextProps.employee_id !== undefined) {
       this.getLeaveData(nextProps.year, nextProps.employee_id);
     }
@@ -117,7 +117,7 @@ class YearlyLeaveDetail extends Component {
                         <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
                       ),
                       others: {
-                        maxWidth: 250
+                        maxWidth: 120
                       }
                     },
                     {
@@ -129,20 +129,45 @@ class YearlyLeaveDetail extends Component {
                       )
                     },
                     {
-                      fieldName: "total_eligible",
+                      fieldName: "close_balance",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
-                      ),
-                      others: {
-                        maxWidth: 100
-                      }
+                        <AlgaehLabel
+                          label={{ forceLabel: "Closing Balance" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "availed_till_date",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Avail Till Date" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "projected_applied_leaves",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Projected Leave" }}
+                        />
+                      )
+                    },
+
+                    {
+                      fieldName: "processed",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Leave Closed" }} />
+                      )
+                      // displayTemplate: row => {
+                      //   return row.processed === "Y" ? "Yes" : "No";
+                      // }
                     }
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"
                   dataSource={{ data: this.state.leave_data }}
                   isEditable={false}
                   loading={this.state.loading}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 15 }}
                   events={{}}
                   others={{}}
                 />

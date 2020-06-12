@@ -8,9 +8,9 @@ import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehFormGroup
+  // AlagehAutoComplete,
+  // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 
@@ -43,7 +43,7 @@ class TransferEntryItems extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.TransferIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -91,7 +91,7 @@ class TransferEntryItems extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.TransferIOputs);
   }
 
@@ -157,7 +157,7 @@ class TransferEntryItems extends Component {
                         <AlgaehAutoSearch
                           div={{ className: "col-3" }}
                           label={{ forceLabel: "Item Name (Ctrl + i)" }}
-                          title="Search Items"
+                          title="Type Item Name Here"
                           id="item_id_search"
                           template={result => {
                             return (
@@ -1284,8 +1284,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TransferEntryItems)
+  connect(mapStateToProps, mapDispatchToProps)(TransferEntryItems)
 );

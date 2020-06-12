@@ -11,7 +11,8 @@ const {
   addtransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer,
-  getAckTransferList
+  getAckTransferList,
+  generateAccountingEntry
 } = transferModels;
 
 export default () => {
@@ -35,6 +36,7 @@ export default () => {
     addtransferEntry,
     updaterequisitionEntryOnceTranfer,
     updateIntoItemLocation,
+    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -46,6 +48,7 @@ export default () => {
   api.put(
     "/updatetransferEntry",
     updatetransferEntry,
+    generateAccountingEntry,
     updateIntoItemLocation,
     updateIntoItemLocation,
     (req, res, next) => {

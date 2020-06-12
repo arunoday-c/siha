@@ -1,29 +1,30 @@
 import React, { Component } from "react";
 import "./loan-auth.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import LoanModal from "./LoanModal/LoanModal";
 import Enumerable from "linq";
 import moment from "moment";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class LoanAuthorization extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      from_date: "",
-      to_date: "",
-      selRow: {},
-      loading: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
-      openAuth: false
+      open: false,
+      leave_levels: [],
+      leave_applns: [],
+      hospital_id: null,
+      loan_status: "PEN",
+      //currLeavAppln: {}
     };
     this.getHospitals();
     this.getEmployees();
@@ -35,38 +36,56 @@ class LoanAuthorization extends Component {
       uri: "/loan/getLoanLevels",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                  w => w.value
+                  (w) => w.value
                 )
               : null;
 
-          this.setState(
-            {
-              levels: res.data.records.auth_levels,
-              auth_level: auth_level !== null ? auth_level.value : null
-            },
-            () => {
-              this.getLoanApplications();
-            }
-          );
+          this.setState({
+            loan_levels: res.data.records.auth_levels,
+            auth_level: auth_level !== null ? auth_level.value : null,
+          });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee,
+      },
+      searchName: "employee_branch_wise",
+      uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id,
+          },
+          () => {}
+        );
+      },
     });
   }
 
   getLoanApplications() {
     this.setState({
-      loading: true
+      loading: true,
     });
 
     algaehApiCall({
@@ -74,30 +93,32 @@ class LoanAuthorization extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        auth_level: "AL" + this.state.auth_level,
+        auth_level: this.state.auth_level,
         employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id,
         from_date: this.state.from_date,
-        to_date: this.state.to_date
+        to_date: this.state.to_date,
+        loan_authorized: this.state.loan_status,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            loan_applns: res.data.records
+            loan_applns: res.data.records,
           });
           this.setState({
-            loading: false
+            loading: false,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
         this.setState({
-          loading: false
+          loading: false,
         });
-      }
+      },
     });
   }
 
@@ -106,52 +127,77 @@ class LoanAuthorization extends Component {
       uri: "/employee/get",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employees: res.data.records
+            employees: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            hospitals: res.data.records
+            hospitals: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value,
-      loan_applns: []
+      loan_applns: [],
     });
   }
 
   closeModal() {
     this.setState({
-      openAuth: false
+      openAuth: false,
     });
   }
 
+  clearState() {
+    let auth_loan =
+      this.state.loan_levels.length > 0
+        ? Enumerable.from(this.state.loan_levels).maxBy((w) => w.value)
+        : null;
+
+    this.setState({
+      from_date: null,
+      to_date: null,
+      hims_d_employee_id: null,
+      employee_name: null,
+      auth_loan: auth_loan !== null ? auth_loan.value : null,
+      loan_status: "PEN",
+      loan_applns: [],
+      employee_id: null,
+    });
+  }
   reloadAuths() {
     this.setState({
-      openAuth: false
+      openAuth: false,
     });
     this.getLoanApplications();
+  }
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
   }
 
   render() {
@@ -170,71 +216,36 @@ class LoanAuthorization extends Component {
         />
         <div className="col-12">
           <div className="row inner-top-search">
+            {/* <AlgaehSecurityElement
+              elementCode="PAY_LON_AUT"
+              render={data => {
+                return (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Auth. Level",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "auth_level",
+                      value: this.state.auth_level,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "text",
+                        valueField: "value",
+                        data: data //this.state.leave_levels
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                );
+              }}
+            /> */}
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Authorization Level",
-                isImp: false
-              }}
-              selector={{
-                name: "auth_level",
-                value: this.state.auth_level,
-                className: "select-fld",
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: this.state.levels
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    auth_level: null,
-                    loan_applns: []
-                  });
-                }
-              }}
-            />
-
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "From Date", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "from_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    from_date: selDate
-                  });
-                }
-              }}
-              value={this.state.from_date}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{ forceLabel: "To Date", isImp: false }}
-              textBox={{
-                className: "txt-fld",
-                name: "to_date"
-              }}
-              maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    to_date: selDate
-                  });
-                }
-              }}
-              value={this.state.to_date}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{
-                forceLabel: "Filter by Branch",
-                isImp: true
+                forceLabel: "Branch",
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -243,47 +254,107 @@ class LoanAuthorization extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.state.hospitals
+                  data: this.state.hospitals,
                 },
                 onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null,
-                    loan_applns: []
-                  });
-                }
               }}
+              showLoading={true}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group mandatory" }}
+              label={{
+                forceLabel: "Auth. Level",
+                isImp: true,
+              }}
+              selector={{
+                name: "auth_level",
+                value: this.state.auth_level,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: this.state.loan_levels,
+                },
+                onChange: this.dropDownHandler.bind(this),
+              }}
+            />
+
+            <AlgaehDateHandler
+              div={{ className: "col-2 form-group mandatory" }}
+              label={{ forceLabel: "From Date", isImp: true }}
+              textBox={{
+                className: "txt-fld",
+                name: "from_date",
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: (selDate) => {
+                  this.setState({
+                    from_date: selDate,
+                  });
+                },
+              }}
+              value={this.state.from_date}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-2 form-group mandatory" }}
+              label={{ forceLabel: "To Date", isImp: true }}
+              textBox={{
+                className: "txt-fld",
+                name: "to_date",
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: (selDate) => {
+                  this.setState({
+                    to_date: selDate,
+                  });
+                },
+              }}
+              value={this.state.to_date}
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group" }}
               label={{
-                forceLabel: "Filter by Employee",
-                isImp: true
+                forceLabel: "Loan Status",
+                isImp: false,
               }}
               selector={{
-                name: "employee_id",
+                name: "loan_status",
                 className: "select-fld",
-                value: this.state.employee_id,
+                value: this.state.loan_status,
                 dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data: this.state.employees
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LOAN_STATUS,
                 },
                 onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    employee_id: null,
-                    loan_applns: []
-                  });
-                }
               }}
             />
 
-            <div className="col form-group">
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={this.employeeSearch.bind(this)}>
+                {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            <div className="col-12 form-group" style={{ textAlign: "right" }}>
+              {" "}
+              <button
+                onClick={this.clearState.bind(this)}
+                className="btn btn-default"
+              >
+                Clear
+              </button>{" "}
               <button
                 onClick={this.getLoanApplications.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginRight: 5 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (
@@ -291,7 +362,7 @@ class LoanAuthorization extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
-              </button>
+              </button>{" "}
             </div>
           </div>
         </div>
@@ -300,7 +371,7 @@ class LoanAuthorization extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">List of Loan Requested</h3>
+                <h3 className="caption-subject">Loan Request List</h3>
               </div>
               <div className="actions">
                 {/* <a className="btn btn-primary btn-circle active">
@@ -320,31 +391,30 @@ class LoanAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Actions" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.loan_authorized === "APR" ? (
                             <i className="fas fa-thumbs-up" />
                           ) : (
-                            <a
+                            <i
+                              className="fas fa-file-signature"
                               onClick={() => {
                                 this.setState({
                                   selRow: row,
-                                  openAuth: true
+                                  openAuth: true,
                                 });
                               }}
-                            >
-                              <i className="fas fa-file-signature" />
-                            </a>
+                            />
                           );
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 55
-                        }
+                          maxWidth: 55,
+                        },
                       },
                       {
                         fieldName: "loan_authorized",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.loan_authorized === "PEN" ? (
@@ -368,7 +438,7 @@ class LoanAuthorization extends Component {
                               )}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "loan_application_number",
@@ -376,7 +446,7 @@ class LoanAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Application Code" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "loan_application_date",
@@ -385,7 +455,7 @@ class LoanAuthorization extends Component {
                             label={{ forceLabel: "Application Date" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.loan_application_date).format(
@@ -393,19 +463,19 @@ class LoanAuthorization extends Component {
                               )}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "loan_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "employee_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "EmployeeCode" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "employee_name",
@@ -413,8 +483,8 @@ class LoanAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
-                      }
+                        ),
+                      },
                     ]}
                     keyId="hims_f_loan_application_id"
                     dataSource={{ data: this.state.loan_applns }}

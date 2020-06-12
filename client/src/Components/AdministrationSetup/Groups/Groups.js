@@ -4,24 +4,23 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { GROUP_TYPE } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
-
 class Groups extends Component {
   constructor(props) {
     super(props);
     this.initCall();
     this.state = {
-      groups: []
+      groups: [],
     };
     this.getGroups();
   }
 
-    initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -29,17 +28,17 @@ class Groups extends Component {
       data: {
         fields: "app_group_code",
         tableName: "algaeh_d_app_group",
-        keyFieldName: "algaeh_d_app_group_id"
+        keyFieldName: "algaeh_d_app_group_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-           app_group_code_placeHolder: placeHolder.app_group_code
+            app_group_code_placeHolder: placeHolder.app_group_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -47,19 +46,19 @@ class Groups extends Component {
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            groups: res.data.records
+            groups: res.data.records,
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   clearState() {
@@ -67,7 +66,7 @@ class Groups extends Component {
       app_group_code: null,
       app_group_name: null,
       app_group_desc: null,
-      group_type: null
+      group_type: null,
     });
   }
   addGroups() {
@@ -78,24 +77,24 @@ class Groups extends Component {
         app_group_code: this.state.app_group_code,
         app_group_name: this.state.app_group_name,
         app_group_desc: this.state.app_group_desc,
-        group_type: this.state.group_type
+        group_type: this.state.group_type,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record added successfully",
-            type: "success"
+            type: "success",
           });
         }
         this.getGroups();
         this.clearState();
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   changeGridEditors(row, e) {
@@ -113,24 +112,24 @@ class Groups extends Component {
         app_group_name: data.app_group_name,
         app_group_desc: data.app_group_desc,
         group_type: data.group_type,
-        algaeh_d_app_group_id: data.algaeh_d_app_group_id
+        algaeh_d_app_group_id: data.algaeh_d_app_group_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getGroups();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -139,9 +138,8 @@ class Groups extends Component {
   }
 
   dropDownHandler(value) {
-    
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -153,36 +151,31 @@ class Groups extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/algaehMasters/deleteAlgaehGroupMAster",
           method: "DELETE",
           data: {
-            algaeh_d_app_group_id: data.algaeh_d_app_group_id
+            algaeh_d_app_group_id: data.algaeh_d_app_group_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record updated successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getGroups();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -190,96 +183,94 @@ class Groups extends Component {
   render() {
     return (
       <div className="groups">
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-body">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_code",
-                  value: this.state.app_group_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.app_group_code_placeHolder
-                        }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_name",
-                  value: this.state.app_group_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  forceLabel: "Group Description",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_desc",
-                  value: this.state.app_group_desc,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  forceLabel: "Group Type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "group_type",
-                  className: "select-fld",
-                  value: this.state.group_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GROUP_TYPE
-                  },
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Code",
+              isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_code",
+              value: this.state.app_group_code,
+              events: {
+                onChange: this.changeTexts.bind(this),
+              },
+              others: {
+                tabIndex: "1",
+                placeholder: this.state.app_group_code_placeHolder,
+              },
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Name",
+              isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_name",
+              value: this.state.app_group_name,
+              events: {
+                onChange: this.changeTexts.bind(this),
+              },
+            }}
+          />
+          {/* <AlagehFormGroup
+            div={{ className: "col-3  mandatory form-group" }}
+            label={{
+              forceLabel: "User Group Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "app_group_desc",
+              value: this.state.app_group_desc,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          /> */}
+          <AlagehAutoComplete
+            div={{ className: "col-2  mandatory form-group" }}
+            label={{
+              forceLabel: "Group Type",
+              isImp: true,
+            }}
+            selector={{
+              name: "group_type",
+              className: "select-fld",
+              value: this.state.group_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GROUP_TYPE,
+              },
 
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+              onChange: this.dropDownHandler.bind(this),
+            }}
+          />
 
-              <div className="col-lg-3">
-                <button
-                  type="submit"
-                  style={{ marginTop: 21 }}
-                  onClick={this.addGroups.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
-              </div>
-            </div>
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addGroups.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Group List</h3>
+                  <h3 className="caption-subject">User Group List</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -294,11 +285,11 @@ class Groups extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Group Code"
+                              forceLabel: "Group Code",
                             }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "app_group_name",
@@ -306,12 +297,12 @@ class Groups extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Group Name"
+                              forceLabel: "Group Name",
                             }}
                           />
                         ),
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -323,69 +314,69 @@ class Groups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Group Name- cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "app_group_desc",
-
-                        label: (
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Group Description"
-                            }}
-                          />
-                        ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "app_group_desc",
-                                value: row.app_group_desc,
-                                events: {
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
+                                  required: true,
                                 },
-                                others: {
-                                  errormessage:
-                                    "Group Description- cannot be blank",
-                                  required: true
-                                }
                               }}
                             />
                           );
-                        }
+                        },
                       },
+                      // {
+                      //   fieldName: "app_group_desc",
+
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{
+                      //         forceLabel: "Group Description"
+                      //       }}
+                      //     />
+                      //   ),
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "app_group_desc",
+                      //           value: row.app_group_desc,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             )
+                      //           },
+                      //           others: {
+                      //             errormessage:
+                      //               "Group Description- cannot be blank",
+                      //             required: true
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "group_type",
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Group Type"
+                              forceLabel: "Group Type",
                             }}
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(GROUP_TYPE)
-                            .where(w => w.value === row.group_type)
+                            .where((w) => w.value === row.group_type)
                             .firstOrDefault();
                           return <span>{x !== undefined ? x.name : ""}</span>;
                         },
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -396,7 +387,7 @@ class Groups extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GROUP_TYPE
+                                  data: GROUP_TYPE,
                                 },
 
                                 onChange: this.changeGridEditors.bind(
@@ -406,24 +397,25 @@ class Groups extends Component {
 
                                 others: {
                                   errormessage: "Group type- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="algaeh_d_app_group_id"
                     dataSource={{
-                      data: this.state.groups
+                      data: this.state.groups,
                     }}
-                    filter={true} isEditable={true}
+                    filter={true}
+                    isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteGroups.bind(this),
-                      onDone: this.updateGroups.bind(this)
+                      onDone: this.updateGroups.bind(this),
                     }}
                   />
                 </div>

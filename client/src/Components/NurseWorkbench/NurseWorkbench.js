@@ -21,7 +21,6 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import {
   setGlobal,
-  getLabelFromLanguage,
   AlgaehValidation
 } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
@@ -89,10 +88,25 @@ class NurseWorkbench extends Component {
     //   getAllChiefComplaints(this);
     // }
     this.isMale = false;
+
+    this.complaintType = [];
+  }
+
+  componentDidMount() {
+    this.loadListofData();
     getAllChiefComplaints(this);
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
-    this.complaintType = [];
+    if (
+      this.props.allallergies === undefined ||
+      this.props.allallergies.length === 0
+    ) {
+      getAllAllergies(this, data => {
+        this.setState({
+          allSpecificAllergies: this.getPerticularAllergyList(data)
+        });
+      });
+    }
   }
 
   openTab(e) {
@@ -192,8 +206,7 @@ class NurseWorkbench extends Component {
       bp_position: null,
       complaint_type: null,
       chief_complaint: null,
-      pageDisplay: "Orders",
-      patient_id: null
+      pageDisplay: "Orders"
     });
 
     const _resetElements = document.getElementById("vitals_recording");
@@ -221,11 +234,11 @@ class NurseWorkbench extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-          isPregnancy: false
-        })
+        isPregnancy: false
+      })
       : this.setState({
-          isPregnancy: true
-        });
+        isPregnancy: true
+      });
   }
   dataLevelUpdate(e) {
     NursingWorkbenchHandler().dataLevelUpdate(this, e);
@@ -300,12 +313,7 @@ class NurseWorkbench extends Component {
               getPatientAllergies(this);
             }
           },
-          onFailure: error => {}
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          onFailure: error => { }
         });
       }
     });
@@ -500,20 +508,6 @@ class NurseWorkbench extends Component {
     });
   }
 
-  componentDidMount() {
-    this.loadListofData();
-    if (
-      this.props.allallergies === undefined ||
-      this.props.allallergies.length === 0
-    ) {
-      getAllAllergies(this, data => {
-        this.setState({
-          allSpecificAllergies: this.getPerticularAllergyList(data)
-        });
-      });
-    }
-  }
-
   // addChiefComplainToPatient() {
   //   if (
   //     this.state.chief_complaint_id === null ||
@@ -583,9 +577,9 @@ class NurseWorkbench extends Component {
     row.update();
   }
 
-  onChiefComplaintRowDone(row) {
-    this.state.patChiefComp[row.rowIdx] = row;
-  }
+  // onChiefComplaintRowDone(row) {
+  //   this.state.patChiefComp[row.rowIdx] = row;
+  // }
 
   onChiefComplaintRowDelete(row) {
     swal({
@@ -602,11 +596,6 @@ class NurseWorkbench extends Component {
 
         this.setState({
           patChiefComp: this.state.patChiefComp
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -755,12 +744,12 @@ class NurseWorkbench extends Component {
                 k === "F"
                   ? "Food"
                   : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                  ? "Animal  &  Insect"
-                  : k === "C"
-                  ? "Chemical & Others"
-                  : "",
+                    ? "Airborne"
+                    : k === "AI"
+                      ? "Animal  &  Insect"
+                      : k === "C"
+                        ? "Chemical & Others"
+                        : "",
               allergyList: g.getSource()
             };
           })
@@ -789,30 +778,32 @@ class NurseWorkbench extends Component {
       <div className="calendar">
         <div className="col-12">
           <div className="row">
-            {this.liGenerate().map((row, index) => {
-              const _currDate = moment(row.currentdate).format("YYYYMMDD");
-              const _activeDate = moment(act_date).format("YYYYMMDD");
-              return (
-                <div
-                  // className="col"
-                  key={index}
-                  date={row.currentdate}
-                  className={
-                    _currDate === _activeDate
-                      ? _currDate === moment().format("YYYYMMDD")
-                        ? "col activeDate CurrentDate"
-                        : "col activeDate"
-                      : _currDate === moment().format("YYYYMMDD")
-                      ? "col CurrentDate"
-                      : "col"
-                  }
-                  onClick={this.onSelectedDateHandler.bind(this)}
-                >
-                  {row.day}
-                  <span>{row.dayName}</span>
-                </div>
-              );
-            })}
+            <ul className="calendarDays">
+              {this.liGenerate().map((row, index) => {
+                const _currDate = moment(row.currentdate).format("YYYYMMDD");
+                const _activeDate = moment(act_date).format("YYYYMMDD");
+                return (
+                  <li
+                    // className="col"
+                    key={index}
+                    date={row.currentdate}
+                    className={
+                      _currDate === _activeDate
+                        ? _currDate === moment().format("YYYYMMDD")
+                          ? " activeDate CurrentDate"
+                          : " activeDate"
+                        : _currDate === moment().format("YYYYMMDD")
+                          ? " CurrentDate"
+                          : ""
+                    }
+                    onClick={this.onSelectedDateHandler.bind(this)}
+                  >
+                    {row.day}
+                    <span>{row.dayName}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>
@@ -826,10 +817,10 @@ class NurseWorkbench extends Component {
       localStorage.getItem("workbenchDateRange") !== null
         ? JSON.parse(localStorage.getItem("workbenchDateRange"))
         : {
-            fromDate: this.state.fromDate,
-            toDate: this.state.toDate,
-            activeDateHeader: this.state.fromDate
-          };
+          fromDate: this.state.fromDate,
+          toDate: this.state.toDate,
+          activeDateHeader: this.state.fromDate
+        };
 
     let inputObj = { fromDate: dateRange.fromDate, toDate: dateRange.toDate };
     if (this.state.sub_department_id !== null) {
@@ -944,27 +935,9 @@ class NurseWorkbench extends Component {
   }
 
   render() {
-    const patChiefComplain =
-      this.state.patChiefComp !== undefined
-        ? this.state.patChiefComp.sort((a, b) => {
-            return (
-              b.hims_f_episode_chief_complaint_id -
-              a.hims_f_episode_chief_complaint_id
-            );
-          })
-        : [];
-
-    const _allUnselectedChiefComp =
-      this.props.allchiefcomplaints === undefined
-        ? []
-        : this.masterChiefComplaintsSortList(
-            patChiefComplain,
-            this.props.allchiefcomplaints
-          );
-
     const _department_viatals =
       this.props.department_vitals === undefined ||
-      this.props.department_vitals.length === 0
+        this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
 
@@ -1084,12 +1057,56 @@ class NurseWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {Enumerable.from(this.state.data)
+                    {/* {Enumerable.from(this.state.data)
                       .where(w => w.status === "V" && w.nurse_examine === "N")
                       .toArray().length !== 0 ? (
-                      Enumerable.from(this.state.data)
-                        .where(w => w.status === "V" && w.nurse_examine === "N")
-                        .toArray()
+                        Enumerable.from(this.state.data)
+                          .where(w => w.status === "V" && w.nurse_examine === "N")
+                          .toArray()
+                          .map((data, index) => (
+                            <li
+                              nursing_pat={index}
+                              key={index}
+                              onClick={this.moveToStation.bind(this, data)}
+                            >
+                              <span className="op-sec-1">
+                                <i
+                                  className={
+                                    data.appointment_patient === "Y"
+                                      ? "appointment-icon"
+                                      : "walking-icon"
+                                  }
+                                />
+                                <span className="opTime">
+                                  {moment(data.encountered_date).format(
+                                    "HH:mm A"
+                                  )}
+                                </span>
+                              </span>
+                              <span className="op-sec-2">
+                                <span className="opPatientName">
+                                  {data.full_name}
+                                </span>
+                                <span className="opStatus nursing">
+                                  {data.nurse_examine === "Y"
+                                    ? "Nursing Done"
+                                    : "Nursing Pending"}
+                                </span>
+                              </span>
+                              <span className="op-sec-3">
+                                <span className="opPatientStatus newVisit">
+                                  New Visit
+                              </span>
+                              </span>
+                            </li>
+                          ))
+                      ) : (
+                        <div className="col noPatientDiv">                          
+                          <p>No Patients Available</p>
+                        </div>
+                      )} */}
+                    {this.state.data.length !== 0 ? (
+                      this.state.data
                         .map((data, index) => (
                           <li
                             nursing_pat={index}
@@ -1128,11 +1145,11 @@ class NurseWorkbench extends Component {
                           </li>
                         ))
                     ) : (
-                      <div className="col noPatientDiv">
-                        {/* <h4>Relax</h4> */}
-                        <p>No Patients Available</p>
-                      </div>
-                    )}
+                        <div className="col noPatientDiv">
+                          {/* <h4>Relax</h4> */}
+                          <p>No Patients Available</p>
+                        </div>
+                      )}
                   </ul>
                 </div>
               </div>
@@ -1166,22 +1183,22 @@ class NurseWorkbench extends Component {
                       item.hims_d_vitals_header_id === 1
                         ? "col-3"
                         : item.hims_d_vitals_header_id >= 3
-                        ? "col-3 vitalTopFld15"
-                        : item.hims_d_vitals_header_id === 5 ||
-                          item.hims_d_vitals_header_id === 6
-                        ? "col-3 vitalTopFld20"
-                        : "col-3";
+                          ? "col-3 vitalTopFld15"
+                          : item.hims_d_vitals_header_id === 5 ||
+                            item.hims_d_vitals_header_id === 6
+                            ? "col-3 vitalTopFld20"
+                            : "col-3";
                     const _name = String(item.vitals_name)
                       .replace(/" "/g, "_")
                       .toLowerCase();
                     const _disable = _name === "bmi" ? true : false;
                     const _dependent =
                       item.hims_d_vitals_header_id === 8 ||
-                      item.hims_d_vitals_header_id === 9
+                        item.hims_d_vitals_header_id === 9
                         ? { dependent: "bp_position" }
                         : item.hims_d_vitals_header_id === 4
-                        ? { dependent: "temperature_from" }
-                        : {};
+                          ? { dependent: "temperature_from" }
+                          : {};
                     return (
                       <React.Fragment key={index}>
                         {item.hims_d_vitals_header_id === 4 ? (
@@ -1236,8 +1253,8 @@ class NurseWorkbench extends Component {
                               item.uom === "C"
                                 ? "°C"
                                 : item.uom === "F"
-                                ? "°F"
-                                : item.vital_short_name +
+                                  ? "°F"
+                                  : item.vital_short_name +
                                   " (" +
                                   String(item.uom).trim() +
                                   ")",
@@ -1551,8 +1568,8 @@ class NurseWorkbench extends Component {
                             ) : data.onset === "O" ? (
                               <span>Onset Date</span>
                             ) : (
-                              ""
-                            );
+                                        ""
+                                      );
                           },
                           editorTemplate: data => {
                             return (
@@ -1624,8 +1641,8 @@ class NurseWorkbench extends Component {
                             ) : data.severity === "SE" ? (
                               <span>Severe</span>
                             ) : (
-                              ""
-                            );
+                                    ""
+                                  );
                           },
                           editorTemplate: data => {
                             return (
@@ -1676,7 +1693,7 @@ class NurseWorkbench extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteAllergy.bind(this),
-                        onEdit: row => {},
+                        onEdit: row => { },
                         onDone: this.updatePatientAllergy.bind(this)
                       }}
                     />
@@ -1765,7 +1782,6 @@ class NurseWorkbench extends Component {
                                   dontAllowKeys: ["-", "e"],
                                   className: "txt-fld",
                                   name: "duration",
-                                  number: true,
                                   value: this.state.duration,
                                   events: {
                                     onChange: this.dataLevelUpdate.bind(this)
@@ -2199,78 +2215,81 @@ class NurseWorkbench extends Component {
                 {/* Chief Complaint End */}
                 <hr />
                 <h6>Nurse Order Service</h6>
+                {this.state.patient_id !== null ? (
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="tab-container toggle-section">
+                        <ul className="nav">
+                          <li
+                            algaehtabs={"Orders"}
+                            className={"nav-item tab-button active"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Investigation"
+                                }}
+                              />
+                            }
+                          </li>
 
-                <div className="row">
-                  <div className="col-12">
-                    <div className="tab-container toggle-section">
-                      <ul className="nav">
-                        <li
-                          algaehtabs={"Orders"}
-                          className={"nav-item tab-button active"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Investigation"
-                              }}
-                            />
-                          }
-                        </li>
+                          <li
+                            algaehtabs={"OrderConsumable"}
+                            className={"nav-item tab-button"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Consumable"
+                                }}
+                              />
+                            }
+                          </li>
 
-                        <li
-                          algaehtabs={"OrderConsumable"}
-                          className={"nav-item tab-button"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Consumable"
-                              }}
-                            />
-                          }
-                        </li>
+                          <li
+                            algaehtabs={"OrderPackage"}
+                            className={"nav-item tab-button"}
+                            onClick={this.openTab.bind(this)}
+                          >
+                            {
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Order Package"
+                                }}
+                              />
+                            }
+                          </li>
+                        </ul>
+                      </div>
 
-                        <li
-                          algaehtabs={"OrderPackage"}
-                          className={"nav-item tab-button"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Order Package"
-                              }}
-                            />
-                          }
-                        </li>
-                      </ul>
-                    </div>
-
-                    <div className="grid-section">
-                      {this.state.pageDisplay === "Orders" &&
-                      this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Investigation"
-                        />
-                      ) : this.state.pageDisplay === "OrderConsumable" &&
-                        this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Consumable"
-                        />
-                      ) : this.state.pageDisplay === "OrderPackage" &&
-                        this.state.patient_id !== null ? (
-                        <OrderedList
-                          vat_applicable={this.props.vat_applicable}
-                          openData="Package"
-                        />
-                      ) : null}
+                      <div className="grid-section">
+                        {this.state.pageDisplay === "Orders" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Investigation"
+                            key="Investigation"
+                          />
+                        ) : this.state.pageDisplay === "OrderConsumable" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Consumable"
+                            key="Consumable"
+                          />
+                        ) : this.state.pageDisplay === "OrderPackage" ? (
+                          <OrderedList
+                            vat_applicable={this.props.vat_applicable}
+                            openData="Package"
+                            key="Package"
+                          />
+                        ) : null}
+                      </div>
                     </div>
                   </div>
-                </div>
+                ) : (
+                    <p>Please select a patient first</p>
+                  )}
                 {/* Notes Start */}
                 <hr />
                 <h6>Enter Nurse Notes</h6>
@@ -2348,8 +2367,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NurseWorkbench)
+  connect(mapStateToProps, mapDispatchToProps)(NurseWorkbench)
 );

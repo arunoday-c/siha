@@ -45,6 +45,9 @@ class Vitals extends Component {
       recorded_time: moment().format(config.formators.time)
     };
     this.handleClose = this.handleClose.bind(this);
+  }
+
+  componentDidMount() {
     if (
       this.props.department_vitals === undefined ||
       this.props.department_vitals.length === 0
@@ -54,9 +57,7 @@ class Vitals extends Component {
       this.props.patient_vitals === undefined ||
       this.props.patient_vitals.length === 0
     ) {
-      if (Window.global !== undefined) {
-        getVitalHistory(this);
-      }
+      getVitalHistory(this);
     }
   }
 
@@ -140,7 +141,6 @@ class Vitals extends Component {
   addPatientVitals(e) {
     e.preventDefault();
 
-    const that = this;
     AlgaehValidation({
       querySelector: "id='vitals_recording'",
       onSuccess: () => {
@@ -152,13 +152,14 @@ class Vitals extends Component {
           const elementName = inputElement.getAttribute("name");
           resetElements[elementName] = "";
           if (_elements[i].value !== "") {
+            const { visit_id, current_patient, case_type } = Window.global;
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({
-              patient_id: Window.global["current_patient"],
-              visit_id: Window.global["visit_id"],
+              patient_id: current_patient, //Window.global["current_patient"],
+              visit_id: visit_id, //Window.global["visit_id"],
               visit_date: this.state.recorded_date,
               visit_time: moment().format(config.formators.time),
-              case_type: Window.global["case_type"],
+              case_type: case_type, //Window.global["case_type"],
               vital_id: _elements[i].getAttribute("vitalid"),
               vital_value: _elements[i].children[0].value,
               vital_value_one:
@@ -208,7 +209,7 @@ class Vitals extends Component {
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
-      this.props.department_vitals.length === 0
+        this.props.department_vitals.length === 0
         ? []
         : this.props.department_vitals;
     let _chartLabels = [];
@@ -217,14 +218,16 @@ class Vitals extends Component {
     const _vitalsGroup =
       this.props.patient_vitals !== undefined
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (key, g) => {
-              _chartLabels.push(key);
-              return {
-                dateTime: key,
-                list: g.getSource()
-              };
-            })
-            .toArray()
+          .groupBy("$.visit_date", null, (key, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            _chartLabels.push(key);
+            return {
+              dateTime: key,
+              recorded_by: firstRecordSet.user_display_name,
+              list: g.getSource()
+            };
+          })
+          .toArray()
         : [];
 
     Enumerable.from(
@@ -368,22 +371,22 @@ class Vitals extends Component {
                           item.hims_d_vitals_header_id === 1
                             ? "col-2"
                             : item.hims_d_vitals_header_id >= 3
-                            ? "col-2"
-                            : item.hims_d_vitals_header_id === 5 ||
-                              item.hims_d_vitals_header_id === 6
-                            ? "col-2"
-                            : "col-2";
+                              ? "col-2"
+                              : item.hims_d_vitals_header_id === 5 ||
+                                item.hims_d_vitals_header_id === 6
+                                ? "col-2"
+                                : "col-2";
                         const _name = String(item.vitals_name)
                           .replace(/" "/g, "_")
                           .toLowerCase();
                         const _disable = _name === "bmi" ? true : false;
                         const _dependent =
                           item.hims_d_vitals_header_id === 8 ||
-                          item.hims_d_vitals_header_id === 9
+                            item.hims_d_vitals_header_id === 9
                             ? { dependent: "bp_position" }
                             : item.hims_d_vitals_header_id === 4
-                            ? { dependent: "temperature_from" }
-                            : {};
+                              ? { dependent: "temperature_from" }
+                              : {};
                         return (
                           <React.Fragment key={index}>
                             {item.hims_d_vitals_header_id === 4 ? (
@@ -440,8 +443,8 @@ class Vitals extends Component {
                                   item.uom === "C"
                                     ? "°C"
                                     : item.uom === "F"
-                                    ? "°F"
-                                    : item.vital_short_name +
+                                      ? "°F"
+                                      : item.vital_short_name +
                                       " (" +
                                       String(item.uom).trim() +
                                       ")",
@@ -521,16 +524,14 @@ class Vitals extends Component {
                         }}
                         textBox={{
                           others: {
-                            type: "time"
+                            type: "time",
+                            disabled: true
                           },
                           className: "txt-fld",
                           name: "recorded_time",
                           value: this.state.recorded_time,
                           events: {
                             onChange: this.texthandle.bind(this)
-                          },
-                          others: {
-                            disabled: true
                           }
                         }}
                       />
@@ -568,7 +569,10 @@ class Vitals extends Component {
                               className="timelineContainer right"
                             >
                               <div className="content">
-                                <p className="dateStamp">{data.dateTime}</p>
+                                <p className="dateStamp">
+                                  Recorded by:<span>{data.recorded_by}</span>
+                                  Recorded on: <span>{data.dateTime}</span>
+                                </p>
                                 <div className="vitalsCntr">
                                   <ul className="vitals-box">
                                     {_.orderBy(
@@ -649,9 +653,4 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Vitals)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Vitals));

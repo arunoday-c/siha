@@ -1,59 +1,38 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import "./PatientRecall.scss";
 import {
-  AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
+import { AlgaehButton } from "algaeh-react-components";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
-import Options from "../../Options.json";
 
-class PatientRecall extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      departments: [],
-      doctors: [],
-      patients: [],
-      sub_department_id: null,
-      provider_id: null,
-      date_of_recall: new Date()
-    };
-    this.getDoctorsAndDepts();
-  }
+function PatientRecall() {
+  const [departments, setDepartments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const today = moment().format("YYYY/MM/DD");
+  const baseState = {
+    sub_department_id: null,
+    provider_id: null,
+    recall_start: moment(today).startOf("month"),
+    recall_end: today
+  };
+  const [inputs, setInputs] = useState(baseState);
 
-  loadPatients() {
-    if (
-      this.state.sub_department_id === null &&
-      this.state.provider_id === null &&
-      this.state.date_of_recall === null
-    ) {
-      swalMessage({
-        title: "Department/Doctor/Date is mandatory to load data.",
-        type: "warning"
-      });
-      return;
-    }
+  useEffect(() => {
+    getDoctorsAndDepts();
+  }, []);
 
-    let inputObj = { date_of_recall: this.state.date_of_recall };
-
-    if (this.state.provider_id !== null) {
-      inputObj.doctor_id = this.state.provider_id;
-    }
-
-    if (this.state.sub_department_id !== null) {
-      inputObj.sub_department_id = this.state.sub_department_id;
-    }
+  function getDoctorsAndDepts() {
     algaehApiCall({
-      uri: "/doctorsWorkBench/getFollowUp",
+      uri: "/department/get/get_All_Doctors_DepartmentWise",
+      module: "masterSettings",
       method: "GET",
-      data: inputObj,
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({
-            patients: response.data.records
-          });
+          setDepartments(response.data.records.departmets);
         }
       },
       onFailure: error => {
@@ -65,7 +44,7 @@ class PatientRecall extends Component {
     });
   }
 
-  dateValidate(value, event) {
+  function dateValidate(value, event) {
     let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
     if (inRange) {
       swalMessage({
@@ -73,254 +52,400 @@ class PatientRecall extends Component {
         type: "warning"
       });
       event.target.focus();
-      this.setState({
+      setInputs({
         [event.target.name]: null
       });
     }
   }
 
-  dropDownHandle(value) {
+  function dropDownHandle(value) {
     switch (value.name) {
       case "sub_department_id":
-        this.setState({
-          [value.name]: value.value,
-          doctors: value.selected.doctors
-        });
-        return;
+        setInputs(state => ({
+          [value.name]: value.value
+        }));
+        setDoctors(value.selected.doctors);
+        break;
 
       default:
-        this.setState({
+        setInputs(state => ({
           [value.name]: value.value
-        });
-
-        return;
+        }));
+        break;
     }
   }
 
-  dateFormater(value) {
-    if (value !== null) {
-      return String(moment(value).format(Options.dateFormat));
-    }
-    // "DD-MM-YYYY"
+  // function dateFormater(value) {
+  //   if (value !== null) {
+  //     return String(moment(value).format(Options.dateFormat));
+  //   }
+  //   // "DD-MM-YYYY"
+  // }
+
+  function handleInput(e) {
+    const { name, value } = e.target;
+    setInputs(state => ({
+      ...state,
+      [name]: value
+    }));
   }
 
-  getDoctorsAndDepts() {
-    algaehApiCall({
-      uri: "/department/get/get_All_Doctors_DepartmentWise",
-      module: "masterSettings",
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            departments: response.data.records.departmets
-          });
+  // function loadPatients() {
+  //   const { provider_id, recall_start, sub_department_id } = inputs;
+  //   if (!sub_department_id && !provider_id && !recall_start) {
+  //     swalMessage({
+  //       title: "Department/Doctor/Date is mandatory to load data.",
+  //       type: "warning"
+  //     });
+  //     return undefined;
+  //   } else {
+  //     let inputObj = {
+  //       date_of_recall: recall_start,
+  //       provider_id,
+  //       sub_department_id
+  //     };
+
+  //     algaehApiCall({
+  //       uri: "/doctorsWorkBench/getFollowUp",
+  //       method: "GET",
+  //       data: inputObj,
+  //       onSuccess: response => {
+  //         if (response.data.success) {
+  //           this.setState({
+  //             patients: response.data.records
+  //           });
+  //         }
+  //       },
+  //       onFailure: error => {
+  //         swalMessage({
+  //           title: error.message,
+  //           type: "error"
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
+
+  const fakeData = [
+    {
+      date: "01-Jan-2020",
+      patients: [
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
+      ]
+    },
+    {
+      date: "10-Jan-2020",
+      patients: [
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        }
+      ]
+    },
+    {
+      date: "10-Jan-2020",
+      patients: [
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        }
+      ]
+    },
+    {
+      date: "12-Jan-2020",
+      patients: [
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        },
+        {
+          patient_code: "PAT-123213",
+          patient_name: "John Doe",
+          contact_number: "81272829",
+          provider_name: "Jane Doe",
+          start_time: "10:00 am",
+          end_time: "10:15 am"
+        }
+      ]
+    }
+  ];
 
-  render() {
+  function Column({ data }) {
     return (
-      <div className="patient_recall">
-        <div className="row inner-top-search">
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Department"
-            }}
-            selector={{
-              name: "sub_department_id",
-              className: "select-fld",
-              value: this.state.sub_department_id,
-              dataSource: {
-                textField: "sub_department_name",
-                valueField: "sub_department_id",
-                data: this.state.departments
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: () => {
-                this.setState({
-                  sub_department_id: null
-                });
-              }
-            }}
-          />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Doctor"
-            }}
-            selector={{
-              name: "provider_id",
-              className: "select-fld",
-              value: this.state.provider_id,
-              dataSource: {
-                textField: "full_name",
-                valueField: "employee_id",
-                data: this.state.doctors
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: () => {
-                this.setState({
-                  provider_id: null
-                });
-              }
-            }}
-          />
-
-          <AlgaehDateHandler
-            div={{ className: "col" }}
-            label={{ forceLabel: "Date" }}
-            textBox={{
-              className: "txt-fld",
-              name: "date_of_recall"
-            }}
-            minDate={new Date()}
-            events={{
-              onChange: selectedDate => {
-                this.setState({
-                  date_of_recall: selectedDate
-                });
-              },
-              onBlur: this.dateValidate.bind(this)
-            }}
-            value={this.state.date_of_recall}
-          />
-
-          <div className="col form-group">
-            <button
-              onClick={this.loadPatients.bind(this)}
-              style={{ marginTop: 21 }}
-              className="btn btn-primary"
-            >
-              LOAD
-            </button>
-          </div>
-        </div>
-
-        <div className="portlet portlet-bordered ">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Patient List</h3>
+      <div className="card">
+        <h2>{data.date}</h2>
+        <div className="slotsDiv">
+          {data.patients.map(item => (
+            <div className="eachSlot">
+              <small>{item.patient_code}</small>
+              <h3>{item.patient_name}</h3>
+              <small>{item.contact_number}</small>
+              <br />
+              <small>
+                <b>{item.start_time}</b> - <b>{item.end_time}</b>
+              </small>
+              <hr />
+              <small>
+                <b>{item.provider_name}</b>
+              </small>
+              <br />
+              <small>{item.sub_department_name || "Cardiology"}</small>
+              <button className="btn btn-default btn-block btn-sm btn-book">
+                Book Appointment
+              </button>
             </div>
-          </div>
-          <div className="portlet-body" id="mrdList-Cntr">
-            <div className="row">
-              <div className="col-lg-12">
-                <AlgaehDataGrid
-                  id="index"
-                  columns={[
-                    {
-                      fieldName: "registration_date",
-                      label: "Registration Date",
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "patient_code",
-                      label: "Patient Code",
-                      displayTemplate: row => {
-                        return (
-                          <span onClick={() => {}} className="pat-code">
-                            {row.patient_code}
-                          </span>
-                        );
-                      },
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      },
-                      className: drow => {
-                        return "greenCell";
-                      }
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: "Patient Name",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "sub_department_name",
-                      label: "Department",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "employee_name",
-                      label: "Doctor",
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "gender",
-                      label: "Gender",
-                      others: {
-                        maxWidth: 90,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "date_of_birth",
-                      label: "Date of Birth",
-                      displayTemplate: row => {
-                        return (
-                          <span>{this.dateFormater(row.date_of_birth)}</span>
-                        );
-                      },
-                      others: {
-                        maxWidth: 120,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "contact_number",
-                      label: "Phone Number",
-                      others: {
-                        maxWidth: 180,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    }
-                  ]}
-                  keyId="index"
-                  dataSource={{
-                    data: this.state.patients
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 20 }}
-                  events={{
-                    onDelete: row => {},
-                    onEdit: row => {},
-                    onDone: row => {}
-                  }}
-                />
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     );
   }
+
+  return (
+    <div className="patient_recall">
+      <div className="row inner-top-search">
+        <AlgaehDateHandler
+          div={{ className: "col-2 form-group" }}
+          label={{ forceLabel: "From Date" }}
+          textBox={{
+            className: "txt-fld",
+            name: "recall_start"
+          }}
+          minDate={new Date()}
+          events={{
+            onChange: handleInput,
+            onBlur: dateValidate
+          }}
+          value={inputs.recall_start}
+        />
+        <AlgaehDateHandler
+          div={{ className: "col-2 form-group" }}
+          label={{ forceLabel: "To Date" }}
+          textBox={{
+            className: "txt-fld",
+            name: "recall_end"
+          }}
+          minDate={new Date()}
+          events={{
+            onChange: handleInput,
+            onBlur: dateValidate
+          }}
+          value={inputs.recall_end}
+        />
+        <AlagehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: "Filter by Department"
+          }}
+          selector={{
+            name: "sub_department_id",
+            className: "select-fld",
+            value: inputs.sub_department_id,
+            onChange: dropDownHandle,
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: departments
+            }
+          }}
+        />
+        <AlagehAutoComplete
+          div={{ className: "col-2 form-group" }}
+          label={{
+            forceLabel: "Filter by Doctor"
+          }}
+          selector={{
+            name: "provider_id",
+            className: "select-fld",
+            value: inputs.provider_id,
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: doctors
+            }
+          }}
+        />
+        <div className="col-2 mt-4">
+          <AlgaehButton type="primary">Load</AlgaehButton>
+        </div>
+      </div>
+      <div className="scrolling-wrapper">
+        {fakeData.map((item, index) => (
+          <Column key={index} data={item} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default PatientRecall;

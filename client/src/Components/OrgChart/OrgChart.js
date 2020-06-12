@@ -1,16 +1,19 @@
-import React, { Component, createContext } from "react";
+import React, { Component } from "react";
 import "./OrgChart.scss";
-import { EmployeeView, DepartmentView } from ".";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
+import { DepartmentView } from "./DepartmentView/DepartmentView";
+import { EmployeeOrgChart } from "./EmployeeOrgChart/EmployeeOrgChart";
 export default class OrgChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pageDisplay: "DepartmentView",
       allBranches: [],
-      reqDepts: []
+      reqDepts: [],
+      employeesReportingTo: [],
     };
   }
 
@@ -23,24 +26,24 @@ export default class OrgChart extends Component {
       uri: "/branchMaster/getDepartmentsChart",
       method: "GET",
       module: "masterSettings",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            allBranches: response.data.records
+            allBranches: response.data.records,
           });
         } else {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: error => {
+      onError: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -50,26 +53,26 @@ export default class OrgChart extends Component {
       method: "GET",
       module: "masterSettings",
       data: {
-        hospital_id: id
+        hospital_id: id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            reqDepts: res.data.records
+            reqDepts: res.data.records,
           });
         } else {
           swalMessage({
             title: res.data.records.message,
-            type: "warning"
+            type: "warning",
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -82,73 +85,64 @@ export default class OrgChart extends Component {
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState(
       {
-        pageDisplay: specified
+        pageDisplay: specified,
       },
       () => {
-        if (this.state.pageDisplay !== "Department View") {
+        if (this.state.pageDisplay !== "DepartmentView") {
           this.clearState("deptData");
         }
       }
     );
   }
 
-  clearState = name => {
+  clearState = (name) => {
     this.setState({
-      [name]: []
+      [name]: [],
     });
   };
 
   chartFuncs = () => ({
     clearState: this.clearState.bind(this),
-    getDeptForBranch: this.getDeptForBranch.bind(this)
+    getDeptForBranch: this.getDeptForBranch.bind(this),
   });
 
   render() {
     return (
       <div className="orgChartUI">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"DepartmentView"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Department View"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"EmployeeView"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Employee View"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="orgChart-section">
-          {this.state.pageDisplay === "EmployeeView" ? (
-            <EmployeeView />
-          ) : this.state.pageDisplay === "DepartmentView" ? (
-            <DepartmentView
-              allBranches={this.state.allBranches}
-              reqDepts={this.state.reqDepts}
-              api={this.chartFuncs()}
-            />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Department View",
+                  }}
+                />
+              ),
+              children: (
+                <DepartmentView
+                  allBranches={this.state.allBranches}
+                  reqDepts={this.state.reqDepts}
+                  api={this.chartFuncs()}
+                />
+              ),
+              componentCode: "ORG_DEP_VEW",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee View",
+                  }}
+                />
+              ),
+              children: <EmployeeOrgChart />,
+              componentCode: "ORG_EMP_VEW",
+            },
+          ]}
+          renderClass="orgChartSection"
+        />
       </div>
     );
   }

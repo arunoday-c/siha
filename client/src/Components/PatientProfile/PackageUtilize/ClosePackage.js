@@ -9,13 +9,11 @@ import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
@@ -73,8 +71,7 @@ class ClosePackage extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
-    
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.package_detail !== undefined) {
       let InputObj = newProps.package_detail;
       InputObj.Cashchecked = true;
@@ -96,8 +93,6 @@ class ClosePackage extends PureComponent {
       card_type: null
     });
 
-    
-
     this.setState(
       {
         receiptdetails: obj,
@@ -116,7 +111,6 @@ class ClosePackage extends PureComponent {
   }
 
   CloseRefund(e) {
-    
     if (
       this.state.closed_remarks === null ||
       this.state.closed_remarks === ""
@@ -128,7 +122,6 @@ class ClosePackage extends PureComponent {
       return;
     }
     this.GenerateReciept($this => {
-      
       algaehApiCall({
         uri: "/billing/patientPackageAdvanceRefund",
         module: "billing",
@@ -158,7 +151,6 @@ class ClosePackage extends PureComponent {
   }
 
   ClosePackage() {
-    
     if (this.state.closed_remarks.length <= 0) {
       swalMessage({
         title: "Enter Remarks...",
@@ -266,7 +258,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Actual Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.actual_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.actual_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -275,7 +267,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Package Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                <h6>{GetAmountFormart(this.state.unit_cost)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -284,7 +276,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Advance Paid"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.advance_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
               </div>
 
               <div className="col-lg-2">
@@ -293,7 +285,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Actual Utilized Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.actual_utilize_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.actual_utilize_amount)}</h6>
               </div>
               <div className="col-lg-2">
                 <AlgaehLabel
@@ -301,7 +293,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Utilized Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.utilize_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.utilize_amount)}</h6>
               </div>
               <div className="col-lg-2">
                 <AlgaehLabel
@@ -309,7 +301,7 @@ class ClosePackage extends PureComponent {
                     forceLabel: "Balance Amount"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.balance_amount)}</h6>
+                <h6>{GetAmountFormart(this.state.balance_amount)}</h6>
               </div>
             </div>
             {this.state.closed_type === "R" ? (

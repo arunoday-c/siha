@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -10,26 +10,22 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 import "./../../../../styles/site.scss";
 import "./RequestDetails.scss";
-import {
-  texthandle,
-  updateServices,
-  deleteServices
-} from "./RequestDetailsEvents";
+import { texthandle } from "./RequestDetailsEvents";
 import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
 
-class PatientDetails extends PureComponent {
+class PatientDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
       requestDeatils: [],
-      append: false
+      append: false,
     };
   }
 
@@ -37,16 +33,19 @@ class PatientDetails extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.selected_services;
     this.setState({ ...this.state, ...InputOutput });
   }
+  UNSAFE_componentWillReceiveProps(newProps) {
+    this.setState(newProps.selected_services);
+  }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -56,7 +55,7 @@ class PatientDetails extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div>
               <h6 className="popSubHdg">Request Details</h6>
 
@@ -70,51 +69,51 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "service_code" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "insurance_service_name",
                         label: (
                           <AlgaehLabel label={{ fieldName: "service_name" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "requested_quantity",
                         label: (
                           <AlgaehLabel label={{ fieldName: "quantity" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "requested_date",
                         label: (
                           <AlgaehLabel label={{ fieldName: "requesteddt" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {this.changeDateFormat(row.requested_date)}
                             </span>
                           );
                         },
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "requested_mode",
                         label: (
                           <AlgaehLabel label={{ fieldName: "requestedmode" }} />
                         ),
-                        displayTemplate: row => {
-                          return row.requested_mode === "O"
-                            ? "Online"
-                            : row.requested_mode === "E"
-                            ? "Email"
-                            : row.requested_mode === "T"
-                            ? "Telephone"
-                            : "Fax";
-                        },
-                        editorTemplate: row => {
+                        // displayTemplate: row => {
+                        //   return row.requested_mode === "O"
+                        //     ? "Online"
+                        //     : row.requested_mode === "E"
+                        //     ? "Email"
+                        //     : row.requested_mode === "T"
+                        //     ? "Telephone"
+                        //     : "Fax";
+                        // },
+                        displayTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
@@ -125,24 +124,29 @@ class PatientDetails extends PureComponent {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_REQMODE
+                                  data: GlobalVariables.FORMAT_REQMODE,
                                 },
-                                onChange: texthandle.bind(this, this, row),
+                                onChange: texthandle.bind(
+                                  this,
+                                  this,
+                                  row,
+                                  context
+                                ),
                                 others: {
                                   disabled:
-                                    row.billing_updated === "Y" ? true : false
-                                }
+                                    row.billing_updated === "Y" ? true : false,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "refer_no",
                         label: (
                           <AlgaehLabel label={{ fieldName: "refereneceno" }} />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -151,30 +155,35 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "refer_no",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: texthandle.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  ),
                                 },
                                 others: {
                                   disabled:
-                                    row.billing_updated === "Y" ? true : false
-                                }
+                                    row.billing_updated === "Y" ? true : false,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="visit_code"
                     dataSource={{
-                      data: this.state.services_details
+                      data: this.state.services_details,
                     }}
-                    isEditable={true}
-                    actions={{ allowDelete: false }}
+                    // filter={true}
+                    // isEditable={false}
+                    // actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 5 }}
-                    events={{
-                      onDelete: deleteServices.bind(this, context),
-                      onEdit: row => {},
-                      onDone: updateServices.bind(this, this, context)
-                    }}
+                    // events={{
+                    //   onEdit: row => {},
+                    //   onDone: row => {}
+                    // }}
                   />
                 </div>
               </div>
@@ -188,22 +197,19 @@ class PatientDetails extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getDepartmentsandDoctors: AlgaehActions
+      getDepartmentsandDoctors: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientDetails)
+  connect(mapStateToProps, mapDispatchToProps)(PatientDetails)
 );

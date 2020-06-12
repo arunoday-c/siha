@@ -132,22 +132,19 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Material Requisition - Pharmacy";
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${ data.material_requisition_number}-Material Requisition - Pharmacy`
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
+      window.open(origin);
+      // window.document.title = "Material Requisition - Pharmacy";
     }
   });
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+    w =>
+      parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
 
   if (auth_qty === true) {
@@ -160,15 +157,22 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "authorize1") {
-    $this.state.authorize1 = "Y";
-    authorize1 = "Y";
-    authorize2 = "N";
-  } else if (authorize === "authorize2") {
+  if ($this.state.requisition_auth_level === "1") {
     $this.state.authorize1 = "Y";
     $this.state.authorie2 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";
+  } else {
+    if (authorize === "authorize1") {
+      $this.state.authorize1 = "Y";
+      authorize1 = "Y";
+      authorize2 = "N";
+    } else if (authorize === "authorize2") {
+      $this.state.authorize1 = "Y";
+      $this.state.authorie2 = "Y";
+      authorize1 = "Y";
+      authorize2 = "Y";
+    }
   }
   AlgaehLoader({ show: true });
 
@@ -226,6 +230,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         item_group_id: null,
         item_id: null,
         quantity_required: 0,
+        transaction_qty: null,
 
         item_uom: null,
         from_qtyhand: 0,
@@ -251,7 +256,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         item_group_id: null,
         item_id: null,
         quantity_required: 0,
-
+        transaction_qty: null,
         item_uom: null,
         from_qtyhand: 0,
         to_qtyhand: 0

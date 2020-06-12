@@ -1,84 +1,21 @@
 import React, { Component } from "react";
 import "./dashboard.scss";
-import { Bar } from "react-chartjs-2";
-import { HorizontalBar } from "react-chartjs-2";
-import { Doughnut } from "react-chartjs-2";
+import {  HorizontalBar } from "react-chartjs-2";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { getCookie } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
-import DashBoardEvents from "./DashBoardEvents";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
+import DashBoardEvents, {
+  chartLegends,  
+  chartOptionsHorizontal
+} from "./DashBoardEvents";
+import { MainContext } from "algaeh-react-components/context";
+import {
+  AlagehAutoComplete  
+} from "../Wrapper/algaehWrapper";
 
-const orderedVScompleted = {
-  datasets: [
-    {
-      type: "bar",
-      label: "Ordered",
-      data: [40, 38, 23, 56],
-      fill: false,
-      backgroundColor: "#71B37C",
-      borderColor: "#71B37C",
-      // hoverBackgroundColor: "#71B37C",
-      // hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-1"
-    },
-    {
-      type: "bar",
-      label: "Completed",
-      data: [38, 40, 22, 50],
-      fill: false,
-      backgroundColor: "#34b8bc",
-      borderColor: "#34b8bc",
-      // hoverBackgroundColor: "#34b8bc",
-      // hoverBorderColor: "#34b8bc",
-      yAxisID: "y-axis-1"
-    }
-  ]
-};
-const orderedVScompletedOptions = {
-  responsive: true,
-  legend: {
-    position: "bottom",
-    labels: {
-      boxWidth: 10
-    }
-  },
-  tooltips: {
-    mode: "label"
-  },
-  elements: {
-    line: {
-      fill: false
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        display: true,
-        gridLines: {
-          display: false
-        },
-        labels: ["Week 42 2019", "Week 43 2019", "Week 44 2019", "Week 45 2019"]
-      }
-    ],
-    yAxes: [
-      {
-        type: "linear",
-        display: true,
-        position: "left",
-        id: "y-axis-1",
-        gridLines: {
-          display: false
-        },
-        labels: {
-          show: true
-        }
-      }
-    ]
-  }
-};
+const dashEvents = DashBoardEvents();
 
 class Dashboard extends Component {
   constructor(props) {
@@ -88,17 +25,45 @@ class Dashboard extends Component {
       showDetails: "d-none",
       no_of_employees: 0,
       total_company_salary: 0,
+      total_staff_count: 0,
+      total_labour_count: 0,
+      total_staff_salary: 0,
+      total_labor_salary: 0,
+      total_localite_count: 0,
+      total_expatriate_count: 0,
+      projectEmployee: {},
       Dept_Employee: {},
       Desig_Employee: {},
       no_of_emp_join: [],
       avg_salary: 0,
-      no_of_projects: 0
+      no_of_projects: 0,
+      hospital_id: ""
     };
-    DashBoardEvents().getEmployeeList(this);
-    DashBoardEvents().getEmployeeDepartmentsWise(this);
-    DashBoardEvents().getEmployeeDesignationWise(this);
+  }
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.props.getOrganizations({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      redux: {
+        type: "ORGS_GET_DATA",
+        mappingName: "organizations"
+      }
+    });
 
-    DashBoardEvents().getProjectList(this);
+    this.setState(
+      {
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      () => {
+        dashEvents.getEmployeeList(this);
+        dashEvents.getEmployeeDepartmentsWise(this);
+        dashEvents.getEmployeeDesignationWise(this);
+        dashEvents.getProjectList(this);
+        dashEvents.getEmployeeProjectWise(this);
+      }
+    );
   }
 
   showDetailHandler(event) {
@@ -107,51 +72,71 @@ class Dashboard extends Component {
     });
   }
 
-  // componentDidMount() {
-  //   let HospitalId =
-  //     getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
-  //   this.props.getHospitalDetails({
-  //     uri: "/organization/getOrganization",
-  //     method: "GET",
-  //     data: {
-  //       hims_d_hospital_id: HospitalId
-  //     },
-  //     redux: {
-  //       type: "HOSPITAL_DETAILS_GET_DATA",
-  //       mappingName: "hospitaldetails"
-  //     },
-  //     afterSuccess: data => {
-  //       if (data.length > 0) {
-  //         sessionStorage.removeItem("CurrencyDetail");
-  //         sessionStorage.setItem(
-  //           "CurrencyDetail",
-  //           AlgaehCloseContainer(JSON.stringify(data[0]))
-  //         );
-  //       }
-  //     }
-  //   });
-  // }
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
     });
   }
 
+  eventHandaler(e) {
+    console.log(e, "eventObj");
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        dashEvents.getEmployeeList(this);
+        dashEvents.getEmployeeDepartmentsWise(this);
+        dashEvents.getEmployeeDesignationWise(this);
+        dashEvents.getProjectList(this);
+        dashEvents.getEmployeeProjectWise(this);
+      }
+    );
+  }
+
   render() {
-    // let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
+        <div className="row">
+          <AlagehAutoComplete
+            div={{ className: "col-lg-3 col-md-3 col-sm-12  form-group" }}
+            label={{
+              forceLabel: "Select a Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              },
+              autoComplete: "off"
+            }}
+          />
+        </div>
         <div className="row card-deck">
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
                     <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
                     <p>Total Project</p>
                     {this.state.no_of_projects}
                   </div>
@@ -162,73 +147,144 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-users" />
+                    <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Employees</p>
-                    {this.state.no_of_employees}
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Staff</p>
+                    {this.state.total_staff_count}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-money-bill-wave" />
+                    <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Total Cost to Company</p>
-                    {getAmountFormart(this.state.total_company_salary)}
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Labour</p>
+                    {this.state.total_labour_count}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          {/* <div className="card animated fadeInUp faster">
+          <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                {/* <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-walking" />
+                    <i className="fas fa-building" />
                   </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Avg. Salary</p>
-                    {this.state.avg_salary} %
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Localite</p>
+                    {this.state.total_localite_count}
                   </div>
                 </div>
               </div>
             </div>
-          </div> */}
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Total Expatriate</p>
+                    {this.state.total_expatriate_count}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-building" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Staff Cost</p>
+                    {GetAmountFormart(this.state.total_staff_salary)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                {/* <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-users" />
+                  </div>
+                </div> */}
+                <div className="col-12">
+                  <div className="text">
+                    <p>Labour Cost</p>
+                    {GetAmountFormart(this.state.total_labor_salary)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="row">
           <div className="col-12">
             <div className="row">
-              <div className="col-6">
+              {" "}
+              <div className="col-sm-12 col-md-4 col-lg-4">
+                <div className="card animated fadeInUp faster">
+                  <h6>No. of Employee by Projects</h6>
+                  <div className="dashboardChartsCntr">
+                    <HorizontalBar
+                      data={this.state.projectEmployee}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-sm-12 col-md-4 col-lg-4">
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Department</h6>
                   <div className="dashboardChartsCntr">
-                    <Bar data={this.state.Dept_Employee} />
+                    <HorizontalBar
+                      data={this.state.Dept_Employee}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
+                    />
                   </div>
                 </div>
               </div>{" "}
-              <div className="col-6">
+              <div className="col-sm-12 col-md-4 col-lg-4">
                 <div className="card animated fadeInUp faster">
                   <h6>No. of Employee by Designation</h6>
                   <div className="dashboardChartsCntr">
-                    <Bar data={this.state.Desig_Employee} />
+                    <HorizontalBar
+                      data={this.state.Desig_Employee}
+                      legend={chartLegends}
+                      options={chartOptionsHorizontal}
+                    />
                   </div>
                 </div>
               </div>
@@ -245,10 +301,6 @@ class Dashboard extends Component {
                           <th className="text-center">Gender</th>
                           <th className="text-center">Designation</th>
                           <th className="text-center">Sub Department</th>
-                          {/*  <th className="text-center">Designation</th>
-                          <th className="text-center">Nationality</th>
-                          <th className="text-center">Department</th>
-                         <th className="text-center">Sub Department</th>*/}
                         </tr>
                       </thead>
                       <tbody>
@@ -291,22 +343,21 @@ class Dashboard extends Component {
 
 function mapStateToProps(state) {
   return {
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    organizations: state.organizations
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getOrganizations: AlgaehActions
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
+  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 );

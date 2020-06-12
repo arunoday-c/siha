@@ -1,0 +1,43 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Salary Number</th>
+                        <th>Loan Number</th>
+                        <th>Deducting Month & Year</th>
+                        <th>Loan Type</th>
+                        <th>Payble Amount</th>
+                        <th>Balance Amount</th>
+                        <th>Balance EMI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each result}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{salary_number}}</td>
+                        <td>{{loan_application_number}}</td>
+                        <td>{{deducting_month}}-{{year}}</td>
+                        <td>{{loan_description}}</td>
+                        <td>{{loan_due_amount}}</td>
+                        <td>{{pending_loan}}</td>
+                        <td>{{pending_tenure}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

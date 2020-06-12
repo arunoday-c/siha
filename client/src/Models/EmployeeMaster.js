@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -101,7 +101,13 @@ export default {
       department_name: null,
       employeeImage: undefined,
       reporting_to_id: null,
-      entitled_daily_ot: "N"
+      entitled_daily_ot: "N",
+      employee_category: null,
+      gratuity_encash: 0,
+      identity_type_id: null,
+      identity_no: null,
+
+      service_dis_percentage: 100
     };
     return output;
   }

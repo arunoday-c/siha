@@ -176,11 +176,6 @@ export default class DiagramMaster extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -359,7 +354,7 @@ export default class DiagramMaster extends Component {
                   <div className="col-lg-3">
                     <button
                       type="submit"
-                      style={{ marginTop: 21 }}
+                      style={{ marginTop: 19 }}
                       onClick={this.addDiagrams.bind(this)}
                       className="btn btn-primary"
                     >
@@ -430,7 +425,7 @@ export default class DiagramMaster extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDelete: this.deleteDiagram.bind(this),
                         onDone: this.updateDiagram.bind(this)
                       }}

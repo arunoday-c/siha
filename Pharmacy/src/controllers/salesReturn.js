@@ -9,7 +9,8 @@ const {
   addsalesReturn,
   getsalesReturn,
   updatesalesReturn,
-  updatePOSDetail
+  updatePOSDetail,
+  generateAccountingEntry
 } = salesModels;
 
 const { updateIntoItemLocation } = comModels;
@@ -40,6 +41,7 @@ export default () => {
     addReceiptEntry,
     addsalesReturn,
     updatePOSDetail,
+    generateAccountingEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

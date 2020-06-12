@@ -1,0 +1,64 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        {{!-- <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table>
+
+
+        </section> --}}
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>UOM</th>
+                        <th>Requested Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total Cost</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement result}}
+
+                    {{#each result}}
+                    <tr>
+                        <td colspan="7" class="tableSubHdg">PO No.: {{purchase_number}}
+                            <span class="textFloatRight"><b>{{net_total}}</b></b></span>
+                        </td>
+
+                    </tr>
+                    {{#each poitems}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_code}}</th>
+                        <td class="txtFld">{{item_description}}</th>
+                        <td>{{uom_description}}</td>
+                        <td class="numberFld">{{authorize_quantity}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                    </tr>
+                    {{/each }}{{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

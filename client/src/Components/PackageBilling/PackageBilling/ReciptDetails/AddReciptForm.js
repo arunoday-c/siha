@@ -8,10 +8,8 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler,
   calculateRecipt,
   countertexthandle
 } from "./AddReciptFormHandaler";
@@ -27,7 +25,7 @@ import "./AddReciptForm.scss";
 import "./../../../../styles/site.scss";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -39,12 +37,12 @@ class AddReciptForm extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
   }
 
@@ -289,7 +287,7 @@ class AddReciptForm extends Component {
                   />
                 </div>
                 {/* Check */}
-                <div className="row secondary-box-container">
+                {/* <div className="row secondary-box-container">
                   <div
                     className="customCheckbox col-lg-3"
                     style={{ border: "none", marginTop: "28px" }}
@@ -368,7 +366,7 @@ class AddReciptForm extends Component {
                     }}
                     value={this.state.cheque_date}
                   />
-                </div>
+                </div> */}
                 <div className="row secondary-box-container">
                   <div className="col-lg-3" />
                   <div className="col-lg-5">
@@ -377,7 +375,7 @@ class AddReciptForm extends Component {
                         fieldName: "unbalanced_amount"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.unbalanced_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>
@@ -409,8 +407,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddReciptForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
 );

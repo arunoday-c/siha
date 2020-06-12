@@ -31,7 +31,7 @@ const numberhandle = ($this, ctrl, e) => {
   let name = e.name;
   if (e.value === "") {
     $this.setState({
-      [name]: value
+      [name]: ""
     });
     return;
   }
@@ -183,16 +183,19 @@ const printPrescription = (that, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Prescription";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+      window.open(origin);
+      // window.document.title = "Prescription";
     }
   });
 };
@@ -338,10 +341,13 @@ const AddItems = $this => {
     return;
   }
 
-  if (moment($this.state.start_date).isBefore(moment(), "day")) {
+  if (
+    !$this.state.start_date ||
+    moment($this.state.start_date).isBefore(moment(), "day")
+  ) {
     $this.setState(
       {
-        start_date: null
+        start_date: moment().format("YYYY-MM-DD")
       },
       () => {
         swalMessage({
@@ -464,7 +470,7 @@ const AddItems = $this => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: ctrl ? moment(ctrl)._d : null
+    [e]: moment(ctrl)._d
   });
 };
 

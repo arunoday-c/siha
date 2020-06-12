@@ -1,0 +1,41 @@
+.ant-table-footer {
+  padding: 0;
+  .ant-table-tfoot {
+    tr {
+      height: 15px;
+      box-sizing: border-box;
+      border-collapse: collapse;
+      td {
+        border-right: 1px solid #e8e8e8;
+        overflow-wrap: break-word;
+        padding: 0;
+        margin: 0;
+        border-collapse: collapse;
+      }
+    }
+  }
+}
+.treeGridPL {
+  border: 1px solid #dedede;
+  table {
+    min-width: calc(100vw - 70px) !important;
+    thead {
+      th.fixed {
+        z-index: 999 !important;
+        border-right: 1px solid #00a895 !important;
+      }
+      th {
+        span {
+          white-space: nowrap !important !important;
+        }
+      }
+    }
+    tbody {
+      td.fixed {
+        min-width: 210px !important;
+        background: #edfffd !important;
+        border-right: 1px solid #00a895 !important;
+      }
+    }
+  }
+}

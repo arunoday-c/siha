@@ -2,7 +2,14 @@ import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
 import bankModels from "../models/bankmaster";
 
-const { addBank, getBank, updateBank, deleteBank } = bankModels;
+const {
+  addBank,
+  getBank,
+  updateBank,
+  deleteBank,
+  getBankCards,
+  addBankCards
+} = bankModels;
 
 export default () => {
   let api = Router();
@@ -41,6 +48,26 @@ export default () => {
       success: true,
       records: result
     });
+    next();
+  });
+
+  api.get("/getBankCards", getBankCards, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+  api.post("/addBankCards", addBankCards, (req, res, next) => {
+    let result = req.records;
+    res
+      .status(utlities.httpStatus().ok)
+      .json({
+        success: true,
+        records: result
+      })
+      .end();
     next();
   });
 

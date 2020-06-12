@@ -92,15 +92,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["REQ_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["REQ_NUM"],
+          table_name: "hims_f_pharmacy_numgen"
         })
         .then(generatedNumbers => {
-          material_requisition_number = generatedNumbers[0];
+          material_requisition_number = generatedNumbers.REQ_NUM;
 
           let year = moment().format("YYYY");
 
@@ -164,7 +161,8 @@ export default {
                 "item_uom",
                 "to_qtyhand",
                 "from_qtyhand",
-                "quantity_required"
+                "quantity_required",
+                "quantity_authorized"
               ];
 
               utilities
@@ -370,11 +368,11 @@ export default {
     const _mysql = new algaehMysql(_options);
 
     const utilities = new algaehUtilities();
-    utilities.logger().log("updaterequisitionEntryOnceTranfer: ");
+    console.log("updaterequisitionEntryOnceTranfer: ");
     try {
       let inputParam = { ...req.body };
 
-      let complete = "Y";
+      let complete = inputParam.complete === "N" ? "N" : "Y";
 
       const partial_recived = new LINQ(inputParam.stock_detail)
         .Where(w => w.quantity_outstanding != 0)
@@ -385,7 +383,7 @@ export default {
       }
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
           WHERE `hims_f_pharamcy_material_header_id`=?",
@@ -416,7 +414,7 @@ export default {
 
             utilities.logger().log("qry: ", qry);
             _mysql
-              .executeQueryWithTransaction({
+              .executeQuery({
                 query: qry,
                 printQuery: true
               })

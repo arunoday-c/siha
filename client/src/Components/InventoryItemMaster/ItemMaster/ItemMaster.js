@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import ItemDetails from "./ItemDetails/ItemDetails";
-import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
+// import ItemDetails from "./ItemDetails/ItemDetails";
+// import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
 
 import "./../../../styles/site.scss";
 import "./ItemMaster.scss";
@@ -22,7 +22,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   radioChange,
   BatchExpRequired,
-  CptCodesSearch,
   VatAppilicable,
   texthandle,
   AddUom,
@@ -36,6 +35,7 @@ import {
   numberEventHandaler
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class InvItemMaster extends Component {
   constructor(props) {
@@ -47,18 +47,27 @@ class InvItemMaster extends Component {
       convertEnable: false
     };
   }
+
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
+  }
   onClose = e => {
     this.props.onClose && this.props.onClose(false);
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InventoryItem.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
@@ -168,7 +177,7 @@ class InvItemMaster extends Component {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
-                    <div className="col-6">
+                    <div className="col-3">
                       <label>Item Currently </label>
                       <div className="customRadio" style={{ borderBottom: 0 }}>
                         <label className="radio inline">
@@ -203,7 +212,21 @@ class InvItemMaster extends Component {
                         </label>
                       </div>
                     </div>
-                    <div className="col-3">
+                    <AlagehFormGroup
+                      div={{ className: "col-4 form-group" }}
+                      label={{
+                        forceLabel: "SFDA"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sfda_code",
+                        value: this.state.sfda_code,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        }
+                      }}
+                    />
+                    <div className="col-2">
                       <label>Expiry Date</label>
                       <div
                         className="customCheckbox"
@@ -215,15 +238,15 @@ class InvItemMaster extends Component {
                         >
                           <input
                             type="checkbox"
-                            name="exp_date_not_required"
+                            name="exp_date_required"
                             checked={
-                              this.state.exp_date_not_required === "Y"
+                              this.state.exp_date_required === "Y"
                                 ? true
                                 : false
                             }
                             onChange={BatchExpRequired.bind(this, this)}
                           />
-                          <span>Not Required</span>
+                          <span>Required</span>
                         </label>
                       </div>
                     </div>
@@ -253,11 +276,9 @@ class InvItemMaster extends Component {
 
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                          <div className=" customCheckbox ">
+                        <div className="col-3">
+                          <label>Vat Applicable</label>
+                          <div className="customCheckbox">
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
@@ -274,10 +295,18 @@ class InvItemMaster extends Component {
                             </label>
                           </div>
                         </div>
+
                         <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
+                          div={{
+                            className:
+                              this.state.vat_applicable === "Y"
+                                ? "col-3 mandatory form-group"
+                                : "col-3 form-group"
+                          }}
                           label={{
-                            fieldName: "vat_percent"
+                            fieldName: "vat_percent",
+                            isImp:
+                              this.state.vat_applicable === "Y" ? true : false
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -377,14 +406,14 @@ class InvItemMaster extends Component {
                     />
 
                     <div className="col-1 actions" style={{ paddingLeft: 0 }}>
-                      <a
+                      <button
                         onClick={AddUom.bind(this, this)}
                         style={{ marginTop: 19 }}
                         // href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
                   <div className="row" style={{ marginBottom: "10px" }}>
@@ -430,9 +459,9 @@ class InvItemMaster extends Component {
                                 this.props.inventoryitemuom === undefined
                                   ? []
                                   : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_inventory_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -560,7 +589,7 @@ class InvItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -645,10 +674,9 @@ class InvItemMaster extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
+                      div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost",
-                        isImp: true
+                        fieldName: "purchase_cost"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -664,7 +692,8 @@ class InvItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "price"
+                        fieldName: "price",
+                        isImp: this.state.item_type === "AST" || this.state.item_type === "NSK" ? false : true
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -693,8 +722,8 @@ class InvItemMaster extends Component {
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <AlgaehLabel label={{ fieldName: "btnSave" }} />
                     ) : (
-                      <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                    )}
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
                   </button>
                   <button
                     onClick={e => {
@@ -737,8 +766,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvItemMaster)
+  connect(mapStateToProps, mapDispatchToProps)(InvItemMaster)
 );

@@ -76,11 +76,6 @@ class Currency extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "warning"
-        });
       }
     });
   }
@@ -337,7 +332,7 @@ class Currency extends Component {
           <div className="col">
             <button
               onClick={this.addCurrencyCodes.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Add to List
@@ -461,12 +456,12 @@ class Currency extends Component {
                               {row.symbol_position === "BWS"
                                 ? "Before without space"
                                 : row.symbol_position === "BS"
-                                ? "Before space"
-                                : row.symbol_position === "AWS"
-                                ? "After without space"
-                                : row.symbol_position === "AS"
-                                ? "After space"
-                                : null}
+                                  ? "Before space"
+                                  : row.symbol_position === "AWS"
+                                    ? "After without space"
+                                    : row.symbol_position === "AS"
+                                      ? "After space"
+                                      : null}
                             </span>
                           );
                         },
@@ -508,10 +503,10 @@ class Currency extends Component {
                               {row.thousand_separator === " "
                                 ? "Space"
                                 : row.thousand_separator === "."
-                                ? "Period"
-                                : row.thousand_separator === ","
-                                ? "Comma"
-                                : null}
+                                  ? "Period"
+                                  : row.thousand_separator === ","
+                                    ? "Comma"
+                                    : null}
                             </span>
                           );
                         },
@@ -552,8 +547,8 @@ class Currency extends Component {
                               {row.decimal_separator === "."
                                 ? "Period"
                                 : row.decimal_separator === ","
-                                ? "Comma"
-                                : null}
+                                  ? "Comma"
+                                  : null}
                             </span>
                           );
                         },
@@ -594,8 +589,8 @@ class Currency extends Component {
                               {row.negative_separator === "TR"
                                 ? "Trailing"
                                 : row.negative_separator === "LD"
-                                ? "Leading"
-                                : null}
+                                  ? "Leading"
+                                  : null}
                             </span>
                           );
                         },
@@ -632,7 +627,7 @@ class Currency extends Component {
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteCurrency.bind(this),
                       onDone: this.updateCurrency.bind(this)
                     }}

@@ -1,0 +1,43 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Emp. Group</th>
+                        <th>Designation</th>
+                        <th>Description</th>
+                        <th>Total Amount</th>
+                </thead>
+                <tbody>{{#hasElement details}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td class="" colspan="6"></td>
+                        <td class="numberFld" colspan="">{{total_ED}}</td>
+                    </tr>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td style="text-align: left;">{{full_name}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{designation}}</td>
+                        <td>{{earning_deduction_description}}</td>
+                        <td class="numberFld">{{amount}}</td>
+                    </tr>
+                    {{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

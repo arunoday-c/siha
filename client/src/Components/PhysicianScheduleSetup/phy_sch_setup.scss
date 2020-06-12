@@ -96,20 +96,22 @@
         float: left;
         position: relative;
 
-        input[type="checkbox"] {
-          opacity: 0;
+        input[type="checkbox"] + i {
+          opacity: 1;
+          color: #f1f1f1;
         }
 
         input[type="checkbox"]:checked + i {
           opacity: 1;
+          color: #007468;
         }
 
         i {
-          opacity: 0;
-          color: #007468;
+          padding: 10px;
+          background: rgb(255, 255, 255);
           position: absolute;
-          top: 3px;
-          left: 4px;
+          top: -7px;
+          left: -7px;
         }
       }
       .physicianListName {
@@ -207,4 +209,18 @@
 .hide-feature {
   display: none;
   opacity: 0;
+}
+.addDoctorSchedule {
+  .algaeh-modal {
+    width: 40vw;
+
+    .noResultLi {
+      font-size: 2rem;
+      margin-top: 23vh;
+      text-align: center;
+      border: none;
+      color: #d6d6d6;
+      line-height: 30px;
+    }
+  }
 }

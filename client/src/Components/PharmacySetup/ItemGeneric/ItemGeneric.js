@@ -56,162 +56,172 @@ class ItemGeneric extends Component {
 
   render() {
     return (
-      <div className="lab_section">
-        <div className="container-fluid">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "type_desc",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "generic_name",
-                value: this.state.generic_name,
-                events: {
-                  onChange: changeTexts.bind(this, this)
-                }
-              }}
-            />
+      <div className="">
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Item Generic Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "generic_name",
+              value: this.state.generic_name,
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
 
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-              <button
-                onClick={insertItemGeneric.bind(this, this)}
-                className="btn btn-primary"
-              >
-                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-              </button>
-            </div>
+          <div className="col" style={{ paddingTop: 19 }}>
+            <button
+              onClick={insertItemGeneric.bind(this, this)}
+              className="btn btn-primary"
+            >
+              <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+            </button>
           </div>
+        </div>
 
-          <div className="row form-details">
-            <div className="col" data-validate="itemGenDiv">
-              <AlgaehDataGrid
-                datavalidate="data-validate='itemGenDiv'"
-                id="item_generic"
-                columns={[
-                  {
-                    fieldName: "generic_name",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.generic_name,
-                            className: "txt-fld",
-                            name: "generic_name",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Generic Name - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered marginBottom-15">
+              <div className="portlet-body" data-validate="itemGenDiv">
+                <AlgaehDataGrid
+                  datavalidate="data-validate='itemGenDiv'"
+                  id="item_generic"
+                  columns={[
+                    {
+                      fieldName: "generic_name",
+                      label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.generic_name,
+                              className: "txt-fld",
+                              name: "generic_name",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Generic Name - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                    {
+                      fieldName: "created_by",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_by" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                    //disabled: true
-                  },
-                  {
-                    fieldName: "item_generic_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.item_generic_status === "A"
-                        ? "Active"
-                        : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "item_generic_status",
-                            className: "select-fld",
-                            value: row.item_generic_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="hims_d_item_generic_id"
-                dataSource={{
-                  data:
-                    this.props.itemgeneric === undefined
-                      ? []
-                      : this.props.itemgeneric
-                }}
-                isEditable={true}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: deleteItemGeneric.bind(this, this),
-                  onEdit: row => {},
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
 
-                  onDone: updateItemGeneric.bind(this, this)
-                }}
-              />
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      }
+                      //disabled: true
+                    },
+                    {
+                      fieldName: "item_generic_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "inv_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.item_generic_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "item_generic_status",
+                              className: "select-fld",
+                              value: row.item_generic_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STATUS
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
+                    }
+                  ]}
+                  keyId="hims_d_item_generic_id"
+                  dataSource={{
+                    data:
+                      this.props.itemgeneric === undefined
+                        ? []
+                        : this.props.itemgeneric
+                  }}
+                  isEditable={true}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onDelete: deleteItemGeneric.bind(this, this),
+                    onEdit: row => {},
+
+                    onDone: updateItemGeneric.bind(this, this)
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -87,11 +87,6 @@ const showconfirmDialog = ($this, id) => {
         },
         onFailure: error => {}
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -149,10 +144,29 @@ const insertLabAnalytes = ($this, e) => {
   // }
 };
 
+const EditInvestigationTest = ($this, row) => {
+  $this.setState({
+    hims_d_investigation_test_id: row.hims_d_investigation_test_id,
+    isOpen: !$this.state.isOpen,
+    InvestigationPop: row
+  });
+
+  $this.props.getTestCategory({
+    uri: "/labmasters/selectTestCategory",
+    module: "laboratory",
+    method: "GET",
+    data: { investigation_type: row.investigation_type },
+    redux: {
+      type: "TESTCATEGORY_GET_DATA",
+      mappingName: "testcategory"
+    }
+  });
+};
 export {
   changeTexts,
   onchangegridcol,
   insertLabAnalytes,
   updateLabAnalytes,
-  deleteLabAnalytes
+  deleteLabAnalytes,
+  EditInvestigationTest
 };

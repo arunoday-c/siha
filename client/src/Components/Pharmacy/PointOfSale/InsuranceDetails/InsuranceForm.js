@@ -9,22 +9,16 @@ import MyContext from "../../../../utils/MyContext";
 import {
   AlgaehLabel,
   AlgaehDateHandler,
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
-  insurancehandle,
   texthandle,
-  datehandle,
   InsuranceDetails,
-  radioChange,
   enddatehandle,
-  clearinsurancehandle,
   dateValidate
 } from "./InsuranceHandler";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
-import variableJson from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../../../Options.json";
 
@@ -37,7 +31,7 @@ class AddInsuranceForm extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -48,7 +42,7 @@ class AddInsuranceForm extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
   imageDetails(context, type) {
@@ -69,17 +63,17 @@ class AddInsuranceForm extends Component {
               <div className="col-8">
                 <div className="row">
                   {this.state.pos_customer_type === "OT" &&
-                  this.state.dataExitst === false ? (
-                    <div className="col-12 margin-bottom-15">
-                      <button
-                        className="btn btn-default"
-                        disabled={this.state.insuranceYes}
-                        onClick={InsuranceDetails.bind(this, this, context)}
-                      >
-                        Select Insurance
+                    this.state.dataExitst === false ? (
+                      <div className="col-12 margin-bottom-15">
+                        <button
+                          className="btn btn-default"
+                          disabled={this.state.insuranceYes}
+                          onClick={InsuranceDetails.bind(this, this, context)}
+                        >
+                          Select Insurance
                       </button>
-                    </div>
-                  ) : null}
+                      </div>
+                    ) : null}
                   <div className="col-3">
                     <AlgaehLabel
                       label={{
@@ -165,39 +159,39 @@ class AddInsuranceForm extends Component {
                   )}*/}
 
                   {this.state.pos_customer_type === "OT" &&
-                  this.state.dataExitst === false ? (
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "CARD NUMBER",
-                        isImp: this.state.insuranceYes === true ? false : true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "card_number",
-                        value: this.state.card_number,
-                        events: {
-                          onChange: texthandle.bind(this, this, context)
-                        },
-                        others: {
-                          disabled: this.state.insuranceYes
-                        }
-                      }}
-                    />
-                  ) : (
-                    <div className="col-3">
-                      <AlgaehLabel
+                    this.state.dataExitst === false ? (
+                      <AlagehFormGroup
+                        div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "Card Number"
+                          forceLabel: "CARD NUMBER",
+                          isImp: this.state.insuranceYes === true ? false : true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_number",
+                          value: this.state.card_number,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.insuranceYes
+                          }
                         }}
                       />
-                      <h6>
-                        {this.state.card_number
-                          ? this.state.card_number
-                          : "-----"}
-                      </h6>
-                    </div>
-                  )}
+                    ) : (
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Card Number"
+                          }}
+                        />
+                        <h6>
+                          {this.state.card_number
+                            ? this.state.card_number
+                            : "-----"}
+                        </h6>
+                      </div>
+                    )}
 
                   <div className="col-3">
                     <AlgaehLabel
@@ -208,48 +202,48 @@ class AddInsuranceForm extends Component {
                     <h6>
                       {this.state.effective_start_date
                         ? moment(this.state.effective_start_date).format(
-                            Options.dateFormat
-                          )
+                          Options.dateFormat
+                        )
                         : "-----"}
                     </h6>
                   </div>
 
                   {this.state.pos_customer_type === "OT" &&
-                  this.state.dataExitst === false ? (
-                    <AlgaehDateHandler
-                      div={{ className: "col-3" }}
-                      label={{
-                        forceLabel: "EXPIRY DATE",
-                        isImp: this.state.insuranceYes === true ? false : true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "effective_end_date"
-                      }}
-                      minDate={new Date()}
-                      events={{
-                        onChange: enddatehandle.bind(this, this, context),
-                        onBlur: dateValidate.bind(this, this, context)
-                      }}
-                      value={this.state.effective_end_date}
-                      disabled={this.state.insuranceYes}
-                    />
-                  ) : (
-                    <div className="col-3">
-                      <AlgaehLabel
+                    this.state.dataExitst === false ? (
+                      <AlgaehDateHandler
+                        div={{ className: "col-3" }}
                         label={{
-                          forceLabel: "EXPIRY DATE"
+                          forceLabel: "EXPIRY DATE",
+                          isImp: this.state.insuranceYes === true ? false : true
                         }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "effective_end_date"
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: enddatehandle.bind(this, this, context),
+                          onBlur: dateValidate.bind(this, this, context)
+                        }}
+                        value={this.state.effective_end_date}
+                        disabled={this.state.insuranceYes}
                       />
-                      <h6>
-                        {this.state.effective_end_date
-                          ? moment(this.state.effective_end_date).format(
+                    ) : (
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "EXPIRY DATE"
+                          }}
+                        />
+                        <h6>
+                          {this.state.effective_end_date
+                            ? moment(this.state.effective_end_date).format(
                               Options.dateFormat
                             )
-                          : "-----"}
-                      </h6>
-                    </div>
-                  )}
+                            : "-----"}
+                        </h6>
+                      </div>
+                    )}
                 </div>
               </div>
 

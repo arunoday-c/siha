@@ -156,43 +156,43 @@ const cardtexthandle = ($this, context, ctrl, e) => {
   }
 };
 
-const chequetexthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
+// const chequetexthandle = ($this, context, ctrl, e) => {
+//   e = e || ctrl;
 
-  let cash_amount = parseFloat($this.state.cash_amount);
-  let card_amount = parseFloat($this.state.card_amount);
-  let cheque_amount = parseFloat(e.target.value);
-  let receiveable_amount = parseFloat($this.state.receiveable_amount);
+//   let cash_amount = parseFloat($this.state.cash_amount);
+//   let card_amount = parseFloat($this.state.card_amount);
+//   let cheque_amount = parseFloat(e.target.value);
+//   let receiveable_amount = parseFloat($this.state.receiveable_amount);
 
-  if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
-    swalMessage({
-      title: "Sum of all amount to be equal to Receivable.",
-      type: "warning"
-    });
-    $this.setState(
-      {
-        [e.target.name]: 0,
-        errorInCheck: true
-      },
-      () => {
-        $this.setState({ errorInCheck: false });
-      }
-    );
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        calculateRecipt($this, context);
-      }
-    );
+//   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
+//     swalMessage({
+//       title: "Sum of all amount to be equal to Receivable.",
+//       type: "warning"
+//     });
+//     $this.setState(
+//       {
+//         [e.target.name]: 0,
+//         errorInCheck: true
+//       },
+//       () => {
+//         $this.setState({ errorInCheck: false });
+//       }
+//     );
+//   } else {
+//     $this.setState(
+//       {
+//         [e.target.name]: e.target.value
+//       },
+//       () => {
+//         calculateRecipt($this, context);
+//       }
+//     );
 
-    if (context !== null) {
-      context.updateState({ [e.target.name]: e.target.value });
-    }
-  }
-};
+//     if (context !== null) {
+//       context.updateState({ [e.target.name]: e.target.value });
+//     }
+//   }
+// };
 
 const datehandle = ($this, context, ctrl, e) => {
   $this.setState({
@@ -248,37 +248,37 @@ const checkcardhandaler = ($this, context, e) => {
   }
 };
 
-const checkcheckhandaler = ($this, context, e) => {
-  let Checkchecked = e.target.checked;
-  $this.setState(
-    {
-      Checkchecked: Checkchecked,
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null
-    },
-    () => {
-      calculateRecipt($this, context);
-    }
-  );
+// const checkcheckhandaler = ($this, context, e) => {
+//   let Checkchecked = e.target.checked;
+//   $this.setState(
+//     {
+//       Checkchecked: Checkchecked,
+//       cheque_amount: 0,
+//       cheque_number: null,
+//       cheque_date: null
+//     },
+//     () => {
+//       calculateRecipt($this, context);
+//     }
+//   );
 
-  if (context !== undefined) {
-    context.updateState({
-      Checkchecked: Checkchecked,
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null
-    });
-  }
-};
+//   if (context !== undefined) {
+//     context.updateState({
+//       Checkchecked: Checkchecked,
+//       cheque_amount: 0,
+//       cheque_number: null,
+//       cheque_date: null
+//     });
+//   }
+// };
 
 export {
   texthandle,
   cashtexthandle,
   datehandle,
   cardtexthandle,
-  chequetexthandle,
+  // chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
+  // checkcheckhandaler
 };

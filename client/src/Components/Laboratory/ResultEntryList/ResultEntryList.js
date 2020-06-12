@@ -44,7 +44,8 @@ class ResultEntryList extends Component {
       isOpen: false,
       proiorty: null,
       status: null,
-      isMicroOpen: false
+      isMicroOpen: false,
+      comments_data: []
     };
   }
 
@@ -362,19 +363,29 @@ class ResultEntryList extends Component {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
+                      },
+                      {
+                        fieldName: "critical_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Critical Result" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.critical_status === "N" ? (
+                            <span className="badge badge-primary">No</span>
+                          ) : (
+                            <span className="badge badge-danger">Yes</span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
                       }
                     ]}
-                    // rowClassName={row => {
-                    //   return row.status === "CF"
-                    //     ? "confirmedClass"
-                    //     : row.status === "CL"
-                    //     ? "collectedClass"
-                    //     : row.status === "CN"
-                    //     ? "cancelledClass"
-                    //     : row.status === "V"
-                    //     ? "validateClass"
-                    //     : null;
-                    // }}
                     keyId="patient_code"
                     dataSource={{
                       data: Enumerable.from(this.state.sample_collection)
@@ -394,6 +405,7 @@ class ResultEntryList extends Component {
             open={this.state.isOpen}
             onClose={closeResultEntry.bind(this, this)}
             selectedPatient={this.state.selectedPatient}
+            comments_data={this.state.comments_data}
           />
 
           <MicrobiologyResultEntry
@@ -423,8 +435,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ResultEntryList)
+  connect(mapStateToProps, mapDispatchToProps)(ResultEntryList)
 );

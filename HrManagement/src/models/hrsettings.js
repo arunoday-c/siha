@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
   getEmployeeGroups: (req, res, next) => {
@@ -11,16 +11,16 @@ export default {
         .executeQuery({
           query:
             "select hims_d_employee_group_id, group_description,\
-          monthly_accrual_days, airfare_eligibility, airfare_amount from hims_d_employee_group\
+          monthly_accrual_days, airfare_eligibility, airfare_amount,ramzan_timing from hims_d_employee_group\
          where record_status='A'  order by hims_d_employee_group_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -37,8 +37,8 @@ export default {
         .executeQuery({
           query:
             "INSERT  INTO hims_d_employee_group(group_description,monthly_accrual_days,airfare_eligibility,airfare_amount,\
-            created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?)",
+            created_date,created_by,updated_date,updated_by,ramzan_timing) \
+            values(?,?,?,?,?,?,?,?,?)",
           values: [
             input.group_description,
             input.monthly_accrual_days,
@@ -47,15 +47,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+            input.ramzan_timing,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -73,7 +74,7 @@ export default {
           query:
             "UPDATE hims_d_employee_group SET group_description = ?,\
           monthly_accrual_days = ?, airfare_eligibility = ?, airfare_amount = ?, record_status=?\
-          ,updated_date=?, updated_by=?  WHERE hims_d_employee_group_id = ?",
+          ,updated_date=?, updated_by=?,ramzan_timing=?  WHERE hims_d_employee_group_id = ?",
           values: [
             input.group_description,
             input.monthly_accrual_days,
@@ -82,15 +83,16 @@ export default {
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_employee_group_id
-          ]
+            input.ramzan_timing,
+            input.hims_d_employee_group_id,
+          ],
         })
-        .then(update_loan => {
+        .then((update_loan) => {
           _mysql.releaseConnection();
           req.records = update_loan;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -108,21 +110,19 @@ export default {
       if (req.query.sub_department_id) {
         strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
 inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
-where E.sub_department_id=${
-          req.query.sub_department_id
-        } group by hims_d_designation_id`;
+where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
       }
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -147,15 +147,15 @@ where E.sub_department_id=${
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -180,15 +180,15 @@ where E.sub_department_id=${
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_designation_id
-          ]
+            input.hims_d_designation_id,
+          ],
         })
-        .then(update_loan => {
+        .then((update_loan) => {
           _mysql.releaseConnection();
           req.records = update_loan;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -218,14 +218,14 @@ where E.sub_department_id=${
             _stringData +
             " order by hims_d_overtime_group_id desc ",
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -257,15 +257,15 @@ where E.sub_department_id=${
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -298,15 +298,15 @@ where E.sub_department_id=${
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_overtime_group_id
-          ]
+            input.hims_d_overtime_group_id,
+          ],
         })
-        .then(update_loan => {
+        .then((update_loan) => {
           _mysql.releaseConnection();
           req.records = update_loan;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -324,14 +324,14 @@ where E.sub_department_id=${
             "select hims_d_document_type_id, document_type,\
             document_description, arabic_name, document_type_status,record_status, created_date from hims_d_document_type\
          where record_status='A'  order by hims_d_document_type_id desc",
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -357,15 +357,15 @@ where E.sub_department_id=${
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -391,15 +391,15 @@ where E.sub_department_id=${
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_document_type_id
-          ]
+            input.hims_d_document_type_id,
+          ],
         })
-        .then(update_loan => {
+        .then((update_loan) => {
           _mysql.releaseConnection();
           req.records = update_loan;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -415,6 +415,10 @@ where E.sub_department_id=${
         _strQuery = " and pjoject_status = '" + req.query.pjoject_status + "'";
       }
 
+      if (req.query.hospital_id > 0) {
+        _strQuery = " and hospital_id = '" + req.query.hospital_id + "'";
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -424,14 +428,14 @@ where E.sub_department_id=${
             _strQuery +
             "order by hims_d_project_id desc",
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -461,15 +465,15 @@ where E.sub_department_id=${
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ]
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -498,15 +502,15 @@ where E.sub_department_id=${
             input.record_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_project_id
-          ]
+            input.hims_d_project_id,
+          ],
         })
-        .then(update_project => {
+        .then((update_project) => {
           _mysql.releaseConnection();
           req.records = update_project;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -545,14 +549,14 @@ where E.sub_department_id=${
               left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id\
               where E.record_status='A' " +
             _strAppend,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } catch (e) {
@@ -573,7 +577,7 @@ where E.sub_department_id=${
           "leave_level2",
           "leave_level3",
           "loan_level1",
-          "loan_level2"
+          "loan_level2",
         ];
 
         _mysql
@@ -590,28 +594,112 @@ where E.sub_department_id=${
               created_date: new Date(),
               created_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              updated_by: req.userIdentity.algaeh_d_app_user_id
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
             },
-            bulkInsertOrUpdate: true
+            bulkInsertOrUpdate: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide valid input"
+          message: "Please provide valid input",
         };
         next();
       }
     } catch (e) {
       next(e);
     }
-  }
+  },
+
+  getAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query: "select * from hims_d_agency WHERE `record_status`='A' order by hims_d_agency_id desc",
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_agency (agency_name, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?)",
+          values: [
+            input.agency_name,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateAgency: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_agency SET agency_name = ?, record_status=?\
+          ,updated_date=?, updated_by=?  WHERE hims_d_agency_id = ?",
+          values: [
+            input.agency_name,
+            input.record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_agency_id,
+          ],
+        })
+        .then((update_loan) => {
+          _mysql.releaseConnection();
+          req.records = update_loan;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
 };

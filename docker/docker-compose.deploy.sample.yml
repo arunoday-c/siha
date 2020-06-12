@@ -1,0 +1,212 @@
+version: "3.1"
+services:
+  core:
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-core:latest
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-core.rule=PathPrefix(`/core`)"
+        - "traefik.http.routers.algaeh-core.middlewares=strip-core@docker"
+        - "traefik.http.middlewares.strip-core.stripprefix.prefixes=/core"
+        - "traefik.http.services.algaeh-core.loadbalancer.server.port=3000"
+    secrets:
+      - all_env
+    networks:
+      - algaeh-network
+  billing:
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-billing:latest
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-billing.rule=PathPrefix(`/billing`)"
+        - "traefik.http.middlewares.strip-billing.stripprefix.prefixes=/billing"
+        - "traefik.http.routers.algaeh-billing.middlewares=strip-billing@docker"
+        - "traefik.http.services.algaeh-billing.loadbalancer.server.port=3014"
+    secrets:
+      - all_env
+    networks:
+      - algaeh-network
+
+  client:
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-client:latest
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-client.rule=PathPrefix(`/`)"
+        - "traefik.http.services.algaeh-client.loadbalancer.server.port=1313"
+    secrets:
+      - all_env
+    networks:
+      - algaeh-network
+  reports:
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-reports:latest
+    secrets:
+      - all_env
+    networks:
+      - algaeh-network
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-reports.rule=PathPrefix(`/reports/`)"
+        - "traefik.http.middlewares.strip-reports.stripprefix.prefixes=/reports"
+        - "traefik.http.routers.algaeh-reports.middlewares=strip-reports@docker"
+        - "traefik.http.services.algaeh-reports.loadbalancer.server.port=3018"
+  clinicaldesk:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-clinicaldesk
+    networks:
+      - algaeh-network
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-clinicaldesk.rule=PathPrefix(`/clinical/`)"
+        - "traefik.http.middlewares.strip-clinicaldesk.stripprefix.prefixes=/clinical"
+        - "traefik.http.routers.algaeh-clinicaldesk.middlewares=strip-clinicaldesk@docker"
+        - "traefik.http.services.algaeh-clinicaldesk.loadbalancer.server.port=3011"
+  documentserver:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-documentserver
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-documentserver.rule=PathPrefix(`/docserver/`)"
+        - "traefik.http.middlewares.strip-documentserver.stripprefix.prefixes=/docserver"
+        - "traefik.http.routers.algaeh-documentserver.middlewares=strip-documentserver@docker"
+        - "traefik.http.services.algaeh-documentserver.loadbalancer.server.port=3006"
+    networks:
+      - algaeh-network
+  frontdesk:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-frontdesk
+    ports:
+      - "3001:3001"
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-frontdesk.rule=PathPrefix(`/frontdesk/`)"
+        - "traefik.http.middlewares.strip-frontdesk.stripprefix.prefixes=/frontdesk"
+        - "traefik.http.routers.algaeh-frontdesk.middlewares=strip-frontdesk@docker"
+        - "traefik.http.services.algaeh-frontdesk.loadbalancer.server.port=3001"
+    networks:
+      - algaeh-network
+  hrserver:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-hrserver
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-hrserver.rule=PathPrefix(`/hrserver/`)"
+        - "traefik.http.middlewares.strip-hrserver.stripprefix.prefixes=/hrserver"
+        - "traefik.http.routers.algaeh-hrserver.middlewares=strip-hrserver@docker"
+        - "traefik.http.services.algaeh-hrserver.loadbalancer.server.port=3004"
+    networks:
+      - algaeh-network
+  insurance:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-insurance
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-insurance.rule=PathPrefix(`/insurance/`)"
+        - "traefik.http.middlewares.strip-insurance.stripprefix.prefixes=/insurance"
+        - "traefik.http.routers.algaeh-insurance.middlewares=strip-insurance@docker"
+        - "traefik.http.services.algaeh-insurance.loadbalancer.server.port=3004"
+    networks:
+      - algaeh-network
+  inventory:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-inventory
+    ports:
+      - "3008:3008"
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-inventory.rule=PathPrefix(`/inventory/`)"
+        - "traefik.http.middlewares.strip-inventory.stripprefix.prefixes=/inventory"
+        - "traefik.http.routers.algaeh-inventory.middlewares=strip-inventory@docker"
+        - "traefik.http.services.algaeh-inventory.loadbalancer.server.port=3008"
+    networks:
+      - algaeh-network
+  laboratory:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-laboratory
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-laboratory.rule=PathPrefix(`/laboratory/`)"
+        - "traefik.http.middlewares.strip-laboratory.stripprefix.prefixes=/laboratory"
+        - "traefik.http.routers.algaeh-laboratory.middlewares=strip-laboratory@docker"
+        - "traefik.http.services.algaeh-laboratory.loadbalancer.server.port=3013"
+    networks:
+      - algaeh-network
+  mastersettings:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mastersettings
+    ports:
+      - "3003:3003"
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-mastersettings.rule=PathPrefix(`/master/`)"
+        - "traefik.http.middlewares.strip-mastersettings.stripprefix.prefixes=/master"
+        - "traefik.http.routers.algaeh-mastersettings.middlewares=strip-mastersettings@docker"
+        - "traefik.http.services.algaeh-mastersettings.loadbalancer.server.port=3003"
+    networks:
+      - algaeh-network
+  mrd:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mrd
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-mrd.rule=PathPrefix(`/mrd/`)"
+        - "traefik.http.middlewares.strip-mrd.stripprefix.prefixes=/mrd"
+        - "traefik.http.routers.algaeh-mrd.middlewares=strip-mrd@docker"
+        - "traefik.http.services.algaeh-mrd.loadbalancer.server.port=3016"
+    networks:
+      - algaeh-network
+  pharmacy:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-pharmacy
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-pharmacy.rule=PathPrefix(`/pharmacy/`)"
+        - "traefik.http.middlewares.strip-pharmacy.stripprefix.prefixes=/pharmacy"
+        - "traefik.http.routers.algaeh-pharmacy.middlewares=strip-pharmacy@docker"
+        - "traefik.http.services.algaeh-pharmacy.loadbalancer.server.port=3009"
+    networks:
+      - algaeh-network
+  procurement:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-procurement
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-procurement.rule=PathPrefix(`/procurement/`)"
+        - "traefik.http.middlewares.strip-procurement.stripprefix.prefixes=/procurement"
+        - "traefik.http.routers.algaeh-procurement.middlewares=strip-procurement@docker"
+        - "traefik.http.services.algaeh-procurement.loadbalancer.server.port=3017"
+    networks:
+      - algaeh-network
+  radiology:
+    secrets:
+      - all_env
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-radiology
+    deploy:
+      labels:
+        - "traefik.http.routers.algaeh-radiology.rule=PathPrefix(`/radiology/`)"
+        - "traefik.http.middlewares.strip-radiology.stripprefix.prefixes=/radiology"
+        - "traefik.http.routers.algaeh-radiology.middlewares=strip-radiology@docker"
+        - "traefik.http.services.algaeh-radiology.loadbalancer.server.port=3012"
+    networks:
+      - algaeh-network
+  cache:
+    image: redis:alpine
+    networks:
+      - algaeh-network
+
+secrets:
+  all_env:
+    external: true
+
+networks:
+  algaeh-network:
+    driver: overlay
+    external: true

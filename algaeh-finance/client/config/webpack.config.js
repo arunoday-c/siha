@@ -25,6 +25,7 @@ const ForkTsCheckerWebpackPlugin = require("react-dev-utils/ForkTsCheckerWebpack
 const typescriptFormatter = require("react-dev-utils/typescriptFormatter");
 const AssetsPlugin = require("assets-webpack-plugin");
 const eslint = require("eslint");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const postcssNormalize = require("postcss-normalize");
 
@@ -198,7 +199,8 @@ module.exports = function(webpackEnv) {
     },
     externals: {
       react: "React",
-      "react-dom": "ReactDOM"
+      "react-dom": "ReactDOM",
+      "react-router-dom": "ReactRouterDOM"
     },
     optimization: {
       minimize: isEnvProduction,
@@ -269,12 +271,15 @@ module.exports = function(webpackEnv) {
       // https://twitter.com/wSokra/status/969633336732905474
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
-        chunks: "all",
-        name: false
+        // chunks: "all",
+        // name: false
+        cacheGroups: {
+          default: false
+        }
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
-      runtimeChunk: true
+      runtimeChunk: false
     },
     resolve: {
       // This allows you to set a fallback for where Webpack should look for modules.
@@ -531,12 +536,14 @@ module.exports = function(webpackEnv) {
       new AssetsPlugin({
         filename: "manifest.micro.json",
         includeAllFileTypes: false,
-        path: paths.appPublic,
+        // path: paths.appPublic,
+        useCompilerPath: true,
         prettyPrint: true,
         metadata: {
           componentName: "FinanceComponent"
         }
       }),
+      new CleanWebpackPlugin(),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       isEnvProduction &&

@@ -16,13 +16,12 @@ import "./PackageUtilize.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import PackageUtilizeEvent from "./PackageUtilizeEvent";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AddAdvanceModal from "../../Advance/AdvanceModal";
 import ConsumtionItemBatches from "./ConsumtionItemBatches";
-import moment from "moment";
 import ClosePackage from "./ClosePackage";
 import UtilizedPackageofVisit from "./UtilizedPackageofVisit";
 
@@ -32,6 +31,7 @@ class PackageUtilize extends Component {
 
     this.state = {
       package_details: [],
+      package_detail: [],
       AdvanceOpen: false,
       itemBatches: false,
       service_id: null,
@@ -47,9 +47,9 @@ class PackageUtilize extends Component {
     this.baseState = this.state;
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.from_billing === true) {
       let consultation = nextProps.from === "frontDesk" ? true : false;
       this.setState({
@@ -189,24 +189,15 @@ class PackageUtilize extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Pakage Details"
+          title="Package Details"
           openPopup={this.props.open}
         >
           <div className="popupInner">
-            <div className="col-lg-12">
-              <div className="row">
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Package Code"
-                    }}
-                  />
-                  <h5 style={{ margin: 0 }}>{this.state.package_code}</h5>
-                </div>
-
+            <div className="col-12">
+              <div className="row margin-top-15">
                 {this.props.from_billing === true ? (
                   <AlagehAutoComplete
-                    div={{ className: "col-4 paddingLeft-0 " }}
+                    div={{ className: "col-4" }}
                     label={{ forceLabel: "Package Name", isImp: false }}
                     selector={{
                       name: "hims_f_package_header_id",
@@ -221,15 +212,15 @@ class PackageUtilize extends Component {
                     }}
                   />
                 ) : (
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Package Name"
-                      }}
-                    />
-                    <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
-                  </div>
-                )}
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Package Name"
+                        }}
+                      />
+                      <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                    </div>
+                  )}
                 {this.state.consultation === true ? (
                   <label className="checkbox inline">
                     <input
@@ -240,13 +231,24 @@ class PackageUtilize extends Component {
                     />
                     <span>Package Utilize, Dont know what to utilize</span>
                   </label>
-                ) : null}
+                ) : null}{" "}
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Package Code"
+                    }}
+                  />
+                  <h5 style={{ margin: 0 }}>{this.state.package_code}</h5>
+                </div>
               </div>
 
               <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                <div
+                  className="col-md-10 col-lg-12"
+                  id="patPackageDetailsGrid_Cntr"
+                >
                   <AlgaehDataGrid
-                    id="Services_Ordering"
+                    id="patPackageDetailsGrid"
                     columns={[
                       {
                         fieldName: "actions",
@@ -282,10 +284,10 @@ class PackageUtilize extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -307,8 +309,8 @@ class PackageUtilize extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.service_id
-                                );
+                                f => f.hims_d_services_id === row.service_id
+                              );
 
                           return (
                             <span>
@@ -326,9 +328,7 @@ class PackageUtilize extends Component {
                       {
                         fieldName: "qty",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Ordered Quantity" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Ordered Qty" }} />
                         ),
                         disabled: true,
                         others: {
@@ -338,9 +338,7 @@ class PackageUtilize extends Component {
                       {
                         fieldName: "utilized_qty",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Utilized Quantity" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Utilized Qty" }} />
                         ),
                         disabled: true,
                         others: {
@@ -351,7 +349,7 @@ class PackageUtilize extends Component {
                         fieldName: "available_qty",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Available Quantity" }}
+                            label={{ forceLabel: "Available Qty" }}
                           />
                         ),
                         disabled: true,
@@ -368,28 +366,28 @@ class PackageUtilize extends Component {
                           return row.service_type_id === 4 ? (
                             row.quantity
                           ) : (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                number: {
-                                  allowNegative: false,
-                                  thousandSeparator: ","
-                                },
-                                value: row.quantity,
-                                className: "txt-fld",
-                                name: "quantity",
-                                dontAllowKeys: ["-", "e", "."],
-                                events: {
-                                  onChange: this.onquantitycol.bind(this, row)
-                                },
-                                others: {
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  value: row.quantity,
+                                  className: "txt-fld",
+                                  name: "quantity",
+                                  dontAllowKeys: ["-", "e", "."],
+                                  events: {
+                                    onChange: this.onquantitycol.bind(this, row)
+                                  },
+                                  others: {
+                                    onFocus: e => {
+                                      e.target.oldvalue = e.target.value;
+                                    }
                                   }
-                                }
-                              }}
-                            />
-                          );
+                                }}
+                              />
+                            );
                         },
                         disabled: true,
                         others: {
@@ -421,198 +419,9 @@ class PackageUtilize extends Component {
                 available_qty={this.state.available_qty}
               />
 
-              {/*
-                <h6> Utilized Services </h6>
-                <div className="row">
-                  <div className="col-md-10 col-lg-12" id="doctorOrder">
-                    <AlgaehDataGrid
-                      id="Services_Ordering"
-                      columns={[
-                        {
-                          fieldName: "service_type_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "service_type_id" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].service_type
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "services_id",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "services_id" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f => f.hims_d_services_id === row.service_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].service_name
-                                  : ""}
-                              </span>
-                            );
-                          },
-
-                          others: {
-                            minWidth: 400
-                          }
-                        },
-
-                        {
-                          fieldName: "qty",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                          ),
-                          disabled: true,
-                          others: {
-                            minWidth: 80
-                          }
-                        },
-
-                        {
-                          fieldName: "utilized_qty",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Utilized Quantity" }}
-                            />
-                          ),
-                          disabled: true,
-                          others: {
-                            minWidth: 110
-                          }
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.utilized_services
-                      }}
-                      // isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      byForceEvents={true}
-                    />
-                  </div>
-                </div>
-
-                <h6> Pending Services </h6>
-              <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
-                  <AlgaehDataGrid
-                    id="Services_Ordering"
-                    columns={[
-                      {
-                        fieldName: "service_type_id",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "service_type_id" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.servicetype === undefined
-                              ? []
-                              : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? display[0].service_type
-                                : ""}
-                            </span>
-                          );
-                        },
-
-                      },
-
-                      {
-                        fieldName: "services_id",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "services_id" }} />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.serviceslist === undefined
-                              ? []
-                              : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.service_id
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].service_name
-                                : ""}
-                            </span>
-                          );
-                        },
-
-                      },
-
-                      {
-                        fieldName: "qty",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 80
-                        }
-                      },
-
-                      {
-                        fieldName: "utilized_qty",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Utilized Quantity" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 110
-                        }
-                      }
-                    ]}
-                    keyId="service_type_id"
-                    dataSource={{
-                      data: this.state.available_services
-                    }}
-                    // isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    byForceEvents={true}
-                  />
-                </div>
-              </div>*/}
-
               <hr />
 
-              <div className="col-lg-12">
+              <div className="col-lg-12 margin-bottom-15">
                 <div className="row">
                   <div className="col">
                     <AlgaehLabel
@@ -621,7 +430,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.unit_cost)}
+                      {GetAmountFormart(this.state.unit_cost)}
                     </h5>
                   </div>
                   <div className="col">
@@ -631,7 +440,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.actual_amount)}
+                      {GetAmountFormart(this.state.actual_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -641,7 +450,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.advance_amount)}
+                      {GetAmountFormart(this.state.advance_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -651,7 +460,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.utilize_amount)}
+                      {GetAmountFormart(this.state.utilize_amount)}
                     </h5>
                   </div>
                   <div className="col">
@@ -661,7 +470,7 @@ class PackageUtilize extends Component {
                       }}
                     />
                     <h5 style={{ margin: 0 }}>
-                      {getAmountFormart(this.state.balance_amount)}
+                      {GetAmountFormart(this.state.balance_amount)}
                     </h5>
                   </div>
                 </div>
@@ -724,14 +533,14 @@ class PackageUtilize extends Component {
                       ) : null}
 
                       {this.props.from_billing === true &&
-                      this.props.from !== "frontDesk" ? (
-                        <button
-                          className="btn btn-default"
-                          onClick={this.ShowVistUtilizedSer.bind(this)}
-                        >
-                          Utilized Services
+                        this.props.from !== "frontDesk" ? (
+                          <button
+                            className="btn btn-default"
+                            onClick={this.ShowVistUtilizedSer.bind(this)}
+                          >
+                            Utilized Services
                         </button>
-                      ) : null}
+                        ) : null}
 
                       {this.props.from_billing === true ? (
                         <button
@@ -778,8 +587,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PackageUtilize)
+  connect(mapStateToProps, mapDispatchToProps)(PackageUtilize)
 );

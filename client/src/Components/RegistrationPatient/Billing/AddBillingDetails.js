@@ -45,7 +45,7 @@ const calculateRecipt = ($this, context) => {
     onSuccess: response => {
       if (response.data.success) {
         if (context !== null) {
-          context.updateState({ ...response.data.records, saveEnable: false });
+          context.updateState({ ...response.data.records });
         }
       }
       AlgaehLoader({ show: false });
@@ -90,8 +90,8 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
-        saveEnable: true
+        [e.target.name]: e.target.value
+        // saveEnable: true
       });
     }
   }
@@ -125,8 +125,8 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
-        saveEnable: true
+        [e.target.name]: e.target.value
+        // saveEnable: true
       });
     }
   }
@@ -161,8 +161,8 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value,
-        saveEnable: true
+        [e.target.name]: e.target.value
+        // saveEnable: true
       });
     }
   }
@@ -200,6 +200,8 @@ const discounthandle = ($this, context, ctrl, e) => {
   let sheet_discount_percentage = 0;
   let sheet_discount_amount = 0;
 
+  debugger
+
   if (e.target.name === "sheet_discount_percentage") {
     sheet_discount_percentage =
       e.target.value === "" ? "" : parseFloat(e.target.value);
@@ -212,7 +214,21 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "Warning"
+      type: "warning"
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)) {
+    swalMessage({
+      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+      type: "warning"
     });
     $this.setState({
       sheet_discount_percentage: $this.state.sheet_discount_percentage
@@ -295,6 +311,12 @@ const billheaderCalculation = ($this, context) => {
         if (context !== null) {
           response.data.records.credit_amount = serviceInput.credit_amount;
           response.data.records.advance_adjust = serviceInput.advance_adjust;
+
+          if ($this.state.default_pay_type === "CD") {
+            response.data.records.card_amount = response.data.records.receiveable_amount
+            response.data.records.cash_amount = 0
+          }
+
           context.updateState({ ...response.data.records });
         }
       }
@@ -317,97 +339,6 @@ const datehandle = ($this, context, ctrl, e) => {
 
   if (context !== null) {
     context.updateState({ [e]: moment(ctrl)._d });
-  }
-};
-
-const ProcessInsurance = ($this, context, ctrl, e) => {
-  if (
-    $this.state.insured === "Y" &&
-    ($this.state.primary_insurance_provider_id == null ||
-      $this.state.primary_network_office_id == null ||
-      $this.state.primary_network_id == null)
-  ) {
-    swalMessage({
-      title: "Please select the primary insurance details properly.",
-      type: "error"
-    });
-  } else if (
-    $this.state.sec_insured === "Y" &&
-    ($this.state.secondary_insurance_provider_id == null ||
-      $this.state.secondary_network_office_id == null ||
-      $this.state.secondary_network_id == null)
-  ) {
-    swalMessage({
-      title: "Please select the secondary insurance details properly.",
-      type: "error"
-    });
-  } else {
-    let serviceInput = [
-      {
-        insured: $this.state.insured,
-        vat_applicable: $this.state.vat_applicable,
-        hims_d_services_id: $this.state.hims_d_services_id,
-        primary_insurance_provider_id:
-          $this.state.primary_insurance_provider_id,
-        primary_network_office_id: $this.state.primary_network_office_id,
-        primary_network_id: $this.state.primary_network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
-
-    AlgaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      data: serviceInput,
-      onSuccess: response => {
-        if (response.data.success) {
-          // response.data.records.billdetails[0].insured =
-          //   response.data.records.billdetails[0].insurance_yesno;
-          $this.setState({ ...response.data.records });
-          if (context !== null) {
-            context.updateState({ ...response.data.records });
-          }
-
-          algaehApiCall({
-            uri: "/billing/billingCalculations",
-            module: "billing",
-            method: "POST",
-            data: response.data.records,
-            onSuccess: response => {
-              if (response.data.success) {
-                response.data.records.saveEnable = false;
-                response.data.records.ProcessInsure = true;
-                $this.setState({ ...response.data.records });
-                if (context !== null) {
-                  context.updateState({ ...response.data.records });
-                }
-              }
-              AlgaehLoader({ show: false });
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
-        }
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
   }
 };
 
@@ -482,7 +413,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
     swalMessage({
-      title: "Criedt amount cannot be greater than Net amount",
+      title: "Credit amount cannot be greater than Net amount",
       type: "warning"
     });
     $this.setState({
@@ -510,12 +441,6 @@ const credittexthandle = ($this, context, ctrl, e) => {
         balance_credit: e.target.value === "" ? 0 : e.target.value
       });
     }
-  }
-};
-
-const advanceAdjustCal = ($this, context, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this, context);
   }
 };
 
@@ -608,12 +533,10 @@ export {
   cardtexthandle,
   chequetexthandle,
   adjustadvance,
-  ProcessInsurance,
   checkcashhandaler,
   checkcardhandler,
   checkcheckhandaler,
   credittexthandle,
-  advanceAdjustCal,
   discountCal,
   credittextCal,
   cashtexthCal,

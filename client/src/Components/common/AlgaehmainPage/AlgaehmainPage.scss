@@ -4,7 +4,19 @@ header {
   border-bottom: 2px solid rgba(0, 0, 0, 0.1);
 }
 .mainTheme {
-  background: $primary-color;
+  // background: $primary-color;
+  // background: linear-gradient(
+  //   to right,
+  //   rgba(228, 171, 89, 0.76) 0%,
+  //   rgba($primary-color, 0.1) 100%
+  // );
+
+  background: linear-gradient(
+    to right,
+    $primary-color 0%,
+    darken($primary-color, 5%) 100%
+  );
+
   color: #fff;
   padding: 0 1rem;
   border-bottom: 1px solid darken($primary-color, 10%);
@@ -16,9 +28,10 @@ header {
   height: 94vh;
   overflow: auto;
   overflow-x: hidden;
+  background-color: #e9e9e9;
 }
 .sideMenuBars {
-  border-right: 1px solid lighten($primary-color, 10%);
+  // border-right: 1px solid lighten($primary-color, 10%);
   margin-left: -15px;
   padding: 15px;
   cursor: pointer;
@@ -31,35 +44,66 @@ header {
     background: lighten($primary-color, 10%);
   }
 }
+
+.sideBackButton {
+  // border-right: 1px solid lighten($primary-color, 10%);
+  margin-left: -15px;
+  padding: 15px;
+  cursor: pointer;
+  background: linear-gradient(
+    to right,
+    rgba(0, 186, 190, 1) 0%,
+    rgba(228, 171, 89, 1) 100%
+  );
+  position: relative;
+  z-index: 9;
+  &:hover {
+    background: lighten($primary-color, 10%);
+  }
+}
 .topNavbar-title {
   margin: 0;
   padding: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  font-size: 1.2em;
+  font-size: 1.1em;
+  width: 50vw;
+  text-overflow: ellipsis;
+  height: 52px;
+  white-space: nowrap;
+  overflow: hidden;
+  line-height: 52px;
+  color: $color-white;
 }
 .appLogoCntr {
-  width: 115px;
   border-left: 1px solid darken($primary-color, 10%);
-  padding-left: 3px;
-  margin-right: 4px;
-
-  .appLogoHIMSOnly {
-    background: url(../../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center
-      left;
-    background-size: 100%;
-    width: 100%;
+  padding: 0;
+  margin: 0;
+  height: 53px;
+  span {
+    display: inline-block;
+    height: 53px;
     margin: 0;
     padding: 0;
-    height: 40px;
+    vertical-align: top;
   }
-  .appLogoHRMSOnly {
-    background: url(../../../assets/svg/HRMS_LOGO_ONLY.svg) no-repeat center
-      left;
-    background-size: 100%;
-    width: 100%;
+  img {
+    height: 45px;
+    width: auto;
+    // border-right: 1px solid #00dac4;
+    margin: 4px 0px;
+  }
+  .appName {
+    display: block;
+    font-size: 1.6rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
     margin: 0;
     padding: 0;
-    height: 40px;
+    line-height: 52px;
+    padding-left: 5px;
+    border-left: 1px solid darken($primary-color, 10%);
+    text-transform: uppercase;
+    font-style: normal;
   }
 }
 
@@ -99,6 +143,9 @@ header {
     padding: 0;
   }
 }
+.leftDrawer {
+  z-index: 99999 !important;
+}
 .leftNavCntr {
   background: #292929;
   margin-top: 0;
@@ -108,6 +155,7 @@ header {
   width: 255px;
   box-shadow: 0 0 300px rgba(0, 0, 0, 0.5);
   animation-duration: 0.4s;
+  left: 0;
 }
 
 /* Light Side Bar Menu */
@@ -115,7 +163,7 @@ header {
   .sideMenu-header {
     color: #212529;
     background: #f7f7f7;
-    margin-top: 52px;
+    margin-top: 28px;
     height: 93vh;
     overflow-y: auto;
     overflow-x: hidden;
@@ -130,6 +178,9 @@ header {
       i {
         color: #00babe;
       }
+    }
+    .moduleNameText {
+      font-size: 0.95rem;
     }
   }
   .side-menu-title {
@@ -211,9 +262,8 @@ header {
   .menuBar-title {
     display: flex;
     padding: 0 5px;
-
     height: 52px;
-    background: #000;
+    background: lighten($color-black, 10%) !important;
     top: 0;
     position: fixed;
     width: 255px;
@@ -236,112 +286,6 @@ header {
   }
 }
 
-/* Dark Side Bar Menu 
-.hptl-phase1-sideMenuBar {
-  .sideMenu-header {
-    color: white;
-    background: #292929;
-    margin-top: 52px;
-    height: 93vh;
-    height: 93vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .side-menu-title {
-    padding: 5px 0;
-    line-height: 35px;
-    border-bottom: 2px solid #000000;
-    border-top: 1px solid #505050;
-    cursor: pointer;
-    
-    i {
-      text-shadow: 0px 2px 0px #000;
-    }
-  }
-  .side-menu-title:hover {
-    background:  lighten($primary-color, 10%);
-    i {
-      text-shadow: 0px 2px 0px #000;
-    }
-  }
-  .side-menu-arrow {
-    margin-top: 5px;
-  }
-  .side-menu-downIcon {
-    padding-top: 5px;
-    padding-right: 5px;
-    cursor: pointer;
-  }
-  ul.tree-structure-menu {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    li {
-      padding: 8px 5px;
-      margin: 0;
-      
-      border-bottom: 1px dotted #4e4e4e;
-      text-transform: uppercase;
-      cursor: pointer;
-      color: #dcac66;
-      line-height: 20px;
-      i {
-        margin-right: 12px;
-        margin-left: 14px;
-        display: inline-block;
-        vertical-align: initial;
-      }
-      span {
-        display: inline-block;
-        width: 80%;
-      }
-    }
-    li:hover {
-      background:  lighten($primary-color, 10%);
-      color: #fff;
-    }
-
-    li.active {
-      background:  lighten($primary-color, 10%);
-      color: #fff;
-    }
-  }
-  .sub-menu-option {
-    background: #000000;
-  }
-
-  .close-menu {
-    padding-top: 5px;
-    cursor: pointer;
-    color: #fff;
-  }
-
-  .menuBar-title {
-    display: flex;
-    
-    height: 49px;
-    background: #000;
-    position: fixed;
-    width: 255px;
-    top:0;
-    z-index: 9;
-  }
-  .sideBarClose {
-    position: absolute;
-    right: 19px;
-    top: 14px;
-    color: #fff;
-    
-  }
-  .sideBarClose:hover {
-    color: #00bcb0;
-    cursor: pointer;
-  }
-  svg {
-    height: 23px;
-  }
-}
-*/
 .screenDisplay {
   display: flex;
   width: 100%;
@@ -384,10 +328,13 @@ header {
 }
 .navTopbar-dropdown {
   padding: 15px;
+  border: 0;
   border-left: 1px solid darken($primary-color, 10%);
   margin: 0;
   margin-right: -15px;
+  background: $primary-color;
   cursor: pointer;
+
   .dropdown-menu {
     left: inherit;
     right: -1px;
@@ -418,6 +365,7 @@ header {
 }
 .loginProfileInfo {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  text-align: right;
   span {
     display: block;
     white-space: nowrap;
@@ -466,4 +414,10 @@ header {
   .navTopBarRight {
     display: none;
   }
+  .topNavbar-title {
+    width: 1vw;
+  }
+}
+.faltRed {
+  border: 1px solid red !important;
 }

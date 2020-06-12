@@ -32,7 +32,8 @@ const {
   getBulkManualTimeSheet,
   uploadBulkManualTimeSheet,
   previewBulkTimeSheet,
-  postBulkTimeSheetMonthWise
+  postBulkTimeSheetMonthWise,
+  SaveAttendanceAndProject
 } = attendence;
 
 export default () => {
@@ -396,7 +397,6 @@ export default () => {
 
     (req, res, next) => {
       if (req.records.invalid_input == true) {
-        console.log("eee:");
         res
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
@@ -450,7 +450,7 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          message: req.records.message
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -458,6 +458,17 @@ export default () => {
           result: req.records
         });
       }
+    }
+  );
+
+  api.post(
+    "/SaveAttendanceAndProject",
+    SaveAttendanceAndProject,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
     }
   );
 

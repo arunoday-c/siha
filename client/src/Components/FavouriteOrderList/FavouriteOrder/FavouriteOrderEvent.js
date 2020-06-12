@@ -1,9 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 export default function FavouriteOrderEvent() {
   return {
@@ -27,12 +24,11 @@ export default function FavouriteOrderEvent() {
       });
     },
     serviceHandeler: ($this, e) => {
-      let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
-
       $this.setState({
-        [name]: value,
-        s_service_amount: e.selected.standard_fee
+        s_service: e.hims_d_services_id,
+        s_service_type: e.service_type_id,
+        insurance_service_name: e.service_name,
+        service_name: e.service_name
       });
     },
 

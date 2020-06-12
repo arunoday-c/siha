@@ -4,17 +4,16 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables";
+// import GlobalVariables from "../../../../utils/GlobalVariables";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import Options from "../../../../Options.json";
-import moment from "moment";
+// import Options from "../../../../Options.json";
+// import moment from "moment";
 import AuthorizationSetupEvent from "./AuthorizationSetupEvent";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";

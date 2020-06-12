@@ -27,11 +27,7 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-
-import AlgaehReport from "../Wrapper/printReports";
-
 import moment from "moment";
-import Options from "../../Options.json";
 
 class OPBillCancellation extends Component {
   constructor(props) {
@@ -55,7 +51,7 @@ class OPBillCancellation extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
     this.setState({ ...this.state, ...IOputs });
   }
@@ -98,7 +94,7 @@ class OPBillCancellation extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let output = {};
 
     if (
@@ -178,6 +174,7 @@ class OPBillCancellation extends Component {
 
         Inputobj.patient_payable = $this.state.patient_payable_h;
         Inputobj.pay_type = "P";
+        Inputobj.ScreenCode = getCookie("ScreenCode")
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
@@ -275,17 +272,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}

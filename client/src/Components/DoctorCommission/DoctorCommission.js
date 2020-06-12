@@ -29,7 +29,7 @@ import GlobalVariables from "../../utils/GlobalVariables.json";
 import moment from "moment";
 import Options from "../../Options.json";
 
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 class DoctorCommission extends Component {
   constructor(props) {
@@ -291,12 +291,12 @@ class DoctorCommission extends Component {
                   <h3 className="caption-subject">Bill Lists</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     className="btn btn-primary btn-circle active"
                     onClick={CalculateCommission.bind(this, this)}
                   >
                     <i className="fas fa-calculator" />
-                  </a>
+                  </button>
                 </div>
               </div>
               <div className="portlet-body">
@@ -336,10 +336,10 @@ class DoctorCommission extends Component {
                               this.props.servicetype === undefined
                                 ? []
                                 : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.servtype_id
-                                  );
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.servtype_id
+                                );
 
                             return (
                               <span>
@@ -360,8 +360,8 @@ class DoctorCommission extends Component {
                               this.props.services === undefined
                                 ? []
                                 : this.props.services.filter(
-                                    f => f.hims_d_services_id === row.service_id
-                                  );
+                                  f => f.hims_d_services_id === row.service_id
+                                );
 
                             return (
                               <span>
@@ -494,7 +494,7 @@ class DoctorCommission extends Component {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         //   onDelete: deleteServices.bind(this, this),
-                        onEdit: row => {}
+                        onEdit: row => { }
                         // onDone: this.updateBillDetail.bind(this)
                       }}
                     />
@@ -510,7 +510,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Commision"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.op_commision)}</h6>
+                <h6>{GetAmountFormart(this.state.op_commision)}</h6>
               </div>
               <div className="col">
                 <AlgaehLabel
@@ -518,7 +518,7 @@ class DoctorCommission extends Component {
                     forceLabel: "OP Credit Comission"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.op_credit_comission)}</h6>
+                <h6>{GetAmountFormart(this.state.op_credit_comission)}</h6>
               </div>
 
               <div className="col">
@@ -527,7 +527,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Gross Comission"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.gross_comission)}</h6>
+                <h6>{GetAmountFormart(this.state.gross_comission)}</h6>
 
                 {/* adjust_amount */}
               </div>
@@ -558,7 +558,7 @@ class DoctorCommission extends Component {
                     forceLabel: "Comission Payable"
                   }}
                 />
-                <h6>{getAmountFormart(this.state.comission_payable)}</h6>
+                <h6>{GetAmountFormart(this.state.comission_payable)}</h6>
               </div>
             </div>
 

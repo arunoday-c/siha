@@ -18,17 +18,14 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import {
-  texthandle,
-  genericnamehandle,
+  texthandle,  
   itemhandle,
   AddItems,
   deleteItems,
   datehandle,
-  SaveMedication,
-  printPrescription,
+  SaveMedication,  
   dateFormater,
-  numberhandle,
-  calcuateDispense,
+  numberhandle,  
   updateItems,
   onchangegridcol,
   EditGrid,
@@ -40,8 +37,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
-import { Label } from "semantic-ui-react";
-import ButtonType from "../../../Wrapper/algaehButton";
+
 import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
 class OrderMedication extends Component {
   constructor(props) {
@@ -51,13 +47,20 @@ class OrderMedication extends Component {
       storedState = Window.global["orderMedicationState"];
       removeGlobal("orderMedicationState");
     }
+    const {
+      current_patient,
+      encounter_id,
+      visit_id,
+      provider_id,
+      episode_id
+    } = Window.global;
     this.state = {
-      patient_id: Window.global["current_patient"],
-      encounter_id: Window.global["encounter_id"],
-      visit_id: Window.global["visit_id"],
+      patient_id: current_patient, // Window.global["current_patient"],
+      encounter_id: encounter_id, // Window.global["encounter_id"],
+      visit_id: visit_id, // Window.global["visit_id"],
 
-      provider_id: Window.global["provider_id"],
-      episode_id: Window.global["episode_id"],
+      provider_id: provider_id, // Window.global["provider_id"],
+      episode_id: episode_id, //Window.global["episode_id"],
 
       vat_applicable: this.props.vat_applicable,
       instructions: "",
@@ -151,7 +154,7 @@ class OrderMedication extends Component {
   componentWillUnmount() {
     setGlobal({ orderMedicationState: this.state });
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -210,16 +213,16 @@ class OrderMedication extends Component {
       item_category_id: null,
       item_group_id: null,
       pre_approval: null,
-      instructions: null,
       generic_name: "",
       item_description: "",
       instructions: "",
+      start_date: moment().format("YYYY-MM-DD"),
       total_quantity: 0
     });
   };
 
   clearAction = e => {
-    {
+    
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -239,7 +242,7 @@ class OrderMedication extends Component {
           );
         }
       });
-    }
+    
   };
 
   render() {
@@ -392,7 +395,6 @@ class OrderMedication extends Component {
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
-                    dontAllow={"past"}
                     value={this.state.start_date}
                   />
                 </div>
@@ -413,7 +415,7 @@ class OrderMedication extends Component {
                     className="col-12"
                     style={{ paddingTop: 9, textAlign: "right" }}
                   >
-                    <span style={{ textAlign: "left" }}>
+                    <span style={{ textAlign: "left", marginRight: "10" }}>
                       Pharmacy Stock: <b>{this.state.total_quantity}</b>
                     </span>
                     <button
@@ -742,8 +744,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderMedication)
+  connect(mapStateToProps, mapDispatchToProps)(OrderMedication)
 );

@@ -30,7 +30,7 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+// import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./basicSubjective.scss";
 import _ from "lodash";
 import moment from "moment";
@@ -38,6 +38,7 @@ import { Dimmer, Loader } from "semantic-ui-react";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
+    const { gender } = Window.global;
     this.state = {
       pageDisplay: "Orders",
       openMedication: false,
@@ -63,7 +64,7 @@ class BasicSubjective extends Component {
       active_medication: [],
       loadingUnderMedication: true
     };
-    this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
+    this.isMale = gender === "Male" ? true : false; // String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
     this.significantSignsLength = 250;
     this.otherConditionMaxLength = 250;
@@ -110,12 +111,12 @@ class BasicSubjective extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-          isPregnancy: true
-        })
+        isPregnancy: true
+      })
       : this.setState({
-          isPregnancy: false,
-          lmp_days: ""
-        });
+        isPregnancy: false,
+        lmp_days: ""
+      });
   }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
@@ -161,6 +162,7 @@ class BasicSubjective extends Component {
   }
 
   getPatientMedications() {
+    const { current_patient } = Window.global;
     this.setState(
       {
         loadingUnderMedication: true
@@ -168,7 +170,7 @@ class BasicSubjective extends Component {
       () => {
         algaehApiCall({
           uri: "/orderMedication/getPatientMedications",
-          data: { patient_id: Window.global["current_patient"] },
+          data: { patient_id: current_patient }, //Window.global["current_patient"] },
           method: "GET",
           onSuccess: response => {
             const data = { loadingUnderMedication: false };
@@ -194,23 +196,34 @@ class BasicSubjective extends Component {
   }
 
   getPatientEncounterDetails() {
+    const { encounter_id } = Window.global;
     algaehApiCall({
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        encounter_id: Window.global.encounter_id
+        encounter_id: encounter_id //Window.global.encounter_id
       },
       onSuccess: response => {
         let data = response.data.records[0];
         if (response.data.success) {
-          this.setState({
-            significant_signs: data.significant_signs,
-            other_signs: data.other_signs
-          });
+          this.setState(
+            {
+              significant_signs: data.significant_signs,
+              other_signs: data.other_signs
+            },
+            () => {
+              Window.global[
+                "significant_signs"
+              ] = this.state.significant_signs;
+              Window.global[
+                "other_signs"
+              ] = this.state.other_signs;
+            }
+          );
 
-          setGlobal({
-            significant_signs: data.significant_signs
-          });
+          // setGlobal({
+          //   significant_signs: data.significant_signs
+          // });
         }
       },
       onFailure: error => {
@@ -309,6 +322,7 @@ class BasicSubjective extends Component {
       } else {
         SubjectiveHandler().updatePatientChiefComplaints(this);
       }
+      const { current_patient, episode_id } = Window.global;
       this.setState(
         {
           openDiet: !this.state.openDiet
@@ -318,8 +332,8 @@ class BasicSubjective extends Component {
             uri: "/doctorsWorkBench/getPatientDiet",
             method: "GET",
             data: {
-              patient_id: Window.global["current_patient"],
-              episode_id: Window.global["episode_id"]
+              patient_id: current_patient, //Window.global["current_patient"],
+              episode_id: episode_id //Window.global["episode_id"]
             },
             cancelRequestId: "getPatientDiet",
             redux: {
@@ -373,17 +387,18 @@ class BasicSubjective extends Component {
     this.setState({
       [name]: value
     });
+    Window.global[name] = value;
+    // if (name === "chief_complaint") {
 
-    if (name === "chief_complaint") {
-      setGlobal({
-        chief_complaint: value
-      });
-    }
-    if (name === "significant_signs") {
-      setGlobal({
-        significant_signs: value
-      });
-    }
+    // setGlobal({
+    //   chief_complaint: value
+    // });
+    //  }
+    // if (name === "significant_signs") {
+    //   setGlobal({
+    //     significant_signs: value
+    //   });
+    // }
   }
   componentDidMount() {
     this.getPatientMedications();
@@ -528,7 +543,7 @@ class BasicSubjective extends Component {
                             <textarea
                               value={
                                 this.state.chief_complaint === null ||
-                                this.state.chief_complaint === undefined
+                                  this.state.chief_complaint === undefined
                                   ? ""
                                   : this.state.chief_complaint
                               }
@@ -661,7 +676,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.significant_signs === null ||
-                            this.state.significant_signs === undefined
+                              this.state.significant_signs === undefined
                               ? ""
                               : this.state.significant_signs
                           }
@@ -696,7 +711,7 @@ class BasicSubjective extends Component {
                         <textarea
                           value={
                             this.state.other_signs === null ||
-                            this.state.other_signs === undefined
+                              this.state.other_signs === undefined
                               ? ""
                               : this.state.other_signs
                           }
@@ -728,12 +743,12 @@ class BasicSubjective extends Component {
                       <h3 className="caption-subject">Diagnosis</h3>
                     </div>
                     <div className="actions">
-                      <a
+                      <button
                         className="btn btn-primary btn-circle active"
                         onClick={this.IcdsSearch.bind(this, "Final")}
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -790,8 +805,7 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: true,
-                              others: { maxWidth: 70, align: "center" }
+                              others: { disabled: true, maxWidth: 70, align: "center" }
                             },
                             {
                               fieldName: "icd_description",
@@ -802,8 +816,9 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: true
+                              others: { disabled: true }
                             }
+
                           ]}
                           keyId="code"
                           dataSource={{
@@ -814,7 +829,7 @@ class BasicSubjective extends Component {
                           paging={{ page: 0, rowsPerPage: 5 }}
                           events={{
                             onDelete: this.deleteFinalDiagnosis.bind(this),
-                            onEdit: row => {},
+                            onEdit: row => { },
 
                             onDone: this.updateDiagnosis.bind(this)
                           }}
@@ -833,13 +848,13 @@ class BasicSubjective extends Component {
                     </div>
 
                     <div className="actions">
-                      <a
+                      <button
                         className="btn btn-primary btn-circle active"
                         onClick={this.showMedication.bind(this)}
                       >
                         <i className="fas fa-plus" />
                         {/* <i className="fas fa-retweet" /> */}
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -850,49 +865,49 @@ class BasicSubjective extends Component {
                           <Loader inline="centered">Loading</Loader>
                         </Dimmer>
                       ) : (
-                        <React.Fragment>
-                          {recentMediction.map((item, index) => (
-                            <div key={index} className="activeMedDateList">
-                              <div className="medcineDate">
-                                <span>{item.month}</span>
-                                <h3>{item.day}</h3>
-                                <span>{item.year}</span>
+                          <React.Fragment>
+                            {recentMediction.map((item, index) => (
+                              <div key={index} className="activeMedDateList">
+                                <div className="medcineDate">
+                                  <span>{item.month}</span>
+                                  <h3>{item.day}</h3>
+                                  <span>{item.year}</span>
 
-                                <div className="printOnHover">
-                                  <i className="fas fa-print" />
+                                  <div className="printOnHover">
+                                    <i className="fas fa-print" />
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="medcineList">
-                                <ul>
-                                  {item.details.map((medicine, indexD) => (
-                                    <li key={indexD}>
-                                      <b>
-                                        {medicine.item_description !== undefined
-                                          ? medicine.item_description.replace(
+                                <div className="medcineList">
+                                  <ul>
+                                    {item.details.map((medicine, indexD) => (
+                                      <li key={indexD}>
+                                        <b>
+                                          {medicine.item_description !== undefined
+                                            ? medicine.item_description.replace(
                                               /\w+/g,
                                               _.capitalize
                                             )
-                                          : medicine.item_description}
-                                      </b>
-                                      {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
-                                      <small>{medicine.instructions}</small>
-                                      <small>
-                                        Medicine end date :{" "}
-                                        {moment(medicine.enddate).format(
-                                          "DD dddd MMMM YYYY"
-                                        )}
-                                      </small>
-                                      <div className="reOrderOnHover">
-                                        <i className="fas fa-retweet" />
-                                      </div>
-                                    </li>
-                                  ))}
-                                </ul>
+                                            : medicine.item_description}
+                                        </b>
+                                        {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                        <small>{medicine.instructions}</small>
+                                        <small>
+                                          Medicine end date :{" "}
+                                          {moment(medicine.enddate).format(
+                                            "DD dddd MMMM YYYY"
+                                          )}
+                                        </small>
+                                        <div className="reOrderOnHover">
+                                          <i className="fas fa-retweet" />
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
                               </div>
-                            </div>
-                          ))}
-                        </React.Fragment>
-                      )}
+                            ))}
+                          </React.Fragment>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -975,7 +990,21 @@ class BasicSubjective extends Component {
                   {this.state.pageDisplay === "Orders" ? (
                     <OrderedList
                       vat_applicable={this.props.vat_applicable}
+                      date_of_birth={this.props.date_of_birth}
+                      gender={this.props.gender}
                       openData="Investigation"
+                      chief_complaint={
+                        this.state.chief_complaint === null ||
+                          this.state.chief_complaint.length < 4
+                          ? true
+                          : false
+                      }
+                      significant_signs={
+                        this.state.significant_signs === null ||
+                          this.state.significant_signs.length < 4
+                          ? true
+                          : false
+                      }
                     />
                   ) : this.state.pageDisplay === "OrderConsumable" ? (
                     <OrderedList
@@ -1024,8 +1053,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(BasicSubjective)
+  connect(mapStateToProps, mapDispatchToProps)(BasicSubjective)
 );

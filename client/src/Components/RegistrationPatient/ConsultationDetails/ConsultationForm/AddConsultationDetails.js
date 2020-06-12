@@ -8,6 +8,7 @@ import {
 import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
@@ -40,7 +41,8 @@ const DeptselectedHandeler = ($this, context, e) => {
               department_id: e.selected.department_id,
               department_type: e.selected.department_type,
               doctors: dept.doctors,
-              doctor_id: null
+              doctor_id: null,
+              primary_policy_num: primary_policy_num,
             });
             if (context !== null) {
               context.updateState({
@@ -49,6 +51,7 @@ const DeptselectedHandeler = ($this, context, e) => {
                 department_id: e.selected.department_id,
                 department_type: e.selected.department_type,
                 doctors: dept.doctors,
+                primary_policy_num: primary_policy_num,
                 doctor_id: null,
 
                 saveEnable: true,
@@ -148,7 +151,7 @@ export const clearBillDetails = (context, ...args) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  let primary_policy_num = $this.state.primary_policy_num;
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
@@ -218,6 +221,7 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  let primary_policy_num = $this.state.primary_policy_num
   SetBulkState({
     state: $this,
     callback: () => {
@@ -229,7 +233,9 @@ const doctorselectedHandeler = ($this, context, e) => {
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id == null ||
               $this.state.primary_network_office_id == null ||
-              $this.state.primary_network_id == null)
+              $this.state.primary_network_id == null ||
+              $this.state.primary_card_number === null ||
+              $this.state.primary_card_number === "")
           ) {
             $this.setState(
               {
@@ -237,7 +243,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               },
               () => {
                 context.updateState({
-                  [e.name]: null
+                  [e.name]: null,
+                  primary_policy_num: primary_policy_num
                 });
                 swalMessage({
                   title:
@@ -291,7 +298,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                           billdetail: false,
                           sub_department_id: sub_department_id,
                           department_type: department_type,
-                          department_id: department_id
+                          department_id: department_id,
+                          primary_policy_num: primary_policy_num
                         },
                         () => {
                           if ($this.state.existing_plan !== "Y") {
@@ -311,7 +319,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                           billdetail: false,
                           sub_department_id: sub_department_id,
                           department_type: department_type,
-                          department_id: department_id
+                          department_id: department_id,
+                          primary_policy_num: primary_policy_num
                         });
                       }
                     }
@@ -359,7 +368,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false,
                   sub_department_id: sub_department_id,
                   department_type: department_type,
-                  department_id: department_id
+                  department_id: department_id,
+                  primary_policy_num: primary_policy_num
                 },
                 () => {
                   generateBillDetails($this, context);
@@ -377,7 +387,8 @@ const doctorselectedHandeler = ($this, context, e) => {
                   billdetail: false,
                   sub_department_id: sub_department_id,
                   department_type: department_type,
-                  department_id: department_id
+                  department_id: department_id,
+                  primary_policy_num: primary_policy_num
                 });
               }
             } else {
@@ -386,7 +397,8 @@ const doctorselectedHandeler = ($this, context, e) => {
               });
               if (context !== null) {
                 context.updateState({
-                  [e.name]: e.value
+                  [e.name]: e.value,
+                  primary_policy_num: primary_policy_num
                 });
               }
               swalMessage({
@@ -458,6 +470,7 @@ const generateBillDetails = ($this, context) => {
 
   AlgaehLoader({ show: true });
 
+
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
@@ -465,8 +478,11 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+
         response.data.records.follow_up = FollowUp;
         response.data.records.existing_treat = zeroBill;
+
+
         if (context !== null) {
           context.updateState({ ...response.data.records });
         }
@@ -478,6 +494,14 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
+              if ($this.state.default_pay_type === "CD") {
+                response.data.records.card_amount = response.data.records.receiveable_amount
+                response.data.records.cash_amount = 0
+              }
+              // response.data.records.Cashchecked =
+              //   $this.state.default_pay_type.default_pay_type === "CH" ? true : false
+              // response.data.records.Cardchecked =
+              //   $this.state.default_pay_type.default_pay_type === "CD" ? true : false
               if (context !== null) {
                 context.updateState({ ...response.data.records });
               }

@@ -3,13 +3,12 @@ import React, { Component } from "react";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import "./Eye.scss";
 import {
-  AlgaehDateHandler,
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 
-import { AlgaehActions } from "../../../actions/algaehActions";
+// import { AlgaehActions } from "../../../actions/algaehActions";
 import EyeModalEvent from "./EyeModalEvent"
 import OptometricIOputs from "../../../Models/Optometric";
 
@@ -21,46 +20,46 @@ export default class GlassPrescription extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = OptometricIOputs.inputParam();
     this.setState(IOputs);
   }
 
   onClose(e) {
     let IOputs = OptometricIOputs.inputParam();
-    this.setState(IOputs,()=>{
+    this.setState(IOputs, () => {
       this.props.onClose && this.props.onClose(e);
     });
   }
 
-  DVRightEventHandler(e){
+  DVRightEventHandler(e) {
     this.setState({
       cva_dv_right: e.target.value
     });
   }
 
 
-  ChangeEventHandler(e){
+  ChangeEventHandler(e) {
     EyeModalEvent().ChangeEventHandler(this, e)
   }
 
-  SaveGlassPrescription(){
+  SaveGlassPrescription() {
     EyeModalEvent().SaveGlassPrescription(this)
   }
 
-  radioChange(e){
+  radioChange(e) {
     EyeModalEvent().radioChange(this, e)
   }
 
-componentWillReceiveProps(newProps){
-  
-  if(newProps.PrescriptionData !== undefined &&
-    newProps.PrescriptionData.length !== 0){
+  UNSAFE_componentWillReceiveProps(newProps) {
 
-      let data =newProps.PrescriptionData[0]
-      this.setState({...this.state, ...data})
+    if (newProps.PrescriptionData !== undefined &&
+      newProps.PrescriptionData.length !== 0) {
+
+      let data = newProps.PrescriptionData[0]
+      this.setState({ ...this.state, ...data })
+    }
   }
-}
 
   render() {
     return (
@@ -74,7 +73,7 @@ componentWillReceiveProps(newProps){
           openPopup={this.props.openGlassPres}
         >
           <div className="popupInner">
-            <div className="popRightDiv table-responsive" style={{overflow:"auto"}}>
+            <div className="popRightDiv table-responsive" style={{ overflow: "auto" }}>
               <table className="table table-bordered table-sm">
                 <thead>
 
@@ -113,7 +112,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.POWER_GLASS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -129,7 +128,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.POWER_GLASS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -145,7 +144,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -161,7 +160,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.ADD_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -178,7 +177,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.POWER_GLASS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -194,7 +193,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.POWER_GLASS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -211,7 +210,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -227,7 +226,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.ADD_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -241,8 +240,8 @@ componentWillReceiveProps(newProps){
                           <input
                             type="radio"
                             name="cva_specs"
-                            value = "S"
-                            checked={this.state.cva_specs === "S"?true : false}
+                            value="S"
+                            checked={this.state.cva_specs === "S" ? true : false}
                             onChange={this.radioChange.bind(this)}
                           />
                           <span>Specs</span>
@@ -251,8 +250,8 @@ componentWillReceiveProps(newProps){
                           <input
                             type="radio"
                             name="cva_specs"
-                            value = "C"
-                            checked={this.state.cva_specs === "C"?true : false}
+                            value="C"
+                            checked={this.state.cva_specs === "C" ? true : false}
                             onChange={this.radioChange.bind(this)}
                           />
                           <span>CL</span>
@@ -349,13 +348,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_right_sch",
                           className: "select-fld",
-                          value:this.state.auto_ref_right_sch,
+                          value: this.state.auto_ref_right_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -365,13 +364,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_right_cyl",
                           className: "select-fld",
-                          value:this.state.auto_ref_right_cyl,
+                          value: this.state.auto_ref_right_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -381,13 +380,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_right_axis",
                           className: "select-fld",
-                          value:this.state.auto_ref_right_axis,
+                          value: this.state.auto_ref_right_axis,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -398,13 +397,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_left_sch",
                           className: "select-fld",
-                          value:this.state.auto_ref_left_sch,
+                          value: this.state.auto_ref_left_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -414,13 +413,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_left_cyl",
                           className: "select-fld",
-                          value:this.state.auto_ref_left_cyl,
+                          value: this.state.auto_ref_left_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                          data: GlobalVariables.AUTO_REF_SCH
+                            data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -430,13 +429,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "auto_ref_left_axis",
                           className: "select-fld",
-                          value:this.state.auto_ref_left_axis,
+                          value: this.state.auto_ref_left_axis,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -451,13 +450,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_right_sch",
                           className: "select-fld",
-                          value:this.state.bcva_dv_right_sch,
+                          value: this.state.bcva_dv_right_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -467,13 +466,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_right_cyl",
                           className: "select-fld",
-                          value:this.state.bcva_dv_right_cyl,
+                          value: this.state.bcva_dv_right_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -489,7 +488,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -499,13 +498,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_right_vision",
                           className: "select-fld",
-                          value:this.state.bcva_dv_right_vision,
+                          value: this.state.bcva_dv_right_vision,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.DV_VISION_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -515,13 +514,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_left_sch",
                           className: "select-fld",
-                          value:this.state.bcva_dv_left_sch,
+                          value: this.state.bcva_dv_left_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -531,13 +530,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_left_cyl",
                           className: "select-fld",
-                          value:this.state.bcva_dv_left_cyl,
+                          value: this.state.bcva_dv_left_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -553,7 +552,7 @@ componentWillReceiveProps(newProps){
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -563,13 +562,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_dv_left_vision",
                           className: "select-fld",
-                          value:this.state.bcva_dv_left_vision,
+                          value: this.state.bcva_dv_left_vision,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.DV_VISION_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -582,13 +581,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_right_sch",
                           className: "select-fld",
-                          value:this.state.bcva_nv_right_sch,
+                          value: this.state.bcva_nv_right_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -597,13 +596,13 @@ componentWillReceiveProps(newProps){
                         selector={{
                           sort: "off",
                           name: "bcva_nv_right_cyl",
-                          value:this.state.bcva_nv_right_cyl,
+                          value: this.state.bcva_nv_right_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -613,13 +612,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_right_axis",
                           className: "select-fld",
-                          value:this.state.bcva_nv_right_axis,
+                          value: this.state.bcva_nv_right_axis,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -629,13 +628,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_right_vision",
                           className: "select-fld",
-                          value:this.state.bcva_nv_right_vision,
+                          value: this.state.bcva_nv_right_vision,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.NV_VISION_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -645,13 +644,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_left_sch",
                           className: "select-fld",
-                          value:this.state.bcva_nv_left_sch,
+                          value: this.state.bcva_nv_left_sch,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -661,13 +660,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_left_cyl",
                           className: "select-fld",
-                          value:this.state.bcva_nv_left_cyl,
+                          value: this.state.bcva_nv_left_cyl,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AUTO_REF_SCH
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -677,13 +676,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_left_axis",
                           className: "select-fld",
-                          value:this.state.bcva_nv_left_axis,
+                          value: this.state.bcva_nv_left_axis,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.AXIS_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -693,13 +692,13 @@ componentWillReceiveProps(newProps){
                           sort: "off",
                           name: "bcva_nv_left_vision",
                           className: "select-fld",
-                          value:this.state.bcva_nv_left_vision,
+                          value: this.state.bcva_nv_left_vision,
                           dataSource: {
                             textField: "name",
                             valueField: "value",
                             data: GlobalVariables.NV_VISION_TYPE
                           },
-                          onChange:this.ChangeEventHandler.bind(this)
+                          onChange: this.ChangeEventHandler.bind(this)
                         }}
                       />
                     </td>
@@ -1285,7 +1284,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.multi_coated}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Multi Coated</span>
+                          <span>Multi Coated</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1294,7 +1293,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.varilux}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Varilux</span>
+                          <span>Varilux</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1303,7 +1302,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.light}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Light</span>
+                          <span>Light</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1312,7 +1311,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.aspheric}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Aspheric</span>
+                          <span>Aspheric</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1330,7 +1329,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.medium}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Medium</span>
+                          <span>Medium</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1339,7 +1338,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.lenticular}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Lenticular</span>
+                          <span>Lenticular</span>
                         </label>
                       </div>
                     </td>
@@ -1355,7 +1354,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.single_vision}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Single Vision</span>
+                          <span>Single Vision</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1364,7 +1363,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.dark}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Dark</span>
+                          <span>Dark</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1373,7 +1372,7 @@ componentWillReceiveProps(newProps){
                             checked={this.state.safety_thickness}
                             onChange={this.radioChange.bind(this)}
                           />
-                        <span>Safety Thickness</span>
+                          <span>Safety Thickness</span>
                         </label>
                         <label className="checkbox inline">
                           <input
@@ -1428,28 +1427,28 @@ componentWillReceiveProps(newProps){
                   </tr>
                   <tr>
                     <td colspan="2">CL Type</td>
-                      <div className="customRadio">
-                        <label className="radio block">
-                          <input
-                            type="radio"
-                            name="cl_type"
-                            value = "P"
-                            checked={this.state.cl_type === "P"?true : false}
-                            onChange={this.radioChange.bind(this)}
-                          />
+                    <div className="customRadio">
+                      <label className="radio block">
+                        <input
+                          type="radio"
+                          name="cl_type"
+                          value="P"
+                          checked={this.state.cl_type === "P" ? true : false}
+                          onChange={this.radioChange.bind(this)}
+                        />
                         <span>Permanent</span>
-                        </label>
-                        <label className="radio block">
-                          <input
-                            type="radio"
-                            name="cl_type"
-                            value = "D"
-                            checked={this.state.cl_type === "D"?true : false}
-                            onChange={this.radioChange.bind(this)}
-                          />
+                      </label>
+                      <label className="radio block">
+                        <input
+                          type="radio"
+                          name="cl_type"
+                          value="D"
+                          checked={this.state.cl_type === "D" ? true : false}
+                          onChange={this.radioChange.bind(this)}
+                        />
                         <span>Disposable</span>
-                        </label>
-                      </div>
+                      </label>
+                    </div>
                     <td />
                     <td />
                     <td />
@@ -1460,16 +1459,16 @@ componentWillReceiveProps(newProps){
                       Remarks
                     </td>
                     <td colspan="8" rowspan="2">
-                    <textarea
-                      className="textArea"
-                      value={
-                       this.state.remarks
-                      }
-                      name="remarks"
-                      onChange={this.ChangeEventHandler.bind(this)}
-                    >
-                      {this.state.remarks}
-                    </textarea>
+                      <textarea
+                        className="textArea"
+                        value={
+                          this.state.remarks
+                        }
+                        name="remarks"
+                        onChange={this.ChangeEventHandler.bind(this)}
+                      >
+                        {this.state.remarks}
+                      </textarea>
                     </td>
                   </tr>
                   <tr />
@@ -1484,7 +1483,7 @@ componentWillReceiveProps(newProps){
                   <button
                     type="button"
                     className="btn btn-primary"
-                      onClick={this.SaveGlassPrescription.bind(this)}
+                    onClick={this.SaveGlassPrescription.bind(this)}
                   >
                     Save
                   </button>

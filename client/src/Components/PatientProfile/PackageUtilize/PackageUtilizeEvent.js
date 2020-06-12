@@ -6,8 +6,8 @@ import moment from "moment";
 export default function PackageSetupEvent() {
   return {
     onPackageChange: ($this, e) => {
-      let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
+      // let name = e.name || e.target.name;
+      // let value = e.value || e.target.value;
 
       $this.setState({
         ...$this.state,
@@ -58,7 +58,7 @@ export default function PackageSetupEvent() {
     onquantitycol: ($this, row, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
-      let oldvalue = row["quantity"];
+      // let oldvalue = row["quantity"];
 
       if (parseFloat(value) > parseFloat(row["available_qty"])) {
         swalMessage({

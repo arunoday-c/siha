@@ -116,7 +116,7 @@ class ProjectActivityMgmnt extends Component {
 
           <div className="col-2 form-group">
             <button
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
               onClick={this.addEvent.bind(this, "Main")}
             >
@@ -168,7 +168,7 @@ class ProjectActivityMgmnt extends Component {
           />
           <div className="col-2 form-group">
             <button
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
               onClick={this.addEvent.bind(this, "Sub")}
             >

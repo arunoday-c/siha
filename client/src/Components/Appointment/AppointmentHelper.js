@@ -1,5 +1,5 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 export function generateTimeslotsForDoctor(data) {
   // Takes Appointment Schedule as input and returns an Array with time and "break"
@@ -13,7 +13,7 @@ export function generateTimeslotsForDoctor(data) {
   let result = [];
   let count = 0;
   let newFrom = from_work_hr.clone();
-  for (;;) {
+  for (; ;) {
     let isBreak = false;
 
     newFrom = count === 0 ? newFrom : newFrom.add(slot, "minutes");
@@ -69,16 +69,10 @@ export function generateReport($this, rpt_name, rpt_desc) {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = rpt_desc;
+       const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
+      window.open(origin);
+      // myWindow.document.title = rpt_desc;
     }
   });
 }

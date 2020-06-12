@@ -16,13 +16,12 @@ import {
   changeTexts,
   onchangegridcol,
   insertAntibiotic,
-  deleteAntibiotic,
   updateAntibiotic
 } from "./AntiBioMasterEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 
-class TestCategory extends Component {
+class AntiBioMaster extends Component {
   constructor(props) {
     super(props);
 
@@ -173,8 +172,8 @@ class TestCategory extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -189,8 +188,8 @@ class TestCategory extends Component {
                         this.props.userdrtails === undefined
                           ? []
                           : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                            f => f.algaeh_d_app_user_id === row.created_by
+                          );
 
                       return (
                         <span>
@@ -272,7 +271,7 @@ class TestCategory extends Component {
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   //onDelete: deleteAntibiotic.bind(this, this),
-                  onEdit: row => {},
+                  onEdit: row => { },
                   onDone: updateAntibiotic.bind(this, this)
                 }}
               />
@@ -304,5 +303,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(TestCategory)
+  )(AntiBioMaster)
 );

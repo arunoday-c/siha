@@ -18,7 +18,7 @@ import {
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
-  selectVisit,
+  // selectVisit,
   ShowOrderPackage,
   ClosePackage,
   getPatientDetails,
@@ -30,11 +30,12 @@ import { successfulMessage } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import AlgaehReport from "../Wrapper/printReports";
+// import AlgaehReport from "../Wrapper/printReports";
 import moment from "moment";
-import Options from "../../Options.json";
+// import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
+import { MainContext } from "algaeh-react-components/context";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -56,16 +57,30 @@ class OPBilling extends Component {
       cheque_amount: 0,
       advance: 0,
       addNewService: false,
-      isPackOpen: false
+      isPackOpen: false,
+      userToken: {}
     };
   }
+  static contextType = MainContext;
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = extend(PatRegIOputs.inputParam(), BillingIOputs.inputParam());
+
+    const userToken = this.context.userToken;
+    IOputs.hospital_id = userToken.hims_d_hospital_id
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false
+    IOputs.default_pay_type = userToken.default_pay_type
+    IOputs.userToken = this.context.userToken
+    IOputs.service_dis_percentage = userToken.service_dis_percentage;
+
     this.setState({ ...this.state, ...IOputs });
   }
 
+
   componentDidMount() {
+
+
     let prevLang = getCookie("Language");
     this.setState({
       selectedLang: prevLang
@@ -119,10 +134,10 @@ class OPBilling extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let prevLang = getCookie("Language");
     let output = {};
-    debugger;
+
     if (prevLang !== this.state.selectedLang) {
       let _screenName = getCookie("ScreenName").replace("/", "");
       let counter_id = 0;
@@ -207,6 +222,8 @@ class OPBilling extends Component {
           // data.visit_id = data.hims_f_patient_visit_id;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
+              data.Cashchecked = false;
+              data.Cardchecked = false;
               if (data.receiptdetails[i].pay_type === "CA") {
                 data.Cashchecked = true;
                 data.cash_amount = data.receiptdetails[i].amount;
@@ -326,6 +343,7 @@ class OPBilling extends Component {
           Inputobj.patient_payable = $this.state.patient_payable_h;
           Inputobj.company_payable = $this.state.company_payble;
           Inputobj.insurance_yesno = $this.state.insured;
+          Inputobj.ScreenCode = getCookie("ScreenCode")
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
@@ -440,17 +458,17 @@ class OPBilling extends Component {
           printArea={
             this.state.bill_number !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generateReceipt(this, this);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generateReceipt(this, this);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -510,8 +528,8 @@ class OPBilling extends Component {
                   this.state.patient_id === null
                     ? true
                     : this.state.Billexists === true
-                    ? true
-                    : false
+                      ? true
+                      : false
                 }
               >
                 <AlgaehLabel

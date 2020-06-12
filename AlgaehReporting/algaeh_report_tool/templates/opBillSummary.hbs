@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -6,23 +6,23 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Service Code</th>
-    <th>Service Name</th>
-    <th>Amount</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Service Code</th>
+                        <th>Service Name</th>
+                        <th>Amount</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{service_type_code}}</td>
-    <td>{{service_type}}</td>
-    <td>{{total_amount}}</td>
+                        <td>{{service_type}}</td>
+                        <td>{{total_amount}}</td>
                     </tr>
                     {{/each }}
-              
+
                 </tbody>
             </table>
         </section>

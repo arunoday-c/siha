@@ -30,12 +30,12 @@ const BatchExpRequired = $this => {
   SetBulkState({
     state: $this,
     callback: () => {
-      let exp_date_not_required = "N";
+      let exp_date_required = "N";
       if (!$this.state.batchexpreq === true) {
-        exp_date_not_required = "Y";
+        exp_date_required = "Y";
       }
       $this.setState({
-        exp_date_not_required: exp_date_not_required,
+        exp_date_required: exp_date_required,
         batchexpreq: !$this.state.batchexpreq,
         ...$this.state
       });
@@ -123,7 +123,7 @@ const stockingtexthandle = ($this, e) => {
       conversion_factor: conversion_factor,
       convertEnable: convertEnable
     },
-    () => {}
+    () => { }
   );
 };
 
@@ -298,7 +298,7 @@ const deleteUOM = ($this, row, rowId) => {
   let insertItemUomMap = $this.state.insertItemUomMap;
   let stocking_uom_id = $this.state.stocking_uom_id;
   const stocking_Uom = _.filter(detail_item_uom, f => {
-    return f.stocking_uom == "Y";
+    return f.stocking_uom === "Y";
   });
 
   if (stocking_Uom !== undefined && stocking_Uom.length > 0) {

@@ -7,7 +7,10 @@
       padding: 5px 0 0;
       width: 100%;
       position: fixed;
-      z-index: 999;
+      z-index: 9999;
+      white-space: nowrap;
+      display: block;
+      overflow: auto;
 
       div {
         float: left;
@@ -141,53 +144,9 @@
     }
   }
   .EmployeeTopNav {
-    background: white;
-    height: 30px;
-    padding: 0;
-    width: 100%;
-    color: #797979;
-
-    text-transform: uppercase;
-    position: fixed;
-    top: 130px;
-    z-index: 99;
     .tabMaster {
-      box-shadow: none;
-      ul {
-        position: relative;
-        li {
-          &:after {
-            display: block;
-            content: "";
-            border-bottom: 3px solid $primary-color;
-            transform: scaleX(0);
-            transition: transform 150ms ease-in-out;
-          }
-          &:hover:after {
-            transform: scaleX(1);
-          }
-          span {
-            text-transform: uppercase;
-            padding: 9px 15px 8px;
-            color: #858585;
-            cursor: pointer;
-          }
-          span.active {
-            border-bottom: 3px solid $primary-color;
-            color: #fff;
-            background: $primary-color;
-            &:hover {
-              cursor: default;
-              color: #fff;
-            }
-            &:hover:after {
-              display: none !important;
-              border: none !important;
-              cursor: pointer;
-            }
-          }
-        }
-      }
+      top: 130px;
+
       .Employee-quick-info {
         color: $primary-color;
         margin: 0;
@@ -266,9 +225,7 @@
     z-index: 1;
     width: 100%;
   }
-  .selfService-setion {
+  .selfServiceSection {
     margin-top: 120px;
-    padding-top: 0;
-    background: none;
   }
 }

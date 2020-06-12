@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
-import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   getPurchaseOrderEntry: (req, res, next) => {
@@ -10,24 +10,22 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT PH.hims_f_procurement_po_header_id, PH.purchase_number, PH.po_date, PH.po_from, PH.pharmcy_location_id, PH.inventory_location_id,\
-            PH.location_type,PH.vendor_id,PH.expected_date,PH.on_hold,PH.phar_requisition_id,PH.inv_requisition_id,\
-            PH.from_multiple_requisition, PH.payment_terms, PH.sub_total,PH.detail_discount, PH.extended_total, \
-            PH.sheet_level_discount_percent,PH.sheet_level_discount_amount,PH.description,PH.net_total,PH.total_tax,\
-            PH.net_payable,PH.is_completed, PH.completed_date,PH.cancelled,PH.cancel_by,PH.cancel_date,PH.authorize1,\
+            "SELECT PH.*, VQH.vendor_quotation_number, \
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
-            where hims_f_pharamcy_material_header_id=PH.inv_requisition_id) END as material_requisition_number,\
+            where hims_f_pharamcy_material_header_id=PH.phar_requisition_id) END as material_requisition_number,\
             CASE PH.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as location_name, V.vendor_name\
             from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
-            left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
-            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id  where purchase_number=?",
+            left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id \
+            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id \
+            left join hims_f_procurement_vendor_quotation_header VQH on VQH.hims_f_procurement_vendor_quotation_header_id = PH.vendor_quotation_header_id \
+            where purchase_number=?",
           values: [req.query.purchase_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let strQuery = "";
 
@@ -42,12 +40,12 @@ export default {
                    PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, PD.`total_quantity`,\
                    PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`,\
                    PD.`sub_discount_percentage`, PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`,\
-                   PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`,PD.`expected_arrival_date`,\
+                   PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`,\
                    PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`,\
                    PD.`quantity_recieved`, PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`,\
                    PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, PD.`tax_percentage`,\
                    PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`,\
-                   PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IM.exp_date_not_required,\
+                   PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IM.exp_date_required,\
                    IU.uom_description,STOCK_UOM.uom_description as stock_uom_description,S.standard_fee as sales_price,IM.sales_uom_id from hims_f_procurement_po_detail PD,\
                     hims_d_inventory_item_master IM ,hims_d_inventory_uom IU, hims_d_inventory_uom STOCK_UOM, hims_d_services S \
                     where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
@@ -62,10 +60,10 @@ export default {
                 PD.`inv_item_category_id`, PD.`inv_item_group_id`, PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, \
                 PD.`total_quantity`, PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`, PD.`sub_discount_percentage`, \
                 PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`, PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`, \
-                PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
+                PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
                 PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
                 PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
-                IM.item_code, IM.item_description,  IM.exp_date_not_required,\
+                IM.item_code, IM.item_description,  IM.exp_date_required,\
                 PU.uom_description,STOCK_UOM.uom_description  as stock_uom_description, S.standard_fee as sales_price,IM.sales_uom_id\
                 from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
@@ -77,17 +75,17 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -97,7 +95,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -110,76 +108,235 @@ export default {
   addPurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let input = { ...req.body };
-      let purchase_number = "";
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addDeliveryNoteEntry: ");
-      _mysql
-        .generateRunningNumber({
-          modules: ["PO_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
-        })
-        .then(generatedNumbers => {
-          purchase_number = generatedNumbers[0];
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
 
-          // let today = moment().format("YYYY-MM-DD");
+      req.on("end", () => {
+        let input = JSON.parse(buffer);
+        req.body = input;
+        let purchase_number = "";
+        _mysql
+          .generateRunningNumber({
+            user_id: req.userIdentity.algaeh_d_app_user_id,
+            numgen_codes: ["PO_NUM"],
+            table_name: "hims_f_procurement_numgen",
+          })
+          .then((generatedNumbers) => {
+            purchase_number = generatedNumbers.PO_NUM;
 
-          _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
-                inventory_location_id,location_type,vendor_id,expected_date,on_hold, phar_requisition_id,inv_requisition_id, \
+            // let today = moment().format("YYYY-MM-DD");
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_f_procurement_po_header` (purchase_number,po_date,po_type,po_from, pharmcy_location_id,\
+                inventory_location_id,location_type,vendor_id,on_hold, phar_requisition_id,\
+                inv_requisition_id, vendor_quotation_header_id,\
                 from_multiple_requisition, payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
                 sheet_level_discount_amount,description,net_total,total_tax, net_payable,created_by,created_date, \
                 updated_by,updated_date,hospital_id) \
               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                purchase_number,
-                new Date(),
-                input.po_type,
-                input.po_from,
-                input.pharmcy_location_id,
-                input.inventory_location_id,
-                input.location_type,
-                input.vendor_id,
-                input.expected_date,
-                input.on_hold,
-                input.requisition_id,
-                input.inv_requisition_id,
-                input.from_multiple_requisition,
-                input.payment_terms,
-                input.comment,
-                input.sub_total,
-                input.detail_discount,
-                input.extended_total,
-                input.sheet_level_discount_percent,
-                input.sheet_level_discount_amount,
-                input.description,
+                values: [
+                  purchase_number,
+                  new Date(),
+                  input.po_type,
+                  input.po_from,
+                  input.pharmcy_location_id,
+                  input.inventory_location_id,
+                  input.location_type,
+                  input.vendor_id,
+                  input.on_hold,
+                  input.requisition_id,
+                  input.inv_requisition_id,
+                  input.vendor_quotation_header_id,
+                  input.from_multiple_requisition,
+                  input.payment_terms,
+                  input.comment,
+                  input.sub_total,
+                  input.detail_discount,
+                  input.extended_total,
+                  input.sheet_level_discount_percent,
+                  input.sheet_level_discount_amount,
+                  input.description,
 
-                input.net_total,
-                input.total_tax,
-                input.net_payable,
+                  input.net_total,
+                  input.total_tax,
+                  input.net_payable,
 
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.hospital_id
-              ],
-              printQuery: true
-            })
-            .then(headerResult => {
-              req.connection = {
-                connection: _mysql.connection,
-                isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
-              };
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.hospital_id,
+                ],
+                printQuery: true,
+              })
+              .then((headerResult) => {
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool,
+                };
+                let IncludeValues = [
+                  "phar_item_category",
+                  "phar_item_group",
+                  "phar_item_id",
+                  "inv_item_category_id",
+                  "inv_item_group_id",
+                  "inv_item_id",
+                  "order_quantity",
+                  "total_quantity",
+                  "pharmacy_uom_id",
+                  "inventory_uom_id",
+                  "unit_price",
+                  "extended_price",
+                  "sub_discount_percentage",
+                  "sub_discount_amount",
+                  "extended_cost",
+                  "net_extended_cost",
+                  "unit_cost",
+                  "pharmacy_requisition_id",
+                  "inventory_requisition_id",
+                  "authorize_quantity",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount",
+                  "item_type",
+                  "quantity_outstanding",
+                  "rejected_quantity",
+                ];
 
-              utilities.logger().log("headerResult: ", headerResult.insertId);
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?",
+                    values: input.po_entry_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      procurement_header_id: headerResult.insertId,
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    req.records = {
+                      purchase_number: purchase_number,
+                      hims_f_procurement_po_header_id: headerResult.insertId,
+                    };
+                    next();
+                    // });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch((e) => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  postPurchaseOrderEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
+
+      req.on("end", () => {
+        let input = JSON.parse(buffer);
+        req.body = input;
+        // const utilities = new algaehUtilities();
+
+        // let today = moment().format("YYYY-MM-DD");
+
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE `hims_f_procurement_po_header` SET is_posted= ?, sub_total =? , detail_discount =?, extended_total =?,\
+                sheet_level_discount_percent = ?, sheet_level_discount_amount = ?, net_total = ?, total_tax = ?, \
+                net_payable=?, updated_by=?,updated_date=? where hims_f_procurement_po_header_id=?;",
+            values: [
+              input.is_posted,
+              input.sub_total,
+              input.detail_discount,
+              input.extended_total,
+              input.sheet_level_discount_percent,
+              input.sheet_level_discount_amount,
+              input.net_total,
+              input.total_tax,
+              input.net_payable,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              input.hims_f_procurement_po_header_id,
+            ],
+            printQuery: true,
+          })
+          .then((headerResult) => {
+            let strQuery = "";
+
+            if (input.delete_stock_detail.length > 0) {
+              strQuery += mysql.format(
+                "DELETE FROM hims_f_procurement_po_detail where hims_f_procurement_po_detail_id in (?);",
+                [input.delete_stock_detail]
+              );
+            }
+            const update_po_detail = _.filter(input.po_entry_detail, (f) => {
+              return (
+                f.hims_f_procurement_po_detail_id !== null &&
+                f.hims_f_procurement_po_detail_id !== undefined
+              );
+            });
+
+            if (update_po_detail.length > 0) {
+              for (let i = 0; i < update_po_detail.length; i++) {
+                strQuery += mysql.format(
+                  "UPDATE hims_f_procurement_po_detail set extended_price=?,sub_discount_percentage=?, \
+                sub_discount_amount=?,extended_cost=?,net_extended_cost=?,unit_cost=?,\
+                tax_amount=?,total_amount=? where hims_f_procurement_po_detail_id=?;",
+                  [
+                    update_po_detail[i].extended_price,
+                    update_po_detail[i].sub_discount_percentage,
+                    update_po_detail[i].sub_discount_amount,
+                    update_po_detail[i].extended_cost,
+                    update_po_detail[i].net_extended_cost,
+                    update_po_detail[i].unit_cost,
+                    update_po_detail[i].tax_amount,
+                    update_po_detail[i].total_amount,
+                    update_po_detail[i].hims_f_procurement_po_detail_id,
+                  ]
+                );
+              }
+            }
+
+            const insert_po_detail = _.filter(input.po_entry_detail, (f) => {
+              return (
+                f.hims_f_procurement_po_detail_id === null ||
+                f.hims_f_procurement_po_detail_id === undefined
+              );
+            });
+
+            if (insert_po_detail.length > 0) {
               let IncludeValues = [
                 "phar_item_category",
                 "phar_item_group",
@@ -198,55 +355,77 @@ export default {
                 "extended_cost",
                 "net_extended_cost",
                 "unit_cost",
-                "expected_arrival_date",
                 "pharmacy_requisition_id",
                 "inventory_requisition_id",
+                "authorize_quantity",
                 "tax_percentage",
                 "tax_amount",
                 "total_amount",
-                "item_type"
+                "item_type",
+                "quantity_outstanding",
+                "rejected_quantity",
               ];
 
               _mysql
                 .executeQuery({
                   query:
-                    "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?",
-                  values: input.po_entry_detail,
+                    "INSERT INTO hims_f_procurement_po_detail(??) VALUES ?; " +
+                    strQuery,
+                  values: insert_po_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    procurement_header_id: headerResult.insertId
+                    procurement_header_id:
+                      input.hims_f_procurement_po_header_id,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
-                  utilities.logger().log("detailResult: ", detailResult);
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  req.records = {
-                    purchase_number: purchase_number
-                  };
-                  next();
-                  // });
+                .then((detailResult) => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      purchase_number: input.purchase_number,
+                      hims_f_procurement_po_header_id:
+                        input.hims_f_procurement_po_header_id,
+                    };
+                    next();
+                  });
                 })
-                .catch(error => {
-                  utilities.logger().log("erroe: ", error);
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
+            } else {
+              _mysql
+                .executeQuery({
+                  query: strQuery,
+                  printQuery: true,
+                })
+                .then((result) => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      purchase_number: input.purchase_number,
+                      hims_f_procurement_po_header_id:
+                        input.hims_f_procurement_po_header_id,
+                    };
+                    next();
+                  });
+                })
+                .catch((error) => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            }
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
             });
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -260,86 +439,98 @@ export default {
     const utilities = new algaehUtilities();
     utilities.logger().log("updatePurchaseOrderEntry: ");
     try {
-      req.mySQl = _mysql;
-      let inputParam = { ...req.body };
-      utilities.logger().log("inputParam: ", inputParam);
-      _mysql
-        .executeQueryWithTransaction({
-          query:
-            "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=? \
-          WHERE `hims_f_procurement_po_header_id`=?",
-          values: [
-            inputParam.authorize1,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_po_header_id
-          ],
-          printQuery: true
-        })
-        .then(headerResult => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
-          };
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.po_entry_detail;
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
 
-            let qry = "";
+      req.on("end", () => {
+        let inputParam = JSON.parse(buffer);
+        req.body = inputParam;
+        req.mySQl = _mysql;
+        // let inputParam = { ...req.body };
+        utilities.logger().log("inputParam: ", inputParam);
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "UPDATE `hims_f_procurement_po_header` SET `authorize1`=?, `authorize_by_date`=?, `authorize_by_1`=?, \
+            `authorize2`=?, `authorize2_date`=?, `authorize2_by`=? WHERE `hims_f_procurement_po_header_id`=?",
+            values: [
+              inputParam.authorize1,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.authorize2,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.hims_f_procurement_po_header_id,
+            ],
+            printQuery: true,
+          })
+          .then((headerResult) => {
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool,
+            };
+            utilities.logger().log("headerResult: ");
+            if (headerResult != null) {
+              let details = inputParam.po_entry_detail;
 
-            for (let i = 0; i < details.length; i++) {
-              utilities.logger().log("details: ");
-              qry += mysql.format(
-                "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
+              let qry = "";
+
+              for (let i = 0; i < details.length; i++) {
+                utilities.logger().log("details: ");
+                qry += mysql.format(
+                  "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
                 quantity_recieved=?, quantity_outstanding=?\
               where `hims_f_procurement_po_detail_id`=?;",
-                [
-                  details[i].authorize_quantity,
-                  details[i].rejected_quantity,
-                  details[i].quantity_recieved,
-                  details[i].quantity_outstanding,
-                  details[i].hims_f_procurement_po_detail_id
-                ]
-              );
+                  [
+                    details[i].authorize_quantity,
+                    details[i].rejected_quantity,
+                    details[i].quantity_recieved,
+                    details[i].quantity_outstanding,
+                    details[i].hims_f_procurement_po_detail_id,
+                  ]
+                );
 
-              if (i == details.length - 1) {
-                utilities.logger().log("if Data: ");
-                qryExecute = true;
+                if (i == details.length - 1) {
+                  utilities.logger().log("if Data: ");
+                  qryExecute = true;
+                }
               }
-            }
-            utilities.logger().log("qryExecute: ", qryExecute);
-            if (qryExecute == true) {
-              _mysql
-                .executeQuery({
-                  query: qry,
-                  printQuery: true
-                })
-                .then(detailResult => {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = detailResult;
-                    next();
+              utilities.logger().log("qryExecute: ", qryExecute);
+              if (qryExecute == true) {
+                _mysql
+                  .executeQuery({
+                    query: qry,
+                    printQuery: true,
+                  })
+                  .then((detailResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = detailResult;
+                      next();
+                    });
+                  })
+                  .catch((e) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
                   });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
+              }
+            } else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {};
+                next();
+              });
             }
-          } else {
+          })
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
+              next(e);
             });
-          }
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -366,7 +557,11 @@ export default {
       // }
 
       let strQuery =
-        "SELECT * from  hims_f_procurement_po_header\
+        "SELECT PO.*,V.vendor_name, case \
+when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
+when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
+when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
+when is_completed='Y'  then 'Delivery Completed' end status from  hims_f_procurement_po_header PO inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           where cancelled='N' ";
 
       if (req.query.from_date != null) {
@@ -399,24 +594,42 @@ export default {
         strQuery += "";
       } else if (inputParam.status == "1") {
         //Pending To Authorize 1
-        strQuery += " and authorize1 = 'N'";
+        strQuery += " and is_posted = 'Y' and authorize1 = 'N'";
       } else if (inputParam.status == "2") {
-        strQuery += " and authorize1 = 'Y' and is_completed='N'";
+        //Pending To Authorize 2
+        strQuery += " and authorize1 = 'Y' and authorize2 = 'N'";
       } else if (inputParam.status == "3") {
+        strQuery +=
+          " and authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'";
+      } else if (inputParam.status == "4") {
         strQuery += " and is_completed='Y'";
       }
+
+      // if (inputParam.status == null || inputParam.status == "0") {
+      //   strQuery += "";
+      // } else if (inputParam.status == "1") {
+      //   //Pending To Authorize 1
+      //   strQuery += " and authorize1 = 'N'";
+      // } else if (inputParam.status == "2") {
+      //   strQuery += " and authorize1 = 'Y' and is_completed='N'";
+      // } else if (inputParam.status == "3") {
+      //   strQuery += " and is_completed='Y'";
+      // }
+      // else if (inputParam.status == "3") {
+      //   strQuery += " and authorize1 = 'Y' and authorie2 = 'N'";
+      // }
 
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -434,9 +647,9 @@ export default {
           query:
             "SELECT * from  hims_f_pharamcy_material_header where material_requisition_number=?",
           values: [req.query.material_requisition_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -444,17 +657,17 @@ export default {
                   "select * from hims_f_pharmacy_material_detail p left outer join hims_d_item_master l \
                 on l.hims_d_item_master_id =p.item_id where pharmacy_header_id=?",
                 values: [headerResult[0].hims_f_pharamcy_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -464,7 +677,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -482,9 +695,9 @@ export default {
           query:
             "SELECT * from  hims_f_inventory_material_header where material_requisition_number=?",
           values: [req.query.material_requisition_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -492,17 +705,17 @@ export default {
                   "select * from hims_f_inventory_material_detail p left outer join hims_d_inventory_item_master l \
                 on l.hims_d_inventory_item_master_id =p.item_id where inventory_header_id=?",
                 values: [headerResult[0].hims_f_inventory_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(po_entry_detail => {
+              .then((po_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ po_entry_detail }
+                  ...{ po_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -512,7 +725,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -544,59 +757,34 @@ export default {
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updatePOEntry: ");
-      let inputParam = { ...req.body };
+      const details = req.body.pharmacy_stock_detail;
 
+      let qry = "";
+
+      for (let i = 0; i < details.length; i++) {
+        qry += mysql.format(
+          "UPDATE hims_f_pharmacy_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
+              where `hims_f_pharmacy_material_detail_id`=? ;",
+          [
+            new Date(),
+            details[i].total_quantity,
+            details[i].pharmacy_requisition_id,
+          ]
+        );
+      }
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_pharamcy_material_header_id`=?;",
-          values: ["Y", new Date(), inputParam.phar_requisition_id],
-          printQuery: true
+          query: qry,
+          printQuery: true,
         })
-        .then(headerResult => {
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.pharmacy_stock_detail;
-
-            let qry = "";
-
-            for (let i = 0; i < details.length; i++) {
-              qry += mysql.format(
-                "UPDATE hims_f_pharmacy_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_pharmacy_material_detail_id`=? ;",
-                [
-                  new Date(),
-                  details[i].total_quantity,
-                  details[i].pharmacy_requisition_id
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.data = req.records.purchase_number;
-                next();
-                // });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
-            });
-          }
+        .then((detailResult) => {
+          // _mysql.commitTransaction(() => {
+          //   _mysql.releaseConnection();
+          req.data = req.records.purchase_number;
+          next();
+          // });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -614,59 +802,34 @@ export default {
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updatePOEntry: ");
-      let inputParam = { ...req.body };
 
+      const details = req.body.inventory_stock_detail;
+      let qry = "";
+
+      for (let i = 0; i < details.length; i++) {
+        qry += mysql.format(
+          "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
+              where `hims_f_inventory_material_detail_id`=? ;",
+          [
+            new Date(),
+            details[i].total_quantity,
+            details[i].inventory_requisition_id,
+          ]
+        );
+      }
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_inventory_material_header_id`=?;",
-          values: ["Y", new Date(), inputParam.inv_requisition_id],
-          printQuery: true
+          query: qry,
+          printQuery: true,
         })
-        .then(headerResult => {
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = inputParam.inventory_stock_detail;
-
-            let qry = "";
-
-            for (let i = 0; i < details.length; i++) {
-              qry += mysql.format(
-                "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_inventory_material_detail_id`=? ;",
-                [
-                  new Date(),
-                  details[i].total_quantity,
-                  details[i].inventory_requisition_id
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.data = req.records.purchase_number;
-                next();
-                // });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
-            });
-          }
+        .then((detailResult) => {
+          // _mysql.commitTransaction(() => {
+          //   _mysql.releaseConnection();
+          req.data = req.records.purchase_number;
+          next();
+          // });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -676,5 +839,118 @@ export default {
         next(e);
       });
     }
-  }
+  },
+
+  getVendorQuotation: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * from  hims_f_procurement_vendor_quotation_header where vendor_quotation_number=?",
+          values: [req.query.vendor_quotation_number],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select * from hims_f_procurement_vendor_quotation_detail vendor_quotation_header_id=?",
+                values: [
+                  headerResult[0].hims_f_procurement_vendor_quotation_header_id,
+                ],
+                printQuery: true,
+              })
+              .then((po_entry_detail) => {
+                _mysql.releaseConnection();
+                req.records = {
+                  ...headerResult[0],
+                  ...{ po_entry_detail },
+                };
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = headerResult;
+            next();
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  raiseRequestForPO: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_f_procurement_purchase_request` (item_id, request_from, request_location, \
+              request_qty, requested_date) \
+            VALUE(?, ?, ?, ?, ?)",
+          values: [
+            req.body.item_id,
+            req.body.request_from,
+            req.body.request_location,
+            req.body.request_qty,
+            new Date(),
+          ],
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getraiseRequestForPO: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let strQuery = "";
+      if (req.query.category_id != null) {
+        strQuery += " and category_id = " + req.query.category_id;
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "select PR.*, IM.item_description,IL.location_description, IM.hims_d_inventory_item_master_id as inv_item_id, \
+            IM.category_id as inv_item_category_id, IM.group_id as inv_item_group_id, IM.purchase_uom_id as inventory_uom_id, \
+            PR.request_qty as quantity from hims_f_procurement_purchase_request PR \
+            inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = PR.item_id\
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = PR.request_location where 1=1" +
+            strQuery,
+          printQuery: true,
+        })
+        .then((headerResult) => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

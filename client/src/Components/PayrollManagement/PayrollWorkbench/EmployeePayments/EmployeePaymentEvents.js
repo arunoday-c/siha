@@ -1,5 +1,5 @@
 // import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall, getCookie } from "../../../../utils/algaehApiCall.js";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
@@ -16,11 +16,23 @@ const texthandle = ($this, e) => {
   });
 };
 
+const branchHandelEvent = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let IOputs = EmployeePaymentIOputs.inputParam();
+  IOputs.cash_finance_account = $this.state.cash_finance_account
+  $this.setState({
+    ...IOputs,
+    [name]: value
+  });
+
+};
 const Paymenttexthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
-
+  IOputs.hospital_id = $this.state.hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState({
     ...IOputs,
     [name]: value
@@ -29,7 +41,8 @@ const Paymenttexthandle = ($this, e) => {
 
 const PaymentOnClear = ($this, e) => {
   let IOputs = EmployeePaymentIOputs.inputParam();
-
+  IOputs.hospital_id = $this.state.hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState({
     ...IOputs,
     [e]: null
@@ -42,6 +55,7 @@ const LoadData = ($this, e) => {
     querySelector: "data-validate='loadData'",
     onSuccess: () => {
       AlgaehLoader({ show: true });
+      getEmployeePayments($this);
       let inputObj = {};
       if ($this.state.select_employee_id !== null) {
         inputObj.employee_id = $this.state.select_employee_id;
@@ -300,7 +314,11 @@ const getPaymentDetails = ($this, row) => {
       deduction_month: row.deducting_month,
       year: row.deducting_year,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if ($this.state.sel_payment_type === "LN") {
     $this.setState({
@@ -311,7 +329,11 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_loan_id: row.hims_f_loan_application_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "EN") {
     $this.setState({
@@ -322,7 +344,12 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_leave_encash_id: row.hims_f_leave_encash_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0,
+      leave_category: row.leave_category
     });
   } else if (row.payment_type === "GR") {
     $this.setState({
@@ -333,7 +360,11 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_end_of_service_id: row.hims_f_end_of_service_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "FS") {
     $this.setState({
@@ -344,7 +375,12 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_final_settlement_id: row.hims_f_final_settlement_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+
+      dis_leave_amount: 0,
+      airfare_months: 0,
+      dis_salary_amount: 0,
+      dis_total_amount: 0
     });
   } else if (row.payment_type === "LS") {
     $this.setState({
@@ -355,7 +391,12 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_leave_settlement_id: row.hims_f_leave_salary_header_id,
       payment_mode: null,
-      processBtn: false
+      processBtn: false,
+
+      dis_leave_amount: row.leave_amount,
+      airfare_months: row.airfare_amount,
+      dis_salary_amount: row.salary_amount,
+      dis_total_amount: row.payment_amount
     });
   }
 };
@@ -365,8 +406,23 @@ const ProessEmpPayment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
     onSuccess: () => {
-      AlgaehLoader({ show: true });
+      if ($this.FIN_Active) {
+        if ($this.state.payment_mode === "CS" &&
+          ($this.state.selected_account === null || $this.state.selected_account === undefined)) {
+          swalMessage({
+            title: "Please Select Cash in Hand Account",
+            type: "warning"
+          });
+          return
+        }
+      }
+      const cs_selected_account = $this.state.selected_account !== null ?
+        $this.state.selected_account.split("-") : []
 
+      AlgaehLoader({ show: true });
+      $this.state.ScreenCode = getCookie("ScreenCode")
+      $this.state.child_id = cs_selected_account.length > 0 ? cs_selected_account[1] : undefined
+      $this.state.head_id = cs_selected_account.length > 0 ? cs_selected_account[0] : undefined
       algaehApiCall({
         uri: "/employeepayments/InsertEmployeePayment",
         module: "hrManagement",
@@ -429,14 +485,19 @@ const employeeSearch = $this => {
 };
 
 const getEmployeePayments = $this => {
+  let inputObj = {
+    payment_type: $this.state.sel_payment_type,
+    hospital_id: $this.state.hospital_id
+  };
+
+  if ($this.state.select_employee_id !== null) {
+    inputObj.employee_id = $this.state.select_employee_id;
+  }
   algaehApiCall({
     uri: "/employeepayments/getEmployeePayments",
     module: "hrManagement",
     method: "GET",
-    data: {
-      employee_id: $this.state.select_employee_id,
-      payment_type: $this.state.sel_payment_type
-    },
+    data: inputObj,
     onSuccess: response => {
       $this.setState({
         PreviousPayments: response.data.result
@@ -453,8 +514,26 @@ const getEmployeePayments = $this => {
 
 const ClearData = $this => {
   let IOputs = EmployeePaymentIOputs.inputParam();
+  IOputs.hospital_id = $this.state.hospital_id;
+  IOputs.cash_finance_account = $this.state.cash_finance_account
   $this.setState(IOputs);
 };
+
+const getFinanceHeaders = ($this) => {
+  algaehApiCall({
+    uri: "/finance/getAccountHeadsForDropdown",
+    data: { voucher_type: "CIH" },
+    method: "GET",
+    module: "finance",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          cash_finance_account: response.data.result
+        });
+      }
+    }
+  });
+}
 
 export {
   texthandle,
@@ -466,5 +545,7 @@ export {
   employeeSearch,
   getEmployeePayments,
   ClearData,
-  PaymentOnClear
+  PaymentOnClear,
+  branchHandelEvent,
+  getFinanceHeaders
 };

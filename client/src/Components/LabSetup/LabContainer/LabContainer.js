@@ -16,9 +16,8 @@ import { getCookie } from "../../../utils/algaehApiCall.js";
 import {
   changeTexts,
   onchangegridcol,
-  insertLabContainer,
-  deleteLabContainer,
-  updateLabContainer
+  insertLabContainer,  
+  updateLabContainer  
 } from "./LabContainerEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -108,6 +107,15 @@ class LabContainer extends Component {
               Add to List
             </button>
           </div>
+
+          {/* <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
+            <button
+              onClick={testData.bind(this, this)}
+              className="btn btn-primary"
+            >
+              TEST
+            </button>
+          </div> */}
         </div>
 
         <div className="portlet portlet-bordered margin-bottom-15">
@@ -175,8 +183,8 @@ class LabContainer extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -191,8 +199,8 @@ class LabContainer extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -271,7 +279,7 @@ class LabContainer extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteLabContainer.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: updateLabContainer.bind(this, this)
                   }}
                 />

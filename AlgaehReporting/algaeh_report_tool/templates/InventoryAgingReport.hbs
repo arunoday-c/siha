@@ -1,0 +1,47 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>0-30</th>
+                        <th>31-60</th>
+                        <th>61-90</th>
+                        <th>90+</th>
+                    </tr>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement result}}
+
+
+                    {{#each transfer_items}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_code}}</th>
+                        <td class="txtFld">{{item_description}}</th>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>

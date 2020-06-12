@@ -19,11 +19,11 @@ import {
   PatientSearch,
   getCtrlCode,
   SaveOPCreidt,
-  generateOPCreditReceipt
+  generateOPCreditReceipt,
 } from "./OPCreditSettlementEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall.js";
-
+import { MainContext } from "algaeh-react-components/context";
 import moment from "moment";
 
 class OPCreditSettlement extends Component {
@@ -44,19 +44,28 @@ class OPCreditSettlement extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
     };
   }
 
-  componentWillMount() {
+  static contextType = MainContext;
+
+  UNSAFE_componentWillMount() {
     let IOputs = SettlementIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
+
     this.setState({ ...this.state, ...IOputs });
   }
 
   componentDidMount() {
     let prevLang = getCookie("Language");
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     let _screenName = getCookie("ScreenName").replace("/", "");
@@ -64,19 +73,19 @@ class OPCreditSettlement extends Component {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: "Counter"
+        identifier: "Counter",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         this.setState({
-          counter_id: response.data.records.selectedValue
+          counter_id: response.data.records.selectedValue,
         });
-      }
+      },
     });
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let output = {};
 
     if (
@@ -101,11 +110,11 @@ class OPCreditSettlement extends Component {
             {
               pageName: (
                 <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
+              ),
             },
             {
-              pageName: <AlgaehLabel label={{ fieldName: "credit_number" }} />
-            }
+              pageName: <AlgaehLabel label={{ fieldName: "credit_number" }} />,
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -115,21 +124,21 @@ class OPCreditSettlement extends Component {
             ),
             value: this.state.credit_number,
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             selectValue: "credit_number",
             searchName: "opCreidt",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "creidtbills.opCreidt"
-            }
+              fieldName: "creidtbills.opCreidt",
+            },
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    fieldName: "credit_date"
+                    fieldName: "credit_date",
                   }}
                 />
                 <h6>
@@ -149,10 +158,10 @@ class OPCreditSettlement extends Component {
                       events: {
                         onClick: () => {
                           generateOPCreditReceipt(this.state);
-                        }
-                      }
-                    }
-                  ]
+                        },
+                      },
+                    },
+                  ],
                 }
               : ""
           }
@@ -163,51 +172,29 @@ class OPCreditSettlement extends Component {
             className="row inner-top-search"
             style={{ paddingTop: 10, paddingBottom: 10 }}
           >
-            <div className="col-lg-3">
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
+            <div
+              className="col-3 globalSearchCntr"
+              style={{
+                cursor: "pointer",
+                pointerEvents: this.state.Billexists === true ? "none" : "",
+              }}
+            >
+              <AlgaehLabel label={{ fieldName: "s_patient_code" }} />
+              <h6 onClick={PatientSearch.bind(this, this)}>
+                {this.state.patient_code ? (
+                  this.state.patient_code
+                ) : (
                   <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "----------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer",
-                      pointerEvents:
-                        this.state.Billexists === true
-                          ? "none"
-                          : this.state.patient_code
-                          ? "none"
-                          : ""
-                    }}
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
+                )}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
             </div>
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-lg-3">
                   <AlgaehLabel
                     label={{
-                      fieldName: "full_name"
+                      fieldName: "full_name",
                     }}
                   />
                   <h6>
@@ -223,7 +210,7 @@ class OPCreditSettlement extends Component {
               state: this.state,
               updateState: (obj, callback) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map(key => {
+                  Object.keys(obj).map((key) => {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
@@ -232,7 +219,7 @@ class OPCreditSettlement extends Component {
                     callback();
                   }
                 });
-              }
+              },
             }}
           >
             <CreditDetails SettlementIOputs={this.state} />
@@ -251,8 +238,8 @@ class OPCreditSettlement extends Component {
                 onClick={SaveOPCreidt.bind(this, this)}
                 disabled={
                   this.state.saveEnable ||
-                  this.state.receipt_amount === 0 ||
-                  this.state.unbalanced_amount !== 0
+                  !this.state.receipt_amount ||
+                  !this.state.unbalanced_amount == 0
                 }
               >
                 <AlgaehLabel
@@ -283,7 +270,7 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     existinsurance: state.existinsurance,
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
   };
 }
 
@@ -292,15 +279,12 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OPCreditSettlement)
+  connect(mapStateToProps, mapDispatchToProps)(OPCreditSettlement)
 );

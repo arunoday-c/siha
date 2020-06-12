@@ -18,15 +18,24 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { MainContext } from "algaeh-react-components/context";
 
 class SampleCollectionPatient extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      collected: true
+      collected: true,
+      hospital_id: null
     };
   }
+
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.deptanddoctors === undefined ||
       this.props.deptanddoctors.length === 0
@@ -70,7 +79,7 @@ class SampleCollectionPatient extends PureComponent {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.selected_patient !== null) {
       let InputOutput = nextProps.selected_patient;
       this.setState({ ...this.state, ...InputOutput });
@@ -97,7 +106,7 @@ class SampleCollectionPatient extends PureComponent {
                 <div>
                   <div className="col-lg-12 popupInner">
                     <div className="row form-details">
-                      <div className="col-lg-3">
+                      <div className="col-lg-2">
                         <AlgaehLabel
                           label={{
                             fieldName: "patient_code"
@@ -109,7 +118,7 @@ class SampleCollectionPatient extends PureComponent {
                             : "Patient Code"}
                         </h6>
                       </div>
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "patient_name"
@@ -122,7 +131,7 @@ class SampleCollectionPatient extends PureComponent {
                         </h6>
                       </div>
 
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "ordered_by"
@@ -261,6 +270,7 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 others: {
+                                  minWidth: 250,
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
@@ -310,6 +320,7 @@ class SampleCollectionPatient extends PureComponent {
                                   );
                                 },
                                 others: {
+                                  maxWidth: 200,
                                   resizable: false,
                                   style: { textAlign: "center" }
                                 }
@@ -465,8 +476,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SampleCollectionPatient)
+  connect(mapStateToProps, mapDispatchToProps)(SampleCollectionPatient)
 );

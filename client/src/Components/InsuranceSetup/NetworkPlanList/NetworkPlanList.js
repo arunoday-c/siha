@@ -69,7 +69,7 @@ class NetworkPlanList extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.insurance_provider_id !== undefined) {
       this.setState({
         network_plan: newProps.networkandplans,
@@ -345,26 +345,26 @@ class NetworkPlanList extends PureComponent {
                 );
               }
             },
-            {
-              fieldName: "max_value",
-              label: <AlgaehLabel label={{ fieldName: "con_max_limit" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.max_value,
-                      className: "txt-fld",
-                      name: "max_value",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "max_value",
+            //   label: <AlgaehLabel label={{ fieldName: "con_max_limit" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.max_value,
+            //           className: "txt-fld",
+            //           name: "max_value",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "deductible_lab",
               label: <AlgaehLabel label={{ fieldName: "deductible_lab" }} />,
@@ -407,26 +407,26 @@ class NetworkPlanList extends PureComponent {
             },
 
             //
-            {
-              fieldName: "lab_max",
-              label: <AlgaehLabel label={{ fieldName: "lab_max" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.lab_max,
-                      className: "txt-fld",
-                      name: "lab_max",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "lab_max",
+            //   label: <AlgaehLabel label={{ fieldName: "lab_max" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.lab_max,
+            //           className: "txt-fld",
+            //           name: "lab_max",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "deductible_rad",
               label: <AlgaehLabel label={{ fieldName: "deductible_rad" }} />,
@@ -468,26 +468,26 @@ class NetworkPlanList extends PureComponent {
                 );
               }
             },
-            {
-              fieldName: "rad_max",
-              label: <AlgaehLabel label={{ fieldName: "rad_max" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.rad_max,
-                      className: "txt-fld",
-                      name: "rad_max",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "rad_max",
+            //   label: <AlgaehLabel label={{ fieldName: "rad_max" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.rad_max,
+            //           className: "txt-fld",
+            //           name: "rad_max",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "deductible_trt",
               label: <AlgaehLabel label={{ fieldName: "deductible_trt" }} />,
@@ -591,26 +591,26 @@ class NetworkPlanList extends PureComponent {
                 );
               }
             },
-            {
-              fieldName: "dental_max",
-              label: <AlgaehLabel label={{ fieldName: "dental_max" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.dental_max,
-                      className: "txt-fld",
-                      name: "dental_max",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "dental_max",
+            //   label: <AlgaehLabel label={{ fieldName: "dental_max" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.dental_max,
+            //           className: "txt-fld",
+            //           name: "dental_max",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "deductible_medicine",
               label: (
@@ -652,27 +652,27 @@ class NetworkPlanList extends PureComponent {
                   />
                 );
               }
-            },
-            {
-              fieldName: "medicine_max",
-              label: <AlgaehLabel label={{ fieldName: "medicine_max" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.medicine_max,
-                      className: "txt-fld",
-                      name: "medicine_max",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
             }
+            // {
+            //   fieldName: "medicine_max",
+            //   label: <AlgaehLabel label={{ fieldName: "medicine_max" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.medicine_max,
+            //           className: "txt-fld",
+            //           name: "medicine_max",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            //}
           ]}
           keyId="network_type"
           dataSource={{

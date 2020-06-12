@@ -35,6 +35,14 @@ class FrontDesk extends Component {
     // this.routeComponents = this.routeComponents.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.screen !== prevState.FD_Screen) {
+      this.setState({
+        FD_Screen: this.props.screen
+      });
+    }
+  }
+
   routeComponents(patient, checkinID) {
     this.props.getEmployeeServiceID({
       uri: "/appointment/getEmployeeServiceID",
@@ -229,8 +237,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FrontDesk)
+  connect(mapStateToProps, mapDispatchToProps)(FrontDesk)
 );

@@ -31,13 +31,14 @@ const getAllDepartmentBased = options => {
 // };
 
 const getPatientPhysicalExamination = $this => {
+  const { current_patient, episode_id } = Window.global;
   $this.props.getPatientPhysicalExamination({
     uri: "/doctorsWorkBench/getPatientPhysicalExamination",
     method: "GET",
     cancelRequestId: "getPatientPhysicalExamination",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, // Window.global["current_patient"],
+      episode_id: episode_id //Window.global["episode_id"]
     },
     redux: {
       type: "ALL_PATIENT_EXAMINATIONS",

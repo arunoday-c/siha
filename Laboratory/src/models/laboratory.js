@@ -5,6 +5,7 @@ import appsettings from "algaeh-utilities/appsettings.json";
 import pad from "node-string-pad";
 import moment from "moment";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   getLabOrderedServices: (req, res, next) => {
@@ -48,12 +49,16 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, \
-            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, LO.status, cancelled, provider_id, ordered_date, test_type,\
-            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
-            LS.status as sample_status, LO.comments, TC.test_section,DLS.urine_specimen from hims_f_lab_order LO \
+            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, critical_status,\
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, \
+            E.full_name as doctor_name, billed, service_id,  S.service_code, S.service_name, \
+            LO.status, cancelled, provider_id, ordered_date, test_type, concat(V.age_in_years,'Y')years, \
+            concat(V.age_in_months,'M')months, concat(V.age_in_days,'D')days, \
+            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  \
+            LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
+            LS.status as sample_status, TC.test_section,DLS.urine_specimen, IT.hims_d_investigation_test_id from hims_f_lab_order LO \
             inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
-            inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
+            inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id \
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
             left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
@@ -82,11 +87,38 @@ export default {
     }
   },
 
-  insertLadOrderedServices: (req, res, next) => {
+  getLabOrderedComment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            " select comments from hims_f_lab_order WHERE hims_f_lab_order_id = ?",
+          values: [req.query.hims_f_lab_order_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result[0];
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  insertLadOrderedServices_BAKP_JAN_30_2020: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
+
+      let input = req.body;
       utilities.logger().log("Services Bill: ");
       // let Services =
       //   req.records.ResultOfFetchOrderIds == null
@@ -131,7 +163,7 @@ export default {
       if (labServices.length > 0) {
         _mysql
           .executeQuery({
-            query: "INSERT INTO hims_f_lab_order(??) VALUES ?",
+            query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
             values: labServices,
             includeValues: IncludeValues,
             extraValues: {
@@ -151,11 +183,39 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?)",
-                values: [get_services_id],
+                  "select  hims_d_investigation_test_id from hims_d_investigation_test where record_status='A' and services_id in (?);\
+                  select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+                  TIMESTAMPDIFF(day, ?, curdate()) as days,\
+                  TIMESTAMPDIFF(month, ?, curdate()) as months,\
+                  TIMESTAMPDIFF(year, ?, curdate()) as years from \
+                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;",
+                values: [
+                  get_services_id,
+                  input.date_of_birth,
+                  input.date_of_birth,
+                  input.date_of_birth,
+                  input.date_of_birth
+                ],
                 printQuery: true
               })
-              .then(investigation_test => {
+              .then(results => {
+                let investigation_test = results[0];
+                const age_data = results[1][0];
+                const age_type = age_data["age_type"];
+                let age = "";
+                switch (age_type) {
+                  case "D":
+                    age = age_data["days"];
+
+                    break;
+                  case "M":
+                    age = age_data["months"];
+                    break;
+                  case "Y":
+                    age = age_data["years"];
+                    break;
+                }
+
                 const test_id = new LINQ(investigation_test)
                   .Select(s => {
                     return s.hims_d_investigation_test_id;
@@ -171,12 +231,16 @@ export default {
                       and visit_id =? and service_id in (?); \
                       select hims_d_investigation_test.services_id, analyte_type, result_unit, analyte_id, \
                       critical_low, critical_high, normal_low,normal_high from hims_d_investigation_test,  hims_m_lab_analyte where hims_d_investigation_test_id=hims_m_lab_analyte.test_id and \
-                      hims_m_lab_analyte.record_status='A' and hims_m_lab_analyte.test_id in  (?);",
+                      hims_m_lab_analyte.record_status='A' and hims_m_lab_analyte.test_id in  (?) \
+                      and gender=? and age_type=? and ? between from_age and to_age;",
                     values: [
                       test_id,
                       req.body.visit_id,
                       get_services_id,
-                      test_id
+                      test_id,
+                      input.gender,
+                      age_type,
+                      age
                     ],
                     printQuery: true
                   })
@@ -187,10 +251,12 @@ export default {
                     ) {
                       _mysql.rollBackTransaction(() => {
                         next(
-                          httpStatus.generateError(
-                            httpStatus.forbidden,
-                            "No Specimen Avilable"
-                          )
+                          utilities
+                            .httpStatus()
+                            .generateError(
+                              httpStatus.forbidden,
+                              "No Specimen Avilable"
+                            )
                         );
                       });
                     }
@@ -210,7 +276,8 @@ export default {
 
                     _mysql
                       .executeQuery({
-                        query: "INSERT INTO hims_f_lab_sample(??) VALUES ?",
+                        query:
+                          "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
                         values: insertedLabSample,
                         includeValues: sample,
                         extraValues: {
@@ -227,10 +294,12 @@ export default {
                         ) {
                           _mysql.rollBackTransaction(() => {
                             next(
-                              httpStatus.generateError(
-                                httpStatus.forbidden,
-                                "No Analytes Avilable"
-                              )
+                              utilities
+                                .httpStatus()
+                                .generateError(
+                                  httpStatus.forbidden,
+                                  "No Analytes Avilable"
+                                )
                             );
                           });
                         }
@@ -248,6 +317,7 @@ export default {
                         utilities
                           .logger()
                           .log("specimentRecords: ", specimentRecords[2]);
+
                         const labAnalytes = new LINQ(specimentRecords[2])
                           .Select(s => {
                             return {
@@ -264,12 +334,13 @@ export default {
                             };
                           })
                           .ToArray();
+
                         utilities.logger().log("labAnalytes: ", labAnalytes);
                         if (labAnalytes.length > 0) {
                           _mysql
                             .executeQuery({
                               query:
-                                "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                                "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
                               values: labAnalytes,
                               includeValues: analyts,
                               extraValues: {
@@ -341,6 +412,293 @@ export default {
       });
     }
   },
+
+  //Recreated by Irfan:
+  insertLadOrderedServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let Services =
+        req.records.ResultOfFetchOrderIds == null
+          ? req.body.billdetails
+          : req.records.ResultOfFetchOrderIds;
+
+      const labServices = Services.filter(
+        f =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Lab
+      ).map(s => {
+        return {
+          ordered_services_id: s.hims_f_ordered_services_id || null,
+          patient_id: req.body.patient_id,
+          provider_id: req.body.incharge_or_provider,
+          visit_id: req.body.visit_id,
+          service_id: s.services_id,
+          billed: req.body.billed,
+          ordered_date: s.created_date,
+          test_type: s.test_type
+        };
+      });
+
+      if (labServices.length > 0) {
+        const IncludeValues = [
+          "ordered_services_id",
+          "patient_id",
+          "visit_id",
+          "provider_id",
+          "service_id",
+          "billed",
+          "ordered_date",
+          "test_type"
+        ];
+
+        _mysql
+          .executeQuery({
+            query: "INSERT IGNORE INTO hims_f_lab_order(??) VALUES ?",
+            values: labServices,
+            includeValues: IncludeValues,
+            extraValues: {
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
+              hospital_id: req.userIdentity.hospital_id
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          })
+          .then(insert_lab_order => {
+            const get_services_id = labServices.map(s => {
+              return s.service_id;
+            });
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT T.hims_d_investigation_test_id,T.description ,C.test_section ,A.analyte_id\
+                  FROM hims_d_investigation_test T inner join  hims_d_test_category C on \
+                  T.category_id=C.hims_d_test_category_id and T.services_id in (?) \
+                  left join hims_m_lab_analyte A on T.hims_d_investigation_test_id=A.test_id group by T.hims_d_investigation_test_id; \
+                    select case when days<31 then 'D' when days<365 then 'M' else 'Y' end as age_type,\
+                  TIMESTAMPDIFF(day, ?, curdate()) as days,\
+                  TIMESTAMPDIFF(month, ?, curdate()) as months,\
+                  TIMESTAMPDIFF(year, ?, curdate()) as years from \
+                  (select  TIMESTAMPDIFF(day, ?, curdate()) as days) as a;  ",
+                values: [
+                  get_services_id,
+
+                  req.body.date_of_birth,
+                  req.body.date_of_birth,
+                  req.body.date_of_birth,
+                  req.body.date_of_birth
+                ],
+                printQuery: true
+              })
+              .then(investigation_test => {
+                const no_analyte = investigation_test[0].find(f => {
+                  return f.test_section != "M" && f.analyte_id == null;
+                });
+                if (no_analyte) {
+                  _mysql.rollBackTransaction(() => {
+                    next(
+                      httpStatus.generateError(
+                        httpStatus.forbidden,
+                        "Analytes not deifined for the test :" +
+                        no_analyte["description"]
+                      )
+                    );
+                  });
+                } else {
+                  const test_id = investigation_test[0].map(s => {
+                    return s.hims_d_investigation_test_id;
+                  });
+
+                  // const category_type = investigation_test[0].find(f => {
+                  //   return f.test_section == "M";
+                  // });
+
+                  const age_data = investigation_test[1][0];
+                  const age_type = age_data["age_type"];
+                  let age = "";
+                  switch (age_type) {
+                    case "D":
+                      age = age_data["days"];
+
+                      break;
+                    case "M":
+                      age = age_data["months"];
+                      break;
+                    case "Y":
+                      age = age_data["years"];
+                      break;
+                  }
+
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select services_id,specimen_id,test_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                    where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
+                    hims_m_lab_specimen.record_status='A' and test_id in (?); \
+                    select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
+                    and visit_id =? and service_id in (?);\
+                    select hims_m_lab_analyte_id,test_id,M.analyte_id, R.gender, R.age_type, R.from_age,\
+                    R.to_age, R.critical_low,  R.critical_high, R.normal_low, R.normal_high ,\
+                    R.normal_qualitative_value,R.text_value ,A.analyte_type,A.result_unit from hims_m_lab_analyte  M \
+                    left join hims_d_lab_analytes A on M.analyte_id=A.hims_d_lab_analytes_id\
+                    left join  hims_d_lab_analytes_range R on  M.analyte_id=R.analyte_id\
+                    and (R.gender=? or R.gender='BOTH') and R.age_type=? and ? between R.from_age and R.to_age\
+                    where M.test_id in(?);",
+                      values: [
+                        test_id,
+                        req.body.visit_id,
+                        get_services_id,
+
+                        req.body.gender,
+                        age_type,
+                        age,
+                        test_id
+                      ],
+                      printQuery: true
+                    })
+                    .then(specimentRecords => {
+                      if (specimentRecords[0].length > 0) {
+                        const specimen_list = specimentRecords[0];
+                        const lab_orders = specimentRecords[1];
+                        const all_analytes = specimentRecords[2];
+                        const inserteLabSample = [];
+
+                        lab_orders.forEach(ord => {
+                          let temp = specimen_list
+                            .filter(f => {
+                              return f.services_id == ord.service_id;
+                            })
+                            .map(m => {
+                              return {
+                                sample_id: m.specimen_id,
+                                test_id: m.test_id,
+                                order_id: ord.hims_f_lab_order_id
+                              };
+                            });
+                          inserteLabSample.push(...temp);
+                        });
+
+                        const sample = ["order_id", "sample_id"];
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "INSERT IGNORE INTO hims_f_lab_sample(??) VALUES ?",
+                            values: inserteLabSample,
+                            includeValues: sample,
+                            extraValues: {
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_by: req.userIdentity.algaeh_d_app_user_id
+                            },
+                            bulkInsertOrUpdate: true,
+                            printQuery: true
+                          })
+                          .then(insert_lab_sample => {
+                            if (all_analytes.length > 0) {
+                              all_analytes.map(item => {
+                                const order_dtails = inserteLabSample.find(
+                                  f => {
+                                    return item.test_id == f.test_id;
+                                  }
+                                );
+
+                                item["order_id"] = order_dtails.order_id;
+                              });
+
+                              const analyts = [
+                                "order_id",
+                                "analyte_id",
+                                "analyte_type",
+                                "result_unit",
+                                "critical_low",
+                                "critical_high",
+                                "normal_low",
+                                "normal_high",
+                                "text_value",
+                                "normal_qualitative_value"
+                              ];
+                              _mysql
+                                .executeQuery({
+                                  query:
+                                    "INSERT IGNORE INTO hims_f_ord_analytes(??) VALUES ?",
+                                  values: all_analytes,
+                                  includeValues: analyts,
+                                  extraValues: {
+                                    created_by:
+                                      req.userIdentity.algaeh_d_app_user_id,
+                                    updated_by:
+                                      req.userIdentity.algaeh_d_app_user_id
+                                  },
+                                  bulkInsertOrUpdate: true,
+                                  printQuery: true
+                                })
+                                .then(ord_analytes => {
+                                  if (req.connection == null) {
+                                    req.records = insert_lab_sample;
+                                    next();
+                                  } else {
+                                    next();
+                                  }
+                                })
+                                .catch(e => {
+                                  _mysql.rollBackTransaction(() => {
+                                    next(e);
+                                  });
+                                });
+                            } else {
+                              if (req.connection == null) {
+                                req.records = insert_lab_sample;
+                                next();
+                              } else {
+                                next();
+                              }
+                            }
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
+                          });
+                      } else {
+                        _mysql.rollBackTransaction(() => {
+                          next(
+                            httpStatus.generateError(
+                              httpStatus.forbidden,
+                              "No Specimen Avilable"
+                            )
+                          );
+                        });
+                      }
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                }
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   updateLabOrderServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -354,9 +712,10 @@ export default {
             query:
               "UPDATE hims_f_lab_sample SET `collected`=?,`status`=?, `collected_by`=?,\
           `collected_date` =now() WHERE hims_d_lab_sample_id=?;\
-          SELECT distinct container_id,container_code FROM hims_m_lab_specimen,hims_d_investigation_test \
-          where hims_d_investigation_test.hims_d_investigation_test_id =hims_m_lab_specimen.test_id \
-          and hims_d_investigation_test.services_id=?;\
+          SELECT distinct LS.container_id, LC.container_id as container_code FROM hims_m_lab_specimen LS \
+          inner join hims_d_investigation_test IT on IT.hims_d_investigation_test_id = LS.test_id \
+          inner join hims_d_lab_container LC on LC.hims_d_lab_container_id = LS.container_id \
+          where IT.services_id=?;\
           SELECT lab_location_code from hims_d_hospital where hims_d_hospital_id=?",
             values: [
               inputParam.collected,
@@ -627,6 +986,7 @@ export default {
     utilities.logger().log("updateLabResultEntry: ");
     try {
       let inputParam = req.body;
+      console.log(req.body, "body");
 
       let status_C = new LINQ(inputParam).Where(w => w.status == "C").ToArray()
         .length;
@@ -639,12 +999,14 @@ export default {
       let status_E = new LINQ(inputParam).Where(w => w.status == "E").ToArray()
         .length;
       utilities.logger().log("runtype: ");
-      let runtype = new LINQ(inputParam)
-        .Where(w => w.run_type != null)
-        .Select(s => s.run_type)
-        .ToArray();
+      // let runtype = new LINQ(inputParam)
+      //   .Where(w => w.run_type != null)
+      //   .Select(s => s.run_type)
+      //   .ToArray();
+      let { runtype } = inputParam[inputParam.length - 1];
+      console.log(runtype, "run type");
 
-      utilities.logger().log("inputParam: ", inputParam);
+      console.log("inputParam: ", inputParam[0].critical_status);
 
       let ref = null;
       let entered_by = null;
@@ -752,15 +1114,16 @@ export default {
             _mysql
               .executeQuery({
                 query:
-                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?" +
+                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?, `critical_status`=? " +
                   strQuery +
-                  "where hims_f_lab_order_id=? ",
+                  " where hims_f_lab_order_id=?; ",
                 values: [
                   ref,
-                  runtype[0],
+                  String(runtype),
                   moment().format("YYYY-MM-DD HH:mm"),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,
+                  inputParam[0].critical_status,
                   inputParam[0].order_id
                 ],
                 printQuery: true
@@ -998,7 +1361,7 @@ export default {
           w =>
             w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
-              appsettings.hims_d_service_type.service_type_id.Lab
+            appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
@@ -1154,6 +1517,125 @@ export default {
           _mysql.releaseConnection();
 
           next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateResultFromMachine: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_f_lab_order_id from hims_f_lab_order where lab_id_number=?;",
+          values: [input.sampleNo],
+          printQuery: true
+        })
+        .then(lab_order => {
+          // MachineId
+          if (lab_order.length > 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_f_ord_analytes_id, analyte_id, critical_low, normal_low, normal_high, critical_high \
+                  from hims_f_ord_analytes where order_id=?;",
+                values: [lab_order[0].hims_f_lab_order_id],
+                printQuery: true
+              })
+              .then(ord_analytes => {
+                let strResultUpdate = "";
+                for (let i = 0; i < input.result.length; i++) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select D.analyte_id from hims_m_machine_analytes_header H, hims_m_machine_analytes_detail D \
+                      where H.hims_m_machine_analytes_header_id = D.machine_analytes_header_id and \
+                      H.machine_id = ? and machine_analyte_code=?;",
+                      values: [input.MachineId, input.result[i].tesCode],
+                      printQuery: true
+                    })
+                    .then(analyte_data => {
+                      let selected_analyte = _.find(
+                        ord_analytes,
+                        f => f.analyte_id === analyte_data[0].analyte_id
+                      );
+
+                      let critical_type = "";
+                      if (
+                        parseFloat(input.result[i].rawResult) <=
+                        parseFloat(selected_analyte.critical_low)
+                      ) {
+                        critical_type = "CL";
+                      } else if (
+                        parseFloat(input.result[i].rawResult) <
+                        parseFloat(selected_analyte.normal_low)
+                      ) {
+                        critical_type = "L";
+                      } else if (
+                        parseFloat(input.result[i].rawResult) <
+                        parseFloat(selected_analyte.normal_high)
+                      ) {
+                        critical_type = "N";
+                      } else if (
+                        parseFloat(input.result[i].rawResult) <
+                        parseFloat(selected_analyte.critical_high)
+                      ) {
+                        critical_type = "H";
+                      } else {
+                        critical_type = "CH";
+                      }
+
+                      strResultUpdate += mysql.format(
+                        "UPDATE `hims_f_ord_analytes` SET result=?, critical_type=? where hims_f_ord_analytes_id=?;",
+                        [
+                          input.result[i].rawResult,
+                          critical_type,
+                          selected_analyte.hims_f_ord_analytes_id
+                        ]
+                      );
+
+                      if (i == input.result.length - 1) {
+                        _mysql
+                          .executeQuery({
+                            query: strResultUpdate,
+                            printQuery: true
+                          })
+                          .then(update_result => {
+                            _mysql.releaseConnection();
+                            req.records = update_result;
+                            next();
+                          })
+                          .catch(e => {
+                            _mysql.releaseConnection();
+                            next(e);
+                          });
+                      }
+                    })
+                    .catch(e => {
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                }
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = lab_order;
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
         });
     } catch (e) {
       _mysql.releaseConnection();

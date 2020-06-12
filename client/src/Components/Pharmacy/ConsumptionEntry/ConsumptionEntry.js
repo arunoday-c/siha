@@ -15,9 +15,7 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
 import Options from "../../../Options.json";
-import AlgaehReport from "../../Wrapper/printReports";
-import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class ConsumptionEntry extends Component {
   constructor(props) {
@@ -26,15 +24,14 @@ class ConsumptionEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ConsumptionIOputs.inputParam();
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
@@ -58,7 +55,7 @@ class ConsumptionEntry extends Component {
       method: "GET",
       data: {
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
@@ -93,15 +90,6 @@ class ConsumptionEntry extends Component {
   }
 
   render() {
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.userwiselocations, f => {
-            return (
-              f.hims_d_pharmacy_location_id === this.state.from_location_id
-            );
-          })
-        : [];
-
     return (
       <React.Fragment>
         <div>
@@ -159,8 +147,8 @@ class ConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -206,8 +194,8 @@ class ConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -279,8 +267,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ConsumptionEntry)
+  connect(mapStateToProps, mapDispatchToProps)(ConsumptionEntry)
 );

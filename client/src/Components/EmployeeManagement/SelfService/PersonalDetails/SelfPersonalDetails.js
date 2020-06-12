@@ -1,39 +1,42 @@
 import React, { Component } from "react";
+
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
 import "./PersonalDetails.scss";
 import {
   algaehApiCall,
   swalMessage,
-  dateFomater
+  dateFomater,
 } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 import moment from "moment";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getYearswithMinMax,
+} from "../../../../utils/GlobalFunctions";
+import BasicDetails from "./BasicEmpDetails";
 
 class SelfPersonalDetails extends Component {
   constructor(props) {
     super(props);
+    this.currentYear = new Date().getFullYear();
+    this.yearList = getYearswithMinMax(this.currentYear - 10, this.currentYear);
     this.state = {
       editContainer: false,
       idTypes: [],
       employee_expc: [],
       employee_edu: [],
-      family_details: []
+      family_details: [],
+      month: moment().format("M"),
+      year: this.currentYear,
     };
-
-    this.getFamilyDetails();
-    this.getIdDetails();
-    this.getIdTypes();
-    this.getEmployeeWorkExp();
-    this.getEmployeeEducation();
   }
 
   scrollToPosition(e) {
@@ -60,7 +63,7 @@ class SelfPersonalDetails extends Component {
 
       this.setState({
         experience_years: years,
-        experience_months: months
+        experience_months: months,
       });
     }
   }
@@ -73,26 +76,31 @@ class SelfPersonalDetails extends Component {
   }
 
   componentDidMount() {
+    this.getFamilyDetails();
+    this.getIdDetails();
+    this.getIdTypes();
+    this.getEmployeeWorkExp();
+    this.getEmployeeEducation();
     let data = this.props.empData !== null ? this.props.empData : {};
     this.setState(data);
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   dropDownHandle(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
-  showEditCntr(type, empData, e) {
+  showEditCntr(type, empData = {}, e) {
     switch (type) {
       case "basicDetails":
-        this.setState({ editBasic: !this.state.editBasic, ...empData });
+        this.setState((state) => ({ editBasic: !state.editBasic, ...empData }));
         break;
 
       case "familyDetails":
@@ -120,6 +128,53 @@ class SelfPersonalDetails extends Component {
     }
   }
 
+  generateSalarySlipESS() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob",
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "salarySlipESS",
+          reportParams: [
+            {
+              name: "employee_id",
+              value: this.state.hims_d_employee_id,
+            },
+            {
+              name: "year",
+              value: this.state.year,
+            },
+            {
+              name: "month",
+              value: this.state.month,
+            },
+          ],
+          outputFileType: "PDF",
+        },
+      },
+      onSuccess: (res) => {
+        // const url = URL.createObjectURL(res.data);
+        // let myWindow = window.open(
+        //   "{{ product.metafields.google.custom_label_0 }}",
+        //   "_blank"
+        // );
+
+        // myWindow.document.write(
+        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+        // );
+        const urlBlob = URL.createObjectURL(res.data);
+        // const documentName="Salary Slip"
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Salary Slip`;
+        window.open(origin);
+      },
+    });
+  }
+
   changeGridDate(row, selDate, name) {
     row[name] = moment(selDate).format("YYYY-MM-DD");
     row.update();
@@ -138,14 +193,14 @@ class SelfPersonalDetails extends Component {
             qualification: this.state.qualification,
             qualitfication_type: this.state.qualitfication_type,
             year: this.state.pass_out_year,
-            university: this.state.university
+            university: this.state.university,
           },
           method: "POST",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
 
               if (type === "SC") {
@@ -154,23 +209,23 @@ class SelfPersonalDetails extends Component {
                   qualification: null,
                   qualitfication_type: null,
                   pass_out_year: null,
-                  university: null
+                  university: null,
                 });
               } else if (type === "S") {
                 this.setState({
                   qualification: null,
                   qualitfication_type: null,
                   pass_out_year: null,
-                  university: null
+                  university: null,
                 });
               }
 
               this.getEmployeeEducation();
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
   }
 
@@ -185,18 +240,18 @@ class SelfPersonalDetails extends Component {
         qualitfication_type: data.qualitfication_type,
         year: data.year,
         university: data.university,
-        hims_d_employee_education_id: data.hims_d_employee_education_id
+        hims_d_employee_education_id: data.hims_d_employee_education_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getEmployeeEducation();
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
   updateEmployeeWorkExperience(data) {
@@ -212,18 +267,18 @@ class SelfPersonalDetails extends Component {
         designation: data.designation,
         experience_years: data.experience_years,
         experience_months: data.experience_months,
-        hims_d_employee_experience_id: data.hims_d_employee_experience_id
+        hims_d_employee_experience_id: data.hims_d_employee_experience_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getEmployeeWorkExp();
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -238,41 +293,36 @@ class SelfPersonalDetails extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/employee/deleteEmployeeEducation",
           module: "hrManagement",
           data: {
-            hims_d_employee_education_id: data.hims_d_employee_education_id
+            hims_d_employee_education_id: data.hims_d_employee_education_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getEmployeeEducation();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -288,41 +338,36 @@ class SelfPersonalDetails extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/employee/deleteEmployeeWorkExperience",
           module: "hrManagement",
           data: {
-            hims_d_employee_experience_id: data.hims_d_employee_experience_id
+            hims_d_employee_experience_id: data.hims_d_employee_experience_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getEmployeeWorkExp();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -333,17 +378,17 @@ class SelfPersonalDetails extends Component {
       uri: "/employee/getEmployeeEducation",
       module: "hrManagement",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employee_edu: res.data.records
+            employee_edu: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -352,17 +397,17 @@ class SelfPersonalDetails extends Component {
       uri: "/employee/getEmployeeWorkExperience",
       module: "hrManagement",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
       },
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employee_expc: res.data.records
+            employee_expc: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -381,15 +426,15 @@ class SelfPersonalDetails extends Component {
             to_date: this.state.to_date,
             designation: this.state.prev_designation,
             experience_years: this.state.experience_years,
-            experience_months: this.state.experience_months
+            experience_months: this.state.experience_months,
           },
           method: "POST",
 
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
 
               if (type === "SC") {
@@ -400,7 +445,7 @@ class SelfPersonalDetails extends Component {
                   to_date: null,
                   prev_designation: null,
                   experience_years: null,
-                  experience_months: null
+                  experience_months: null,
                 });
               } else if (type === "S") {
                 this.setState({
@@ -409,16 +454,16 @@ class SelfPersonalDetails extends Component {
                   to_date: null,
                   prev_designation: null,
                   experience_years: null,
-                  experience_months: null
+                  experience_months: null,
                 });
               }
 
               this.getEmployeeWorkExp();
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
   }
 
@@ -440,13 +485,13 @@ class SelfPersonalDetails extends Component {
             valid_upto: this.state.valid_upto,
             issue_date: this.state.issue_date,
             alert_required: this.state.alert_required,
-            alert_date: this.state.alert_date
+            alert_date: this.state.alert_date,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Records Added Successfully",
-                type: "success"
+                type: "success",
               });
               if (type === "SC") {
                 this.setState({
@@ -454,27 +499,27 @@ class SelfPersonalDetails extends Component {
                   identity_documents_id: null,
                   identity_number: null,
                   valid_upto: null,
-                  issue_date: null
+                  issue_date: null,
                 });
               } else if (type === "S") {
                 this.setState({
                   identity_documents_id: null,
                   identity_number: null,
                   valid_upto: null,
-                  issue_date: null
+                  issue_date: null,
                 });
               }
               this.getIdDetails();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -492,13 +537,13 @@ class SelfPersonalDetails extends Component {
             dependent_type: this.state.dependent_type,
             dependent_name: this.state.dependent_name,
             dependent_identity_type: this.state.dependent_identity_type,
-            dependent_identity_no: this.state.dependent_identity_no
+            dependent_identity_no: this.state.dependent_identity_no,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Records Added Successfully",
-                type: "success"
+                type: "success",
               });
               if (type === "SC") {
                 this.setState({
@@ -506,27 +551,27 @@ class SelfPersonalDetails extends Component {
                   dependent_type: null,
                   dependent_name: null,
                   dependent_identity_type: null,
-                  dependent_identity_no: null
+                  dependent_identity_no: null,
                 });
               } else if (type === "S") {
                 this.setState({
                   dependent_type: null,
                   dependent_name: null,
                   dependent_identity_type: null,
-                  dependent_identity_no: null
+                  dependent_identity_no: null,
                 });
               }
               this.getFamilyDetails();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -541,40 +586,35 @@ class SelfPersonalDetails extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/selfService/deleteEmployeeDependentDetails",
           data: {
-            hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
+            hims_d_employee_dependents_id: data.hims_d_employee_dependents_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getFamilyDetails();
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -588,47 +628,42 @@ class SelfPersonalDetails extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/employee/deleteEmployeeIdentification",
           data: {
             hims_d_employee_identification_id:
-              data.hims_d_employee_identification_id
+              data.hims_d_employee_identification_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.records.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getIdDetails();
             } else if (!response.data.records.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
   }
 
-  updateEmployeeBasicDetails() {
+  updateEmployeeBasicDetails = (input) => {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='emp-basic-div'",
@@ -638,52 +673,90 @@ class SelfPersonalDetails extends Component {
           method: "PUT",
           module: "hrManagement",
           data: {
-            full_name: this.state.full_name,
-            arabic_name: this.state.arabic_name,
-            date_of_birth: this.state.date_of_birth,
-            sex: this.state.sex,
-            present_address: this.state.present_address,
-            permanent_address: this.state.permanent_address,
-            primary_contact_no: this.state.primary_contact_no,
-            email: this.state.email,
-            hims_d_employee_id: this.state.hims_d_employee_id
+            ...input,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
+              this.props.refreshEmp();
+              this.setState(
+                {
+                  editBasic: false,
+                },
+                () => {
+                  swalMessage({
+                    title: "Record updated successfully",
+                    type: "success",
+                  });
+                }
+              );
               document.getElementById("ep-dl").click();
-              this.setState({
-                editBasic: false
-              });
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
+              // this.setState({
+              //   editBasic: false,
+              // });
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
-  }
+  };
+  // updateEmployeeBasicDetails() {
+  //   AlgaehValidation({
+  //     alertTypeIcon: "warning",
+  //     querySelector: "data-validate='emp-basic-div'",
+  //     onSuccess: () => {
+  //       algaehApiCall({
+  //         uri: "/selfService/updateEmployeeBasicDetails",
+  //         method: "PUT",
+  //         module: "hrManagement",
+  //         data: {
+  //           full_name: this.state.full_name,
+  //           arabic_name: this.state.arabic_name,
+  //           date_of_birth: this.state.date_of_birth,
+  //           sex: this.state.sex,
+  //           present_address: this.state.present_address,
+  //           permanent_address: this.state.permanent_address,
+  //           primary_contact_no: this.state.primary_contact_no,
+  //           email: this.state.email,
+  //           hims_d_employee_id: this.state.hims_d_employee_id,
+  //         },
+  //         onSuccess: (res) => {
+  //           if (res.data.success) {
+  //             this.showEditCntr("basicDetails");
+  //             document.getElementById("ep-dl").click();
+  //             // this.setState({
+  //             //   editBasic: false,
+  //             // });
+  //             swalMessage({
+  //               title: "Record updated successfully",
+  //               type: "success",
+  //             });
+  //           }
+  //         },
+  //         onFailure: (err) => {},
+  //       });
+  //     },
+  //   });
+  // }
 
   getFamilyDetails() {
     algaehApiCall({
       uri: "/selfService/getEmployeeDependentDetails",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            family_details: res.data.records
+            family_details: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getIdDetails() {
@@ -691,19 +764,19 @@ class SelfPersonalDetails extends Component {
       uri: "/selfService/getEmployeeIdentificationDetails",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            id_details: res.data.records
+            id_details: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -712,14 +785,14 @@ class SelfPersonalDetails extends Component {
       uri: "/identity/get",
       module: "masterSettings",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            idTypes: res.data.records
+            idTypes: res.data.records,
           });
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -731,25 +804,25 @@ class SelfPersonalDetails extends Component {
         dependent_name: data.dependent_name,
         dependent_identity_type: data.dependent_identity_type,
         dependent_identity_no: data.dependent_identity_no,
-        hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
+        hims_d_employee_dependents_id: data.hims_d_employee_dependents_id,
       },
       method: "PUT",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record updated Successfully",
-            type: "success"
+            type: "success",
           });
           this.getFamilyDetails();
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -764,28 +837,30 @@ class SelfPersonalDetails extends Component {
         alert_required: data.alert_required,
         alert_date: data.alert_date,
         hims_d_employee_identification_id:
-          data.hims_d_employee_identification_id
+          data.hims_d_employee_identification_id,
       },
       method: "PUT",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record updated Successfully",
-            type: "success"
+            type: "success",
           });
           this.getIdDetails();
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
-
+  updateBasicDetails(data) {
+    this.setState({ ...data });
+  }
   render() {
     let empDetails = this.props.empData ? this.props.empData : {};
 
@@ -797,7 +872,134 @@ class SelfPersonalDetails extends Component {
               <div className="portlet-title">
                 <div
                   className="caption"
-                  ref={c => {
+                  ref={(c) => {
+                    this.basicDetails = c;
+                  }}
+                >
+                  <h3 className="caption-subject">Basic Details</h3>
+                </div>
+                <div className="actions">
+                  <button
+                    className="btn btn-other btn-circle"
+                    onClick={this.showEditCntr.bind(
+                      this,
+                      "basicDetails",
+                      empDetails
+                    )}
+                  >
+                    <i
+                      className={
+                        this.state.editBasic ? "fas fa-times" : "fas fa-pen"
+                      }
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <BasicDetails
+                show={this.state.editBasic}
+                data={this.state}
+                onSubmit={this.updateEmployeeBasicDetails}
+                onCancel={() => this.setState({ editBasic: false })}
+              />
+
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-3">
+                    <AlgaehFile
+                      name="attach_photo"
+                      accept="image/*"
+                      textAltMessage={this.state.full_name}
+                      showActions={true}
+                      serviceParameters={{
+                        uniqueID: empDetails.employee_code,
+                        destinationName: empDetails.employee_code,
+                        fileType: "Employees",
+                      }}
+                    />
+                  </div>
+                  <div className="col-8">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Name",
+                          }}
+                        />
+                        <h6>{this.state.full_name}</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Arabic Full Name",
+                          }}
+                        />
+                        <h6>{this.state.arabic_name}</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Date of Birth",
+                          }}
+                        />
+                        <h6>{this.state.date_of_birth}</h6>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Gender",
+                          }}
+                        />
+                        <h6>{empDetails.sex}</h6>
+                      </div>{" "}
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Mobile",
+                          }}
+                        />
+                        <h6>{this.state.primary_contact_no}</h6>
+                      </div>{" "}
+                      <div className="col employeeEmail">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Personal Email",
+                          }}
+                        />
+                        <h6>{this.state.email}</h6>
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="row">
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Present Address",
+                          }}
+                        />
+                        <h6>{this.state.present_address}</h6>
+                      </div>
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Permanent Address",
+                          }}
+                        />
+                        <h6>{this.state.permanent_address}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div
+                  className="caption"
+                  ref={(c) => {
                     this.offcialDetails = c;
                   }}
                 >
@@ -807,10 +1009,11 @@ class SelfPersonalDetails extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
+                  {" "}
                   <div className="col-3">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Employee Code"
+                        forceLabel: "Employee Code",
                       }}
                     />
                     <h6>{empDetails.employee_code}</h6>
@@ -818,7 +1021,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Designation"
+                        forceLabel: "Designation",
                       }}
                     />
                     <h6>{empDetails.designation}</h6>
@@ -826,7 +1029,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Department"
+                        forceLabel: "Department",
                       }}
                     />
                     <h6>{empDetails.sub_department_name}</h6>
@@ -834,7 +1037,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Reporting To"
+                        forceLabel: "Reporting To",
                       }}
                     />
                     <h6>
@@ -847,287 +1050,9 @@ class SelfPersonalDetails extends Component {
               </div>
             </div>
             <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div
-                  className="caption"
-                  ref={c => {
-                    this.basicDetails = c;
-                  }}
-                >
-                  <h3 className="caption-subject">Basic Details</h3>
-                </div>
-                <div className="actions">
-                  <a
-                    className="btn btn-other btn-circle active"
-                    onClick={this.showEditCntr.bind(
-                      this,
-                      "basicDetails",
-                      empDetails
-                    )}
-                  >
-                    <i
-                      className={
-                        this.state.editBasic ? "fas fa-times" : "fas fa-pen"
-                      }
-                    />
-                  </a>
-                </div>
-              </div>
-              {this.state.editBasic ? (
-                <div
-                  className={
-                    "col-12 editFloatCntr animated  " +
-                    (this.state.editBasic ? "slideInUp" : "slideOutDown") +
-                    " faster"
-                  }
-                  data-validate="emp-basic-div"
-                >
-                  <h5>Edit Basic Details</h5>
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Full Name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "full_name",
-                        value: this.state.full_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          tabIndex: "1"
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col arabic-txt-fld" }}
-                      label={{
-                        forceLabel: "Arabic Name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "arabic_name",
-                        value: this.state.arabic_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          tabIndex: "2"
-                        }
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col margin-bottom-15" }}
-                      label={{
-                        forceLabel: "Date of Birth",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "date_of_birth",
-                        others: {
-                          tabIndex: "3"
-                        }
-                      }}
-                      events={{
-                        onChange: selDate => {
-                          this.setState({
-                            date_of_birth: selDate
-                          });
-                        }
-                      }}
-                      value={this.state.date_of_birth}
-                      maxDate={new Date()}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Gender",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "sex",
-                        className: "select-fld",
-                        value: this.state.sex,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.EMP_FORMAT_GENDER
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Mobile No.",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "primary_contact_no",
-                        value: this.state.primary_contact_no,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          type: "number"
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Email Address",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "email",
-                        value: this.state.email,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Present Address",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "present_address",
-                        value: this.state.present_address,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Permanent Address",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "permanent_address",
-                        value: this.state.permanent_address,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <div className="col">
-                      <button
-                        onClick={this.updateEmployeeBasicDetails.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Update
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={this.showEditCntr.bind(this, "basicDetails")}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : null}
-
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Name"
-                      }}
-                    />
-                    <h6>{empDetails.full_name}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Arabic Full Name"
-                      }}
-                    />
-                    <h6>{empDetails.arabic_name}</h6>
-                  </div>
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Date of Birth"
-                      }}
-                    />
-                    <h6>{empDetails.date_of_birth}</h6>
-                  </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Gender"
-                      }}
-                    />
-                    <h6>{empDetails.sex}</h6>
-                  </div>{" "}
-                  <div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Mobile"
-                      }}
-                    />
-                    <h6>{empDetails.primary_contact_no}</h6>
-                  </div>{" "}
-                  <div className="col employeeEmail">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Personal Email"
-                      }}
-                    />
-                    <h6>{empDetails.email}</h6>
-                  </div>
-                </div>
-                <hr />
-                <div className="row">
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Present Address"
-                      }}
-                    />
-                    <h6>{empDetails.present_address}</h6>
-                  </div>
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Permanent Address"
-                      }}
-                    />
-                    <h6>{empDetails.permanent_address}</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
               <div
                 className="portlet-title"
-                ref={c => {
+                ref={(c) => {
                   this.familyDetails = c;
                 }}
               >
@@ -1135,8 +1060,8 @@ class SelfPersonalDetails extends Component {
                   <h3 className="caption-subject">Family Details</h3>
                 </div>
                 <div className="actions">
-                  <a
-                    className="btn btn-other btn-circle active"
+                  <button
+                    className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
                       "familyDetails",
@@ -1148,7 +1073,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addFamily ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addFamily ? (
@@ -1166,7 +1091,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Dependent Type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "dependent_type",
@@ -1175,30 +1100,30 @@ class SelfPersonalDetails extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.DEPENDENT_TYPE
+                          data: GlobalVariables.DEPENDENT_TYPE,
                         },
                         onChange: this.dropDownHandle.bind(this),
                         others: {
                           // tabIndex: "10"
-                        }
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Dependent Name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "dependent_name",
                         value: this.state.dependent_name,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           //tabIndex: "1"
-                        }
+                        },
                       }}
                     />
 
@@ -1206,7 +1131,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "dependent_identity_type",
@@ -1215,19 +1140,19 @@ class SelfPersonalDetails extends Component {
                         dataSource: {
                           textField: "identity_document_name",
                           valueField: "hims_d_identity_document_id",
-                          data: this.state.idTypes
+                          data: this.state.idTypes,
                         },
                         onChange: this.dropDownHandle.bind(this),
                         others: {
                           //tabIndex: "1"
-                        }
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col" }}
                       label={{
                         forceLabel: "Id Number",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.dependent_identity_no,
@@ -1235,11 +1160,11 @@ class SelfPersonalDetails extends Component {
                         name: "dependent_identity_no",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           //   tabIndex: "7"
-                        }
+                        },
                       }}
                     />
                   </div>
@@ -1284,7 +1209,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Dependent Type" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.dependent_type === "SP"
@@ -1303,7 +1228,7 @@ class SelfPersonalDetails extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -1314,20 +1239,20 @@ class SelfPersonalDetails extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.DEPENDENT_TYPE
+                                    data: GlobalVariables.DEPENDENT_TYPE,
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "dependent_name",
@@ -1336,7 +1261,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Dependent Name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 textBox={{
@@ -1344,18 +1269,18 @@ class SelfPersonalDetails extends Component {
                                   name: "dependent_name",
                                   value: row.dependent_name,
                                   others: {
-                                    tabIndex: "3"
+                                    tabIndex: "3",
                                   },
                                   events: {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "identity_document_name",
@@ -1364,7 +1289,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "ID Card Type" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 selector={{
@@ -1374,27 +1299,27 @@ class SelfPersonalDetails extends Component {
                                   dataSource: {
                                     textField: "identity_document_name",
                                     valueField: "hims_d_identity_document_id",
-                                    data: this.state.idTypes
+                                    data: this.state.idTypes,
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "dependent_identity_no",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Number" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -1406,21 +1331,21 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_employee_dependents_id"
                       dataSource={{
-                        data: this.state.family_details
+                        data: this.state.family_details,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -1429,7 +1354,7 @@ class SelfPersonalDetails extends Component {
                         onDelete: this.deleteEmployeeDependentDetails.bind(
                           this
                         ),
-                        onDone: this.editDependentDetails.bind(this)
+                        onDone: this.editDependentDetails.bind(this),
                       }}
                     />
                   </div>
@@ -1440,15 +1365,15 @@ class SelfPersonalDetails extends Component {
               <div className="portlet-title">
                 <div
                   className="caption"
-                  ref={c => {
+                  ref={(c) => {
                     this.identificationDetails = c;
                   }}
                 >
                   <h3 className="caption-subject">Identification Details</h3>
                 </div>
                 <div className="actions">
-                  <a
-                    className="btn btn-other btn-circle active"
+                  <button
+                    className="btn btn-other btn-circle"
                     onClick={this.showEditCntr.bind(
                       this,
                       "IdDetails",
@@ -1460,7 +1385,7 @@ class SelfPersonalDetails extends Component {
                         this.state.addIdDetails ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
 
@@ -1479,7 +1404,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "identity_documents_id",
@@ -1488,19 +1413,19 @@ class SelfPersonalDetails extends Component {
                         dataSource: {
                           textField: "identity_document_name",
                           valueField: "hims_d_identity_document_id",
-                          data: this.state.idTypes
+                          data: this.state.idTypes,
                         },
                         onChange: this.dropDownHandle.bind(this),
                         others: {
-                          tabIndex: "1"
-                        }
+                          tabIndex: "1",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Id Number",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.identity_number,
@@ -1508,34 +1433,34 @@ class SelfPersonalDetails extends Component {
                         name: "identity_number",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           tabIndex: "2",
                           placeholder: "",
-                          type: "number"
-                        }
+                          type: "text",
+                        },
                       }}
                     />
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Issue Date",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "issue_date",
                         others: {
-                          tabIndex: "3"
-                        }
+                          tabIndex: "3",
+                        },
                       }}
                       events={{
-                        onChange: selDate => {
+                        onChange: (selDate) => {
                           this.setState({
-                            issue_date: moment(selDate).format("YYYY-MM-DD")
+                            issue_date: moment(selDate).format("YYYY-MM-DD"),
                           });
-                        }
+                        },
                       }}
                       value={this.state.issue_date}
                     />
@@ -1543,21 +1468,21 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Expiry Date",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "valid_upto",
                         others: {
-                          tabIndex: "4"
-                        }
+                          tabIndex: "4",
+                        },
                       }}
                       events={{
-                        onChange: selDate => {
+                        onChange: (selDate) => {
                           this.setState({
-                            valid_upto: moment(selDate).format("YYYY-MM-DD")
+                            valid_upto: moment(selDate).format("YYYY-MM-DD"),
                           });
-                        }
+                        },
                       }}
                       value={this.state.valid_upto}
                     />
@@ -1607,7 +1532,7 @@ class SelfPersonalDetails extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID Type" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 selector={{
@@ -1617,27 +1542,27 @@ class SelfPersonalDetails extends Component {
                                   dataSource: {
                                     textField: "identity_document_name",
                                     valueField: "hims_d_identity_document_id",
-                                    data: this.state.idTypes
+                                    data: this.state.idTypes,
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "identity_number",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -1649,40 +1574,40 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "issue_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlgaehDateHandler
                                 textBox={{
                                   className: "txt-fld hidden",
-                                  name: "issue_date"
+                                  name: "issue_date",
                                 }}
                                 events={{
-                                  onChange: selDate => {
+                                  onChange: (selDate) => {
                                     row["issue_date"] = dateFomater(selDate);
                                     row.update();
-                                  }
+                                  },
                                 }}
                                 value={row.issue_date}
                               />
                             );
                           },
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.issue_date !== null
@@ -1690,31 +1615,31 @@ class SelfPersonalDetails extends Component {
                                   : "------"}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "valid_upto",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Valid Upto" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlgaehDateHandler
                                 textBox={{
                                   className: "txt-fld hidden",
-                                  name: "issue_date"
+                                  name: "issue_date",
                                 }}
                                 events={{
-                                  onChange: selDate => {
+                                  onChange: (selDate) => {
                                     row["valid_upto"] = dateFomater(selDate);
                                     row.update();
-                                  }
+                                  },
                                 }}
                                 value={row.valid_upto}
                               />
                             );
                           },
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.valid_upto !== null
@@ -1722,19 +1647,19 @@ class SelfPersonalDetails extends Component {
                                   : "------"}
                               </span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_employee_identification_id"
                       dataSource={{
-                        data: this.state.id_details
+                        data: this.state.id_details,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteIdDetails.bind(this),
-                        onDone: this.updateIdDetails.bind(this)
+                        onDone: this.updateIdDetails.bind(this),
                       }}
                     />
                   </div>
@@ -1746,27 +1671,27 @@ class SelfPersonalDetails extends Component {
                 <div
                   className="caption"
                   data-position="workExperianceDetails"
-                  ref={c => {
+                  ref={(c) => {
                     this.workExperianceDetails = c;
                   }}
                 >
                   <h3 className="caption-subject">Work Experience</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     onClick={this.showEditCntr.bind(
                       this,
                       "addWorkExp",
                       empDetails
                     )}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
                         this.state.addWorkExp ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addWorkExp ? (
@@ -1784,7 +1709,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Previous Company Name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.previous_company_name,
@@ -1792,18 +1717,18 @@ class SelfPersonalDetails extends Component {
                         name: "previous_company_name",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          tabIndex: "1"
-                        }
+                          tabIndex: "1",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Designation",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.prev_designation,
@@ -1811,31 +1736,31 @@ class SelfPersonalDetails extends Component {
                         name: "prev_designation",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          tabIndex: "2"
-                        }
+                          tabIndex: "2",
+                        },
                       }}
                     />
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
                       label={{
                         forceLabel: "From Date",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_date",
                         others: {
-                          tabIndex: "3"
-                        }
+                          tabIndex: "3",
+                        },
                       }}
                       events={{
-                        onChange: selDate => {
+                        onChange: (selDate) => {
                           this.setState(
                             {
-                              from_date: moment(selDate).format("YYYY-MM-DD")
+                              from_date: moment(selDate).format("YYYY-MM-DD"),
                             },
                             () => {
                               if (this.state.to_date !== undefined) {
@@ -1846,7 +1771,7 @@ class SelfPersonalDetails extends Component {
                               }
                             }
                           );
-                        }
+                        },
                       }}
                       value={this.state.from_date}
                     />
@@ -1854,20 +1779,20 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-3" }}
                       label={{
                         forceLabel: "To Date",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_date",
                         others: {
-                          tabIndex: "4"
-                        }
+                          tabIndex: "4",
+                        },
                       }}
                       events={{
-                        onChange: selDate => {
+                        onChange: (selDate) => {
                           this.setState(
                             {
-                              to_date: moment(selDate).format("YYYY-MM-DD")
+                              to_date: moment(selDate).format("YYYY-MM-DD"),
                             },
                             () => {
                               if (this.state.from_date !== undefined) {
@@ -1878,7 +1803,7 @@ class SelfPersonalDetails extends Component {
                               }
                             }
                           );
-                        }
+                        },
                       }}
                       value={this.state.to_date}
                     />
@@ -1886,7 +1811,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Experience in Years",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.experience_years,
@@ -1894,19 +1819,19 @@ class SelfPersonalDetails extends Component {
                         name: "experience_years",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           tabIndex: "5",
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Experience in Months",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.experience_months,
@@ -1914,11 +1839,11 @@ class SelfPersonalDetails extends Component {
                         name: "experience_months",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          tabIndex: "6"
-                        }
+                          tabIndex: "6",
+                        },
                       }}
                     />
                   </div>
@@ -1975,7 +1900,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Company Name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -1987,16 +1912,16 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "designation",
@@ -2005,7 +1930,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Designation" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -2017,59 +1942,59 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Designation - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "from_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "From Date" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlgaehDateHandler
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "from_date"
+                                  name: "from_date",
                                 }}
                                 events={{
-                                  onChange: this.changeGridDate.bind(this, row)
+                                  onChange: this.changeGridDate.bind(this, row),
                                 }}
                                 value={row.from_date}
                                 maxDate={new Date()}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "to_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "To Date" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlgaehDateHandler
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "to_date"
+                                  name: "to_date",
                                 }}
                                 events={{
-                                  onChange: this.changeGridDate.bind(this, row)
+                                  onChange: this.changeGridDate.bind(this, row),
                                 }}
                                 value={row.to_date}
                                 maxDate={new Date()}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "experience_years",
@@ -2077,7 +2002,7 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Year of Exp." }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "experience_months",
@@ -2085,19 +2010,19 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Months of Exp." }}
                             />
-                          )
-                        }
+                          ),
+                        },
                       ]}
                       keyId="hims_d_employee_experience_id"
                       dataSource={{
-                        data: this.state.employee_expc
+                        data: this.state.employee_expc,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmpWrkExp.bind(this),
-                        onDone: this.updateEmployeeWorkExperience.bind(this)
+                        onDone: this.updateEmployeeWorkExperience.bind(this),
                       }}
                     />
                   </div>
@@ -2109,23 +2034,23 @@ class SelfPersonalDetails extends Component {
                 <div
                   className="caption"
                   data-position="educationDetails"
-                  ref={c => {
+                  ref={(c) => {
                     this.educationDetails = c;
                   }}
                 >
                   <h3 className="caption-subject">Education Details</h3>
                 </div>
                 <div className="actions">
-                  <a
+                  <button
                     onClick={this.showEditCntr.bind(this, "addEdu", empDetails)}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
                         this.state.addEdu ? "fas fa-times" : "fas fa-plus"
                       }
                     />
-                  </a>
+                  </button>
                 </div>
               </div>
               {this.state.addEdu ? (
@@ -2143,25 +2068,25 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Qualification",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.qualification,
                         className: "txt-fld",
                         name: "qualification",
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          tabIndex: "1"
-                        }
+                          tabIndex: "1",
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Qualification Type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "qualitfication_type",
@@ -2170,12 +2095,12 @@ class SelfPersonalDetails extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.QULFN_TYP
+                          data: GlobalVariables.QULFN_TYP,
                         },
                         onChange: this.dropDownHandle.bind(this),
                         others: {
-                          tabIndex: "2"
-                        }
+                          tabIndex: "2",
+                        },
                       }}
                     />
 
@@ -2183,7 +2108,7 @@ class SelfPersonalDetails extends Component {
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Passout Year",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.pass_out_year,
@@ -2191,19 +2116,19 @@ class SelfPersonalDetails extends Component {
                         name: "pass_out_year",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
                           tabIndex: "3",
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{ className: "col-2" }}
                       label={{
                         forceLabel: "University",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         value: this.state.university,
@@ -2211,11 +2136,11 @@ class SelfPersonalDetails extends Component {
                         name: "university",
 
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: this.changeTexts.bind(this),
                         },
                         others: {
-                          tabIndex: "4"
-                        }
+                          tabIndex: "4",
+                        },
                       }}
                     />
                   </div>
@@ -2267,7 +2192,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Qualification" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -2279,16 +2204,16 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "qualitfication_type",
@@ -2297,7 +2222,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Qualitfication Type" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.qualitfication_type === "FT"
@@ -2308,7 +2233,7 @@ class SelfPersonalDetails extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -2319,20 +2244,20 @@ class SelfPersonalDetails extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.QULFN_TYP
+                                    data: GlobalVariables.QULFN_TYP,
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "year",
@@ -2341,7 +2266,7 @@ class SelfPersonalDetails extends Component {
                               label={{ forceLabel: "Year of Passout" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -2353,24 +2278,24 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
                                     required: true,
-                                    type: "number"
-                                  }
+                                    type: "number",
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "university",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "University" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -2382,28 +2307,28 @@ class SelfPersonalDetails extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Field cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_employee_education_id"
                       dataSource={{
-                        data: this.state.employee_edu
+                        data: this.state.employee_edu,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteEmployeeEdu.bind(this),
-                        onDone: this.updateEmployeeEdu.bind(this)
+                        onDone: this.updateEmployeeEdu.bind(this),
                       }}
                     />
                   </div>
@@ -2413,21 +2338,93 @@ class SelfPersonalDetails extends Component {
           </div>
 
           <div className="col-5">
-            <div className="EmployeeImgEdit">
-              <AlgaehFile
-                name="attach_photo"
-                accept="image/*"
-                textAltMessage={empDetails.full_name}
-                showActions={true}
-                serviceParameters={{
-                  uniqueID: empDetails.employee_code,
-                  destinationName: empDetails.employee_code,
-                  fileType: "Employees"
-                }}
-              />
-            </div>
-
             <div className="portlet portlet-bordered margin-bottom-15">
+              {/* <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Payroll Information</h3>
+                </div>
+              </div> */}
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 " }}
+                    label={{
+                      forceLabel: "Year",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "year",
+                      className: "select-fld",
+                      value: this.state.year,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: this.yearList,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 paddingLeft" }}
+                    label={{
+                      forceLabel: "Month",
+                      isImp: false,
+                    }}
+                    selector={{
+                      name: "month",
+                      sort: "off",
+                      className: "select-fld",
+                      value: this.state.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS,
+                      },
+                      onChange: this.dropDownHandle.bind(this),
+                    }}
+                  />{" "}
+                  <div className="col paddingLeft">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      style={{ marginTop: 19 }}
+                      onClick={this.generateSalarySlipESS.bind(this)}
+                    >
+                      Print Payslip
+                    </button>
+                  </div>
+                </div>
+                {/* <hr></hr>
+                <div className="row">
+                  <div className="col-8">
+                    <Doughnut
+                      data={PieData}
+                      height={160}
+                      //options={AdmissionsReadmissionDataOptions}
+                    />
+                  </div>{" "}
+                  <div className="col-4 salaryBreakup">
+                    <div className="row">
+                      <div className="col-12">
+                        <p>Earnings</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Deductions</p>
+                        <h4>0.00</h4>
+                      </div>
+                      <div className="col-12">
+                        {" "}
+                        <p>Total Net Salary</p>
+                        <h3>0.00</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+              </div>
+            </div>
+            {/* <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Attachments Details</h3>
@@ -2439,7 +2436,7 @@ class SelfPersonalDetails extends Component {
                       "addAttach",
                       empDetails
                     )}
-                    className="btn btn-other btn-circle active"
+                    className="btn btn-other btn-circle"
                   >
                     <i
                       className={
@@ -2573,85 +2570,72 @@ class SelfPersonalDetails extends Component {
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
+            </div> */}
+
+            {/* <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Change Password</h3>
+                  <h3 className="caption-subject">Request / Download Forms</h3>
                 </div>
-                {/* <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      forceLabel: "Enter Old Password",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      option: {
-                        type: "password"
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      forceLabel: "New Password",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      option: {
-                        type: "password"
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
-                    label={{
-                      forceLabel: "Confirm New Password",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      option: {
-                        type: "password"
-                      }
-                    }}
-                  />
+                  {" "}
                   <div className="col-12">
-                    <button
-                      className="btn btn-primary"
-                      style={{ float: "right", marginLeft: 15 }}
-                    >
-                      Update
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ float: "right", marginLeft: 15 }}
-                    >
-                      Clear
-                    </button>
+                    <AlgaehDataGrid
+                      id="employeeFormTemplate"
+                      columns={[
+                        {
+                          fieldName: "formName",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Form Template" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left"
+                            }
+                          }
+                        },
+                        {
+                          fieldName: "url",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Download" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <a href={row.url} download target="_blank">
+                                Download
+                              </a>
+                            );
+                          },
+                          others: {
+                            maxWidth: 100
+                          }
+                        }
+                      ]}
+                      keyId=""
+                      dataSource={{
+                        data: [
+                          {
+                            formName: "Business Trip Request Form",
+                            url: "https://google.com"
+                          },
+                          {
+                            formName: "Salary Certificate of Employee",
+                            url: "https://google.com"
+                          }
+                        ]
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{}}
+                    />
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

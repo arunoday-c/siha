@@ -10,8 +10,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-import extend from "extend";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 import moment from "moment";
 
@@ -21,7 +20,7 @@ class DNItemList extends Component {
     this.state = {};
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // this.setState({
     //   dn_from: nextProps.dn_from,
     //   dn_item_details: nextProps.dn_item_details
@@ -227,7 +226,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.discount_amount, {
+                          {GetAmountFormart(row.discount_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -243,7 +242,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.net_extended_cost, {
+                          {GetAmountFormart(row.net_extended_cost, {
                             appendSymbol: false
                           })}
                         </span>
@@ -258,7 +257,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.tax_amount, {
+                          {GetAmountFormart(row.tax_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -273,7 +272,7 @@ class DNItemList extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {getAmountFormart(row.total_amount, {
+                          {GetAmountFormart(row.total_amount, {
                             appendSymbol: false
                           })}
                         </span>
@@ -338,93 +337,3 @@ export default withRouter(
     mapDispatchToProps
   )(DNItemList)
 );
-
-{
-  /*
-  {
-    fieldName: "po_quantity",
-    label: (
-      <AlgaehLabel label={{ forceLabel: "PO Quantity" }} />
-    ),
-    disabled: true
-  },
-  {
-  fieldName: "unit_cost",
-  label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />,
-  displayTemplate: row => {
-    return (
-      <span>
-        {getAmountFormart(row.unit_cost, {
-          appendSymbol: false
-        })}
-      </span>
-    );
-  },
-
-  disabled: true
-},
-{
-  fieldName: "sales_price",
-  label: (
-    <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
-  ),
-  displayTemplate: row => {
-    return (
-      <span>
-        {getAmountFormart(row.sales_price, {
-          appendSymbol: false
-        })}
-      </span>
-    );
-  }
-},
-
-{
-  fieldName: "batchno",
-  label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
-
-  others: {
-    minWidth: 150,
-    resizable: false
-  }
-},
-
-{
-  fieldName: "vendor_batchno",
-  label: (
-    <AlgaehLabel
-      label={{ forceLabel: "Vendor Batch  No." }}
-    />
-  ),
-
-  others: {
-    minWidth: 150,
-    resizable: false
-  }
-
-  {
-    fieldName: "quantity_outstanding",
-    label: (
-      <AlgaehLabel
-        label={{
-          forceLabel: "Qty Outstanding"
-        }}
-      />
-    ),
-    disabled: true,
-    others: { minWidth: 140 }
-  },
-  {
-    fieldName: "quantity_recieved_todate",
-    label: (
-      <AlgaehLabel
-        label={{
-          forceLabel: "Qty Received till date"
-        }}
-      />
-    ),
-    disabled: true,
-    others: { minWidth: 150 }
-  },
-},*/
-}

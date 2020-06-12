@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 <div class="print-body">
     <section>
         <table class="tableForLabel" cell-padding="0">
@@ -68,8 +68,10 @@
 
                 {{/each}}
                 <tr>
-                    <td colspan="6">
-                        <h5>Remarks</h5>{{comments}}
+
+                    <td colspan="6">Comments:<ol> {{#each (commentBreakUp comments commentBreakUp)}}
+                            <li>{{this}}</li>{{/each}}
+                        </ol>
                     </td>
                 </tr>
                 <tr>

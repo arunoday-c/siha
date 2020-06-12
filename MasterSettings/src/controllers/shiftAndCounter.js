@@ -13,7 +13,7 @@ const {
   addCashierToShift,
   getCashiersAndShiftMAP,
   updateCashiersAndShiftMAP,
-  deleteCashiersAndShiftMAP
+  deleteCashiersAndShiftMAP,
 } = shiftModels;
 
 export default () => {
@@ -24,7 +24,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -33,7 +33,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -42,7 +42,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -51,7 +51,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -60,7 +60,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -69,7 +69,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -78,7 +78,7 @@ export default () => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
-      records: result
+      records: result,
     });
     next();
   });
@@ -89,12 +89,12 @@ export default () => {
     if (result.invalid_input == true) {
       res.status(utlities.httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
 
@@ -108,7 +108,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -121,7 +121,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
       next();
     }
@@ -134,7 +134,7 @@ export default () => {
       let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
-        records: result
+        records: { message: "Successfully removed" },
       });
       next();
     }

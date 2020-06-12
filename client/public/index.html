@@ -11,16 +11,27 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.png" />
 
+    <script crossorigin src="cdn/react.%REACT_APP_CDN%.js"></script>
+    <script crossorigin src="cdn/react-dom.%REACT_APP_CDN%.js"></script>
+    <script src="cdn/react-router-dom.min.js"></script>
     <link rel="stylesheet" href="css/Bootstrap.css" />
     <!--
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.1/css/all.css" integrity="sha384-O8whS3fhG2OnA5Kas0Y9l3cfpmYjapjI0E4theH4iuMD+pLhbf6JI0jIMfYcK3yZ"
       crossorigin="anonymous">
     -->
+
     <link rel="stylesheet" href="css/font-awesome/all.min.css" />
     <link rel="stylesheet" href="css/animate.min.css" />
     <!-- <link rel="stylesheet" href="css/OpenSans.css"> -->
 
     <link rel="stylesheet" type="text/css" href="./css/semantic.min.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href=""
+      id="finance-style"
+      data-hash=""
+    />
     <!-- <link
       href="https://fonts.googleapis.com/css?family=Titillium+Web:300,400,600,700"
       rel="stylesheet"
@@ -37,12 +48,13 @@
         rel="stylesheet"
       />
     -->
-
-    <link rel="stylesheet" href="css/loader.css" />
+    <!--<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/antd/3.23.6/antd.min.css"/>-->
 
     <title>
-      Algaeh - A complete integration across departments, comprehensive reports
-      and a workflow from registration to billing provide a complete product.
+      Algaeh - Our technology specialists configure Information Management
+      System to serve the exact purpose and meet the objectivity of its
+      installation. To provide the best possible outcomes to take your business
+      forward.
     </title>
   </head>
 
@@ -60,11 +72,11 @@
       </div>
     </div>
 
-    <script>
+    <!-- <script>
       window.onpopstate = function(event) {
         window.history.go(1);
       };
-    </script>
+    </script> -->
     <!--
       <script
         type="text/javascript"
@@ -75,16 +87,18 @@
           Yamli.yamlify("arabicName");
         }
       </script>
+      src="https://unpkg.com/react@16/umd/react.%REACT_APP_CDN%.js"
+      src="https://unpkg.com/react-dom@16/umd/react-dom.%REACT_APP_CDN%.js"
     -->
 
-        <script
-        crossorigin
-        src="https://unpkg.com/react@16/umd/react.%REACT_APP_CDN%.js"
-      ></script>
-      <script
-        crossorigin
-        src="https://unpkg.com/react-dom@16/umd/react-dom.%REACT_APP_CDN%.js"
-      ></script>
-
+    <script
+      src=""
+      crossorigin="anonymous"
+      id="finance-script"
+      data-hash=""
+    ></script>
+    <script>
+      window.audio_feedback = new Audio("audio/notification.ogg");
+    </script>
   </body>
 </html>

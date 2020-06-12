@@ -1,0 +1,12 @@
+#auditLogGrid {
+  .ReactTable {
+    max-height: 56vh !important;
+  }
+}
+.error {
+  background-color: rgb(216, 110, 110) !important;
+  color: white;
+}
+.warning {
+  background-color: rgb(223, 223, 118) !important;
+}

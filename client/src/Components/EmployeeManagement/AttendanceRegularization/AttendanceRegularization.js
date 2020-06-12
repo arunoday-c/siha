@@ -19,7 +19,7 @@ export default class AttendanceRegularization extends Component {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // console.log("REGZ", nextProps.regularize);
   }
 
@@ -205,7 +205,7 @@ export default class AttendanceRegularization extends Component {
               onClick={this.loadRegularizationList.bind(this)}
               type="button"
               className="btn btn-primary"
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
             >
               {!this.state.loading ? (
                 <span>Load</span>

@@ -12,7 +12,9 @@ const {
   createUserLogin,
   getLoginUserMaster,
   changePassword,
-  updateUser
+  updateUser,
+  verifyEmployeeEmailID,
+  verifyUserNameExists
 } = userModel;
 
 export default ({ config, db }) => {
@@ -94,26 +96,21 @@ export default ({ config, db }) => {
   );
 
   // created by irfan :
-  api.post(
-    "/createUserLogin",
-    createUserLogin,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
-    },
-    releaseConnection
-  );
+  api.post("/createUserLogin", createUserLogin, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   // created by irfan :
   api.get(
@@ -172,6 +169,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+  api.post("/verifyEmployeeEmail", verifyEmployeeEmailID, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: `Successfully verified and updated email to employee.`
+    });
+  });
+  api.get("/verifyUserNameExists", verifyUserNameExists, (req, res) => {
+    const exists = req.records;
+    res.status(httpStatus.ok).json({
+      success: exists,
+      message:
+        exists === true ? `User id is already exists please use another id` : ""
+    });
+  });
 
   return api;
 };

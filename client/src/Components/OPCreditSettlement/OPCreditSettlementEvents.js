@@ -22,22 +22,24 @@ const PatientSearch = ($this, e) => {
     },
 
     onRowSelect: row => {
-      $this.setState(
-        {
-          patient_code: row.patient_code,
-          patient_id: row.hims_d_patient_id,
-          full_name: row.full_name
-        },
-        () => {
-          getPatientDetails($this);
-        }
-      );
+      AlgaehLoader({ show: true });
+      let IOputs = extend(SettlementIOputs.inputParam());
+      IOputs.patient_code = row.patient_code;
+      IOputs.patient_id = row.hims_d_patient_id;
+      IOputs.full_name = row.full_name;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
+
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+        getPatientDetails($this);
+      });
     }
   });
 };
 
 const getPatientDetails = $this => {
-  AlgaehLoader({ show: true });
+  // AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/opCreditSettlement/getPatientwiseBill",
@@ -71,80 +73,68 @@ const getPatientDetails = $this => {
   });
 };
 
-const ClearData = ($this, e) => {
-  let _screenName = getCookie("ScreenName").replace("/", "");
-  let counter_id = 0;
-  algaehApiCall({
-    uri: "/userPreferences/get",
-    data: {
-      screenName: _screenName,
-      identifier: "Counter"
-    },
-    method: "GET",
-    onSuccess: response => {
-      counter_id = response.data.records.selectedValue;
+const ClearData = $this => {
+  let IOputs = extend(SettlementIOputs.inputParam());
+  IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+  IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
 
-      let IOputs = extend(SettlementIOputs.inputParam());
-
-      IOputs.counter_id = counter_id;
-      $this.setState({ ...$this.state, ...IOputs }, () => {
-        getCashiersAndShiftMAP($this);
-      });
-    }
+  $this.setState({ ...$this.state, ...IOputs }, () => {
+    getCashiersAndShiftMAP($this);
   });
 };
 
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.card_amount > 0) {
-    if ($this.state.card_number === null || $this.state.card_number === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Number cannot be blank."
-      });
+  // if ($this.state.card_amount > 0) {
+  //   // if ($this.state.card_number === null || $this.state.card_number === "") {
+  //   //   isError = true;
+  //   //   swalMessage({
+  //   //     type: "warning",
+  //   //     title: "Invalid. Card Number cannot be blank."
+  //   //   });
 
-      document.querySelector("[name='card_check_number']").focus();
-      return isError;
-    }
+  //   //   document.querySelector("[name='card_check_number']").focus();
+  //   //   return isError;
+  //   // }
 
-    if ($this.state.card_date === null || $this.state.card_date === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
-      });
+  //   // if ($this.state.card_date === null || $this.state.card_date === "") {
+  //   //   isError = true;
+  //   //   swalMessage({
+  //   //     type: "warning",
+  //   //     title: "Invalid. Card Date Cannot be blank."
+  //   //   });
 
-      document.querySelector("[name='card_date']").focus();
-      return isError;
-    }
-  } else if ($this.state.cheque_amount > 0) {
-    if (
-      $this.state.cheque_number === null ||
-      $this.state.cheque_number === ""
-    ) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Check Number cannot be blank."
-      });
+  //   //   document.querySelector("[name='card_date']").focus();
+  //   //   return isError;
+  //   // }
+  // } else if ($this.state.cheque_amount > 0) {
+  //   if (
+  //     $this.state.cheque_number === null ||
+  //     $this.state.cheque_number === ""
+  //   ) {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Check Number cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_number']").focus();
-      return isError;
-    }
+  //     document.querySelector("[name='cheque_number']").focus();
+  //     return isError;
+  //   }
 
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Cheque Date Cannot be blank."
-      });
+  //   if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Cheque Date Cannot be blank."
+  //     });
 
-      document.querySelector("[name='cheque_date']").focus();
-      return isError;
-    }
-  } else if ($this.state.unbalanced_amount > 0) {
+  //     document.querySelector("[name='cheque_date']").focus();
+  //     return isError;
+  //   }
+  // }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -325,6 +315,7 @@ const SaveOPCreidt = $this => {
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
+        Inputobj.ScreenCode = getCookie("ScreenCode");
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",
@@ -339,7 +330,8 @@ const SaveOPCreidt = $this => {
                 receipt_number: response.data.records.receipt_number,
                 hims_f_credit_header_id:
                   response.data.records.hims_f_credit_header_id,
-                saveEnable: true
+                saveEnable: true,
+                Billexists: true
               });
               swalMessage({
                 title: "Done Successfully",
@@ -392,15 +384,9 @@ const generateOPCreditReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "OP Credit Settlement - Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };

@@ -1,0 +1,92 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Quotation No.</label>:<span
+                            class="valueText">{{sales_quotation_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Customer</label>:<span class="valueText">{{customer_name}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Bill To</label>:<span class="valueText">{{customer_name}}</span>
+                    </td>
+                    <td><label class="textEnLft">Customer Address</label>:<span class="valueText">{{address}}</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Order No</label>:<span class="valueText">{{sales_order_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Order Date</label>:<span class="valueText">{{sales_order_date}}</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Delivery Date</label>:<span class="valueText">{{delivery_date }}</span>
+                    </td>
+                    <td><label class="textEnLft">Sales Person</label>:<span class="valueText">{{employee_name}}</span>
+                    </td>
+                </tr>
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Service Name</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Frequency</th>
+                        <th>Ext. Cost</th>
+                        <th>Disc. Amt.</th>
+                        <th>Net Ext. Cost</th>
+                        <th>Tax Amt.</th>
+                        <th>Total Amt. </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{service_name}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{quantity}}</td>
+                        <td class="numberFld">{{service_frequency}}</td>
+                        <td class="numberFld">{{extended_cost}}</td>
+                        <td class="numberFld">{{discount_amount}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td>
+                        <td class="numberFld">{{tax_amount}}</td>
+                        <td class="numberFld">{{total_amount}}</td>
+
+                    </tr>
+                    {{/each }}
+
+                    <tr class="footerTotalDown">
+                        <td colspan="9">Net Total</td>
+                        <td class="numberFld">{{net_payable}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td>Narration:<span class="valueText"> {{narration}}</span>
+                    </td>
+                </tr>
+            </table>
+
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

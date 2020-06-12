@@ -16,7 +16,7 @@ class PatientVisitDetails extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -32,8 +32,8 @@ class PatientVisitDetails extends Component {
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
-          mappingName: "patienttype"
-        }
+          mappingName: "patienttype",
+        },
       });
     }
 
@@ -47,79 +47,65 @@ class PatientVisitDetails extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "opcacelproviders"
+          mappingName: "opcacelproviders",
         },
-        afterSuccess: data => {
+        afterSuccess: (data) => {
           this.setState({
-            doctors: data
+            doctors: data,
           });
-        }
+        },
       });
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
   }
 
   render() {
     let provider_name = null;
-    if (this.state.incharge_or_provider !== null) {
+    debugger;
+    if (this.state.doctor_id !== null) {
       provider_name = Enumerable.from(this.props.opcacelproviders)
-        .where(w => w.hims_d_employee_id === this.state.incharge_or_provider)
-        .select(s => s.full_name)
+        .where((w) => w.hims_d_employee_id === this.state.doctor_id)
+        .select((s) => s.full_name)
         .firstOrDefault();
     }
 
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-display-patient-form">
               <div
                 className="row inner-top-search"
                 style={{ paddingTop: 10, paddingBottom: 10 }}
               >
                 {/* Patient code */}
-                <div className="col-lg-3">
-                  <div
-                    className="row"
-                    style={{
-                      border: " 1px solid #ced4d9",
-                      borderRadius: 5,
-                      marginLeft: 0
-                    }}
-                  >
-                    <div className="col">
+
+                <div
+                  className="col-3 globalSearchCntr"
+                  style={{
+                    cursor: "pointer",
+                    pointerEvents:
+                      this.state.Billexists === true
+                        ? "none"
+                        : this.state.patient_code
+                        ? "none"
+                        : "",
+                  }}
+                >
+                  <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                  <h6 onClick={BillSearch.bind(this, this, context)}>
+                    {this.state.bill_number ? (
+                      this.state.bill_number
+                    ) : (
                       <AlgaehLabel label={{ fieldName: "bill_number" }} />
-                      <h6>
-                        {this.state.bill_number
-                          ? this.state.bill_number
-                          : "----------"}
-                      </h6>
-                    </div>
-                    <div
-                      className="col-lg-3"
-                      style={{ borderLeft: "1px solid #ced4d8" }}
-                    >
-                      <i
-                        className="fas fa-search fa-lg"
-                        style={{
-                          paddingTop: 17,
-                          paddingLeft: 3,
-                          cursor: "pointer",
-                          pointerEvents:
-                            this.state.Billexists === true
-                              ? "none"
-                              : this.state.patient_code
-                              ? "none"
-                              : ""
-                        }}
-                        onClick={BillSearch.bind(this, this, context)}
-                      />
-                    </div>
-                  </div>
+                    )}
+                    <i className="fas fa-search fa-lg"></i>
+                  </h6>
                 </div>
+
                 <div className="col-lg-9">
                   <div className="row">
                     <div className="col">
@@ -159,7 +145,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "full_name"
+                          fieldName: "full_name",
                         }}
                       />
                       <h6>
@@ -172,7 +158,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "patient_type"
+                          fieldName: "patient_type",
                         }}
                       />
                       <h6>
@@ -185,7 +171,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "mode_of_pay"
+                          fieldName: "mode_of_pay",
                         }}
                       />
                       <h6>
@@ -208,7 +194,7 @@ class PatientVisitDetails extends Component {
 function mapStateToProps(state) {
   return {
     patienttype: state.patienttype,
-    opcacelproviders: state.opcacelproviders
+    opcacelproviders: state.opcacelproviders,
   };
 }
 
@@ -216,15 +202,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientType: AlgaehActions,
-      getProviderDetails: AlgaehActions
+      getProviderDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientVisitDetails)
+  connect(mapStateToProps, mapDispatchToProps)(PatientVisitDetails)
 );

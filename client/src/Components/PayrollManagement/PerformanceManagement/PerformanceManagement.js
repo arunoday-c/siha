@@ -2,13 +2,17 @@ import React, { Component } from "react";
 import "./perf_mgmt.scss";
 import PerformanceReview from "./PerformanceReview/PerformanceReview";
 import SalaryApprisal from "./SalaryApprisal/SalaryApprisal";
+import AppraisalMatrixMaster from "./AppraisalMatrixMaster/AppraisalMatrixMaster";
+import PerfoParaMaster from "./PerfoParaMaster/PerfoParaMaster";
+
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class PerformanceManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "SalaryApprisal"
+      pageDisplay: "AppraisalMatrixMaster",
     };
   }
 
@@ -20,52 +24,64 @@ class PerformanceManagement extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
   render() {
     return (
       <div className="perf_mgmt">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"SalaryApprisal"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "SALARY APPRAISAL"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"PerformanceReview"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Performance Review"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "PerformanceReview" ? (
-            <PerformanceReview />
-          ) : this.state.pageDisplay === "SalaryApprisal" ? (
-            <SalaryApprisal />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "KPI & Matrix Master",
+                  }}
+                />
+              ),
+              children: <AppraisalMatrixMaster />,
+              componentCode: "PER_MAT_MST",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Performance Parameters Master",
+                  }}
+                />
+              ),
+              children: <PerfoParaMaster />,
+              componentCode: "PER_QST_MST",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Performance Review",
+                  }}
+                />
+              ),
+              children: <PerformanceReview />,
+              componentCode: "PER_PER_REV",
+            },
+
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Salary Apprisal",
+                  }}
+                />
+              ),
+              children: <SalaryApprisal />,
+              componentCode: "PER_SAL_APP",
+            },
+          ]}
+          renderClass="performanceManagementSection"
+        />
       </div>
     );
   }

@@ -62,11 +62,6 @@ class AppointmentRooms extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -179,126 +174,155 @@ class AppointmentRooms extends Component {
   render() {
     return (
       <div className="appointment_rooms">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "roomName",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "description",
-                value: this.state.description,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-
-            <div className="col-lg-3">
-              <button
-                style={{ marginTop: 21 }}
-                onClick={this.addAppointmentRooms.bind(this)}
-                type="button"
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          className="col-lg-12"
-          style={{ marginTop: 10 }}
-          data-validate="apptRoomsDiv"
-          id="apptRoomsDivCntr"
-        >
-          <AlgaehDataGrid
-            datavalidate="data-validate='apptRoomsDiv'"
-            id="appt-room-grid"
-            columns={[
-              {
-                fieldName: "roomDesc",
-                label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                editorTemplate: row => {
-                  return (
-                    <AlagehFormGroup
-                      div={{}}
-                      textBox={{
-                        value: row.roomDesc,
-                        className: "txt-fld",
-                        name: "description",
-                        events: {
-                          onChange: this.changeGridEditors.bind(this, row)
-                        },
-                        others: {
-                          errormessage: "Description - cannot be blank",
-                          required: true
-                        }
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "created_date",
-                label: <AlgaehLabel label={{ fieldName: "created_date" }} />,
-                displayTemplate: row => {
-                  return (
-                    <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
-                  );
-                },
-                editorTemplate: row => {
-                  return (
-                    <span>{moment(row.created_date).format("DD-MM-YYYY")}</span>
-                  );
-                }
-              },
-              {
-                fieldName: "room_active",
-                label: <AlgaehLabel label={{ fieldName: "room_status" }} />,
-                displayTemplate: row => {
-                  return row.room_active === "Y" ? "Active" : "Inactive";
-                },
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{}}
-                      selector={{
-                        name: "room_active",
-                        className: "select-fld",
-                        value: row.room_active,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.FORMAT_ACT_INACT
-                        },
-                        others: {
-                          errormessage: "Status - cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              }
-            ]}
-            keyId="hims_d_appointment_room_id"
-            dataSource={{
-              data: this.state.appointmentRooms
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              fieldName: "roomName",
+              isImp: true
             }}
-            filter={true}
-            isEditable={true}
-            paging={{ page: 0, rowsPerPage: 10 }}
-            events={{
-              onEdit: () => {},
-              onDelete: this.deleteApptRooms.bind(this),
-              onDone: this.updateApptRooms.bind(this)
+            textBox={{
+              className: "txt-fld",
+              name: "description",
+              value: this.state.description,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
             }}
           />
+
+          <div className="col-3">
+            <button
+              style={{ marginTop: 19 }}
+              onClick={this.addAppointmentRooms.bind(this)}
+              type="button"
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                {" "}
+                <div className="row">
+                  <div
+                    className="col-12"
+                    data-validate="apptRoomsDiv"
+                    id="apptRoomsDivCntr"
+                  >
+                    <AlgaehDataGrid
+                      datavalidate="data-validate='apptRoomsDiv'"
+                      id="appt-room-grid"
+                      columns={[
+                        {
+                          fieldName: "roomDesc",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "description" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.roomDesc,
+                                  className: "txt-fld",
+                                  name: "description",
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Description - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "created_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "created_date" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.created_date).format("DD-MM-YYYY")}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.created_date).format("DD-MM-YYYY")}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "room_active",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "room_status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.room_active === "Y"
+                              ? "Active"
+                              : "Inactive";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "room_active",
+                                  className: "select-fld",
+                                  value: row.room_active,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.FORMAT_ACT_INACT
+                                  },
+                                  others: {
+                                    errormessage: "Status - cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="hims_d_appointment_room_id"
+                      dataSource={{
+                        data: this.state.appointmentRooms
+                      }}
+                      filter={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteApptRooms.bind(this),
+                        onDone: this.updateApptRooms.bind(this)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

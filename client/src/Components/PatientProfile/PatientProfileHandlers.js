@@ -1,13 +1,14 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../utils/algaehApiCall";
+import {  algaehApiCall } from "../../utils/algaehApiCall";
 
 const getPatientProfile = $this => {
+  const { current_patient, episode_id } = Window.global;
   $this.props.getPatientProfile({
     uri: "/doctorsWorkBench/getPatientProfile",
     method: "GET",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id //Window.global["episode_id"]
     },
     cancelRequestId: "getPatientProfile",
     redux: {
@@ -19,13 +20,14 @@ const getPatientProfile = $this => {
 };
 
 const getPatientVitals = $this => {
+  const { current_patient, visit_id } = Window.global;
   $this.props.getPatientVitals({
     uri: "/doctorsWorkBench/getPatientVitals",
     method: "GET",
     cancelRequestId: "getPatientVitals",
     data: {
-      patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"]
+      patient_id: current_patient, //Window.global["current_patient"],
+      visit_id: visit_id //Window.global["visit_id"]
     },
     redux: {
       type: "PATIENT_VITALS",
@@ -35,11 +37,12 @@ const getPatientVitals = $this => {
 };
 
 const getPatientAllergies = ($this, noFunctionCall) => {
+  const { current_patient } = Window.global;
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
     data: {
-      patient_id: Window.global["current_patient"]
+      patient_id: current_patient //Window.global["current_patient"]
     },
     cancelRequestId: "getPatientAllergies",
     redux: {
@@ -78,12 +81,13 @@ const getPatientAllergies = ($this, noFunctionCall) => {
 };
 
 const getPatientDiet = $this => {
+  const { current_patient, episode_id } = Window.global;
   $this.props.getPatientDiet({
     uri: "/doctorsWorkBench/getPatientDiet",
     method: "GET",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id // Window.global["episode_id"]
     },
     cancelRequestId: "getPatientDiet",
     redux: {
@@ -93,13 +97,14 @@ const getPatientDiet = $this => {
   });
 };
 const getPatientDiagnosis = ($this, isProcess) => {
+  const { current_patient, episode_id } = Window.global;
   $this.props.getPatientDiagnosis({
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     method: "GET",
     cancelRequestId: "getPatientDiagnosis",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, //Window.global["current_patient"],
+      episode_id: episode_id // Window.global["episode_id"]
     },
     redux: {
       type: "PATIENT_DIAGNOSIS",
@@ -123,12 +128,13 @@ const getPatientDiagnosis = ($this, isProcess) => {
 };
 
 const getPatientHistory = $this => {
+  const { current_patient } = Window.global;
   $this.props.getPatientHistory({
     uri: "/doctorsWorkBench/getPatientHistory",
     method: "GET",
     cancelRequestId: "getPatientHistory",
     data: {
-      patient_id: Window.global["current_patient"]
+      patient_id: current_patient //Window.global["current_patient"]
     },
     redux: {
       type: "PATIENT_HISTORY",
@@ -138,8 +144,9 @@ const getPatientHistory = $this => {
 };
 
 const printPrescription = (that, e) => {
-  const _patient = Window.global["current_patient"];
-  const _visit = Window.global["visit_id"];
+  const { current_patient, visit_id } = Window.global;
+  const _patient = current_patient; //Window.global["current_patient"];
+  const _visit = visit_id; //Window.global["visit_id"];
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -169,16 +176,11 @@ const printPrescription = (that, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Prescription";
+      const urlBlob = URL.createObjectURL(res.data);
+      
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Prescription`;
+      window.open(origin);
+      // window.document.title = "";
     }
   });
 };

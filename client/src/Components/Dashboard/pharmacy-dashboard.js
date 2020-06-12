@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getCookie } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 
 const AdmissionsReadmissionData = {
   datasets: [
@@ -455,7 +455,7 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Today's Sales</p>
-                    {getAmountFormart("8134.11")}
+                    {GetAmountFormart("8134.11")}
                   </div>
                 </div>
               </div>
@@ -472,7 +472,7 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Total Monthly Sales</p>
-                    {getAmountFormart("124128.75")}
+                    {GetAmountFormart("124128.75")}
                   </div>
                 </div>
               </div>
@@ -633,8 +633,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
+  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 );

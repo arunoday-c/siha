@@ -63,13 +63,13 @@ class PackageSetup extends Component {
               <h3 className="caption-subject">Package Lists</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               <NewPackage
                 HeaderCaption={
                   <AlgaehLabel

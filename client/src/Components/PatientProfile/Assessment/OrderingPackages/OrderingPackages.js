@@ -4,27 +4,20 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import PackageDetail from "./PackageDetail";
 import {
-  serviceTypeHandeler,
-  texthandle,
   serviceHandeler,
   ProcessService,
   deleteServices,
   SaveOrdersServices,
-  calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
-  makeZeroIngrid,
   ClosePackageMaster,
   ShowPackageMaster
 } from "./OrderingPackagesHandaler";
@@ -32,8 +25,8 @@ import "./OrderingPackages.scss";
 import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
 import NewPackage from "../../../PackageSetup/NewPackage/NewPackage";
@@ -53,7 +46,7 @@ class OrderingPackages extends Component {
       vat_applicable: this.props.vat_applicable,
       provider_id: this.props.provider_id,
 
-      orderservicesdata: [],
+      orderpackagedata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
@@ -192,7 +185,7 @@ class OrderingPackages extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -218,21 +211,19 @@ class OrderingPackages extends Component {
   }
 
   ClosePackageDetail(e) {
-    let orderservicesdata = this.state.orderservicesdata;
+    let orderpackagedata = this.state.orderpackagedata;
 
-    orderservicesdata[this.state.selected_row_index] = e;
+    orderpackagedata[this.state.selected_row_index] = e;
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: null,
       select_package_type: null,
       selected_row_index: null,
-      orderservicesdata: orderservicesdata
+      orderpackagedata: orderpackagedata
     });
   }
 
-  ShowPackageDetail(row) {
-    let orderservicesdata = this.state.orderservicesdata;
-    let selected_row_index = orderservicesdata.indexOf(row);
+  ShowPackageDetail(row) {    
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: row,
@@ -253,7 +244,7 @@ class OrderingPackages extends Component {
         provider_id: this.props.provider_id,
         vat_applicable: this.props.vat_applicable,
 
-        orderservicesdata: [],
+        orderpackagedata: [],
         approval_amt: 0,
         preapp_limit_amount: 0,
         preserviceInput: [],
@@ -455,10 +446,10 @@ class OrderingPackages extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -475,10 +466,10 @@ class OrderingPackages extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -511,8 +502,8 @@ class OrderingPackages extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -529,8 +520,8 @@ class OrderingPackages extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -628,7 +619,7 @@ class OrderingPackages extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderservicesdata
+                      data: this.state.orderpackagedata
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -657,7 +648,7 @@ class OrderingPackages extends Component {
                           fieldName: "net_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
+                      <h5>{GetAmountFormart(this.state.net_total)}</h5>
                     </div>
                   </div>
                 </div>
@@ -670,7 +661,7 @@ class OrderingPackages extends Component {
                           fieldName: "pat_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                      <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
                     </div>
                     <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
@@ -678,7 +669,7 @@ class OrderingPackages extends Component {
                           fieldName: "co_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                      <h5>{GetAmountFormart(this.state.company_payble)}</h5>
                     </div>
                   </div>
                 </div>
@@ -747,79 +738,3 @@ export default withRouter(
     mapDispatchToProps
   )(OrderingPackages)
 );
-{
-  /*
-  {
-    fieldName: "discount_percentage",
-    label: (
-      <AlgaehLabel
-        label={{ fieldName: "discount_percentage" }}
-      />
-    ),
-    displayTemplate: row => {
-      return (
-        <AlagehFormGroup
-          div={{}}
-          textBox={{
-            decimal: { allowNegative: false },
-            value: row.discount_percentage,
-            className: "txt-fld",
-            name: "discount_percentage",
-            events: {
-              onChange: calculateAmount.bind(
-                this,
-                this,
-                row
-              )
-            },
-            others: {
-              disabled:
-                this.state.insured === "Y" ? true : false,
-              onBlur: makeZeroIngrid.bind(this, this, row),
-              onFocus: e => {
-                e.target.oldvalue = e.target.value;
-              }
-            }
-          }}
-        />
-      );
-    }
-  },
-  {
-    fieldName: "discount_amout",
-    label: (
-      <AlgaehLabel
-        label={{ fieldName: "discount_amout" }}
-      />
-    ),
-    displayTemplate: row => {
-      return (
-        <AlagehFormGroup
-          div={{}}
-          textBox={{
-            decimal: { allowNegative: false },
-            value: row.discount_amout,
-            className: "txt-fld",
-            name: "discount_amout",
-            events: {
-              onChange: calculateAmount.bind(
-                this,
-                this,
-                row
-              )
-            },
-            others: {
-              disabled:
-                this.state.insured === "Y" ? true : false,
-              onBlur: makeZeroIngrid.bind(this, this, row),
-              onFocus: e => {
-                e.target.oldvalue = e.target.value;
-              }
-            }
-          }}
-        />
-      );
-    }
-  },
-  */
-}

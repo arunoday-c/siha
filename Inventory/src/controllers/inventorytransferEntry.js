@@ -10,7 +10,8 @@ const {
   addtransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer,
-  getAckTransferList
+  getAckTransferList,
+  generateAccountingEntry
 } = invTransModels;
 const { updateinvreqEntryOnceTranfer } = invReqModels;
 
@@ -35,6 +36,7 @@ export default () => {
     addtransferEntry,
     updateinvreqEntryOnceTranfer,
     updateIntoInvItemLocation,
+    updateIntoInvItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -46,6 +48,7 @@ export default () => {
   api.put(
     "/updatetransferEntry",
     updatetransferEntry,
+    generateAccountingEntry,
     updateIntoInvItemLocation,
     updateIntoInvItemLocation,
     (req, res, next) => {

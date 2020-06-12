@@ -29,7 +29,7 @@ export default function asyncComponent({ prefix, loadManifest }) {
             script.crossOrigin = "anonymous";
             script.onload = () => {
               const Component = window[componentName];
-              console.log(Component);
+              // console.log(Component);
               this.setState({ Component });
             };
             document.body.appendChild(script);
@@ -38,7 +38,7 @@ export default function asyncComponent({ prefix, loadManifest }) {
     }
     render() {
       const { Component } = this.state;
-      console.log(this.props);
+      // console.log(this.props);
 
       if (Component) {
         return <Component {...this.props} />;

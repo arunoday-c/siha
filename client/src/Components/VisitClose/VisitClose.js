@@ -67,47 +67,60 @@ class VisitClose extends Component {
   render() {
     return (
       <div className="hims_visit_close">
+        <div className="row inner-top-search">
+          <div className="col-3 globalSearchCntr form-group">
+            <AlgaehLabel label={{ forceLabel: "Select a Patient" }} />
+            <h6 onClick={PatientSearch.bind(this, this)}>
+              {this.state.patient_code ? this.state.patient_code : "----------"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          {/* <div className="col-lg-3">
+            <div
+              className="row"
+              style={{
+                border: " 1px solid #ced4d9",
+                borderRadius: 5,
+                marginLeft: 0
+              }}
+            >
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
+                <h6>
+                  {this.state.patient_code
+                    ? this.state.patient_code
+                    : "----------"}
+                </h6>
+              </div>
+              <div
+                className="col-lg-3"
+                style={{ borderLeft: "1px solid #ced4d8" }}
+              >
+                <i
+                  className="fas fa-search fa-lg"
+                  style={{
+                    paddingTop: 17,
+                    paddingLeft: 3,
+                    cursor: "pointer"
+                  }}
+                  onClick={PatientSearch.bind(this, this)}
+                />
+              </div>
+            </div>
+          </div> */}
+        </div>
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
-            <div className="col-lg-3">
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "----------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
+            <div className="caption">
+              <h3 className="caption-subject">Opened Visit List</h3>
             </div>
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12" id="VisitCloseGrid">
+              <div className="col-lg-12" id="VisitCloseGrid_Cntr">
                 <AlgaehDataGrid
-                  id="item_grid"
+                  id="VisitCloseGrid"
                   columns={[
                     {
                       fieldName: "close",
@@ -154,11 +167,11 @@ class VisitClose extends Component {
                         let display =
                           this.props.subDepartments === undefined
                             ? []
-                            : (display = this.props.subDepartments.filter(
-                                f =>
-                                  f.hims_d_sub_department_id ===
-                                  row.sub_department_id
-                              ));
+                            : this.props.subDepartments.filter(
+                              f =>
+                                f.hims_d_sub_department_id ===
+                                row.sub_department_id
+                            );
 
                         return (
                           <span>
@@ -177,9 +190,9 @@ class VisitClose extends Component {
                         let display =
                           this.props.viewproviders === undefined
                             ? []
-                            : (display = this.props.viewproviders.filter(
-                                f => f.hims_d_employee_id === row.doctor_id
-                              ));
+                            : this.props.viewproviders.filter(
+                              f => f.hims_d_employee_id === row.doctor_id
+                            );
 
                         return (
                           <span>
@@ -253,8 +266,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(VisitClose)
+  connect(mapStateToProps, mapDispatchToProps)(VisitClose)
 );

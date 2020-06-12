@@ -130,7 +130,8 @@ const getPreAprovalList = $this => {
               apprv_status: firstRecordSet.apprv_status,
               card_no: firstRecordSet.card_no,
               sub_department_name: firstRecordSet.sub_department_name,
-
+              doctor_name: firstRecordSet.doctor_name,
+              insurance_provider_name: firstRecordSet.insurance_provider_name,
               services_details: g.getSource()
             };
           })
@@ -236,6 +237,10 @@ const getMedicationAprovalList = $this => {
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,
+              card_no: firstRecordSet.card_no,
+              sub_department_name: firstRecordSet.sub_department_name,
+              doctor_name: firstRecordSet.doctor_name,
+              insurance_provider_name: firstRecordSet.insurance_provider_name,
 
               services_details: g.getSource()
             };

@@ -2,17 +2,24 @@ import React, { Component } from "react";
 import "./SalaryProcessing.scss";
 
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 import {
   SalaryProcess,
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  getOptions,
+  generateMonthlyLoanReport,
 } from "./NewSalaryProcessingEvents.js";
 import SalariesComponents from "./SalariesComponents";
-
+import { AlgaehSecurityElement } from "algaeh-react-components";
+const STATUS = {
+  CHECK: true,
+  UNCHECK: false,
+  INDETERMINATE: true,
+};
 class NewSalaryProcessing extends Component {
   constructor(props) {
     super(props);
@@ -47,8 +54,62 @@ class NewSalaryProcessing extends Component {
       net_salary: null,
       salary_dates: null,
       isOpen: false,
-      dis_employee_name: null
+      dis_employee_name: null,
+      hrms_options: {},
+      selectAll: STATUS.UNCHECK,
     };
+    this.allChecked = undefined;
+    getOptions(this);
+  }
+  onCheckChangeRow(dol, row, e) {
+    const status = e.target.checked;
+    const currentRow = row;
+    row.checked = status;
+    const records = this.state.salaryprocess_header;
+    const hasUncheck = records.filter((f) => {
+      return f.checked === undefined || f.checked === false;
+    });
+    const hasProceesed = hasUncheck.find((f) => f.salary_processed === "Y");
+    const totalRecords = records.length;
+    let ckStatus =
+      totalRecords === hasUncheck.length
+        ? "UNCHECK"
+        : hasUncheck.length === 0
+        ? "CHECK"
+        : "INDETERMINATE";
+    if (hasProceesed !== undefined) {
+      ckStatus = "INDETERMINATE";
+    }
+    if (ckStatus === "INDETERMINATE") {
+      this.allChecked.indeterminate = true;
+    } else {
+      this.allChecked.indeterminate = false;
+    }
+    this.setState({
+      selectAll: ckStatus,
+    });
+  }
+  onChageCheckSelectAll(e) {
+    const staus = e.target.checked;
+    const myState = this.state.salaryprocess_header.map((f) => {
+      return { ...f, checked: f.salary_processed === "N" ? staus : false };
+    });
+
+    const hasProcessed = myState.find((f) => f.salary_processed === "Y");
+    if (hasProcessed !== undefined && staus === true) {
+      this.allChecked.indeterminate = true;
+    } else {
+      this.allChecked.indeterminate = false;
+    }
+    this.setState({
+      salaryprocess_header: myState,
+      selectAll:
+        hasProcessed !== undefined
+          ? "INDETERMINATE"
+          : staus === true
+          ? "CHECK"
+          : "UNCHECK",
+    });
   }
 
   render() {
@@ -56,7 +117,10 @@ class NewSalaryProcessing extends Component {
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
           <EmployeeFilter
-            loadFunc={inputs => SalaryProcess(this, inputs, "load")}
+            loadFunc={(inputs) => {
+              this.setState({ ...inputs });
+              SalaryProcess(this, inputs, "load");
+            }}
           />
           <div className="row" style={{ marginBottom: 40 }}>
             <div className="col-12">
@@ -85,15 +149,55 @@ class NewSalaryProcessing extends Component {
                             id="Salary_Management_Cntr_grid"
                             columns={[
                               {
+                                label: (
+                                  <input
+                                    type="checkbox"
+                                    defaultChecked={
+                                      this.state.selectAll === "CHECK"
+                                        ? true
+                                        : false
+                                    }
+                                    ref={(input) => {
+                                      this.allChecked = input;
+                                    }}
+                                    onChange={this.onChageCheckSelectAll.bind(
+                                      this
+                                    )}
+                                  />
+                                ),
+                                fieldName: "select",
+                                displayTemplate: (row) => (
+                                  <input
+                                    type="checkbox"
+                                    checked={row.checked}
+                                    disabled={
+                                      row.salary_processed === "Y"
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={this.onCheckChangeRow.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 50,
+                                  filterable: false,
+                                  sortable: false,
+                                },
+                              },
+                              {
                                 fieldName: "Action",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Action"
+                                      forceLabel: "Action",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       <i
@@ -110,8 +214,9 @@ class NewSalaryProcessing extends Component {
                                 },
                                 others: {
                                   minWidth: 50,
-                                  filterable: false
-                                }
+                                  filterable: false,
+                                  sortable: false,
+                                },
                               },
 
                               {
@@ -120,11 +225,11 @@ class NewSalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Status"
+                                      forceLabel: "Salary Status",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.salary_processed === "N" ? (
                                     <span className="badge badge-warning">
                                       Not Finalized
@@ -136,8 +241,8 @@ class NewSalaryProcessing extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 100
-                                }
+                                  minWidth: 80,
+                                },
                               },
                               {
                                 fieldName: "salary_paid",
@@ -145,11 +250,11 @@ class NewSalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Payment Status"
+                                      forceLabel: "Payment Status",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.salary_paid === "N" ? (
                                     <span className="badge badge-warning">
                                       Unpaid
@@ -161,71 +266,75 @@ class NewSalaryProcessing extends Component {
                                   );
                                 },
                                 others: {
-                                  minWidth: 100
-                                }
-                              },
-                              {
-                                fieldName: "salary_number",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Salary No."
-                                    }}
-                                  />
-                                ),
-                                others: {
-                                  minWidth: 160
-                                }
+                                  minWidth: 80,
+                                },
                               },
                               {
                                 fieldName: "employee_code",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Emp. Code"
+                                      forceLabel: "Emp. Code",
                                     }}
                                   />
                                 ),
-                                others: {
-                                  minWidth: 160
-                                }
+                                // others: {
+                                //   minWidth: 80,
+                                // },
                               },
                               {
                                 fieldName: "full_name",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Emp. Name"
+                                      forceLabel: "Emp. Name",
                                     }}
                                   />
-                                )
+                                ),
+                                others: {
+                                  minWidth: 300,
+                                  style: { textAlign: "left" },
+                                },
+                              },
+                              {
+                                fieldName: "salary_number",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary No.",
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 120,
+                                },
                               },
                               {
                                 fieldName: "display_present_days",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Present days"
+                                      forceLabel: "Present days",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "advance_due",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Advance Due"
+                                      forceLabel: "Advance Due",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.advance_due)}
+                                      {GetAmountFormart(row.advance_due)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "loan_due_amount",
@@ -233,17 +342,17 @@ class NewSalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Due Amt."
+                                      forceLabel: "Loan Due Amt.",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.loan_due_amount)}
+                                      {GetAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -251,41 +360,41 @@ class NewSalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Payable Amt."
+                                      forceLabel: "Loan Payable Amt.",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
-                                      {getAmountFormart(
+                                      {GetAmountFormart(
                                         row.loan_payable_amount
                                       )}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "net_salary",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Total Amt."
+                                      forceLabel: "Total Amt.",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
-                                      {getAmountFormart(row.net_salary)}
+                                      {GetAmountFormart(row.net_salary)}
                                     </span>
                                   );
-                                }
-                              }
+                                },
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salaryprocess_header
+                              data: this.state.salaryprocess_header,
                             }}
                             filter={true}
                             isEditable={false}
@@ -293,7 +402,7 @@ class NewSalaryProcessing extends Component {
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
-                              onDone: () => {}
+                              onDone: () => {},
                             }}
                           />
                         </div>
@@ -304,32 +413,56 @@ class NewSalaryProcessing extends Component {
               </div>
             </div>
           </div>
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={FinalizeSalary.bind(this, this)}
-                  disabled={this.state.finalizeBtn}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Finalize", returnText: true }}
-                  />
-                </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={FinalizeSalary.bind(this, this)}
+                    disabled={this.state.finalizeBtn}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Send for Payment",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+                  {/* this.state.salaryprocess_header */}
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    // onClick={this.clearState.bind(this)}
+                    onClick={generateMonthlyLoanReport.bind(this, this)}
+                    disabled={
+                      this.state.salaryprocess_header.length === 0
+                        ? true
+                        : false
+                    }
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Monthly Loan Report",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </AlgaehSecurityElement>
           <SalariesComponents
             open={this.state.isOpen}
             onClose={closeSalaryComponents.bind(this, this)}

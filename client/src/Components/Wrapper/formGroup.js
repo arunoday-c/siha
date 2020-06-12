@@ -1,16 +1,16 @@
 import React, { PureComponent } from "react";
 import {
-  checkSecurity,
-  AlgaehOpenContainer
+  checkSecurity  
 } from "../../utils/GlobalFunctions";
-import "./wrapper.scss";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
 import { Input, TextArea } from "semantic-ui-react";
 import _ from "lodash";
+import { MainContext } from "algaeh-react-components/context";
 
 export default class FormGroup extends PureComponent {
+  static contextType = MainContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -151,9 +151,11 @@ export default class FormGroup extends PureComponent {
       // let settings = AlgaehOpenContainer(
       //   sessionStorage.getItem("CurrencyDetail")
       // );
-      let settings = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      );
+      const userToken = this.context.userToken;
+      let settings = userToken;
+      //   JSON.parse(
+      //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      // );
       if (typeof settings === "string") {
         settings = JSON.parse(settings);
       }
@@ -196,7 +198,7 @@ export default class FormGroup extends PureComponent {
           : false
     });
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
     if (
       props.textBox.value !== this.state.value ||

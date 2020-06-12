@@ -1,22 +1,24 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
-const utilities = new algaehUtilities();
+// const algaehUtilities = require("algaeh-utilities/utilities");
+// const utilities = new algaehUtilities();
 
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
+  const input = options.args;
   return new Promise(function(resolve, reject) {
     try {
+      const { crypto } = input;
       const header = options.result[0];
       let otherObj = [];
 
       const quantity = parseFloat(header.quantity);
       for (let i = 0; i < quantity; i++) {
+        const s_price = options.currencyFormat(header.sales_price, crypto);
         otherObj.push({
-          barcode: header.barcode,
-          sales_price: header.sales_price
+          sales_price: s_price,
+          item_description: header.item_description,
+          print_barcode: header.barcode
         });
-        utilities.logger().log("loop: ", otherObj);
       }
-      utilities.logger().log("otherObj: ", otherObj);
       const result = {
         header: otherObj
       };

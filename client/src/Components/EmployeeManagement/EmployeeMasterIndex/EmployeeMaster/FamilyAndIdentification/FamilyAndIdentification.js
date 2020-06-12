@@ -68,13 +68,13 @@ class FamilyAndIdentification extends Component {
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
           <div className="row">
-            <div className="col-12" data-validate="empIdGrid">
+            <div className="col-6" data-validate="empIdGrid">
               <h5>
                 <span>Identification Details</span>
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true
@@ -100,7 +100,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true
@@ -121,7 +121,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Issue Date",
                     isImp: true
@@ -140,7 +140,7 @@ class FamilyAndIdentification extends Component {
                   value={this.state.issue_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Expiry Date",
                     isImp: true
@@ -161,8 +161,8 @@ class FamilyAndIdentification extends Component {
                 <div className="col">
                   <button
                     type="button"
-                    className="btn btn-primary"
-                    style={{ marginTop: 21 }}
+                    className="btn btn-default"
+                    style={{ marginTop: 19 }}
                     onClick={AddEmpId.bind(this, this)}
                   >
                     Add
@@ -305,13 +305,13 @@ class FamilyAndIdentification extends Component {
               </div>
             </div>
 
-            <div className="col-12" data-validate="dependentGrid">
+            <div className="col-6" data-validate="dependentGrid">
               <h5>
                 <span>Family Details</span>
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Dependent Type",
                     isImp: true
@@ -334,7 +334,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Dependent Name",
                     isImp: true
@@ -350,7 +350,7 @@ class FamilyAndIdentification extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true
@@ -373,7 +373,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true
@@ -391,8 +391,8 @@ class FamilyAndIdentification extends Component {
                 <div className="col">
                   <button
                     type="button"
-                    className="btn btn-primary"
-                    style={{ marginTop: 21 }}
+                    className="btn btn-default"
+                    style={{ marginTop: 19 }}
                     onClick={addDependentType.bind(this, this)}
                   >
                     Add
@@ -569,8 +569,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(FamilyAndIdentification)
+  connect(mapStateToProps, mapDispatchToProps)(FamilyAndIdentification)
 );

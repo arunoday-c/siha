@@ -24,7 +24,7 @@ export default class AlgaehModalPopUp extends PureComponent {
   componentWillUnmount() {
     modalRoot.removeChild(this.el);
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     this.setState({ openPopup: newProps.openPopup });
   }
   render() {
@@ -36,10 +36,10 @@ export default class AlgaehModalPopUp extends PureComponent {
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">
-                <div className="col-lg-8">
+                <div className="col-lg-8 col-md-8 col-sm-9">
                   <h4>{this.props.title ? this.props.title : "Algaeh HIMS"}</h4>
                 </div>
-                <div className="col-lg-4">
+                <div className="col-lg-4 col-md-4 col-sm-3">
                   <button type="button" className="" onClick={this.handleClose}>
                     <i className="fas fa-times-circle" />
                   </button>

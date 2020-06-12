@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -21,9 +21,11 @@ export default {
       leave_period: null,
       status: "PEN",
       leave_application_id: null,
+      airfare_months: null,
 
       employee_name: null,
       leave_salary_detail: [],
+      emp_leave_salary: [],
       ProcessBtn: true,
       encash_type: null,
       SaveBtn: true,
@@ -31,7 +33,8 @@ export default {
       dis_salary_amount: null,
       dis_leave_amount: null,
       dis_airfare_amount: null,
-      dis_total_amount: null
+      dis_total_amount: null,
+      dataExists: false
     };
     return output;
   }

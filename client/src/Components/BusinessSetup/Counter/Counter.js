@@ -129,11 +129,6 @@ class Counter extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "warning"
-        });
       }
     });
   }
@@ -234,7 +229,7 @@ class Counter extends Component {
             <div className="col-lg-3">
               <button
                 onClick={this.addCounter.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 className="btn btn-primary"
               >
                 Add to List
@@ -367,7 +362,7 @@ class Counter extends Component {
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: () => { },
                       onDelete: this.deleteCounters.bind(this),
                       onDone: this.updatecounters.bind(this)
                     }}

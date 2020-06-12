@@ -1,6 +1,7 @@
 import moment from "moment";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import _ from "lodash";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -47,7 +48,7 @@ const itemchangeText = ($this, context, e) => {
   }
   if ($this.state.requistion_type === "PR") {
     let value = e.value || e.target.value;
-
+    AlgaehLoader({ show: true });
     $this.props.getSelectedItemDetais({
       uri: "/pharmacy/getItemMasterAndItemUom",
       module: "pharmacy",
@@ -96,6 +97,7 @@ const itemchangeText = ($this, context, e) => {
       }
     });
   } else {
+    AlgaehLoader({ show: true });
     let value = e.value || e.target.value;
 
     $this.props.getSelectedItemDetais({
@@ -103,7 +105,6 @@ const itemchangeText = ($this, context, e) => {
       module: "pharmacy",
       method: "GET",
       data: {
-        // location_id: $this.state.to_location_id,
         hims_d_item_master_id: value
       },
       redux: {
@@ -255,8 +256,8 @@ const deleteRequisitionDetail = ($this, context, row) => {
     $this.props.requisition_auth === true
       ? true
       : pharmacy_stock_detail.length > 0
-      ? false
-      : true;
+        ? false
+        : true;
   let authBtnEnable = pharmacy_stock_detail.length > 0 ? false : true;
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
@@ -300,31 +301,31 @@ const onchangegridcol = ($this, context, row, e) => {
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
-    row[name] = $this.state.quantity_transferred;
+    return
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
     });
-    // row[name] = oldvalue
-    // row.update();
-  } else {
-    row[name] = value;
-    row["quantity_outstanding"] = value === "" ? 0 : value;
-
-    pharmacy_stock_detail[row.rowIdx] = row;
-    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-    }
+    return
   }
+  row[name] = value === "" ? null : value;
+  row["quantity_outstanding"] = value === "" ? 0 : value;
+
+  pharmacy_stock_detail[row.rowIdx] = row;
+  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+  if (context !== undefined) {
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
+
 };
 
 const getItemLocationStock = ($this, context, value) => {
-  $this.props.getItemLocationStock({
+
+  algaehApiCall({
     uri: "/pharmacyGlobal/getItemLocationStock",
     module: "pharmacy",
     method: "GET",
@@ -332,39 +333,46 @@ const getItemLocationStock = ($this, context, value) => {
       pharmacy_location_id: value.location_id,
       item_id: value.item_id
     },
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
-    },
-    afterSuccess: data => {
-      if (data.length > 0) {
-        // let total_quantity = 0;
-        let total_quantity = _.sumBy(data, s => {
-          return parseFloat(s.qtyhand);
-        });
+    onSuccess: response => {
 
-        if (value.set === "To") {
-          $this.setState({
-            to_qtyhand: total_quantity
+      if (response.data.success === true) {
+        let data = response.data.records
+        if (data.length > 0) {
+          // let total_quantity = 0;
+          let total_quantity = _.sumBy(data, s => {
+            return parseFloat(s.qtyhand);
           });
 
-          context.updateState({
-            to_qtyhand: total_quantity
-          });
-        } else if (value.set === "From") {
-          $this.setState({
-            from_qtyhand: total_quantity
-          });
+          if (value.set === "To") {
+            $this.setState({
+              to_qtyhand: total_quantity
+            });
 
-          context.updateState({
-            from_qtyhand: total_quantity
-          });
+            context.updateState({
+              to_qtyhand: total_quantity
+            });
+          } else if (value.set === "From") {
+            $this.setState({
+              from_qtyhand: total_quantity
+            });
+
+            context.updateState({
+              from_qtyhand: total_quantity
+            });
+          }
+        } else {
+          if (value.set === "To") {
+            context.updateState({
+              to_qtyhand: null
+            });
+          } else if (value.set === "From") {
+            context.updateState({
+              from_qtyhand: null
+            });
+          }
+
         }
-      } else {
-        context.updateState({
-          to_qtyhand: null,
-          from_qtyhand: null
-        });
+        AlgaehLoader({ show: false });
       }
     }
   });
@@ -372,8 +380,9 @@ const getItemLocationStock = ($this, context, value) => {
 
 const getConsumptionSelectedMonth = ($this, context, value) => {
   let date = new Date($this.state.requistion_date);
-  var from_date = new Date(date.getFullYear(), date.getMonth(), 1);
-  var to_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  var from_date = new Date(date.getFullYear(), date.getMonth() - 3, date.getDate());
+  var to_date = new Date();
 
   algaehApiCall({
     uri: "/pharmacyGlobal/getConsumptionSelectedMonth",

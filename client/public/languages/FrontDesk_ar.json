@@ -16,6 +16,7 @@
   "marital_status": "الحالة الزوجية",
   "address1": "العنوان الرئيسي",
   "address2": "العنوان الثانوي",
+  "tel_code": "رمز",
   "contact_number": "رقم الجوال",
   "email": "عنوان البريد الإلكتروني",
   "visa_type_id": "نوع التأشيرة",
@@ -46,7 +47,6 @@
   "btn_clear": "واضح",
   "btn_advance": "تقدم",
   "btn_refund": "إعادة مال",
-
   "tab_patdtls": "تفاصيل المريض",
   "tab_othinf": "معلومات أخرى",
   "tab_condtls": "تفاصيل التشاور",
@@ -78,7 +78,6 @@
   "credit_amount": "ائتمان",
   "balance_due": "الرصيد المستحق",
   "receiveable_amount": "ذمم مدينة",
-
   "receipt_number": "عدد إيصال",
   "receipt_date": "تاريخ استلام",
   "counter_id": "عداد",
@@ -107,39 +106,30 @@
   "payable_lbl": "تدفع",
   "deductable_percentage": "خصم ٪",
   "deductable_amount": "مقدار الخصم",
-
   "tax_inclusive": "الضرائب شاملة",
   "patient_tax": "ضريبة المرضى",
   "company_tax": "ضريبة الشركات",
   "sec_company_tax": "ضريبة الشركات الثانوية",
   "total_tax": "مجموع الضريبة",
-
   "patient_resp": "المريض المسؤول",
   "patient_payable": "حصة المريض",
   "comapany_resp": "شركة مسؤولة",
   "company_payble": "شركة حصة",
-
   "sec_company": "التأمين الثانوي",
   "sec_deductable_percentage": "خصم ٪",
   "sec_deductable_amount": "مقدار الخصم",
-
   "sec_company_res": "شركة مسؤولة",
   "sec_company_paybale": "شركة ثانوية",
-
   "sec_copay_percntage": "كوباي٪",
   "sec_copay_amount": "مبلغ التعويض",
-
   "tax_Detsils": "تفاصيل الضريبة",
   "prim-insurance": "تأمين ابتدائي",
   "present-bill-services": "خدمات الفواتير الحالية",
-
   "advance_amount": "تقدم مقدما",
   "advance_caption": "تقدم",
   "refund_caption": "إعادة مال",
-
   "payment_number": "رقم الدفع",
   "payment_date": "تاريخ الدفع",
-
   "insurance_id": "شركة التأمين",
   "sub_insurance_id": "شركة التأمين الثانوية",
   "plan_id": "خطة",
@@ -147,21 +137,16 @@
   "effective_start_date": "تاريخ البدء الفعال",
   "attach_front": "الجانب الامامي",
   "attach_back": "الجانب الخلفي",
-
   "responsibility": "المسئولية",
   "tax_details": "ضريبة",
   "payable": "تدفع",
-
   "patient_lbl": "صبور",
   "company_lbl": "الشركة الرئيسية",
   "sec_comp_lbl": "شركة ثانوية",
   "card_number": "رقم البطاقة",
-
   "bill_details": "تفاصيل الفاتورة",
   "process_insurance": "التأمين على العمليات",
-
   "patient_type": "نوع المريض",
-
   "payby_cash": "الدفع نقدا",
   "payby_card": "الدفع عن طريق البطاقة",
   "payby_check": "الدفع عن طريق شيك",
@@ -176,11 +161,11 @@
   "doctorLeave": "طبيب في إجازة",
   "noDoctorAvail": "لا يوجد أطباء متاحون للمعايير المختارة",
   "lbl_insurance": "تأمين",
-
   "card_holder_name": "إسم صاحب البطاقة",
   "card_holder_age": "حامل العمر",
   "card_holder_gender": "حامل الجنس",
   "card_class": "فئة البطاقة",
   "employee_id": "هوية الموظف",
-  "eligible_reference_number": "رقم المرجع"
+  "eligible_reference_number": "رقم المرجع",
+  "select_card": "اختر البطاقة"
 }

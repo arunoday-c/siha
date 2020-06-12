@@ -12,18 +12,43 @@ import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getItems, EditItemMaster } from "./ItemSetupEvent";
 import ItemSetupEvent from "./ItemSetupEvent";
+import ItemLocationReorder from "./ItemLocationReorder";
+import { MainContext } from "algaeh-react-components/context";
 
 class ItemSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
+      isReQtyOpen: false,
       itemPop: {},
-      addNew: true
+      addNew: true,
+      decimal_places: 0
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      decimal_places: userToken.decimal_places
+    })
+
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        git_location: "N",
+        location_status: "A",
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "locations"
+      }
+    });
     this.props.getItemCategory({
       uri: "/pharmacy/getItemCategory",
       module: "pharmacy",
@@ -122,6 +147,10 @@ class ItemSetup extends Component {
     );
   }
 
+  CloseReQtyModel(e) {
+    this.setState({ isReQtyOpen: !this.state.isReQtyOpen });
+  }
+
   render() {
     let ItemList = Enumerable.from(this.props.itemlist)
       .groupBy("$.hims_d_item_master_id", null, (k, g) => {
@@ -146,7 +175,7 @@ class ItemSetup extends Component {
           service_id: firstRecordSet.service_id,
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
-          exp_date_not_required: firstRecordSet.exp_date_not_required,
+          exp_date_required: firstRecordSet.exp_date_required,
           sfda_code: firstRecordSet.sfda_code,
           reorder_qty: firstRecordSet.reorder_qty,
           standard_fee: firstRecordSet.sales_price,
@@ -165,13 +194,13 @@ class ItemSetup extends Component {
               <h3 className="caption-subject">Item List</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               <ItemMaster
                 HeaderCaption={
                   <AlgaehLabel
@@ -185,6 +214,15 @@ class ItemSetup extends Component {
                 onClose={this.CloseModel.bind(this)}
                 itemPop={this.state.itemPop}
                 addNew={this.state.addNew}
+              />
+
+              <ItemLocationReorder
+                HeaderCaption="Reorder Location Wise"
+                open={this.state.isReQtyOpen}
+                item_description={this.state.item_description}
+                item_id={this.state.item_id}
+                reorder_locations={this.state.reorder_locations}
+                onClose={this.CloseReQtyModel.bind(this)}
               />
             </div>
           </div>
@@ -208,11 +246,20 @@ class ItemSetup extends Component {
                                 row
                               )}
                             />
+
+                            <i
+                              className="fas fa-plus"
+                              onClick={ItemSetupEvent().OpenReQtyLocation.bind(
+                                this,
+                                this,
+                                row
+                              )}
+                            />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 55,
+                        maxWidth: 90,
                         style: {
                           textAlign: "center"
                         },
@@ -242,8 +289,8 @@ class ItemSetup extends Component {
                           this.props.itemgeneric === undefined
                             ? []
                             : this.props.itemgeneric.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
+                              f => f.hims_d_item_generic_id === row.generic_id
+                            );
 
                         return (
                           <span>
@@ -255,6 +302,20 @@ class ItemSetup extends Component {
                       }
                     },
                     {
+                      fieldName: "standard_fee",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "price" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.standard_fee !== null ? (parseFloat(row.standard_fee)).toFixed(this.state.decimal_places) : 0}
+                          </span>
+                        );
+                      }
+
+                    },
+                    {
                       fieldName: "category_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "category_id" }} />
@@ -264,9 +325,9 @@ class ItemSetup extends Component {
                           this.props.itemcategory === undefined
                             ? []
                             : this.props.itemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id === row.category_id
-                              );
+                              f =>
+                                f.hims_d_item_category_id === row.category_id
+                            );
 
                         return (
                           <span>
@@ -285,8 +346,8 @@ class ItemSetup extends Component {
                           this.props.itemgroup === undefined
                             ? []
                             : this.props.itemgroup.filter(
-                                f => f.hims_d_item_group_id === row.group_id
-                              );
+                              f => f.hims_d_item_group_id === row.group_id
+                            );
 
                         return (
                           <span>
@@ -308,10 +369,10 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.purchase_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.purchase_uom_id
+                            );
 
                         return (
                           <span>
@@ -332,9 +393,9 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id === row.sales_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id === row.sales_uom_id
+                            );
 
                         return (
                           <span>
@@ -355,10 +416,10 @@ class ItemSetup extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.stocking_uom_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                         return (
                           <span>
@@ -369,7 +430,6 @@ class ItemSetup extends Component {
                         );
                       }
                     },
-
                     {
                       fieldName: "item_status",
                       label: (
@@ -405,7 +465,8 @@ function mapStateToProps(state) {
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
     itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    itemservices: state.itemservices,
+    locations: state.locations
   };
 }
 
@@ -419,7 +480,8 @@ function mapDispatchToProps(dispatch) {
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getLocation: AlgaehActions
     },
     dispatch
   );

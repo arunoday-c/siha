@@ -1,13 +1,14 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
       hims_f_procurement_po_header_id: null,
       purchase_number: null,
-
+      vendor_quotation_number: null,
+      vendor_quotation_header_id: null,
       po_date: new Date(),
-      po_type: null,
+      po_type: "D",
       po_from: null,
       pharmcy_location_id: null,
       inventory_location_id: null,
@@ -47,6 +48,7 @@ export default {
       inventory_uom_id: null,
       pharmacy_stock_detail: [],
       inventory_stock_detail: [],
+      po_entry_detail: [],
 
       tax_percentage: 0,
       order_quantity: 0,
@@ -74,7 +76,11 @@ export default {
       saveEnable: true,
       InvoiceEnable: false,
       OTItemAddDis: false,
-      authorizeBtn: false
+      authorizeBtn: false,
+      dataFinder: false,
+      is_posted: "N",
+      dataPosted: true,
+      delete_stock_detail: []
     };
     return output;
   }

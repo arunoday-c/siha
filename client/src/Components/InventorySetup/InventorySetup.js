@@ -11,8 +11,7 @@ import ItemUOM from "./ItemUOM/ItemUOM";
 import Location from "./Location/Location";
 
 import LocationPermission from "./LocationPermission/LocationPermission";
-
-// import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
+// import ReorderQtyMasterInventory from "./ReorderQtyMasterInventory/ReorderQtyMasterInventory";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -20,7 +19,7 @@ class InventorySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "ItemCategory", sidBarOpen: true };
+    this.state = { pageDisplay: "Location", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -63,49 +62,21 @@ class InventorySetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              {/* <li
+                algaehtabs={"InventoryOptions"}
+                className={"nav-item tab-button active "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Inventory Settings"
+                    }}
+                  />
+                }
+              </li> */}
               <li
-                algaehtabs={"ItemCategory"}
                 className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_category"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"ItemGroup"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_group"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"ItemUOM"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "item_uom"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                className={"nav-item tab-button "}
                 algaehtabs={"Location"}
                 onClick={this.openTab.bind(this)}
               >
@@ -117,7 +88,6 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"LocationPermission"}
@@ -131,11 +101,68 @@ class InventorySetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"ItemCategory"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_category"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ItemGroup"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "item_group"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"ItemUOM"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "UOM Master"
+                    }}
+                  />
+                }
+              </li>
+              {/* <li
+                className={"nav-item tab-button "}
+                algaehtabs={"ReorderQtyMasterInventory"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Reorder Qty Master"
+                    }}
+                  />
+                }
+              </li> */}
             </ul>
           </div>
         </div>
-
-        <div className="common-section">
+        {/* this.state.pageDisplay === "InventoryOptions" ? (
+            <InventoryOptions />
+          ) : 
+          : this.state.pageDisplay === "ReorderQtyMasterInventory" ? (
+            <ReorderQtyMasterInventory />
+          ) */}
+        <div className="inventorySetupSection">
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
@@ -169,8 +196,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InventorySetup)
+  connect(mapStateToProps, mapDispatchToProps)(InventorySetup)
 );

@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.scss";
 import "./../../../../styles/site.scss";
-import extend from "extend";
+// import extend from "extend";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -18,14 +18,10 @@ import {
   serviceHandeler,
   discounthandle,
   adjustadvance,
-  billheaderCalculation,
-  onchangegridcol,
   credittexthandle,
   EditGrid,
   CancelGrid,
-  onquantitycol,
   ondiscountgridcol,
-  calculateAmount,
   makeZero,
   makeDiscountZero,
   makeZeroIngrid
@@ -34,7 +30,7 @@ import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
 class AddOPBillingForm extends Component {
@@ -46,12 +42,12 @@ class AddOPBillingForm extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.BillingIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.BillingIOputs);
   }
 
@@ -175,6 +171,12 @@ class AddOPBillingForm extends Component {
                             $this.state.patient_payable;
 
                           response.data.records.billDetails = false;
+                          if (this.state.default_pay_type === "CD") {
+                            response.data.records.card_amount =
+                              response.data.records.receiveable_amount;
+                            response.data.records.cash_amount = 0;
+                          }
+
                           context.updateState({ ...response.data.records });
                         }
                       }
@@ -231,6 +233,12 @@ class AddOPBillingForm extends Component {
             response.data.records.patient_payable || this.state.patient_payable;
           response.data.records.saveEnable = false;
           response.data.records.addNewService = false;
+          if (this.state.default_pay_type === "CD") {
+            response.data.records.card_amount =
+              response.data.records.receiveable_amount;
+            response.data.records.cash_amount = 0;
+          }
+
           if (context !== null) {
             context.updateState({ ...response.data.records });
           }
@@ -307,6 +315,11 @@ class AddOPBillingForm extends Component {
               response.data.records.patient_payable ||
               this.state.patient_payable;
 
+            if (this.state.default_pay_type === "CD") {
+              response.data.records.card_amount =
+                response.data.records.receiveable_amount;
+              response.data.records.cash_amount = 0;
+            }
             if (context !== null) {
               context.updateState({ ...response.data.records });
             }
@@ -337,482 +350,489 @@ class AddOPBillingForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-op-add-billing-form">
-              <div className="container-fluid">
-                <div className="row margin-top-15">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "select_service_type"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      others: { disabled: this.state.Billexists },
-                      onChange: serviceTypeHandeler.bind(this, this, context),
-                      onClear: serviceTypeHandeler.bind(this, this, context)
-                    }}
-                  />
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "select_service"
-                    }}
-                    selector={{
-                      name: "s_service",
-                      className: "select-fld",
-                      value: this.state.s_service,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_name"
-                            : "arabic_service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.props.opbilservices
-                      },
-                      others: { disabled: this.state.Billexists },
-                      onChange: serviceHandeler.bind(this, this, context),
-                      onClear: serviceHandeler.bind(this, this, context)
-                    }}
-                  />
-                  <div className="col-lg-2">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: "19px" }}
-                      onClick={this.ProcessToBill.bind(this, context)}
-                      disabled={this.state.addNewService}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "add_new_service",
-                          align: "ltr",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-                  </div>
-                  <div className="col-lg-2">
-                    <button
-                      className="btn btn-default"
-                      style={{ marginTop: "19px" }}
-                      onClick={this.ShowBillDetails.bind(this)}
-                      disabled={this.state.billDetails}
-                    >
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "view_bill_details",
-                          align: "ltr",
-                          returnText: true
-                        }}
-                      />
-                    </button>
-
-                    <DisplayOPBilling
-                      HeaderCaption={
-                        <AlgaehLabel
+            <div className="row">
+              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
+                <div className="screenCardStyle">
+                  {" "}
+                  <div className="row">
+                    <div className="col-12">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
                           label={{
-                            fieldName: "bill_details",
-                            align: "ltr"
+                            fieldName: "select_service_type"
+                          }}
+                          selector={{
+                            name: "s_service_type",
+                            className: "select-fld",
+                            value: this.state.s_service_type,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "service_type"
+                                  : "arabic_service_type",
+                              valueField: "hims_d_service_type_id",
+                              data: this.props.servicetype
+                            },
+                            others: { disabled: this.state.Billexists },
+                            onChange: serviceTypeHandeler.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                            onClear: serviceTypeHandeler.bind(
+                              this,
+                              this,
+                              context
+                            )
                           }}
                         />
-                      }
-                      BillingIOputs={{
-                        selectedLang: this.state.selectedLang,
-                        billdetails: this.state.billdetails
-                      }}
-                      show={this.state.isOpen}
-                      onClose={this.ShowBillDetails.bind(this)}
-                    />
-                  </div>{" "}
-                  {/* {Package_Exists.length > 0 ? (
-                    <div className="col">
-                      <h6 style={{ color: "green" }}> Package Exists </h6>
-                    </div>
-                  ) : null} */}
-                  {Package_Exists.length > 0 ? (
-                    <div className="col">
-                      <div
-                        className="alert alert-warning animated flash slow infinite"
-                        role="alert"
-                        style={{
-                          margin: "18px 0 0",
-                          padding: 5,
-                          textAlign: "center"
-                        }}
-                      >
-                        Package Exists
+                        <AlagehAutoComplete
+                          div={{ className: "col-lg-3" }}
+                          label={{
+                            fieldName: "select_service"
+                          }}
+                          selector={{
+                            name: "s_service",
+                            className: "select-fld",
+                            value: this.state.s_service,
+                            dataSource: {
+                              textField:
+                                this.state.selectedLang === "en"
+                                  ? "service_name"
+                                  : "arabic_service_name",
+                              valueField: "hims_d_services_id",
+                              data: this.props.opbilservices
+                            },
+                            others: { disabled: this.state.Billexists },
+                            onChange: serviceHandeler.bind(this, this, context),
+                            onClear: serviceHandeler.bind(this, this, context)
+                          }}
+                        />
+                        <div className="col-lg-2">
+                          <button
+                            className="btn btn-primary"
+                            style={{ marginTop: "19px" }}
+                            onClick={this.ProcessToBill.bind(this, context)}
+                            disabled={this.state.addNewService}
+                          >
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "add_new_service",
+                                align: "ltr",
+                                returnText: true
+                              }}
+                            />
+                          </button>
+                        </div>
+                        <div className="col-lg-2">
+                          <button
+                            className="btn btn-default"
+                            style={{ marginTop: "19px" }}
+                            onClick={this.ShowBillDetails.bind(this)}
+                            disabled={this.state.billDetails}
+                          >
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "view_bill_details",
+                                align: "ltr",
+                                returnText: true
+                              }}
+                            />
+                          </button>
+
+                          <DisplayOPBilling
+                            HeaderCaption={
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "bill_details",
+                                  align: "ltr"
+                                }}
+                              />
+                            }
+                            BillingIOputs={{
+                              selectedLang: this.state.selectedLang,
+                              billdetails: this.state.billdetails
+                            }}
+                            show={this.state.isOpen}
+                            onClose={this.ShowBillDetails.bind(this)}
+                          />
+                        </div>{" "}
+                        {Package_Exists.length > 0 ? (
+                          <div className="col">
+                            <div
+                              className="alert alert-warning animated flash slow infinite"
+                              role="alert"
+                              style={{
+                                margin: "18px 0 0",
+                                padding: 5,
+                                textAlign: "center"
+                              }}
+                            >
+                              Package Exists
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
                     </div>
-                  ) : null}
-                </div>
-                <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12" id="opBillingGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="Bill_details"
-                      columns={[
-                        {
-                          fieldName: "actions",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Action" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                <i
-                                  style={{
-                                    pointerEvents: this.state.Billexists
-                                      ? "none"
-                                      : "",
-                                    opacity: this.state.Billexists ? "0.1" : ""
-                                  }}
-                                  onClick={this.deleteBillDetail.bind(
-                                    this,
-                                    context,
-                                    row
-                                  )}
-                                  className="fas fa-trash-alt"
-                                />
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "service_type_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "service_type_id" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
-                                  : ""}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "services_id",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "services_id" }} />
-                          ),
-                          displayTemplate: row => {
-                            let package_service =
-                              row.trans_package_detail_id > 0
-                                ? "(Package Service)"
-                                : "";
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
-                                  : ""}
-                                <span className="packageAvail">
-                                  {package_service}
+                    <div className="col-12" id="opBillingGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="Bill_details"
+                        columns={[
+                          {
+                            fieldName: "actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <i
+                                    style={{
+                                      pointerEvents: this.state.Billexists
+                                        ? "none"
+                                        : "",
+                                      opacity: this.state.Billexists
+                                        ? "0.1"
+                                        : ""
+                                    }}
+                                    onClick={this.deleteBillDetail.bind(
+                                      this,
+                                      context,
+                                      row
+                                    )}
+                                    className="fas fa-trash-alt"
+                                  />
                                 </span>
-                              </span>
-                            );
+                              );
+                            }
                           },
-                          editorTemplate: row => {
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "insurance_yesno",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "insurance" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.insurance_yesno === "N"
-                                  ? "Not Covered"
-                                  : "Covered"}
-                              </span>
-                            );
-                          },
-                          disabled: true
-                        },
-                        {
-                          fieldName: "unit_cost",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "unit_cost" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.unit_cost, {
-                                  appendSymbol: false
-                                })}
-                              </span>
-                            );
-                          },
-                          disabled: true
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          disabled: true
-                        },
-
-                        {
-                          fieldName: "gross_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "gross_amount" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "discount_percentage",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "discount_percentage" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  decimal: { allowNegative: false },
-                                  value: row.discount_percentage,
-                                  className: "txt-fld",
-                                  name: "discount_percentage",
-                                  events: {
-                                    onChange: ondiscountgridcol.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    placeholder: "0.00",
-                                    disabled:
-                                      this.state.insurance_yesno === "Y"
-                                        ? true
-                                        : row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
-                                    onBlur: makeZeroIngrid.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
+                          {
+                            fieldName: "service_type_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "service_type_id" }}
                               />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "discount_amout",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "discount_amout" }}
-                            />
-                          ),
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.servicetype === undefined
+                                  ? []
+                                  : this.props.servicetype.filter(
+                                      f =>
+                                        f.hims_d_service_type_id ===
+                                        row.service_type_id
+                                    );
 
-                          displayTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  decimal: { allowNegative: false },
-                                  value: row.discount_amout,
-                                  className: "txt-fld",
-                                  name: "discount_amout",
-                                  events: {
-                                    onChange: ondiscountgridcol.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    placeholder: "0.00",
-                                    disabled:
-                                      this.state.insurance_yesno === "Y"
-                                        ? true
-                                        : row.trans_package_detail_id > 0
-                                        ? true
-                                        : this.state.Billexists,
-                                    onBlur: makeZeroIngrid.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? this.state.selectedLang === "en"
+                                      ? display[0].service_type
+                                      : display[0].arabic_service_type
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              let display =
+                                this.props.servicetype === undefined
+                                  ? []
+                                  : this.props.servicetype.filter(
+                                      f =>
+                                        f.hims_d_service_type_id ===
+                                        row.service_type_id
+                                    );
 
-                        {
-                          fieldName: "net_amout",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "net_amout" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.net_amout, {
-                                  appendSymbol: false
-                                })}
-                              </span>
-                            );
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? this.state.selectedLang === "en"
+                                      ? display[0].service_type
+                                      : display[0].arabic_service_type
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
-                          disabled: true
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.billdetails
-                      }}
-                      // isEditable={!this.state.Billexists}
-                      actions={{
-                        allowEdit: !this.state.Billexists,
-                        allowDelete: !this.state.Billexists
-                      }}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      byForceEvents={true}
-                      events={{
-                        onDelete: this.deleteBillDetail.bind(this, context),
-                        onEdit: EditGrid.bind(this, this, context),
-                        onCancel: CancelGrid.bind(this, this, context),
-                        onDone: this.updateBillDetail.bind(this, context)
-                      }}
-                      forceRender={this.state.Rerender}
-                    />
-                  </div>
-                </div>
 
-                <div className="row">
-                  <div className="col-lg-7" />
-                  <div className="col-lg-5" style={{ textAlign: "right" }}>
-                    <div className="row">
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "sub_total_amount"
-                          }}
-                        />
-                        <h6>{getAmountFormart(this.state.sub_total_amount)}</h6>
-                      </div>
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "discount_amount"
-                          }}
-                        />
-                        <h6>{getAmountFormart(this.state.discount_amount)}</h6>
-                      </div>
+                          {
+                            fieldName: "services_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "services_id" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let package_service =
+                                row.trans_package_detail_id > 0
+                                  ? "(Package Service)"
+                                  : "";
+                              let display =
+                                this.props.serviceslist === undefined
+                                  ? []
+                                  : this.props.serviceslist.filter(
+                                      f =>
+                                        f.hims_d_services_id === row.services_id
+                                    );
 
-                      <div className="col-lg-4">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "net_total"
-                          }}
-                        />
-                        <h6>{getAmountFormart(this.state.net_total)}</h6>
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? this.state.selectedLang === "en"
+                                      ? display[0].service_name
+                                      : display[0].arabic_service_name
+                                    : ""}
+                                  <span className="packageAvail">
+                                    {package_service}
+                                  </span>
+                                </span>
+                              );
+                            },
+                            editorTemplate: row => {
+                              let display =
+                                this.props.serviceslist === undefined
+                                  ? []
+                                  : this.props.serviceslist.filter(
+                                      f =>
+                                        f.hims_d_services_id === row.services_id
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? this.state.selectedLang === "en"
+                                      ? display[0].service_name
+                                      : display[0].arabic_service_name
+                                    : ""}
+                                </span>
+                              );
+                            }
+                          },
+
+                          {
+                            fieldName: "insurance_yesno",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "insurance" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {row.insurance_yesno === "N"
+                                    ? "Not Covered"
+                                    : "Covered"}
+                                </span>
+                              );
+                            },
+                            disabled: true
+                          },
+                          {
+                            fieldName: "unit_cost",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "unit_cost" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {GetAmountFormart(row.unit_cost, {
+                                    appendSymbol: false
+                                  })}
+                                </span>
+                              );
+                            },
+                            disabled: true
+                          },
+                          {
+                            fieldName: "quantity",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "quantity" }} />
+                            ),
+                            disabled: true
+                          },
+
+                          {
+                            fieldName: "gross_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "gross_amount" }}
+                              />
+                            ),
+                            disabled: true
+                          },
+                          {
+                            fieldName: "discount_percentage",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "discount_percentage" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_percentage,
+                                    className: "txt-fld",
+                                    name: "discount_percentage",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        this.state.insurance_yesno === "Y"
+                                          ? true
+                                          : row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: e => {
+                                        e.target.oldvalue = e.target.value;
+                                      }
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+                          {
+                            fieldName: "discount_amout",
+                            label: (
+                              <AlgaehLabel
+                                label={{ fieldName: "discount_amout" }}
+                              />
+                            ),
+
+                            displayTemplate: row => {
+                              return (
+                                <AlagehFormGroup
+                                  div={{}}
+                                  textBox={{
+                                    decimal: { allowNegative: false },
+                                    value: row.discount_amout,
+                                    className: "txt-fld",
+                                    name: "discount_amout",
+                                    events: {
+                                      onChange: ondiscountgridcol.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )
+                                    },
+                                    others: {
+                                      placeholder: "0.00",
+                                      disabled:
+                                        this.state.insurance_yesno === "Y"
+                                          ? true
+                                          : row.trans_package_detail_id > 0
+                                          ? true
+                                          : this.state.Billexists,
+                                      onBlur: makeZeroIngrid.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      ),
+                                      onFocus: e => {
+                                        e.target.oldvalue = e.target.value;
+                                      }
+                                    }
+                                  }}
+                                />
+                              );
+                            }
+                          },
+
+                          {
+                            fieldName: "net_amout",
+                            label: (
+                              <AlgaehLabel label={{ fieldName: "net_amout" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  {GetAmountFormart(row.net_amout, {
+                                    appendSymbol: false
+                                  })}
+                                </span>
+                              );
+                            },
+                            disabled: true
+                          }
+                        ]}
+                        keyId="service_type_id"
+                        dataSource={{
+                          data: this.state.billdetails
+                        }}
+                        // isEditable={!this.state.Billexists}
+                        actions={{
+                          allowEdit: !this.state.Billexists,
+                          allowDelete: !this.state.Billexists
+                        }}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        byForceEvents={true}
+                        events={{
+                          onDelete: this.deleteBillDetail.bind(this, context),
+                          onEdit: EditGrid.bind(this, this, context),
+                          onCancel: CancelGrid.bind(this, this, context),
+                          onDone: this.updateBillDetail.bind(this, context)
+                        }}
+                        forceRender={this.state.Rerender}
+                      />
+                    </div>
+                    <div className="col-lg-7" />
+                    <div className="col-lg-5" style={{ textAlign: "right" }}>
+                      <div className="row">
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "sub_total_amount"
+                            }}
+                          />
+                          <h6>
+                            {GetAmountFormart(this.state.sub_total_amount)}
+                          </h6>
+                        </div>
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "discount_amount"
+                            }}
+                          />
+                          <h6>
+                            {GetAmountFormart(this.state.discount_amount)}
+                          </h6>
+                        </div>
+
+                        <div className="col-lg-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "net_total"
+                            }}
+                          />
+                          <h6>{GetAmountFormart(this.state.net_total)}</h6>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-
+              </div>
+              <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <div className="row">
-                  <div className="col-lg-4">
-                    <div
-                      style={{
-                        margin: "15px 0",
-                        border: "1px solid #acaaaa",
-                        padding: 15,
-                        borderRadius: 10
-                      }}
-                    >
+                  <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12 ">
+                    <div className="screenCardStyle">
                       <div className="row">
                         <div className="col-lg-6">
                           <AlgaehLabel
@@ -820,7 +840,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "copay_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
                         </div>
                         {this.state.deductable_amount === 0 ? null : (
                           <div className="col-lg-6">
@@ -830,7 +850,7 @@ class AddOPBillingForm extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.deductable_amount)}
+                              {GetAmountFormart(this.state.deductable_amount)}
                             </h6>
                           </div>
                         )}
@@ -841,7 +861,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.sec_copay_amount)}
+                            {GetAmountFormart(this.state.sec_copay_amount)}
                           </h6>
                         </div>
                         <div className="col-lg-6">
@@ -851,7 +871,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.sec_deductable_amount)}
+                            {GetAmountFormart(this.state.sec_deductable_amount)}
                           </h6>
                         </div> */}
                       </div>
@@ -862,6 +882,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "patient_lbl"
                             }}
                           />
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel
@@ -870,7 +891,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_res)}
+                                {GetAmountFormart(this.state.patient_res)}
                               </h6>
                             </div>
 
@@ -881,7 +902,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_tax)}
+                                {GetAmountFormart(this.state.patient_tax)}
                               </h6>
                             </div>
 
@@ -892,7 +913,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.patient_payable_h)}
+                                {GetAmountFormart(this.state.patient_payable_h)}
                               </h6>
                             </div>
                           </div>
@@ -904,7 +925,8 @@ class AddOPBillingForm extends Component {
                             label={{
                               fieldName: "company_lbl"
                             }}
-                          />
+                          />{" "}
+                          <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
                               <AlgaehLabel
@@ -913,7 +935,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_res)}
+                                {GetAmountFormart(this.state.company_res)}
                               </h6>
                             </div>
 
@@ -924,7 +946,7 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_tax)}
+                                {GetAmountFormart(this.state.company_tax)}
                               </h6>
                             </div>
 
@@ -935,68 +957,17 @@ class AddOPBillingForm extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.company_payble)}
+                                {GetAmountFormart(this.state.company_payble)}
                               </h6>
                             </div>
                           </div>
                         </div>
-
-                        {/* <div className="col-lg-12">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "sec_comp_lbl"
-                            }}
-                          />
-                          <div className="row insurance-details">
-                            <div className="col-5">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "responsibility_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(this.state.sec_company_res)}
-                              </h6>
-                            </div>
-
-                            <div className="col-3">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "tax_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(this.state.sec_company_tax)}
-                              </h6>
-                            </div>
-
-                            <div className="col-4">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "payable_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(
-                                  this.state.sec_company_paybale
-                                )}
-                              </h6>
-                            </div>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
 
-                  <div className="col-lg-8">
-                    <div
-                      style={{
-                        margin: "15px 0",
-                        border: "1px solid #acaaaa",
-                        padding: 15,
-                        borderRadius: 10
-                      }}
-                    >
+                  <div className="algaeh-md-8 algaeh-lg-8 algaeh-xl-12  primary-details ">
+                    <div className="screenCardStyle">
                       <div className="row secondary-box-container">
                         <AlagehFormGroup
                           div={{ className: "col-lg-4" }}
@@ -1096,7 +1067,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "advance_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.advance_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.advance_amount)}</h6>
                         </div>
 
                         <div className="col">
@@ -1105,7 +1076,7 @@ class AddOPBillingForm extends Component {
                               fieldName: "net_amount"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                          <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                         </div>
 
                         <AlagehFormGroup
@@ -1134,20 +1105,14 @@ class AddOPBillingForm extends Component {
                           }}
                         />
 
-                        <div
-                          className="col"
-                          style={{
-                            background: " #44b8bd",
-                            color: " #fff"
-                          }}
-                        >
+                        <div className="col highlightGreen">
                           <AlgaehLabel
                             label={{
                               fieldName: "receiveable_amount"
                             }}
                           />
                           <h4>
-                            {getAmountFormart(this.state.receiveable_amount)}
+                            {GetAmountFormart(this.state.receiveable_amount)}
                           </h4>
                         </div>
                         <div className="col highlightGrey">
@@ -1157,7 +1122,7 @@ class AddOPBillingForm extends Component {
                             }}
                           />
 
-                          <h6>{getAmountFormart(this.state.balance_credit)}</h6>
+                          <h6>{GetAmountFormart(this.state.balance_credit)}</h6>
                         </div>
                       </div>
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
@@ -1194,10 +1159,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddOPBillingForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddOPBillingForm)
 );
 
 // editorTemplate: row => {

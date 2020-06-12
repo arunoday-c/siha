@@ -21,7 +21,9 @@ class LeaveMaster extends Component {
       leaveEncash: [],
       leaveRules: [],
       encashment_percentage: 0,
-      carry_forward_percentage: 0
+      carry_forward_percentage: 0,
+      from_value: 0,
+      // reset_leave: "1"
     };
   }
 
@@ -48,11 +50,6 @@ class LeaveMaster extends Component {
         this.setState({
           leaveDetails: this.state.leaveDetails
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -73,11 +70,6 @@ class LeaveMaster extends Component {
         this.setState({
           leaveRules: this.state.leaveRules
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -96,11 +88,6 @@ class LeaveMaster extends Component {
 
         this.setState({
           leaveEncash: this.state.leaveEncash
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
         });
       }
     });
@@ -153,7 +140,8 @@ class LeaveMaster extends Component {
         document_mandatory: this.state.document_mandatory ? "Y" : "N",
         leaveEncash: this.state.leaveEncash,
         leaveRules: this.state.leaveRules,
-        leaveDetails: this.state.leaveDetails
+        leaveDetails: this.state.leaveDetails,
+        reset_leave: this.state.reset_leave
       };
 
       algaehApiCall({
@@ -205,7 +193,7 @@ class LeaveMaster extends Component {
         this.setState({
           rule_earning_id: null,
           paytype: null,
-          from_value: null,
+          from_value: parseFloat(this.state.to_value) + 1,
           to_value: null,
           value_type: null,
           total_days: null
@@ -507,7 +495,7 @@ class LeaveMaster extends Component {
           rule_earning_id: null,
           paytype: null,
           leaveRules: [],
-          from_value: "",
+          from_value: 0,
           to_value: "",
           value_type: null,
           total_days: ""
@@ -532,9 +520,9 @@ class LeaveMaster extends Component {
           leave_type: null,
           leave_category: null,
           calculation_type: null,
-          encashment_percentage: "",
+          encashment_percentage: 0,
           leave_carry_forward: "",
-          carry_forward_percentage: "",
+          carry_forward_percentage: 0,
           religion_required: "",
           religion_id: null,
           holiday_reimbursement: "",
@@ -557,9 +545,9 @@ class LeaveMaster extends Component {
     this.props.onClose();
   };
 
-  updateLeaveDetail(data) {}
-  updateLeaveEncash(data) {}
-  updateLeaveRule(data) {}
+  updateLeaveDetail(data) { }
+  updateLeaveEncash(data) { }
+  updateLeaveRule(data) { }
 
   render() {
     return (

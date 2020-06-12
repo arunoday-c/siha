@@ -62,7 +62,7 @@ export default class AbsenceManagement extends Component {
     });
   }
 
-  deleteAbsent(data) {}
+  deleteAbsent(data) { }
 
   getAbsentList() {
     let yearAndMonth = this.state.year + "-" + this.state.month + "-01";
@@ -108,7 +108,7 @@ export default class AbsenceManagement extends Component {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id
           },
-          () => {}
+          () => { }
         );
       }
     });
@@ -248,9 +248,9 @@ export default class AbsenceManagement extends Component {
         } else {
           let totalDays =
             this.state.from_session === "FH" ||
-            this.state.to_session === "FH" ||
-            this.state.from_session === "SH" ||
-            this.state.to_session === "SH"
+              this.state.to_session === "FH" ||
+              this.state.from_session === "SH" ||
+              this.state.to_session === "SH"
               ? 0.5
               : 1;
           algaehApiCall({
@@ -414,19 +414,19 @@ export default class AbsenceManagement extends Component {
 
           <div className="col form-group">
             <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              CLEAR
+            </button>{" "}
+            <button
               onClick={this.addAbsentRecord.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               Add
             </button>{" "}
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              CLEAR
-            </button>
           </div>
         </div>
 
@@ -536,10 +536,10 @@ export default class AbsenceManagement extends Component {
                                 {row.from_session === "FH"
                                   ? "First Half"
                                   : row.from_session === "SH"
-                                  ? "Second Half"
-                                  : row.from_session === "FD"
-                                  ? "Full Day"
-                                  : "------"}
+                                    ? "Second Half"
+                                    : row.from_session === "FD"
+                                      ? "Full Day"
+                                      : "------"}
                               </span>
                             );
                           },
@@ -549,10 +549,10 @@ export default class AbsenceManagement extends Component {
                                 {row.from_session === "FH"
                                   ? "First Half"
                                   : row.from_session === "SH"
-                                  ? "Second Half"
-                                  : row.from_session === "FD"
-                                  ? "Full Day"
-                                  : "------"}
+                                    ? "Second Half"
+                                    : row.from_session === "FD"
+                                      ? "Full Day"
+                                      : "------"}
                               </span>
                             );
                           },
@@ -571,10 +571,10 @@ export default class AbsenceManagement extends Component {
                                 {row.to_session === "FH"
                                   ? "First Half"
                                   : row.to_session === "SH"
-                                  ? "Second Half"
-                                  : row.to_session === "FD"
-                                  ? "Full Day"
-                                  : "------"}
+                                    ? "Second Half"
+                                    : row.to_session === "FD"
+                                      ? "Full Day"
+                                      : "------"}
                               </span>
                             );
                           },
@@ -584,10 +584,10 @@ export default class AbsenceManagement extends Component {
                                 {row.to_session === "FH"
                                   ? "First Half"
                                   : row.to_session === "SH"
-                                  ? "Second Half"
-                                  : row.to_session === "FD"
-                                  ? "Full Day"
-                                  : "------"}
+                                    ? "Second Half"
+                                    : row.to_session === "FD"
+                                      ? "Full Day"
+                                      : "------"}
                               </span>
                             );
                           }
@@ -613,8 +613,8 @@ export default class AbsenceManagement extends Component {
                                 {row.cancel === "Y"
                                   ? "Yes"
                                   : row.cancel === "N"
-                                  ? "No"
-                                  : "------"}
+                                    ? "No"
+                                    : "------"}
                               </span>
                             );
                           },
@@ -658,7 +658,7 @@ export default class AbsenceManagement extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
-                        onEdit: () => {},
+                        onEdit: () => { },
                         onDone: this.updateAbsent.bind(this),
                         onDelete: this.deleteAbsent.bind(this)
                       }}

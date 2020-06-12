@@ -1,4 +1,3 @@
-import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -59,7 +58,7 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.ItemDisable = true;
         data.addedItem = true;
-        $this.setState(data, () => {});
+        $this.setState(data, () => { });
         AlgaehLoader({ show: false });
       }
     });
@@ -126,22 +125,20 @@ const generateMaterialReqInv = (data, rpt_name, rpt_desc) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Material Requisition - Inventory";
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${data.material_requisition_number}-Material Requisition - Inventory`
+
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
+      window.open(origin);
+      // window.document.title = "Material Requisition - Inventory";
     }
   });
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let auth_qty = Enumerable.from($this.state.inventory_stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+    w =>
+      parseFloat(w.quantity_authorized) === 0 || w.quantity_authorized === null
   );
   if (auth_qty === true) {
     swalMessage({
@@ -153,15 +150,22 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "authorize1") {
+  if ($this.state.requisition_auth_level === "1") {
     $this.state.authorize1 = "Y";
-    authorize1 = "Y";
-    authorize2 = "N";
-  } else if (authorize === "authorize2") {
     $this.state.authorie2 = "Y";
-    $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";
+  } else {
+    if (authorize === "authorize1") {
+      $this.state.authorize1 = "Y";
+      authorize1 = "Y";
+      authorize2 = "N";
+    } else if (authorize === "authorize2") {
+      $this.state.authorie2 = "Y";
+      $this.state.authorize1 = "Y";
+      authorize1 = "Y";
+      authorize2 = "Y";
+    }
   }
   AlgaehLoader({ show: true });
 
@@ -220,6 +224,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         quantity_required: 0,
         barcode: null,
         item_uom: null,
+        transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0
       });
@@ -244,6 +249,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         quantity_required: 0,
         barcode: null,
         item_uom: null,
+        transaction_qty: null,
         from_qtyhand: 0,
         to_qtyhand: 0
       });

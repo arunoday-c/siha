@@ -77,30 +77,43 @@ class RCMWorkbench extends Component {
 
   addClaimsArray(row, e) {
     let generateReport = true;
+    let claims = this.state.claims;
+    let _index = claims.indexOf(row);
     if (row.claim_validated === "P") {
-      e.preventDefault();
+      // e.preventDefault();
+
+      row.chkselect = 0;
+      claims[_index] = row;
+
+      generateReport = this.validatedClaims.length > 0 ? false : true;
+      this.setState({
+        generateReport: generateReport,
+        claims: claims
+      });
       swalMessage({
         title: "Please Validate the bill first",
         type: "warning"
       });
-
-      generateReport = this.validatedClaims.length > 0 ? false : true;
-      this.setState({
-        generateReport: generateReport
-      });
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
 
-      generateReport = this.validatedClaims.length > 0 ? false : true;
-      this.setState({
-        generateReport: generateReport
-      });
-    } else {
-      this.validatedClaims.push(row);
+      row.chkselect = 1;
+      claims[_index] = row;
 
       generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
-        generateReport: generateReport
+        generateReport: generateReport,
+        claims: claims
+      });
+    } else {
+      this.validatedClaims.push(row);
+      row.chkselect = 1;
+      claims[_index] = row;
+
+      generateReport = this.validatedClaims.length > 0 ? false : true;
+      this.setState({
+        generateReport: generateReport,
+        claims: claims
       });
     }
   }
@@ -232,16 +245,19 @@ class RCMWorkbench extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
+        // const url = URL.createObjectURL(res.data);
+        // let myWindow = window.open(
+        //   "{{ product.metafields.google.custom_label_0 }}",
+        //   "_blank"
+        // );
 
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Algaeh Merdge";
+        // myWindow.document.write(
+        //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+        // );
+        const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh Merdge`;
+      window.open(origin);
+        // window.document.title = "Algaeh Merdge";
         AlgaehLoader({ show: false });
       },
       onFailure: error => {
@@ -377,11 +393,14 @@ class RCMWorkbench extends Component {
         }
       },
       onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", "prevalidate.pdf");
-        link.click();
+        // const url = URL.createObjectURL(res.data);
+        // const link = document.createElement("a");
+        // link.setAttribute("href", url);
+        // link.setAttribute("download", ".pdf");
+        // link.click();
+        const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Prevalidation`;
+      window.open(origin);
       }
     });
   }
@@ -548,14 +567,14 @@ class RCMWorkbench extends Component {
               <button
                 onClick={this.getInvoicesForClaims}
                 className="btn btn-primary"
-                style={{ marginTop: 21, marginLeft: 5, float: "right" }}
+                style={{ marginTop: 19, marginLeft: 5, float: "right" }}
               >
                 Load Claims
               </button>
               <button
                 onClick={this.clearSearch}
                 className="btn btn-default"
-                style={{ marginTop: 21, float: "right" }}
+                style={{ marginTop: 19, float: "right" }}
               >
                 Clear
               </button>
@@ -610,7 +629,9 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              // checked = {row.chkselect === 0 ? true : false}
+                              checked={
+                                parseFloat(row.chkselect) === 0 ? false : true
+                              }
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -619,7 +640,9 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              // checked = {row.chkselect === 0 ? true : false}
+                              checked={
+                                parseFloat(row.chkselect) === 0 ? false : true
+                              }
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );

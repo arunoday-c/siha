@@ -24,11 +24,8 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { algaehApiCall } from "../../../utils/algaehApiCall.js";
-
-import AlgaehReport from "../../Wrapper/printReports";
-
+import { MainContext } from "algaeh-react-components/context";
 import moment from "moment";
-import Options from "../../../Options.json";
 
 class POSCreditSettlement extends Component {
   constructor(props) {
@@ -52,8 +49,17 @@ class POSCreditSettlement extends Component {
     };
   }
 
-  componentWillMount() {
+  static contextType = MainContext;
+
+  UNSAFE_componentWillMount() {
     let IOputs = SettlementIOputs.inputParam();
+
+    const userToken = this.context.userToken;
+
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
+
     this.setState({ ...this.state, ...IOputs });
   }
 
@@ -80,7 +86,7 @@ class POSCreditSettlement extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let output = {};
 
     if (
@@ -161,17 +167,17 @@ class POSCreditSettlement extends Component {
           printArea={
             this.state.hims_f_credit_header_id !== null
               ? {
-                  menuitems: [
-                    {
-                      label: "Print Receipt",
-                      events: {
-                        onClick: () => {
-                          generatePOSCreditSettlementReceipt(this.state);
-                        }
+                menuitems: [
+                  {
+                    label: "Print Receipt",
+                    events: {
+                      onClick: () => {
+                        generatePOSCreditSettlementReceipt(this.state);
                       }
                     }
-                  ]
-                }
+                  }
+                ]
+              }
               : ""
           }
           // printArea={
@@ -214,7 +220,29 @@ class POSCreditSettlement extends Component {
             className="row inner-top-search"
             style={{ paddingTop: 10, paddingBottom: 10 }}
           >
-            <div className="col-lg-3">
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6
+                onClick={PatientSearch.bind(this, this)}
+                style={{
+                  cursor: "pointer",
+                  pointerEvents:
+                    this.state.Billexists === true
+                      ? "none"
+                      : this.state.patient_code
+                        ? "none"
+                        : ""
+                }}
+              >
+                {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                {this.state.patient_code
+                  ? this.state.patient_code
+                  : "Search Patient"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            {/* <div className="col-lg-3">
               <div
                 className="row"
                 style={{
@@ -245,14 +273,14 @@ class POSCreditSettlement extends Component {
                         this.state.Billexists === true
                           ? "none"
                           : this.state.patient_code
-                          ? "none"
-                          : ""
+                            ? "none"
+                            : ""
                     }}
                     onClick={PatientSearch.bind(this, this)}
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
             <div className="col-lg-9">
               <div className="row">
                 <div className="col-lg-3">
@@ -302,8 +330,8 @@ class POSCreditSettlement extends Component {
                 onClick={SavePosCreidt.bind(this, this)}
                 disabled={
                   this.state.saveEnable ||
-                  this.state.receipt_amount == 0 ||
-                  this.state.unbalanced_amount != 0
+                  this.state.receipt_amount === 0 ||
+                  this.state.unbalanced_amount !== 0
                 }
               >
                 <AlgaehLabel
@@ -350,8 +378,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(POSCreditSettlement)
+  connect(mapStateToProps, mapDispatchToProps)(POSCreditSettlement)
 );

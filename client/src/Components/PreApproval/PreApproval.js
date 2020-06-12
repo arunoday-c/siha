@@ -9,8 +9,6 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -20,9 +18,7 @@ import SubmitRequest from "./SubmitRequest/SubmitRequest";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
 import UpdateOrders from "./UpdateOrders/UpdateOrders";
 import {
-  texthandle,
   datehandle,
-  PatientSearch,
   VerifyOrderModel,
   CloseOrderModel,
   getPreAprovalList,
@@ -31,7 +27,6 @@ import {
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
-import variableJson from "../../utils/GlobalVariables.json";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
@@ -267,6 +262,31 @@ class PreApproval extends Component {
                           }
                         },
                         {
+                          fieldName: "apprv_status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "dis_status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.apprv_status === "NR" ? (
+                              <span className="badge badge-default">
+                                Not Requested
+                              </span>
+                            ) : row.apprv_status === "AW" ? (
+                              <span className="badge badge-info">
+                                Awaiting Approval
+                              </span>
+                            ) : row.apprv_status === "AP" ? (
+                              <span className="badge badge-success">
+                                Approved
+                              </span>
+                            ) : (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            );
+                          }
+                        },
+                        {
                           fieldName: "patient_code",
                           label: (
                             <AlgaehLabel
@@ -301,61 +321,33 @@ class PreApproval extends Component {
                           }
                         },
                         {
-                          fieldName: "doctor_id",
+                          fieldName: "doctor_name",
                           label: (
                             <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                           ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.deptanddoctors === undefined
-                                ? []
-                                : this.props.deptanddoctors.doctors.filter(
-                                    f => f.employee_id === row.doctor_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].full_name
-                                  : ""}
-                              </span>
-                            );
+                          others: {
+                            minWidth: 150
                           }
                         },
                         {
-                          fieldName: "insurance_provider_id",
+                          fieldName: "insurance_provider_name",
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "insurance_id" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.insurarProviders === undefined
-                                ? []
-                                : this.props.insurarProviders.filter(
-                                    f =>
-                                      f.hims_d_insurance_provider_id ===
-                                      row.insurance_provider_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].insurance_provider_name
-                                  : ""}
-                              </span>
-                            );
+                          others: {
+                            minWidth: 150
                           }
                         },
-                        {
-                          fieldName: "icd_code",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "insurance_code" }}
-                            />
-                          )
-                        },
+                        // {
+                        //   fieldName: "icd_code",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "insurance_code" }}
+                        //     />
+                        //   )
+                        // },
                         {
                           fieldName: "number_of_Services",
                           label: (
@@ -363,21 +355,6 @@ class PreApproval extends Component {
                               label={{ fieldName: "no_of_services" }}
                             />
                           )
-                        },
-                        {
-                          fieldName: "apprv_status",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "dis_status" }} />
-                          ),
-                          displayTemplate: row => {
-                            return row.apprv_status === "NR"
-                              ? "Not Requested"
-                              : row.apprv_status === "AW"
-                              ? "Awaiting Approval"
-                              : row.apprv_status === "AP"
-                              ? "Approved"
-                              : "Rejected";
-                          }
                         }
                       ]}
                       keyId="pre_approval_code"
@@ -457,6 +434,31 @@ class PreApproval extends Component {
                           }
                         },
                         {
+                          fieldName: "apprv_status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "dis_status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.apprv_status === "NR" ? (
+                              <span className="badge badge-default">
+                                Not Requested
+                              </span>
+                            ) : row.apprv_status === "AW" ? (
+                              <span className="badge badge-info">
+                                Awaiting Approval
+                              </span>
+                            ) : row.apprv_status === "AP" ? (
+                              <span className="badge badge-success">
+                                Approved
+                              </span>
+                            ) : (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            );
+                          }
+                        },
+                        {
                           fieldName: "patient_code",
                           label: (
                             <AlgaehLabel
@@ -552,21 +554,6 @@ class PreApproval extends Component {
                               label={{ fieldName: "no_of_services" }}
                             />
                           )
-                        },
-                        {
-                          fieldName: "apprv_status",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "dis_status" }} />
-                          ),
-                          displayTemplate: row => {
-                            return row.apprv_status === "NR"
-                              ? "Not Requested"
-                              : row.apprv_status === "AW"
-                              ? "Awaiting Approval"
-                              : row.apprv_status === "AP"
-                              ? "Approved"
-                              : "Rejected";
-                          }
                         }
                       ]}
                       keyId="pre_approval_code"
@@ -651,8 +638,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PreApproval)
+  connect(mapStateToProps, mapDispatchToProps)(PreApproval)
 );

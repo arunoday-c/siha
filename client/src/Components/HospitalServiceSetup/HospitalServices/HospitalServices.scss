@@ -1,26 +1,34 @@
 .hptl-phase1-add-hospitalservies-form {
-	background: #fff;
-	// border-radius: 5px;
-	padding: 0px;
-	mark {
-		background: none;
-		color: red;
-	}
-	.form-details {
-		padding-bottom: 0px;
-	}
-	.button {
-		padding: 10px;
-	}
+  background: #fff;
+  // border-radius: 5px;
+  padding: 0px;
+  mark {
+    background: none;
+    color: red;
+  }
+  .form-details {
+    padding-bottom: 0px;
+  }
+  .button {
+    padding: 10px;
+  }
+}
+
+.ant-select-tree-dropdown{
+  z-index: 9999!important;
 }
 
 .popUpHospitalServices {
-	.algaeh-modal {
-		max-width: 40vw;
-	}
+  .algaeh-modal {
+    max-width: 40vw;
+  }
 }
 .HospitalServicesPopup {
-	.algaeh-modal {
-		width: 50vw;
-	}
+  .algaeh-modal {
+    width: 57vw;
+  }
+}
+
+.ant-select-tree-dropdown{
+  z-index: 9999!important;
 }

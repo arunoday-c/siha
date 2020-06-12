@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -31,6 +31,10 @@
                         <th>Religion</th>
                         <th>Emp. Type</th>
                         <th>Emp. Status</th>
+                        <th>Country</th>
+                        <th>State</th>
+                        {{!-- <th>City</th> --}}
+
 
                     </tr>
 
@@ -40,7 +44,7 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="12"
+                        <td colspan="14"
                             excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"CDF4EF"},"bgColor":{"argb":"747474"}}'
                             class="tableSubHdg">Nationality: {{nationality}}
                             <span class="textFloatRight">No
@@ -48,6 +52,7 @@
 
                         </td>
                     </tr>
+
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -62,11 +67,16 @@
                         <td>{{religion_name}}</td>
                         <td>{{employee_type}}</td>
                         <td>{{asemployee_status}}</td>
+                        <td>{{country_name}}</td>
+                        <td>{{state_name}}</td>
+                        {{!-- <td>{{city_name}}</td> --}}
+
+
                     </tr>
                     {{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
+                        <td colspan="14" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

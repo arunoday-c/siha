@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getCookie } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import DashBoardEvents from "./DashBoardEvents";
 
 // const AdmissionsReadmissionData = {
@@ -462,7 +462,7 @@ class Dashboard extends Component {
                   <div className="numbers">
                     <p>Operational Cost</p>
 
-                    {getAmountFormart("150378.00")}
+                    {GetAmountFormart("150378.00")}
                   </div>
                 </div>
               </div>
@@ -470,7 +470,7 @@ class Dashboard extends Component {
                 <hr />
                 <div className="stats">
                   Avg. Cost per Patient -
-                  <span>{getAmountFormart("500.00")} </span>
+                  <span>{GetAmountFormart("500.00")} </span>
                 </div>
               </div>
             </div>
@@ -486,7 +486,7 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Revenue by MTD</p>
-                    {getAmountFormart("124128.75")}
+                    {GetAmountFormart("124128.75")}
                   </div>
                 </div>
               </div>
@@ -494,7 +494,7 @@ class Dashboard extends Component {
                 <hr />
                 <div className="stats">
                   Avg. Revenue per day-
-                  <span>{getAmountFormart("4128.75")} </span>
+                  <span>{GetAmountFormart("4128.75")} </span>
                   {/* <b onClick={this.showDetailHandler.bind(this)}>
                     {this.state.showDetails === "d-block"
                       ? "Hide"
@@ -724,8 +724,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Dashboard)
+  connect(mapStateToProps, mapDispatchToProps)(Dashboard)
 );

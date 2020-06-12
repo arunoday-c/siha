@@ -7,7 +7,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -18,7 +18,6 @@ import {
   unitpricenumberchangeTexts,
   discounthandle,
   AddItems,
-  dateFormater,
   deletePODetail,
   updatePODetail,
   onchangegridcol,
@@ -26,9 +25,9 @@ import {
   AssignData,
   GridAssignData,
   EditGrid,
-  CancelGrid
+  CancelGrid,
 } from "./POItemListEvents";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class POItemList extends Component {
   constructor(props) {
@@ -36,12 +35,12 @@ class POItemList extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POEntry;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POEntry);
   }
 
@@ -49,7 +48,7 @@ class POItemList extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hims-purchase-order-entry">
               <div className="row">
                 <div className="col-lg-12">
@@ -74,12 +73,12 @@ class POItemList extends Component {
                               this.state.po_from === "PHR"
                                 ? "hims_d_item_master_id"
                                 : "hims_d_inventory_item_master_id",
-                            data: this.props.poitemlist
+                            data: this.props.poitemlist,
                           },
                           others: {
-                            disabled: this.state.dataExitst
+                            disabled: this.state.dataExitst,
                           },
-                          onChange: itemchangeText.bind(this, this, context)
+                          onChange: itemchangeText.bind(this, this, context),
                         }}
                       />
                       <AlagehAutoComplete
@@ -101,11 +100,11 @@ class POItemList extends Component {
                               this.state.po_from === "PHR"
                                 ? "hims_d_item_category_id"
                                 : "hims_d_inventory_tem_category_id",
-                            data: this.props.poitemcategory
+                            data: this.props.poitemcategory,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                       <AlagehAutoComplete
@@ -127,12 +126,12 @@ class POItemList extends Component {
                               this.state.po_from === "PHR"
                                 ? "hims_d_item_group_id"
                                 : "hims_d_inventory_item_group_id",
-                            data: this.props.poitemgroup
+                            data: this.props.poitemgroup,
                           },
                           others: {
-                            disabled: true
+                            disabled: true,
                           },
-                          onChange: null
+                          onChange: null,
                         }}
                       />
                       <AlagehAutoComplete
@@ -154,43 +153,24 @@ class POItemList extends Component {
                               this.state.po_from === "PHR"
                                 ? "hims_d_pharmacy_uom_id"
                                 : "hims_d_inventory_uom_id",
-                            data: this.props.poitemuom
+                            data: this.props.poitemuom,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                     </div>
                     <div className="row">
-                      {/* <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Quantity in Hand"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.qtyhand,
-                          className: "txt-fld",
-                          name: "qtyhand",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      /> */}
-
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Quantity"
+                          forceLabel: "Quantity",
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           className: "txt-fld",
                           name: "order_quantity",
@@ -201,17 +181,17 @@ class POItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
-                            disabled: this.state.dataExitst
-                          }
+                            disabled: this.state.dataExitst,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Unit Price"
+                          forceLabel: "Unit Price",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -223,18 +203,18 @@ class POItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
-                            disabled: this.state.dataExitst
-                          }
+                            disabled: this.state.dataExitst,
+                          },
                         }}
                       />
 
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Extended Price"
+                            forceLabel: "Extended Price",
                           }}
                         />
                         <h6>
@@ -243,29 +223,11 @@ class POItemList extends Component {
                             : "-----------"}
                         </h6>
                       </div>
-                      {/*<AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Extended Price"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.extended_price,
-                          className: "txt-fld",
-                          name: "extended_price",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />*/}
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Discount %"
+                          forceLabel: "Discount %",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -273,21 +235,21 @@ class POItemList extends Component {
                           className: "txt-fld",
                           name: "sub_discount_percentage",
                           events: {
-                            onChange: discounthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context),
                           },
                           others: {
                             disabled: this.state.dataExitst,
                             min: 0,
                             max: 100,
-                            onBlur: AssignData.bind(this, this)
-                          }
+                            onBlur: AssignData.bind(this, this),
+                          },
                         }}
                       />
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Discount Amount"
+                          forceLabel: "Discount Amount",
                         }}
                         textBox={{
                           decimal: { allowNegative: false },
@@ -295,19 +257,19 @@ class POItemList extends Component {
                           className: "txt-fld",
                           name: "sub_discount_amount",
                           events: {
-                            onChange: discounthandle.bind(this, this, context)
+                            onChange: discounthandle.bind(this, this, context),
                           },
                           others: {
                             disabled: this.state.dataExitst,
-                            onBlur: AssignData.bind(this, this)
-                          }
+                            onBlur: AssignData.bind(this, this),
+                          },
                         }}
                       />
 
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Extended Cost"
+                            forceLabel: "Extended Cost",
                           }}
                         />
                         <h6>
@@ -316,24 +278,6 @@ class POItemList extends Component {
                             : "-----------"}
                         </h6>
                       </div>
-                      {/*<AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Extended Cost"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          value: this.state.extended_cost,
-                          className: "txt-fld",
-                          name: "extended_cost",
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />*/}
                     </div>
                   </div>
                   <div className="row">
@@ -354,6 +298,7 @@ class POItemList extends Component {
                       <div className="col-lg-12" id="POGrid">
                         <AlgaehDataGrid
                           id="PO_details"
+                          filter={true}
                           columns={[
                             {
                               fieldName:
@@ -365,7 +310,7 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -373,7 +318,7 @@ class POItemList extends Component {
                                       this.props.poitemlist === undefined
                                         ? []
                                         : this.props.poitemlist.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_master_id ===
                                               row.phar_item_id
                                           ))
@@ -381,7 +326,7 @@ class POItemList extends Component {
                                       this.props.poitemlist === undefined
                                         ? []
                                         : this.props.poitemlist.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_item_master_id ===
                                               row.inv_item_id
                                           ));
@@ -395,7 +340,7 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -403,7 +348,7 @@ class POItemList extends Component {
                                       this.props.poitemlist === undefined
                                         ? []
                                         : this.props.poitemlist.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_master_id ===
                                               row.phar_item_id
                                           ))
@@ -411,7 +356,7 @@ class POItemList extends Component {
                                       this.props.poitemlist === undefined
                                         ? []
                                         : this.props.poitemlist.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_item_master_id ===
                                               row.inv_item_id
                                           ));
@@ -426,8 +371,8 @@ class POItemList extends Component {
                                 );
                               },
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
 
                             {
@@ -440,7 +385,7 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -448,7 +393,7 @@ class POItemList extends Component {
                                       this.props.poitemcategory === undefined
                                         ? []
                                         : this.props.poitemcategory.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_category_id ===
                                               row.phar_item_category
                                           ))
@@ -456,7 +401,7 @@ class POItemList extends Component {
                                       this.props.poitemcategory === undefined
                                         ? []
                                         : this.props.poitemcategory.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_tem_category_id ===
                                               row.inv_item_category_id
                                           ));
@@ -470,7 +415,7 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -478,7 +423,7 @@ class POItemList extends Component {
                                       this.props.poitemcategory === undefined
                                         ? []
                                         : this.props.poitemcategory.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_category_id ===
                                               row.phar_item_category
                                           ))
@@ -486,7 +431,7 @@ class POItemList extends Component {
                                       this.props.poitemcategory === undefined
                                         ? []
                                         : this.props.poitemcategory.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_tem_category_id ===
                                               row.inv_item_category_id
                                           ));
@@ -501,8 +446,8 @@ class POItemList extends Component {
                                 );
                               },
                               others: {
-                                minWidth: 250
-                              }
+                                minWidth: 250,
+                              },
                             },
                             {
                               fieldName:
@@ -514,7 +459,7 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Item Group" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -522,7 +467,7 @@ class POItemList extends Component {
                                       this.props.poitemgroup === undefined
                                         ? []
                                         : this.props.poitemgroup.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_group_id ===
                                               row.phar_item_group
                                           ))
@@ -530,7 +475,7 @@ class POItemList extends Component {
                                       this.props.poitemgroup === undefined
                                         ? []
                                         : this.props.poitemgroup.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_item_group_id ===
                                               row.inv_item_group_id
                                           ));
@@ -544,7 +489,7 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 let display;
 
                                 this.state.po_from === "PHR"
@@ -552,7 +497,7 @@ class POItemList extends Component {
                                       this.props.poitemgroup === undefined
                                         ? []
                                         : this.props.poitemgroup.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_item_group_id ===
                                               row.phar_item_group
                                           ))
@@ -560,7 +505,7 @@ class POItemList extends Component {
                                       this.props.poitemgroup === undefined
                                         ? []
                                         : this.props.poitemgroup.filter(
-                                            f =>
+                                            (f) =>
                                               f.hims_d_inventory_item_group_id ===
                                               row.inv_item_group_id
                                           ));
@@ -573,7 +518,7 @@ class POItemList extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -583,24 +528,27 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Unit Price" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_price, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.unit_price, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_price, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.unit_price, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "total_quantity",
@@ -609,7 +557,19 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Total Qty" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: (row) => {
+                                return (
+                                  <span>{parseFloat(row.total_quantity)}</span>
+                                );
+                              },
+                              editorTemplate: (row) => {
+                                return (
+                                  <span>{parseFloat(row.total_quantity)}</span>
+                                );
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "extended_price",
@@ -618,24 +578,27 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Ext. Price" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_price, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.extended_price, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_price, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.extended_price, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "authorize_quantity",
@@ -644,19 +607,19 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Auth Qty" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return row.authorize_quantity !== ""
                                   ? parseFloat(row.authorize_quantity)
                                   : 0;
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
                                       number: {
                                         allowNegative: false,
-                                        thousandSeparator: ","
+                                        thousandSeparator: ",",
                                       },
                                       value:
                                         row.authorize_quantity !== ""
@@ -670,7 +633,7 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
@@ -679,12 +642,15 @@ class POItemList extends Component {
                                         errormessage:
                                           "Please enter Authorized Quantity ..",
                                         checkvalidation:
-                                          "value ==='' || value ==='0'"
-                                      }
+                                          "value ==='' || value ==='0'",
+                                      },
                                     }}
                                   />
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "sub_discount_percentage",
@@ -693,7 +659,7 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Discount %" }}
                                 />
                               ),
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
@@ -707,7 +673,7 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       },
                                       others: {
                                         disabled: !this.state.authorizeEnable,
@@ -715,15 +681,16 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
-                                      }
+                                        ),
+                                      },
                                     }}
                                   />
                                 );
                               },
                               others: {
-                                minWidth: 100
-                              }
+                                minWidth: 100,
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "sub_discount_amount",
@@ -732,16 +699,16 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Discount Amt." }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.sub_discount_amount, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.sub_discount_amount, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
@@ -755,7 +722,7 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       },
                                       others: {
                                         disabled: !this.state.authorizeEnable,
@@ -763,12 +730,15 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
-                                      }
+                                        ),
+                                      },
                                     }}
                                   />
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "net_extended_cost",
@@ -777,24 +747,27 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Net Ext Cost" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.net_extended_cost, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.net_extended_cost, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
 
                             {
@@ -804,24 +777,27 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_cost, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.unit_cost, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.unit_cost, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.unit_cost, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
 
                             {
@@ -829,45 +805,49 @@ class POItemList extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Outstanding Qty"
+                                    forceLabel: "Outstanding Qty",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return row.quantity_outstanding !== ""
                                   ? parseFloat(row.quantity_outstanding)
                                   : 0;
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return row.quantity_outstanding !== ""
                                   ? parseFloat(row.quantity_outstanding)
                                   : 0;
                               },
                               disabled: true,
                               others: {
-                                minWidth: 130
-                              }
+                                minWidth: 130,
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "rejected_quantity",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Rejected Qty"
+                                    forceLabel: "Rejected Qty",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return row.rejected_quantity !== ""
                                   ? parseFloat(row.rejected_quantity)
                                   : 0;
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return row.rejected_quantity !== ""
                                   ? parseFloat(row.rejected_quantity)
                                   : 0;
                               },
-                              disabled: true
+                              disabled: true,
+                              others: {
+                                filterable: false,
+                              },
                             },
                             {
                               fieldName: "tax_amount",
@@ -876,24 +856,27 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Tax Amt" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.tax_amount, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.tax_amount, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
+                              },
+                              others: {
+                                filterable: false,
+                              },
                             },
 
                             {
@@ -903,41 +886,48 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Total Amt" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.total_amount, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
                               },
-                              editorTemplate: row => {
+                              editorTemplate: (row) => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
-                                      appendSymbol: false
+                                    {GetAmountFormart(row.total_amount, {
+                                      appendSymbol: false,
                                     })}
                                   </span>
                                 );
-                              }
-                            }
+                              },
+                              others: {
+                                filterable: false,
+                              },
+                            },
                           ]}
                           keyId="hims_f_procurement_po_detail_id"
                           dataSource={{
                             data:
                               this.state.po_from === "PHR"
                                 ? this.state.pharmacy_stock_detail
-                                : this.state.inventory_stock_detail
+                                : this.state.inventory_stock_detail,
                           }}
                           isEditable={true}
+                          actions={{
+                            allowDelete: !this.state.dataExitst,
+                          }}
                           byForceEvents={true}
+                          // forceRender={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deletePODetail.bind(this, this, context),
                             onEdit: EditGrid.bind(this, this, context),
                             onCancel: CancelGrid.bind(this, this, context),
-                            onDone: updatePODetail.bind(this, this, context)
+                            onDone: updatePODetail.bind(this, this, context),
                           }}
                         />
                       </div>
@@ -949,34 +939,43 @@ class POItemList extends Component {
                     <div className="row">
                       <div className="col" />
 
-                      <div className="col-lg-5" style={{ textAlign: "right" }}>
+                      <div className="col-lg-6" style={{ textAlign: "right" }}>
                         <div className="row">
-                          <div className="col-lg-4">
+                          <div className="col-lg-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Sub Total"
+                                forceLabel: "Sub Total",
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                           </div>
-                          <div className="col-lg-4">
+                          <div className="col-lg-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Discount Amount"
+                                forceLabel: "Discount Amount",
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.detail_discount)}
+                              {GetAmountFormart(this.state.detail_discount)}
                             </h6>
                           </div>
 
-                          <div className="col-lg-4">
+                          <div className="col-lg-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Net Payable"
+                                forceLabel: "Tax Amount",
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                            <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                          </div>
+
+                          <div className="col-lg-3">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Net Payable",
+                              }}
+                            />
+                            <h6>{GetAmountFormart(this.state.net_payable)}</h6>
                           </div>
                         </div>
                       </div>
@@ -992,48 +991,13 @@ class POItemList extends Component {
   }
 }
 
-{
-  /*{
-  fieldName: "expected_arrival_date",
-  label: (
-    <AlgaehLabel
-      label={{
-        forceLabel: "Exp Arrival Date"
-      }}
-    />
-  ),
-  displayTemplate: row => {
-    return (
-      <span>
-        {dateFormater(
-          this,
-          row.expected_arrival_date
-        )}
-      </span>
-    );
-  },
-  editorTemplate: row => {
-    return (
-      <span>
-        {dateFormater(
-          this,
-          row.expected_arrival_date
-        )}
-      </span>
-    );
-  },
-  others: {
-    minWidth: 130
-  }
-},*/
-}
 function mapStateToProps(state) {
   return {
     poitemlist: state.poitemlist,
     polocations: state.polocations,
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
-    poitemuom: state.poitemuom
+    poitemuom: state.poitemuom,
   };
 }
 
@@ -1044,15 +1008,12 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(POItemList)
+  connect(mapStateToProps, mapDispatchToProps)(POItemList)
 );

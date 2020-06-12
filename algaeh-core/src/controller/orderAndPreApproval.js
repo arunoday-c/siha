@@ -27,7 +27,9 @@ const {
   addPackage,
   getPatientPackage,
   deleteOrderService,
-  insertPhysiotherapyServices
+  insertPhysiotherapyServices,
+  deleteInvOrderedItems,
+  deleteOrderedPackage
 } = onpModels;
 
 export default ({ config, db }) => {
@@ -265,6 +267,29 @@ export default ({ config, db }) => {
       records: req.records
     });
   });
+
+  api.delete("/deleteInvOrderedItems", deleteInvOrderedItems, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.delete("/deleteOrderedPackage", deleteOrderedPackage, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+
+
 
   return api;
 };

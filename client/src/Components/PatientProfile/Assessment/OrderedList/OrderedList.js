@@ -37,10 +37,142 @@ class OrderedList extends PureComponent {
     };
   }
 
-  ShowModel(e) {
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
     this.setState({
-      ...this.state,
-      isOpen: !this.state.isOpen
+      selectedLang: prevLang
+    });
+
+    if (
+      this.props.servicetype === undefined ||
+      this.props.servicetype.length === 0
+    ) {
+      this.props.getServiceTypes({
+        uri: "/serviceType",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "SERVIES_TYPES_GET_DATA",
+          mappingName: "servicetype"
+        }
+      });
+    }
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
+    const { visit_id, current_patient } = Window.global;
+    this.props.getOrderList({
+      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+      method: "GET",
+      data: {
+        visit_id: visit_id //Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "orderedList"
+      }
+    });
+
+    this.props.getConsumableOrderList({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: visit_id //Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "consumableorderedList"
+      }
+    });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: current_patient //Window.global["current_patient"]
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
+      }
+    });
+  }
+
+  // UNSAFE_componentWillReceiveProps(nextProps) {
+  //   if (nextProps.openData !== undefined) {
+  //     this.setState({ openData: nextProps.openData });
+  //   }
+  // }
+
+  ShowModel(e) {
+    if (this.props.chief_complaint === true) {
+      swalMessage({
+        type: "warning",
+        title: "Enter Chief Complaint. Atlest 4 letter"
+      });
+      return;
+    }
+    if (this.props.significant_signs === true) {
+      swalMessage({
+        type: "warning",
+        title: "Enter Significant Signs. Atlest 4 letter"
+      });
+      return;
+    }
+    const { visit_id } = Window.global;
+    algaehApiCall({
+      uri: "/patientRegistration/getVisitServiceAmount",
+      module: "frontDesk",
+      method: "GET",
+      data: {
+        hims_f_patient_visit_id: visit_id //Window.global["visit_id"]
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          let orderedList = this.props.orderedList;
+          let preserviceInput = [];
+          if (orderedList.length > 0) {
+            for (let k = 0; k < orderedList.length; k++) {
+              preserviceInput.push({
+                insured: orderedList[k].insurance_yesno,
+                vat_applicable: this.props.vat_applicable,
+                hims_d_services_id: orderedList[k].hims_d_services_id,
+                service_type_id: orderedList[k].service_type_id,
+                primary_insurance_provider_id:
+                  orderedList[k].insurance_provider_id,
+                primary_network_office_id:
+                  orderedList[k].insurance_network_office_id,
+                primary_network_id: orderedList[k].network_id,
+                approval_amt: orderedList[k].approval_amt,
+                approval_limit_yesno: orderedList[k].approval_limit_yesno,
+                hims_f_ordered_services_id:
+                  orderedList[k].hims_f_ordered_services_id,
+                billed: orderedList[k].billed
+              });
+            }
+          }
+          this.setState({
+            approval_amt: response.data.records[0].ins_services_amount,
+            approval_limit_yesno: response.data.records[0].approval_limit_yesno,
+            preserviceInput: preserviceInput,
+            isOpen: !this.state.isOpen
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -50,11 +182,12 @@ class OrderedList extends PureComponent {
         isPackOpen: !this.state.isPackOpen
       },
       () => {
+        const { current_patient } = Window.global;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: Window.global["current_patient"]
+            patient_id: current_patient //Window.global["current_patient"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -72,11 +205,12 @@ class OrderedList extends PureComponent {
         isOpen: !this.state.isOpen
       },
       () => {
+        const { visit_id } = Window.global;
         this.props.getOrderList({
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id // Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -94,15 +228,41 @@ class OrderedList extends PureComponent {
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
-          const Departmant_Location = _.filter(response.data.records, f => {
-            return (
-              f.hims_d_sub_department_id ===
-              this.props.patient_profile[0].sub_department_id
-            );
-          });
-          this.setState({
-            isConsOpen: !this.state.isConsOpen,
-            inventory_location_id: Departmant_Location[0].inventory_location_id
+          let Depat_data = response.data.records;
+          const { visit_id } = Window.global;
+          algaehApiCall({
+            uri: "/patientRegistration/getVisitServiceAmount",
+            module: "frontDesk",
+            method: "GET",
+            data: {
+              hims_f_patient_visit_id: visit_id //Window.global["visit_id"]
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                const Departmant_Location = _.filter(Depat_data, f => {
+                  return (
+                    f.hims_d_sub_department_id ===
+                    this.props.patient_profile[0].sub_department_id
+                  );
+                });
+
+                this.setState({
+                  isConsOpen: !this.state.isConsOpen,
+                  inventory_location_id:
+                    Departmant_Location[0].inventory_location_id,
+                  approval_amt: response.data.records[0].ins_services_amount,
+                  approval_limit_yesno:
+                    response.data.records[0].approval_limit_yesno
+                  // preserviceInput: preserviceInput
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
           });
         }
       },
@@ -122,6 +282,7 @@ class OrderedList extends PureComponent {
   }
 
   CloseConsumableModel(e) {
+    const { visit_id } = Window.global;
     this.setState(
       {
         isConsOpen: !this.state.isConsOpen
@@ -131,7 +292,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getVisitConsumable",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -176,11 +337,12 @@ class OrderedList extends PureComponent {
         isPackUtOpen: !this.state.isPackUtOpen
       },
       () => {
+        const { current_patient, visit_id } = Window.global;
         this.props.getPakageList({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: Window.global["current_patient"]
+            patient_id: current_patient //Window.global["current_patient"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -191,7 +353,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -202,7 +364,7 @@ class OrderedList extends PureComponent {
           uri: "/orderAndPreApproval/getVisitConsumable",
           method: "GET",
           data: {
-            visit_id: Window.global["visit_id"]
+            visit_id: visit_id //Window.global["visit_id"]
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -281,81 +443,6 @@ class OrderedList extends PureComponent {
     });
   }
 
-  componentDidMount() {
-    let prevLang = getCookie("Language");
-
-    this.setState({
-      selectedLang: prevLang
-    });
-
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    this.props.getServices({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "serviceslist"
-      }
-    });
-
-    this.props.getOrderList({
-      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
-      method: "GET",
-      data: {
-        visit_id: Window.global["visit_id"]
-      },
-      redux: {
-        type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "orderedList"
-      }
-    });
-
-    this.props.getConsumableOrderList({
-      uri: "/orderAndPreApproval/getVisitConsumable",
-      method: "GET",
-      data: {
-        visit_id: Window.global["visit_id"]
-      },
-      redux: {
-        type: "ORDER_SERVICES_GET_DATA",
-        mappingName: "consumableorderedList"
-      }
-    });
-
-    this.props.getPakageList({
-      uri: "/orderAndPreApproval/getPatientPackage",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"]
-      },
-      redux: {
-        type: "PAIENT_PACKAGE_GET_DATA",
-        mappingName: "pakageList"
-      }
-    });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.openData !== undefined) {
-      this.setState({ openData: nextProps.openData });
-    }
-  }
-
   dateFormater(value) {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
@@ -388,15 +475,17 @@ class OrderedList extends PureComponent {
             hims_f_ordered_services_id: row.hims_f_ordered_services_id,
             service_type: service_type,
             trans_package_detail_id: row.trans_package_detail_id,
-            quantity: row.quantity
+            quantity: row.quantity,
+            pre_approval: row.pre_approval
           },
           onSuccess: response => {
+            const { visit_id, current_patient } = Window.global;
             if (response.data.success === true) {
               this.props.getOrderList({
                 uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
                 method: "GET",
                 data: {
-                  visit_id: Window.global["visit_id"]
+                  visit_id: visit_id //Window.global["visit_id"]
                 },
                 redux: {
                   type: "ORDER_SERVICES_GET_DATA",
@@ -408,7 +497,7 @@ class OrderedList extends PureComponent {
                 uri: "/orderAndPreApproval/getPatientPackage",
                 method: "GET",
                 data: {
-                  patient_id: Window.global["current_patient"]
+                  patient_id: current_patient //Window.global["current_patient"]
                 },
                 redux: {
                   type: "PAIENT_PACKAGE_GET_DATA",
@@ -433,14 +522,117 @@ class OrderedList extends PureComponent {
     });
   }
 
+  DeleteInvOrderItems(row) {
+    swal({
+      title: "Are you sure you want to delete this Item?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/orderAndPreApproval/deleteInvOrderedItems",
+          method: "delete",
+          data: {
+            hims_f_ordered_inventory_id: row.hims_f_ordered_inventory_id
+          },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              const { visit_id } = Window.global;
+              this.props.getConsumableOrderList({
+                uri: "/orderAndPreApproval/getVisitConsumable",
+                method: "GET",
+                data: {
+                  visit_id: visit_id //Window.global["visit_id"]
+                },
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "consumableorderedList"
+                }
+              });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
+
+  DeleteOrderedPackage(row) {
+    swal({
+      title: "Are you sure you want to delete this Package?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/orderAndPreApproval/deleteOrderedPackage",
+          method: "delete",
+          data: {
+            hims_f_package_header_id: row.hims_f_package_header_id
+          },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              const { current_patient } = Window.global;
+              this.props.getPakageList({
+                uri: "/orderAndPreApproval/getPatientPackage",
+                method: "GET",
+                data: {
+                  patient_id: current_patient //Window.global["current_patient"]
+                },
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "pakageList"
+                }
+              });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success"
+              });
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
   render() {
     let patient_date =
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
+    const { current_patient, visit_id, provider_id } = Window.global;
     return (
       <div className="hptl-phase1-ordering-services-form">
-        {this.state.openData === "Investigation" ? (
+        {this.props.openData === "Investigation" ? (
           <div>
             <div
               className="col-lg-12"
@@ -495,8 +687,15 @@ class OrderedList extends PureComponent {
                               <i
                                 style={{
                                   pointerEvents:
-                                    row.billed === "N" ? "" : "none",
-                                  opacity: row.billed === "N" ? "" : "0.1"
+                                    row.billed === "N" &&
+                                    row.trans_package_detail_id > 0
+                                      ? ""
+                                      : "none",
+                                  opacity:
+                                    row.billed === "N" &&
+                                    row.trans_package_detail_id > 0
+                                      ? ""
+                                      : "0.1"
                                 }}
                                 className="fas fa-trash-alt"
                                 onClick={this.DeleteOrderService.bind(
@@ -651,7 +850,7 @@ class OrderedList extends PureComponent {
               </div>
             </div>
           </div>
-        ) : this.state.openData === "Consumable" ? (
+        ) : this.props.openData === "Consumable" ? (
           <div>
             <div
               className="col-lg-12"
@@ -672,6 +871,33 @@ class OrderedList extends PureComponent {
                   <AlgaehDataGrid
                     id="Orderd_Consumable"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                // style={{
+                                //   pointerEvents:
+                                //     row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "none",
+                                //   opacity: row.billed && row.trans_package_detail_id > 0 === "N" ? "" : "0.1"
+                                // }}
+                                className="fas fa-trash-alt"
+                                onClick={this.DeleteInvOrderItems.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
                       {
                         fieldName: "created_date",
                         label: (
@@ -842,10 +1068,23 @@ class OrderedList extends PureComponent {
                         ),
                         displayTemplate: row => {
                           return (
-                            <i
-                              className="fas fa-eye"
-                              onClick={this.ShowPackageUtilize.bind(this, row)}
-                            />
+                            <span>
+                              <i
+                                className="fas fa-eye"
+                                onClick={this.ShowPackageUtilize.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+
+                              <i
+                                onClick={this.DeleteOrderedPackage.bind(
+                                  this,
+                                  row
+                                )}
+                                className="fas fa-trash-alt"
+                              />
+                            </span>
                           );
                         },
                         others: {
@@ -989,16 +1228,21 @@ class OrderedList extends PureComponent {
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
+          approval_amt={this.state.approval_amt}
+          approval_limit_yesno={this.state.approval_limit_yesno}
+          preserviceInput={this.state.preserviceInput}
           addNew={true}
+          date_of_birth={this.props.date_of_birth}
+          gender={this.props.gender}
         />
 
         <OrderingPackages
           open={this.state.isPackOpen}
           onClose={this.ClosePackage.bind(this)}
           vat_applicable={this.props.vat_applicable}
-          patient_id={Window.global["current_patient"]}
-          visit_id={Window.global["visit_id"]}
-          provider_id={Window.global["provider_id"]}
+          patient_id={current_patient} //Window.global["current_patient"]}
+          visit_id={visit_id} //Window.global["visit_id"]}
+          provider_id={provider_id} //Window.global["provider_id"]}
           addNew={true}
         />
 
@@ -1007,6 +1251,9 @@ class OrderedList extends PureComponent {
           onClose={this.CloseConsumableModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           inventory_location_id={this.state.inventory_location_id}
+          approval_amt={this.state.approval_amt}
+          approval_limit_yesno={this.state.approval_limit_yesno}
+          // preserviceInput={this.state.preserviceInput}
           addNew={true}
         />
 
@@ -1028,9 +1275,9 @@ class OrderedList extends PureComponent {
           open={this.state.isPackUtOpen}
           onClose={this.ClosePackageUtilize.bind(this)}
           package_detail={this.state.package_detail}
-          patient_id={Window.global["current_patient"]}
-          visit_id={Window.global["visit_id"]}
-          doctor_id={Window.global["provider_id"]}
+          patient_id={current_patient} //Window.global["current_patient"]}
+          visit_id={visit_id} //Window.global["visit_id"]}
+          doctor_id={provider_id} //Window.global["provider_id"]}
           inventory_location_id={this.state.inventory_location_id}
         />
       </div>
@@ -1063,8 +1310,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderedList)
+  connect(mapStateToProps, mapDispatchToProps)(OrderedList)
 );

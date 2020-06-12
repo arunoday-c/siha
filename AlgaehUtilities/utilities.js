@@ -1,37 +1,29 @@
 const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
-const winston = require("winston");
-const path = require("path");
+let winston = require("winston");
+require("winston-mongodb");
+const keys = require("algaeh-keys");
 
-require("winston-daily-rotate-file");
-const gracefulFs = require("graceful-fs");
-const fs = require("fs");
-gracefulFs.gracefulify(fs);
 function algaehUtilities(options) {
   this.options = options;
   this.keys = this.keys != null ? this.keys : require("algaeh-keys").default;
 }
-algaehUtilities.prototype.encryption = function(data) {
+algaehUtilities.prototype.encryption = function (data) {
   try {
-    var stringData = JSON.stringify({
-      ...require("./cryptoData.json"),
-      ...data
-    });
-    return new cryptr(this.keys.SECRETKey).encrypt(stringData);
+    return data;
   } catch (error) {
     throw error;
   }
 };
-algaehUtilities.prototype.decryption = function(data) {
+algaehUtilities.prototype.decryption = function (data) {
   try {
-    var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
-    return JSON.parse(stringData);
+    return data;
   } catch (error) {
     throw error;
   }
 };
 
-algaehUtilities.prototype.getTokenData = function(token) {
+algaehUtilities.prototype.getTokenData = function (token) {
   try {
     var _details = jwt.decode(token, this.keys.SECRETKey);
     return _details;
@@ -39,7 +31,7 @@ algaehUtilities.prototype.getTokenData = function(token) {
     throw error;
   }
 };
-algaehUtilities.prototype.tokenVerify = function(token) {
+algaehUtilities.prototype.tokenVerify = function (token) {
   try {
     var _verify = jwt.verify(token, this.keys.SECRETKey);
     return _verify;
@@ -48,7 +40,7 @@ algaehUtilities.prototype.tokenVerify = function(token) {
   }
 };
 
-algaehUtilities.prototype.httpStatus = function() {
+algaehUtilities.prototype.httpStatus = function () {
   return {
     ok: 200,
     created: 201,
@@ -69,11 +61,11 @@ algaehUtilities.prototype.httpStatus = function() {
     },
     dataBaseNotInitilizedError: () => {
       return generateError(503, "Database is not initilized");
-    }
+    },
   };
 };
 
-algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
+algaehUtilities.prototype.decimalPoints = function (value, decimal_point) {
   decimal_point = decimal_point || 2;
   let data_value = value;
   if (typeof value === "string") {
@@ -85,67 +77,58 @@ algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
   return parseFloat(data_value.toFixed(decimal_point));
 };
 
-algaehUtilities.prototype.logger = function(reqTracker) {
+algaehUtilities.prototype.logger = function (reqTracker) {
   reqTracker = reqTracker || "";
-  var _logPath = path.join(process.cwd(), "/LOGS");
-  if (!fs.existsSync(_logPath)) {
-    fs.mkdirSync(_logPath);
-  }
+
   var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
-  var transport = new winston.transports.DailyRotateFile({
-    filename: `${_logPath}/%DATE%.log`,
-    datePattern: "YYYY-MM-DD-HH",
-    zippedArchive: true,
-    maxSize: "20m",
-    maxFiles: "14d",
-    level: _levels,
-    eol: "\r\n"
-  });
-  var colorizer = winston.format.colorize();
-  colorizer.addColors({
-    error: "red",
-    warn: "yellow",
-    info: "cyan",
-    debug: "green"
-  });
+  //Create transports;
+  let transport = undefined;
+  const { mongoDb } = keys.default;
+
+  // transport = new winston.transports.MongoDB({
+  //   db: mongoDb.connectionURI,
+  //   options: { useUnifiedTopology: true, poolSize: 10 },
+  //   collection: "audit_logs",
+  //   tryReconnect: true
+  // });
+  if (process.env.NODE_ENV === "development") {
+    transport = new winston.transports.Console({
+      colorize: true,
+      format: winston.format.simple(),
+    });
+  } else {
+    transport = new winston.transports.MongoDB({
+      db: mongoDb.connectionURI,
+      options: { useUnifiedTopology: true, poolSize: 10 },
+      collection: "audit_logs",
+      tryReconnect: true,
+    });
+  }
+
   var logger = winston.createLogger({
-    handleExceptions: true,
-    format: winston.format.combine(
-      winston.format.timestamp(),
-      // winston.format.prettyPrint(),
-      // winston.format.colorize(),
-      winston.format.json(),
-      winston.format.printf(msg => {
-        var _data = colorizer.colorize(
-          msg.level,
-          `{${new Date(msg.timestamp).toLocaleString()} - ${msg.level}:   -${
-            msg.message
-          } , data -${msg.data} } `
-        );
-        return _data;
-      })
-    ),
-    transports: [transport]
+    transports: [transport],
+    format: winston.format.json(),
   });
   return {
     log: (message, obj, logtype) => {
       logtype = logtype || "debug";
-      var _data =
-        obj != null
-          ? { data: typeof obj == "string" ? obj : JSON.stringify(obj) }
-          : {};
-
       logger.log({
         level: logtype,
-        message: message,
-        ..._data
+        message,
+        metadata: obj,
       });
+      logger.close();
       return this;
-    }
+    },
   };
 };
 
-algaehUtilities.prototype.getCurrencyFormart = function(value, CurrencyDetail) {
+algaehUtilities.prototype.getCurrencyFormart = function (
+  value,
+  CurrencyDetail,
+  addSymbol
+) {
+  addSymbol = addSymbol || true;
   const settings = CurrencyDetail;
 
   const precesions =
@@ -167,11 +150,7 @@ algaehUtilities.prototype.getCurrencyFormart = function(value, CurrencyDetail) {
     const k = Math.pow(10, prec);
     return Math.round(n * k) / k;
   };
-  let s = prec
-    ? toFixedFix(n, prec)
-    : Math.round(n)
-        .toString()
-        .split(".");
+  let s = prec ? toFixedFix(n, prec) : Math.round(n).toString().split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
@@ -191,6 +170,9 @@ algaehUtilities.prototype.getCurrencyFormart = function(value, CurrencyDetail) {
       : parseFloat(s).toFixed(precesions);
   let currency = result;
 
+  if (addSymbol === false) {
+    return currency;
+  }
   switch (settings.symbol_position) {
     case "BWS":
       currency = settings.currency_symbol + result;

@@ -5,6 +5,7 @@ import { LINQ } from "node-linq";
 import extend from "extend";
 import _ from "lodash";
 import mysql from "mysql";
+import moment from "moment";
 
 export default {
   newReceiptData: (req, res, next) => {
@@ -47,8 +48,7 @@ export default {
               "card_check_number",
               "expiry_date",
               "pay_type",
-              "amount",
-              "card_type"
+              "amount"
             ];
 
             _mysql
@@ -108,10 +108,12 @@ export default {
         inputParam.billdetails == null ||
         inputParam.billdetails.length == 0
       ) {
-        const errorGen = httpStatus.generateError(
-          httpStatus.badRequest,
-          "Please select atleast one service."
-        );
+        const errorGen = utilities
+          .httpStatus()
+          .generateError(
+            httpStatus.badRequest,
+            "Please select atleast one service."
+          );
         _mysql.rollBackTransaction(() => {
           next(errorGen);
         });
@@ -121,10 +123,12 @@ export default {
         inputParam.sheet_discount_amount != 0 &&
         inputParam.bill_comments == ""
       ) {
-        const errorGene = httpStatus.generateError(
-          httpStatus.badRequest,
-          "Please enter sheet level discount comments. "
-        );
+        const errorGene = utilities
+          .httpStatus()
+          .generateError(
+            httpStatus.badRequest,
+            "Please enter sheet level discount comments. "
+          );
 
         _mysql.rollBackTransaction(() => {
           next(errorGene);
@@ -141,10 +145,10 @@ export default {
               incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
-              , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
+              , patient_tax, s_patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit , created_by, created_date, updated_by, updated_date, copay_amount,\
               deductable_amount,hospital_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -171,6 +175,7 @@ export default {
             inputParam.company_payable,
             inputParam.sec_company_payable,
             inputParam.patient_tax,
+            inputParam.s_patient_tax,
             inputParam.company_tax,
             inputParam.sec_company_tax,
             inputParam.net_tax,
@@ -253,6 +258,7 @@ export default {
             "deductable_percentage",
             "tax_inclusive",
             "patient_tax",
+            "s_patient_tax",
             "company_tax",
             "total_tax",
             "patient_resp",
@@ -295,6 +301,7 @@ export default {
                 deductable_percentage: s.deductable_percentage,
                 tax_inclusive: s.tax_inclusive == 0 ? "N" : s.tax_inclusive,
                 patient_tax: s.patient_tax,
+                s_patient_tax: s.s_patient_tax,
                 company_tax: s.company_tax,
                 total_tax: s.total_tax,
                 patient_resp: s.patient_resp,
@@ -373,10 +380,12 @@ export default {
         req.body.intCalculateall == undefined ? req.body.billdetails : req.body;
       if (inputParam.length == 0) {
         next(
-          httpStatus.generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service"
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service"
+            )
         );
       }
       let sendingObject = {};
@@ -435,6 +444,10 @@ export default {
           parseFloat(d.patient_tax)
         );
 
+        sendingObject.s_patient_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.s_patient_tax)
+        );
+
         sendingObject.company_tax = new LINQ(inputParam).Sum(d =>
           parseFloat(d.company_tax)
         );
@@ -487,6 +500,12 @@ export default {
           sendingObject.patient_tax,
           decimal_places
         );
+
+        sendingObject.s_patient_tax = utilities.decimalPoints(
+          sendingObject.s_patient_tax,
+          decimal_places
+        );
+
         sendingObject.company_tax = utilities.decimalPoints(
           sendingObject.company_tax,
           decimal_places
@@ -592,10 +611,12 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service."
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            )
         );
       }
       let Module_Name = "";
@@ -610,14 +631,12 @@ export default {
       // console.log("deination:", req.mySQl);
       _mysql
         .generateRunningNumber({
-          modules: [Module_Name],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: [Module_Name],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
+          req.body["receipt_number"] = generatedNumbers[Module_Name];
           _mysql
             .executeQuery({
               query:
@@ -625,7 +644,7 @@ export default {
                   created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type,hospital_id) \
                   VALUES (?,?,?,?,?,?,?,?,?,?,?)",
               values: [
-                generatedNumbers[0],
+                generatedNumbers[Module_Name],
                 new Date(),
                 inputParam.total_amount,
                 req.userIdentity.algaeh_d_app_user_id,
@@ -656,8 +675,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 _mysql
@@ -723,17 +741,8 @@ export default {
                             printQuery: true
                           })
                           .then(update_advance => {
-                            // _mysql.commitTransaction(() => {
-                            //   _mysql.releaseConnection();
-                            //   req.records = {
-                            //     receipt_number: generatedNumbers[0],
-                            //     total_advance_amount: inputParam.advance_amount
-                            //   };
-                            //   next();
-                            // });
-
                             req.records = {
-                              receipt_number: generatedNumbers[0],
+                              receipt_number: generatedNumbers[Module_Name],
                               total_advance_amount: inputParam.advance_amount
                             };
                             next();
@@ -812,7 +821,7 @@ export default {
           internal_error: true,
           message: "No receipt details"
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -1744,10 +1753,12 @@ export default {
         inputParam.receiptdetails.length == 0
       ) {
         next(
-          httpStatus.generateError(
-            httpStatus.badRequest,
-            "Please select atleast one service."
-          )
+          utilities
+            .httpStatus()
+            .generateError(
+              httpStatus.badRequest,
+              "Please select atleast one service."
+            )
         );
       }
       let Module_Name = "";
@@ -1760,12 +1771,9 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: [Module_Name],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: [Module_Name],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           _mysql
@@ -1775,7 +1783,7 @@ export default {
                   created_by, created_date, updated_by, updated_date, shift_id, pay_type,hospital_id) \
                   VALUES (?,?,?,?,?,?,?,?,?,?)",
               values: [
-                generatedNumbers[0],
+                generatedNumbers[Module_Name],
                 new Date(),
                 inputParam.total_amount,
                 req.userIdentity.algaeh_d_app_user_id,
@@ -1800,8 +1808,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 _mysql
@@ -1887,7 +1894,7 @@ export default {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = {
-                                receipt_number: generatedNumbers[0],
+                                receipt_number: generatedNumbers[Module_Name],
                                 total_advance_amount: inputParam.advance_amount
                               };
                               next();
@@ -1934,19 +1941,8 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
-
-    utilities.logger().log("updatePatientPackage: ");
     try {
       let inputParam = req.body;
-
-      utilities.logger().log("consultation data : ", inputParam.consultation);
-
-      utilities
-        .logger()
-        .log("updatePatientPackage visit_id : ", inputParam.visit_id);
-      utilities
-        .logger()
-        .log("updatePatientPackage doctor_id : ", inputParam.doctor_id);
 
       if (inputParam.consultation == "Y") {
         for (let i = 0; i < inputParam.package_details.length; i++) {
@@ -1954,8 +1950,6 @@ export default {
           inputParam.package_details[i].doctor_id = inputParam.doctor_id;
         }
       }
-
-      utilities.logger().log("package_details: ", inputParam.package_details);
       req.body.incharge_or_provider = req.body.doctor_id;
       req.body.billed = "N";
       let qry = "";
@@ -1994,13 +1988,6 @@ export default {
               if (pack_results.length > 0) {
                 strQuery = ", `closed`='Y', closed_type='D' ";
               }
-
-              utilities
-                .logger()
-                .log(
-                  "actual_utilize_amount: ",
-                  inputParam.actual_utilize_amount
-                );
               _mysql
                 .executeQuery({
                   query:
@@ -2038,9 +2025,6 @@ export default {
                       return f.service_type_id == 4;
                     }
                   );
-
-                  utilities.logger().log("_services : ", _services);
-
                   insertOrderServices({
                     services: _services,
                     _mysql: _mysql,
@@ -2049,11 +2033,7 @@ export default {
                     req: req
                   })
                     .then(Order_Services => {
-                      utilities
-                        .logger()
-                        .log("_inv_services : ", _inv_services.length);
                       if (_inv_services.length > 0) {
-                        utilities.logger().log("IncludeValues : ");
                         let IncludeValues = [
                           "patient_id",
                           "visit_id",
@@ -2103,12 +2083,13 @@ export default {
                               created_date: new Date(),
                               updated_by: req.userIdentity.algaeh_d_app_user_id,
                               updated_date: new Date(),
-                              hospital_id: req.userIdentity["x-branch"]
+                              hospital_id: req.userIdentity.hospital_id
                             },
                             bulkInsertOrUpdate: true,
                             printQuery: true
                           })
                           .then(inv_order_detail => {
+
                             req.records = inv_order_detail;
                             next();
                           })
@@ -2118,6 +2099,8 @@ export default {
                             });
                           });
                       } else {
+                        req.records = {}
+
                         next();
                       }
                     })
@@ -2191,16 +2174,12 @@ export default {
 
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
                  copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
-               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${
-                 req.userIdentity.hospital_id
-               }\
+               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${req.userIdentity.hospital_id}\
                and hims_d_insurance_network_office_id in (${network_office_ids});\
                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
                deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
                from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
-               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${
-                 req.userIdentity.hospital_id
-               }\
+               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${req.userIdentity.hospital_id}\
                and SI.insurance_id in (${insurance_provider_ids}) and\
                SI.services_id in (${service_ids})  and SI.record_status='A' and IP.record_status='A';\
                select SIN.network_id ,SIN.services_id,IP.insurance_provider_name, IP.company_service_price_type, NET.network_type,\
@@ -2208,20 +2187,19 @@ export default {
                net_amount,gross_amt from  hims_d_services_insurance_network SIN\
                inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
-               where   SIN.hospital_id=${
-                 req.userIdentity.hospital_id
-               } and SIN.network_id in (${network_ids})\
+               where   SIN.hospital_id=${req.userIdentity.hospital_id} and SIN.network_id in (${network_ids})\
                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
           }
-
+          // req.userIdentity.hospital_id,
+          // hospital_id=? and
           _mysql
             .executeQuery({
               query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
              service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
              vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
-             where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
-              values: [req.userIdentity.hospital_id, service_ids],
-              printQuery: false
+             where hims_d_services_id in (?);${strQuery}`,
+              values: [service_ids],
+              printQuery: true
             })
             .then(result => {
               _mysql.releaseConnection();
@@ -2231,6 +2209,7 @@ export default {
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
               let apr_amount_bulk = 0;
+              // let total_approal_amount = 0;
               for (let i = 0; i < input.length; i++) {
                 let servicesDetails = input[i];
 
@@ -2242,22 +2221,21 @@ export default {
                 let unit_cost =
                   servicesDetails.unit_cost == undefined
                     ? 0
-                    : servicesDetails.unit_cost;
+                    : parseFloat(servicesDetails.unit_cost);
 
                 let from_pos = servicesDetails.from_pos;
 
-                let zeroBill =
-                  servicesDetails.zeroBill == undefined
-                    ? false
-                    : servicesDetails.zeroBill;
+                // let zeroBill =
+                //   servicesDetails.zeroBill == undefined
+                //     ? false
+                //     : servicesDetails.zeroBill;
 
                 let FollowUp =
                   servicesDetails.FollowUp == undefined
                     ? false
                     : servicesDetails.FollowUp;
                 let gross_amount = 0,
-                  net_amout = 0,
-                  sec_unit_cost = 0;
+                  net_amout = 0;
 
                 let patient_resp = 0,
                   patient_payable = 0;
@@ -2275,7 +2253,8 @@ export default {
                 let patient_tax = 0,
                   company_tax = 0,
                   sec_company_tax = 0,
-                  total_tax = 0;
+                  total_tax = 0,
+                  s_patient_tax = 0;
 
                 let after_dect_amout = 0,
                   deductable_percentage = 0,
@@ -2283,35 +2262,35 @@ export default {
 
                 let sec_deductable_percentage = 0,
                   sec_deductable_amount = 0;
-                let conversion_factor =
-                  servicesDetails.conversion_factor == undefined
-                    ? 0
-                    : servicesDetails.conversion_factor;
+                // let conversion_factor =
+                //   servicesDetails.conversion_factor == undefined
+                //     ? 0
+                //     : servicesDetails.conversion_factor;
 
                 let quantity =
                   servicesDetails.quantity == undefined
                     ? 1
-                    : servicesDetails.quantity;
+                    : parseFloat(servicesDetails.quantity);
 
                 let discount_amout =
                   servicesDetails.discount_amout == undefined
                     ? 0
-                    : servicesDetails.discount_amout;
+                    : parseFloat(servicesDetails.discount_amout);
 
                 let discount_percentage =
                   servicesDetails.discount_percentage == undefined
                     ? 0
-                    : servicesDetails.discount_percentage;
+                    : parseFloat(servicesDetails.discount_percentage);
 
                 let insured =
                   servicesDetails.insured == undefined
                     ? "N"
                     : servicesDetails.insured;
 
-                let sec_insured =
-                  servicesDetails.sec_insured == undefined
-                    ? "N"
-                    : servicesDetails.sec_insured;
+                // let sec_insured =
+                //   servicesDetails.sec_insured == undefined
+                //     ? "N"
+                //     : servicesDetails.sec_insured;
 
                 let bulkProcess =
                   servicesDetails.bulkProcess == undefined
@@ -2334,7 +2313,7 @@ export default {
                 let approved_amount =
                   servicesDetails.approved_amount == undefined
                     ? 0
-                    : servicesDetails.approved_amount;
+                    : parseFloat(servicesDetails.approved_amount);
 
                 let pre_approval =
                   servicesDetails.pre_approval == undefined
@@ -2347,6 +2326,10 @@ export default {
                 let ser_gross_amt = 0;
                 let icd_code = "";
                 let covered = "Y";
+                let billed =
+                  servicesDetails.billed == undefined
+                    ? "N"
+                    : servicesDetails.billed;
                 let preapp_limit_amount =
                   servicesDetails.preapp_limit_amount == undefined
                     ? 0
@@ -2369,7 +2352,7 @@ export default {
                     prices = allCompany_price.find(item => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2419,15 +2402,24 @@ export default {
                     : records.cpt_code;
 
                 if (insured == "Y" && policydtls.covered == "Y") {
-                  ser_net_amount = policydtls.net_amount;
-                  ser_gross_amt = policydtls.gross_amt;
-
-                  if (policydtls.company_service_price_type == "N") {
-                    unit_cost =
-                      unit_cost != 0 ? unit_cost : policydtls.net_amount;
+                  if (FollowUp === true) {
+                    ser_net_amount = 0;
+                    ser_gross_amt = 0;
+                    unit_cost = 0;
                   } else {
-                    unit_cost =
-                      unit_cost != 0 ? unit_cost : policydtls.gross_amt;
+                    ser_net_amount = policydtls.net_amount;
+                    ser_gross_amt = policydtls.gross_amt;
+                    if (policydtls.company_service_price_type == "N") {
+                      unit_cost =
+                        unit_cost != 0
+                          ? unit_cost
+                          : parseFloat(policydtls.net_amount);
+                    } else {
+                      unit_cost =
+                        unit_cost != 0
+                          ? unit_cost
+                          : parseFloat(policydtls.gross_amt);
+                    }
                   }
 
                   // if (conversion_factor != 0) {
@@ -2447,16 +2439,18 @@ export default {
                       decimal_places
                     );
                   }
-                  net_amout = gross_amount - discount_amout;
+                  net_amout =
+                    parseFloat(gross_amount) - parseFloat(discount_amout);
                   net_amout = utilities.decimalPoints(
                     net_amout,
                     decimal_places
                   );
+                  console.log("copay_status", policydtls.copay_status);
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
                     copay_percentage =
-                      (parseFloat(copay_amount) / net_amout) * 100;
+                      (parseFloat(copay_amount) / parseFloat(net_amout)) * 100;
                   } else {
                     // utilities
                     //   .logger()
@@ -2546,74 +2540,107 @@ export default {
                       copay_percentage = policydtls.copay_percent;
                     }
 
+                    console.log("deductable_percentage", deductable_percentage);
                     deductable_amount =
-                      (net_amout * deductable_percentage) / 100;
+                      deductable_percentage !== null
+                        ? (parseFloat(net_amout) *
+                          parseFloat(deductable_percentage)) /
+                        100
+                        : 0;
 
                     deductable_amount = utilities.decimalPoints(
                       deductable_amount,
                       decimal_places
                     );
-                    after_dect_amout = net_amout - deductable_amount;
-                    copay_amount = (after_dect_amout * copay_percentage) / 100;
+                    after_dect_amout =
+                      parseFloat(net_amout) - parseFloat(deductable_amount);
+                    copay_amount =
+                      (parseFloat(after_dect_amout) *
+                        parseFloat(copay_percentage)) /
+                      100;
                     copay_amount = utilities.decimalPoints(
                       copay_amount,
                       decimal_places
                     );
                   }
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof patient_resp);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof copay_amount);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", typeof deductable_amount);
+
+                  console.log("patient_resp", patient_resp);
+                  console.log("copay_amount", copay_amount);
+                  console.log("deductable_amount", deductable_amount);
+                  patient_resp =
+                    parseFloat(copay_amount) + parseFloat(deductable_amount);
+
                   utilities
                     .logger()
                     .log("service_type_id: ", typeof patient_resp);
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof copay_amount);
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof deductable_amount);
 
-                  // console.log(typeof patient_resp);
-                  // console.log(typeof copay_amount);
-                  // console.log(typeof deductable_amount);
-                  patient_resp = copay_amount + deductable_amount;
-
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof patient_resp);
-
-                  comapany_resp = net_amout - patient_resp;
+                  comapany_resp =
+                    parseFloat(net_amout) - parseFloat(patient_resp);
                   comapany_resp = utilities.decimalPoints(
                     comapany_resp,
                     decimal_places
                   );
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", typeof comapany_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax =
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
                       decimal_places
                     );
                   }
+                  utilities
+                    .logger()
+                    .log("vat_applicable: ", records.vat_applicable);
+                  if (records.vat_applicable == "Y") {
+                    s_patient_tax =
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
+
+                    s_patient_tax = utilities.decimalPoints(
+                      patient_tax,
+                      decimal_places
+                    );
+                  }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = (comapany_resp * records.vat_percent) / 100;
+                    company_tax =
+                      (parseFloat(comapany_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
                     company_tax = utilities.decimalPoints(
                       company_tax,
                       decimal_places
                     );
                   }
-                  total_tax = patient_tax + company_tax;
+                  total_tax = parseFloat(patient_tax) + parseFloat(company_tax);
                   // total_tax = total_tax.toFixed(decimal_places);
-                  patient_payable = patient_resp + patient_tax;
+                  patient_payable =
+                    parseFloat(patient_resp) + parseFloat(patient_tax);
                   // patient_payable = patient_payable.toFixed(decimal_places);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
-                    let diff_val = approved_amount - comapany_resp;
-                    patient_payable = patient_payable + diff_val;
-                    patient_resp = patient_resp + diff_val;
-                    comapany_resp = comapany_resp - diff_val;
+                    let diff_val =
+                      parseFloat(approved_amount) - parseFloat(comapany_resp);
+                    patient_payable =
+                      parseFloat(patient_payable) + parseFloat(diff_val);
+                    patient_resp =
+                      parseFloat(patient_resp) + parseFloat(diff_val);
+                    comapany_resp =
+                      parseFloat(comapany_resp) - parseFloat(diff_val);
 
                     patient_payable = utilities.decimalPoints(
                       patient_payable,
@@ -2629,9 +2656,11 @@ export default {
                     );
                   }
 
-                  company_payble = net_amout - patient_resp;
+                  company_payble =
+                    parseFloat(net_amout) - parseFloat(patient_resp);
 
-                  company_payble = company_payble + company_tax;
+                  company_payble =
+                    parseFloat(company_payble) + parseFloat(company_tax);
 
                   company_payble = utilities.decimalPoints(
                     company_payble,
@@ -2646,44 +2675,37 @@ export default {
                         parseFloat(apr_amount_bulk) +
                         parseFloat(company_payble);
 
-                      approval_amt = apr_amount_bulk;
+                      approval_amt =
+                        parseFloat(approval_amt) + parseFloat(apr_amount_bulk);
                     } else {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);
                     }
-
-                    utilities.logger().log("approval_amt: ", approval_amt);
-                    utilities.logger().log("company_payble: ", company_payble);
-                    utilities
-                      .logger()
-                      .log("preapp_limit_amount: ", preapp_limit_amount);
                     if (approval_amt > preapp_limit_amount) {
-                      utilities.logger().log("enter: ");
                       preapp_limit_exceed = "Y";
                     }
-                    utilities
-                      .logger()
-                      .log("preapp_limit_exceed: ", preapp_limit_exceed);
                   }
 
                   //If primary and secondary exists
                 } else {
                   if (FollowUp === true) {
                     unit_cost =
-                      unit_cost != 0 ? unit_cost : records.followup_free_fee;
+                      unit_cost != 0
+                        ? parseFloat(unit_cost)
+                        : parseFloat(records.followup_free_fee);
                   } else {
                     unit_cost =
                       from_pos == "Y"
-                        ? unit_cost
+                        ? parseFloat(unit_cost)
                         : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
-                  gross_amount = quantity * unit_cost;
+                  gross_amount = quantity * parseFloat(unit_cost);
 
                   gross_amount = utilities.decimalPoints(
                     gross_amount,
@@ -2691,34 +2713,52 @@ export default {
                   );
 
                   if (discount_amout > 0) {
-                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage =
+                      (parseFloat(discount_amout) / parseFloat(gross_amount)) *
+                      100;
                   } else if (discount_percentage > 0) {
-                    discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout =
+                      (parseFloat(gross_amount) *
+                        parseFloat(discount_percentage)) /
+                      100;
                     discount_amout = utilities.decimalPoints(
                       discount_amout,
                       decimal_places
                     );
                   }
-                  net_amout = gross_amount - discount_amout;
-                  patient_resp = net_amout;
+                  net_amout =
+                    parseFloat(gross_amount) - parseFloat(discount_amout);
+                  patient_resp = parseFloat(net_amout);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax =
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
 
                     patient_tax = utilities.decimalPoints(
                       patient_tax,
                       decimal_places
                     );
-                    total_tax = patient_tax;
+                    total_tax = parseFloat(patient_tax);
                   }
 
-                  // patient_payable = net_amout + patient_tax;
-                  patient_payable = patient_resp + patient_tax;
+                  if (records.vat_applicable === "Y") {
+                    s_patient_tax =
+                      (parseFloat(patient_resp) *
+                        parseFloat(records.vat_percent)) /
+                      100;
+
+                    s_patient_tax = utilities.decimalPoints(
+                      s_patient_tax,
+                      decimal_places
+                    );
+                  }
+
+                  patient_payable =
+                    parseFloat(patient_resp) + parseFloat(patient_tax);
                 }
 
-                // }
-                //--------------------------------------
-                console.log("fine:calculated bill details");
                 let out = extend(
                   {
                     hims_f_billing_details_id: null,
@@ -2738,13 +2778,13 @@ export default {
                     deductable_percentage: 0,
                     tax_inclusive: "N",
                     patient_tax: 0,
+                    s_patient_tax: 0,
                     company_tax: 0,
                     total_tax: 0,
                     patient_resp: 0,
                     patient_payable: 0,
                     comapany_resp: 0,
                     company_payble: 0,
-                    // sec_company: 0,
                     sec_deductable_percentage: 0,
                     sec_deductable_amount: 0,
                     sec_company_res: 0,
@@ -2756,6 +2796,7 @@ export default {
                   {
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
+                    insurance_service_name: records.service_name,
                     services_id: records.hims_d_services_id,
                     physiotherapy_service: records.physiotherapy_service,
                     quantity: quantity,
@@ -2772,6 +2813,7 @@ export default {
                     comapany_resp: comapany_resp,
                     company_payble: company_payble,
                     patient_tax: patient_tax,
+                    s_patient_tax: s_patient_tax,
                     company_tax: company_tax,
                     sec_company_tax: sec_company_tax,
                     total_tax: total_tax,
@@ -2806,14 +2848,24 @@ export default {
                     package_visit_type: servicesDetails.package_visit_type,
                     package_type: servicesDetails.package_type,
                     actual_amount: servicesDetails.actual_amount,
-                    pack_expiry_date: servicesDetails.expiry_date
+                    pack_expiry_date: servicesDetails.expiry_date,
+                    hims_f_ordered_services_id:
+                      servicesDetails.hims_f_ordered_services_id,
+                    billed: billed
                   }
                 );
 
                 outputArray.push(out);
 
                 if (i == input.length - 1) {
-                  req.records = { billdetails: outputArray };
+                  let total_approal_amount = _.maxBy(outputArray, f => {
+                    return f.approval_amt;
+                  });
+                  // console.log("total_approal_amount: ", total_approal_amount)
+                  req.records = {
+                    billdetails: outputArray,
+                    approval_amt: total_approal_amount.approval_amt
+                  };
                   next();
                 }
               }
@@ -2939,6 +2991,674 @@ export default {
     } catch (e) {
       reject(e);
       next(e);
+    }
+  },
+
+  //created by:IRFAN
+  addtoDayEnd_backup_8_feb_2020: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+          and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: true
+        })
+        .then(product_type => {
+          if (product_type.length == 1) {
+            const inputParam = req.body;
+            const servicesIds = ["0"];
+            if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+              inputParam.billdetails.forEach(item => {
+                servicesIds.push(item.services_id);
+              });
+            }
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
+            SELECT hims_d_services_id,service_name,head_id,child_id,\
+            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);",
+                values: [servicesIds],
+                printQuery: true
+              })
+              .then(Result => {
+                const controls = Result[0];
+                const serviceData = Result[1];
+
+                const OP_DEP = controls.find(f => {
+                  return f.account == "OP_DEP";
+                });
+
+                const CIH_OP = controls.find(f => {
+                  return f.account == "CIH_OP";
+                });
+                const OUTPUT_TAX = controls.find(f => {
+                  return f.account == "OUTPUT_TAX";
+                });
+                const OP_REC = controls.find(f => {
+                  return f.account == "OP_REC";
+                });
+                const CARD_SETTL = controls.find(f => {
+                  return f.account == "CARD_SETTL";
+                });
+
+                let voucher_type = "";
+                let narration = "";
+                let amount = 0;
+
+                const EntriesArray = [];
+                if (inputParam.transaction_type == "AD") {
+                  voucher_type = "receipt";
+
+                  narration =
+                    " Collected Advance From Patient:" +
+                    inputParam.patient_code;
+
+                  amount = inputParam.total_amount;
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.total_amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                } else if (inputParam.transaction_type == "RF") {
+                  voucher_type = "payment";
+
+                  narration = " Refund to Patient:" + inputParam.patient_code;
+                  amount = inputParam.total_amount;
+
+                  // DECREASE PATIENT PAYABLE
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: inputParam.total_amount,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  // DECREASE CASH IN HAND
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: CIH_OP.head_id,
+                    child_id: CIH_OP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+                } else {
+                  voucher_type = "sales";
+
+                  amount = inputParam.receiveable_amount;
+                  narration = "Patient:" + inputParam.patient_code;
+
+                  //BOOKING INCOME AND TAX
+                  serviceData.forEach(curService => {
+                    narration =
+                      narration +
+                      ", Booking Income for " +
+                      curService.service_name;
+
+                    const bill = inputParam.billdetails.find(f => {
+                      if (f.services_id == curService.hims_d_services_id)
+                        return f;
+                    });
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: curService.head_id,
+                      child_id: curService.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_resp,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OUTPUT_TAX.head_id,
+                      child_id: OUTPUT_TAX.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_tax,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  });
+
+                  //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+                  if (inputParam.advance_adjust > 0) {
+                    narration =
+                      narration +
+                      ", Adjusting Advance  Amount of " +
+                      inputParam.advance_adjust;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.advance_adjust,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+                  //PROVING OP SERVICE ON CREDIT
+                  if (inputParam.credit_amount > 0) {
+                    narration =
+                      narration +
+                      ", Providng OP Service On Credit for Amount " +
+                      inputParam.credit_amount;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_REC.head_id,
+                      child_id: OP_REC.child_id,
+                      debit_amount: inputParam.credit_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+
+                  //INCREASING CASH IN CAND AND BANK
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                }
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      new Date(),
+                      amount,
+                      voucher_type,
+                      inputParam.receipt_header_id,
+                      inputParam.receipt_number,
+                      inputParam.ScreenCode,
+                      narration,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ],
+                    printQuery: true
+                  })
+                  .then(headerDayEnd => {
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: EntriesArray,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          year: year,
+                          month: month,
+                          day_end_header_id: headerDayEnd.insertId
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  //created by:IRFAN
+  addtoDayEnd: (req, res, next) => {
+    try {
+      const _options = req.connection == null ? {} : req.connection;
+
+      const _mysql = new algaehMysql(_options);
+      // const utilities = new algaehUtilities();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+          and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: true
+        })
+        .then(product_type => {
+          if (product_type.length == 1) {
+            const inputParam = req.body;
+            const servicesIds = ["0"];
+            if (inputParam.billdetails && inputParam.billdetails.length > 0) {
+              inputParam.billdetails.forEach(item => {
+                servicesIds.push(item.services_id);
+              });
+            }
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
+            account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
+            SELECT hims_d_services_id,service_name,head_id,child_id,\
+            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
+            select cost_center_type, cost_center_required from finance_options limit 1;",
+                values: [servicesIds],
+                printQuery: true
+              })
+              .then(Result => {
+                const controls = Result[0];
+                const serviceData = Result[1];
+
+                const OP_DEP = controls.find(f => {
+                  return f.account == "OP_DEP";
+                });
+
+                const CIH_OP = controls.find(f => {
+                  return f.account == "CIH_OP";
+                });
+                const OUTPUT_TAX = controls.find(f => {
+                  return f.account == "OUTPUT_TAX";
+                });
+                const OP_REC = controls.find(f => {
+                  return f.account == "OP_REC";
+                });
+                const CARD_SETTL = controls.find(f => {
+                  return f.account == "CARD_SETTL";
+                });
+
+                let voucher_type = "";
+                let narration = "";
+                let amount = 0;
+
+                const EntriesArray = [];
+                if (inputParam.transaction_type == "AD") {
+                  voucher_type = "receipt";
+
+                  narration =
+                    " Collected Advance From Patient:" +
+                    inputParam.patient_code;
+
+                  amount = inputParam.total_amount;
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: inputParam.total_amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                } else if (inputParam.transaction_type == "RF") {
+                  voucher_type = "payment";
+
+                  narration = " Refund to Patient:" + inputParam.patient_code;
+                  amount = inputParam.total_amount;
+
+                  // DECREASE PATIENT PAYABLE
+
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: OP_DEP.head_id,
+                    child_id: OP_DEP.child_id,
+                    debit_amount: inputParam.total_amount,
+                    payment_type: "DR",
+                    credit_amount: 0,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+
+                  // DECREASE CASH IN HAND
+                  EntriesArray.push({
+                    payment_date: new Date(),
+                    head_id: CIH_OP.head_id,
+                    child_id: CIH_OP.child_id,
+                    debit_amount: 0,
+                    payment_type: "CR",
+                    credit_amount: amount,
+                    hospital_id: req.userIdentity.hospital_id
+                  });
+                } else {
+                  voucher_type = "sales";
+
+                  amount = inputParam.receiveable_amount;
+                  narration = "Patient:" + inputParam.patient_code;
+
+                  //BOOKING INCOME AND TAX
+                  serviceData.forEach(curService => {
+                    narration =
+                      narration +
+                      ", Booking Income for " +
+                      curService.service_name;
+
+                    const bill = inputParam.billdetails.find(f => {
+                      if (f.services_id == curService.hims_d_services_id)
+                        return f;
+                    });
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: curService.head_id,
+                      child_id: curService.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: bill.patient_resp,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+
+                    if (parseFloat(bill.patient_tax) > 0) {
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: OUTPUT_TAX.head_id,
+                        child_id: OUTPUT_TAX.child_id,
+                        debit_amount: 0,
+                        payment_type: "CR",
+                        credit_amount: bill.patient_tax,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+
+                  //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
+                  if (inputParam.advance_adjust > 0) {
+                    narration =
+                      narration +
+                      ", Adjusting Advance  Amount of " +
+                      inputParam.advance_adjust;
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_DEP.head_id,
+                      child_id: OP_DEP.child_id,
+                      debit_amount: inputParam.advance_adjust,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+                  //PROVING OP SERVICE ON CREDIT
+                  if (inputParam.credit_amount > 0) {
+                    narration =
+                      narration +
+                      ", Providng OP Service On Credit for Amount " +
+                      inputParam.credit_amount;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OP_REC.head_id,
+                      child_id: OP_REC.child_id,
+                      debit_amount: inputParam.credit_amount,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id
+                    });
+                  }
+
+                  //INCREASING CASH IN CAND AND BANK
+                  inputParam.receiptdetails.forEach(m => {
+                    if (m.pay_type == "CD") {
+                      narration = narration + ",Received By CARD:" + m.amount;
+
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CARD_SETTL.head_id,
+                        child_id: CARD_SETTL.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    } else {
+                      narration = narration + ",Received By CASH:" + m.amount;
+                      EntriesArray.push({
+                        payment_date: new Date(),
+                        head_id: CIH_OP.head_id,
+                        child_id: CIH_OP.child_id,
+                        debit_amount: m.amount,
+                        payment_type: "DR",
+                        credit_amount: 0,
+                        hospital_id: req.userIdentity.hospital_id
+                      });
+                    }
+                  });
+                }
+
+                let strQuery = "";
+
+                if (
+                  Result[2][0].cost_center_required === "Y" &&
+                  Result[2][0].cost_center_type === "P"
+                ) {
+                  strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
+                    inner join hims_d_project P on D.project_id=P.hims_d_project_id \
+                    inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
+                }
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date,amount,voucher_type,document_id,\
+                  document_number,from_screen,narration,entered_by,entered_date) \
+                  VALUES (?,?,?,?,?,?,?,?,?);" +
+                      strQuery,
+                    values: [
+                      new Date(),
+                      amount,
+                      voucher_type,
+                      inputParam.receipt_header_id,
+                      inputParam.receipt_number,
+                      inputParam.ScreenCode,
+                      narration,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ],
+                    printQuery: true
+                  })
+                  .then(header_result => {
+                    let project_id = null;
+
+                    let headerDayEnd = "";
+
+                    if (strQuery == "") {
+                      headerDayEnd = header_result;
+                    } else {
+                      headerDayEnd = header_result[0];
+                      if (header_result[1].length > 0) {
+                        project_id = header_result[1][0].project_id;
+                      }
+                    }
+
+                    const month = moment().format("M");
+                    const year = moment().format("YYYY");
+                    const IncludeValuess = [
+                      "payment_date",
+                      "head_id",
+                      "child_id",
+                      "debit_amount",
+                      "payment_type",
+                      "credit_amount",
+                      "hospital_id"
+                    ];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO finance_day_end_sub_detail (??) VALUES ? ;",
+                        values: EntriesArray,
+                        includeValues: IncludeValuess,
+                        bulkInsertOrUpdate: true,
+                        extraValues: {
+                          year: year,
+                          month: month,
+                          day_end_header_id: headerDayEnd.insertId,
+                          project_id: project_id,
+                          sub_department_id: req.body.sub_department_id
+                        },
+                        printQuery: true
+                      })
+                      .then(subResult => {
+                        console.log("FOUR");
+                        next();
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };
@@ -3417,8 +4137,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     from_pos == "Y"
                       ? unit_cost
                       : unit_cost != 0
-                      ? unit_cost
-                      : records.standard_fee;
+                        ? unit_cost
+                        : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {
@@ -3694,7 +4414,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             })
             .catch(e => {
               _mysql.releaseConnection();
-              next(httpStatus.generateError(httpStatus.badRequest, e));
+              next(
+                utilities.httpStatus().generateError(httpStatus.badRequest, e)
+              );
             });
         }
       })
@@ -3792,7 +4514,6 @@ function insertOrderServices(options) {
       const inputParam = options.inputParam;
       const req = options.req;
       const utilities = new algaehUtilities();
-      utilities.logger().log("_services : ", _services.length);
       if (_services.length > 0) {
         let IncludeValues = [
           "patient_id",
@@ -3839,13 +4560,13 @@ function insertOrderServices(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity["x-branch"]
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
           })
           .then(order_detail => {
-            utilities.logger().log("order_detail: ", order_detail);
+
             let patient_id;
             let doctor_id;
             let visit_id;
@@ -3858,17 +4579,13 @@ function insertOrderServices(options) {
               })
               .ToArray();
 
-            utilities.logger().log("services: ", services);
+
             let servicesForPreAproval = [];
 
             servicesForPreAproval.push(patient_id);
             servicesForPreAproval.push(doctor_id);
             servicesForPreAproval.push(visit_id);
             servicesForPreAproval.push(services);
-
-            utilities
-              .logger()
-              .log("servicesForPreAproval: ", servicesForPreAproval);
 
             _mysql
               .executeQuery({

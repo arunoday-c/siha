@@ -13,7 +13,8 @@ import Location from "./Location/Location";
 import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
 import LocationPermission from "./LocationPermission/LocationPermission";
-import PharmacyOptions from "./PharmacyOptions/PharmacyOptions";
+// import ReorderQtyMasterPharmacy from "./ReorderQtyMasterPharmacy/ReorderQtyMasterPharmacy";
+// import PharmacyOptions from "./PharmacyOptions/PharmacyOptions";
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -22,7 +23,7 @@ class PharmacySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "PharmacyOptions", sidBarOpen: true };
+    this.state = { pageDisplay: "Location", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -62,11 +63,10 @@ class PharmacySetup extends Component {
   render() {
     return (
       <div className="hims_pharmacy_setup">
-        {" "}
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/* <li
                 algaehtabs={"PharmacyOptions"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -74,7 +74,33 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "pharmacy_options"
+                      forceLabel: "Pharmacy Settings"
+                    }}
+                  />
+                }
+              </li> */}
+              <li
+                className={"nav-item tab-button active"}
+                algaehtabs={"Location"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location Master"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                className={"nav-item tab-button "}
+                algaehtabs={"LocationPermission"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "location_permission"
                     }}
                   />
                 }
@@ -92,7 +118,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGroup"}
                 className={"nav-item tab-button"}
@@ -106,7 +131,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"ItemGeneric"}
                 className={"nav-item tab-button "}
@@ -120,7 +144,6 @@ class PharmacySetup extends Component {
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"ItemUOM"}
@@ -129,25 +152,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_uom"
+                      forceLabel: "UOM Master"
                     }}
                   />
                 }
               </li>
-              <li
-                className={"nav-item tab-button "}
-                algaehtabs={"Location"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "location"
-                    }}
-                  />
-                }
-              </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Form"}
@@ -156,12 +165,11 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_form"
+                      forceLabel: "Form Master"
                     }}
                   />
                 }
               </li>
-
               <li
                 className={"nav-item tab-button "}
                 algaehtabs={"Storage"}
@@ -170,34 +178,36 @@ class PharmacySetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "item_storage"
+                      forceLabel: "Storage Master"
                     }}
                   />
                 }
               </li>
-
-              <li
+              {/* <li
                 className={"nav-item tab-button "}
-                algaehtabs={"LocationPermission"}
+                algaehtabs={"ReorderQtyMasterPharmacy"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "location_permission"
+                      forceLabel: "Reorder Qty Master"
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>
-        <div className="common-section">
+        <div style={{ marginTop: 33 }}>
           {/*  {<this.state.pageDisplay />} */}
-
-          {this.state.pageDisplay === "PharmacyOptions" ? (
+          {/* this.state.pageDisplay === "PharmacyOptions" ? (
             <PharmacyOptions />
-          ) : this.state.pageDisplay === "ItemCategory" ? (
+          ) : 
+          : this.state.pageDisplay === "ReorderQtyMasterPharmacy" ? (
+            <ReorderQtyMasterPharmacy />
+          )*/}
+          {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />
@@ -236,8 +246,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PharmacySetup)
+  connect(mapStateToProps, mapDispatchToProps)(PharmacySetup)
 );

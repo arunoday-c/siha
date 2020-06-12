@@ -3,7 +3,11 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
@@ -206,6 +210,8 @@ const SaveSalesReturn = $this => {
 
       inputObj.pharmacy_stock_detail[i].operation = "+";
     }
+
+    inputObj.ScreenCode = getCookie("ScreenCode");
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
       module: "pharmacy",
@@ -257,6 +263,7 @@ const POSSearch = ($this, e) => {
         {
           pos_number: row.pos_number,
           from_pos_id: row.hims_f_pharmacy_pos_header_id,
+          sub_department_id: row.sub_department_id,
           saveEnable: false
         },
         () => {
@@ -317,8 +324,18 @@ const getPOSEntry = $this => {
         data.from_bill_id = data.hims_f_billing_header_id;
         data.counter_id = $this.state.counter_id || null;
         data.shift_id = $this.state.shift_id || null;
-
+        data.credit_amount = parseFloat(data.balance_credit);
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
+
+        if (
+          $this.state.userToken !== undefined &&
+          $this.state.userToken.local_vat_applicable === "N" &&
+          $this.state.userToken.default_nationality === data.nationality_id
+        ) {
+          data.vat_applicable = "N";
+        } else {
+          data.vat_applicable = "Y";
+        }
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           // if (data.pharmacy_stock_detail[i].return_done === "Y") {

@@ -45,8 +45,8 @@ let getServiceType = (req, res, next) => {
       connection.query(
         "SELECT `hims_d_service_type_id`, `service_type_code`, `service_type`, `service_type_desc` \
           ,`arabic_service_type` FROM `hims_d_service_type` WHERE `record_status`='A' AND " +
-          where.condition +
-          " order by hims_d_service_type_id desc",
+        where.condition +
+        " order by hims_d_service_type_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -93,7 +93,8 @@ let getServices = (req, res, next) => {
         query:
           "select hims_d_services_id, service_code, cpt_code, service_name \
           , service_desc, sub_department_id, hospital_id, service_type_id, standard_fee \
-          , discount, vat_applicable, vat_percent, effective_start_date, effectice_end_date from hims_d_services WHERE record_status ='A' AND " +
+          , discount, vat_applicable, vat_percent, effective_start_date, effectice_end_date, service_status\
+           from hims_d_services WHERE record_status ='A' AND " +
           condition.condition +
           " order by hims_d_services_id desc" +
           pagePaging,

@@ -96,15 +96,12 @@ export default {
 
       _mysql
         .generateRunningNumber({
-          modules: ["INV_REQ_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_REQ_NUM"],
+          table_name: "hims_f_inventory_numgen"
         })
         .then(generatedNumbers => {
-          material_requisition_number = generatedNumbers[0];
+          material_requisition_number = generatedNumbers.INV_REQ_NUM;
           // let today = moment().format("YYYY-MM-DD");
           _mysql
             .executeQuery({
@@ -161,7 +158,8 @@ export default {
                 "item_uom",
                 "to_qtyhand",
                 "from_qtyhand",
-                "quantity_required"
+                "quantity_required",
+                "quantity_authorized"
               ];
 
               utilities
@@ -368,7 +366,7 @@ export default {
     try {
       let inputParam = { ...req.body };
 
-      let complete = "Y";
+      let complete = inputParam.complete === "N" ? "N" : "Y";
 
       const partial_recived = new LINQ(inputParam.inventory_stock_detail)
         .Where(w => w.quantity_outstanding != 0)

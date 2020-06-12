@@ -3,10 +3,10 @@
   "form_name": "OP Billing",
   "form_home": "Home",
   "form_create": "Create New",
-
   "bill_number": "Bill Number",
   "bill_date": "Bill Date",
-  "patient_code": "Patient Code",
+  "patient_code": "Search Patient",
+  "s_patient_code": "Select Patient",
   "visit_code": "Visit Code",
   "visit_date": "Visit Date",
   "visit_type": "Visit Type",
@@ -15,11 +15,9 @@
   "mode_of_pay": "Mode of Payment",
   "patient_type": "Patient Type",
   "full_name": "Patient Name",
-
   "select_service": "Select Service",
   "select_service_type": "Select Service Type",
   "select_visit": "Select Visit",
-
   "gross_total": "Gross Total",
   "advance": "Advance",
   "advance_adjust": "Adjust",
@@ -31,18 +29,14 @@
   "receiveable_amount": "Receivable",
   "sub_total_amount": "Sub Total",
   "discount_amount": "Discount",
-
   "sheet_discount_percentage": "Sheet Level %",
   "sheet_discount_amount": "Sheet Level Amount",
-
   "patient": "Patient",
   "company": "Co.",
   "seco_company": "Secondary Co.",
-
   "responsiblity": "Responsiblity",
   "tax": "Tax",
   "payable": "Payable",
-
   "service_type_id": "Service Type",
   "services_id": "Service",
   "quantity": "Quantity",
@@ -78,13 +72,10 @@
   "advance_amount": "Available Advance",
   "advance_caption": "Advance",
   "refund_caption": "Refund",
-
   "seco_copay_amount": "Secondary Copay Amt.",
   "seco_deductable_amount": "Secondary Deductable Amt.",
-
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
-
   "receipt_number": "Receipt Number",
   "receipt_date": "Receipt Date",
   "counter_id": "Counter",
@@ -96,29 +87,22 @@
   "expiry_date": "Expiry Date",
   "amount": "Amount",
   "unbalanced_amount": "Unbalanced Amount",
-
   "responsibility_lbl": "Responsibility",
   "tax_lbl": "Vat",
   "payable_lbl": "Payable",
-
   "patient_lbl": "Patient Responsibility",
   "company_lbl": "Company Responsibility",
   "sec_comp_lbl": "Secondary Co.",
-
   "insurance_company": "Insurance Co.",
   "sub_insurance_company": "Sub Insurance Co.",
   "plan_desc": "Plan",
   "policy_no": "Policy Number",
   "card_no": "Card Number",
   "ins_expiry_date": "Expiry Date",
-
   "consultation": "Consultation",
-
   "bill_details": "Bill Details",
   "insurance_details": "Insurance Details",
-
   "view_bill_details": "View Bill Details",
-
   "services": "Services",
   "percentage": "Percentage",
   "max_limit": "Max-Limit",
@@ -128,22 +112,22 @@
   "dental": "Dental",
   "medicine": "Medicine",
   "co_insurance": "Co Insurance",
-
   "btn_save": "Save",
   "btn_order_package": "Order Package",
   "btn_clear": "Clear",
-
   "payby_cash": "Pay by Cash",
   "payby_card": "Pay by Card",
   "payby_check": "Pay by Cheque",
   "NotGenerated": "Not Generated",
   "add_new_service": "Add New Services",
-
   "card_holder_name": "Card Holder Name",
   "card_holder_age": "Holder Age",
   "card_holder_gender": "Holder Gender",
   "card_class": "Card Class",
-
   "created_date": "Ordered Date",
-  "pre_approval": "Pre Approval"
+  "pre_approval": "Pre Approval",
+  "select_card": "Select Card",
+  "net_ttl": "Net Total",
+  "pat_payable": "Patient Payable",
+  "co_payable": "Co. Payable"
 }

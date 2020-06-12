@@ -26,20 +26,40 @@ let generateAccessToken = (req, res, next) => {
     next();
   }
 };
+
+let createJWTToken = (dataToSave, useStream) => {
+  const stream =
+    useStream === undefined
+      ? {
+          stream: true
+        }
+      : useStream === true
+      ? {
+          stream: true
+        }
+      : {};
+  return jwt.sign(
+    {
+      ...dataToSave,
+      ...stream
+    },
+    SECRET
+  );
+};
+
 // const days = moment.duration(TOKENTIME, "seconds").asDays();
 
 let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
-    token: req.token,
-    // days: days,
     hospitalList: req.result.hospitalList,
-    activemoduleList: req.result.activemoduleList
+    activemoduleList: [] //req.result.activemoduleList
   });
 };
 
 export default {
   authenticate,
   generateAccessToken,
-  respond
+  respond,
+  createJWTToken
 };

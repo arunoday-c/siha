@@ -25,7 +25,6 @@ import {
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -43,7 +42,7 @@ class UpdatePatientDetails extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = PatRegIOputs.inputParam();
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -58,7 +57,7 @@ class UpdatePatientDetails extends Component {
     this.setState(IOputs);
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
       setGlobal({ selectedLang: prevLang });
@@ -235,7 +234,7 @@ class UpdatePatientDetails extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ fieldName: "form_patregister", align: "ltr" }}
+              label={{ forceLabel: "Update Patient Details", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -399,8 +398,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(UpdatePatientDetails)
+  connect(mapStateToProps, mapDispatchToProps)(UpdatePatientDetails)
 );

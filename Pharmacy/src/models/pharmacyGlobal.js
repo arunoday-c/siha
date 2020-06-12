@@ -17,11 +17,11 @@ export default {
              ITU.item_master_id=? ;\
              SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, \
              expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, \
-             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description \
+             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description, git_qty \
              from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
              IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
              IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
-             and (date(expirydt) > date(CURDATE())|| exp_date_not_required='Y') order by date(expirydt)",
+             and (date(expirydt) > date(CURDATE())|| exp_date_required='N') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -194,6 +194,10 @@ export default {
               _strQry += " and allow_pos='Y' ";
             }
 
+            if (req.query.git_location == "N") {
+              _strQry += " and git_location='N' ";
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -269,64 +273,73 @@ export default {
   },
 
   updateItemMaster: (req, res, next) => {
-    const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options);
-
+    const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
     utilities.logger().log("updateItemMaster: ", req.body);
 
     try {
       let inputParam = req.body;
-      let execute_query = "";
 
-      utilities.logger().log("updateItemMaster: ", inputParam);
+      _mysql
+        .executeQueryWithTransaction({
+          query: "select 1=1",
+          printQuery: true
+        })
+        .then(openconn => {
 
-      for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
-        _mysql
-          .executeQuery({
-            query:
-              "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
-            values: [inputParam.pharmacy_stock_detail[i].item_id],
-            printQuery: true
-          })
-          .then(result => {
-            var date = new Date();
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var seconds = date.getSeconds();
-            var chars =
-              String(hours) +
-              String(minutes) +
-              String(seconds) +
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            var length = 2;
-            var resultString = "";
-            for (var j = length; j > 0; --j)
-              resultString += chars[Math.floor(Math.random() * chars.length)];
-            resultString +=
-              req.userIdentity.algaeh_d_app_user_id +
-              req.userIdentity.hospital_id;
+          for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
+                values: [inputParam.pharmacy_stock_detail[i].item_id],
+                printQuery: true
+              })
+              .then(result => {
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
+                var date = new Date();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var seconds = date.getSeconds();
+                var day = date.getDate();
+                var year = String(new Date().getFullYear()).substring(2, 4);
+                var month = date.getMonth();
+                if (String(month).length == 1) {
+                  month = "0" + month;
+                }
 
-            let batch_no = parseInt(result[0].batch_no) + 1;
-            let barcode = result[0].item_code + "B" + resultString;
+                var chars =
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-            console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+                var length = 2;
+                var resultString = year + month + day + hours + minutes + seconds;
+                for (var j = length; j > 0; --j)
+                  resultString += chars[Math.floor(Math.random() * chars.length)];
+                resultString +=
+                  req.userIdentity.algaeh_d_app_user_id +
+                  req.userIdentity.hospital_id;
 
-            req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
-            req.body.pharmacy_stock_detail[i].barcode = barcode;
-            utilities
-              .logger()
-              .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
-            if (i == inputParam.pharmacy_stock_detail.length - 1) {
-              next();
-            }
-          })
-          .catch(e => {
-            _mysql.releaseConnection();
-            next(e);
-          });
-      }
+
+                req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
+                req.body.pharmacy_stock_detail[i].barcode = "B" + resultString;
+                if (i == inputParam.pharmacy_stock_detail.length - 1) {
+                  next();
+                }
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
@@ -335,24 +348,27 @@ export default {
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let intValues = [];
+      let intValues = [req.query.pharmacy_location_id];
       let strAppend = "";
       if (req.query.item_id != null) {
-        strAppend += " and item_id=?";
+        strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
       }
       if (req.query.pharmacy_location_id != null) {
         strAppend += " and pharmacy_location_id=?";
         intValues.push(req.query.pharmacy_location_id);
       }
+
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_description,IM.stocking_uom_id, coalesce(IM.reorder_qty,0) as reorder_qty ,hims_m_item_location_id, item_id, pharmacy_location_id,\
-             item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
+            "SELECT IM.item_code,IM.item_description,IM.stocking_uom_id,  coalesce(PLR.reorder_qty, IM.reorder_qty,0) as reorder_qty ,\
+            hims_m_item_location_id, IL.item_id, pharmacy_location_id,\
+            item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
             last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom,\
-            CASE WHEN sum(qtyhand)<=IM.reorder_qty THEN 'R'   else 'NR' END as reorder from \
+            CASE WHEN sum(qtyhand)<=coalesce(PLR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder from \
             hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+            left  join hims_d_phar_location_reorder PLR on PLR.item_id=IL.item_id and location_id=? \
             where qtyhand>0" +
             strAppend +
             "group by item_id order by date(expirydt)",
@@ -436,7 +452,7 @@ export default {
             expiry_date_filter = new Date(
               today_date.setFullYear(
                 today_date.getFullYear() +
-                  parseInt(result[0].notification_before)
+                parseInt(result[0].notification_before)
               )
             );
           }

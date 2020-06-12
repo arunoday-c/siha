@@ -9,15 +9,11 @@ import "./ViewFavouriteOrder.scss";
 
 import {
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 class ViewFavouriteOrder extends PureComponent {
@@ -70,7 +66,16 @@ class ViewFavouriteOrder extends PureComponent {
         });
       }
     }
-    this.props.onClose && this.props.onClose(selected_services);
+
+    this.setState(
+      {
+        all_favourites: [],
+        favourite_details: []
+      },
+      () => {
+        this.props.onClose && this.props.onClose(selected_services);
+      }
+    );
   }
   selectToProcess(row, e) {
     let all_favourites = this.state.all_favourites;
@@ -101,7 +106,7 @@ class ViewFavouriteOrder extends PureComponent {
       favourite_details: row.favourite_details
     });
   }
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.all_favourites !== undefined) {
       this.setState({ all_favourites: newProps.all_favourites });
     }

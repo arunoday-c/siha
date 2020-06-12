@@ -12,21 +12,14 @@ import VisitType from "./VisitType/VisitType";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
-import _ from "lodash";
+import { MainContext } from "algaeh-react-components/context";
 
 class CommonSetup extends Component {
   constructor(props) {
     super(props);
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
     this.state = {
-      pageDisplay: HIMS_Active.length > 0 ? "VisitType" : "VisaType",
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      pageDisplay: "",
+      HIMS_Active: false,
     };
   }
 
@@ -38,18 +31,31 @@ class CommonSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    const active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
+    this.setState({
+      pageDisplay: active ? "VisitType" : "VisaType",
+      HIMS_Active: active,
+    });
+
     this.props.getUserDetails({
       uri: "/algaehappuser/selectAppUsers",
       method: "GET",
       redux: {
         type: "USER_DETAILS_GET_DATA",
-        mappingName: "userdrtails"
-      }
+        mappingName: "userdrtails",
+      },
     });
   }
 
@@ -68,7 +74,7 @@ class CommonSetup extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        fieldName: "visit_type"
+                        fieldName: "visit_type",
                       }}
                     />
                   }
@@ -76,17 +82,18 @@ class CommonSetup extends Component {
               ) : null}
               <li
                 algaehtabs={"VisaType"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "visa_type"
+                      fieldName: "visa_type",
                     }}
                   />
                 }
               </li>
+
               <li
                 algaehtabs={"IDType"}
                 className={"nav-item tab-button"}
@@ -95,7 +102,7 @@ class CommonSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "identification_type"
+                      fieldName: "identification_type",
                     }}
                   />
                 }
@@ -109,7 +116,7 @@ class CommonSetup extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        fieldName: "patient_type"
+                        fieldName: "patient_type",
                       }}
                     />
                   }
@@ -161,22 +168,19 @@ class CommonSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CommonSetup)
+  connect(mapStateToProps, mapDispatchToProps)(CommonSetup)
 );

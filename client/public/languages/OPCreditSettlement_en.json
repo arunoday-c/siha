@@ -3,10 +3,10 @@
   "form_name": "OP Credit Settlement",
   "form_home": "Home",
   "form_create": "Create New",
-
   "credit_number": "Settlement Number",
   "credit_date": "Settlement Date",
-  "patient_code": "Patient Code",
+  "patient_code": "Search Patient",
+  "s_patient_code": "Select Patient",
   "full_name": "Patient Name",
   "include": "Include",
   "bill_number": "Bill Number",
@@ -20,7 +20,6 @@
   "remarks": "Remarks",
   "payment_number": "Payment Number",
   "payment_date": "Payment Date",
-
   "receipt_number": "Receipt Number",
   "receipt_date": "Receipt Date",
   "counter_id": "Counter",
@@ -32,7 +31,6 @@
   "expiry_date": "Expiry Date",
   "amount": "Amount",
   "unbalanced_amount": "Unbalanced Amount",
-
   "btn_save": "Save",
   "btn_clear": "Clear"
 }

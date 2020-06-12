@@ -55,7 +55,7 @@ const serviceHandeler = ($this, context, e) => {
         [e.name]: e.value,
         visittypeselect: false
       },
-      () => {}
+      () => { }
     );
     if (context !== null) {
       context.updateState({ [e.name]: e.value });
@@ -142,6 +142,20 @@ const discounthandle = ($this, context, ctrl, e) => {
         sheet_discount_percentage: $this.state.sheet_discount_percentage
       });
     }
+  } else if (sheet_discount_percentage > parseFloat($this.state.service_dis_percentage)) {
+    swalMessage({
+      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+      type: "warning"
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
   } else if (sheet_discount_amount > parseFloat($this.state.patient_payable)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
@@ -212,6 +226,10 @@ const billheaderCalculation = ($this, context, e) => {
           response.data.records.patient_payable_h =
             response.data.records.patient_payable ||
             $this.state.patient_payable;
+          if ($this.state.default_pay_type === "CD") {
+            response.data.records.card_amount = response.data.records.receiveable_amount
+            response.data.records.cash_amount = 0
+          }
           context.updateState({ ...response.data.records });
         }
       }
@@ -235,7 +253,7 @@ const onchangegridcol = ($this, row, e) => {
 const ondiscountgridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let oldvalue = e.oldvalue || e.target.oldvalue;
+  // let oldvalue = e.oldvalue || e.target.oldvalue;
   let billdetails = $this.state.billdetails;
   let _index = billdetails.indexOf(row);
   // if (value === undefined) {
@@ -248,48 +266,67 @@ const ondiscountgridcol = ($this, context, row, e) => {
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
+
+      row[name] = 0;
+      row["discount_amout"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
-      row[name] = oldvalue;
+      // return;
+    } else if (parseFloat(value) > parseFloat($this.state.service_dis_percentage)) {
+      row[name] = 0;
+      row["discount_amout"] = 0
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
-      return;
-    }
-    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+        type: "warning"
+      });
+    } else if (parseFloat(value) < 0) {
+
+      row[name] = 0;
+      row["discount_amout"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount % cannot be less than Zero",
         type: "warning"
       });
-      row[name] = oldvalue;
-      billdetails[_index] = row;
-      $this.setState({ billdetails: billdetails });
-      return;
+      // return;
+    } else {
+      row[name] = value;
     }
   } else if (name === "discount_amout") {
     if (parseFloat(row.gross_amount) < parseFloat(value)) {
+
+      row[name] = 0;
+      row["discount_percentage"] = 0
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
         type: "warning"
       });
-      row[name] = oldvalue;
+      // return;
+    } else if (parseFloat(value) < 0) {
+
+      row[name] = 0;
+      row["discount_percentage"] = 0
       billdetails[_index] = row;
       $this.setState({ billdetails: billdetails });
-      return;
-    }
-    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Discount Amount cannot be less than Zero",
         type: "warning"
       });
-      row[name] = oldvalue;
-      billdetails[_index] = row;
-      $this.setState({ billdetails: billdetails });
-      return;
+      // return;
+    } else {
+      row[name] = value;
     }
   }
-  row[name] = value;
+  // row[name] = value;
   // row.update();
   calculateAmount($this, context, row, e);
 };
@@ -316,7 +353,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
     swalMessage({
-      title: "Criedt amount cannot be greater than Net amount",
+      title: "Credit amount cannot be greater than Net amount",
       type: "warning"
     });
     $this.setState({
@@ -400,7 +437,8 @@ const calculateAmount = ($this, context, row, e) => {
   // if (e.target.value !== e.target.oldvalue) {
   let billdetails = $this.state.billdetails;
 
-  row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
+
+  // row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
   let inputParam = [
     {
       hims_d_services_id: row.services_id,
@@ -448,6 +486,11 @@ const calculateAmount = ($this, context, row, e) => {
                   this.state.patient_payable;
                 response.data.records.saveEnable = false;
                 response.data.records.addNewService = false;
+
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount = response.data.records.receiveable_amount
+                  response.data.records.cash_amount = 0
+                }
                 if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }

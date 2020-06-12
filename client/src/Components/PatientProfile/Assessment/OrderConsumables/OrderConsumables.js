@@ -19,7 +19,6 @@ import {
   SaveOrdersServices,
   calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
   ItemChargable,
   makeZeroIngrid
@@ -28,22 +27,22 @@ import "./OrderConsumables.scss";
 import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 class OrderConsumables extends Component {
   constructor(props) {
     super(props);
-
+    const { current_patient, visit_id } = Window.global;
     this.state = {
       s_service_type: null,
       s_service: null,
       selectedLang: "en",
 
-      patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"],
+      patient_id: current_patient, //Window.global["current_patient"],
+      visit_id: visit_id, // Window.global["visit_id"],
       doctor_id: null,
       vat_applicable: this.props.vat_applicable,
 
-      orderservicesdata: [],
+      orderconsumabledata: [],
       approval_amt: 0,
       preapp_limit_amount: 0,
       preserviceInput: [],
@@ -129,15 +128,15 @@ class OrderConsumables extends Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
+        this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, f => {
-            return (
-              f.hims_d_inventory_location_id === nextProps.inventory_location_id
-            );
-          })
+          return (
+            f.hims_d_inventory_location_id === nextProps.inventory_location_id
+          );
+        })
         : [];
 
     if (
@@ -146,6 +145,9 @@ class OrderConsumables extends Component {
     ) {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
+      output.approval_amt = nextProps.approval_amt;
+      output.approval_limit_yesno = nextProps.approval_limit_yesno;
+      output.preserviceInput = [];
       if (Location_name.length > 0) {
         output.inventory_location_id = nextProps.inventory_location_id;
         output.location_name = Location_name[0].location_description;
@@ -165,18 +167,19 @@ class OrderConsumables extends Component {
   }
 
   onClose = e => {
+    const { current_patient, visit_id } = Window.global;
     this.setState(
       {
         s_service_type: null,
         s_service: null,
         selectedLang: "en",
 
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
+        patient_id: current_patient, //Window.global["current_patient"],
+        visit_id: visit_id, //Window.global["visit_id"],
         doctor_id: null,
         vat_applicable: this.props.vat_applicable,
 
-        orderservicesdata: [],
+        orderconsumabledata: [],
         approval_amt: 0,
         preapp_limit_amount: 0,
         preserviceInput: [],
@@ -392,10 +395,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -412,10 +415,10 @@ class OrderConsumables extends Component {
                             this.props.servicetype === undefined
                               ? []
                               : this.props.servicetype.filter(
-                                  f =>
-                                    f.hims_d_service_type_id ===
-                                    row.service_type_id
-                                );
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
 
                           return (
                             <span>
@@ -439,8 +442,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -457,8 +460,8 @@ class OrderConsumables extends Component {
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
-                                  f => f.hims_d_services_id === row.services_id
-                                );
+                                f => f.hims_d_services_id === row.services_id
+                              );
 
                           return (
                             <span>
@@ -471,7 +474,7 @@ class OrderConsumables extends Component {
                           );
                         },
                         others: {
-                          minWidth: 400
+                          minWidth: 250
                         }
                       },
                       {
@@ -479,6 +482,9 @@ class OrderConsumables extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
+                        others: {
+                          minWidth: 200
+                        },
                         disabled: true
                       },
                       {
@@ -655,7 +661,7 @@ class OrderConsumables extends Component {
                     ]}
                     keyId="service_type_id"
                     dataSource={{
-                      data: this.state.orderservicesdata
+                      data: this.state.orderconsumabledata
                     }}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
@@ -679,7 +685,7 @@ class OrderConsumables extends Component {
                           fieldName: "sub_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                      <h5>{GetAmountFormart(this.state.sub_total_amount)}</h5>
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -687,7 +693,7 @@ class OrderConsumables extends Component {
                           fieldName: "dsct_amt"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                      <h5>{GetAmountFormart(this.state.discount_amount)}</h5>
                     </div>
 
                     <div className="col">
@@ -696,7 +702,7 @@ class OrderConsumables extends Component {
                           fieldName: "net_ttl"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
+                      <h5>{GetAmountFormart(this.state.net_total)}</h5>
                     </div>
                   </div>
                 </div>
@@ -709,7 +715,7 @@ class OrderConsumables extends Component {
                           fieldName: "pat_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                      <h5>{GetAmountFormart(this.state.patient_payable)}</h5>
                     </div>
                     <div className="col">
                       <AlgaehLabel
@@ -717,7 +723,7 @@ class OrderConsumables extends Component {
                           fieldName: "co_payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                      <h5>{GetAmountFormart(this.state.company_payble)}</h5>
                     </div>
                   </div>
                 </div>
@@ -774,33 +780,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderConsumables)
+  connect(mapStateToProps, mapDispatchToProps)(OrderConsumables)
 );
-{
-  /*displayTemplate: row => {
-  return (
-    <AlagehFormGroup
-      div={{}}
-      textBox={{
-        value: row.quantity,
-        className: "txt-fld",
-        name: "quantity",
-        events: {
-          onChange: onchangegridcol.bind(
-            this,
-            this,
-            row
-          )
-        },
-        others: {
-          disabled:
-            this.state.insured === "Y" ? true : false
-        }
-      }}
-    />
-  );
-}*/
-}

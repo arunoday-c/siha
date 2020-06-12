@@ -11,10 +11,9 @@ exports.default = {
   mysqlDb: {
     connectionLimit: 100,
     // host: "166.62.10.184",
-    host: "49.206.18.38",
+    //host: "49.206.18.38",
     // host: "192.168.0.102",
-    // host: "127.0.0.1",
-
+    host: "127.0.0.1",
     port: 3306,
     user: "algaeh_root",
     password: "alg_hea2018",
@@ -22,11 +21,11 @@ exports.default = {
     // database: "hims_test_db",
     //database: "twareat_live_db",
     //database: "awdesh_db",
-    database: "hims_test_db",
+    // database: "hims_test_db",
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
     //database: "shahid_db",
-    // database: "shaksy_live_db",
+    database: "shaksy_live_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,
@@ -35,19 +34,23 @@ exports.default = {
     waitForConnections: true, // Default value.
     queueLimit: 0, // Unlimited - default value.
     supportBigNumbers: true,
-    bigNumberStrings: true
+    bigNumberStrings: true,
   },
   mongoDb: {
     connectionURI:
-      "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db"
+      "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db",
+  },
+  redis: {
+    host: "127.0.0.1",
+    port: 6379,
   },
   running: {
     date: "20190429",
-    counter: 0
+    counter: 0,
   },
   //Db Date format
   dbFormat: {
-    date: "YYYY-MM-DD"
+    date: "YYYY-MM-DD",
   },
   useSSL: false,
   chromePuppeteer: {
@@ -55,10 +58,9 @@ exports.default = {
     // for windows
     // executablePath:
     //   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
-
     //for Mac
-    executablePath: chromePathFinder()
-  }
+    executablePath: chromePathFinder(),
+  },
 };
 
 function chromePathFinder() {

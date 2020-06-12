@@ -87,12 +87,11 @@ const itemchangeText = ($this, e, ctrl) => {
     item_group_id: e.group_id,
     uom_id: e.stocking_uom_id,
     sales_uom: e.sales_uom_id,
-    required_batchno: e.exp_date_not_required,
+    required_batchno: e.exp_date_required,
     item_code: e.item_code,
     item_description: e.item_description,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
-    batchno: "B" + e.batch_no,
     purchase_uom_id: e.purchase_uom_id,
     stock_uom_desc: e.stock_uom_desc,
     sales_uom_desc: e.sales_uom_desc
@@ -118,7 +117,7 @@ const AddItems = $this => {
         document.querySelector("[name='unit_cost']").focus();
       } else if (
         $this.state.expiry_date === null &&
-        $this.state.required_batchno === "N"
+        $this.state.required_batchno === "Y"
       ) {
         swalMessage({
           title: "Select Expiry Date.",
@@ -153,7 +152,7 @@ const AddItems = $this => {
         $this.setState({
           pharmacy_stock_detail: pharmacy_stock_detail,
 
-          location_id: null,
+          // location_id: null,
           item_category_id: null,
           item_group_id: null,
           item_id: null,
@@ -283,32 +282,12 @@ const getCtrlCode = ($this, docNumber) => {
 
 const SaveInitialStock = $this => {
   AlgaehLoader({ show: true });
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "INT";
-  $this.state.transaction_date = $this.state.docdate;
-
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].extended_cost;
-
-    $this.state.pharmacy_stock_detail[i].operation = "+";
-  }
-
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",
     module: "pharmacy",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        // $this.setState({
-        //   document_number: response.data.records.document_number,
-        //   hims_f_pharmacy_stock_header_id:
-        //     response.data.records.hims_f_pharmacy_stock_header_id,
-        //   year: response.data.records.year,
-        //   period: response.data.records.period,
-        //   saveEnable: true,
-        //   postEnable: false
-        // });
         getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
@@ -328,15 +307,17 @@ const SaveInitialStock = $this => {
 
 const deleteInitialStock = ($this, row) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let saveEnable = true;
+  let _index = pharmacy_stock_detail.indexOf(row);
+  pharmacy_stock_detail.splice(_index, 1);
 
-  for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    if (pharmacy_stock_detail[x].noorecords === row.noorecords) {
-      pharmacy_stock_detail.splice(x, 1);
-    }
+  if (pharmacy_stock_detail.length) {
+    saveEnable = false;
   }
 
   $this.setState({
-    pharmacy_stock_detail: pharmacy_stock_detail
+    pharmacy_stock_detail: pharmacy_stock_detail,
+    saveEnable
   });
 };
 const ClearData = $this => {
@@ -361,11 +342,13 @@ const ClearData = $this => {
     postEnable: true,
     dataExitst: false,
     sales_price: 0,
+    posted: "N",
     grn_number: null
   });
 };
 
 const PostInitialStock = $this => {
+  AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
@@ -374,11 +357,6 @@ const PostInitialStock = $this => {
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;
-
-    $this.state.pharmacy_stock_detail[i].barcode =
-      $this.state.pharmacy_stock_detail[i].batchno +
-      "-" +
-      $this.state.pharmacy_stock_detail[i].item_code;
     $this.state.pharmacy_stock_detail[i].operation = "+";
     // $this.state.pharmacy_stock_detail[i].operation = "+";
   }
@@ -398,6 +376,7 @@ const PostInitialStock = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
     },
     onFailure: error => {
       AlgaehLoader({ show: false });
@@ -420,6 +399,11 @@ const printBarcode = ($this, row) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "PharmacyBarcode",
         reportParams: [
           {
@@ -431,16 +415,19 @@ const printBarcode = ($this, row) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Item Barcode";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
+      window.open(origin);
+      // window.document.title = "Item Barcode";
     }
   });
 };
@@ -448,19 +435,22 @@ const printBarcode = ($this, row) => {
 const onChamgeGridQuantity = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let _index = pharmacy_stock_detail.indexOf(row);
   let extended_cost = 0;
   if (value !== "") {
     extended_cost = parseFloat(row.unit_cost) * value;
-
     extended_cost = extended_cost.toFixed(2);
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   } else {
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   }
+  pharmacy_stock_detail[_index] = row;
+  $this.setState({
+    pharmacy_stock_detail: pharmacy_stock_detail
+  });
 };
 
 const updateInitialStock = ($this, row) => {
@@ -480,8 +470,11 @@ const EditGrid = ($this, cancelRow) => {
   if (cancelRow !== undefined) {
     _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
+
   $this.setState({
-    saveEnable: !$this.state.saveEnable,
+    saveEnable:
+      $this.state.dataExitst === true ? true : !$this.state.saveEnable,
+    postEnable: !$this.state.postEnable,
     pharmacy_stock_detail: _pharmacy_stock_detail
   });
 };

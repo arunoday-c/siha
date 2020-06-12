@@ -7,7 +7,9 @@ const {
   updateOPBilling,
   updateEncounterDetails,
   checkLabSampleCollected,
-  checkRadSheduled
+  checkRadSheduled,
+  financeOpBillCancel,
+  checkDentalProcedure
 } = opModels;
 import recModels from "../models/receiptentry";
 const { getReceiptEntry, addReceiptEntry } = recModels;
@@ -52,6 +54,18 @@ export default () => {
         next();
       }
     },
+    checkDentalProcedure,
+    (req, res, next) => {
+      if (req.dental_procedure.internal_error == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.dental_procedure
+        });
+      } else {
+        next();
+      }
+    },
+    financeOpBillCancel,
     updateOPBilling,
 
     (req, res, next) => {

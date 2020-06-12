@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-// import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
-import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
-import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import BulkTimeSheet from "./BulkTimeSheet";
+import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
+import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
 import "./AttendanceMgmt.scss";
-// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-// import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default class AttendanceMgmt extends Component {
   constructor(props) {
@@ -16,31 +14,7 @@ export default class AttendanceMgmt extends Component {
     this.state = {
       pageDisplay: "NewMonthlyAttendance"
     };
-    // this.getOptions();
   }
-
-  // getOptions() {
-  //   algaehApiCall({
-  //     uri: "/payrollOptions/getHrmsOptions",
-  //     method: "GET",
-  //     module: "hrManagement",
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         sessionStorage.removeItem("hrOptions");
-  //         sessionStorage.setItem(
-  //           "hrOptions",
-  //           AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
-  //         );
-  //       }
-  //     },
-  //     onFailure: err => {
-  //       swalMessage({
-  //         title: err.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -57,107 +31,71 @@ export default class AttendanceMgmt extends Component {
   render() {
     return (
       <div className="attendance_mgmt">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              {/* <li
-                algaehtabs={"MonthlyAttendance"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Monthly Attendance"
-                    }}
-                  />
-                }
-              </li> */}
-              <li
-                algaehtabs={"NewMonthlyAttendance"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Monthly Attendance"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"BulkManualTimeSheet"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Manual Timesheet (Single/Bulk)"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"WeeklyAttendance"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Biometric Timesheet"
-                    }}
-                  />
-                }
-              </li>{" "}
-              <li
-                algaehtabs={"AbsenceManagement"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Absence Management"
-                    }}
-                  />
-                }
-              </li>
-              {/* <li
-                algaehtabs={"ManualAttendance"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Manual Timesheet"
-                    }}
-                  />
-                }
-              </li> */}
-            </ul>
-          </div>
-        </div>
-        <div className="attendance-setion">
-          {//   this.state.pageDisplay === "MonthlyAttendance" ? (
-          //   <MonthlyAttendance />
-          // ) :
-          this.state.pageDisplay === "NewMonthlyAttendance" ? (
-            <NewMonthlyAttendence />
-          ) : this.state.pageDisplay === "WeeklyAttendance" ? (
-            <WeeklyAttendance />
-          ) : this.state.pageDisplay === "AbsenceManagement" ? (
-            <AbsenceManagement />
-          ) : // ) : this.state.pageDisplay === "ManualAttendance" ? (
-          //   <ManualAttendance />
-          this.state.pageDisplay === "BulkManualTimeSheet" ? (
-            <BulkTimeSheet />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Monthly Attendance"
+                  }}
+                />
+              ),
+              children: <NewMonthlyAttendence />,
+              componentCode: "ATT_MON_ATT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Manual Timesheet (Single/Bulk)"
+                  }}
+                />
+              ),
+              children: <BulkTimeSheet />,
+              componentCode: "ATT_MAN_TIM"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Biometric Timesheet"
+                  }}
+                />
+              ),
+              children: <WeeklyAttendance />,
+              componentCode: "ATT_BIO_TIM"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Absence Management"
+                  }}
+                />
+              ),
+              children: <AbsenceManagement />,
+              componentCode: "ATT_ABS_MGMT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Overtime Management"
+                  }}
+                />
+              ),
+              children: <OverTimeMgmt />,
+              componentCode: "ATT_OVR_TIM"
+            }
+          ]}
+          renderClass="AttMgmntSection"
+        />
       </div>
     );
   }
 }
+// function ChildrenItem({ children }) {
+//   return <div className="Attendance-Management-section">{children}</div>;
+// }

@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -15,7 +15,7 @@ export default {
       recieve_amount: 0,
       year: null,
       period: null,
-      location_id: null,
+      location_id: 1,
       location_type: null,
       sub_total: 0,
       discount_percentage: 0,
@@ -23,7 +23,7 @@ export default {
       net_total: 0,
       copay_amount: 0,
       patient_responsibility: 0,
-      pos_customer_type: "OP",
+      pos_customer_type: "OT",
 
       patient_name: null,
       referal_doctor: null,
@@ -58,6 +58,7 @@ export default {
       insured: "N",
       sec_insured: "N",
       insurance_yesno: "N",
+      posted: "N",
 
       hims_f_receipt_header_id: null,
       receipt_number: null,
@@ -124,7 +125,9 @@ export default {
       InvoiceEnable: false,
       OTItemAddDis: false,
       patInsuranceFrontImg: undefined,
-      patInsuranceBackImg: undefined
+      patInsuranceBackImg: undefined,
+      prescribed_item_list: [],
+      prescribed_item: false
     };
     return output;
   }

@@ -51,8 +51,7 @@ const calculateRecipt = ($this, context, e) => {
               response.data.records.patient_payable ||
               $this.state.patient_payable;
             context.updateState({
-              ...response.data.records,
-              saveEnable: false
+              ...response.data.records
             });
           }
         }
@@ -109,7 +108,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }
@@ -147,7 +146,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }
@@ -186,7 +185,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       if (context !== null) {
         context.updateState({
           [e.target.name]: e.target.value,
-          saveEnable: true
+          // saveEnable: true
         });
       }
     }

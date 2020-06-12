@@ -8,7 +8,8 @@ const {
   addCreidtSettlement,
   getCreidtSettlement,
   updateOPBilling,
-  getPatientwiseBill
+  getPatientwiseBill,
+  addCreditToDayEnd
 } = opCreditModels;
 
 const { addCashHandover } = billModels;
@@ -39,6 +40,7 @@ export default () => {
         next();
       }
     },
+    addCreditToDayEnd,
     updateOPBilling,
 
     (req, res, next) => {

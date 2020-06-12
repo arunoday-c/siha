@@ -112,13 +112,13 @@ export default class LeaveMasterIndex extends Component {
           onClick={this.restoreIndex.bind(this)}
         />
         <div className="col-lg-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Leave Master List</h3>
               </div>
               <div className="actions">
-                <a
+                <button
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     this.setState({
@@ -127,7 +127,7 @@ export default class LeaveMasterIndex extends Component {
                   }}
                 >
                   <i className="fas fa-plus" />
-                </a>
+                </button>
               </div>
             </div>
             <div className="portlet-body">
@@ -190,8 +190,8 @@ export default class LeaveMasterIndex extends Component {
                               {row.include_holiday === "Y"
                                 ? "Yes"
                                 : row.include_holiday === "N"
-                                ? "No"
-                                : "Not Specified"}
+                                  ? "No"
+                                  : "Not Specified"}
                             </span>
                           );
                         }
@@ -209,8 +209,8 @@ export default class LeaveMasterIndex extends Component {
                               {row.include_weekoff === "Y"
                                 ? "Yes"
                                 : row.include_weekoff === "N"
-                                ? "No"
-                                : "Not Specified"}
+                                  ? "No"
+                                  : "Not Specified"}
                             </span>
                           );
                         }
@@ -226,8 +226,8 @@ export default class LeaveMasterIndex extends Component {
                               {row.leave_type === "P"
                                 ? "Paid"
                                 : row.leave_type === "U"
-                                ? "Unpaid"
-                                : "Not Specified"}
+                                  ? "Unpaid"
+                                  : "Not Specified"}
                             </span>
                           );
                         }
@@ -243,10 +243,10 @@ export default class LeaveMasterIndex extends Component {
                               {row.leave_mode === "REG"
                                 ? "Regular"
                                 : row.leave_mode === "LOP"
-                                ? "Loss of Pay"
-                                : row.leave_mode === "COM"
-                                ? "Comp Off"
-                                : "Not Specified"}
+                                  ? "Loss of Pay"
+                                  : row.leave_mode === "COM"
+                                    ? "Comp Off"
+                                    : "Not Specified"}
                             </span>
                           );
                         }

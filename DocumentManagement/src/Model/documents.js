@@ -1,14 +1,16 @@
+import stream from "stream";
 import EmployeeDocModel from "./employeeDoc";
 import PatientDocModel from "./patientDoc";
 import CompanyDocModel from "./company";
 import DepartmentImageModel from "./departmentImages";
+import EmailConfig from "./emailConfig";
+
 //import { logger, debugLog } from "../Utils/logging";
-import stream from "stream";
-export default db => {
+export default (db) => {
   return {
     saveDocument: (req, res, next) => {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
       req.on("end", () => {
@@ -24,7 +26,7 @@ export default db => {
           EmployeeDocModel.findOneAndUpdate(
             {
               pageName: _headerFile.pageName,
-              destinationName: _headerFile.destinationName
+              destinationName: _headerFile.destinationName,
             },
             {
               pageName: _headerFile.pageName,
@@ -32,13 +34,13 @@ export default db => {
               clientID: _clientID,
               image: _utf,
               fileExtention: _headerFile.fileExtention,
-              updatedDate: new Date()
+              updatedDate: new Date(),
             },
             (error, result) => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -56,7 +58,7 @@ export default db => {
               }
               res.status(200).json({
                 success: true,
-                records: "Success"
+                records: "Success",
               });
             }
           );
@@ -64,7 +66,7 @@ export default db => {
           PatientDocModel.findOneAndUpdate(
             {
               pageName: _headerFile.pageName,
-              destinationName: _headerFile.destinationName
+              destinationName: _headerFile.destinationName,
             },
             {
               pageName: _headerFile.pageName,
@@ -72,13 +74,13 @@ export default db => {
               clientID: _clientID,
               image: _utf,
               fileExtention: _headerFile.fileExtention,
-              updatedDate: new Date()
+              updatedDate: new Date(),
             },
             (error, result) => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -97,7 +99,7 @@ export default db => {
 
               res.status(200).json({
                 success: true,
-                records: "Success"
+                records: "Success",
               });
             }
           );
@@ -105,7 +107,7 @@ export default db => {
           CompanyDocModel.findOneAndUpdate(
             {
               pageName: _headerFile.pageName,
-              destinationName: _headerFile.destinationName
+              destinationName: _headerFile.destinationName,
             },
             {
               pageName: _headerFile.pageName,
@@ -113,13 +115,13 @@ export default db => {
               clientID: _clientID,
               image: _utf,
               fileExtention: _headerFile.fileExtention,
-              updatedDate: new Date()
+              updatedDate: new Date(),
             },
             (error, result) => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
               } else {
                 if (result == null) {
@@ -136,7 +138,7 @@ export default db => {
               }
               res.status(200).json({
                 success: true,
-                records: "Success"
+                records: "Success",
               });
             }
           );
@@ -144,7 +146,7 @@ export default db => {
           DepartmentImageModel.findOneAndUpdate(
             {
               pageName: _headerFile.pageName,
-              destinationName: _headerFile.destinationName
+              destinationName: _headerFile.destinationName,
             },
             {
               pageName: _headerFile.pageName,
@@ -152,13 +154,13 @@ export default db => {
               clientID: _clientID,
               image: _utf,
               fileExtention: _headerFile.fileExtention,
-              updatedDate: new Date()
+              updatedDate: new Date(),
             },
             (error, result) => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -178,7 +180,7 @@ export default db => {
 
               res.status(200).json({
                 success: true,
-                records: "Success"
+                records: "Success",
               });
             }
           );
@@ -202,7 +204,7 @@ export default db => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -216,7 +218,7 @@ export default db => {
                 } else {
                   res.status(204).json({
                     success: false,
-                    message: "file not found"
+                    message: "file not found",
                   });
                 }
               }
@@ -229,7 +231,7 @@ export default db => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -243,7 +245,7 @@ export default db => {
                 } else {
                   res.status(204).json({
                     success: false,
-                    message: "file not found"
+                    message: "file not found",
                   });
                 }
               }
@@ -256,7 +258,7 @@ export default db => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  records: error
+                  records: error,
                 });
                 return;
               } else {
@@ -270,7 +272,7 @@ export default db => {
                 } else {
                   res.status(204).json({
                     success: false,
-                    message: "file not found"
+                    message: "file not found",
                   });
                 }
               }
@@ -280,7 +282,7 @@ export default db => {
       } catch (error) {
         res.status(400).json({
           success: false,
-          message: error.message
+          message: error.message,
         });
       }
     },
@@ -291,16 +293,16 @@ export default db => {
         if (_headerFile.fileType == "DepartmentImages") {
           DepartmentImageModel.deleteOne(
             { destinationName: _headerFile.unique },
-            error => {
+            (error) => {
               if (error) {
                 res.status(400).json({
                   success: false,
-                  message: error
+                  message: error,
                 });
               } else {
                 res.status(200).json({
                   success: true,
-                  message: "Successfully Deleted"
+                  message: "Successfully Deleted",
                 });
               }
             }
@@ -309,9 +311,47 @@ export default db => {
       } catch (error) {
         res.status(400).json({
           success: false,
-          message: error.message
+          message: error.message,
         });
       }
-    }
+    },
+    getEmailConfig: (req, res) => {
+      EmailConfig.find()
+        .then((conf) => {
+          console.log(conf, "config");
+          res.status(200).json({
+            success: true,
+            data: conf,
+          });
+        })
+        .catch((e) => {
+          res.status(400).json({
+            success: false,
+            message: e.message,
+          });
+        });
+    },
+    setEmailConfig: (req, res) => {
+      console.log(req.body);
+      const input = req.body;
+      EmailConfig.deleteMany({})
+        .then(() => {
+          const doc = new EmailConfig({
+            ...input,
+          });
+          doc.save().then(() => {
+            res.status(200).json({
+              success: true,
+              message: "Updated successfully!",
+            });
+          });
+        })
+        .catch((e) => {
+          res.status(400).json({
+            success: false,
+            message: "Failed to Update Configuration",
+          });
+        });
+    },
   };
 };

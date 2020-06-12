@@ -63,6 +63,9 @@ body {
   font-weight: bold;
   text-transform: uppercase;
 }
+.print-body .tableForData thead th small {
+  display: block;
+}
 
 .print-body .tableForData tbody {
   margin: 0;
@@ -251,7 +254,14 @@ body {
 .txtFld {
   text-align: left !important;
 }
-
+.numberFldTotal {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+.numberFldTotalBottom {
+  background: #ffc7a6;
+  font-weight: bold;
+}
 .tableForPharmacy {
   width: 100%;
   border-collapse: collapse;
@@ -366,6 +376,7 @@ body {
   text-align: center;
   border-right: 1px solid #bebebe;
   font-size: 10px;
+  color: #000;
 }
 .print-body .tableHeaderForData th p {
   font-size: 11px;
@@ -474,4 +485,10 @@ body {
 .analyteResult [data-value="CL"],
 .analyteResult [data-value="CH"] {
   color: red;
+}
+.textTruncate {
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -2,8 +2,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
 import InventoryItem from "../../../Models/InventoryItem";
 import {
-  AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehValidation
 } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -29,6 +28,19 @@ const Validations = $this => {
       document.querySelector("[name='conversion_factor']").focus();
     }
   } else {
+
+    // else if (
+    //       $this.state.purchase_cost === null ||
+    //       $this.state.purchase_cost === "" ||
+    //       parseFloat($this.state.purchase_cost) === 0
+    //     ) {
+    //       isError = true;
+    //       swalMessage({
+    //         type: "warning",
+    //         title: "Please Enter Purchase Cost."
+    //       });
+    //       document.querySelector("[name='purchase_cost']").focus();
+    //     }
     AlgaehValidation({
       querySelector: "data-validate='InvItemMaster'", //if require section level
       fetchFromFile: true, //if required arabic error
@@ -49,9 +61,10 @@ const Validations = $this => {
             title: "Item Code Already Exist."
           });
         } else if (
-          $this.state.standard_fee === null ||
-          $this.state.standard_fee === "" ||
-          parseFloat($this.state.standard_fee) === 0
+          ($this.state.standard_fee === null ||
+            $this.state.standard_fee === "" ||
+            parseFloat($this.state.standard_fee) === 0) &&
+          ($this.state.standard_fee === "STK" || $this.state.standard_fee === "OITM")
         ) {
           isError = true;
           swalMessage({
@@ -59,17 +72,6 @@ const Validations = $this => {
             title: "Please Enter the Sales Price."
           });
           document.querySelector("[name='standard_fee']").focus();
-        } else if (
-          $this.state.purchase_cost === null ||
-          $this.state.purchase_cost === "" ||
-          parseFloat($this.state.purchase_cost) === 0
-        ) {
-          isError = true;
-          swalMessage({
-            type: "warning",
-            title: "Please Enter Purchase Cost."
-          });
-          document.querySelector("[name='purchase_cost']").focus();
         } else if (
           $this.state.vat_applicable === "Y" &&
           ($this.state.vat_percent === null ||
@@ -115,11 +117,6 @@ const InsertUpdateItems = $this => {
           $this.state.service_code = $this.state.item_code;
           $this.state.service_type_id = "4";
           $this.state.service_name = $this.state.item_description;
-          $this.state.hospital_id = JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-          ).hims_d_hospital_id;
-
-          $this.state.standard_fee = parseFloat($this.state.standard_fee);
 
           algaehApiCall({
             uri: "/inventory/addItemMaster",

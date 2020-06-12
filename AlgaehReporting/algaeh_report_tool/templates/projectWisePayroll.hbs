@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -18,7 +18,7 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
+                        {{!-- <th>Sl No.</th> --}}
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Designation</th>
@@ -32,10 +32,10 @@
                 <tbody>
                     {{#hasElement result}}
                     {{#each result}}
-                    <tr>
+                    {{!-- <tr>
                         <td colspan="8" class="tableSubHdg0">Projects: {{project_name}}
                         </td>
-                    </tr>
+                    </tr> --}}
 
 
 
@@ -43,21 +43,21 @@
 
 
                     {{#each dept_Array}}
-                    <tr>
+                    {{!-- <tr>
                         <td colspan="8" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span class="textFloatRight">No
                                 Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
-                    </tr>
+                    </tr> --}}
                     {{#each sub_dept}}
-                    <tr>
+                    {{!-- <tr>
                         <td colspan="8" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
                                 class="textFloatRight">No
                                 Employees: <b>{{sub_no_employee}}</b></span></td>
-                    </tr>
+                    </tr> --}}
                     {{#each employees}}
                     <tr>
-                        <td>{{inc @index}}</td>
+                        {{!-- <td>{{inc @index}}</td> --}}
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{designation}}</td>
@@ -67,7 +67,7 @@
                         <td>{{project_desc}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
-                    {{!-- <tr>
+                    <tr class="footerTotalDown">
                         <td></td>
                         <td></td>
                         <td style="text-align: right;">Total Employees: <b>{{./no_employees}}</b></td>
@@ -76,7 +76,7 @@
                         <td style="text-align: right;"><b>{{./no_hours}}</b></td>
                         <td style="text-align: right;"><b>{{./project_cost}}</b></td>
                         <td></td>
-                    </tr> --}}
+                    </tr>
 
 
 

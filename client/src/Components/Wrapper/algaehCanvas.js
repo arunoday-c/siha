@@ -67,7 +67,7 @@ export default class AlgaehCanvas extends Component {
       this.loadImageFromDB();
     }
   }
-  componentWillReceiveProps(props) {
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.directImage === undefined) {
       this.loadImageFromDB();
     } else {

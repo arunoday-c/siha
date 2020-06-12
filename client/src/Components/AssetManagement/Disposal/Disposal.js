@@ -238,7 +238,7 @@ class Disposal extends Component {
               }}
             />
             <div className="col">
-              <button className="btn btn-primary" style={{ marginTop: 21 }}>
+              <button className="btn btn-primary" style={{ marginTop: 19 }}>
                 Add to List
               </button>
             </div>

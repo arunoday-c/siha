@@ -43,7 +43,6 @@
         "fieldName": "contact_number",
         "label": "Contact Number"
       },
-
       {
         "fieldName": "primary_id_no",
         "label": "Primary ID No."
@@ -82,7 +81,6 @@
         "fieldName": "bill_number",
         "label": "Bill Number"
       },
-
       {
         "fieldName": "patient_code",
         "label": "Patient Code"
@@ -143,7 +141,6 @@
         "fieldName": "comission_code",
         "label": "Comission Number"
       },
-
       {
         "fieldName": "provider_code",
         "label": "Provider Code"
@@ -162,7 +159,6 @@
       }
     ]
   },
-
   "initialStock": {
     "intstock": [
       {
@@ -264,13 +260,28 @@
         "label": "Requisition Date"
       },
       {
-        "fieldName": "from_location",
-        "label": "From Location",
-        "required": "N"
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
       },
       {
-        "fieldName": "to_location",
-        "label": "To Location",
+        "fieldName": "TPL.location_description",
+        "label": "To Location"
+      }
+    ]
+  },
+  "AdjustmentEntry": {
+    "AdjEntry": [
+      {
+        "fieldName": "adjustment_number",
+        "label": "Adjustment Number"
+      },
+      {
+        "fieldName": "adjustment_date",
+        "label": "Adjustment Date"
+      },
+      {
+        "fieldName": "location_name",
+        "label": "Location Name",
         "required": "N"
       }
     ]
@@ -298,14 +309,12 @@
         "label": "Transfer Date"
       },
       {
-        "fieldName": "from_location",
-        "label": "From Location",
-        "required": "N"
+        "fieldName": "FPL.location_description",
+        "label": "From Location"
       },
       {
-        "fieldName": "to_location",
-        "label": "To Location",
-        "required": "N"
+        "fieldName": "TPL.location_description",
+        "label": "To Location"
       }
     ]
   },
@@ -392,7 +401,70 @@
       },
       {
         "fieldName": "vendor_name",
+        "label": "Vendor Name"
+      }
+    ],
+    "POReturnEntry": [
+      {
+        "fieldName": "purchase_return_number",
+        "label": "PO Number"
+      },
+      {
+        "fieldName": "return_date",
+        "label": "PO Date"
+      },
+      {
+        "fieldName": "po_return_from",
+        "label": "PO Done For"
+      },
+      {
+        "fieldName": "grn_number",
+        "label": "Receipt Number",
+        "required": "N"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "vendor_name",
         "label": "Vendor Name",
+        "required": "N"
+      }
+    ],
+    "RequestQuotation": [
+      {
+        "fieldName": "quotation_number",
+        "label": "Quotation Number"
+      },
+      {
+        "fieldName": "quotation_date",
+        "label": "Quotation Date"
+      },
+      {
+        "fieldName": "quotation_for",
+        "label": "Quotation Done For",
+        "required": "N"
+      }
+    ],
+    "VendorQuotation": [
+      {
+        "fieldName": "vendor_quotation_number",
+        "label": "Vendor Quotation Number"
+      },
+      {
+        "fieldName": "vendor_quotation_date",
+        "label": "Transaction Date"
+      },
+      {
+        "fieldName": "quotation_for",
+        "label": "Quotation Done For",
+        "required": "N"
+      },
+      {
+        "fieldName": "quotation_number",
+        "label": "Quotation Number",
         "required": "N"
       }
     ]
@@ -444,8 +516,7 @@
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name",
-        "required": "N"
+        "label": "Vendor Name"
       }
     ]
   },
@@ -522,7 +593,6 @@
         "label": "Approved Amount"
       }
     ],
-
     "encash_leave": [
       {
         "fieldName": "encashment_number",
@@ -545,7 +615,6 @@
         "label": "Total Amount"
       }
     ],
-
     "end_of_service": [
       {
         "fieldName": "end_of_service_number",
@@ -568,7 +637,6 @@
         "label": "Payable Amount"
       }
     ],
-
     "final_settlement": [
       {
         "fieldName": "final_settlement_number",
@@ -591,7 +659,6 @@
         "label": "Total Amount"
       }
     ],
-
     "leave_settlement": [
       {
         "fieldName": "leave_salary_number",
@@ -645,7 +712,6 @@
       }
     ]
   },
-
   "pharmacy": {
     "itemdata": [
       {
@@ -707,6 +773,10 @@
       {
         "fieldName": "generic_name",
         "label": "Generic Name"
+      },
+      {
+        "fieldName": "item_code",
+        "label": "Item Code"
       }
     ]
   },
@@ -722,8 +792,7 @@
       },
       {
         "fieldName": "location_description",
-        "label": "Location Name",
-        "required": "N"
+        "label": "Location Name"
       }
     ],
     "InvConsEntry": [
@@ -731,7 +800,6 @@
         "fieldName": "consumption_number",
         "label": "Consumption Number"
       },
-
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
@@ -743,8 +811,7 @@
       },
       {
         "fieldName": "location_description",
-        "label": "Location Name",
-        "required": "N"
+        "label": "Location Name"
       }
     ]
   },
@@ -757,10 +824,6 @@
       {
         "fieldName": "batchno",
         "label": "Batch No."
-      },
-      {
-        "fieldName": "expirydt",
-        "label": "Expiry Date"
       },
       {
         "fieldName": "barcode",
@@ -779,6 +842,155 @@
       {
         "fieldName": "group_description",
         "label": "Item Category"
+      },
+      {
+        "fieldName": "item_code",
+        "label": "Item Code"
+      }
+    ]
+  },
+  "Sales": {
+    "SalesQuotation": [
+      {
+        "fieldName": "sales_quotation_number",
+        "label": "Quotation Number"
+      },
+      {
+        "fieldName": "sales_quotation_date",
+        "label": "Quotation Date"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "quote_validity",
+        "label": "Quote Validity",
+        "required": "N"
+      }
+    ],
+    "SalesOrder": [
+      {
+        "fieldName": "sales_order_number",
+        "label": "Order Number"
+      },
+      {
+        "fieldName": "sales_order_date",
+        "label": "Order Date"
+      },
+      {
+        "fieldName": "sales_quotation_number",
+        "label": "Sales Quotation Number"
+      },
+      {
+        "fieldName": "sales_order_mode",
+        "label": "Order Mode",
+        "required": "N"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "delivery_date",
+        "label": "Delivery Date"
+      }
+    ],
+    "DispatchNote": [
+      {
+        "fieldName": "dispatch_note_number",
+        "label": "DN Number"
+      },
+      {
+        "fieldName": "dispatch_note_date",
+        "label": "DN Date"
+      },
+      {
+        "fieldName": "sales_order_number",
+        "label": "Sales Order"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "location",
+        "label": "Location",
+        "required": "N"
+      }
+    ],
+    "SalesInvoice": [
+      {
+        "fieldName": "invoice_number",
+        "label": "Invoice Number"
+      },
+      {
+        "fieldName": "invoice_date",
+        "label": "Invoice Date"
+      },
+      {
+        "fieldName": "sales_invoice_mode",
+        "label": "Invoice Mode"
+      },
+      {
+        "fieldName": "sales_order_number",
+        "label": "Sales Order Number"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      }
+    ],
+    "InvSalesReturn": [
+      {
+        "fieldName": "sales_return_number",
+        "label": "Return Number"
+      },
+      {
+        "fieldName": "return_date",
+        "label": "Return Date"
+      },
+      {
+        "fieldName": "invoice_number",
+        "label": "Sales Order Number"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "project_desc",
+        "label": "Project Desc"
+      }
+    ],
+    "ContractMang": [
+      {
+        "fieldName": "contract_number",
+        "label": "Contract Number"
+      },
+      {
+        "fieldName": "contract_date",
+        "label": "Contract Date"
+      },
+      {
+        "fieldName": "customer_name",
+        "label": "Customer Name"
+      },
+      {
+        "fieldName": "start_date",
+        "label": "Start Date"
+      },
+      {
+        "fieldName": "end_date",
+        "label": "End Date"
+      },
+      {
+        "fieldName": "contract_code",
+        "label": "Contract Code"
+      },
+      {
+        "fieldName": "quotation_ref_numb",
+        "label": "Quotation Ref. Num."
       }
     ]
   }

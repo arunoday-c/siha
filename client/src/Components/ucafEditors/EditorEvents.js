@@ -1,8 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import Enumerable from "linq";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import GlobalVariables from "../../utils/GlobalVariables.json";
-import { SetBulkState } from "../../utils/GlobalFunctions";
 
 export default function EditorEvents() {
   return {
@@ -288,8 +284,8 @@ export default function EditorEvents() {
                   );
                   myWindow.document.write(
                     "<embed src= '" +
-                      reader.result +
-                      "' width='100%' height='100%' />"
+                    reader.result +
+                    "' width='100%' height='100%' />"
                   );
                   myWindow.document.title = "Algaeh OCAF 2.0";
                 };
@@ -338,35 +334,39 @@ export default function EditorEvents() {
                 }
               },
               onSuccess: res => {
-                let reader = new FileReader();
-                reader.onloadend = () => {
-                  // let myWindow = window.open(
-                  //   "{{ product.metafields.google.custom_label_0 }}",
-                  //   "_blank"
-                  // );
-                  // myWindow.document.write(
-                  //   "<embed src= '" + reader.result + "' width='100%' height='100%' />"
-                  // );
-                  // myWindow.document.title = "Algaeh DCAF 2.0";
-                  let myWindow = window.open(
-                    "",
-                    "",
-                    "width=800,height=500,left=200,top=200"
-                  );
 
-                  myWindow.document.write(
-                    "<iframe src= '" +
-                      reader.result +
-                      "' width='100%' height='100%' />"
-                  );
-                  myWindow.document.title = "Algaeh DCAF 2.0";
-                  myWindow.document.body.style.overflow = "hidden";
-                  $this.setState({
-                    loading: false
-                  });
-                };
+                // let reader = new FileReader();
+                // reader.onloadend = () => {
+                // let myWindow = window.open(
+                //   "{{ product.metafields.google.custom_label_0 }}",
+                //   "_blank"
+                // );
+                // myWindow.document.write(
+                //   "<embed src= '" + reader.result + "' width='100%' height='100%' />"
+                // );
+                // myWindow.document.title = "Algaeh DCAF 2.0";
+                // let myWindow = window.open(
+                //   "",
+                //   "",
+                //   "width=800,height=500,left=200,top=200"
+                // );
 
-                reader.readAsDataURL(res.data);
+                // myWindow.document.write(
+                //   "<iframe src= '" +
+                //     reader.result +
+                //     "' width='100%' height='100%' />"
+                // );
+                // myWindow.document.title = "Algaeh DCAF 2.0";
+                // myWindow.document.body.style.overflow = "hidden";
+                const urlBlob = URL.createObjectURL(res.data);
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Algaeh DCAF 2.0`;
+                window.open(origin);
+                //   $this.setState({
+                //     loading: false
+                //   });
+                // };
+
+                //   reader.readAsDataURL(res.data);
               }
             });
           }
@@ -410,21 +410,24 @@ export default function EditorEvents() {
                 }
               },
               onSuccess: res => {
-                let reader = new FileReader();
-                reader.onloadend = () => {
-                  let myWindow = window.open(
-                    "{{ product.metafields.google.custom_label_0 }}",
-                    "_blank"
-                  );
-                  myWindow.document.write(
-                    "<embed src= '" +
-                      reader.result +
-                      "' width='100%' height='100%' />"
-                  );
-                  myWindow.document.title = "Algaeh UCAF 2.0";
-                };
+                // let reader = new FileReader();
+                // reader.onloadend = () => {
+                //   let myWindow = window.open(
+                //     "{{ product.metafields.google.custom_label_0 }}",
+                //     "_blank"
+                //   );
+                //   myWindow.document.write(
+                //     "<embed src= '" +
+                //       reader.result +
+                //       "' width='100%' height='100%' />"
+                //   );
+                //   myWindow.document.title = "Algaeh UCAF 2.0";
+                // };
 
-                reader.readAsDataURL(res.data);
+                // reader.readAsDataURL(res.data);
+                const urlBlob = URL.createObjectURL(res.data);
+                const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Algaeh UCAF 2.0`;
+                window.open(origin);
               }
             });
           }

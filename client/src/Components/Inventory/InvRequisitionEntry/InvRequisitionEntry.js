@@ -18,15 +18,14 @@ import {
 import "./InvRequisitionEntry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import Options from "../../../Options.json";
-import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class InvRequisitionEntry extends Component {
   constructor(props) {
@@ -35,16 +34,15 @@ class InvRequisitionEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = RequisitionIOputs.inputParam();
     IOputs.requisition_auth = this.props.requisition_auth;
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
 
     this.props.getItems({
       uri: "/inventory/getItemMaster",
@@ -61,6 +59,7 @@ class InvRequisitionEntry extends Component {
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
       method: "GET",
+      data: { git_location: "N", location_status: "A" },
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "inventoryreqlocations"
@@ -72,8 +71,9 @@ class InvRequisitionEntry extends Component {
       module: "inventory",
       method: "GET",
       data: {
+        git_location: "N",
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id
       },
       redux: {
         type: "LOCATIOS_GET_DATA",
@@ -87,11 +87,34 @@ class InvRequisitionEntry extends Component {
     ) {
       getCtrlCode(this, this.props.material_requisition_number);
     }
+    this.getInventoryOptions();
   }
 
   componentWillUnmount() {
     ClearData(this, this);
   }
+
+  getInventoryOptions() {
+    algaehApiCall({
+      uri: "/inventory/getInventoryOptions",
+      method: "GET",
+      module: "inventory",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            requisition_auth_level: res.data.records[0].requisition_auth_level
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     const invuserwiselocations = _.filter(
       this.props.invuserwiselocations,
@@ -99,20 +122,6 @@ class InvRequisitionEntry extends Component {
         return f.location_type !== "WH";
       }
     );
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, f => {
-            return (
-              f.hims_d_inventory_location_id === this.state.from_location_id
-            );
-          })
-        : [];
-    const to_location_name =
-      this.state.to_location_id !== null
-        ? _.filter(this.props.inventoryreqlocations, f => {
-            return f.hims_d_inventory_location_id === this.state.to_location_id;
-          })
-        : [];
 
     return (
       <React.Fragment>
@@ -171,63 +180,86 @@ class InvRequisitionEntry extends Component {
                   <h6>
                     {this.state.requistion_date
                       ? moment(this.state.requistion_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
+                {this.state.hims_f_inventory_material_header_id !== null ? (
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Requisition Status"
+                      }}
+                    />
+                    <h6>
+                      {this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "Y" ? (
+                          <span className="badge badge-success">Authorized</span>
+                        ) : this.state.authorize1 === "Y" &&
+                          this.state.authorie2 === "N" ? (
+                            <span className="badge badge-danger">Pending</span>
+                          ) : this.state.authorize1 === "N" &&
+                            this.state.authorize2 === "N" ? (
+                              <span className="badge badge-danger">Pending</span>
+                            ) : (
+                              "-------"
+                            )}
+                    </h6>
+                  </div>
+                ) : null}
               </div>
             }
             printArea={
               this.state.material_requisition_number !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            generateMaterialReqInv(this.state);
-                          }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateMaterialReqInv(this.state);
                         }
                       }
-                      // {
-                      //   label: "Print Report",
-                      //   events: {
-                      //     onClick: () => {
-                      //       AlgaehReport({
-                      //         report: {
-                      //           fileName: "Inventory/MaterialRequisition"
-                      //         },
-                      //         data: {
-                      //           requisition_number: this.state
-                      //             .material_requisition_number,
-                      //           requistion_date: moment(
-                      //             this.state.requistion_date
-                      //           ).format(Options.datetimeFormat),
+                    }
+                    // {
+                    //   label: "Print Report",
+                    //   events: {
+                    //     onClick: () => {
+                    //       AlgaehReport({
+                    //         report: {
+                    //           fileName: "Inventory/MaterialRequisition"
+                    //         },
+                    //         data: {
+                    //           requisition_number: this.state
+                    //             .material_requisition_number,
+                    //           requistion_date: moment(
+                    //             this.state.requistion_date
+                    //           ).format(Options.datetimeFormat),
 
-                      //           requistion_type:
-                      //             this.state.requistion_type === "PR"
-                      //               ? "Purchase Requisition"
-                      //               : "Material Requisition",
+                    //           requistion_type:
+                    //             this.state.requistion_type === "PR"
+                    //               ? "Purchase Requisition"
+                    //               : "Material Requisition",
 
-                      //           from_location:
-                      //             from_location_name.length > 0
-                      //               ? from_location_name[0].location_description
-                      //               : "",
-                      //           to_location:
-                      //             to_location_name.length > 0
-                      //               ? to_location_name[0].location_description
-                      //               : [],
+                    //           from_location:
+                    //             from_location_name.length > 0
+                    //               ? from_location_name[0].location_description
+                    //               : "",
+                    //           to_location:
+                    //             to_location_name.length > 0
+                    //               ? to_location_name[0].location_description
+                    //               : [],
 
-                      //           inventory_stock_detail: this.state
-                      //             .inventory_stock_detail
-                      //         }
-                      //       });
-                      //     }
-                      //   }
-                      // }
-                    ]
-                  }
+                    //           inventory_stock_detail: this.state
+                    //             .inventory_stock_detail
+                    //         }
+                    //       });
+                    //     }
+                    //   }
+                    // }
+                  ]
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -276,8 +308,8 @@ class InvRequisitionEntry extends Component {
                       ? this.state.from_location_type === "WH"
                         ? "Warehouse"
                         : this.state.from_location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "From Location Type"}
                   </h6>
                 </div>
@@ -350,8 +382,8 @@ class InvRequisitionEntry extends Component {
                       ? this.state.to_location_type === "WH"
                         ? "Warehouse"
                         : this.state.to_location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "To Location Type"}
                   </h6>
                 </div>
@@ -408,8 +440,8 @@ class InvRequisitionEntry extends Component {
                           ? true
                           : this.state.authorize1 === "Y" &&
                             this.state.authorie2 === "Y"
-                          ? true
-                          : false
+                            ? true
+                            : false
                       }
                       onClick={AuthorizeRequisitionEntry.bind(
                         this,
@@ -424,7 +456,9 @@ class InvRequisitionEntry extends Component {
                           forceLabel:
                             this.state.authorize1 === "N"
                               ? "Authorize 1"
-                              : "Authorize 2",
+                              : this.state.requisition_auth_level === "2"
+                                ? "Authorize 2"
+                                : "Authorize 1",
                           returnText: true
                         }}
                       />

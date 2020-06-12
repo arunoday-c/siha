@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import InvestigationIOputs from "../../../Models/InvestigationSetup";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -19,22 +20,33 @@ const texthandle = ($this, ctrl, e) => {
     });
   }
   if (name === "investigation_type") {
-    $this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      module: "laboratory",
-      method: "GET",
-      data: { investigation_type: value },
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
+    $this.setState({ [name]: value }, () => {
+      $this.props.getTestCategory({
+        uri: "/labmasters/selectTestCategory",
+        module: "laboratory",
+        method: "GET",
+        data: { investigation_type: value },
+        redux: {
+          type: "TESTCATEGORY_GET_DATA",
+          mappingName: "testcategory"
+        }
+      });
     });
   }
 };
 
 const Validations = $this => {
   let isError = false;
+  // if ($this.state.test_code === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "error",
+  //     title: "Test Code Cannot be blank."
+  //   });
 
+  //   document.querySelector("[name='test_code']").focus();
+  //   return isError;
+  // } else
   if ($this.state.description === null) {
     isError = true;
     swalMessage({
@@ -88,6 +100,8 @@ const Validations = $this => {
       });
       document.querySelector("[name='category_id']").focus();
       return isError;
+    } else {
+      return isError;
     }
   }
 
@@ -103,7 +117,7 @@ const Validations = $this => {
 };
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
-  console.log($this.state, "from insert lab");
+  // console.log($this.state, "from insert lab");
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
@@ -118,7 +132,10 @@ const InsertLabTest = ($this, e) => {
               type: "success",
               title: "Saved successfully . ."
             });
-            $this.props.onClose && $this.props.onClose(true);
+            let IOputs = InvestigationIOputs.inputParam();
+            $this.setState({ ...$this.state, ...IOputs }, () => {
+              $this.props.onClose && $this.props.onClose(true);
+            });
           }
         }
       });
@@ -135,7 +152,10 @@ const InsertLabTest = ($this, e) => {
               type: "success",
               title: "Updated successfully . ."
             });
-            $this.props.onClose && $this.props.onClose(true);
+            let IOputs = InvestigationIOputs.inputParam();
+            $this.setState({ ...$this.state, ...IOputs }, () => {
+              $this.props.onClose && $this.props.onClose(true);
+            });
           }
         }
       });

@@ -36,8 +36,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_investigation_test_id, T.description, services_id, R.hims_d_rad_template_detail_id, \
-             R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
+            "select hims_d_investigation_test_id, T.test_code, T.description, services_id, R.hims_d_rad_template_detail_id, \
+             R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.age_type, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, \
+             S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
              left  join  hims_d_rad_template_detail R on T.hims_d_investigation_test_id = R.test_id \
              left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
              left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
@@ -73,11 +74,12 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "insert into hims_d_investigation_test(short_description,description,investigation_type,lab_section_id,\
+            "insert into hims_d_investigation_test(test_code, short_description,description,investigation_type,lab_section_id,\
                 send_out_test,available_in_house,restrict_order,restrict_by,\
                 external_facility_required,facility_description,services_id,priority,cpt_id,category_id,film_category, screening_test, film_used,created_by,updated_by)values(\
-                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
+            input.test_code,
             input.short_description,
             input.description,
             input.investigation_type,
@@ -132,6 +134,7 @@ export default {
                       "analyte_id",
                       "analyte_type",
                       "result_unit",
+                      "age_type",
                       "gender",
                       "from_age",
                       "to_age",
@@ -244,12 +247,13 @@ export default {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_investigation_test` SET short_description=?,description=?,investigation_type=?,\
+            "UPDATE `hims_d_investigation_test` SET test_code=?, short_description=?,description=?,investigation_type=?,\
             lab_section_id=?, send_out_test=?,available_in_house=?,restrict_order=?,restrict_by=?,\
             external_facility_required=?,facility_description=?,services_id=?,priority=?,cpt_id=?,\
             category_id=?,film_category=?,screening_test=?,film_used=?,updated_date=?,updated_by=?\
             WHERE record_status='A' AND `hims_d_investigation_test_id`=?;",
           values: [
+            inputParam.test_code,
             inputParam.short_description,
             inputParam.description,
             inputParam.investigation_type,
@@ -327,6 +331,7 @@ export default {
                         "analyte_id",
                         "analyte_type",
                         "result_unit",
+                        "age_type",
                         "gender",
                         "from_age",
                         "to_age",
@@ -373,7 +378,7 @@ export default {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
-                          `from_age`=?, `to_age`=?,\
+                          `from_age`=?, `to_age`=?, `age_type`=?, `gender`=?, \
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -383,6 +388,8 @@ export default {
                             update_analytes[i].normal_high,
                             update_analytes[i].from_age,
                             update_analytes[i].to_age,
+                            update_analytes[i].age_type,
+                            update_analytes[i].gender,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id
@@ -591,6 +598,109 @@ export default {
         };
         next();
       }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+
+  addTestComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_investigation_test_comments` (investigation_test_id, commnet_name, commet,  \
+              created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?)",
+          values: [
+            inputParam.investigation_test_id,
+            inputParam.commnet_name,
+            inputParam.commet,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateTestComments: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_investigation_test_comments` SET  commet=?, comment_status=?, updated_date=?, updated_by=? \
+            WHERE  hims_d_investigation_test_comments_id=?;",
+          values: [
+            inputParam.commet,
+            inputParam.comment_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam.hims_d_investigation_test_comments_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getTestComments: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let strQuery = ""
+
+    if (req.query.comment_status !== null && req.query.comment_status !== undefined) {
+      strQuery = ` and comment_status = '${req.query.comment_status}'`
+    }
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select * FROM hims_d_investigation_test_comments where investigation_test_id = ?" +
+            strQuery +
+            "order by hims_d_investigation_test_comments_id desc ",
+          values: [req.query.investigation_test_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } catch (e) {
       _mysql.releaseConnection();
       next(e);

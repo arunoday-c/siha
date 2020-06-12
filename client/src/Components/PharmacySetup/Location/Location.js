@@ -20,12 +20,12 @@ import {
   updateLocation,
   deleteLocation,
   getLocation,
-  allowPos
+  allowPos,
+  GITLoacation
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class Location extends Component {
   constructor(props) {
@@ -36,23 +36,30 @@ class Location extends Component {
       location_description: "",
       location_type: null,
       allowpos: false,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
-      allow_pos: "N"
+      hospital_id: null,
+      allow_pos: "N",
+      gitloaction: false,
+      git_location: "N",
+      phar_loactions: []
     };
     this.baseState = this.state;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    })
     let prevLang = getCookie("Language");
 
     this.setState({
       selectedLang: prevLang
     });
-    if (this.props.location === undefined || this.props.location.length === 0) {
-      getLocation(this, this);
-    }
+
+    getLocation(this, this);
+
 
     if (
       this.props.organizations === undefined ||
@@ -77,73 +84,103 @@ class Location extends Component {
 
   render() {
     return (
-      <div className="lab_section">
-        <div className="container-fluid">
-          <div className="row">
-            {" "}
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "hospital_id",
-                isImp: true
-              }}
-              selector={{
-                name: "hospital_id",
-                className: "select-fld",
-                value: this.state.hospital_id,
-                dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
-                },
-                onChange: changeTexts.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null
-                  });
-                }
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "location_type",
-                isImp: true
-              }}
-              selector={{
-                name: "location_type",
-                className: "select-fld",
-                value: this.state.location_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_PHARMACY_STORE
-                },
-                onChange: changeTexts.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    location_type: null
-                  });
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "type_desc",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "location_description",
-                value: this.state.location_description,
+      <div className="">
+        <div className="row inner-top-search">
+          {" "}
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations
+              },
+              onChange: changeTexts.bind(this, this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              fieldName: "location_type",
+              isImp: true
+            }}
+            selector={{
+              name: "location_type",
+              className: "select-fld",
+              value: this.state.location_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.FORMAT_PHARMACY_STORE
+              },
+              onChange: changeTexts.bind(this, this),
+              onClear: () => {
+                this.setState({
+                  location_type: null
+                });
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Enter Location Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "location_description",
+              value: this.state.location_description,
 
-                events: {
-                  onChange: changeTexts.bind(this, this)
-                }
-              }}
-            />
-            <div
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
+          <div className="col-2">
+            <label>Show in POS</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  value="yes"
+                  name="Allow POS"
+                  checked={this.state.allowpos}
+                  onChange={allowPos.bind(this, this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+          <div className="col-2">
+            <label>GIT Location</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input
+                  type="checkbox"
+                  value="yes"
+                  name="GIT"
+                  checked={this.state.gitloaction}
+                  onChange={GITLoacation.bind(this, this)}
+                />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+
+          {/* <div
               className="customCheckbox col-lg-2"
               style={{ border: "none", marginTop: "19px" }}
             >
@@ -156,264 +193,294 @@ class Location extends Component {
                 />
                 <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
               </label>
-            </div>
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-              <button
-                onClick={insertLocation.bind(this, this)}
-                className="btn btn-primary"
-              >
-                <AlgaehLabel label={{ fieldName: "Addbutton" }} />
-              </button>
-            </div>
+            </div> */}
+          <div className="col" style={{ paddingTop: 19 }}>
+            <button
+              onClick={insertLocation.bind(this, this)}
+              className="btn btn-primary"
+            >
+              <AlgaehLabel label={{ fieldName: "Addbutton" }} />
+            </button>
           </div>
+        </div>
 
-          <div className="row form-details">
-            <div className="col" data-validate="pharLocDiv">
-              <AlgaehDataGrid
-                datavalidate="data-validate='pharLocDiv'"
-                id="pharmacy_location"
-                columns={[
-                  {
-                    fieldName: "location_description",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.location_description,
-                            className: "txt-fld",
-                            name: "location_description",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Description - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "location_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "location_type" }} />
-                    ),
-                    displayTemplate: row => {
-                      return row.location_type === "WH"
-                        ? "Warehouse"
-                        : row.location_type === "MS"
-                        ? "Main Store"
-                        : row.location_type === "SS"
-                        ? "Sub Store"
-                        : null;
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered marginBottom-15">
+              <div className="portlet-body" data-validate="pharLocDiv">
+                <AlgaehDataGrid
+                  datavalidate="data-validate='pharLocDiv'"
+                  id="pharmacy_location"
+                  columns={[
+                    {
+                      fieldName: "location_description",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Location Name" }} />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.location_description,
+                              className: "txt-fld",
+                              name: "location_description",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Description - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      return row.location_type === "WH"
-                        ? "Warehouse"
-                        : row.location_type === "MS"
-                        ? "Main Store"
-                        : row.location_type === "SS"
-                        ? "Sub Store"
-                        : null;
-                    }
-                    // editorTemplate: row => {
-                    //   return (
-                    //     <AlagehAutoComplete
-                    //       div={{}}
-                    //       selector={{
-                    //         name: "location_type",
-                    //         className: "select-fld",
-                    //         value: row.location_type,
-                    //         dataSource: {
-                    //           textField: "name",
-                    //           valueField: "value",
-                    //           data: GlobalVariables.FORMAT_PHARMACY_STORE
-                    //         },
-                    //         onChange: onchangegridcol.bind(this, this, row),
-                    //         others: {
-                    //           errormessage: "Location Type - cannot be blank",
-                    //           required: true
-                    //         }
-                    //       }}
-                    //     />
-                    //   );
-                    // }
-                  },
-                  {
-                    fieldName: "hospital_id",
-                    label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.organizations === undefined
-                          ? []
-                          : this.props.organizations.filter(
+                    {
+                      fieldName: "location_type",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "location_type" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.location_type === "WH"
+                          ? "Warehouse"
+                          : row.location_type === "MS"
+                            ? "Main Store"
+                            : row.location_type === "SS"
+                              ? "Sub Store"
+                              : null;
+                      },
+                      editorTemplate: row => {
+                        return row.location_type === "WH"
+                          ? "Warehouse"
+                          : row.location_type === "MS"
+                            ? "Main Store"
+                            : row.location_type === "SS"
+                              ? "Sub Store"
+                              : null;
+                      }
+                    },
+                    {
+                      fieldName: "hospital_id",
+                      label: <AlgaehLabel label={{ forceLabel: "Branch" }} />,
+                      displayTemplate: row => {
+                        let display =
+                          this.props.organizations === undefined
+                            ? []
+                            : this.props.organizations.filter(
                               f => f.hims_d_hospital_id === row.hospital_id
                             );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].hospital_name
-                            : ""}
-                        </span>
-                      );
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].hospital_name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "hospital_id",
+                              className: "select-fld",
+                              value: row.hospital_id,
+                              dataSource: {
+                                textField: "hospital_name",
+                                valueField: "hims_d_hospital_id",
+                                data: this.props.organizations
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage:
+                                  "Division/Branch - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "hospital_id",
-                            className: "select-fld",
-                            value: row.hospital_id,
-                            dataSource: {
-                              textField: "hospital_name",
-                              valueField: "hims_d_hospital_id",
-                              data: this.props.organizations
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Division/Branch - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "allow_pos",
-                    label: <AlgaehLabel label={{ fieldName: "allow_pos" }} />,
-                    displayTemplate: row => {
-                      return row.allow_pos === "N"
-                        ? "No"
-                        : row.allow_pos === "Y"
-                        ? "Yes"
-                        : null;
+                    {
+                      fieldName: "allow_pos",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Show in POS" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.allow_pos === "N"
+                          ? "No"
+                          : row.allow_pos === "Y"
+                            ? "Yes"
+                            : null;
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "allow_pos",
+                              className: "select-fld",
+                              value: row.allow_pos,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Allow POS - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "allow_pos",
-                            className: "select-fld",
-                            value: row.allow_pos,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_YESNO
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Allow POS - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
+                    {
+                      fieldName: "git_location",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "GIT Location" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.git_location === "N"
+                          ? "No"
+                          : row.git_location === "Y"
+                            ? "Yes"
+                            : null;
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "git_location",
+                              className: "select-fld",
+                              value: row.git_location,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "GIT Location - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
+                    },
+
+                    {
+                      fieldName: "created_by",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_by" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
                               f => f.algaeh_d_app_user_id === row.created_by
                             );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    },
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
 
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
+                      editorTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
                               f => f.algaeh_d_app_user_id === row.created_by
                             );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      }
                     },
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
 
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                  },
-                  {
-                    fieldName: "location_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.location_status === "A"
-                        ? "Active"
-                        : "Inactive";
+                      editorTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "location_status",
-                            className: "select-fld",
-                            value: row.location_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
+                    {
+                      fieldName: "location_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "inv_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.location_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "location_status",
+                              className: "select-fld",
+                              value: row.location_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STATUS
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     }
-                  }
-                ]}
-                keyId="hims_d_pharmacy_location_id"
-                dataSource={{
-                  data:
-                    this.props.location === undefined ? [] : this.props.location
-                }}
-                isEditable={true}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: deleteLocation.bind(this, this),
-                  onEdit: row => {},
+                  ]}
+                  keyId="hims_d_pharmacy_location_id"
+                  dataSource={{
+                    data:
+                      this.state.phar_loactions
+                  }}
+                  isEditable={true}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onDelete: deleteLocation.bind(this, this),
+                    onEdit: row => { },
 
-                  onDone: updateLocation.bind(this, this)
-                }}
-              />
+                    onDone: updateLocation.bind(this, this)
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

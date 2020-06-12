@@ -1,11 +1,11 @@
-import React, { useEffect, useState, createContext } from "react";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import { FilterComponent } from ".";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeSheet/Filter/filter.events";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
+import { MainContext } from "algaeh-react-components/context";
 
 export const FilterContext = createContext(null);
 
@@ -15,10 +15,10 @@ export default function EmployeeFilter(props) {
   const [empGroups, setEmpGroups] = useState([]);
   const [subDepts, setSubDepts] = useState([]);
   const [designations, setDesignations] = useState([]);
+  const { userToken } = useContext(MainContext);
+
   const baseInput = {
-    hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
+    hospital_id: userToken.hims_d_hospital_id,
     year: moment().year(),
     month: moment(new Date()).format("M"),
     department_id: null,
@@ -27,15 +27,14 @@ export default function EmployeeFilter(props) {
     group_id: null,
     hims_d_employee_id: null,
     emp_name: null,
-    hims_d_employee_id: null,
-    inputChanged: false
+    inputChanged: false,
   };
   const [inputs, setInputs] = useState({ ...baseInput });
 
   // kind of works like componentDidMount but runs after the first render and runs once
   useEffect(() => {
     getHospitals();
-    getEmpGroups(data => setEmpGroups(data));
+    getEmpGroups((data) => setEmpGroups(data));
   }, []);
 
   // To get the departments after branch changes
@@ -55,14 +54,14 @@ export default function EmployeeFilter(props) {
         clearOtherStates(["hospital_id", "department_id"]);
       }
       const [reqDept] = allDepartments.filter(
-        dept => dept.hims_d_department_id === inputs.department_id
+        (dept) => dept.hims_d_department_id === inputs.department_id
       );
       if (reqDept) {
         setSubDepts(reqDept.subDepts);
       } else {
         swalMessage({
           title: "Please contact the admin, Error Code: 007",
-          type: "error"
+          type: "error",
         });
       }
     } else {
@@ -81,14 +80,14 @@ export default function EmployeeFilter(props) {
 
   function getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           setHospitals(res.data.records);
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -97,20 +96,20 @@ export default function EmployeeFilter(props) {
       uri: "/branchMaster/getBranchWiseDepartments",
       method: "GET",
       data: {
-        hospital_id: inputs.hospital_id
+        hospital_id: inputs.hospital_id,
       },
       module: "masterSettings",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           setDepts(res.data.records);
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -120,52 +119,60 @@ export default function EmployeeFilter(props) {
       method: "GET",
       module: "hrManagement",
       data: {
-        sub_department_id: sub_department_id
+        sub_department_id: sub_department_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           setDesignations(res.data.records);
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   function dropDownHandler(e) {
     const { name, value } = e;
-    setInputs(state => ({
+    setInputs((state) => ({
       ...state,
       [name]: value,
-      inputChanged: true
+      inputChanged: true,
+    }));
+  }
+
+  function dropDownClear(e) {
+    setInputs((state) => ({
+      ...state,
+      [e]: null,
+      inputChanged: true,
     }));
   }
 
   function clearInputState(fields) {
-    setInputs(state => ({
+    setInputs((state) => ({
       ...state,
-      ...fields
+      ...fields,
     }));
   }
 
   function clearOtherStates(fields) {
-    setInputs(state => {
+    setInputs((state) => {
       const arr = [
         "department_id",
         "sub_department_id",
         "designation_id",
         "hims_d_employee_id",
         "emp_name",
-        "hims_d_employee_id"
+        "hims_d_employee_id",
       ];
-      const matches = arr.filter(element => !fields.includes(element));
+      const matches = arr.filter((element) => !fields.includes(element));
 
       let result = { ...state };
-      matches.forEach(fld => {
+      matches.forEach((fld) => {
         result[fld] = null;
       });
       return result;
@@ -173,6 +180,14 @@ export default function EmployeeFilter(props) {
   }
 
   function employeeSearch(e) {
+    if (inputs.hospital_id === null || inputs.hospital_id === undefined) {
+      swalMessage({
+        title: "Please Select Branch",
+        type: "warning",
+      });
+      document.querySelector("[name='hospital_id']").focus();
+      return;
+    }
     let input_data = " hospital_id=" + inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
       input_data += " and  sub_department_id=" + inputs.sub_department_id;
@@ -180,9 +195,12 @@ export default function EmployeeFilter(props) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
     }
+    if (inputs.group_id !== null) {
+      input_data += " and employee_group_id=" + inputs.group_id;
+    }
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_project",
       uri: "/gloabelSearch/get",
@@ -190,23 +208,23 @@ export default function EmployeeFilter(props) {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         console.log(row, "emp details");
         // let arr = employees;
         // arr.push(row);
         // getDesignations(row.sub_department_id);
 
-        setInputs(state => ({
+        setInputs((state) => ({
           ...state,
           hims_d_employee_id: row.hims_d_employee_id,
           emp_name: row.full_name,
           department_id: row.hims_d_department_id,
           sub_department_id: row.sub_department_id,
           designation_id: row.employee_designation_id,
-          inputChanged: false
+          inputChanged: false,
         }));
         // setEmployees(employees);
-      }
+      },
     });
   }
 
@@ -220,7 +238,7 @@ export default function EmployeeFilter(props) {
     } else {
       swalMessage({
         title: "Please select a hospital",
-        type: "warning"
+        type: "warning",
       });
     }
   }
@@ -230,7 +248,8 @@ export default function EmployeeFilter(props) {
     dropDownHandler,
     employeeSearch,
     clearState,
-    loadFunc
+    loadFunc,
+    dropDownClear,
   }))();
 
   return (
@@ -242,7 +261,7 @@ export default function EmployeeFilter(props) {
         subDepts,
         designations,
         empGroups,
-        handlers
+        handlers,
       }}
     >
       <FilterComponent loadFunc={props.loadFunc} />

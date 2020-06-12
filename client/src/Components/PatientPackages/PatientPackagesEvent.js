@@ -1,4 +1,4 @@
-import { algaehApiCall } from "../../utils/algaehApiCall";
+// import { algaehApiCall } from "../../utils/algaehApiCall";
 // import _ from "lodash";
 // import Enumerable from "linq";
 // import { AlgaehValidation } from "../../utils/GlobalFunctions";
@@ -19,7 +19,7 @@ export default function PackageSetupEvent() {
     ShowPackageUtilize: ($this, row) => {
       $this.setState({
         isPackUtOpen: !$this.state.isPackUtOpen,
-        package_detail: row
+        package_detail: [row]
       });
     },
     ClosePackageUtilize: $this => {

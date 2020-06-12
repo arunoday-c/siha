@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/AlgaehReporting/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/AlgaehReporting/algaeh_report_tool/templates/Output" />
+      <excludeFolder url="file://$MODULE_DIR$/Billing/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/ClinicalDesk/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/DocumentManagement/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/FrontDesk/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/HrManagement/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Insurance/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Inventory/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Laboratory/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/MRD/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/MasterSettings/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/MasterSettings/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/MasterSettings/build" />
+      <excludeFolder url="file://$MODULE_DIR$/Pharmacy/.vscode" />
+      <excludeFolder url="file://$MODULE_DIR$/Pharmacy/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Procurement/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Radiology/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/Sockets/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/algaeh-core/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/algaeh-core/build" />
+      <excludeFolder url="file://$MODULE_DIR$/algaeh-finance/LOGS" />
+      <excludeFolder url="file://$MODULE_DIR$/algaeh-finance/build" />
+      <excludeFolder url="file://$MODULE_DIR$/algaeh-finance/client/dist" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

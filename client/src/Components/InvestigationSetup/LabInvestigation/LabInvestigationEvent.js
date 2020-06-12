@@ -1,146 +1,49 @@
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
-const texthandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
-
-  switch (name) {
-    case "lab_section_id":
-      let analytes_required = e.selected.test_section === "M" ? false : true;
-      $this.setState({
-        [name]: value,
-        analytes_required: analytes_required
-      });
-
-      if (context !== undefined) {
-        context.updateState({
-          [name]: value,
-          analytes_required: analytes_required
-        });
-      }
-
-      break;
-
-    default:
-      $this.setState({
-        [name]: value
-      });
-
-      if (context !== undefined) {
-        context.updateState({
-          [name]: value
-        });
-      }
-
-      break;
-  }
-};
-
-const containeridhandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value,
-    container_code: e.selected.container_id
-  });
-
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value,
-      container_code: e.selected.container_id
-    });
-  }
-};
-
-const analyteidhandle = ($this, context, ctrl, e) => {
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value,
-    analyte_type: e.selected.analyte_type,
-    result_unit: e.selected.result_unit
-  });
-
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value,
-      analyte_type: e.selected.analyte_type,
-      result_unit: e.selected.result_unit
-    });
-  }
-};
-
-const AddAnalytes = ($this, context) => {
-  if ($this.state.analyte_id !== null) {
-    let insert_analytes = $this.state.insert_analytes;
-    let analytes = $this.state.analytes;
-    let obj = {
-      analyte_id: $this.state.analyte_id,
-      analyte_type: $this.state.analyte_type,
-      result_unit: $this.state.result_unit,
-      gender: $this.state.gender,
-      from_age: $this.state.from_age,
-      to_age: $this.state.to_age,
-      critical_low: $this.state.critical_low,
-      critical_high: $this.state.critical_high,
-      normal_low: $this.state.normal_low,
-      normal_high: $this.state.normal_high
-    };
-
-    if ($this.state.hims_d_investigation_test_id !== null) {
-      let Insertobj = {
-        ...obj,
-        test_id: $this.state.hims_d_investigation_test_id
+export function AddAnalytes() {
+  AlgaehValidation({
+    alertTypeIcon: "warning",
+    querySelector: "data-validate='analyte_details'",
+    onSuccess: () => {
+      const { state } = this.context;
+      let insert_analytes = state.insert_analytes;
+      let analytes = state.analytes;
+      let obj = {
+        analyte_id: state.analyte_id
       };
-      insert_analytes.push(Insertobj);
+
+      if (state.hims_d_investigation_test_id !== null) {
+        let Insertobj = {
+          ...obj,
+          test_id: state.hims_d_investigation_test_id
+        };
+        insert_analytes.push(Insertobj);
+      }
+
+      analytes.push(obj);
+      if (this.context !== undefined) {
+        this.context.updateState({
+          analytes: analytes,
+          insert_analytes: insert_analytes,
+          analyte_id: null
+        });
+      }
     }
+  });
+}
 
-    analytes.push(obj);
-    $this.setState(
-      {
-        analytes: analytes,
-        insert_analytes: insert_analytes,
-        analyte_id: null
-      },
-      () => $this.clearInputState()
-    );
-    if (context !== undefined) {
-      context.updateState({
-        analytes: analytes,
-        insert_analytes: insert_analytes,
-        analyte_id: null
-      });
-    }
-  } else {
-    successfulMessage({
-      message: "Please select analyte to add.",
-      title: "Warning",
-      icon: "warning"
-    });
-  }
-};
+export function updateLabInvestigation(row) {
+  const { state } = this.context;
+  let analytes = state.analytes;
+  let update_analytes = state.update_analytes;
 
-const updateLabInvestigation = ($this, context, row) => {
-  let analytes = $this.state.analytes;
-  let update_analytes = $this.state.update_analytes;
+  let analytes_index = analytes.indexOf(row);
 
-  if ($this.state.hims_d_investigation_test_id !== null) {
+  if (state.hims_d_investigation_test_id !== null) {
     let Updateobj = {
       hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-      critical_low: row.critical_low,
-      critical_high: row.critical_high,
-      normal_low: row.normal_low,
-      normal_high: row.normal_high,
-      gender: row.gender,
-      from_age: row.from_age,
-      to_age: row.to_age,
       record_status: "A"
     };
     if (row.hims_m_lab_analyte_id !== undefined) {
@@ -155,31 +58,23 @@ const updateLabInvestigation = ($this, context, row) => {
     }
   }
 
-  for (let l = 0; l < analytes.length; l++) {
-    if (analytes[l].analyte_id === row.analyte_id) {
-      analytes[l] = row;
-    }
-  }
-  // analytes.splice(rowId, 1);
-  $this.setState({
-    analytes: analytes,
-    update_analytes: update_analytes
-  });
+  analytes[analytes_index] = row;
 
-  if (context !== undefined) {
-    context.updateState({
+  if (this.context !== undefined) {
+    this.context.updateState({
       analytes: analytes,
       update_analytes: update_analytes
     });
   }
-};
+}
 
-const deleteLabAnalyte = ($this, context, row, rowId) => {
-  let analytes = $this.state.analytes;
-  let update_analytes = $this.state.update_analytes;
-  let insert_analytes = $this.state.insert_analytes;
-
-  if ($this.state.hims_d_investigation_test_id !== null) {
+export function deleteLabAnalyte(row, rowId) {
+  const { state } = this.context;
+  let analytes = [...state.analytes];
+  let update_analytes = [...state.update_analytes];
+  let insert_analytes = [...state.insert_analytes];
+  console.log(analytes, "analytes");
+  if (state.hims_d_investigation_test_id !== null) {
     swal({
       title: "Are you Sure you want to Delete this Analyte?",
       type: "warning",
@@ -191,6 +86,7 @@ const deleteLabAnalyte = ($this, context, row, rowId) => {
     }).then(willUpdate => {
       if (willUpdate.value) {
         if (row.hims_m_lab_analyte_id !== undefined) {
+          console.log("hello", row);
           algaehApiCall({
             uri: "/investigation/deleteLabAnalyte",
             module: "laboratory",
@@ -202,12 +98,8 @@ const deleteLabAnalyte = ($this, context, row, rowId) => {
               if (response.data.success === true) {
                 findAndRemoveAnalyte(analytes, row);
                 findAndRemoveAnalyte(update_analytes, row);
-                $this.setState({
-                  analytes,
-                  update_analytes
-                });
-                if (context !== undefined) {
-                  context.updateState({
+                if (this.context !== undefined) {
+                  this.context.updateState({
                     analytes,
                     update_analytes
                   });
@@ -223,13 +115,8 @@ const deleteLabAnalyte = ($this, context, row, rowId) => {
           findAndRemoveAnalyte(insert_analytes, row);
           findAndRemoveAnalyte(update_analytes, row);
           findAndRemoveAnalyte(analytes, row);
-          $this.setState({
-            analytes,
-            update_analytes,
-            insert_analytes
-          });
-          if (context !== undefined) {
-            context.updateState({
+          if (this.context !== undefined) {
+            this.context.updateState({
               analytes,
               update_analytes,
               insert_analytes
@@ -243,40 +130,168 @@ const deleteLabAnalyte = ($this, context, row, rowId) => {
       }
     });
   }
-};
+}
 
 function findAndRemoveAnalyte(analytes, row) {
   for (let l = 0; l < analytes.length; l++) {
-    if (
-      analytes[l].analyte_id === row.analyte_id &&
-      analytes[l].gender === row.gender &&
-      analytes[l].from_age === row.from_age
-    ) {
+    if (analytes[l].analyte_id === row.analyte_id) {
       analytes.splice(l, 1);
     }
   }
 }
 
-const onchangegridcol = ($this, row, e) => {
-  let analytes = $this.state.analytes;
+export function texthandle(ctrl, e) {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value === "" ? null : e.value || e.target.value;
+  let obj = {};
+  if (name === "lab_section_id") {
+    let analytes_required = e.selected.test_section === "M" ? false : true;
+    obj = { [name]: value, analytes_required: analytes_required };
+  } else {
+    obj = { [name]: value };
+  }
+  this.context.updateState({
+    ...obj
+  });
+}
+
+export function analyteidhandle(ctrl, e) {
+  e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  row[name] = value;
 
-  for (let x = 0; x < analytes.length; x++) {
-    if (analytes[x].analyte_id === row.analyte_id) {
-      analytes[x] = row;
-    }
+  if (this.context !== undefined) {
+    this.context.updateState({
+      [name]: value,
+      analyte_type: e.selected.analyte_type,
+      result_unit: e.selected.result_unit
+    });
   }
-  $this.setState({ analytes: analytes });
-};
+}
 
-export {
-  texthandle,
-  analyteidhandle,
-  containeridhandle,
-  AddAnalytes,
-  updateLabInvestigation,
-  deleteLabAnalyte,
-  onchangegridcol
-};
+export function containeridhandle(ctrl, e) {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (this.context !== undefined) {
+    this.context.updateState({
+      [name]: value,
+      container_code: e.selected.container_id
+    });
+  }
+}
+
+// Dead Code
+
+// export const texthandle = (ctrl, e) => {
+//   e = e || ctrl;
+//   let name = e.name || e.target.name;
+//   let value = e.value === "" ? null : e.value || e.target.value;
+
+//   switch (name) {
+//     case "lab_section_id":
+//       let analytes_required = e.selected.test_section === "M" ? false : true;
+//       if (this.context !== undefined) {
+//         this.context.updateState({
+//           [name]: value,
+//           analytes_required: analytes_required
+//         });
+//       }
+//       break;
+
+//     default:
+//       if (this.context !== undefined) {
+//         this.context.updateState({
+//           [name]: value
+//         });
+//       }
+//       break;
+//   }
+// };
+
+// export const ageValidater = ($this, context) => {
+//   let isError = false;
+
+//   if ($this.state.age_type === "D" && parseFloat($this.state.to_age) > 30) {
+//     swalMessage({
+//       type: "warning",
+//       title: "To Age cannot be greater than 30 Days"
+//     });
+//     isError = true;
+//   } else if (
+//     $this.state.age_type === "M" &&
+//     parseFloat($this.state.to_age) > 12
+//   ) {
+//     swalMessage({
+//       type: "warning",
+//       title: "To Age cannot be greater than 12 Months"
+//     });
+//     isError = true;
+//   }
+//   if (parseFloat($this.state.from_age) > 0 && parseFloat($this.state.to_age)) {
+//     if (parseFloat($this.state.from_age) > parseFloat($this.state.to_age)) {
+//       swalMessage({
+//         type: "warning",
+//         title: "To Age cannot be less than From Age"
+//       });
+//       isError = true;
+//     }
+//   }
+//   if (isError === true) {
+//     $this.setState({
+//       to_age: 0
+//     });
+//     context.updateState({
+//       to_age: 0
+//     });
+//   }
+// };
+
+// export const containeridhandle = (ctrl, e) => {
+//   e = e || ctrl;
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+
+//   if (this.context !== undefined) {
+//     this.context.updateState({
+//       [name]: value,
+//       container_code: e.selected.container_id
+//     });
+//   }
+// };
+
+// export const analyteidhandle = (ctrl, e) => {
+//   e = e || ctrl;
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+
+//   if (this.context !== undefined) {
+//     this.context.updateState({
+//       [name]: value,
+//       analyte_type: e.selected.analyte_type,
+//       result_unit: e.selected.result_unit
+//     });
+//   }
+// };
+
+// if ($this.state.analyte_id === null) {
+//   swalMessage({
+//     type: "warning",
+//     title: "Please select analyte to add."
+//   });
+//   return;
+// }
+// }
+
+// export const onchangegridcol = ($this, row, e) => {
+//   let analytes = $this.state.analytes;
+//   let analytes_index = analytes.indexOf(row);
+//   let name = e.name || e.target.name;
+//   let value = e.value || e.target.value;
+//   row[name] = value;
+//   analytes[analytes_index] = row;
+
+//   $this.setState({ analytes: analytes });
+// };

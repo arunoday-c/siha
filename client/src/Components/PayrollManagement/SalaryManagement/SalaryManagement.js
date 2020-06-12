@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import "./SalaryManagement.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-// import SalaryPayments from "./SalaryPayments/SalaryPayments";
-// import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
 import NewSalaryProcessing from "./SalaryProcessing/NewSalaryProcessing";
-import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
+import MiscEarningsDeductionsNew from "./MiscEarningsDeductionsNew/MiscEarningsDeductionsNew";
+import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default class SalaryManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "NewSalaryProcessing"
+      pageDisplay: "MiscEarningsDeductions"
     };
   }
 
@@ -30,94 +30,60 @@ export default class SalaryManagement extends Component {
   render() {
     return (
       <div className="salary_management">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              {/* <li
-                algaehtabs={"SalaryProcessing"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Processing"
-                    }}
-                  />
-                }
-              </li> */}
-              <li
-                algaehtabs={"NewSalaryProcessing"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Processing"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"MiscEarningsDeductions"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "miscellaneous Earnings & Deductions"
-                    }}
-                  />
-                }
-              </li>
-              {/* <li
-                algaehtabs={"SalaryPayments"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Payments"
-                    }}
-                  />
-                }
-              </li> */}
-
-              <li
-                algaehtabs={"NewSalaryPayments"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Salary Payments"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="salary-setion">
-          {//   this.state.pageDisplay === "SalaryProcessing" ? (
-          //   <SalaryProcessing />
-          // ) :
-          this.state.pageDisplay === "NewSalaryProcessing" ? (
-            <NewSalaryProcessing />
-          ) : // this.state.pageDisplay === "SalaryPayments" ? (
-          //   <SalaryPayments />
-          // ) :
-          this.state.pageDisplay === "NewSalaryPayments" ? (
-            <NewSalaryPayments />
-          ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
-            <MiscEarningsDeductions />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Miscellaneous E&D"
+                  }}
+                />
+              ),
+              children: <MiscEarningsDeductions />,
+              componentCode: "SAL_MIS_E&D"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Miscellaneous E&D Bulk"
+                  }}
+                />
+              ),
+              children: <MiscEarningsDeductionsNew />,
+              componentCode: "SAL_MIS_E&D_BLK"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Normal Salary Process"
+                  }}
+                />
+              ),
+              children: <NewSalaryProcessing />,
+              componentCode: "SAL_NOR_SAL_PRO"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Salary Process"
+                  }}
+                />
+              ),
+              children: <LeaveSalaryProcess />,
+              componentCode: "SAL_LEV_SAL_PRO"
+            }
+          ]}
+          renderClass="SalaryMgmntSection"
+        />
       </div>
     );
   }
 }
+// function ChildrenItem({ children }) {
+//   return <div className="Salary-Management-section">{children}</div>;
+// }

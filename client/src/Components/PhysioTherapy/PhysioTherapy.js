@@ -5,15 +5,14 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import spotlightSearch from "../../Search/spotlightSearch.json";
+// import AlgaehSearch from "../Wrapper/globalSearch";
+// import spotlightSearch from "../../Search/spotlightSearch.json";
 import PhysioTherapyEvent from "./PhysioTherapyEvent";
 import moment from "moment";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Options from "../../Options.json";
 import { swalMessage } from "../../utils/algaehApiCall";
 

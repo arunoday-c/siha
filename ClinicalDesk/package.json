@@ -11,9 +11,10 @@
     "api": "npm run clinical_desk_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run-prod": "cross-env PORT=3011 NODE_ENV=production pm2 start  -i 1 build/app.js",
+    "run-prod": "cross-env PORT=3011 NODE_ENV=production pm2 start  -i 2 build/app.js --name 'clinical-desk'",
+    "run-docker": "cross-env PORT=3011 NODE_ENV=production node build/app.js",
     "start": "run-s build run-prod",
-    "run-dev": "cross-env PORT=3011 NODE_ENV=development nodemon ./build/app.js"
+    "run-dev": "cross-env PORT=3011 NODE_ENV=development nodemon ./build/app.js "
   },
   "eslintConfig": {
     "parserOptions": {
@@ -31,7 +32,7 @@
     }
   },
   "dependencies": {
-    "algaeh-mysql": "^1.2.4",
+    "algaeh-mysql": "^1.4.2",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",

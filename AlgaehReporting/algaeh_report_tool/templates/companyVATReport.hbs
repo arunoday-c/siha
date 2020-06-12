@@ -1,0 +1,34 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.<small>م</small></th>
+                        <th>Date<small>التاريخ</small></th>
+                        <th>MRN No.<small>اسم المريض</small></th>
+                        <th>Insurance Liability Before VAT<small>الايراد قبل الضريبة التامين</small></th>
+                        <th>Insurance Liability After VAT<small> الايراد بعد الضريبة التامين </small></th>
+                        <th>Insurance VAT Amount<small>ضريبة القيمة المضافة علي التامين</small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td>{{before_vat}}</td>
+                        <td>{{after_vat}}</td>
+                        <td>{{patient_vat}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
+import "./SalaryProcessing.scss";
 // import "./../../styles/site.scss";
 import {
   AlgaehLabel,
@@ -17,7 +18,7 @@ export default class SalariesComponents extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.selectedEmployee !== undefined) {
       this.setState({ ...this.state, ...newProps.selectedEmployee });
     }
@@ -34,17 +35,23 @@ export default class SalariesComponents extends PureComponent {
           openPopup={this.props.open}
         >
           <div className="popupInner">
-            <div className="col-12 margin-top-15">
-              <h6>
-                <small>Selected Employee:</small>
-                <br />
-                {this.state.dis_employee_name}
-              </h6>
-            </div>
+            <div className="col-12 margin-top-15"></div>
             <div className="col-12 margin-bottom-15">
               <div className="portlet portlet-bordered">
                 <div className="portlet-body">
                   <div className="row">
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Employee Name"
+                        }}
+                      />
+                      <h6>
+                        {this.state.dis_employee_name === null
+                          ? 0
+                          : this.state.dis_employee_name}
+                      </h6>
+                    </div>
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
@@ -55,6 +62,30 @@ export default class SalariesComponents extends PureComponent {
                         {this.state.total_days === null
                           ? 0
                           : this.state.total_days}
+                      </h6>
+                    </div>
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Present Days"
+                        }}
+                      />
+                      <h6>
+                        {this.state.display_present_days === null
+                          ? 0
+                          : this.state.display_present_days}
+                      </h6>
+                    </div>
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Absent Days"
+                        }}
+                      />
+                      <h6>
+                        {this.state.absent_days === null
+                          ? 0
+                          : this.state.absent_days}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -85,25 +116,13 @@ export default class SalariesComponents extends PureComponent {
                     <div className="col-2">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Absent"
+                          forceLabel: "Previous Unpaid Leaves"
                         }}
                       />
                       <h6>
-                        {this.state.absent_days === null
+                        {this.state.pending_unpaid_leave === null
                           ? 0
-                          : this.state.absent_days}
-                      </h6>
-                    </div>
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Present Days"
-                        }}
-                      />
-                      <h6>
-                        {this.state.display_present_days === null
-                          ? 0
-                          : this.state.display_present_days}
+                          : this.state.pending_unpaid_leave}
                       </h6>
                     </div>
                     <div className="col-2">
@@ -154,128 +173,12 @@ export default class SalariesComponents extends PureComponent {
                           : this.state.total_paid_days}
                       </h6>
                     </div>
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Previous Unpaid Leaves"
-                        }}
-                      />
-                      <h6>
-                        {this.state.pending_unpaid_leave === null
-                          ? 0
-                          : this.state.pending_unpaid_leave}
-                      </h6>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Gross Earnings"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_earnings === null
-                          ? 0
-                          : getAmountFormart(this.state.total_earnings)}
-                      </h6>
-                    </div>
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Total Deductions"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_deductions === null
-                          ? 0
-                          : getAmountFormart(this.state.total_deductions)}
-                      </h6>
-                    </div>
-
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Loan Payable"
-                        }}
-                      />
-                      <h6>
-                        {this.state.loan_payable_amount === null
-                          ? 0
-                          : getAmountFormart(this.state.loan_payable_amount)}
-                      </h6>
-                    </div>
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Due Loan"
-                        }}
-                      />
-                      <h6>
-                        {this.state.loan_due_amount === null
-                          ? 0
-                          : getAmountFormart(this.state.loan_due_amount)}
-                      </h6>
-                    </div>
-                    <div className="col-2">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Net Salary"
-                        }}
-                      />
-                      <h6>
-                        {this.state.net_salary === null
-                          ? 0
-                          : getAmountFormart(this.state.net_salary)}
-                      </h6>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* <div className="col-lg-12">
-                <div className="row">
-                  <div className="patientInfo-lab-Top box-shadow-normal">
-                    <div className="patientName">
-                      <h6>{this.state.full_name}</h6>
-                      <p>{this.state.gender}</p>
-                    </div>
-                    <div className="patientDemographic">
-                      <span>
-                        DOB:&nbsp;
-                        <b>
-                          {moment(this.state.date_of_birth).format(
-                            Options.dateFormat
-                          )}
-                        </b>
-                      </span>
-                      <span>
-                        MRN:&nbsp;<b>{this.state.patient_code}</b>
-                      </span>
-                    </div>
-                    <div className="patientDemographic">
-                      <span>
-                        Ref by:&nbsp;
-                        <b>
-                          {display !== null && display.length !== 0
-                            ? display[0].full_name
-                            : ""}
-                        </b>
-                      </span>
-                      <span>
-                        Ordered Date:&nbsp;
-                        <b>
-                          {moment(this.state.ordered_date).format(
-                            Options.dateFormat
-                          )}
-                        </b>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
-            <div className="col-lg-12">
+
+            <div className="col-12">
               <div className="row">
                 <div className="col-4">
                   <div className="portlet portlet-bordered margin-bottom-15">
@@ -319,7 +222,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -391,7 +294,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -465,7 +368,7 @@ export default class SalariesComponents extends PureComponent {
                                 ),
                                 displayTemplate: row => {
                                   return (
-                                    <span>{getAmountFormart(row.amount)}</span>
+                                    <span>{GetAmountFormart(row.amount)}</span>
                                   );
                                 },
 
@@ -488,6 +391,75 @@ export default class SalariesComponents extends PureComponent {
                           />
                         </div>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-body">
+                  <div className="row">
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Gross Earnings"
+                        }}
+                      />
+                      <h6>
+                        {this.state.total_earnings === null
+                          ? 0
+                          : GetAmountFormart(this.state.total_earnings)}
+                      </h6>
+                    </div>
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Total Deductions"
+                        }}
+                      />
+                      <h6>
+                        {this.state.total_deductions === null
+                          ? 0
+                          : GetAmountFormart(this.state.total_deductions)}
+                      </h6>
+                    </div>
+
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Loan Payable"
+                        }}
+                      />
+                      <h6>
+                        {this.state.loan_payable_amount === null
+                          ? 0
+                          : GetAmountFormart(this.state.loan_payable_amount)}
+                      </h6>
+                    </div>
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Due Loan"
+                        }}
+                      />
+                      <h6>
+                        {this.state.loan_due_amount === null
+                          ? 0
+                          : GetAmountFormart(this.state.loan_due_amount)}
+                      </h6>
+                    </div>
+                    <div className="col-2">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Net Salary"
+                        }}
+                      />
+                      <h6>
+                        {this.state.net_salary === null
+                          ? 0
+                          : GetAmountFormart(this.state.net_salary)}
+                      </h6>
                     </div>
                   </div>
                 </div>

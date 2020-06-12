@@ -8,9 +8,7 @@ import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import {
@@ -26,7 +24,6 @@ import {
   ShowItemBatch,
   CloseItemBatch,
   AddItems,
-  UomchangeTexts,
   onchangegridcolauthqty
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -41,7 +38,7 @@ class TransferEntryItems extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.TransferIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -89,7 +86,7 @@ class TransferEntryItems extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.TransferIOputs);
   }
 
@@ -140,12 +137,7 @@ class TransferEntryItems extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.quantity_authorized;
-    // let stock_enable =
-    //   this.state.item_details === null
-    //     ? null
-    //     : this.state.item_details.batches.length > 0
-    //     ? false
-    //     : true;
+
     const pharmacy_location_id = this.state.from_location_id;
     return (
       <React.Fragment>
@@ -160,7 +152,7 @@ class TransferEntryItems extends Component {
                         <AlgaehAutoSearch
                           div={{ className: "col-3" }}
                           label={{ forceLabel: "Item Name (Ctrl + i)" }}
-                          title="Search Items"
+                          title="Type Item Name Here"
                           id="item_id_search"
                           template={result => {
                             return (
@@ -1304,8 +1296,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TransferEntryItems)
+  connect(mapStateToProps, mapDispatchToProps)(TransferEntryItems)
 );

@@ -96,6 +96,32 @@ export default {
       });
     }
   },
+
+  getVisitServiceAmount: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select ins_services_amount, approval_limit_yesno from hims_f_patient_visit where hims_f_patient_visit_id=?",
+          values: [req.query.hims_f_patient_visit_id],
+          printQuery: true
+        })
+        .then(VisitServiceAmount => {
+          console.log("VisitServiceAmount", VisitServiceAmount);
+          _mysql.releaseConnection();
+          req.records = VisitServiceAmount;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   //created by:irfan
   getPatientInsurance: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -119,7 +145,7 @@ export default {
               mIns.primary_sub_id as sub_insurance_provider_id ,\
                sIns.insurance_sub_name as sub_insurance_provider_name,\
               mIns.primary_network_id as network_id, \
-               net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id,\
+               net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id, netoff.preapp_limit as preapp_limit_amount, \
                mIns.primary_card_number as card_number,\
               mIns.primary_inc_card_path as insurance_card_path,\
               mIns.primary_effective_start_date,mIns.primary_effective_end_date,mIns.primary_effective_end_date as effective_end_date,\
@@ -139,7 +165,7 @@ export default {
                mIns.secondary_network_id ,\
                net.network_type as secondary_network_type,\
                netoff.policy_number as secondary_policy_number,netoff.hims_d_insurance_network_office_id as secondary_network_office_id ,mIns.secondary_card_number,mIns.secondary_inc_card_path,\
-              mIns.secondary_effective_start_date,mIns.secondary_effective_end_date \
+              mIns.secondary_effective_start_date,mIns.secondary_effective_end_date, netoff.preapp_limit as sec_preapp_limit \
               from ((((hims_d_insurance_provider Ins \
               INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.secondary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
                INNER JOIN  hims_d_insurance_sub sIns ON mIns.secondary_sub_id= sIns.hims_d_insurance_sub_id) \
@@ -269,6 +295,42 @@ export default {
             new Date(),
             inputparam.hims_d_patient_id
           ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by:irfan
+  getPatientAdvaceAndRefund: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let inputParam = req.query;
+
+      const utilities = new algaehUtilities();
+      /* Select statemwnt  */
+
+      _mysql
+        .executeQuery({
+          query: `select hims_f_patient_advance_id,hims_f_patient_id,A.hims_f_receipt_header_id,A.advance_amount,
+              case transaction_type  when 'AD' then 'Advance' when 'RF' then 'Refund' end as transaction_type,
+              date_format(R.receipt_date, '%d-%m-%Y') as receipt_date, U.username as cashier, R.receipt_number  from hims_f_patient_advance A
+              inner join hims_f_receipt_header R on A.hims_f_receipt_header_id = R.hims_f_receipt_header_id
+              left join algaeh_d_app_user U on A.created_by = U.algaeh_d_app_user_id
+              where A.hims_f_patient_id = ? and A.record_status = 'A' and R.record_status = 'A';`,
+          values: [inputParam.patient_id],
           printQuery: true
         })
         .then(result => {

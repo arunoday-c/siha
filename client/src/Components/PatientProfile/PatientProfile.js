@@ -1,22 +1,18 @@
 import React, { Component, Suspense } from "react";
 import "./patientprofile.scss";
 import Overview from "./Overview/Overview";
-import Subjective from "./Subjective/Subjective";
 import BasicSubjective from "./Subjective/BasicSubjective";
-import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
-// import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
-import Assesment from "./Assessment/Assessment";
-
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
   algaehApiCall,
   cancelRequest,
   getCookie,
-  swalMessage
+  swalMessage,
+  setCookie,
 } from "../../utils/algaehApiCall";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import moment from "moment";
-import { setGlobal, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -27,18 +23,13 @@ import {
   getPatientVitals,
   getPatientDiet,
   getPatientDiagnosis,
-  // getPatientAllergies,
-  //getPatientHistory,
-  printPrescription
+  printPrescription,
 } from "./PatientProfileHandlers";
-// import AlgaehReport from "../Wrapper/printReports";
-// import { getPatientAllergies } from "./Allergies/AllergiesHandlers";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
-import Allergies from "./Allergies/Allergies";
 import SickLeave from "./SickLeave/SickLeave";
 import PatientMRD from "../MRD/PatientMRD/PatientMRD";
 
@@ -51,26 +42,17 @@ const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
 const OcafEditor = React.lazy(() => import("../ucafEditors/ocaf"));
 
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
-let allergyPopUp;
 
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
     this.selected_module = getCookie("module_id");
-    this.active_modules = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
-    );
 
-    allergyPopUp = props.open_allergy_popup;
     this.state = {
       pageDisplay: "subjective",
       patientDiet: [],
       patImg: "",
-      patient_code:
-        this.props.patient_profile !== undefined &&
-        this.props.patient_profile.length > 0
-          ? this.props.patient_profile[0].patient_code
-          : "",
+      patient_code: "",
       openUCAF: false,
       UCAFData: undefined,
       openDCAF: false,
@@ -79,52 +61,76 @@ class PatientProfile extends Component {
       openOCAF: false,
       openSickLeave: false,
       OCAFData: [],
-      chart_type: Window.global["chart_type"],
+      chart_type: "",
       alergyExist: "",
-      patientAllergies: []
+      showAllergyPopup: true,
+      patientAllergies: [],
     };
 
-    getPatientProfile(this);
-    getPatientVitals(this);
-
-    // getPatientAllergies(this, () => {
-    //   swalMessage({
-    //     title: "Alergy Exists...",
-    //     type: "warning"
-    //   });
-    // });
-    getPatientDiet(this);
-    getPatientDiagnosis(this);
-    //getPatientHistory(this);
-    this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
+  }
+
+  componentDidMount() {
+    const patientDetails = Window.global;
+    // if (patientDetails === undefined) {
+    //   this.props.history.push("/DoctorsWorkbench");
+    // }
+    this.setState(
+      {
+        alergyExist: "",
+        firstLaunch:
+          this.state.firstLaunch === undefined ? this.props.firstLaunch : false,
+        patient_code:
+          this.props.patient_profile !== undefined &&
+            this.props.patient_profile.length > 0
+            ? this.props.patient_profile[0].patient_code
+            : "",
+        chart_type: patientDetails["chart_type"],
+      },
+      () => {
+        getPatientProfile(this);
+        getPatientVitals(this);
+
+        // getPatientAllergies(this, () => {
+        //   swalMessage({
+        //     title: "Alergy Exists...",
+        //     type: "warning"
+        //   });
+        // });
+        getPatientDiet(this);
+        getPatientDiagnosis(this);
+        //getPatientHistory(this);
+        this.getLocation();
+      }
+    );
   }
 
   openAllergies(e) {
     this.setState({
-      openAlergy: true
+      openAlergy: true,
     });
   }
 
   closeAllergies(e) {
     this.setState({
-      openAlergy: false
+      openAlergy: false,
     });
   }
 
   showSickLeave() {
     this.setState({
-      openSickLeave: !this.state.openSickLeave
+      openSickLeave: !this.state.openSickLeave,
     });
   }
 
   printGeneralConsentForm() {
+    const { current_patient, visit_id, episode_id } = Window.global;
     algaehApiCall({
       uri: "/report",
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -133,42 +139,37 @@ class PatientProfile extends Component {
           reportParams: [
             {
               name: "patient_id",
-              value: Window.global["current_patient"]
+              value: current_patient,
             },
             {
               name: "visit_id",
-              value: Window.global["visit_id"]
+              value: visit_id,
             },
             {
               name: "episode_id",
-              value: Window.global["episode_id"]
-            }
+              value: episode_id,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
-
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Consent Form";
-      }
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=General Consent Form`;
+        window.open(origin);
+        // window.document.title = "Consent Form";
+      },
     });
   }
 
   printMedicalConsentForm() {
+    const { current_patient, visit_id, episode_id } = Window.global;
     algaehApiCall({
       uri: "/report",
       method: "GET",
       module: "reports",
       headers: {
-        Accept: "blob"
+        Accept: "blob",
       },
       others: { responseType: "blob" },
       data: {
@@ -177,32 +178,26 @@ class PatientProfile extends Component {
           reportParams: [
             {
               name: "patient_id",
-              value: Window.global["current_patient"]
+              value: current_patient,
             },
             {
               name: "visit_id",
-              value: Window.global["visit_id"]
+              value: visit_id,
             },
             {
               name: "episode_id",
-              value: Window.global["episode_id"]
-            }
+              value: episode_id,
+            },
           ],
-          outputFileType: "PDF"
-        }
+          outputFileType: "PDF",
+        },
       },
-      onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
-
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = "Consent Form";
-      }
+      onSuccess: (res) => {
+        const urlBlob = URL.createObjectURL(res.data);
+        const documentName = "Medical Consent Form";
+        const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${documentName}`;
+        window.open(origin);
+      },
     });
   }
 
@@ -215,68 +210,27 @@ class PatientProfile extends Component {
         uri: "/inventory/getInventoryLocation",
         module: "inventory",
         data: {
-          location_status: "A"
+          location_status: "A",
         },
         method: "GET",
         redux: {
           type: "LOCATIONS_GET_DATA",
-          mappingName: "inventorylocations"
-        }
+          mappingName: "inventorylocations",
+        },
       });
     }
   }
 
   changeTabs(e) {
-    let chief_complaint = Window.global["chief_complaint"];
-    let significant_signs = Window.global["significant_signs"];
-    const _Vitals =
-      this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
-        ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
-        : [];
-
-    if (
-      chief_complaint === null ||
-      chief_complaint === undefined ||
-      chief_complaint.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      significant_signs === null ||
-      significant_signs === undefined ||
-      significant_signs.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      _Vitals.length === 0 &&
-      Window.global["vitals_mandatory"] === "Y"
-    ) {
-      swalMessage({
-        title: "Enter All Vitals...",
-        type: "warning"
-      });
-    } else {
-      var element = document.querySelectorAll("[algaehsoap]");
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-      var page = e.currentTarget.getAttribute("algaehsoap");
-      this.setState({
-        pageDisplay: page
-      });
+    var element = document.querySelectorAll("[algaehsoap]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
     }
+    e.currentTarget.classList.add("active");
+    var page = e.currentTarget.getAttribute("algaehsoap");
+    this.setState({
+      pageDisplay: page,
+    });
   }
 
   componentWillUnmount() {
@@ -288,81 +242,89 @@ class PatientProfile extends Component {
       redux: {
         type: "PATIENT_ALLERGIES",
         mappingName: "patient_allergies",
-        data: []
-      }
-    });
-  }
-  componentWillReceiveProps(props) {
-    if (props.patient_allergies !== undefined) {
-      if (this.state.patientAllergies.length === 0)
-        this.showAllergyAlert(props.patient_allergies);
-      this.setState({
-        alergyExist: props.patient_allergies.length > 0 ? " AllergyActive" : "",
-        patientAllergies: Enumerable.from(props.patient_allergies)
-          .groupBy("$.allergy_type", null, (k, g) => {
-            return {
-              allergy_type: k,
-              allergy_type_desc:
-                k === "F"
-                  ? "Food"
-                  : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                  ? "Animal  &  Insect"
-                  : k === "C"
-                  ? "Chemical & Others"
-                  : "",
-              allergyList: g.getSource()
-            };
-          })
-          .toArray()
-      });
-    } else {
-      this.setState({
-        alergyExist: "",
-        patientAllergies: []
-      });
-    }
-  }
-  componentDidMount() {
-    this.setState({
-      alergyExist: "",
-      firstLaunch:
-        this.state.firstLaunch === undefined ? this.props.firstLaunch : false
+        data: [],
+      },
     });
   }
 
+  UNSAFE_componentWillReceiveProps(props) {
+    if (props.patient_allergies !== undefined) {
+      if (this.state.patientAllergies.length === 0)
+        this.showAllergyAlert(props.patient_allergies);
+      this.setState(
+        {
+          alergyExist:
+            props.patient_allergies.length > 0 ? " AllergyActive" : "",
+          patientAllergies: Enumerable.from(props.patient_allergies)
+            .groupBy("$.allergy_type", null, (k, g) => {
+              return {
+                allergy_type: k,
+                allergy_type_desc:
+                  k === "F"
+                    ? "Food"
+                    : k === "A"
+                      ? "Airborne"
+                      : k === "AI"
+                        ? "Animal  &  Insect"
+                        : k === "C"
+                          ? "Chemical & Others"
+                          : "",
+                allergyList: g.getSource(),
+              };
+            })
+            .toArray(),
+        },
+        () => {
+          this.showAllergyAlert(props.patient_allergies);
+        }
+      );
+    } else {
+      this.setState({
+        alergyExist: "",
+        patientAllergies: [],
+      });
+    }
+  }
+
   openUCAFReport(data, e) {
-    let chief_complaint = Window.global["chief_complaint"];
-    let significant_signs = Window.global["significant_signs"];
+    const {
+      chief_complaint,
+      significant_signs,
+      vitals_mandatory,
+      current_patient,
+      visit_id,
+    } = Window.global;
+    // let chief_complaint = Window.global["chief_complaint"];
+    // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (chief_complaint === null || chief_complaint.length < 4) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
-      Window.global["vitals_mandatory"] === "Y"
+      // Window.global["vitals_mandatory"] === "Y"
+      vitals_mandatory === "Y"
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -370,37 +332,44 @@ class PatientProfile extends Component {
         uri: "/ucaf/getPatientUCAF",
         method: "GET",
         data: {
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"],
-          forceReplace: true
+          patient_id: current_patient, //Window.global["current_patient"],
+          visit_id: visit_id, //Window.global["visit_id"],
+          forceReplace: true,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openUCAF: true, UCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
 
   openDCAFReport(data, e) {
-    let chief_complaint = Window.global["chief_complaint"];
-    let significant_signs = Window.global["significant_signs"];
+    const {
+      chief_complaint,
+      significant_signs,
+      vitals_mandatory,
+      current_patient,
+      visit_id,
+    } = Window.global;
+    // let chief_complaint = Window.global["chief_complaint"];
+    // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -410,20 +379,21 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
-      Window.global["vitals_mandatory"] === "Y"
+      // Window.global["vitals_mandatory"] === "Y"
+      vitals_mandatory === "Y"
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -431,37 +401,44 @@ class PatientProfile extends Component {
         uri: "/dcaf/getPatientDCAF",
         method: "GET",
         data: {
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"]
+          patient_id: current_patient, //Window.global["current_patient"],
+          visit_id: visit_id, //Window.global["visit_id"]
           // forceReplace: true
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openDCAF: true, DCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
 
   openOCAFReport(data, e) {
-    let chief_complaint = Window.global["chief_complaint"];
-    let significant_signs = Window.global["significant_signs"];
+    const {
+      chief_complaint,
+      significant_signs,
+      vitals_mandatory,
+      current_patient,
+      visit_id,
+    } = Window.global;
+    // let chief_complaint = Window.global["chief_complaint"];
+    // let significant_signs = Window.global["significant_signs"];
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+          .groupBy("$.visit_date", null, (k, g) => {
+            return g.getSource();
+          })
+          .orderBy((g) => g.visit_date)
+          .lastOrDefault()
         : [];
 
     if (
@@ -471,20 +448,21 @@ class PatientProfile extends Component {
     ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (significant_signs === null || significant_signs.length < 4) {
       swalMessage({
         title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       _Vitals.length === 0 &&
-      Window.global["vitals_mandatory"] === "Y"
+      // Window.global["vitals_mandatory"] === "Y"
+      vitals_mandatory === "Y"
     ) {
       swalMessage({
         title: "Enter All Vitals...",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let that = this;
@@ -492,36 +470,36 @@ class PatientProfile extends Component {
         uri: "/ocaf/getPatientOCAF",
         method: "GET",
         data: {
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"]
+          patient_id: current_patient, //Window.global["current_patient"],
+          visit_id: visit_id, //Window.global["visit_id"]
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             that.setState({ openOCAF: true, OCAFData: response.data.records });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           swalMessage({
             title: error.response.data.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   }
 
   showAllergyAlert(_patient_allergies) {
-    if (allergyPopUp && _patient_allergies.length > 0) {
-      allergyPopUp = false;
+    if (this.state.showAllergyPopup && _patient_allergies.length > 0) {
       swalMessage({
         title: "Alergy Exists...",
-        type: "warning"
+        type: "warning",
       });
+      this.setState({ showAllergyPopup: false });
     }
   }
   decissionAllergyOnSet(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-      .where(w => w.value === row.onset)
+      .where((w) => w.value === row.onset)
       .firstOrDefault();
     if (_onSet !== undefined) {
       return _onSet.name;
@@ -532,11 +510,13 @@ class PatientProfile extends Component {
       redux: {
         type: "PATIENT_PROFILE",
         mappingName: "patient_profile",
-        data: []
-      }
+        data: [],
+      },
     });
+    setCookie("ScreenName", "DoctorsWorkbench");
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
-    document.getElementById("ehr-router").click();
+    //document.getElementById("ehr-router").click();
+    this.props.history.push("/DoctorsWorkbench");
   }
 
   renderDCAFReport() {
@@ -547,7 +527,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openDCAF: false });
-          }
+          },
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
@@ -562,7 +542,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openOCAF: false });
-          }
+          },
         }}
       >
         <OcafEditor dataProps={this.state.OCAFData} />
@@ -577,7 +557,7 @@ class PatientProfile extends Component {
         events={{
           onClose: () => {
             this.setState({ openUCAF: false });
-          }
+          },
         }}
       >
         <UcafEditor dataProps={this.state.UCAFData} />
@@ -586,107 +566,92 @@ class PatientProfile extends Component {
   }
 
   OpenMrdHandler(e) {
-    let chief_complaint = Window.global["chief_complaint"];
-    let significant_signs = Window.global["significant_signs"];
-    const _Vitals =
-      this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
-        ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
-        : [];
 
-    if (
-      chief_complaint === null ||
-      chief_complaint === undefined ||
-      chief_complaint.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Chief Complaint. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      significant_signs === null ||
-      significant_signs === undefined ||
-      significant_signs.length < 4
-    ) {
-      swalMessage({
-        title: "Enter Significant Signs. Atlest 4 letter",
-        type: "warning"
-      });
-    } else if (
-      _Vitals.length === 0 &&
-      Window.global["vitals_mandatory"] === "Y"
-    ) {
-      swalMessage({
-        title: "Enter All Vitals...",
-        type: "warning"
-      });
-    } else {
-      const details = Window.global;
-      var element = document.querySelectorAll("[algaehsoap]");
-      for (var i = 0; i < element.length; i++) {
-        element[i].classList.remove("active");
-      }
-      e.currentTarget.classList.add("active");
-      var page = e.currentTarget.getAttribute("algaehsoap");
+    // let chief_complaint = Window.global["chief_complaint"];
+    // let significant_signs = Window.global["significant_signs"];
+    // const _Vitals =
+    //   this.props.patient_vitals !== undefined &&
+    //   this.props.patient_vitals.length > 0
+    //     ? Enumerable.from(this.props.patient_vitals)
+    //         .groupBy("$.visit_date", null, (k, g) => {
+    //           return g.getSource();
+    //         })
+    //         .orderBy(g => g.visit_date)
+    //         .lastOrDefault()
+    //     : [];
 
-      setGlobal({
-        "MRD-STD": "PatientMRD",
-        mrd_patient: details["current_patient"],
-        nationality: document.querySelector("[patient_nationality='true']")
-          .innerText,
-        gender: details["gender"]
-      });
-      this.setState({
-        pageDisplay: page
+    // if (
+    //   chief_complaint === null ||
+    //   chief_complaint === undefined ||
+    //   chief_complaint.length < 4
+    // ) {
+    //   swalMessage({
+    //     title: "Enter Chief Complaint. Atlest 4 letter",
+    //     type: "warning"
+    //   });
+    // } else if (
+    //   significant_signs === null ||
+    //   significant_signs === undefined ||
+    //   significant_signs.length < 4
+    // ) {
+    //   swalMessage({
+    //     title: "Enter Significant Signs. Atlest 4 letter",
+    //     type: "warning"
+    //   });
+    // } else if (
+    //   _Vitals.length === 0 &&
+    //   // Window.global["vitals_mandatory"] === "Y"
+    //   vitals_mandatory === "Y"
+    // ) {
+    //   swalMessage({
+    //     title: "Enter All Vitals...",
+    //     type: "warning"
+    //   });
+    // } else {
+    const details = Window.global;
+    var element = document.querySelectorAll("[algaehsoap]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var page = e.currentTarget.getAttribute("algaehsoap");
+
+    setGlobal({
+      "MRD-STD": "PatientMRD",
+      mrd_patient: details["current_patient"],
+      nationality: document.querySelector("[patient_nationality='true']")
+        .innerText,
+      gender: details["gender"],
+    });
+    this.setState({
+      pageDisplay: page,
+    });
+    // }
+  }
+
+  goback = () => {
+    if (!Window.global) {
+      this.props.history.push({
+        pathname: "/DoctorsWorkbench",
       });
     }
-  }
-  render() {
-    const module_plan = _.find(this.active_modules, f => {
-      return f.module_id === parseInt(this.selected_module);
-    });
+  };
 
+  render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
-      this.props.patient_profile.length > 0
+        this.props.patient_profile.length > 0
         ? this.props.patient_profile[0]
         : {};
 
     const _Vitals =
       this.props.patient_vitals !== undefined &&
-      this.props.patient_vitals.length > 0
+        this.props.patient_vitals.length > 0
         ? _.chain(this.props.patient_vitals)
-            .uniqBy(u => u.vital_id)
-            .orderBy(o => o.sequence_order)
-            .value()
+          .uniqBy((u) => u.vital_id)
+          .orderBy((o) => o.sequence_order)
+          .value()
         : [];
-
-    // const _patient_allergies =
-    //   this.props.patient_allergies === undefined
-    //     ? []
-    //     : Enumerable.from(this.props.patient_allergies)
-    //         .groupBy("$.allergy_type", null, (k, g) => {
-    //           return {
-    //             allergy_type: k,
-    //             allergy_type_desc:
-    //               k === "F"
-    //                 ? "Food"
-    //                 : k === "A"
-    //                 ? "Airborne"
-    //                 : k === "AI"
-    //                 ? "Animal  &  Insect"
-    //                 : k === "C"
-    //                 ? "Chemical & Others"
-    //                 : "",
-    //             allergyList: g.getSource()
-    //           };
-    //         })
-    //         .toArray();
 
     const _patient_allergies = this.state.patientAllergies;
 
@@ -705,7 +670,7 @@ class PatientProfile extends Component {
             <button
               id="btn-outer-component-load"
               className="d-none"
-              //  onClick={this.setPatientGlobalParameters.bind(this)}
+            //  onClick={this.setPatientGlobalParameters.bind(this)}
             />
             <button
               onClick={this.renderBackButton.bind(this)}
@@ -725,7 +690,7 @@ class PatientProfile extends Component {
               serviceParameters={{
                 uniqueID: _pat_profile.patient_code,
                 destinationName: _pat_profile.patient_code,
-                fileType: "Patients"
+                fileType: "Patients",
               }}
               forceRefresh={true}
             />
@@ -744,7 +709,7 @@ class PatientProfile extends Component {
             </span>
 
             <span>
-              Nationality:{" "}
+              Nationality:
               <b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
             <span>
@@ -753,8 +718,8 @@ class PatientProfile extends Component {
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
                   : _pat_profile.payment_type === "S"
-                  ? "Self"
-                  : ""}
+                    ? "Self"
+                    : ""}
               </b>
             </span>
           </div>
@@ -831,214 +796,15 @@ class PatientProfile extends Component {
                   <span>OCAF Report</span>
                 </li>
               ) : (
-                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
-                  <span>UCAF Report</span>
-                </li>
-              )}
+                    <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                      <span>UCAF Report</span>
+                    </li>
+                  )}
             </ul>
           </div>
         </div>
         <div className="patientTopNav box-shadow-normal">
-          {module_plan === undefined || module_plan.module_plan === "G" ? (
-            <ul className="nav">
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="subjective"
-                  className="nav-link active"
-                >
-                  Subjective
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="phy_exam"
-                  className="nav-link"
-                >
-                  Physical Examination
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="exam_diagram"
-                  className="nav-link"
-                >
-                  Examination Diagram
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="assesment"
-                  className="nav-link"
-                >
-                  Assesment
-                </span>
-              </li>
-
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="dental"
-                  className="nav-link"
-                >
-                  Dental
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="eye"
-                  className="nav-link"
-                >
-                  Optometry
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="summary"
-                  className="nav-link"
-                >
-                  Summary
-                </span>
-              </li>
-
-              <ul className="float-right patient-quick-info">
-                <li>
-                  <i className={"fas fa-allergies " + this.state.alergyExist} />
-                  <section>
-                    <span className="top-nav-sec-hdg">Allergies</span>
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <thead>
-                          <tr>
-                            <th>
-                              <b>Allergy</b>
-                            </th>
-                            <th>
-                              <b>Onset From</b>
-                            </th>
-                            <th>
-                              <b>Severity</b>
-                            </th>
-                            <th>
-                              <b>Comments</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {_patient_allergies.map((data, index) => (
-                            <React.Fragment key={index}>
-                              {data.allergyList.map((allergy, aIndex) => (
-                                <tr
-                                  className={
-                                    allergy.allergy_inactive === "Y"
-                                      ? "red"
-                                      : ""
-                                  }
-                                >
-                                  <td>{allergy.allergy_name}</td>
-                                  <td>
-                                    {allergy.onset === "O"
-                                      ? allergy.onset_date
-                                      : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
-                                  </td>
-                                  <td>
-                                    {allergy.severity === "MO"
-                                      ? "Moderate"
-                                      : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
-                                  </td>
-                                  <td>{allergy.comment}</td>
-                                </tr>
-                              ))}
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </li>
-                <li>
-                  <i className="fas fa-diagnoses" />
-                  <section>
-                    <span className="top-nav-sec-hdg">Diagnosis</span>
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <thead>
-                          <tr>
-                            <th>
-                              <b>ICD Code</b>
-                            </th>
-                            <th>
-                              <b>Description</b>
-                            </th>
-                            <th>
-                              <b>Diagnosis Type</b>
-                            </th>
-                            <th>
-                              <b>Diagnosis Level</b>
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {_diagnosis.map((item, index) => (
-                            <tr key={index}>
-                              <td>{item.icd_code}</td>
-                              <td>{item.icd_description}</td>
-                              <td>
-                                {item.diagnosis_type === "S"
-                                  ? "Secondary"
-                                  : "Primary"}
-                              </td>
-                              <td>
-                                {item.final_daignosis === "Y"
-                                  ? "Final"
-                                  : "Not Final"}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </li>
-                <li>
-                  <i className="fas fa-utensils" />
-                  <section>
-                    <span className="top-nav-sec-hdg">Diet</span>{" "}
-                    <div className="listofADDWrapper">
-                      <table className="listofADDTable">
-                        <tbody>
-                          {_diet.map((item, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>{item.hims_d_diet_note}</td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
-                  </section>
-                </li>
-              </ul>
-            </ul>
-          ) : (
+          {
             <ul className="nav">
               <li className="nav-item">
                 <span
@@ -1093,7 +859,7 @@ class PatientProfile extends Component {
               </li>
               <li className="nav-item">
                 <span
-                  onClick={this.OpenMrdHandler.bind(this)}
+                  onClick={this.OpenMrdHandler.bind(this)} //this.OpenMrdHandler.bind(this)}
                   algaehsoap="mrd"
                   className="nav-link"
                 >
@@ -1140,23 +906,23 @@ class PatientProfile extends Component {
                                     {allergy.onset === "O"
                                       ? allergy.onset_date
                                       : allergy.onset === "A"
-                                      ? "Adulthood"
-                                      : allergy.onset === "C"
-                                      ? "Childhood"
-                                      : allergy.onset === "P"
-                                      ? "Pre Terms"
-                                      : allergy.onset === "T"
-                                      ? "Teenage"
-                                      : ""}
+                                        ? "Adulthood"
+                                        : allergy.onset === "C"
+                                          ? "Childhood"
+                                          : allergy.onset === "P"
+                                            ? "Pre Terms"
+                                            : allergy.onset === "T"
+                                              ? "Teenage"
+                                              : ""}
                                   </td>
                                   <td>
                                     {allergy.severity === "MO"
                                       ? "Moderate"
                                       : allergy.severity === "MI"
-                                      ? "Mild"
-                                      : allergy.severity === "SE"
-                                      ? "Severe"
-                                      : ""}
+                                        ? "Mild"
+                                        : allergy.severity === "SE"
+                                          ? "Severe"
+                                          : ""}
                                   </td>
                                   <td>{allergy.comment}</td>
                                 </tr>
@@ -1215,7 +981,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <span className="top-nav-sec-hdg">Diet</span>{" "}
+                    <span className="top-nav-sec-hdg">Diet</span>
                     <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <tbody>
@@ -1233,44 +999,17 @@ class PatientProfile extends Component {
                 </li>
               </ul>
             </ul>
-          )}
+          }
         </div>
         <div className="patientContentArea">
-          {module_plan === undefined || module_plan.module_plan === "G" ? (
-            this.state.pageDisplay === "overview" ? (
-              <Overview />
-            ) : this.state.pageDisplay === "subjective" ? (
-              <Subjective />
-            ) : this.state.pageDisplay === "phy_exam" ? (
-              <PhysicalExamination />
-            ) : this.state.pageDisplay === "exam_diagram" ? (
-              <Suspense
-                fallback={
-                  <div className="loader-container">
-                    <div className="algaeh-progress float shadow">
-                      <div className="progress__item">loading</div>
-                    </div>
-                  </div>
-                }
-              >
-                <ExamDiagramStandolone />
-              </Suspense>
-            ) : this.state.pageDisplay === "assesment" ? (
-              <Assesment vat_applicable={this.vatApplicable()} />
-            ) : this.state.pageDisplay === "summary" ? (
-              <Summary />
-            ) : this.state.pageDisplay === "dental" ? (
-              <Dental
-                vat_applicable={this.vatApplicable()}
-                age_in_years={_pat_profile.age_in_years}
-              />
-            ) : this.state.pageDisplay === "eye" ? (
-              <Eye />
-            ) : null
-          ) : this.state.pageDisplay === "overview" ? (
+          {this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective vat_applicable={this.vatApplicable()} />
+            <BasicSubjective
+              vat_applicable={this.vatApplicable()}
+              date_of_birth={_pat_profile.date_of_birth}
+              gender={_pat_profile.gender}
+            />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <Suspense
               fallback={
@@ -1324,7 +1063,7 @@ function mapStateToProps(state) {
     patient_diet: state.patient_diet,
     patient_diagnosis: state.patient_diagnosis,
     inventorylocations: state.inventorylocations,
-    patient_history: state.patient_history
+    patient_history: state.patient_history,
   };
 }
 
@@ -1336,7 +1075,7 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
       //getPatientHistory: AlgaehActions
     },
     dispatch
@@ -1344,8 +1083,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientProfile)
+  connect(mapStateToProps, mapDispatchToProps)(PatientProfile)
 );

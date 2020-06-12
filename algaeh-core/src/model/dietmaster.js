@@ -1,48 +1,37 @@
 import utils from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
-
-const { whereCondition, selectStatement } = utils;
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
+// const { whereCondition, selectStatement } = utils;
 
 let selectDiet = (req, res, next) => {
-  let Diet = {
-    hims_d_diet_master_id: "ALL"
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let str = "";
+    if (req.query.hims_d_diet_master_id > 0) {
+      str = " and hims_d_diet_master_id=" + req.query.hims_d_diet_master_id;
     }
-    let pagePaging = "";
-    if (req.paging != null) {
-      let Page = paging(req.paging);
-      pagePaging += " LIMIT " + Page.pageNo + "," + page.pageSize;
-    }
-
-    let condition = whereCondition(extend(Diet, req.query));
-    selectStatement(
-      {
-        db: req.db,
-        query:
-          "SELECT * FROM `hims_d_diet_master` WHERE `record_status`='A' AND " +
-          condition.condition +
-          " " +
-          pagePaging,
-        values: condition.values
-      },
-      result => {
+    _mysql
+      .executeQuery({
+        query: `SELECT * FROM hims_d_diet_master WHERE record_status='A' ${str};`,
+        printQuery: false,
+      })
+      .then((result) => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
-      },
-      error => {
+      })
+      .catch((error) => {
+        _mysql.releaseConnection();
         next(error);
-      },
-      true
-    );
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
 
 export default {
-  selectDiet
+  selectDiet,
 };

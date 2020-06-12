@@ -9,8 +9,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
+  // AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
@@ -33,19 +33,22 @@ import {
   qtyonchangegridcol,
   EditGrid,
   credittexthandle,
-  SelectBatchDetails,
-  getMedicationAprovalList
+  // SelectBatchDetails,
+  getMedicationAprovalList,
+  generatePharmacyLabel,
+  CloseItemInstructions
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import InsuranceForm from "../InsuranceDetails/InsuranceForm";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
 import { getMedicationList, getPosEntry } from "../PointOfSaleEvents";
+import ItemInstructions from "./ItemInstructions";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -54,12 +57,14 @@ class PosListItems extends Component {
       selectBatch: false,
       selectBatchButton: true,
       viewInsurance: false,
-      viewPreapproval: false
+      viewPreapproval: false,
+      view_item_instructions: false,
+      item_details: {}
     };
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -127,7 +132,7 @@ class PosListItems extends Component {
     document.removeEventListener("keypress", this.onKeyPress, false);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
 
@@ -153,7 +158,7 @@ class PosListItems extends Component {
                             <AlgaehAutoSearch
                               div={{ className: "col-3" }}
                               label={{ forceLabel: "Item Name (Ctrl + i)" }}
-                              title="Search Items"
+                              title="Type Item Name Here"
                               id="item_id_search"
                               template={result => {
                                 return (
@@ -200,7 +205,7 @@ class PosListItems extends Component {
                                   qtyhand: null,
                                   barcode: null,
                                   ItemUOM: [],
-                                  Batch_Items: null,
+                                  Batch_Items: [],
                                   addItemButton: true,
                                   item_description: null,
                                   sales_uom_id: null,
@@ -355,7 +360,7 @@ class PosListItems extends Component {
                               />
                               <h6>
                                 {this.state.unit_cost
-                                  ? getAmountFormart(this.state.unit_cost)
+                                  ? GetAmountFormart(this.state.unit_cost)
                                   : "-----------"}
                               </h6>
                             </div>
@@ -371,6 +376,7 @@ class PosListItems extends Component {
                             >
                               Add Item
                             </button>
+
                             <button
                               className="btn btn-default"
                               onClick={ShowItemBatch.bind(this, this)}
@@ -379,6 +385,14 @@ class PosListItems extends Component {
                               Select Batch
                             </button>
 
+                            {this.state.Batch_Items.length > 1 ? (
+                              <span
+                                className="badge badge-warning animated flash slower"
+                                style={{ marginTop: 9, float: "right" }}
+                              >
+                                More Batch Available
+                              </span>
+                            ) : null}
                             <div>
                               {this.state.insured === "Y" &&
                               this.state.insurance_yesno === "N" ? (
@@ -407,6 +421,16 @@ class PosListItems extends Component {
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
+
+                            <ItemInstructions
+                              show={this.state.view_item_instructions}
+                              item_details={this.state.item_details}
+                              hims_f_pharmacy_pos_header_id={
+                                this.state.hims_f_pharmacy_pos_header_id
+                              }
+                              // POSIOputs={this.state}
+                              onClose={CloseItemInstructions.bind(this, this)}
+                            />
                           </div>
                         </div>
                       </div>
@@ -427,15 +451,45 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       return (
-                                        <span
-                                          onClick={deletePosDetail.bind(
-                                            this,
-                                            this,
-                                            context,
-                                            row
-                                          )}
-                                        >
-                                          <i className="fas fa-trash-alt" />
+                                        <span>
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                this.state.posted === "Y"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                this.state.posted === "Y"
+                                                  ? "0.1"
+                                                  : ""
+                                            }}
+                                            className="fas fa-trash-alt"
+                                            onClick={deletePosDetail.bind(
+                                              this,
+                                              this,
+                                              context,
+                                              row
+                                            )}
+                                          />
+
+                                          <i
+                                            style={{
+                                              pointerEvents:
+                                                this.state.posted === "N"
+                                                  ? "none"
+                                                  : "",
+                                              opacity:
+                                                this.state.posted === "N"
+                                                  ? "0.1"
+                                                  : ""
+                                            }}
+                                            className="fas fa-print"
+                                            onClick={generatePharmacyLabel.bind(
+                                              this,
+                                              this,
+                                              row
+                                            )}
+                                          />
                                         </span>
                                       );
                                     }
@@ -518,35 +572,35 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Batch No." }}
                                       />
                                     ),
-                                    displayTemplate: row => {
-                                      // {this.state.dataExitst === false}
-                                      return this.state.dataExitst === false ? (
-                                        <AlagehAutoComplete
-                                          div={{ className: "" }}
-                                          selector={{
-                                            name: "batchno",
-                                            className: "select-fld",
-                                            value: row.batchno,
-                                            dataSource: {
-                                              textField: "batchno",
-                                              valueField: "batchno",
-                                              data: row.batches
-                                            },
-                                            onChange: SelectBatchDetails.bind(
-                                              this,
-                                              this,
-                                              row,
-                                              context
-                                            ),
-                                            onClear: () => {
-                                              row["batchno"] = null;
-                                            }
-                                          }}
-                                        />
-                                      ) : (
-                                        row.batchno
-                                      );
-                                    },
+                                    // displayTemplate: row => {
+                                    //   // {this.state.dataExitst === false}
+                                    //   return this.state.dataExitst === false ? (
+                                    //     <AlagehAutoComplete
+                                    //       div={{ className: "" }}
+                                    //       selector={{
+                                    //         name: "batchno",
+                                    //         className: "select-fld",
+                                    //         value: row.batchno,
+                                    //         dataSource: {
+                                    //           textField: "batchno",
+                                    //           valueField: "batchno",
+                                    //           data: row.batches
+                                    //         },
+                                    //         onChange: SelectBatchDetails.bind(
+                                    //           this,
+                                    //           this,
+                                    //           row,
+                                    //           context
+                                    //         ),
+                                    //         onClear: () => {
+                                    //           row["batchno"] = null;
+                                    //         }
+                                    //       }}
+                                    //     />
+                                    //   ) : (
+                                    //       row.batchno
+                                    //     );
+                                    // },
                                     disabled: true,
                                     others: {
                                       minWidth: 150
@@ -583,7 +637,10 @@ class PosListItems extends Component {
                                               allowNegative: false,
                                               thousandSeparator: ","
                                             },
-                                            value: row.quantity,
+                                            value:
+                                              row.quantity !== ""
+                                                ? parseFloat(row.quantity)
+                                                : "",
                                             className: "txt-fld",
                                             name: "quantity",
                                             dontAllowKeys: ["-", "e", "."],
@@ -713,7 +770,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(row.unit_cost, {
+                                          {GetAmountFormart(row.unit_cost, {
                                             appendSymbol: false
                                           })}
                                         </span>
@@ -735,7 +792,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(row.extended_cost, {
+                                          {GetAmountFormart(row.extended_cost, {
                                             appendSymbol: false
                                           })}
                                         </span>
@@ -847,7 +904,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {getAmountFormart(
+                                          {GetAmountFormart(
                                             row.net_extended_cost,
                                             {
                                               appendSymbol: false
@@ -898,7 +955,7 @@ class PosListItems extends Component {
                                 forceLabel: "Sub Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                           </div>
                           <div className="col-lg-4">
                             <AlgaehLabel
@@ -907,7 +964,7 @@ class PosListItems extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.discount_amount)}
+                              {GetAmountFormart(this.state.discount_amount)}
                             </h6>
                           </div>
 
@@ -917,7 +974,7 @@ class PosListItems extends Component {
                                 forceLabel: "Net Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.net_total)}</h6>
                           </div>
                         </div>
                       </div>
@@ -939,7 +996,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.copay_amount)}
+                                    {GetAmountFormart(this.state.copay_amount)}
                                   </h6>
                                 </div>
                               </div>
@@ -954,7 +1011,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.patient_responsibility
                                     )}
                                   </h6>
@@ -967,7 +1024,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.patient_tax)}
+                                    {GetAmountFormart(this.state.patient_tax)}
                                   </h6>
                                 </div>
 
@@ -978,7 +1035,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.patient_payable_h
                                     )}
                                   </h6>
@@ -995,7 +1052,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_responsibility
                                     )}
                                   </h6>
@@ -1008,7 +1065,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.company_tax)}
+                                    {GetAmountFormart(this.state.company_tax)}
                                   </h6>
                                 </div>
 
@@ -1019,7 +1076,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_payable
                                     )}
                                   </h6>
@@ -1084,7 +1141,7 @@ class PosListItems extends Component {
                                   disabled:
                                     this.state.insurance_yesno === "Y"
                                       ? true
-                                      : this.state.saveEnable,
+                                      : !this.state.saveEnable,
                                   placeholder: "0.00",
                                   // onBlur: PosheaderCalculation.bind(
                                   //   this,
@@ -1120,7 +1177,7 @@ class PosListItems extends Component {
                                   disabled:
                                     this.state.insurance_yesno === "Y"
                                       ? true
-                                      : this.state.saveEnable,
+                                      : !this.state.saveEnable,
                                   placeholder: "0.00",
                                   // onBlur: PosheaderCalculation.bind(
                                   //   this,
@@ -1147,7 +1204,7 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.advance_amount)}
+                                {GetAmountFormart(this.state.advance_amount)}
                               </h6>
                             </div>
 
@@ -1157,7 +1214,7 @@ class PosListItems extends Component {
                                   forceLabel: "Net Amount"
                                 }}
                               />
-                              <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                              <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                             </div>
 
                             <AlagehFormGroup
@@ -1188,20 +1245,14 @@ class PosListItems extends Component {
                               }}
                             />
 
-                            <div
-                              className="col-2"
-                              style={{
-                                background: " #44b8bd",
-                                color: " #fff"
-                              }}
-                            >
+                            <div className="col-2 highlightGreen">
                               <AlgaehLabel
                                 label={{
                                   forceLabel: "Receiveable Amount"
                                 }}
                               />
                               <h4>
-                                {getAmountFormart(
+                                {GetAmountFormart(
                                   this.state.receiveable_amount
                                 )}
                               </h4>
@@ -1215,7 +1266,7 @@ class PosListItems extends Component {
                               />
 
                               <h6>
-                                {getAmountFormart(this.state.balance_credit)}
+                                {GetAmountFormart(this.state.balance_credit)}
                               </h6>
                             </div>
                           </div>
@@ -1297,8 +1348,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PosListItems)
+  connect(mapStateToProps, mapDispatchToProps)(PosListItems)
 );

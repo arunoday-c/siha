@@ -66,5 +66,8 @@
   "shift_type": "Shift Type",
   "select_cashier": "Select Cashier",
   "select_month": "Select Month",
-  "year": "Year"
+  "year": "Year",
+  "branch": "Branch",
+  "company_account": "Company Account",
+  "bank_master": "Bank Master"
 }

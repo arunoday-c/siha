@@ -17,6 +17,7 @@ app.use(
   })
 );
 
+process.env.MYSQL_KEYS = JSON.stringify(keys.default);
 //api routeres v1
 app.use("/api/v1", router);
 process.on("warning", warning => {
@@ -29,12 +30,12 @@ process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled rejection", { reason: reason, promise: promise });
 });
 
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
-  error.status = error.status || httpStatus.internalServer;
+  error.status = error.status || 500;
   if (req.db != null) {
     let connection = req.connection;
     if (connection != null) {

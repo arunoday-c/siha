@@ -4,9 +4,9 @@ import {
   AlgaehDataGrid,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
-import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
 import WPSEvents from "./WPSEvent";
@@ -26,7 +26,7 @@ export default class WPS extends Component {
       employer_cr_no: null,
       payer_cr_no: null,
       bank_short_name: null,
-      account_number: null
+      account_number: null,
     };
     WPSEvents().getCompanyAccount(this);
   }
@@ -72,7 +72,7 @@ export default class WPS extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Year",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "year",
@@ -81,21 +81,21 @@ export default class WPS extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: allYears
+                data: allYears,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Month",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               sort: "off",
@@ -105,21 +105,21 @@ export default class WPS extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: MONTHS
+                data: MONTHS,
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Select Bank",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "bank_id",
@@ -128,14 +128,14 @@ export default class WPS extends Component {
               dataSource: {
                 textField: "bank_name",
                 valueField: "bank_id",
-                data: this.state.companyAccount
+                data: this.state.companyAccount,
               },
               onChange: this.BankEventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  bank_id: null
+                  bank_id: null,
                 });
-              }
+              },
             }}
           />
           <div
@@ -217,7 +217,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Employee ID Type" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "employee_code",
@@ -226,7 +226,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Employee Code" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "salary_number",
@@ -235,7 +235,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Reference Number" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "employee_name",
@@ -244,7 +244,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Employee Name" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "employee_bank_ifsc_code",
@@ -253,7 +253,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Employee BIC" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "employee_account_number",
@@ -262,7 +262,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Employee Account No." }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "salary_freq",
@@ -271,7 +271,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Salary Frequency" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "total_work_days",
@@ -280,7 +280,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "No. of Working Days" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
 
                         {
@@ -288,16 +288,16 @@ export default class WPS extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
-                                {getAmountFormart(row.net_salary, {
-                                  appendSymbol: false
+                                {GetAmountFormart(row.net_salary, {
+                                  appendSymbol: false,
                                 })}
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "basic_salary",
@@ -306,16 +306,16 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Basic Salary" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
-                                {getAmountFormart(row.basic_salary, {
-                                  appendSymbol: false
+                                {GetAmountFormart(row.basic_salary, {
+                                  appendSymbol: false,
                                 })}
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "complete_ot",
@@ -325,7 +325,7 @@ export default class WPS extends Component {
                             />
                           ),
 
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "extra_income",
@@ -334,56 +334,56 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Extra Income" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
-                                {getAmountFormart(row.extra_income, {
-                                  appendSymbol: false
+                                {GetAmountFormart(row.extra_income, {
+                                  appendSymbol: false,
                                 })}
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "total_deductions",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Deductions" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
-                                {getAmountFormart(row.total_deductions, {
-                                  appendSymbol: false
+                                {GetAmountFormart(row.total_deductions, {
+                                  appendSymbol: false,
                                 })}
                               </span>
                             );
                           },
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "social_security_deductions",
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Social Security Deductions"
+                                forceLabel: "Social Security Deductions",
                               }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
-                                {getAmountFormart(
+                                {GetAmountFormart(
                                   row.social_security_deductions,
                                   {
-                                    appendSymbol: false
+                                    appendSymbol: false,
                                   }
                                 )}
                               </span>
                             );
                           },
 
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "notes_comments",
@@ -392,7 +392,7 @@ export default class WPS extends Component {
                               label={{ forceLabel: "Notes/Comments" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -404,22 +404,23 @@ export default class WPS extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_f_salary_id"
                       dataSource={{ data: this.state.employees }}
                       isEditable={true}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 50 }}
                       events={{
                         onEdit: () => {},
                         onDelete: this.deleteFunction.bind(this),
-                        onDone: this.updateWPS.bind(this)
+                        onDone: this.updateWPS.bind(this),
                       }}
                       others={{}}
                     />
@@ -433,7 +434,7 @@ export default class WPS extends Component {
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Number Of Records"
+                      forceLabel: "Number Of Records",
                     }}
                   />
                   <h6>{this.state.employees.length}</h6>
@@ -441,10 +442,10 @@ export default class WPS extends Component {
                 <div className="col-2">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Net Salary"
+                      forceLabel: "Total Net Salary",
                     }}
                   />
-                  <h6>{getAmountFormart(this.state.total_net_salary)}</h6>
+                  <h6>{GetAmountFormart(this.state.total_net_salary)}</h6>
                 </div>
               </div>
             </div>

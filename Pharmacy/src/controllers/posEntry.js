@@ -16,7 +16,9 @@ const {
   getPrescriptionPOS,
   cancelPosEntry,
   insertPreApprovalOutsideCustomer,
-  updatePOSDetailForPreApproval
+  updatePOSDetailForPreApproval,
+  generateAccountingEntry,
+  updatePatientAdvance
 } = posEntryModels;
 
 const { updateIntoItemLocation } = comModels;
@@ -32,10 +34,7 @@ export default () => {
       if (req.records.hims_f_receipt_header_id != undefined) {
         getReceiptEntry(req, res, next);
       } else {
-        utilities.logger().log("Outside: ");
-
         req.receptEntry = { receiptdetails: [] };
-        utilities.logger().log("po_from: ", req.receptEntry);
         next();
       }
     },
@@ -62,12 +61,12 @@ export default () => {
     addPosEntry,
 
     (req, res, next) => {
-      utilities.logger().log("pos_customer_type: ", req.body.pos_customer_type);
-      utilities.logger().log("pre_approval_req: ", req.body.pre_approval_req);
+      console.log("visit_preapproval: ", req.body.visit_preapproval);
       if (
-        req.body.pos_customer_type == "OT" &&
-        req.body.pre_approval_req == "Y"
+        (req.body.pos_customer_type == "OT" &&
+          req.body.pre_approval_req == "Y") || (req.body.visit_preapproval === "Y")
       ) {
+        console.log("if data: ");
         insertPreApprovalOutsideCustomer(req, res, next);
       } else {
         next();
@@ -92,6 +91,7 @@ export default () => {
     "/addandpostPosEntry",
     addReceiptEntry,
     addPosEntry,
+    updatePatientAdvance,
     addCashHandover,
     (req, res, next) => {
       if (
@@ -110,6 +110,7 @@ export default () => {
         next();
       }
     },
+    generateAccountingEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -138,7 +139,9 @@ export default () => {
     "/postPosEntry",
     addReceiptEntry,
     updatePosEntry,
+    updatePatientAdvance,
     addCashHandover,
+    generateAccountingEntry,
     (req, res, next) => {
       if (
         req.records.internal_error != undefined &&

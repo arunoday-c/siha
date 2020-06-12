@@ -93,7 +93,6 @@ const completeTest = $this => {
       exam_status: "CO",
       exam_end_date_time: moment(new Date())._d,
       status: "RC",
-      report_type: "FL",
       changesDone: true
     },
     () => UpdateRadOrder($this, "complete")

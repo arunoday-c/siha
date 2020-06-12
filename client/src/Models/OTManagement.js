@@ -1,7 +1,7 @@
 import moment from "moment";
 
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -32,7 +32,8 @@ export default {
       overtime_date: null,
       from_time: null,
       to_time: null,
-      saveBtn: true
+      saveBtn: true,
+      hospital_id: null
     };
     return output;
   }

@@ -26,7 +26,7 @@ const PatientSearch = ($this, context, e) => {
 
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
-
+  AlgaehLoader({ show: true });
   let mode_of_pay = "Self";
   let applydiscount = false;
 
@@ -34,7 +34,6 @@ const selectVisit = ($this, context, e) => {
     mode_of_pay = "Insurance";
     applydiscount = true;
   }
-
   $this.setState(
     {
       incharge_or_provider: e.selected.doctor_id,
@@ -42,7 +41,8 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       insurance_yesno: e.selected.insured,
       sec_insured: e.selected.sec_insured,
-      mode_of_pay: mode_of_pay
+      mode_of_pay: mode_of_pay,
+      sub_department_id: e.selected.sub_department_id
     },
     () => {
       if ($this.state.insured === "Y") {
@@ -69,7 +69,7 @@ const selectVisit = ($this, context, e) => {
         },
         onSuccess: response => {
           if (response.data.success) {
-            AlgaehLoader({ show: false });
+            // AlgaehLoader({ show: false });
 
             let data = response.data.records;
 
@@ -114,6 +114,11 @@ const selectVisit = ($this, context, e) => {
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
                       response.data.records.applydiscount = applydiscount;
+
+                      if ($this.state.default_pay_type === "CD") {
+                        response.data.records.card_amount = response.data.records.receiveable_amount
+                        response.data.records.cash_amount = 0
+                      }
                       if (context !== null) {
                         context.updateState({ ...response.data.records });
                       }
@@ -196,7 +201,8 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
-      addNewService: false
+      addNewService: false,
+      sub_department_id: e.selected.sub_department_id
     });
   }
 };

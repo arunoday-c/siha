@@ -5,12 +5,7 @@ import { bindActionCreators } from "redux";
 import "./PurchaseOrderEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import MyContext from "../../../utils/MyContext";
-import {
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
-} from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -27,33 +22,66 @@ import {
   AuthorizePOEntry,
   getVendorMaster,
   generatePOReceipt,
-  generatePOReceiptNoPrice
+  generatePOReceiptNoPrice,
+  clearItemDetails,
+  VendorQuotationSearch,
+  getPOOptions,
+  getData,
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
 import Enumerable from "linq";
-import AlgaehReport from "../../Wrapper/printReports";
-import _ from "lodash";
+import { MainContext } from "algaeh-react-components/context";
+import {
+  AlgaehSecurityComponent,
+  RawSecurityComponent,
+} from "algaeh-react-components";
 
 class PurchaseOrderEntry extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      decimal_places: null,
+      // po_auth_level: "1"
+    };
     getVendorMaster(this, this);
+    getPOOptions(this, this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = POEntry.inputParam();
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      decimal_places: userToken.decimal_places,
+    });
     if (
       this.props.purchase_number !== undefined &&
       this.props.purchase_number.length !== 0
     ) {
       getCtrlCode(this, this.props.purchase_number);
     }
+    RawSecurityComponent({ componentCode: "PUR_ORD_INVENTORY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "INV");
+          this.setState({ po_from: "INV" });
+        }
+      }
+    );
+
+    RawSecurityComponent({ componentCode: "PUR_ORD_PHARMACY" }).then(
+      (result) => {
+        if (result === "show") {
+          getData(this, "PHR");
+          this.setState({ po_from: "PHR" });
+        }
+      }
+    );
   }
 
   render() {
@@ -61,9 +89,15 @@ class PurchaseOrderEntry extends Component {
       this.state.po_from === null
         ? []
         : Enumerable.from(this.props.polocations)
-            .where(w => w.location_type === "WH")
+            .where((w) => w.location_type === "WH")
             .toArray();
 
+    const class_finder =
+      this.state.dataFinder === true
+        ? " disableFinder"
+        : this.state.ReqData === true
+        ? " disableFinder"
+        : "";
     return (
       <div>
         <BreadCrumb
@@ -79,18 +113,18 @@ class PurchaseOrderEntry extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel
                   label={{ forceLabel: "Purchase Order Entry", align: "ltr" }}
                 />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -101,20 +135,20 @@ class PurchaseOrderEntry extends Component {
             value: this.state.purchase_number,
             selectValue: "purchase_number",
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "Purchase.POEntry"
+              fieldName: "Purchase.POEntry",
             },
-            searchName: "POEntry"
+            searchName: "POEntry",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "PO Date"
+                    forceLabel: "PO Date",
                   }}
                 />
                 <h6>
@@ -123,10 +157,41 @@ class PurchaseOrderEntry extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+              {this.state.dataExitst === true ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "PO Status",
+                    }}
+                  />
+                  <h6>
+                    {this.state.is_posted === "N" ? (
+                      <span className="badge badge-danger">Not Posted</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "Y" ? (
+                      <span className="badge badge-success">Authorized</span>
+                    ) : this.state.authorize1 === "Y" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
+                      </span>
+                    ) : this.state.authorize1 === "N" &&
+                      this.state.authorize2 === "N" ? (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
+                      </span>
+                    ) : (
+                      <span className="badge badge-danger">
+                        Posted/Pending For Authorize
+                      </span>
+                    )}
+                  </h6>
+                </div>
+              ) : null}
             </div>
           }
           printArea={
-            this.state.hims_f_procurement_po_header_id !== null
+            this.state.purchase_number !== null
               ? {
                   menuitems: [
                     {
@@ -134,18 +199,18 @@ class PurchaseOrderEntry extends Component {
                       events: {
                         onClick: () => {
                           generatePOReceipt(this.state);
-                        }
-                      }
+                        },
+                      },
                     },
                     {
                       label: "Receipt for Vendor",
                       events: {
                         onClick: () => {
                           generatePOReceiptNoPrice(this.state);
-                        }
-                      }
-                    }
-                  ]
+                        },
+                      },
+                    },
+                  ],
                 }
               : ""
           }
@@ -160,6 +225,31 @@ class PurchaseOrderEntry extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
+                  label={{ forceLabel: "PO Type" }}
+                  selector={{
+                    name: "po_type",
+                    className: "select-fld",
+                    value: this.state.po_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.PO_TYPE,
+                    },
+                    others: {
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false,
+                    },
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        po_type: "D",
+                      });
+                    },
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "PO For" }}
                   selector={{
                     name: "po_from",
@@ -168,22 +258,24 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PO_FROM
+                      data: GlobalVariables.PO_FROM,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: true,
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
+                      clearItemDetails(this, this);
                       this.setState({
                         po_from: null,
                         ReqData: true,
                         pharmcy_location_id: null,
-                        inventory_location_id: null
+                        inventory_location_id: null,
                       });
-                    }
+                    },
                   }}
                 />
+
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "Location Code" }}
@@ -203,23 +295,24 @@ class PurchaseOrderEntry extends Component {
                         this.state.po_from === "PHR"
                           ? "hims_d_pharmacy_location_id"
                           : "hims_d_inventory_location_id",
-                      data: _mainStore
+                      data: _mainStore,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        location_description: null
+                        location_description: null,
                       });
-                    }
+                    },
                   }}
                 />
 
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor No." }}
+                  label={{ forceLabel: "Vendor Name" }}
                   selector={{
                     name: "vendor_id",
                     className: "select-fld",
@@ -227,61 +320,47 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "vendor_name",
                       valueField: "hims_d_vendor_id",
-                      data: this.props.povendors
+                      data: this.props.povendors,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        vendor_id: null
+                        vendor_id: null,
                       });
-                    }
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Requisition No."
-                  }}
-                  textBox={{
-                    value: this.state.material_requisition_number,
-                    className: "txt-fld",
-                    name: "material_requisition_number",
-
-                    events: {
-                      onChange: null
                     },
-                    others: {
-                      disabled: true
-                    }
                   }}
                 />
-                <div
-                  className="col"
-                  style={{
-                    paddingLeft: 0,
-                    paddingRight: 0
-                  }}
-                >
-                  <span
-                    className="fas fa-search fa-2x"
-                    style={{
-                      fontSize: " 1.2rem",
-                      marginTop: 26,
-                      paddingBottom: 0,
-                      pointerEvents:
-                        this.state.dataExitst === true
-                          ? "none"
-                          : this.state.ReqData === true
-                          ? "none"
-                          : ""
-                    }}
-                    onClick={RequisitionSearch.bind(this, this)}
-                  />
-                </div>
+
+                {this.state.po_type === "MR" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Requisition No." }}
+                    />
+                    <h6 onClick={RequisitionSearch.bind(this, this)}>
+                      {this.state.material_requisition_number
+                        ? this.state.material_requisition_number
+                        : "Requisition No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : this.state.po_type === "VQ" ? (
+                  <div className={"col-2 globalSearchCntr" + class_finder}>
+                    <AlgaehLabel
+                      label={{ forceLabel: "Search Vendor Quotation No." }}
+                    />
+                    <h6 onClick={VendorQuotationSearch.bind(this, this)}>
+                      {this.state.vendor_quotation_number
+                        ? this.state.vendor_quotation_number
+                        : "Vendor Quotation No."}
+                      <i className="fas fa-search fa-lg"></i>
+                    </h6>
+                  </div>
+                ) : null}
+
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{ forceLabel: "Payment Terms" }}
@@ -292,17 +371,18 @@ class PurchaseOrderEntry extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      data: GlobalVariables.PAYMENT_TERMS,
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.po_entry_detail.length > 0 ? true : false,
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        payment_terms: null
+                        payment_terms: null,
                       });
-                    }
+                    },
                   }}
                 />
 
@@ -343,65 +423,119 @@ class PurchaseOrderEntry extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <POItemList POEntry={this.state} />
           </MyContext.Provider>
         </div>
 
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={SavePOEnrty.bind(this, this)}
-                disabled={this.state.saveEnable}
-              >
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Save Order",
-                    returnText: true
-                  }}
-                />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                disabled={this.state.ClearDisable}
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
-
-              {this.props.purchase_auth === true ? (
+        <AlgaehSecurityComponent componentCode="PUR_ORD_MAINT">
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
                 <button
                   type="button"
-                  className="btn btn-other"
-                  disabled={
-                    this.state.authorize1 === "Y"
-                      ? true
-                      : this.state.authorizeBtn
-                  }
-                  onClick={AuthorizePOEntry.bind(this, this)}
+                  className="btn btn-primary"
+                  onClick={SavePOEnrty.bind(this, this, "S")}
+                  disabled={this.state.saveEnable}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Authorize",
-                      returnText: true
+                      forceLabel: "Save Purchase Order",
+                      returnText: true,
                     }}
                   />
                 </button>
-              ) : null}
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  disabled={this.state.ClearDisable}
+                  onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.dataPosted}
+                  onClick={SavePOEnrty.bind(this, this, "P")}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Send for Authorization",
+                      returnText: true,
+                    }}
+                  />
+                </button>
+                <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH1">
+                  {this.props.purchase_auth === true ? (
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize1 === "Y"
+                          ? true
+                          : false
+                      }
+                      onClick={AuthorizePOEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
+                      )}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize 1",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  ) : null}
+                </AlgaehSecurityComponent>
+                <AlgaehSecurityComponent componentCode="PUR_AUT_AUTH2">
+                  {this.props.purchase_auth === true ? (
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize2 === "Y"
+                          ? true
+                          : false
+                      }
+                      onClick={AuthorizePOEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
+                      )}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize 2",
+                          returnText: true,
+                        }}
+                      />
+                    </button>
+                  ) : null}
+                </AlgaehSecurityComponent>
+              </div>
             </div>
           </div>
-        </div>
+        </AlgaehSecurityComponent>
       </div>
     );
   }
@@ -415,7 +549,7 @@ function mapStateToProps(state) {
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
     povendors: state.povendors,
-    purchaseorderentry: state.purchaseorderentry
+    purchaseorderentry: state.purchaseorderentry,
   };
 }
 
@@ -428,15 +562,12 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getPurchaseOrderEntry: AlgaehActions
+      getPurchaseOrderEntry: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PurchaseOrderEntry)
+  connect(mapStateToProps, mapDispatchToProps)(PurchaseOrderEntry)
 );

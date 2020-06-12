@@ -64,7 +64,7 @@ const getPurchaseOrderList = $this => {
       if (response.data.success) {
         let data = response.data.records;
         for (let i = 0; i < data.length; i++) {
-          if (data[i].authorize1 === "Y" && data[i].is_completed === "N") {
+          if (data[i].authorize1 === "Y" && data[i].authorize2 === "Y" && data[i].is_completed === "N") {
             data[i].delivery_pending = true;
           }
         }
@@ -211,5 +211,7 @@ export {
   texthandle,
   poforhandle,
   datehandle,
-  changeEventHandaler
+  changeEventHandaler,
+  getPurchaseOrderList,
+  getData
 };

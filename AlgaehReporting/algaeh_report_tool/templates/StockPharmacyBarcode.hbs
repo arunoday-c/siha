@@ -1,0 +1,11 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+{{#each header}}
+<div class="barcodeLine">
+ <small class="small-top-left">{{item_description}}</small>
+  <img src={{barcode "code128" print_barcode false }} />
+ <small class="small-left"><b>{{sales_price}}</b></small>
+  <small class="small-right">{{print_barcode}}</small>
+  {{!-- <hr/>  --}}
+</div>
+{{/each }}

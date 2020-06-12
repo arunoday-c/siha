@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "./doctor_workbench.scss";
 import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   cancelRequest,
-  swalMessage
+  swalMessage,
+  setCookie
 } from "../../utils/algaehApiCall";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
@@ -105,8 +107,8 @@ class DoctorsWorkbench extends Component {
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );
-    const patient_id = e.currentTarget.getAttribute("data-patientid");
-
+    // const patient_id = e.currentTarget.getAttribute("data-patientid");
+    const history = this.props.history;
     algaehApiCall({
       uri: "/doctorsWorkBench/updatdePatEncntrStatus",
       data: {
@@ -129,7 +131,23 @@ class DoctorsWorkbench extends Component {
             gender: data.gender,
             sub_department_id: data.sub_department_id
           });
-          document.getElementById("ehr-router").click();
+          setCookie("ScreenName", "PatientProfile");
+          history.push({
+            pathname: "/PatientProfile",
+            state: {
+              vitals_mandatory: data.vitals_mandatory,
+              "EHR-STD": "PatientProfile",
+              current_patient: data.patient_id,
+              episode_id: data.episode_id,
+              visit_id: data.visit_id,
+              encounter_id: response.data.records.encounter_id,
+              provider_id: data.provider_id,
+              chart_type: data.chart_type,
+              gender: data.gender,
+              sub_department_id: data.sub_department_id
+            }
+          });
+          // document.getElementById("ehr-router").click();
           // setGlobal(
           //   {
           //     "EHR-STD": "PatientProfile",
@@ -284,35 +302,37 @@ class DoctorsWorkbench extends Component {
       <div className="calendar">
         <div className="col-12">
           <div className="row">
-            {this.liGenerate().map((row, index) => {
-              const _currDate = moment(row.currentdate).format("YYYYMMDD");
-              const _activeDate = moment(act_date).format("YYYYMMDD");
-              return (
-                <div
-                  // className="col"
-                  key={index}
-                  date={row.currentdate}
-                  className={
-                    _currDate === _activeDate
-                      ? _currDate === moment().format("YYYYMMDD")
-                        ? "col activeDate CurrentDate"
-                        : "col activeDate"
-                      : _currDate === moment().format("YYYYMMDD")
-                      ? "col CurrentDate"
-                      : "col"
-                  }
-                  onClick={this.onSelectedDateHandler.bind(this)}
-                >
-                  {row.day}
-                  <span
-                  // date={row.currentdate}
-                  // onClick={this.onSelectedDateHandler.bind(this)}
+            <ul className="calendarDays">
+              {this.liGenerate().map((row, index) => {
+                const _currDate = moment(row.currentdate).format("YYYYMMDD");
+                const _activeDate = moment(act_date).format("YYYYMMDD");
+                return (
+                  <li
+                    // className="col"
+                    key={index}
+                    date={row.currentdate}
+                    className={
+                      _currDate === _activeDate
+                        ? _currDate === moment().format("YYYYMMDD")
+                          ? " activeDate CurrentDate"
+                          : " activeDate"
+                        : _currDate === moment().format("YYYYMMDD")
+                        ? " CurrentDate"
+                        : ""
+                    }
+                    onClick={this.onSelectedDateHandler.bind(this)}
                   >
-                    {row.dayName}
-                  </span>
-                </div>
-              );
-            })}
+                    {row.day}
+                    <span
+                    // date={row.currentdate}
+                    // onClick={this.onSelectedDateHandler.bind(this)}
+                    >
+                      {row.dayName}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </div>
       </div>
@@ -343,6 +363,7 @@ class DoctorsWorkbench extends Component {
       });
       return;
     }
+
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",
@@ -355,7 +376,26 @@ class DoctorsWorkbench extends Component {
       gender: data.gender,
       sub_department_id: data.sub_department_id
     });
-    document.getElementById("ehr-router").click();
+    const history = this.props.history;
+    setCookie("ScreenName", "PatientProfile");
+    history.push({
+      pathname: "/PatientProfile",
+      state: {
+        content: {
+          vitals_mandatory: data.vitals_mandatory,
+          "EHR-STD": "PatientProfile",
+          current_patient: data.patient_id,
+          episode_id: data.episode_id,
+          visit_id: data.visit_id,
+          encounter_id: data.encounter_id,
+          provider_id: data.provider_id,
+          chart_type: data.chart_type,
+          gender: data.gender,
+          sub_department_id: data.sub_department_id
+        }
+      }
+    });
+    // document.getElementById("ehr-router").click();
   }
 
   render() {
@@ -392,7 +432,7 @@ class DoctorsWorkbench extends Component {
 
         <div className="row card-deck panel-layout">
           {/* Appointment UI Panel Start*/}
-          <div className="col-3">
+          <div className="col-lg-3 col-md-3 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -452,7 +492,7 @@ class DoctorsWorkbench extends Component {
           </div>
           {/* Appointment UI Panel End*/}
           {/* Left Pane Start */}
-          <div className="col-3" style={{ padding: 0 }}>
+          <div className="col-lg-3 col-md-3 col-sm-12" style={{ padding: 0 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -561,7 +601,7 @@ class DoctorsWorkbench extends Component {
 
           {/* Right Pane Start */}
 
-          <div className="col-6">
+          <div className="col-lg-6 col-md-6 col-sm-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -737,4 +777,4 @@ class DoctorsWorkbench extends Component {
   }
 }
 
-export default DoctorsWorkbench;
+export default withRouter(DoctorsWorkbench);

@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -11,17 +11,21 @@
                         <th>Application No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Employee Group</th>
+                        <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Leave Type</th>
                         <th>From Date</th>
                         <th>To Date</th>
                         <th>Total Days</th>
+                        <th>Salary Mode</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#hasElement detail}}
                     {{#each detail}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg">{{status}}</td>
+                        <td colspan="12" class="tableSubHdg">{{status}}</td>
                     </tr>
                     {{#each detailList}}
                     <tr>
@@ -29,16 +33,20 @@
                         <td>{{leave_application_code}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{employee_name}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{department_name}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{leave_description}}</td>
                         <td>{{from_date}}</td>
                         <td>{{to_date}}</td>
                         <td>{{total_applied_days}}</td>
+                        <td>{{from_normal_salary}}</td>
                     </tr>
                     {{/each }}
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
             </table>

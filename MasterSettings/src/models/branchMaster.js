@@ -9,13 +9,14 @@ export default {
       if (req.userIdentity.role_type != "GN") {
         const _mysql = new algaehMysql();
         const input = req.body;
+        input.algaeh_api_auth_id = 1;
         _mysql
           .executeQuery({
             query:
               "INSERT INTO hims_d_hospital (hospital_code, default_nationality, default_country, default_currency, \
                 hospital_name, hospital_address, requied_emp_id, algaeh_api_auth_id, created_date, created_by, \
-                updated_date, updated_by) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?)",
+                updated_date, updated_by,organization_id ) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.hospital_code,
               input.default_nationality,
@@ -28,23 +29,24 @@ export default {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.organization_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -67,21 +69,21 @@ export default {
               hospital_address,hosital_status,requied_emp_id,default_currency,default_country,default_nationality from hims_d_hospital H left join hims_d_currency CU \
               on H.default_currency=CU.hims_d_currency_id left join   hims_d_nationality N  on \
               H.default_nationality=N.hims_d_nationality_id left join  hims_d_country C on\
-              H.default_country=C.hims_d_country_id where H.record_status='A'"
+              H.default_country=C.hims_d_country_id where H.record_status='A'",
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -103,21 +105,21 @@ export default {
               hospital_address,hosital_status,requied_emp_id from hims_d_hospital H left join hims_d_currency CU \
               on H.default_currency=CU.hims_d_currency_id left join   hims_d_nationality N  on \
               H.default_nationality=N.hims_d_nationality_id left join  hims_d_country C on\
-              H.default_country=C.hims_d_country_id where H.record_status='A' and H.hosital_status='A';"
+              H.default_country=C.hims_d_country_id where H.record_status='A' and H.hosital_status='A';",
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -147,10 +149,10 @@ export default {
               input.requied_emp_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hospital_id
-            ]
+              input.hospital_id,
+            ],
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result.affectedRows > 0) {
@@ -158,20 +160,20 @@ export default {
             } else {
               req.records = {
                 invalid_data: true,
-                message: "Please Provide Valid input"
+                message: "Please Provide Valid input",
               };
             }
 
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -194,24 +196,24 @@ export default {
               hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
               from hims_d_department D inner join hims_d_sub_department  SD\
               on D.hims_d_department_id=SD.department_id\
-              where D.department_status='A' and SD.sub_department_status='A';"
+              where D.department_status='A' and SD.sub_department_status='A';",
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             const outputArray = _.chain(result)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => {
+              .groupBy((g) => g.hims_d_department_id)
+              .map((m) => {
                 return {
                   hims_d_department_id: m[0].hims_d_department_id,
                   department_code: m[0].department_code,
                   department_name: m[0].department_name,
-                  subDepts: m.map(item => {
+                  subDepts: m.map((item) => {
                     return {
                       hims_d_sub_department_id: item.hims_d_sub_department_id,
                       sub_department_code: item.sub_department_code,
-                      sub_department_name: item.sub_department_name
+                      sub_department_name: item.sub_department_name,
                     };
-                  })
+                  }),
                 };
               })
               .value();
@@ -219,14 +221,14 @@ export default {
             req.records = outputArray;
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -251,28 +253,28 @@ export default {
               inner join hims_d_department D on D.hims_d_department_id=SD.department_id\
               where B.hospital_id=?;",
             values: [req.query.hospital_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             if (result.length > 0) {
               const outputArray = _.chain(result)
-                .groupBy(g => g.hims_d_department_id)
-                .map(m => {
+                .groupBy((g) => g.hims_d_department_id)
+                .map((m) => {
                   return {
                     hims_d_department_id: m[0].hims_d_department_id,
                     hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
                     department_code: m[0].department_code,
                     department_name: m[0].department_name,
-                    subDepts: m.map(item => {
+                    subDepts: m.map((item) => {
                       return {
                         hims_d_sub_department_id: item.hims_d_sub_department_id,
                         sub_department_code: item.sub_department_code,
                         sub_department_name: item.sub_department_name,
                         hims_m_branch_dept_map_id:
-                          item.hims_m_branch_dept_map_id
+                          item.hims_m_branch_dept_map_id,
                       };
-                    })
+                    }),
                   };
                 })
                 .value();
@@ -284,14 +286,14 @@ export default {
 
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_data: true,
-          message: "please provide branch id"
+          message: "please provide branch id",
         };
         next();
       }
@@ -315,37 +317,37 @@ export default {
                 query:
                   "delete from hims_m_branch_dept_map where hospital_id=? and hims_m_branch_dept_map_id in (?);",
                 values: [input.hospital_id, input.remove_sub],
-                printQuery: true
+                printQuery: true,
               })
-              .then(deleteRes => {
+              .then((deleteRes) => {
                 resolve(deleteRes);
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
           } else {
             resolve({});
           }
-        }).then(res => {
+        }).then((res) => {
           if (input.add_new_sub.length > 0) {
             _mysql
               .executeQuery({
                 query: "INSERT INTO hims_m_branch_dept_map (??)  values ?",
                 values: input.add_new_sub,
                 extraValues: {
-                  hospital_id: input.hospital_id
+                  hospital_id: input.hospital_id,
                 },
 
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -357,7 +359,7 @@ export default {
             } else {
               req.records = {
                 invalid_data: true,
-                message: "Please provide valid data"
+                message: "Please provide valid data",
               };
               next();
             }
@@ -368,7 +370,7 @@ export default {
       } else {
         req.records = {
           invalid_data: true,
-          message: "you dont have admin privilege"
+          message: "you dont have admin privilege",
         };
         next();
       }
@@ -380,164 +382,137 @@ export default {
   //created by:irfan
   getDepartmentsChart: (req, res, next) => {
     try {
-      if (req.userIdentity.role_type != "GN") {
-        const _mysql = new algaehMysql();
-        const utilities = new algaehUtilities();
-        _mysql
-          .executeQuery({
-            query:
-              "select hims_d_hospital_id, hospital_code, hospital_name,hims_m_branch_dept_map_id,hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
+      // if (req.userIdentity.role_type != "GN") {
+      const _mysql = new algaehMysql();
+      const utilities = new algaehUtilities();
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_hospital_id, hospital_code, hospital_name,hims_m_branch_dept_map_id,hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
               hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
               from hims_m_branch_dept_map B  inner join hims_d_hospital  H on B.hospital_id=H.hims_d_hospital_id \
               inner join hims_d_sub_department  SD \
               on B.sub_department_id=SD.hims_d_sub_department_id \
               inner join hims_d_department D on D.hims_d_department_id=SD.department_id;",
-            printQuery: false
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            if (result.length > 0) {
-              const branchGroup = _.chain(result)
-                .groupBy(g => g.hims_d_hospital_id)
-                .map(m => m)
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          if (result.length > 0) {
+            const branchGroup = _.chain(result)
+              .groupBy((g) => g.hims_d_hospital_id)
+              .map((m) => m)
+              .value();
+
+            const outputArray = [];
+
+            for (let i = 0; i < branchGroup.length; i++) {
+              const branch = _.chain(branchGroup[i])
+                .groupBy((g) => g.hims_d_department_id)
+                .map((m) => {
+                  return {
+                    hims_d_department_id: m[0].hims_d_department_id,
+                    hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
+                    department_code: m[0].department_code,
+                    department_name: m[0].department_name,
+                    sub_dept_count: m.length,
+                    subDepts: m.map((item) => {
+                      return {
+                        hims_d_sub_department_id: item.hims_d_sub_department_id,
+                        sub_department_code: item.sub_department_code,
+                        sub_department_name: item.sub_department_name,
+                        hims_m_branch_dept_map_id:
+                          item.hims_m_branch_dept_map_id,
+                      };
+                    }),
+                  };
+                })
                 .value();
 
-              const outputArray = [];
-
-              for (let i = 0; i < branchGroup.length; i++) {
-                const branch = _.chain(branchGroup[i])
-                  .groupBy(g => g.hims_d_department_id)
-                  .map(m => {
-                    return {
-                      hims_d_department_id: m[0].hims_d_department_id,
-                      hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
-                      department_code: m[0].department_code,
-                      department_name: m[0].department_name,
-                      sub_dept_count: m.length,
-                      subDepts: m.map(item => {
-                        return {
-                          hims_d_sub_department_id:
-                            item.hims_d_sub_department_id,
-                          sub_department_code: item.sub_department_code,
-                          sub_department_name: item.sub_department_name,
-                          hims_m_branch_dept_map_id:
-                            item.hims_m_branch_dept_map_id
-                        };
-                      })
-                    };
-                  })
-                  .value();
-
-                outputArray.push({
-                  hims_d_hospital_id: branchGroup[i][0].hims_d_hospital_id,
-                  hospital_code: branchGroup[i][0].hospital_code,
-                  hospital_name: branchGroup[i][0].hospital_name,
-                  dept_count: branch.length,
-                  departments: branch
-                });
-              }
-              req.records = outputArray;
-            } else {
-              req.records = result;
+              outputArray.push({
+                hims_d_hospital_id: branchGroup[i][0].hims_d_hospital_id,
+                hospital_code: branchGroup[i][0].hospital_code,
+                hospital_name: branchGroup[i][0].hospital_name,
+                dept_count: branch.length,
+                departments: branch,
+              });
             }
+            req.records = outputArray;
+          } else {
+            req.records = result;
+          }
 
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      } else {
-        req.records = {
-          invalid_data: true,
-          message: "You dont have Admin previlege"
-        };
-        next();
-      }
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+      // } else {
+      //   req.records = {
+      //     invalid_data: true,
+      //     message: "You dont have Admin previlege"
+      //   };
+      //   next();
+      // }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
     }
   },
-
-  dummy_roster3333: (req, res, next) => {
+  //created by:irfan
+  getEmployeeReportingTo: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
-      const input = req.body;
-      console.log("count EMP :", input.length);
-
-      const newDateList = getDaysArray(
-        new Date("2019-06-01"),
-        new Date("2019-09-31")
-      );
-
-      for (let i = 0; i < input.length; i++) {
-        const insurtColumns = ["attendance_date"];
-
-        _mysql
-          .executeQuery({
-            query: "INSERT INTO aa_roster(??) VALUES ? ",
-            values: newDateList,
-            includeValues: insurtColumns,
-            extraValues: {
-              employee_id: input[i].employee_id,
-              project_id: input[i].project_id
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: false
-          })
-          .then(result => {
-            if (i == input.length - 1) {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            }
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      }
-    } catch (e) {
-      console.log("here:", e);
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
-  dummy_roster: (req, res, next) => {
-    try {
-      const _mysql = new algaehMysql();
-      const input = req.body;
-      console.log("count EMP :", input.length);
-
-      const insurtColumns = [
-        "employee_id",
-        "leave_id",
-        "total_eligible",
-        "availed_till_date",
-        "closing_balance"
-      ];
 
       _mysql
         .executeQuery({
-          query:
-            "WITH  CTE  AS\
-            (\
-              select count(*)as aa,report_id,report_name,created_by from algaeh_d_reports\
-            )\
-            SELECT CONVERT(aa ,UNSIGNED) as dd FROM CTE;",
-          // values: input,
-          // includeValues: insurtColumns,
-          // bulkInsertOrUpdate: true,
-          printQuery: true
+          query: `select  hims_d_employee_id, employee_code,full_name as employee_name, null as reporting_to_id,
+                  null reporting_to_code,  null as reporting_to_name,SD.sub_department_name,D.designation
+                  FROM hims_d_employee E left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+                  left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id
+                  where  E.record_status='A' and hims_d_employee_id= (SELECT hims_d_head_of_organization_id FROM 
+                  hims_d_organization  where hims_d_organization_id=1 and hims_d_head_of_organization_id>0);
+                  select  E.hims_d_employee_id, E.employee_code,  E.full_name as employee_name,E.reporting_to_id,
+                  R.employee_code as reporting_to_code, R.full_name as reporting_to_name,SD.sub_department_name,D.designation
+                  FROM hims_d_employee  E inner join hims_d_employee R on  E.reporting_to_id= R.hims_d_employee_id 
+                  left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+                  left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id 
+                  where E.record_status='A' and E.reporting_to_id>0 and E.hims_d_employee_id<> 
+                  (SELECT hims_d_head_of_organization_id FROM hims_d_organization  where hims_d_organization_id=1 
+                  and hims_d_head_of_organization_id>0);`,
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
-          console.log("result:", result[0]);
-          req.records = parseInt(result[0]["dd"]);
-          next();
+          if (result[0].length > 0) {
+            let hod = result[0][0];
+            let employees = _.chain(result[1])
+              .groupBy((g) => g.reporting_to_id)
+              .value();
+
+            let findReportingEmployees = function (parent) {
+              if (employees[parent.hims_d_employee_id]) {
+                const childs = employees[parent.hims_d_employee_id];
+                parent["count"] = childs.length;
+                parent["children"] = childs;
+                for (let i = 0, len = parent.children.length; i < len; ++i) {
+                  findReportingEmployees(parent.children[i]);
+                }
+              }
+            };
+            findReportingEmployees(hod);
+            req.records = hod;
+            next();
+          } else {
+            req.records = {
+              invalid_data: true,
+              message: "Please define head of organization ",
+            };
+            next();
+          }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -546,14 +521,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
-function getDaysArray(start, end) {
-  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
-    const dat = new Date(dt);
-
-    arr.push({ attendance_date: dat });
-  }
-
-  return arr;
-}

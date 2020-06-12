@@ -1,18 +1,23 @@
-import utilities from "algaeh-utilities";
-
 export function authenticate(socket, data, callback) {
-  const token = data.token;
-  // const userIdentity = data.userIdentity;
-  const _verify = utilities.AlgaehUtilities().tokenVerify(token);
-  // if (_verify) {
-  //   let header = userIdentity;
-  //   if (header != null && header != "" && header != "null") {
-  //     header = utliites.AlgaehUtilities().decryption(header);
-  //     req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-  //   }
-  console.log(_verify);
-  if (!_verify) {
-    return callback(new Error("Permission Denied"));
+  const { token } = data;
+  if (token && token.user_id) {
+    console.log("authed");
+    return callback(null, true);
+  } else {
+    return callback(new Error("You are not allowed to access"));
   }
-  return callback(null, _verify);
+}
+
+export function postAuthenticate(socket, data) {
+  const { token, moduleList } = data;
+  socket.client.user = token.employee_id;
+  socket.client.details = token;
+  socket.join(token.employee_id, err => {
+    console.log(err);
+  });
+  socket.join(moduleList, err => console.log(err));
+}
+
+export function disconnect(socket) {
+  console.log(socket.id + " disconnected");
 }

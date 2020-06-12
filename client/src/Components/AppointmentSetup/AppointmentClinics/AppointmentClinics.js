@@ -168,11 +168,6 @@ class AppointmentClinics extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -287,230 +282,259 @@ class AppointmentClinics extends Component {
   render() {
     return (
       <div className="appointment_clinics">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "description",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "description",
-                value: this.state.description,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                },
-
-                error: this.state.description_error,
-                helperText: this.state.description_error_text
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "department_name",
-                isImp: true
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "sub_department_id",
-                  data: this.state.departments
-                },
-                onChange: this.deptDropDownHandler.bind(this)
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "doctor",
-                isImp: true
-              }}
-              selector={{
-                name: "provider_id",
-                className: "select-fld",
-                value: this.state.provider_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "employee_id",
-                  data: this.state.doctors
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "room",
-                isImp: true
-              }}
-              selector={{
-                name: "room_id",
-                className: "select-fld",
-                value: this.state.room_id,
-                dataSource: {
-                  textField: "roomDesc",
-                  valueField: "hims_d_appointment_room_id",
-                  data: this.state.appointmentRooms
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
-
-            <div className="col-lg-2">
-              <button
-                style={{ marginTop: 21 }}
-                onClick={this.addAppointmentClinics.bind(this)}
-                type="button"
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="col-lg-12"
-          data-validate="apptClinicsDiv"
-          id="apptClinicsDivCntr"
-        >
-          <AlgaehDataGrid
-            id="appt-status-grid"
-            datavalidate="data-validate='apptClinicsDiv'"
-            columns={[
-              {
-                fieldName: "description",
-                label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                editorTemplate: row => {
-                  return (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "description",
-                        value: row.description,
-                        events: {
-                          onChange: this.changeGridEditors.bind(this, row)
-                        },
-                        others: {
-                          errormessage: "Description - cannot be blank",
-                          required: true
-                        }
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "sub_department_id",
-                label: <AlgaehLabel label={{ fieldName: "department_name" }} />,
-                displayTemplate: row => {
-                  return this.getDeptName(row.sub_department_id);
-                },
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "sub_department_id",
-                        className: "select-fld",
-                        value: row.sub_department_id,
-                        dataSource: {
-                          textField: "sub_department_name",
-                          valueField: "sub_department_id",
-                          data: this.state.departments
-                        },
-                        others: {
-                          errormessage: "Department - cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "provider_id",
-                label: <AlgaehLabel label={{ fieldName: "doctor" }} />,
-                displayTemplate: row => {
-                  return this.getDoctorName(row.provider_id);
-                },
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "provider_id",
-                        className: "select-fld",
-                        value: row.provider_id,
-                        dataSource: {
-                          textField: "full_name",
-                          valueField: "employee_id",
-                          data: this.state.all_docs
-                        },
-                        others: {
-                          errormessage: "Doctor - cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              },
-              {
-                fieldName: "room_id",
-                label: <AlgaehLabel label={{ fieldName: "room" }} />,
-                displayTemplate: row => {
-                  return this.getRoomName(row.room_id);
-                },
-                editorTemplate: row => {
-                  return (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      selector={{
-                        name: "room_id",
-                        className: "select-fld",
-                        value: row.room_id,
-                        dataSource: {
-                          textField: "roomDesc",
-                          valueField: "hims_d_appointment_room_id",
-                          data: this.state.appointmentRooms
-                        },
-                        others: {
-                          errormessage: "Room - cannot be blank",
-                          required: true
-                        },
-                        onChange: this.changeGridEditors.bind(this, row)
-                      }}
-                    />
-                  );
-                }
-              }
-            ]}
-            keyId="hims_d_appointment_clinic_id"
-            dataSource={{
-              data: this.state.appointmentClinics
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              fieldName: "description",
+              isImp: true
             }}
-            filter={true}
-            isEditable={true}
-            paging={{ page: 0, rowsPerPage: 10 }}
-            events={{
-              onEdit: () => {},
-              onDelete: this.deleteAppointmentClinics.bind(this),
-              onDone: this.updateAppointmentClinics.bind(this)
+            textBox={{
+              className: "txt-fld",
+              name: "description",
+              value: this.state.description,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+
+              error: this.state.description_error,
+              helperText: this.state.description_error_text
             }}
           />
+
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              fieldName: "department_name",
+              isImp: true
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "sub_department_id",
+                data: this.state.departments
+              },
+              onChange: this.deptDropDownHandler.bind(this)
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              fieldName: "doctor",
+              isImp: true
+            }}
+            selector={{
+              name: "provider_id",
+              className: "select-fld",
+              value: this.state.provider_id,
+              dataSource: {
+                textField: "full_name",
+                valueField: "employee_id",
+                data: this.state.doctors
+              },
+              onChange: this.dropDownHandler.bind(this)
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              fieldName: "room",
+              isImp: true
+            }}
+            selector={{
+              name: "room_id",
+              className: "select-fld",
+              value: this.state.room_id,
+              dataSource: {
+                textField: "roomDesc",
+                valueField: "hims_d_appointment_room_id",
+                data: this.state.appointmentRooms
+              },
+              onChange: this.dropDownHandler.bind(this)
+            }}
+          />
+
+          <div className="col">
+            <button
+              style={{ marginTop: 19 }}
+              onClick={this.addAppointmentClinics.bind(this)}
+              type="button"
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div
+                    className="col-lg-12"
+                    data-validate="apptClinicsDiv"
+                    id="apptClinicsDivCntr"
+                  >
+                    <AlgaehDataGrid
+                      id="appt-status-grid"
+                      datavalidate="data-validate='apptClinicsDiv'"
+                      columns={[
+                        {
+                          fieldName: "description",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "description" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "description",
+                                  value: row.description,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Description - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "sub_department_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "department_name" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return this.getDeptName(row.sub_department_id);
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "sub_department_id",
+                                  className: "select-fld",
+                                  value: row.sub_department_id,
+                                  dataSource: {
+                                    textField: "sub_department_name",
+                                    valueField: "sub_department_id",
+                                    data: this.state.departments
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Department - cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "provider_id",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "doctor" }} />
+                          ),
+                          displayTemplate: row => {
+                            return this.getDoctorName(row.provider_id);
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "provider_id",
+                                  className: "select-fld",
+                                  value: row.provider_id,
+                                  dataSource: {
+                                    textField: "full_name",
+                                    valueField: "employee_id",
+                                    data: this.state.all_docs
+                                  },
+                                  others: {
+                                    errormessage: "Doctor - cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "room_id",
+                          label: <AlgaehLabel label={{ fieldName: "room" }} />,
+                          displayTemplate: row => {
+                            return this.getRoomName(row.room_id);
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "room_id",
+                                  className: "select-fld",
+                                  value: row.room_id,
+                                  dataSource: {
+                                    textField: "roomDesc",
+                                    valueField: "hims_d_appointment_room_id",
+                                    data: this.state.appointmentRooms
+                                  },
+                                  others: {
+                                    errormessage: "Room - cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="hims_d_appointment_clinic_id"
+                      dataSource={{
+                        data: this.state.appointmentClinics
+                      }}
+                      filter={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteAppointmentClinics.bind(this),
+                        onDone: this.updateAppointmentClinics.bind(this)
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );

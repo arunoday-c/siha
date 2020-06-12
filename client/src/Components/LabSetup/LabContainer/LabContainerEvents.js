@@ -46,7 +46,7 @@ const updateLabContainer = ($this, data) => {
         });
       }
     },
-    onFailure: error => {}
+    onFailure: error => { }
   });
 };
 
@@ -87,12 +87,7 @@ const showconfirmDialog = ($this, id) => {
             });
           }
         },
-        onFailure: error => {}
-      });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
+        onFailure: error => { }
       });
     }
   });
@@ -138,10 +133,44 @@ const insertLabContainer = ($this, e) => {
   });
 };
 
+
+
+const testData = ($this, e) => {
+
+  let inputObj = {
+    sampleNo: "101929713001",
+    MachineId: "1",
+    result: [
+      { tesCode: "RBC", rawResult: "14.04", resultUnit: "Mg/ml" },
+      { tesCode: "WBC", rawResult: "14044", resultUnit: "count" }
+    ]
+
+  }
+
+  algaehApiCall({
+    uri: "/laboratory/updateResultFromMachine",
+    module: "laboratory",
+    method: "PUT",
+    data: inputObj,
+    onSuccess: response => {
+      if (response.data.success === true) {
+
+        swalMessage({
+          title: "Lab Container added successfully",
+          type: "success"
+        });
+      }
+    }
+  });
+
+};
+
+
 export {
   changeTexts,
   onchangegridcol,
   insertLabContainer,
   updateLabContainer,
-  deleteLabContainer
+  deleteLabContainer,
+  testData
 };

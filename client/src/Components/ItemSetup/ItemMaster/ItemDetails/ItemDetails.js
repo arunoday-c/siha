@@ -78,12 +78,12 @@ class ItemDetails extends Component {
     });
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -278,15 +278,15 @@ class ItemDetails extends Component {
                       <label className="checkbox" style={{ color: "#212529" }}>
                         <input
                           type="checkbox"
-                          name="exp_date_not_required"
+                          name="exp_date_required"
                           checked={
-                            this.state.exp_date_not_required === "Y"
+                            this.state.exp_date_required === "Y"
                               ? true
                               : false
                           }
                           onChange={BatchExpRequired.bind(this, this, context)}
                         />
-                        <span>Not Required</span>
+                        <span>Required</span>
                       </label>
                     </div>
                   </div>
@@ -477,8 +477,8 @@ class ItemDetails extends Component {
                               this.props.itemuom === undefined
                                 ? []
                                 : this.props.itemuom.filter(
-                                    f => f.hims_d_pharmacy_uom_id === row.uom_id
-                                  );
+                                  f => f.hims_d_pharmacy_uom_id === row.uom_id
+                                );
 
                             return (
                               <span>
@@ -607,7 +607,7 @@ class ItemDetails extends Component {
                       paging={{ page: 0, rowsPerPage: 5 }}
                       events={{
                         onDelete: deleteUOM.bind(this, this, context),
-                        onEdit: row => {},
+                        onEdit: row => { },
                         onDone: updateUOM.bind(this, this, context)
                       }}
                     />
@@ -689,7 +689,7 @@ class ItemDetails extends Component {
                         data: this.state.detail_item_uom
                       }
                     }}
-                    //forceUpdate={true}
+                  //forceUpdate={true}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-4 mandatory form-group" }}

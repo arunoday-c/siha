@@ -28,7 +28,8 @@ const {
   updateLeaveRuleMaster,
   deleteLeaveApplication,
   cancelLeave,
-  getLeaveBalances
+  getLeaveBalances,
+  updateEmployeeLeave
 } = leave;
 
 export default () => {
@@ -144,22 +145,22 @@ export default () => {
       });
     }
   });
-  api.get("/processYearlyLeave", processYearlyLeave, (req, res, next) => {
-    if (
-      req.records.invalid_input == true ||
-      req.records.already_processed == true
-    ) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  });
+  // api.get("/processYearlyLeave", processYearlyLeave, (req, res, next) => {
+  //   if (
+  //     req.records.invalid_input == true ||
+  //     req.records.already_processed == true
+  //   ) {
+  //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //       success: false,
+  //       records: req.records
+  //     });
+  //   } else {
+  //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //       success: true,
+  //       records: req.records
+  //     });
+  //   }
+  // });
   api.get("/getLeaveApllication", getLeaveApllication, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -379,15 +380,21 @@ export default () => {
   );
   api.put("/cancelLeave", cancelLeave, (req, res, next) => {
     if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: false,
+          records: req.records
+        })
+        .end();
     } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+      res
+        .status(utlities.AlgaehUtilities().httpStatus().ok)
+        .json({
+          success: true,
+          records: req.records
+        })
+        .end();
     }
   });
   api.get("/getLeaveBalances", getLeaveBalances, (req, res, next) => {
@@ -402,6 +409,29 @@ export default () => {
         records: req.records
       });
     }
+  });
+  api.get("/processYearlyLeave", processYearlyLeave, (req, res, next) => {
+    if (
+      req.records.invalid_input != undefined &&
+      req.records.invalid_input == true
+    ) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+
+  api.put("/updateEmployeeLeave", updateEmployeeLeave, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

@@ -1,8 +1,7 @@
 import React, { PureComponent } from "react";
-
+import { withRouter } from "react-router-dom";
 import {
-  AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import "./Referal.scss";
 import "../../../../styles/site.scss";
@@ -111,30 +110,30 @@ class Referal extends PureComponent {
               onClear={this.doctorDepartmentClearHandler.bind(this)}
             />
           ) : (
-            <AlagehFormGroup
-              div={{ className: "col-lg-10" }}
-              label={{
-                forceLabel: "Physician Details"
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "external_doc_name",
-                value: this.state.external_doc_name,
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            />
-          )}
+              <AlagehFormGroup
+                div={{ className: "col-lg-10" }}
+                label={{
+                  forceLabel: "Physician Details"
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "external_doc_name",
+                  value: this.state.external_doc_name,
+                  events: {
+                    onChange: texthandle.bind(this, this)
+                  }
+                }}
+              />
+            )}
 
           <div className="actions" style={{ paddingTop: "3.5vh" }}>
-            <a
+            <button
               // href="javascript"
               className="btn btn-primary btn-circle active"
               onClick={addReferal.bind(this, this)}
             >
               <i className="fas fa-plus" />
-            </a>
+            </button>
           </div>
         </div>
 
@@ -172,4 +171,4 @@ class Referal extends PureComponent {
     );
   }
 }
-export default Referal;
+export default withRouter(Referal);

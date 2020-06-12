@@ -50,7 +50,13 @@ class PatientMRD extends Component {
   }
 
   componentDidMount() {
-    if (this.props.fromClinicalDesk === undefined) this.getPatientAllergies();
+    if (this.props.fromClinicalDesk === undefined) {
+      this.getPatientAllergies();
+    }
+  }
+
+  componentWillUnmount() {
+    delete Window.global["mrd_patient"];
   }
 
   changeTabs(e) {

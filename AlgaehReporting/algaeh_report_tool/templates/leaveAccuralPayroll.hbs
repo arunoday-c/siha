@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -10,27 +10,36 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Employee Group</th>
                         <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Leave Days</th>
                         <th>Leave Salary</th>
                         <th>Airfare Amt.</th>
                     </tr>
                 </thead>
                 <tbody>{{#hasElement detailsList}}
+                    <tr class="numberFld numberFldTotalBottom">
+                        <td colspan="7"></td>
+                        <td class="numberFld">{{sum_leave_salary}}</tdclass="numberFld numberFldTotal">
+                        <td class="numberFld">{{sum_airfare_amount}}</td>
+                    </tr>
                     {{#each detailsList}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{full_name}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
-                        <td>{{leave_days}}</td>
-                        <td>{{leave_salary}}</td>
-                        <td>{{airfare_amount}}</td>
+                        <td class="numberFld">{{balance_leave_days}}</td class="numberFld">
+                        <td class="numberFld">{{balance_leave_salary_amount}}</td>
+                        <td class="numberFld">{{balance_airticket_amount}}</td class="numberFld">
                     </tr>
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
                 </tbody>

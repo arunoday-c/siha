@@ -18,7 +18,7 @@ class BreadCrumb extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       value:
         nextProps.soptlightSearch !== undefined
@@ -41,19 +41,18 @@ class BreadCrumb extends PureComponent {
     if (this.props.soptlightSearch !== undefined) {
       return (
         <div className="col  margin-top-15">
-          <div className="row spotlightSearchBox">
-            <div className="col-lg-9">
+          <div
+            className="row spotlightSearchBox"
+            onClick={SearchDetails.bind(this, this)}
+          >
+            <div className="col">
               <AlgaehLabel
                 label={{ forceLabel: this.props.soptlightSearch.label }}
               />
               <h6>{this.state.value ? this.state.value : "----------"}</h6>
             </div>
             <div className="col spotlightSearchIconBox">
-              <i
-                className="fas fa-search fa-lg"
-                style={{ paddingTop: 17, paddingLeft: 3, cursor: "pointer" }}
-                onClick={SearchDetails.bind(this, this)}
-              />
+              <i className="fas fa-search fa-lg" />
             </div>
           </div>
         </div>

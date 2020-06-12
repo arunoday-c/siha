@@ -17,5 +17,7 @@
   "payment_mode": "طريقة الدفع",
   "bank_name": "اسم البنك",
   "vat_applicable": "ضريبة القيمة المضافة قابلة للتطبيق",
-  "vat_percentage": "نسبة ضريبة القيمة المضافة"
+  "vat_percentage": "نسبة ضريبة القيمة المضافة",
+  "active": "نشط",
+  "inactive": "غير نشط"
 }

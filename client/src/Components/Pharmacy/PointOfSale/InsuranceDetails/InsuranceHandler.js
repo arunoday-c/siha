@@ -5,7 +5,6 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -179,9 +178,6 @@ const enddatehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
-  const hospital = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  );
 
   AlgaehSearch({
     searchGrid: {
@@ -189,7 +185,7 @@ const InsuranceDetails = ($this, context, e) => {
     },
     searchName: "insurance",
     uri: "/gloabelSearch/get",
-    inputs: "netoff.hospital_id = " + hospital.hims_d_hospital_id,
+    inputs: "netoff.hospital_id = " + $this.state.userToken.hims_d_hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -361,6 +357,11 @@ const ProcessInsurance = ($this, context) => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount = response.data.records.receiveable_amount
+                  response.data.records.cash_amount = 0
+                }
+
                 $this.setState({ ...response.data.records });
                 if (context !== null) {
                   context.updateState({ ...response.data.records });

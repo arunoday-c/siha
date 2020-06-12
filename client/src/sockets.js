@@ -1,23 +1,32 @@
 import io from "socket.io-client";
-import { getCookie } from "./utils/algaehApiCall";
+import config from "./utils/config.json";
+
+const { sockets } = config.routersAndPorts;
 
 function createSockets() {
-  const _localaddress =
-    window.location.protocol + "//" + window.location.hostname + ":";
-  const PORT = "3019";
-  const URI = `${_localaddress}${PORT}`;
-  return io.connect(URI, {
+  let _localaddress =
+    window.location.protocol + "//" + window.location.hostname;
+  // const PORT = window.location.port ? `:${sockets.port}` : "";
+  // const URI = `${_localaddress}${PORT}`;
+  const options = {
     reconnection: true,
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
-    reconnectionAttempts: 5
-  });
+    reconnectionAttempts: 5,
+  }
+  if(window.location.port){
+    _localaddress = _localaddress + `:${sockets.port}`
+  } else {
+    options.path = sockets.path
+  }
+  options.transports = ['websocket']
+  return io.connect(_localaddress, options);
 }
 
 const socket = createSockets();
 
 socket.on("connect", () => {
-  socket.emit("authentication", { token: getCookie("authToken") });
+  console.log("connected");
 });
 
 socket.on("disconnect", () => {

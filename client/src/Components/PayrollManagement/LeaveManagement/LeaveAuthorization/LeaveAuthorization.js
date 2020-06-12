@@ -4,7 +4,7 @@ import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -12,10 +12,8 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
-import Socket from "../../../../sockets";
-
+import { MainContext } from "algaeh-react-components/context";
 export default class LeaveAuthorization extends Component {
   constructor(props) {
     super(props);
@@ -23,27 +21,31 @@ export default class LeaveAuthorization extends Component {
       open: false,
       leave_levels: [],
       leave_applns: [],
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       leave_status: "PEN",
-      currLeavAppln: {}
+      currLeavAppln: {},
+      auth_level: undefined,
     };
-    this.leaveAuthSock = Socket;
     this.getLeaveLevels();
     this.getHospitals();
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const { userToken } = this.context;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
+  }
   closePopup() {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
   clearState() {
     let auth_level =
       this.state.leave_levels.length > 0
-        ? Enumerable.from(this.state.leave_levels).maxBy(w => w.value)
+        ? Enumerable.from(this.state.leave_levels).maxBy((w) => w.value)
         : null;
 
     this.setState({
@@ -53,14 +55,14 @@ export default class LeaveAuthorization extends Component {
       employee_name: null,
       auth_level: auth_level !== null ? auth_level.value : null,
       leave_status: "PEN",
-      leave_applns: []
+      leave_applns: [],
     });
   }
 
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -68,15 +70,15 @@ export default class LeaveAuthorization extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
           },
           () => {}
         );
-      }
+      },
     });
   }
 
@@ -99,7 +101,7 @@ export default class LeaveAuthorization extends Component {
       leave_category: data.leave_category,
       leave_from: data.leave_from,
       absent_id: data.absent_id,
-      hospital_id: this.state.hospital_id
+      hospital_id: this.state.hospital_id,
     };
 
     algaehApiCall({
@@ -107,16 +109,17 @@ export default class LeaveAuthorization extends Component {
       method: "PUT",
       module: "hrManagement",
       data: send_data,
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.loadLeaveApplications();
           if (type === "A") {
             swalMessage({
               title: "Leave Authorized Successfully",
-              type: "success"
+              type: "success",
             });
-            if (this.leaveAuthSock.connected) {
-              this.leaveAuthSock.emit(
+            debugger;
+            if (this.context.socket.connected) {
+              this.context.socket.emit(
                 "/leave/authorized",
                 data.employee_id,
                 data.from_date,
@@ -126,10 +129,10 @@ export default class LeaveAuthorization extends Component {
           } else {
             swalMessage({
               title: "Leave Rejected Successfully",
-              type: "success"
+              type: "success",
             });
-            if (this.leaveAuthSock.connected) {
-              this.leaveAuthSock.emit(
+            if (this.context.socket.connected) {
+              this.context.socket.emit(
                 "/leave/rejected",
                 data.employee_id,
                 data.from_date,
@@ -140,22 +143,22 @@ export default class LeaveAuthorization extends Component {
         } else {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "error",
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   loadLeaveApplications() {
     this.setState({
-      loading: true
+      loading: true,
     });
 
     algaehApiCall({
@@ -164,29 +167,32 @@ export default class LeaveAuthorization extends Component {
       module: "hrManagement",
       data: {
         hospital_id: this.state.hospital_id,
-        auth_level: this.state.auth_level,
+        auth_level:
+          this.state.auth_level !== undefined
+            ? this.state.auth_level
+            : this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,
         from_date: this.state.from_date,
-        to_date: this.state.to_date
+        to_date: this.state.to_date,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             leave_applns: res.data.records,
-            loading: false
+            loading: false,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
         this.setState({
-          loading: false
+          loading: false,
         });
-      }
+      },
     });
   }
 
@@ -195,56 +201,56 @@ export default class LeaveAuthorization extends Component {
       uri: "/leave/getLeaveLevels",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           let auth_level =
             res.data.records.auth_levels.length > 0
               ? Enumerable.from(res.data.records.auth_levels).maxBy(
-                  w => w.value
+                  (w) => w.value
                 )
               : null;
 
           this.setState({
             leave_levels: res.data.records.auth_levels,
-            auth_level: auth_level !== null ? auth_level.value : null
+            auth_level: auth_level !== null ? auth_level.value : null,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   getHospitals() {
     algaehApiCall({
-      uri: "/organization/getOrganization",
+      uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            hospitals: res.data.records
+            hospitals: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   realoadLeaveAuths() {
     this.loadLeaveApplications();
     this.setState({
-      open: false
+      open: false,
     });
   }
 
@@ -261,17 +267,44 @@ export default class LeaveAuthorization extends Component {
           onClose={this.closePopup.bind(this)}
           data={{
             ...this.state.currLeavAppln,
-            auth_level: this.state.auth_level
+            auth_level: this.state.auth_level,
           }}
           type={this.state.type}
         />
         <div className="col-12">
           <div className="row inner-top-search">
+            {/* <AlgaehSecurityElement
+              elementCode="PAY_LEA_MGMT_AUT_LEV"
+              render={data => {
+                return (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group mandatory" }}
+                    label={{
+                      forceLabel: "Auth. Level",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "auth_level",
+                      value: this.state.auth_level,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "text",
+                        valueField: "value",
+                        data: data //this.state.leave_levels
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                );
+              }}
+            /> */}
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{
+                className: "col-lg-2 col-md-2  col-sm-12 form-group mandatory",
+              }}
               label={{
                 forceLabel: "Auth. Level",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "auth_level",
@@ -280,52 +313,58 @@ export default class LeaveAuthorization extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: this.state.leave_levels
+                  data: this.state.leave_levels,
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
               }}
             />
 
             <AlgaehDateHandler
-              div={{ className: "col" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+              }}
               label={{ forceLabel: "From Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
-                name: "from_date"
+                name: "from_date",
               }}
               maxDate={new Date()}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   this.setState({
-                    from_date: selDate
+                    from_date: selDate,
                   });
-                }
+                },
               }}
               value={this.state.from_date}
             />
             <AlgaehDateHandler
-              div={{ className: "col" }}
+              div={{
+                className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+              }}
               label={{ forceLabel: "To Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
-                name: "to_date"
+                name: "to_date",
               }}
               maxDate={new Date()}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   this.setState({
-                    to_date: selDate
+                    to_date: selDate,
                   });
-                }
+                },
               }}
               value={this.state.to_date}
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{
+                className: "col-lg-2 col-md-2  col-sm-12 form-group mandatory",
+              }}
               label={{
-                forceLabel: "Filter by Branch",
-                isImp: true
+                forceLabel: "Branch",
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -334,18 +373,18 @@ export default class LeaveAuthorization extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.state.hospitals
+                  data: this.state.hospitals,
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
               }}
               showLoading={true}
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-lg-2 col-md-2  col-sm-12  form-group" }}
               label={{
                 forceLabel: "Leave Status",
-                isImp: false
+                isImp: false,
               }}
               selector={{
                 name: "leave_status",
@@ -354,13 +393,13 @@ export default class LeaveAuthorization extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.LEAVE_STATUS
+                  data: GlobalVariables.LEAVE_STATUS,
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
               }}
             />
 
-            <div className="col-3 globalSearchCntr">
+            <div className="col-lg-2 col-md-2 col-sm-12  globalSearchCntr form-group">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -371,44 +410,20 @@ export default class LeaveAuthorization extends Component {
               </h6>
             </div>
 
-            {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
+            <div
+              className="col-lg-12 col-md-12 col-sm-12 form-group"
+              style={{ textAlign: "right" }}
+            >
+              {" "}
+              <button
+                onClick={this.clearState.bind(this)}
+                className="btn btn-default"
               >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={this.employeeSearch.bind(this)}
-                  />
-                </div>
-              </div>
-            </div> */}
-
-            <div className="col form-group">
+                Clear
+              </button>
               <button
                 onClick={this.loadLeaveApplications.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginLeft: 5 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (
@@ -416,13 +431,6 @@ export default class LeaveAuthorization extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
-              </button>
-              <button
-                onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21, marginLeft: 5 }}
-                className="btn btn-default"
-              >
-                Clear
               </button>
             </div>
           </div>
@@ -456,39 +464,19 @@ export default class LeaveAuthorization extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Actions" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.status === "PEN" ? (
                             <React.Fragment>
                               <i
-                                style={
-                                  {
-                                    //     pointerEvents:
-                                    //      row.status === "Y" ? "none" : null,
-                                    //  opacity: row.status === "Y" ? "0.1" : null
-                                  }
-                                }
-                                className="fas fa-thumbs-up"
-                                // onClick={this.authorizeLeave.bind(
-                                //   this,
-                                //   "A",
-                                //   row
-                                // )}
+                                className="fas fa-eye"
                                 onClick={() => {
                                   this.setState({
                                     open: true,
                                     currLeavAppln: row,
-                                    type: row.status === "APR" ? "C" : undefined
+                                    type:
+                                      row.status === "APR" ? "C" : undefined,
                                   });
                                 }}
-                              />
-
-                              <i
-                                className="fas fa-thumbs-down"
-                                onClick={this.authorizeLeave.bind(
-                                  this,
-                                  "R",
-                                  row
-                                )}
                               />
                             </React.Fragment>
                           ) : row.status === "APR" ? (
@@ -498,7 +486,7 @@ export default class LeaveAuthorization extends Component {
                                 this.setState({
                                   open: true,
                                   currLeavAppln: row,
-                                  type: "C"
+                                  type: "C",
                                 });
                               }}
                             />
@@ -508,15 +496,13 @@ export default class LeaveAuthorization extends Component {
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 105
-                        }
+                          maxWidth: 60,
+                        },
                       },
                       {
                         fieldName: "status",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Status" }} />
-                        ),
-                        displayTemplate: row => {
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.status === "PEN" ? (
@@ -540,7 +526,7 @@ export default class LeaveAuthorization extends Component {
                               )}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "employee_code",
@@ -549,7 +535,7 @@ export default class LeaveAuthorization extends Component {
                             label={{ forceLabel: "Employee Code" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           const statCheck =
                             row.status !== "REJ" && row.status !== "CAN";
                           return statCheck ? (
@@ -558,7 +544,7 @@ export default class LeaveAuthorization extends Component {
                                 this.setState({
                                   open: true,
                                   currLeavAppln: row,
-                                  type: row.status === "APR" ? "C" : undefined
+                                  type: row.status === "APR" ? "C" : undefined,
                                 });
                               }}
                               className="pat-code"
@@ -569,11 +555,11 @@ export default class LeaveAuthorization extends Component {
                             <span>{row.employee_code}</span>
                           );
                         },
-                        className: row => {
+                        className: (row) => {
                           return row.status !== "REJ" && row.status !== "CAN"
                             ? "greenCell"
                             : null;
-                        }
+                        },
                       },
                       {
                         fieldName: "employee_name",
@@ -581,34 +567,44 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "designation",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
-                        )
+                        ),
                       },
-                      {
-                        fieldName: "sub_department_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sub Department" }}
-                          />
-                        )
-                      },
+
                       {
                         fieldName: "leave_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                        )
+                        ),
                       },
 
                       {
                         fieldName: "leave_application_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Request Code" }} />
-                        )
+                        ),
+                      },
+                      {
+                        fieldName: "application_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Date" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {moment(row.application_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          );
+                        },
                       },
                       {
                         fieldName: "total_applied_days",
@@ -616,38 +612,38 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Applied for (days)" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "from_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.from_date).format("DD-MM-YYYY")}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "to_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "To Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.to_date).format("DD-MM-YYYY")}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "remarks",
-                        label: <AlgaehLabel label={{ forceLabel: "Reason" }} />
-                      }
+                        label: <AlgaehLabel label={{ forceLabel: "Reason" }} />,
+                      },
                     ]}
                     keyId="hims_f_leave_application_id"
                     dataSource={{ data: this.state.leave_applns }}
@@ -658,7 +654,7 @@ export default class LeaveAuthorization extends Component {
                     events={{
                       onEdit: () => {},
                       onDone: () => {},
-                      onDelete: () => {}
+                      onDelete: () => {},
                     }}
                   />
                 </div>

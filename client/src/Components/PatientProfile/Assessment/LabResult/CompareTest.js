@@ -9,8 +9,6 @@ import {
   AlgaehModalPopUp,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-
-import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
@@ -58,7 +56,7 @@ export default class CompareTest extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     // if (
     //   newProps.test_analytes === undefined ||
     //   newProps.test_analytes.length === 0

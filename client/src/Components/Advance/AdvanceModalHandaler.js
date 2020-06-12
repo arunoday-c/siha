@@ -152,19 +152,31 @@ const Validations = ($this, e) => {
 
       // document.querySelector("[name='card_amount']").focus();
       return isError;
-    } else if (
-      $this.state.card_number === null ||
-      $this.state.card_number === ""
-    ) {
-      isError = true;
-      swalMessage({
-        title: "Card Number date is mandatory.",
-        type: "error"
-      });
-
-      // document.querySelector("[name='card_date']").focus();
-      return isError;
     }
+
+    // else if (
+    //   $this.state.card_number === null ||
+    //   $this.state.card_number === ""
+    // ) {
+    //   isError = true;
+    //   swalMessage({
+    //     title: "Card Number date is mandatory.",
+    //     type: "error"
+    //   });
+
+    //   // document.querySelector("[name='card_date']").focus();
+    //   return isError;
+    // } else if ($this.state.bank_card_id === null) {
+    //   isError = true;
+
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Select Card."
+    //   });
+
+    //   document.querySelector("[name='bank_card_id']").focus();
+    //   return isError;
+    // }
   }
 
   if ($this.state.Checkchecked === true) {
@@ -204,7 +216,7 @@ const Validations = ($this, e) => {
   } else if (
     $this.props.Advance === false &&
     parseFloat($this.state.total_amount) >
-      parseFloat($this.props.inputsparameters.advance_amount)
+    parseFloat($this.props.inputsparameters.advance_amount)
   ) {
     isError = true;
     swalMessage({

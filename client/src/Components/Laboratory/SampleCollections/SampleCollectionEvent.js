@@ -1,8 +1,6 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-import AlgaehReport from "../../Wrapper/printReports";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 const CollectSample = ($this, context, row) => {
   let inputobj = {
@@ -12,9 +10,7 @@ const CollectSample = ($this, context, row) => {
     sample_id: row.sample_id,
     collected: "Y",
     status: "N",
-    hims_d_hospital_id: JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).hims_d_hospital_id,
+    hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
     service_code: row.service_code
   };
@@ -70,6 +66,11 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "specimenBarcode",
         reportParams: [
           {
@@ -81,16 +82,19 @@ const printBarcode = ($this, row, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Specimen Barcode";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
+      window.open(origin);
+      // window.document.title = "Specimen Barcode";
     }
   });
 };

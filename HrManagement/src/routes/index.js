@@ -1,5 +1,5 @@
 import express from "express";
-import generalLedger from "../controllers/general_ledger";
+
 import leave_approval from "../controllers/leave_approval";
 import attendance from "../controllers/attandance";
 import salary from "../controllers/salary";
@@ -22,12 +22,15 @@ import loan from "../controllers/loan";
 import shift_roster from "../controllers/shift_roster";
 import excelFile from "../controllers/excel_file";
 import projectjobcosting from "../controllers/project_job_costing";
+import openingBalanceUpload from "../controllers/openingBalanceUpload";
+import salarypayment from "../controllers/salarypayment";
+import performanceManagement from "../controllers/performanceMangement";
 
 const router = express();
 router.use("/attendance", attendance());
 router.use("/employee", employee());
 router.use("/leave", leave_approval());
-router.use("/testapi", generalLedger());
+
 router.use("/salary", salary());
 router.use("/test", test());
 router.use("/employeepayments", employee_payments());
@@ -47,5 +50,8 @@ router.use("/documents", employeeDocuments());
 router.use("/shift_roster", shift_roster());
 router.use("/excel", excelFile());
 router.use("/projectjobcosting", projectjobcosting());
+router.use("/openingBalanceUpload", openingBalanceUpload());
+router.use("/salarypayment", salarypayment());
+router.use("/performanceManagement", performanceManagement());
 
 export default router;

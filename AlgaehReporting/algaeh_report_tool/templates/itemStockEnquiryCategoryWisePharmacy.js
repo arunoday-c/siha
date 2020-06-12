@@ -1,7 +1,7 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
       let str1 = "";
@@ -13,7 +13,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       if (input.item_id > 0) {
         str1 = `and TS.item_code_id=${input.item_id}`;
@@ -24,30 +24,31 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `WITH CTE AS (
             select hims_f_pharmacy_trans_history_id,transaction_type,from_location_id,item_code_id,location_description,
-            transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in' 
+            transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in'
             when transaction_type in( 'ST', 'CS', 'POS') and operation='-' then  'out' end as stock_status,item_description
-            from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on 
-            TS.from_location_id=PL.hims_d_pharmacy_location_id inner join hims_d_item_master IM 
+            from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on
+            TS.from_location_id=PL.hims_d_pharmacy_location_id inner join hims_d_item_master IM
             on TS.item_code_id=IM.hims_d_item_master_id
-            where TS.record_status='A'  and PL.hospital_id=? and  TS.from_location_id=? 
-             and IM.category_id=? ${str1} and transaction_type in( 'ST', 'CS', 'POS','SRT' 'INT','DNA') 
-            and date(transaction_date) = date(?))
+            where TS.record_status='A'  and PL.hospital_id=? and  TS.from_location_id=?
+             and IM.category_id=? ${str1} and transaction_type in( 'ST', 'CS', 'POS','SRT' 'INT','DNA')
+            and date(transaction_date) between date(?) and date(?))
             select hims_f_pharmacy_trans_history_id,location_description,item_code_id,item_description,
             sum(transaction_qty) as transaction_qty,transaction_date ,stock_status
-            from CTE group by item_code_id,stock_status;            
+            from CTE group by item_code_id,stock_status;
             select hims_m_item_location_id ,item_id,location_description,hims_d_pharmacy_location_id,
             sum(IL.qtyhand) as qtyhand,item_description
-            from hims_m_item_location IL inner join hims_d_pharmacy_location PL on 
+            from hims_m_item_location IL inner join hims_d_pharmacy_location PL on
             IL.pharmacy_location_id=PL.hims_d_pharmacy_location_id inner join hims_d_item_master IM on
             IL.item_id=IM.hims_d_item_master_id
             where IL.record_status='A' and PL.hospital_id=? and IL.pharmacy_location_id=?
             and  IM.category_id=? ${str2} group by IL.item_id;
-                        
+
             `,
           values: [
             input.hospital_id,
             input.location_id,
             input.category_id,
+            input.from_date,
             input.to_date,
             input.hospital_id,
             input.location_id,
@@ -111,7 +112,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

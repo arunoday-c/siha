@@ -4,8 +4,10 @@ export default {
 
     output = {
       hims_d_investigation_test_id: null,
+      test_code: null,
       short_description: null,
       description: null,
+      specimen_id: null,
       investigation_type: "L",
       lab_section_id: null,
       send_out_test: "N",
@@ -36,12 +38,17 @@ export default {
       normal_high: 0,
       critical_low: 0,
       critical_high: 0,
+      age_type: "Y",
 
       film_category: "NA",
       screening_test: "N",
       film_used: "N",
       clear: false,
-      analytes_required: true
+      analytes_required: true,
+
+      gender: null,
+      from_age: 0,
+      to_age: 0
     };
     return output;
   }

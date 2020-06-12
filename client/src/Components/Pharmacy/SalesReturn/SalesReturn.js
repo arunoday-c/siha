@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
@@ -22,6 +22,7 @@ import MyContext from "../../../utils/MyContext";
 import SALESRETURNIOputs from "../../../Models/SalesReturn";
 import DisplayInsuranceDetails from "./DisplayInsuranceDetails/DisplayInsuranceDetails";
 import Options from "../../../Options.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class SalesReturn extends Component {
   constructor(props) {
@@ -44,12 +45,17 @@ class SalesReturn extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = SALESRETURNIOputs.inputParam();
     this.setState(IOputs);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+
+    this.setState({
+      userToken: this.context.userToken
+    })
     if (
       this.props.salesitemlist === undefined ||
       this.props.salesitemlist.length === 0
@@ -83,7 +89,7 @@ class SalesReturn extends Component {
     getCashiersAndShiftMAP(this, this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let SalesHeaderOut = {};
 
     if (
@@ -179,8 +185,8 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.sales_return_date
                       ? moment(this.state.sales_return_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -194,105 +200,72 @@ class SalesReturn extends Component {
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
             {/* Patient code */}
-            <div className="col-lg-3">
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0,
-                  height: 50
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "POS Number" }} />
-                  <h6>
-                    {this.state.pos_number
-                      ? this.state.pos_number
-                      : "----------"}
-                  </h6>
-                </div>
-                <div
-                  className="col-lg-2"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer",
-                      pointerEvents:
-                        this.state.postEnable === true ? "none" : ""
-                    }}
-                    onClick={POSSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
+
+            <div className="col-3 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "POS Number" }} />
+              <h6 onClick={POSSearch.bind(this, this)}>
+                {this.state.pos_number ? this.state.pos_number : "POS Number"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
             </div>
-            <div className="col-lg-9">
-              <div className="row">
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Location"
-                    }}
-                  />
-                  <h6>
-                    {this.state.location_description
-                      ? this.state.location_description
-                      : "--------"}
-                  </h6>
-                </div>
 
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Visit Code"
-                    }}
-                  />
-                  <h6>
-                    {this.state.visit_code ? this.state.visit_code : "--------"}
-                  </h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Patient Code"
-                    }}
-                  />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "--------"}
-                  </h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Patient Name"
-                    }}
-                  />
-                  <h6>
-                    {this.state.full_name ? this.state.full_name : "--------"}
-                  </h6>
-                </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Location"
+                }}
+              />
+              <h6>
+                {this.state.location_description
+                  ? this.state.location_description
+                  : "--------"}
+              </h6>
+            </div>
 
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Mode of Payment"
-                    }}
-                  />
-                  <h6>
-                    {this.state.mode_of_pay === "1"
-                      ? "Self"
-                      : this.state.mode_of_pay === "2"
-                      ? "Insurance"
-                      : "-----------"}
-                  </h6>
-                </div>
-              </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Visit Code"
+                }}
+              />
+              <h6>
+                {this.state.visit_code ? this.state.visit_code : "--------"}
+              </h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Patient Code"
+                }}
+              />
+              <h6>
+                {this.state.patient_code ? this.state.patient_code : "--------"}
+              </h6>
+            </div>
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Patient Name"
+                }}
+              />
+              <h6>
+                {this.state.full_name ? this.state.full_name : "--------"}
+              </h6>
+            </div>
+
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Mode of Payment"
+                }}
+              />
+              <h6>
+                {this.state.mode_of_pay === "1"
+                  ? "Self"
+                  : this.state.mode_of_pay === "2"
+                    ? "Insurance"
+                    : "-----------"}
+              </h6>
             </div>
           </div>
 
@@ -382,8 +355,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SalesReturn)
+  connect(mapStateToProps, mapDispatchToProps)(SalesReturn)
 );

@@ -145,97 +145,115 @@ class Formula extends Component {
   render() {
     return (
       <div className="formulas">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "formula id",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "algaeh_d_formulas_id",
-                value: this.state.algaeh_d_formulas_id,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Formula For",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "formula_for",
-                value: this.state.formula_for,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                forceLabel: "Formula",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "formula",
-                value: this.state.formula,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehFormGroup
+            div={{ className: "col-1 form-group mandatory" }}
+            label={{
+              forceLabel: "formula id",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "algaeh_d_formulas_id",
+              value: this.state.algaeh_d_formulas_id,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-1 form-group mandatory" }}
+            label={{
+              forceLabel: "Formula For",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "formula_for",
+              value: this.state.formula_for,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              forceLabel: "Formula",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "formula",
+              value: this.state.formula,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <div className="col-lg-3">
-              <button
-                type="submit"
-                style={{ marginTop: 21 }}
-                onClick={this.addFormulas.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col-3">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addFormulas.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
 
-          <div data-validate="formulaDiv" id="algaehGrid_Cntr">
-            <AlgaehDataGrid
-              id="formula-grid"
-              datavalidate="id='algaehGrid_Cntr'"
-              columns={[
-                {
-                  fieldName: "algaeh_d_formulas_id",
-                  label: "Formula ID"
-                },
-                {
-                  fieldName: "formula_for",
-                  label: "Formula For"
-                },
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Formula</h3>
+                </div>
+                <div className="actions"></div>
+              </div>
 
-                {
-                  fieldName: "formula",
-                  label: "Formula"
-                }
-              ]}
-              keyId="algaeh_d_formulas_id"
-              dataSource={{
-                data: this.state.formulas
-              }}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteformulas.bind(this),
-                onDone: this.updateformulas.bind(this)
-              }}
-            />
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12">
+                    {" "}
+                    <div data-validate="formulaDiv" id="algaehGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="formula-grid"
+                        datavalidate="id='algaehGrid_Cntr'"
+                        columns={[
+                          {
+                            fieldName: "algaeh_d_formulas_id",
+                            label: "Formula ID"
+                          },
+                          {
+                            fieldName: "formula_for",
+                            label: "Formula For"
+                          },
+
+                          {
+                            fieldName: "formula",
+                            label: "Formula"
+                          }
+                        ]}
+                        keyId="algaeh_d_formulas_id"
+                        dataSource={{
+                          data: this.state.formulas
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 10 }}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: this.deleteformulas.bind(this),
+                          onDone: this.updateformulas.bind(this)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -4,8 +4,9 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
+import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
@@ -16,6 +17,7 @@ export default class EndServiceOption extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hims_d_end_of_service_options_id: null,
       earnings: [],
       deductions: [],
       deduction_ids: [],
@@ -24,7 +26,9 @@ export default class EndServiceOption extends Component {
       t_earning_comp: [],
       service_days: [],
       comps: {},
-      service_range: 0
+      service_range: 0,
+      org_country_id: undefined,
+      benefit: undefined,
     };
     this.getEosOptions();
     this.getEarningDeducts();
@@ -40,16 +44,18 @@ export default class EndServiceOption extends Component {
         arr.push({
           service_range: this.state.service_range,
           from_service_range: this.state.from_service_range,
-          eligible_days: this.state.eligible_days
+          eligible_days: this.state.eligible_days,
+          benefit_days: this.state.benefit,
         });
 
         this.setState({
           service_days: arr,
           service_range: this.state.from_service_range,
           from_service_range: null,
-          eligible_days: null
+          eligible_days: null,
+          benefit_days: null,
         });
-      }
+      },
     });
   }
 
@@ -61,22 +67,23 @@ export default class EndServiceOption extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.earning_comp.pop(row);
         this.setState({
-          earning_comp: this.state.earning_comp
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          earning_comp: this.state.earning_comp,
         });
       }
     });
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const { org_country_id } = this.context.userToken;
+    this.setState({
+      org_country_id: org_country_id,
+    });
+  }
   deleteServiceDays(row) {
     swal({
       title: "Delete Service Days",
@@ -85,14 +92,14 @@ export default class EndServiceOption extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.service_days.pop(row);
         //service_range : this.state.service_days
         this.setState(
           {
-            service_days: this.state.service_days
+            service_days: this.state.service_days,
           },
           () => {
             this.setState({
@@ -101,15 +108,10 @@ export default class EndServiceOption extends Component {
                 undefined
                   ? Enumerable.from(this.state.service_days).lastOrDefault()
                       .from_service_range
-                  : 0
+                  : 0,
             });
           }
         );
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -123,12 +125,12 @@ export default class EndServiceOption extends Component {
         if ($this.state.earning_comp.length > 4) {
           swalMessage({
             title: "Cannot Add More than 4 Components",
-            type: "success"
+            type: "success",
           });
         } else {
           let x = Enumerable.from($this.state.earning_comp)
             .where(
-              w =>
+              (w) =>
                 w.hims_d_earning_deduction_id ===
                 $this.state.comps.hims_d_earning_deduction_id
             )
@@ -140,16 +142,16 @@ export default class EndServiceOption extends Component {
 
             $this.setState({
               earning_id: null,
-              earning_comp: earn_cmp
+              earning_comp: earn_cmp,
             });
           } else {
             swalMessage({
               title: "Already Exist in the list",
-              type: "warning"
+              type: "warning",
             });
           }
         }
-      }
+      },
     });
   }
 
@@ -161,12 +163,12 @@ export default class EndServiceOption extends Component {
         if (this.state.t_earning_comp.length > 4) {
           swalMessage({
             title: "Cannot Add More than 4 Components",
-            type: "success"
+            type: "success",
           });
         } else {
           let x = Enumerable.from(this.state.t_earning_comp)
             .where(
-              w =>
+              (w) =>
                 w.hims_d_earning_deduction_id ===
                 this.state.Tcomps.hims_d_earning_deduction_id
             )
@@ -178,16 +180,16 @@ export default class EndServiceOption extends Component {
 
             this.setState({
               deduction_id: null,
-              t_earning_comp: earn_cmp
+              t_earning_comp: earn_cmp,
             });
           } else {
             swalMessage({
               title: "Already Exist in the list",
-              type: "warning"
+              type: "warning",
             });
           }
         }
-      }
+      },
     });
   }
 
@@ -195,39 +197,77 @@ export default class EndServiceOption extends Component {
     // console.log("Comps", JSON.stringify(this.state.earning_comp));
     // console.log("Serv Days", JSON.stringify(this.state.service_days));
 
-    algaehApiCall({
-      uri: "/payrollOptions/updateEosOptions",
-      method: "PUT",
-      module: "hrManagement",
-      data: {
-        end_of_service_calculation: this.state.end_of_service_calculation,
-        terminate_salary: this.state.terminate_salary,
-        end_of_service_payment: this.state.end_of_service_payment,
-        end_of_service_type: this.state.end_of_service_type,
-        end_of_service_years: this.state.end_of_service_years,
-        limited_years: this.state.limited_years,
-        gratuity_in_final_settle: this.state.gratuity_in_final_settle,
-        pending_salary_with_final: this.state.pending_salary_with_final,
-        round_off_nearest_year: this.state.round_off_nearest_year,
-        earning_comp: this.state.earning_comp,
-        service_days: this.state.service_days,
-        gratuity_provision: this.state.gratuity_provision
-      },
-      onSuccess: res => {
-        if (res.data.success) {
+    if (this.state.hims_d_end_of_service_options_id === null) {
+      algaehApiCall({
+        uri: "/payrollOptions/InsertEosOptions",
+        method: "POST",
+        module: "hrManagement",
+        data: {
+          end_of_service_calculation: this.state.end_of_service_calculation,
+          terminate_salary: this.state.terminate_salary,
+          end_of_service_payment: this.state.end_of_service_payment,
+          end_of_service_type: this.state.end_of_service_type,
+          end_of_service_years: this.state.end_of_service_years,
+          limited_years: this.state.limited_years,
+          gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+          pending_salary_with_final: this.state.pending_salary_with_final,
+          round_off_nearest_year: this.state.round_off_nearest_year,
+          earning_comp: this.state.earning_comp,
+          service_days: this.state.service_days,
+          gratuity_provision: this.state.gratuity_provision,
+        },
+        onSuccess: (res) => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully...",
+              type: "success",
+            });
+          }
+        },
+        onFailure: (err) => {
           swalMessage({
-            title: "Updated Successfully",
-            type: "success"
+            title: err.message,
+            type: "error",
           });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+        },
+      });
+    } else {
+      algaehApiCall({
+        uri: "/payrollOptions/updateEosOptions",
+        method: "PUT",
+        module: "hrManagement",
+        data: {
+          end_of_service_calculation: this.state.end_of_service_calculation,
+          terminate_salary: this.state.terminate_salary,
+          end_of_service_payment: this.state.end_of_service_payment,
+          end_of_service_type: this.state.end_of_service_type,
+          end_of_service_years: this.state.end_of_service_years,
+          limited_years: this.state.limited_years,
+          gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+          pending_salary_with_final: this.state.pending_salary_with_final,
+          round_off_nearest_year: this.state.round_off_nearest_year,
+          earning_comp: this.state.earning_comp,
+          service_days: this.state.service_days,
+          gratuity_provision: this.state.gratuity_provision,
+          hims_d_end_of_service_options_id: this.state
+            .hims_d_end_of_service_options_id,
+        },
+        onSuccess: (res) => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully...",
+              type: "success",
+            });
+          }
+        },
+        onFailure: (err) => {
+          swalMessage({
+            title: err.message,
+            type: "error",
+          });
+        },
+      });
+    }
   }
 
   getEarningDeducts() {
@@ -235,24 +275,24 @@ export default class EndServiceOption extends Component {
       uri: "/payrollSettings/getMiscEarningDeductions",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
             earnings: Enumerable.from(res.data.records)
-              .where(w => w.component_category === "E")
+              .where((w) => w.component_category === "E")
               .toArray(),
             deductions: Enumerable.from(res.data.records)
-              .where(w => w.component_category === "D")
-              .toArray()
+              .where((w) => w.component_category === "D")
+              .toArray(),
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -261,22 +301,22 @@ export default class EndServiceOption extends Component {
       uri: "/payrollOptions/getEosOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           if (res.data.result.invalid_input !== true) {
             this.setState({
               ...res.data.result,
-              earning_comp: res.data.result.earning_comp
+              earning_comp: res.data.result.earning_comp,
             });
           }
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -284,7 +324,7 @@ export default class EndServiceOption extends Component {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -293,14 +333,14 @@ export default class EndServiceOption extends Component {
       case "earning_id":
         this.setState({
           comps: value.selected,
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
 
       case "dedution_id":
         this.setState({
           Tcomps: value.selected,
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
       default:
@@ -429,7 +469,7 @@ export default class EndServiceOption extends Component {
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
-                    label={{ forceLabel: "Earnings", isImp: true }}
+                    label={{ forceLabel: "Gratuity Provision", isImp: true }}
                     selector={{
                       name: "gratuity_provision",
                       value: this.state.gratuity_provision,
@@ -437,14 +477,14 @@ export default class EndServiceOption extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GRATUITY_PROVISION
+                        data: GRATUITY_PROVISION,
                       },
                       onChange: this.textHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          gratuity_provision: null
+                          gratuity_provision: null,
                         });
-                      }
+                      },
                     }}
                   />
                 </div>
@@ -480,18 +520,18 @@ export default class EndServiceOption extends Component {
                       div={{ className: "col-2 form-group" }}
                       label={{
                         forceLabel: "Maximum Limit Years",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "limited_years",
                         value: this.state.limited_years,
                         events: {
-                          onChange: this.textHandler.bind(this)
+                          onChange: this.textHandler.bind(this),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   ) : null}
@@ -599,7 +639,7 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group mandatory" }}
                             label={{
                               forceLabel: "From Range",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -610,8 +650,8 @@ export default class EndServiceOption extends Component {
                               },
                               others: {
                                 type: "number",
-                                disabled: true
-                              }
+                                disabled: true,
+                              },
                             }}
                           />
 
@@ -619,18 +659,18 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "To Range",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "from_service_range",
                               value: this.state.from_service_range,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
 
@@ -638,24 +678,41 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Eligible Days",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "eligible_days",
                               value: this.state.eligible_days,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
-
+                          <AlagehFormGroup
+                            div={{ className: "col-3 form-group" }}
+                            label={{
+                              forceLabel: "Benefit",
+                              isImp: true,
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "benefit",
+                              value: this.state.benefit,
+                              events: {
+                                onChange: this.textHandler.bind(this),
+                              },
+                              others: {
+                                type: "number",
+                              },
+                            }}
+                          />
                           <div
                             className="col-3 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop: 19 }}
                           >
                             <button
                               onClick={this.addServiceRange.bind(this)}
@@ -674,9 +731,9 @@ export default class EndServiceOption extends Component {
                             {
                               fieldName: "action",
                               label: (
-                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <i
                                     className="fas fa-trash-alt"
@@ -686,7 +743,7 @@ export default class EndServiceOption extends Component {
                                     )}
                                   />
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "service_range",
@@ -694,7 +751,7 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "From Range" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "from_service_range",
@@ -702,7 +759,7 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "To Range" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "eligible_days",
@@ -710,8 +767,19 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Eligible Days" }}
                                 />
-                              )
-                            }
+                              ),
+                            },
+                            {
+                              fieldName: "benefit_days",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Benefit" }}
+                                />
+                              ),
+                              others: {
+                                visibled: true, //this.state.org_country_id ===178?false:true
+                              },
+                            },
                           ]}
                           keyId=""
                           dataSource={{ data: this.state.service_days }}
@@ -738,19 +806,19 @@ export default class EndServiceOption extends Component {
                               dataSource: {
                                 textField: "earning_deduction_description",
                                 valueField: "hims_d_earning_deduction_id",
-                                data: this.state.earnings
+                                data: this.state.earnings,
                               },
                               onChange: this.dropDownHandler.bind(this),
                               onClear: () => {
                                 this.setState({
-                                  earning_id: null
+                                  earning_id: null,
                                 });
-                              }
+                              },
                             }}
                           />
                           <div
                             className="col-2 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop: 19 }}
                           >
                             <button
                               onClick={this.addEarningComponent.bind(this)}
@@ -769,9 +837,9 @@ export default class EndServiceOption extends Component {
                             {
                               fieldName: "action",
                               label: (
-                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <i
                                     className="fas fa-trash-alt"
@@ -781,7 +849,7 @@ export default class EndServiceOption extends Component {
                                     )}
                                   />
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "earning_deduction_code",
@@ -789,7 +857,7 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Earnings Code" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "earning_deduction_description",
@@ -797,8 +865,8 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Earnings" }}
                                 />
-                              )
-                            }
+                              ),
+                            },
                           ]}
                           keyId="hims_d_earning_deduction_id"
                           dataSource={{ data: this.state.earning_comp }}
@@ -837,7 +905,7 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group mandatory" }}
                             label={{
                               forceLabel: "From Range",
-                              isImp: false
+                              isImp: false,
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -848,8 +916,8 @@ export default class EndServiceOption extends Component {
                               },
                               others: {
                                 type: "number",
-                                disabled: true
-                              }
+                                disabled: true,
+                              },
                             }}
                           />
 
@@ -857,18 +925,18 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "To Range",
-                              isImp: false
+                              isImp: false,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "from_service_range_t",
                               value: this.state.from_service_range_t,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
 
@@ -876,24 +944,24 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Eligible Days",
-                              isImp: false
+                              isImp: false,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "eligible_days_t",
                               value: this.state.eligible_days_t,
                               events: {
-                                onChange: this.textHandler.bind(this)
+                                onChange: this.textHandler.bind(this),
                               },
                               others: {
-                                type: "number"
-                              }
+                                type: "number",
+                              },
                             }}
                           />
 
                           <div
                             className="col-3 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop: 19 }}
                           >
                             <button
                               onClick={this.addTerminationComps.bind(this)}
@@ -915,7 +983,7 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "From Range" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "Column_2",
@@ -923,7 +991,7 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "To Range" }}
                                 />
-                              )
+                              ),
                             },
                             {
                               fieldName: "Column_2",
@@ -931,8 +999,8 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Eligible Days" }}
                                 />
-                              )
-                            }
+                              ),
+                            },
                           ]}
                           keyId=""
                           dataSource={{ data: [] }}
@@ -960,19 +1028,19 @@ export default class EndServiceOption extends Component {
                               dataSource: {
                                 textField: "earning_deduction_description",
                                 valueField: "hims_d_earning_deduction_id",
-                                data: this.state.deductions
+                                data: this.state.deductions,
                               },
                               onChange: this.dropDownHandler.bind(this),
                               onClear: () => {
                                 this.setState({
-                                  earning_id: null
+                                  earning_id: null,
                                 });
-                              }
+                              },
                             }}
                           />
                           <div
                             className="col-2 align-middle"
-                            style={{ paddingTop: 21 }}
+                            style={{ paddingTop: 19 }}
                           >
                             <button
                               onClick={this.addEarningComponent.bind(this)}
@@ -992,7 +1060,7 @@ export default class EndServiceOption extends Component {
                               fieldName: "earning_deduction_code",
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "Code" }} />
-                              )
+                              ),
                             },
                             {
                               fieldName: "earning_deduction_description",
@@ -1000,8 +1068,8 @@ export default class EndServiceOption extends Component {
                                 <AlgaehLabel
                                   label={{ forceLabel: "Description" }}
                                 />
-                              )
-                            }
+                              ),
+                            },
                           ]}
                           keyId=""
                           dataSource={{ data: this.state.t_earning_comp }}
@@ -1027,7 +1095,7 @@ export default class EndServiceOption extends Component {
                   onClick={this.updateEosOptions.bind(this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Update", returnText: true }}
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </div>

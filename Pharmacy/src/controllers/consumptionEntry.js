@@ -2,7 +2,7 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import conEntryModels from "../models/consumptionEntry";
 import comModels from "../models/commonFunction";
-const { getconsumptionEntry, addconsumptionEntry } = conEntryModels;
+const { getconsumptionEntry, addconsumptionEntry, generateAccountingEntry } = conEntryModels;
 
 const { updateIntoItemLocation } = comModels;
 export default () => {
@@ -17,6 +17,7 @@ export default () => {
   api.post(
     "/addconsumptionEntry",
     addconsumptionEntry,
+    generateAccountingEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

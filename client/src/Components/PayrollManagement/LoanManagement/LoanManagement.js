@@ -3,6 +3,7 @@ import "./loan_mgmt.scss";
 import LoanAdjustment from "./LoanAdjustment/LoanAdjustment";
 import LoanAuthorization from "./LoanAuthorization/LoanAuthorization";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class LoanManagement extends Component {
   constructor(props) {
@@ -27,48 +28,41 @@ class LoanManagement extends Component {
   render() {
     return (
       <div className="loan_mgmt">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"LoanAuth"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan Authorization"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanAdjustment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan Adjustment"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "LoanAuth" ? (
-            <LoanAuthorization />
-          ) : this.state.pageDisplay === "LoanAdjustment" ? (
-            <LoanAdjustment />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan Authorization"
+                  }}
+                />
+              ),
+              children: <LoanAuthorization />,
+              componentCode: "LON_LON_AUT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan Adjustment"
+                  }}
+                />
+              ),
+              children: <LoanAdjustment />,
+              componentCode: "LON_LON_ADJ"
+            }
+          ]}
+          renderClass="LoanMgmtSection"
+        />
       </div>
     );
   }
 }
+
+// function ChildrenItem({ children }) {
+//   return <div className="loan-management-section">{children}</div>;
+// }
 
 export default LoanManagement;

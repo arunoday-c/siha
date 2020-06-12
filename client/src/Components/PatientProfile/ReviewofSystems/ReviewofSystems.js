@@ -191,12 +191,7 @@ class ReviewofSystems extends Component {
           },
           onFailure: error => {}
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled . .",
-          type: "error"
-        });
-      }
+      } 
     });
   }
 

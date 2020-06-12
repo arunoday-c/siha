@@ -1,12 +1,104 @@
-version: "3"
+version: "3.1"
 services:
-  app:
-    container_name: docker-hims-erp
-    restart: always
-    build: .
-    volumes:
-      - ./:/apps
-    ports:
-      - "3004:3004"
-      - "3000:3000"
-      - "3006:3006"
+  core:
+    container_name: algaeh-core
+    build:
+      context: ./algaeh-core
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-core
+  billing:
+    container_name: algaeh-billing
+    build:
+      context: ./Billing
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-billing
+  reports:
+    container_name: algaeh-reports
+    build:
+      context: ./AlgaehReporting
+      dockerfile: $PWD/docker/Reports.Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-reports
+  clinicaldesk:
+    container_name: algaeh-clinicaldesk
+    build:
+      context: ./ClinicalDesk
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-clinicaldesk
+  documentserver:
+    container_name: algaeh-documentserver
+    build:
+      context: ./DocumentManagement
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-documentserver
+  frontdesk:
+    container_name: algaeh-frontdesk
+    build:
+      context: ./FrontDesk
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-frontdesk
+  hrserver:
+    container_name: algaeh-hrserver
+    build:
+      context: ./HrManagement
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-hrserver
+  insurance:
+    container_name: algaeh-insurance
+    build:
+      context: ./Insurance
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-insurance
+  inventory:
+    container_name: algaeh-inventory
+    build:
+      context: ./Inventory
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-inventory
+  laboratory:
+    container_name: algaeh-laboratory
+    build:
+      context: ./Laboratory
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-laboratory
+  mastersettings:
+    container_name: algaeh-mastersettings
+    build:
+      context: ./MasterSettings
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mastersettings
+  mrd:
+    container_name: algaeh-mrd
+    build:
+      context: ./MRD
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-mrd
+  pharmacy:
+    container_name: algaeh-pharmacy
+    build:
+      context: ./Pharmacy
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-pharmacy
+  procurement:
+    container_name: algaeh-procurement
+    build:
+      context: ./Procurement
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-procurement
+  radiology:
+    container_name: algaeh-radiology
+    build:
+      context: ./Radiology
+      dockerfile: $PWD/docker/Dockerfile
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-radiology
+  client:
+    container_name: algaeh-client
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-client
+    build:
+      context: ./client
+      dockerfile: $PWD/docker/Client.Dockerfile
+  algaeh-finance:
+    container_name: algaeh-finance
+    image: registry.gitlab.com/algaeh/algaeh-monorepo/algaeh-finance
+    build:
+      context: ./algaeh-finance
+      dockerfile: $PWD/docker/Finance.Dockerfile

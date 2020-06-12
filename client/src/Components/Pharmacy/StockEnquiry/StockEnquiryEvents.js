@@ -92,7 +92,7 @@ const getItemLocationStock = $this => {
   }
 };
 
-const updateStockDetils = $this => {};
+const updateStockDetils = $this => { };
 
 const datehandle = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
@@ -113,6 +113,50 @@ const closeBatchWise = $this => {
   });
 };
 
+
+const printBarcode = ($this, row) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
+        reportName: "StockPharmacyBarcode",
+        reportParams: [
+          {
+            name: "hims_m_item_location_id",
+            value: row.hims_m_item_location_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
+
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
+      window.open(origin);
+      // window.document.title = "Item Barcode";
+    }
+  });
+};
 export {
   changeTexts,
   dateFormater,
@@ -121,5 +165,6 @@ export {
   datehandle,
   texthandle,
   getBatchWiseData,
-  closeBatchWise
+  closeBatchWise,
+  printBarcode
 };

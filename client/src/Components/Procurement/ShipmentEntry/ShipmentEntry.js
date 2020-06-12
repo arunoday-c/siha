@@ -146,7 +146,7 @@ class ShipmentEntry extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Vendor" }}
+                  label={{ forceLabel: "Vendor Name" }}
                   selector={{
                     name: "vendor_id",
                     className: "select-fld",

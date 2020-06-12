@@ -7,18 +7,16 @@ import "./ProjectPayroll.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 
-import {
-  getYears,
-  AlgaehOpenContainer,
-  getAmountFormart
-} from "../../../../utils/GlobalFunctions";
+import { getYears, GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
+import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup";
 
 class ProjectPayroll extends Component {
   constructor(props) {
@@ -28,9 +26,7 @@ class ProjectPayroll extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
 
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: "",
       project_wise_payroll: [],
       noEmployees: 0,
       total_worked_hours: 0,
@@ -38,7 +34,9 @@ class ProjectPayroll extends Component {
       employee_id: null,
       employee_name: null,
       total_cost: 0,
-      lbl_total: "Total Employees"
+      lbl_total: "Total Employees",
+      decimal_places: 0,
+      isOpen: false,
     };
     this.baseState = this.state;
   }
@@ -49,11 +47,25 @@ class ProjectPayroll extends Component {
   LoadData() {
     ProjectPayrollEvents().LoadProjectDetails(this);
   }
+  openSalaryComponents(row) {
+    ProjectPayrollEvents().openSalaryComponents(this, row);
+  }
+  closeSalaryComponents() {
+    this.setState({
+      isOpen: !this.state.isOpen,
+    });
+  }
   clearState() {
     this.setState(this.baseState);
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+      decimal_places: userToken.decimal_places,
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -63,8 +75,8 @@ class ProjectPayroll extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
 
@@ -79,8 +91,8 @@ class ProjectPayroll extends Component {
 
         redux: {
           type: "EMPLY_GET_DATA",
-          mappingName: "all_employees"
-        }
+          mappingName: "all_employees",
+        },
       });
     }
 
@@ -92,8 +104,8 @@ class ProjectPayroll extends Component {
         date: { pjoject_status: "A" },
         redux: {
           type: "PROJECTS_GET_DATA",
-          mappingName: "projects"
-        }
+          mappingName: "projects",
+        },
       });
     }
   }
@@ -105,17 +117,17 @@ class ProjectPayroll extends Component {
       this.props.projects === undefined
         ? []
         : this.props.projects.filter(
-            f => f.hims_d_project_id === this.state.project_id
+            (f) => f.hims_d_project_id === this.state.project_id
           );
 
     return (
       <div className="projectPayrollScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Year.",
-              isImp: true
+              forceLabel: "Year",
+              isImp: true,
             }}
             selector={{
               name: "year",
@@ -124,23 +136,23 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: allYears
+                data: allYears,
               },
               onChange: this.eventHandaler.bind(this),
 
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
                 });
-              }
+              },
             }}
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Select a Month.",
-              isImp: true
+              forceLabel: "Month",
+              isImp: true,
             }}
             selector={{
               sort: "off",
@@ -150,22 +162,22 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.MONTHS
+                data: GlobalVariables.MONTHS,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
                 });
-              }
+              },
             }}
           />
 
-          <AlagehAutoComplete
-            div={{ className: "col" }}
+          {/* <AlagehAutoComplete
+            div={{ className: "col mandatory" }}
             label={{
-              forceLabel: "Filter by Branch.",
-              isImp: true
+              forceLabel: "Filter by Branch",
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -174,22 +186,22 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
-          />
+          /> */}
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "project_id",
@@ -198,18 +210,30 @@ class ProjectPayroll extends Component {
               dataSource: {
                 textField: "project_desc",
                 valueField: "hims_d_project_id",
-                data: this.props.projects
+                data: this.props.projects,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  project_id: null
+                  project_id: null,
                 });
-              }
+              },
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6
+              onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}
+            >
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          {/* <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -244,22 +268,22 @@ class ProjectPayroll extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-2 form-group">
             <button
-              style={{ marginTop: 21 }}
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>{" "}
+            <button
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
               onClick={this.LoadData.bind(this)}
             >
               <span>Load</span>
-            </button>
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              Clear
             </button>
           </div>
         </div>
@@ -286,99 +310,123 @@ class ProjectPayroll extends Component {
                       datavalidate="projectPayrollGrid"
                       columns={[
                         {
-                          fieldName: "project_desc",
+                          fieldName: "Action",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Project Name" }}
+                              label={{
+                                forceLabel: "Action",
+                              }}
                             />
-                          )
+                          ),
+                          displayTemplate: (row) => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-eye"
+                                  aria-hidden="true"
+                                  onClick={this.openSalaryComponents.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 50,
+                            filterable: false,
+                            sortable: false,
+                          },
                         },
                         {
                           fieldName: "employee_code",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Code" }}
-                            />
-                          )
+                            <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                          },
                         },
                         {
                           fieldName: "full_name",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Name" }}
-                            />
-                          )
+                            <AlgaehLabel label={{ forceLabel: "Emp. Name" }} />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
+                          },
                         },
-                        {
-                          fieldName: "department_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Department Name" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "sub_department_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Sub Depart. Name" }}
-                            />
-                          )
-                        },
+                        // {
+                        //   fieldName: "department_name",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Department Name" }}
+                        //     />
+                        //   ),
+                        // },
+                        // {
+                        //   fieldName: "sub_department_name",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Sub Depart. Name" }}
+                        //     />
+                        //   ),
+                        // },
                         {
                           fieldName: "designation",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Employee Designation " }}
+                              label={{ forceLabel: "Designation " }}
                             />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 130,
+                          },
                         },
 
                         {
                           fieldName: "total_working_hours",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Basic Working Hrs" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Basic Hrs" }} />
                           ),
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "project_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               parseFloat(row.project_cost) -
                               parseFloat(row.ot_amount)
-                            );
+                            ).toFixed(this.state.decimal_places);
                           },
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "ot_work",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "OT Working Hrs" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "OT Hrs" }} />
                           ),
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "ot_amount",
@@ -386,41 +434,51 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "complete_hours",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Total Worked Hrs" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
                           ),
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 80,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
+                            style: { textAlign: "center" },
+                          },
                         },
                         {
                           fieldName: "project_cost",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Project Cost" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
                           ),
 
                           others: {
-                            maxWidth: 150,
+                            maxWidth: 100,
                             resizable: false,
                             filterable: false,
-                            style: { textAlign: "center" }
-                          }
-                        }
+                            style: { textAlign: "center" },
+                          },
+                        },
+
+                        {
+                          fieldName: "project_desc",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Project Name" }}
+                            />
+                          ),
+                          others: {
+                            style: {
+                              textAlign: "left",
+                            },
+                          },
+                        },
                       ]}
                       keyId="projectPayrollGrid"
                       dataSource={{ data: this.state.project_wise_payroll }}
@@ -445,7 +503,7 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: this.state.lbl_total
+                        forceLabel: this.state.lbl_total,
                       }}
                     />
                     <h6>{this.state.noEmployees} Nos</h6>
@@ -453,7 +511,7 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Total Worked Hr"
+                        forceLabel: "Total Worked Hr",
                       }}
                     />
                     <h6>{this.state.total_worked_hours} Hr</h6>
@@ -461,17 +519,45 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Project Total Cost"
+                        forceLabel: "Project Total Cost",
                       }}
                     />
 
-                    <h6>{getAmountFormart(this.state.total_cost)}</h6>
+                    <h6>{GetAmountFormart(this.state.total_cost)}</h6>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              {this.state.net_amount != null ? (
+              <button
+                type="button"
+                className="btn btn-other"
+                onClick={this.clearState.bind(this)}
+                onClick={this.generateFinalSettlementSlip.bind(this)}
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Generate Settlement Slip",
+                    returnText: true,
+                  }}
+                />
+              </button>
+              ) : null}
+            </div>
+          </div>
+        </div> */}
+
+        <ProjectPayrollSalaryBreakup
+          open={this.state.isOpen}
+          onClose={this.closeSalaryComponents.bind(this)}
+          selectedEmployee={this.state.selected_employee}
+        />
       </div>
     );
   }
@@ -481,7 +567,7 @@ function mapStateToProps(state) {
   return {
     organizations: state.organizations,
     all_employees: state.all_employees,
-    projects: state.projects
+    projects: state.projects,
   };
 }
 
@@ -490,15 +576,12 @@ function mapDispatchToProps(dispatch) {
     {
       getOrganizations: AlgaehActions,
       getEmployees: AlgaehActions,
-      getProjects: AlgaehActions
+      getProjects: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ProjectPayroll)
+  connect(mapStateToProps, mapDispatchToProps)(ProjectPayroll)
 );

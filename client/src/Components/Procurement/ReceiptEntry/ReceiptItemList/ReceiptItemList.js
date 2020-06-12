@@ -5,28 +5,18 @@ import { bindActionCreators } from "redux";
 
 import "../ReceiptEntry.scss";
 
-import {
-  AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlgaehDateHandler
-} from "../../../Wrapper/algaehWrapper";
+import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
 import {
   deleteReceiptDetail,
   updateReceiptDetail,
-  onchangegridcol,
   EditGrid,
   CancelGrid,
-  onchangegridcoldatehandle,
-  changeDateFormat,
-  GridAssignData,
-  onchhangegriddiscount,
   getDeliveryItemDetails,
   CloseItemDetail
 } from "./ReceiptItemListEvent";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import DNItemList from "./DeliveryItemDetails";
 
 class ReceiptItemList extends Component {
@@ -38,12 +28,12 @@ class ReceiptItemList extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.ReceiptEntryInp;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.ReceiptEntryInp);
   }
 
@@ -125,7 +115,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.extended_cost, {
+                                    {GetAmountFormart(row.extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -144,7 +134,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.discount_amount, {
+                                    {GetAmountFormart(row.discount_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -162,7 +152,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.net_extended_cost, {
+                                    {GetAmountFormart(row.net_extended_cost, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -180,7 +170,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tax_amount, {
+                                    {GetAmountFormart(row.tax_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -199,7 +189,7 @@ class ReceiptItemList extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.total_amount, {
+                                    {GetAmountFormart(row.total_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -239,32 +229,41 @@ class ReceiptItemList extends Component {
 
                     <div className="col-lg-5" style={{ textAlign: "right" }}>
                       <div className="row">
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Sub Total"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                          <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                         </div>
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Discount Amount"
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.detail_discount)}
+                            {GetAmountFormart(this.state.detail_discount)}
                           </h6>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col-lg-3">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Tax"
+                            }}
+                          />
+                          <h6>{GetAmountFormart(this.state.total_tax)}</h6>
+                        </div>
+
+                        <div className="col-lg-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Net Payable"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                          <h6>{GetAmountFormart(this.state.net_payable)}</h6>
                         </div>
                       </div>
                     </div>

@@ -10,13 +10,16 @@ import hbs from "handlebars";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 // import chrome from "algaeh-keys";
-
+import writtenForm from "written-number";
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
+import utilitites from "algaeh-utilities/utilities";
+import { convertMilimetersToPixel } from "algaeh-utilities/reportConvetions";
+import { generatePDFReport } from "./hummus/index";
 // const chromePath =
-  // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
+// chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
-const XlsxTemplate = require("xlsx-template");
+// const XlsxTemplate = require("xlsx-template");
 
 let outputFolder = path.join(
   path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
@@ -25,27 +28,23 @@ if (!fs.existsSync(outputFolder)) {
   fs.mkdirSync(outputFolder);
 }
 
-const compile = async function(templateName, data) {
+const compile = async function (templateName, data) {
   try {
     const filePath = path.join(
       process.cwd(),
       "algaeh_report_tool/templates",
       `${templateName}.hbs`
     );
-    console.log(filePath)
     const html = await fs.readFile(filePath, "utf-8");
-    const comp = await hbs.compile(html)(data);
-    //
-    return comp;
-  } catch (error) {
-    console.log("compile -data -", data);
-    return undefined;
-  }
 
-  // return "رقم الفاتورة";
+    return await hbs.compile(html)(data);
+  } catch (error) {
+    console.error("Compile Data error,changing to No Records Found : ", error);
+    return "<center><b>No Records Found</b></center>";
+  }
 };
 
-const compileExcel = async function(templateName, data) {
+const compileExcel = async function (templateName, data) {
   const filePath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -55,9 +54,9 @@ const compileExcel = async function(templateName, data) {
   return hbs.compile(html)(data);
 };
 
-hbs.registerHelper("sumOf", function(data, sumby, callBack) {
+hbs.registerHelper("sumOf", function (data, sumby, callBack) {
   data = Array.isArray(data) ? data : [];
-  const sumof = _.sumBy(data, function(s) {
+  const sumof = _.sumBy(data, function (s) {
     return s[sumby];
   });
   if (typeof callBack == "function") callBack(sumof);
@@ -65,16 +64,47 @@ hbs.registerHelper("sumOf", function(data, sumby, callBack) {
     return sumof;
   }
 });
-hbs.registerHelper("countOf", function(data) {
+hbs.registerHelper("countOf", function (data) {
   data = Array.isArray(data) ? data : [];
   return data.length;
 });
-hbs.registerHelper("if", function(value1, value2, options) {
+hbs.registerHelper("if", function (value1, value2, options) {
   if (value1 == value2) return options.fn(this);
   else return options.inverse(this);
 });
+hbs.registerHelper("ifCond", function (v1, operator, v2, options) {
+  switch (operator) {
+    case "==":
+      return v1 == v2 ? options.fn(this) : options.inverse(this);
+    case "===":
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    case "!=":
+      return v1 != v2 ? options.fn(this) : options.inverse(this);
+    case "!==":
+      return v1 !== v2 ? options.fn(this) : options.inverse(this);
+    case "<":
+      return v1 < v2 ? options.fn(this) : options.inverse(this);
+    case "<=":
+      return v1 <= v2 ? options.fn(this) : options.inverse(this);
+    case ">":
+      return v1 > v2 ? options.fn(this) : options.inverse(this);
+    case ">=":
+      return v1 >= v2 ? options.fn(this) : options.inverse(this);
+    case "&&":
+      return v1 && v2 ? options.fn(this) : options.inverse(this);
+    case "||":
+      return v1 || v2 ? options.fn(this) : options.inverse(this);
+    default:
+      return options.inverse(this);
+  }
+});
 
-hbs.registerHelper("dateTime", function(value, type) {
+// hbs.registerHelper("ifgtreql", function (value1, value2) {
+//   console.log("value1: ", value1)
+//   console.log("value2: ", value2)
+//   if (value1 > value2) { return true; } else { return false; }
+// });
+hbs.registerHelper("dateTime", function (value, type) {
   type = type || "date";
 
   if (value == null) {
@@ -95,16 +125,16 @@ hbs.registerHelper("dateTime", function(value, type) {
   }
 });
 
-hbs.registerHelper("capitalization", function(value) {
+hbs.registerHelper("capitalization", function (value) {
   return _.startCase(_.toLower(value));
 });
 //created by irfan
-hbs.registerHelper("inc", function(value, options) {
+hbs.registerHelper("inc", function (value, options) {
   return parseInt(value) + 1;
 });
 
 //created by irfan:to check array has elements
-hbs.registerHelper("hasElement", function(conditional, options) {
+hbs.registerHelper("hasElement", function (conditional, options) {
   if (conditional.length > 0) {
     return options.fn(this);
   } else {
@@ -112,26 +142,30 @@ hbs.registerHelper("hasElement", function(conditional, options) {
   }
 });
 //created by irfan:
-hbs.registerHelper("dynamicSalary", function(searchKey, inputArray, comp_type) {
+hbs.registerHelper("dynamicSalary", function (
+  searchKey,
+  inputArray,
+  comp_type
+) {
   if (comp_type == "E") {
-    const obj = inputArray.find(item => {
+    const obj = inputArray.find((item) => {
       return item.earnings_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "BBB";
   } else if (comp_type == "D") {
-    const obj = inputArray.find(item => {
+    const obj = inputArray.find((item) => {
       return item.deductions_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "BBB";
   } else if (comp_type == "C") {
-    const obj = inputArray.find(item => {
+    const obj = inputArray.find((item) => {
       return item.contributions_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "BBB";
   }
 });
 
-hbs.registerHelper("importStyle", function(styleSheetName) {
+hbs.registerHelper("importStyle", function (styleSheetName) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -141,7 +175,7 @@ hbs.registerHelper("importStyle", function(styleSheetName) {
   return "<style type='text/css'>" + style + "</style>";
 });
 
-hbs.registerHelper("loadPage", function(filePath, data) {
+hbs.registerHelper("loadPage", function (filePath, data) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -151,7 +185,7 @@ hbs.registerHelper("loadPage", function(filePath, data) {
   return hbs.compile(html)(data);
 });
 
-hbs.registerHelper("imageSource", function(filePath) {
+hbs.registerHelper("imageSource", function (filePath) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
@@ -162,20 +196,20 @@ hbs.registerHelper("imageSource", function(filePath) {
   return "data:image/" + _extention + ";base64," + img;
 });
 
-hbs.registerHelper("groupBy", function(data, groupby) {
+hbs.registerHelper("groupBy", function (data, groupby) {
   const groupBy = _.chain(data)
     .groupBy(groupby)
-    .map(function(detail, key) {
+    .map(function (detail, key) {
       return {
         [groupby]: key,
-        groupDetail: detail
+        groupDetail: detail,
       };
     })
     .value();
 
   return groupBy;
 });
-hbs.registerHelper("currentDateTime", function(type) {
+hbs.registerHelper("currentDateTime", function (type) {
   if (type == null || type == "") {
     return moment().format("DD-MM-YYYY");
   } else if (type == "time") {
@@ -184,7 +218,7 @@ hbs.registerHelper("currentDateTime", function(type) {
     return moment().format("DD-MM-YYYY");
   }
 });
-hbs.registerHelper("firstElement", function(array, index, fieldName) {
+hbs.registerHelper("firstElement", function (array, index, fieldName) {
   array = array || [];
   index = index || 0;
   if (array.length > 0) {
@@ -193,7 +227,7 @@ hbs.registerHelper("firstElement", function(array, index, fieldName) {
     return null;
   }
 });
-hbs.registerHelper("consoleLog", function(data) {
+hbs.registerHelper("consoleLog", function (data) {
   if (typeof data == "string") {
     return data;
   } else {
@@ -201,7 +235,7 @@ hbs.registerHelper("consoleLog", function(data) {
   }
 });
 
-hbs.registerHelper("imageUrl", function(
+hbs.registerHelper("imageUrl", function (
   filename,
   index,
   name,
@@ -209,8 +243,9 @@ hbs.registerHelper("imageUrl", function(
   filetype,
   reqHeader
 ) {
-  const host = reqHeader["host"].split(":")[0];
-
+  const host =
+    reqHeader === "none" ? "localhost" : reqHeader["host"].split(":")[0];
+  console.log(filename, name, filetype);
   if (Array.isArray(filename)) {
     if (filename.length > 0) {
       stringToappend = stringToappend || "";
@@ -229,9 +264,7 @@ hbs.registerHelper("imageUrl", function(
     }
   } else {
     return (
-      "http://" +
-      host +
-      ":3006/api/v1/Document/get?destinationName=" +
+      "http://localhost:3006/api/v1/Document/get?destinationName=" +
       filename +
       "&fileType=" +
       filetype
@@ -239,19 +272,47 @@ hbs.registerHelper("imageUrl", function(
   }
 });
 
-hbs.registerHelper("barcode", function(type, text, includetext) {
+hbs.registerHelper("logoUrl", function (logo_type, reqHead) {
+  const image =
+    logo_type === "ORG" ? reqHead.organization_id : reqHead.hims_d_hospital_id;
+  let logo = `${image}_${logo_type}.png`;
+  let fullPath = path.join(
+    process.cwd(),
+    "algaeh_report_tool/templates/images/",
+    logo
+  );
+  if (!fs.existsSync(fullPath)) {
+    fullPath = path.join(
+      process.cwd(),
+      "algaeh_report_tool/templates/images/clientLogo.png"
+    );
+  }
+  const _extention = path.extname(fullPath).replace(".", "");
+  const img = fs.readFileSync(fullPath, "base64");
+  return "data:image/" + _extention + ";base64," + img;
+});
+
+hbs.registerHelper("barcode", function (type, text, includetext) {
   type = type || "code128";
-  includetext = includetext || true;
-  return `http://localhost:3018/barcode?bcid=${type}&text=${text}&includetext=${includetext}&guardwhitespace`;
+  includetext = includetext === undefined ? `&includetext` : ``;
+  return `http://localhost:3018/barcode?bcid=${type}&text=${text}${includetext}&guardwhitespace`;
+});
+
+hbs.registerHelper("commentBreakUp", function (comment_data) {
+  if (comment_data === "" || comment_data === null) {
+    return [];
+  } else {
+    return comment_data.split("<br/>");
+  }
 });
 
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)
-    .map(function(detail, key) {
+    .map(function (detail, key) {
       return {
         [groupby]: key,
-        groupDetail: detail
+        groupDetail: detail,
       };
     })
     .value();
@@ -281,12 +342,12 @@ export default {
             report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
             select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
-            O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+            O.email,O.phone1,O.fax from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
-          printQuery: true
+          printQuery: true,
         })
-        .then(data => {
+        .then((data) => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
 
@@ -296,12 +357,18 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
+
               let _value = [];
+
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
                   _inputParam.reportParams,
-                  f => f.name == _inputOrders[i]
+                  (f) => f.name == _inputOrders[i]
                 );
                 if (_params != undefined) {
                   _value.push(_params.value);
@@ -315,37 +382,51 @@ export default {
               let queryObject = {
                 query: _data.report_query,
                 values: _value,
-                printQuery: true
+                printQuery: true,
               };
+
               if (_data.report_query == null || _data.report_query == "") {
                 queryObject = {
                   query: "select 1",
-                  printQuery: true
+                  printQuery: true,
                 };
               }
 
               _mysql
                 .executeQuery(queryObject)
-                .then(result => {
+                .then((result) => {
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
                     _data.report_name + moment().format("YYYYMMDDHHmmss")
                   );
-                  const _reportType = "PDF";
+
+                  // const _reportType = "PDF";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
                     `${_data.report_name}.js`
                   );
+
                   const _header = req.headers;
 
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch({headless: true});
+                    const browser = await puppeteer.launch({
+                      headless: true,
+                      executablePath: process.env.CHROME_BIN || null,
+                      args: process.env.CHROME_BIN
+                        ? [
+                            "--no-sandbox",
+                            "--headless",
+                            "--disable-gpu",
+                            "--disable-dev-shm-usage",
+                          ]
+                        : [],
+                    });
                     const page = await browser.newPage();
-                    const _pdfTemplating = {};
+                    let _pdfTemplating = {};
                     if (
                       _data.report_header_file_name != null &&
                       _data.report_header_file_name != ""
@@ -355,17 +436,19 @@ export default {
                         {
                           reqHeader: _header,
                           ...data[1][0],
+                          identity: req.userIdentity,
                           user_name: req.userIdentity["username"],
                           report_name_for_header: _data.report_name_for_header,
                           filter:
                             _inputParam.reportParams == null
                               ? []
-                              : _inputParam.reportParams
+                              : _inputParam.reportParams,
                         }
                       );
                       _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
-                        top: "150px"
+                        top: "150px",
+                        ..._inputParam.headerProps,
                       };
                     }
                     if (
@@ -377,12 +460,14 @@ export default {
                         {
                           reqHeader: _header,
                           ...data[1][0],
-                          report_name_for_header: _data.report_name_for_header
+                          identity: req.userIdentity,
+                          report_name_for_header: _data.report_name_for_header,
                         }
                       );
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom: "70px"
+                        bottom: "100px",
+                        ..._inputParam.footerProps,
                       };
                     } else {
                       _pdfTemplating[
@@ -393,45 +478,78 @@ export default {
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
                       <div class="pdffooter">
-                      <span class="showreportname">${_data.report_name_for_header}</span>
+                      <span class="showreportname">System Generated Report / Printed By - ${
+                        req.userIdentity["full_name"]
+                      } / Printed Date - ${moment().format(
+                        "DD-MM-YYYY"
+                      )} </span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies.</span>
                     </div>`;
+
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom: "50px"
+                        bottom: "50px",
+                        ..._inputParam.footerProps,
                       };
                     }
 
                     await page.setContent(
                       await compile(_data.report_name, {
                         ...result,
-                        reqHeader: _header
+                        reqHeader: _header,
                       })
                     );
-                    await page.emulateMedia("screen");
-                    const pageOrentation =
+                    // await page.emulateMedia("screen");
+                    let pageOrentation =
                       _inputParam.pageOrentation == null
                         ? {}
                         : _inputParam.pageOrentation == "landscape"
                         ? { landscape: true }
                         : {};
 
-                    const pageSize =
+                    let pageSize =
                       _inputParam.pageSize == null
                         ? { format: "A4" }
                         : { format: _inputParam.pageSize };
+                    let displayHeaderFooter = true;
+                    const { others } = _inputParam;
+                    if (others !== undefined) {
+                      const existsSize = Object.keys(others).find(
+                        (f) => f === "width" || f === "height"
+                      );
+
+                      if (existsSize !== undefined) {
+                        pageSize = {};
+                        _pdfTemplating = {};
+                        await page.addStyleTag({
+                          content: "@page:first {margin-top: -8px;}",
+                        });
+                        const sizes = convertMilimetersToPixel(others);
+
+                        await page.setViewport({
+                          width: Math.ceil(sizes.width),
+                          height: Math.ceil(sizes.height),
+                        });
+                      }
+                      displayHeaderFooter =
+                        others.showHeaderFooter === false ? false : true;
+                    }
+
                     await page.pdf({
                       path: _outPath,
                       ...pageSize,
                       ...pageOrentation,
                       printBackground: true,
-                      displayHeaderFooter: true,
-                      ..._pdfTemplating
+                      displayHeaderFooter: displayHeaderFooter,
+                      ..._pdfTemplating,
+                      ...others,
+
                       // headerTemplate:
                       //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
                     });
+
                     await browser.close();
 
                     if (r == _reportCount - 1) {
@@ -445,18 +563,18 @@ export default {
 
                       if (_reportOutput.length > 1) {
                         _mysql.releaseConnection();
-                        merge(_reportOutput, _rOut, error => {
+                        merge(_reportOutput, _rOut, (error) => {
                           if (error) {
                             res
                               .status(400)
                               .send({ error: JSON.stringify(error) });
                           } else {
-                            fs.exists(_rOut, exists => {
+                            fs.exists(_rOut, (exists) => {
                               if (exists) {
                                 res.writeHead(200, {
                                   "content-type": "application/pdf",
                                   "content-disposition":
-                                    "attachment;filename=" + _outfileName
+                                    "attachment;filename=" + _outfileName,
                                 });
                                 const _fs = fs.createReadStream(_rOut);
                                 _fs.on("end", () => {
@@ -479,13 +597,13 @@ export default {
                           }
                         });
                       } else {
-                        fs.exists(_reportOutput[0], exists => {
+                        fs.exists(_reportOutput[0], (exists) => {
                           _mysql.releaseConnection();
                           if (exists) {
                             res.writeHead(200, {
                               "content-type": "application/pdf",
                               "content-disposition":
-                                "attachment;filename=" + _outfileName
+                                "attachment;filename=" + _outfileName,
                             });
                             const _fs = fs.createReadStream(_reportOutput[0]);
                             _fs.on("end", () => {
@@ -503,7 +621,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = require(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
@@ -511,13 +631,27 @@ export default {
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
-                      result: result
+                      result: result,
+                      writtenForm: writtenForm,
+                      convertMilimetersToPixel: convertMilimetersToPixel,
+                      utilitites: () => {
+                        return new utilitites();
+                      },
+                      currencyFormat: (currency, formater, addSymbol) => {
+                        return new utilitites().getCurrencyFormart(
+                          currency,
+                          formater,
+                          addSymbol
+                        );
+                      },
                     })
-                      .then(resultReq => {
+                      .then((resultReq) => {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {});
+                      .catch((error) => {
+                        console.log("error in report generation : ", error);
+                      });
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -530,7 +664,7 @@ export default {
                     startGenerate();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   res.status(400).send({ error: JSON.stringify(error) });
                 });
@@ -539,7 +673,7 @@ export default {
             res.status(400).send({ error: "No such report exists" });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           console.log(
             "Error in report table query execution : ",
@@ -569,10 +703,10 @@ export default {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
-          printQuery: true
+          values: [_inputParam.reportName, req.userIdentity.hospital_id],
+          printQuery: true,
         })
-        .then(data => {
+        .then((data) => {
           const templates = data[0];
           let subReportCollection = [];
           const inputParameters = _inputParam.reportParams;
@@ -585,7 +719,7 @@ export default {
                 new Promise((resolve, reject) => {
                   const resourceTemplate = _.find(
                     templates,
-                    f => f.report_name == reportSequence[i]
+                    (f) => f.report_name == reportSequence[i]
                   );
                   const inputOrders = eval(
                     resourceTemplate.report_input_series
@@ -594,7 +728,7 @@ export default {
                   for (var ip = 0; ip < inputOrders.length; ip++) {
                     const _params = _.find(
                       inputData,
-                      f => f.name == inputOrders[ip]
+                      (f) => f.name == inputOrders[ip]
                     );
                     if (_params != undefined) {
                       _value.push(_params.value);
@@ -609,9 +743,9 @@ export default {
                   _mysql
                     .executeQuery({
                       query: _myquery,
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(result => {
+                    .then((result) => {
                       const _path = path.join(
                         process.cwd(),
                         "algaeh_report_tool/templates/Output",
@@ -625,7 +759,18 @@ export default {
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
-                        const browser = await puppeteer.launch({headless: true});
+                        const browser = await puppeteer.launch({
+                          headless: true,
+                          executablePath: process.env.CHROME_BIN || null,
+                          args: process.env.CHROME_BIN
+                            ? [
+                                "--no-sandbox",
+                                "--headless",
+                                "--disable-gpu",
+                                "--disable-dev-shm-usage",
+                              ]
+                            : [],
+                        });
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
                         if (
@@ -637,14 +782,15 @@ export default {
                             {
                               ...data[1][0],
                               reqHeader: req.headers,
+                              identity: req.userIdentity,
                               user_name: req.userIdentity["username"],
                               report_name_for_header:
-                                resourceTemplate.report_name_for_header
+                                resourceTemplate.report_name_for_header,
                             }
                           );
                           _pdfTemplating["headerTemplate"] = _header;
                           _pdfTemplating["margin"] = {
-                            top: "140px"
+                            top: "140px",
                           };
                         }
                         if (
@@ -657,12 +803,12 @@ export default {
                               ...data[1][0],
                               reqHeader: req.headers,
                               report_name_for_header:
-                                resourceTemplate.report_name_for_header
+                                resourceTemplate.report_name_for_header,
                             }
                           );
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],
-                            bottom: "70px"
+                            bottom: "70px",
                           };
                         } else {
                           _pdfTemplating[
@@ -680,14 +826,14 @@ export default {
                     </div>`;
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],
-                            bottom: "50px"
+                            bottom: "50px",
                           };
                         }
 
                         await page.setContent(
                           await compile(resourceTemplate.report_name, {
                             ...result,
-                            reqHeader: req.headers
+                            reqHeader: req.headers,
                           })
                         );
                         await page.emulateMedia("screen");
@@ -708,7 +854,7 @@ export default {
                           ...pageOrentation,
                           printBackground: true,
                           displayHeaderFooter: true,
-                          ..._pdfTemplating
+                          ..._pdfTemplating,
                         });
                         await browser.close();
                         resolve();
@@ -721,20 +867,32 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } = require(_supportingJS);
+                        const { executePDF } = __non_webpack_require__(
+                          _supportingJS
+                        );
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
                           loadash: _,
                           moment: moment,
                           mainData: data[1],
-                          result: result
+                          result: result,
+                          writtenForm: writtenForm,
+                          currencyFormat: (currency, formater) => {
+                            return new utilitites().getCurrencyFormart(
+                              currency,
+                              formater
+                            );
+                          },
+                          utilitites: () => {
+                            return new utilitites();
+                          },
                         })
-                          .then(resultReq => {
+                          .then((resultReq) => {
                             result = resultReq;
                             startGenerate();
                           })
-                          .catch(error => {});
+                          .catch((error) => {});
                       } else {
                         if (
                           resourceTemplate.data_manupulation != null &&
@@ -748,13 +906,13 @@ export default {
                         startGenerate();
                       }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       console.error(
                         "Error Report Name",
                         resourceTemplate.report_name
                       );
                       console.error("Error Query", _myquery);
-                      console.error();
+
                       reject(error);
                     });
                 })
@@ -768,14 +926,14 @@ export default {
               req.records = subReportCollection;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
 
               res.writeHead(400, { "Content-Type": "text/plain" });
               res.end(error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           res.writeHead(400, { "Content-Type": "text/plain" });
           res.end(error);
@@ -795,19 +953,19 @@ export default {
       _outfileName
     );
 
-    merge(getAllReports, _rOut, error => {
+    merge(getAllReports, _rOut, (error) => {
       if (error) {
         console.error(error);
         res.writeHead(400, {
-          "Content-Type": "text/plain"
+          "Content-Type": "text/plain",
         });
         res.end(JSON.stringify(error));
       } else {
-        fs.exists(_rOut, exists => {
+        fs.exists(_rOut, (exists) => {
           if (exists) {
             res.writeHead(200, {
               "content-type": "application/pdf",
-              "content-disposition": "attachment;filename=" + _outfileName
+              "content-disposition": "attachment;filename=" + _outfileName,
             });
             const _fs = fs.createReadStream(_rOut);
             _fs.on("end", () => {
@@ -819,7 +977,7 @@ export default {
             _fs.pipe(res);
           } else {
             res.writeHead(400, {
-              "Content-Type": "text/plain"
+              "Content-Type": "text/plain",
             });
             res.end("ERROR File does not exist");
           }
@@ -842,18 +1000,20 @@ export default {
       O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
       where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
-          printQuery: true
+          printQuery: true,
         })
-        .then(data => {
+        .then((data) => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
           const _data = data[0][0];
-          const _inputOrders = eval(_data.report_input_series);
+          const _inputOrders = eval(
+            _data.report_input_series === null ? [] : _data.report_input_series
+          );
           let _value = [];
           for (var i = 0; i < _inputOrders.length; i++) {
             const _params = _.find(
               _inputParam.reportParams,
-              f => f.name == _inputOrders[i]
+              (f) => f.name == _inputOrders[i]
             );
             if (_params != undefined) {
               _value.push(_params.value);
@@ -866,17 +1026,17 @@ export default {
           let queryObject = {
             query: _data.report_query,
             values: _value,
-            printQuery: true
+            printQuery: true,
           };
           if (_data.report_query == null || _data.report_query == "") {
             queryObject = {
               query: "select 1",
-              printQuery: true
+              printQuery: true,
             };
           }
           _mysql
             .executeQuery(queryObject)
-            .then(result => {
+            .then((result) => {
               let mainPath = path.join(
                 process.cwd(),
                 "algaeh_report_tool/templates"
@@ -889,12 +1049,11 @@ export default {
               );
               let excelRun;
 
-              const { executePDF } = require(path.join(
-                mainPath,
-                _inputParam.reportName + ".js"
-              ));
+              const { executePDF } = __non_webpack_require__(
+                path.join(mainPath, _inputParam.reportName + ".js")
+              );
               excelRun = executePDF;
-              const _input = { hospital_id: req.userIdentity["x-branch"] };
+              const _input = { hospital_id: req.userIdentity.hospital_id };
               for (let i = 0; i < _inputParam.reportParams.length; i++) {
                 const _inp = _inputParam.reportParams[i];
                 _input[_inp.name] = _inp.value;
@@ -906,8 +1065,18 @@ export default {
                 loadash: _,
                 moment: moment,
                 mainData: data[1],
-                result: result
-              }).then(resultData => {
+                result: result,
+                writtenForm: writtenForm,
+                currencyFormat: (currency, formater) => {
+                  return new utilitites().getCurrencyFormart(
+                    currency,
+                    formater
+                  );
+                },
+                utilitites: () => {
+                  return new utilitites();
+                },
+              }).then((resultData) => {
                 (async () => {
                   try {
                     let rawData = await compile(
@@ -918,7 +1087,7 @@ export default {
                       _mysql.releaseConnection();
                       res.status(500).json({
                         success: false,
-                        message: "There is no data for the above filter."
+                        message: "There is no data for the above filter.",
                       });
                       return;
                     }
@@ -929,7 +1098,7 @@ export default {
                     workbook.modified = new Date();
 
                     var worksheet = workbook.addWorksheet("Report", {
-                      properties: { tabColor: { argb: "FFC0000" } }
+                      properties: { tabColor: { argb: "FFC0000" } },
                     });
                     const logoPath = path.join(
                       mainPath,
@@ -938,7 +1107,7 @@ export default {
                     );
                     let companyLogo = workbook.addImage({
                       filename: logoPath,
-                      extension: "png"
+                      extension: "png",
                     });
 
                     var $ = cheerio.load(rawData);
@@ -956,13 +1125,15 @@ export default {
                       worksheet.addRow([]);
                     }
                     var tables = $("table").length;
+
                     if (tables > 0) {
-                      $("table").each(function(tableIdx, table) {
+                      $("table").each(function (tableIdx, table) {
                         var rows = [];
+                        // let mergedRecords = [];
                         var columns = [];
                         $(this)
                           .find("th")
-                          .map(function(theadIdx, thead) {
+                          .map(function (theadIdx, thead) {
                             let text = $(this).text();
                             let widthAttr = $(this).attr("excelwidth");
 
@@ -975,7 +1146,7 @@ export default {
                                   ? text.length < 8
                                     ? 12
                                     : 30
-                                  : parseInt(widthAttr)
+                                  : parseInt(widthAttr),
                             });
                           });
                         worksheet.columns = columns;
@@ -986,31 +1157,39 @@ export default {
                           type: "pattern",
                           pattern: "solid",
                           fgColor: {
-                            argb: "48A897"
-                          }
+                            argb: "48A897",
+                          },
                         };
                         headerRow.font = {
                           name: "calibri",
                           family: 4,
                           size: 12,
                           bold: true,
-                          color: { argb: "FFFFFF" }
+                          color: { argb: "FFFFFF" },
                         };
                         headerRow.alignment = {
                           vertical: "middle",
-                          horizontal: "center"
+                          horizontal: "center",
                         };
                         $(this)
                           .find("tbody")
                           .find("tr")
-                          .map(function(trIdx, tr) {
+                          .map(function (trIdx, tr) {
                             var rowID = worksheet.rowCount + 1;
                             const itemRow = worksheet.getRow(rowID);
+                            let skipOnMerdge = null;
                             $(this)
                               .find("td")
-                              .map(function(cellIndex, td) {
+                              .map(function (cellIndex, td) {
                                 const celllIdx = cellIndex + 1;
-                                const cell = itemRow.getCell(celllIdx);
+                                const cell = itemRow.getCell(
+                                  skipOnMerdge === null
+                                    ? celllIdx
+                                    : skipOnMerdge
+                                );
+                                if (skipOnMerdge) {
+                                  skipOnMerdge = skipOnMerdge + 1;
+                                }
                                 if ($(this).attr("excelfonts") !== undefined) {
                                   cell.font = JSON.parse(
                                     $(this).attr("excelfonts")
@@ -1028,10 +1207,7 @@ export default {
                                     const _mergeCells = $(this)
                                       .attr("excelcellmerge")
                                       .split(":");
-                                    const merge = `${_mergeCells[0]}${rowID}:${
-                                      _mergeCells[1]
-                                    }${rowID}`;
-
+                                    const merge = `${_mergeCells[0]}${rowID}:${_mergeCells[1]}${rowID}`;
                                     const den = `${_mergeCells[0]}${rowID}`;
                                     worksheet.getCell(den).value = $(this)
                                       .text()
@@ -1045,20 +1221,53 @@ export default {
                                       .replace(/\n/g, " ")
                                       .replace(/  +/g, " ")
                                       .replace(/&amp;/gi, "&");
+                                    if (!isNaN(cell.value)) {
+                                      cell.alignment = {
+                                        vertical: "top",
+                                        horizontal: "right",
+                                      };
+                                    }
+                                    const onlyAlphabets = cell.address.replace(
+                                      /\d+/g,
+                                      ""
+                                    );
+                                    const prefixes = onlyAlphabets.substring(
+                                      0,
+                                      onlyAlphabets.length - 1
+                                    );
+                                    const lastcharacter = onlyAlphabets.charCodeAt(
+                                      onlyAlphabets.length - 1
+                                    );
 
-                                    const allColumns = worksheet.columns.length;
-                                    const merge = `A${rowID}:${columnToLetter(
-                                      allColumns
-                                    )}${rowID}`;
-                                    worksheet.mergeCells(merge);
+                                    const numberOfCols =
+                                      parseInt($(this).attr("colspan")) - 1;
+                                    const added = lastcharacter + numberOfCols;
+                                    const character = String.fromCharCode(
+                                      added
+                                    );
+                                    skipOnMerdge =
+                                      celllIdx +
+                                      parseInt($(this).attr("colspan"));
+                                    // const allColumns = worksheet.columns.length;
+                                    //  const merge = `A${rowID}:${columnToLetter(
+                                    //  allColumns
+                                    //)}${rowID}`;
+
+                                    const merge = `${cell.address}:${prefixes}${character}${rowID}`;
+                                    try {
+                                      worksheet.mergeCells(merge);
+                                    } catch {
+                                      console.log("Already Merge", merge);
+                                    }
+
                                     itemRow.font = {
-                                      bold: true
+                                      bold: true,
                                     };
                                     itemRow.fill = {
                                       type: "pattern",
                                       pattern: "solid",
                                       bgColor: { argb: "000000" },
-                                      fgColor: { argb: "D1FCFF" }
+                                      fgColor: { argb: "D1FCFF" },
                                     };
                                   }
                                 } else {
@@ -1067,6 +1276,13 @@ export default {
                                     .replace(/\n/g, " ")
                                     .replace(/  +/g, " ")
                                     .replace(/&amp;/gi, "&");
+
+                                  if (!isNaN(cell.value)) {
+                                    cell.alignment = {
+                                      vertical: "top",
+                                      horizontal: "right",
+                                    };
+                                  }
                                 }
 
                                 if (
@@ -1097,7 +1313,9 @@ export default {
                           f++
                         ) {
                           const item = _inputParam.reportParams[f];
-                          filter += `${item.label}:${item.labelValue} || `;
+                          // console.log("item.label ", item.label);
+                          if (item.label !== undefined)
+                            filter += `${item.label}:${item.labelValue} || `;
                         }
                       }
                       worksheet.getRow(6).getCell(1).value = filter;
@@ -1105,7 +1323,7 @@ export default {
                       worksheet.getRow(6).font = { bold: true };
                       worksheet.getRow(6).alignment = {
                         vertical: "middle",
-                        horizontal: "center"
+                        horizontal: "center",
                       };
                     }
 
@@ -1118,7 +1336,7 @@ export default {
                       "Content-Disposition",
                       "attachment; filename=" + "Report.xlsx"
                     );
-                    workbook.xlsx.write(res).then(function(data) {
+                    workbook.xlsx.write(res).then(function (data) {
                       res.end();
                       console.log("File write done........");
                     });
@@ -1127,17 +1345,17 @@ export default {
                     console.error(e);
                     res.status(500).json({
                       success: false,
-                      message: e.toString()
+                      message: e.toString(),
                     });
                   }
                 })();
               });
             })
-            .catch(error => {
+            .catch((error) => {
               next(error);
             });
         })
-        .catch(error => {
+        .catch((error) => {
           next(error);
         });
     } catch (error) {
@@ -1159,9 +1377,9 @@ export default {
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
-          printQuery: true
+          printQuery: true,
         })
-        .then(data => {
+        .then((data) => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
@@ -1169,13 +1387,17 @@ export default {
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
 
-              const _inputOrders = eval(_data.report_input_series);
+              const _inputOrders = eval(
+                _data.report_input_series === null
+                  ? []
+                  : _data.report_input_series
+              );
 
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
                   _inputParam.reportParams,
-                  f => f.name == _inputOrders[i]
+                  (f) => f.name == _inputOrders[i]
                 );
 
                 if (_params != undefined) {
@@ -1188,17 +1410,17 @@ export default {
               let queryObject = {
                 query: _data.report_query,
                 values: _value,
-                printQuery: true
+                printQuery: true,
               };
               if (_data.report_query == null || _data.report_query == "") {
                 queryObject = {
                   query: "select 1",
-                  printQuery: true
+                  printQuery: true,
                 };
               }
               _mysql
                 .executeQuery(queryObject)
-                .then(result => {
+                .then((result) => {
                   if (result.length == 0) {
                     _mysql.releaseConnection();
                     res.status(400).send("No records");
@@ -1229,32 +1451,32 @@ export default {
                         {
                           reqHeader: _header,
                           ...data[1][0],
+                          identity: req.userIdentity,
                           user_name: req.userIdentity["username"],
-                          report_name_for_header: _data.report_name_for_header
+                          report_name_for_header: _data.report_name_for_header,
                         }
                       );
                       _pdfTemplating["headerTemplate"] = _headerTemp;
                       _pdfTemplating["margin"] = {
-                        top: "150px"
+                        top: "150px",
                       };
                     }
                     if (
                       _data.report_footer_file_name != null &&
                       _data.report_footer_file_name != ""
                     ) {
-                      console.log("before footer");
                       _pdfTemplating["footerTemplate"] = await compile(
                         _data.report_footer_file_name,
                         {
                           reqHeader: _header,
                           ...data[1][0],
-                          report_name_for_header: _data.report_name_for_header
+                          report_name_for_header: _data.report_name_for_header,
                         }
                       );
 
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom: "70px"
+                        bottom: "70px",
                       };
                     } else {
                       _pdfTemplating[
@@ -1265,20 +1487,20 @@ export default {
                     .showcompay{float:right;padding-right:5px;font-size: 08px;}
                     </style>
                     <div class="pdffooter">
-                    <span class="showreportname">${_data.report_name_for_header}</span>
+                    <span class="showreportname">System Generated Report - ${_data.report_name_for_header}</span>
                     <span>Page </span>
                     <span class="pageNumber"></span> / <span class="totalPages"></span>
                     <span class="showcompay">Powered by Algaeh Techonologies.</span>
                     </div>`;
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
-                        bottom: "50px"
+                        bottom: "50px",
                       };
                     }
 
                     const reportRaw = await compile(_data.report_name, {
                       ...result,
-                      reqHeader: _header
+                      reqHeader: _header,
                     });
                     _mysql.releaseConnection();
                     if (reportRaw != "") {
@@ -1304,7 +1526,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = require(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
@@ -1312,13 +1536,20 @@ export default {
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
-                      result: result
+                      result: result,
+                      writtenForm: writtenForm,
+                      currencyFormat: (currency, formater) => {
+                        return new utilitites().getCurrencyFormart(
+                          currency,
+                          formater
+                        );
+                      },
                     })
-                      .then(resultReq => {
+                      .then((resultReq) => {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {});
+                      .catch((error) => {});
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -1331,7 +1562,7 @@ export default {
                     startGenerate();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.releaseConnection();
                   // res.writeHead(400, { "Content-Type": "text/plain" });
                   // res.write(error);
@@ -1345,7 +1576,7 @@ export default {
             res.status(400).send("No such report exists");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           res.status(400).send(JSON.stringify(error));
           //   res.status(400).send(JSON.stringify(error));
@@ -1358,5 +1589,74 @@ export default {
       // res.writeHead(400, { "Content-Type": "text/plain" });
       // res.write(e);
     }
-  }
+  },
+  printReportRaw: (req, res) => {
+    let buffer = "";
+    req.on("data", (chunk) => {
+      buffer += chunk.toString();
+    });
+    req.on("end", () => {
+      (async () => {
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        const _pdfTemplating = {};
+        _pdfTemplating["headerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          top: "150px",
+        };
+        _pdfTemplating["footerTemplate"] = "";
+        _pdfTemplating["margin"] = {
+          bottom: "50px",
+        };
+        const template = hbs.compile(buffer);
+        await page.setContent(template({}));
+        await page.emulateMedia("screen");
+        const _path = path.join(
+          process.cwd(),
+          "algaeh_report_tool/templates/Output",
+          "newReports" + moment().format("YYYYMMDDHHmmss")
+        );
+        const _outPath = _path + ".pdf";
+        const _inputParam = {};
+        const pageOrentation =
+          _inputParam.pageOrentation == null
+            ? {}
+            : _inputParam.pageOrentation == "landscape"
+            ? { landscape: true }
+            : { landscape: true };
+        const pageSize =
+          _inputParam.pageSize == null
+            ? { format: "A3" }
+            : { format: _inputParam.pageSize };
+        const result = await page.pdf({
+          // path: _outPath,
+          ...pageSize,
+          landscape: true,
+          printBackground: true,
+          displayHeaderFooter: true,
+          ..._pdfTemplating,
+          // headerTemplate:
+          //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
+        });
+        await browser.close();
+        res.contentType("application/pdf");
+        res.status(200).send(result);
+        // fs.exists(_outPath, exists => {
+        //   if (exists) {
+        //     res.writeHead(200, {
+        //       "content-type": "application/pdf",
+        //       "content-disposition": "attachment;filename=newReport.pdf"
+        //     });
+        //     const _fs = fs.createReadStream(_outPath);
+        //     _fs.on("end", () => {
+        //       // fs.unlink(_outPath);
+        //     });
+        //     _fs.pipe(res);
+        //   } else {
+        //     res.status(400).send({ error: "ERROR File does not exist" });
+        //   }
+        // });
+      })();
+    });
+  },
 };

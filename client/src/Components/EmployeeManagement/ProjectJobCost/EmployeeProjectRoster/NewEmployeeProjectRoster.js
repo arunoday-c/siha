@@ -18,7 +18,7 @@ class NewEmployeeProjectRoster extends Component {
       copyData: null,
       employees: [],
       projects: [],
-      inputs: {}
+      inputs: {},
     };
     this.totalCount = 0;
     // this.getAllDepartments();
@@ -30,50 +30,32 @@ class NewEmployeeProjectRoster extends Component {
     console.log(React.version);
   }
 
-  // clearState() {
-  //   this.setState({
-  //     employees: [],
-  //     sub_department_id: null,
-  //     department_id: null,
-
-  //     hospital_id: JSON.parse(
-  //       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  //     ).hims_d_hospital_id,
-  //     year: moment().year(),
-  //     month: moment(new Date()).format("M"),
-  //     hims_d_employee_id: null,
-  //     emp_name: null,
-  //     designation_id: null,
-  //     designations: []
-  //   });
-  // }
-
   getProjects() {
     algaehApiCall({
       uri: "/projectjobcosting/getDivisionProject",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            projects: res.data.records
+            projects: res.data.records,
           });
         }
       },
 
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   closeProjectAssign() {
     this.setState({
       openProjectAssign: false,
-      openAnother: false
+      openAnother: false,
     });
     this.getEmployeesForProjectRoster();
   }
@@ -86,7 +68,7 @@ class NewEmployeeProjectRoster extends Component {
         this.setState({
           sendRow: row,
           openProjectAssign: true,
-          sendDate: e.currentTarget.getAttribute("date")
+          sendDate: e.currentTarget.getAttribute("date"),
         });
       }
     } else return;
@@ -94,17 +76,17 @@ class NewEmployeeProjectRoster extends Component {
 
   showAnother = () => {
     this.setState({
-      openAnother: true
+      openAnother: true,
     });
   };
 
   copyProject(data) {
     this.setState({
-      copyData: data
+      copyData: data,
     });
     swalMessage({
       title: "Project Copied.",
-      type: "success"
+      type: "success",
     });
   }
 
@@ -112,7 +94,7 @@ class NewEmployeeProjectRoster extends Component {
     this.state.copyData === null
       ? swalMessage({
           title: "Please copy the Project first",
-          type: "warning"
+          type: "warning",
         })
       : algaehApiCall({
           uri: "/projectjobcosting/pasteProjectRoster",
@@ -123,23 +105,23 @@ class NewEmployeeProjectRoster extends Component {
             attendance_date: data.date,
             shift_id: this.state.copyData.shift_id,
             project_id: this.state.copyData.project_id,
-            hospital_id: this.state.inputs.hospital_id
+            hospital_id: this.state.inputs.hospital_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Pasted Successfully . . ",
-                type: "success"
+                type: "success",
               });
               this.getEmployeesForProjectRoster();
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
   }
 
@@ -151,41 +133,36 @@ class NewEmployeeProjectRoster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/projectjobcosting/deleteProjectRoster",
           method: "DELETE",
           module: "hrManagement",
           data: {
-            hims_f_project_roster_id: data.hims_f_project_roster_id
+            hims_f_project_roster_id: data.hims_f_project_roster_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Deleted Successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getEmployeesForProjectRoster();
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -195,7 +172,7 @@ class NewEmployeeProjectRoster extends Component {
     if (this.state.copyData === null) {
       swalMessage({
         title: "Please copy the shift first",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let sendData = {
@@ -204,7 +181,7 @@ class NewEmployeeProjectRoster extends Component {
         attendance_date: data.date,
         hospital_id: data.hospital_id,
         weekoff: data.weekoff,
-        holiday: data.holiday
+        holiday: data.holiday,
       };
 
       algaehApiCall({
@@ -212,21 +189,21 @@ class NewEmployeeProjectRoster extends Component {
         method: "POST",
         module: "hrManagement",
         data: sendData,
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Pasted Successfully . . ",
-              type: "success"
+              type: "success",
             });
             this.getEmployeesForProjectRoster();
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -236,19 +213,15 @@ class NewEmployeeProjectRoster extends Component {
     let yearMonth =
       this.state.inputs.year + "-" + this.state.inputs.month + "-01";
 
-    var currDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    var lastDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    var currDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    var lastDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       let holiday = Enumerable.from(holidays)
         .where(
-          w =>
+          (w) =>
             moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
         )
         .firstOrDefault();
@@ -257,7 +230,7 @@ class NewEmployeeProjectRoster extends Component {
       if (leaves !== undefined && leaves.length > 0) {
         leave = Enumerable.from(leaves)
           .where(
-            w =>
+            (w) =>
               moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
           )
           .firstOrDefault();
@@ -267,7 +240,7 @@ class NewEmployeeProjectRoster extends Component {
       if (projects !== undefined && projects.length > 0) {
         project = Enumerable.from(projects)
           .where(
-            w =>
+            (w) =>
               moment(w.attendance_date).format("YYYYMMDD") ===
               now.format("YYYYMMDD")
           )
@@ -326,7 +299,7 @@ class NewEmployeeProjectRoster extends Component {
               <li
                 onClick={this.pasteProject.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
                 })}
               >
                 Paste
@@ -365,10 +338,10 @@ class NewEmployeeProjectRoster extends Component {
                   date: now.format("YYYY-MM-DD"),
                   project_id: row.project_id,
                   holiday: holiday.holiday,
-                  weekoff: holiday.weekoff
+                  weekoff: holiday.weekoff,
                 })}
                 style={{
-                  zIndex: 9999
+                  zIndex: 9999,
                 }}
               >
                 Paste As Week Off
@@ -380,7 +353,7 @@ class NewEmployeeProjectRoster extends Component {
                 //   sub_id: row.sub_department_id
                 // })}
                 style={{
-                  zIndex: 9999
+                  zIndex: 9999,
                 }}
               >
                 Paste As Normal
@@ -400,7 +373,7 @@ class NewEmployeeProjectRoster extends Component {
               <li
                 onClick={this.pasteProject.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
                 })}
               >
                 Paste
@@ -420,12 +393,8 @@ class NewEmployeeProjectRoster extends Component {
     let yearMonth =
       this.state.inputs.year + "-" + this.state.inputs.month + "-01";
 
-    var currDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    var lastDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    var currDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    var lastDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     var now = moment(currDate).clone();
 
@@ -443,12 +412,8 @@ class NewEmployeeProjectRoster extends Component {
   }
 
   monthFormatorString(yearAndMonth) {
-    const _start = moment(yearAndMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    const _end = moment(yearAndMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    const _start = moment(yearAndMonth).startOf("month").format("MMM DD YYYY");
+    const _end = moment(yearAndMonth).endOf("month").format("MMM DD YYYY");
 
     return _start + " - " + _end;
   }
@@ -457,34 +422,26 @@ class NewEmployeeProjectRoster extends Component {
     const { inputs } = this.state;
     let yearMonth = inputs.year + "-" + inputs.month + "-01";
 
-    const fromDate = moment(yearMonth)
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    const toDate = moment(yearMonth)
-      .endOf("month")
-      .format("YYYY-MM-DD");
+    const fromDate = moment(yearMonth).startOf("month").format("YYYY-MM-DD");
+    const toDate = moment(yearMonth).endOf("month").format("YYYY-MM-DD");
     return { fromDate, toDate };
   };
 
   getStartandMonthEnd() {
     let yearMonth =
       this.state.inputs.year + "-" + this.state.inputs.month + "-01";
-    let startDate = moment(yearMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    let endDate = moment(yearMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+    let startDate = moment(yearMonth).startOf("month").format("MMM DD YYYY");
+    let endDate = moment(yearMonth).endOf("month").format("MMM DD YYYY");
 
     this.setState({
-      formatingString: startDate + " - " + endDate
+      formatingString: startDate + " - " + endDate,
     });
   }
 
   getEmployeesForProjectRoster(inputs) {
     AlgaehLoader({ show: true });
     this.setState(
-      prevState => {
+      (prevState) => {
         return { inputs: !inputs ? prevState.inputs : inputs };
       },
       () => {
@@ -502,40 +459,38 @@ class NewEmployeeProjectRoster extends Component {
             department_id: inputs.department_id,
             fromDate: fromDate,
             toDate: toDate,
-            designation_id: inputs.designation_id
+            designation_id: inputs.designation_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
-              debugger;
-
               const rosterExists = _.filter(
                 res.data.records,
-                f => f.empProject.length > 0
+                (f) => f.empProject.length > 0
               ).length;
               const rosterNotExists = _.filter(
                 res.data.records,
-                f => f.empProject.length === 0
+                (f) => f.empProject.length === 0
               ).length;
               this.totalCount = `Total Rosters : ${rosterExists} || Total Non Rosters : ${rosterNotExists}`;
               this.setState({
-                employees: res.data.records
+                employees: res.data.records,
               });
               AlgaehLoader({ show: false });
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
-                type: "warning"
+                type: "warning",
               });
               AlgaehLoader({ show: false });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
             AlgaehLoader({ show: false });
-          }
+          },
         });
       }
     );
@@ -552,7 +507,7 @@ class NewEmployeeProjectRoster extends Component {
               from_date: this.state.sendDate,
               to_date: this.state.sendDate,
               projects: this.state.projects,
-              hospital_id: this.state.inputs.hospital_id
+              hospital_id: this.state.inputs.hospital_id,
             }}
             sendRow={this.state.sendRow}
             open={this.state.openProjectAssign}
@@ -571,19 +526,19 @@ class NewEmployeeProjectRoster extends Component {
               to_date: toDate,
               projects: this.state.projects,
               employees: this.state.employees,
-              hospital_id: this.state.inputs.hospital_id
+              hospital_id: this.state.inputs.hospital_id,
             }}
             open={this.state.openAnother}
             onClose={() =>
               this.setState({
-                openAnother: false
+                openAnother: false,
               })
             }
           />
         ) : null}
 
         <EmployeeFilter
-          loadFunc={inputs => this.getEmployeesForProjectRoster(inputs)}
+          loadFunc={(inputs) => this.getEmployeesForProjectRoster(inputs)}
         />
 
         <div className="row">
@@ -603,6 +558,15 @@ class NewEmployeeProjectRoster extends Component {
                   <span> Total {this.totalCount}</span>
                 </div>
                 <div className="actions">
+                  <span
+                    style={{
+                      background: "rgb(255, 230, 234)",
+                      color: "rgb(228, 34, 69)",
+                    }}
+                    className="legends"
+                  >
+                    Not Assigned
+                  </span>{" "}
                   <span style={{ background: "#3f9c62" }} className="legends">
                     Weekly Off (WO)
                   </span>
@@ -615,7 +579,6 @@ class NewEmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
-
                   {/* <EmployeeMaster
                     HeaderCaption={
                       <AlgaehLabel
@@ -647,56 +610,59 @@ class NewEmployeeProjectRoster extends Component {
                   <div className="row">
                     {this.state.employees.length === 0 ? (
                       <div className="noTimeSheetData">
-                        <h1>Employee Project Roster</h1>
+                        <h1>Project Roster</h1>
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (
-                      <table>
-                        <thead id="tHdRstr">
-                          <tr>
-                            {/* <th>Employee Code</th> */}
-                            <th>Employee Name</th>
-                            {this.getDaysOfMonth()}
-                            <th>Joining Date</th>
-                            <th>Exit Date</th>
-                          </tr>
-                        </thead>
-                        {/* <div className="tbodyScrollCntr"> */}
-                        <tbody>
-                          {this.state.employees.map((row, index) => {
-                            return (
-                              <tr key={row.hims_d_employee_id}>
-                                {/* <td>{row.employee_code}</td> */}
-                                <td>
-                                  <b> {row.employee_name}</b>
-                                  <br />
-                                  {row.employee_code}
-                                  <br />
-                                  <small> {row.designation}</small>
-                                </td>
+                      <div className="bulkProjectRosterScroll">
+                        <table id="bulkRosterPreview">
+                          <thead id="tHdRstr">
+                            <tr>
+                              {/* <th>Employee Code</th> */}
+                              <th>Employee Name</th>
+                              {this.getDaysOfMonth()}
+                              <th>Joining Date</th>
+                              <th>Exit Date</th>
+                            </tr>
+                          </thead>
+                          {/* <div className="tbodyScrollCntr"> */}
+                          <tbody>
+                            {this.state.employees.map((row, index) => {
+                              return (
+                                <tr key={row.hims_d_employee_id}>
+                                  {/* <td>{row.employee_code}</td> */}
+                                  <td>
+                                    <b> {row.employee_name}</b>
+                                    <br />
+                                    {row.employee_code}
+                                    <br />
+                                    <small> {row.designation}</small>
+                                  </td>
 
-                                {this.plotEmployeeDates(
-                                  row,
-                                  row.holidays,
-                                  row.employeeLeaves,
-                                  row.empProject
-                                )}
-                                <td>
-                                  {moment(row.date_of_joining).format(
-                                    "DD-MM-YYYY"
+                                  {this.plotEmployeeDates(
+                                    row,
+                                    row.holidays,
+                                    row.employeeLeaves,
+                                    row.empProject
                                   )}
-                                </td>
-                                <td>
-                                  {row.exit_date
-                                    ? moment(row.exit_date).format("DD-MM-YYYY")
-                                    : "------"}
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                        {/* </div> */}
-                      </table>
+                                  <td>
+                                    {moment(row.date_of_joining).format(
+                                      "DD-MM-YYYY"
+                                    )}
+                                  </td>
+                                  <td>
+                                    {row.exit_date
+                                      ? moment(row.exit_date).format(
+                                          "DD-MM-YYYY"
+                                        )
+                                      : "------"}
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
                     )}
                   </div>
                 </div>

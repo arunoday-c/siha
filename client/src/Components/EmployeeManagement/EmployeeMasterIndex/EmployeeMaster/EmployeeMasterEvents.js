@@ -1,10 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer,
-  imageToByteArray
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import _ from "lodash";
@@ -253,10 +249,6 @@ const InsertUpdateEmployee = $this => {
           $this.state.personalDetails.employee_designation_id =
             activeDept[0].employee_designation_id;
         }
-
-        const hospital = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
         let inputObj = $this.state.personalDetails;
 
         inputObj.inactive_date =
@@ -273,7 +265,7 @@ const InsertUpdateEmployee = $this => {
         delete inputObj.employeeImage;
 
         const _payload = {
-          hospital_id: hospital.hims_d_hospital_id,
+          hospital_id: $this.state.hospital_id,
           ...inputObj
         };
 
@@ -435,10 +427,44 @@ const InsertUpdateEmployee = $this => {
   });
 };
 
-// const ClearEmployee = $this => {
-//   let IOputs = EmpMasterIOputs.inputParam();
-//   IOputs.pageDisplay = "PersonalDetails";
-//   $this.setState(IOputs);
-// };
+const generateEmployeeContract = ($this, empEvent) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "employeeContract",
+        reportParams: [
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.personalDetails.hims_d_employee_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-export { InsertUpdateEmployee };
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      // myWindow.document.title = "Employee Contract";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Employee Contract`;
+      window.open(origin);
+    }
+  });
+};
+
+
+export { InsertUpdateEmployee, generateEmployeeContract };

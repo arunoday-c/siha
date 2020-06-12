@@ -105,8 +105,9 @@ const itemchangeText = ($this, e, ctrl) => {
     item_group_id: e.group_id,
     uom_id: e.stocking_uom_id,
     sales_uom: e.sales_uom_id,
-    required_batchno: e.exp_date_not_required,
+    required_batchno: e.exp_date_required,
     item_code: e.item_code,
+    item_description: e.item_description,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
     purchase_uom_id: e.purchase_uom_id,
@@ -134,7 +135,7 @@ const AddItems = $this => {
         document.querySelector("[name='unit_cost']").focus();
       } else if (
         $this.state.expiry_date === null &&
-        $this.state.required_batchno === "N"
+        $this.state.required_batchno === "Y"
       ) {
         swalMessage({
           title: "Select Expiry Date.",
@@ -302,31 +303,13 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveInitialStock = $this => {
-  $this.state.posted = "Y";
-  $this.state.transaction_type = "INT";
-  $this.state.transaction_date = $this.state.docdate;
-
-  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-    $this.state.inventory_stock_detail[i].net_total =
-      $this.state.inventory_stock_detail[i].extended_cost;
-    $this.state.inventory_stock_detail[i].operation = "+";
-  }
-
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/inventoryinitialstock/addInventoryInitialStock",
     module: "inventory",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        // $this.setState({
-        //   document_number: response.data.records.document_number,
-        //   hims_f_inventory_stock_header_id:
-        //     response.data.records.hims_f_inventory_stock_header_id,
-        //   year: response.data.records.year,
-        //   period: response.data.records.period,
-        //   saveEnable: true,
-        //   postEnable: false
-        // });
         getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
@@ -346,15 +329,16 @@ const SaveInitialStock = $this => {
 
 const deleteInitialStock = ($this, row) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let saveEnable = true;
+  let _index = inventory_stock_detail.indexOf(row)
+  inventory_stock_detail.splice(_index, 1);
 
-  for (let x = 0; x < inventory_stock_detail.length; x++) {
-    if (inventory_stock_detail[x].noorecords === row.noorecords) {
-      inventory_stock_detail.splice(x, 1);
-    }
+  if (inventory_stock_detail.length) {
+    saveEnable = false;
   }
-
   $this.setState({
-    inventory_stock_detail: inventory_stock_detail
+    inventory_stock_detail: inventory_stock_detail,
+    saveEnable
   });
 };
 const ClearData = $this => {
@@ -385,6 +369,7 @@ const ClearData = $this => {
 };
 
 const PostInitialStock = $this => {
+  AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_id = $this.state.hims_f_inventory_stock_header_id;
@@ -393,12 +378,9 @@ const PostInitialStock = $this => {
   for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
     $this.state.inventory_stock_detail[i].net_total =
       $this.state.inventory_stock_detail[i].extended_cost;
-    $this.state.inventory_stock_detail[i].barcode =
-      $this.state.inventory_stock_detail[i].item_code +
-      "-" +
-      $this.state.inventory_stock_detail[i].batchno;
     $this.state.inventory_stock_detail[i].operation = "+";
   }
+
   algaehApiCall({
     uri: "/inventoryinitialstock/updateInventoryInitialStock",
     module: "inventory",
@@ -414,6 +396,7 @@ const PostInitialStock = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
     },
     onFailure: error => {
       AlgaehLoader({ show: false });
@@ -426,6 +409,7 @@ const PostInitialStock = $this => {
 };
 
 const printBarcode = ($this, row, e) => {
+
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -436,6 +420,11 @@ const printBarcode = ($this, row, e) => {
     others: { responseType: "blob" },
     data: {
       report: {
+        others: {
+          width: "50mm",
+          height: "20mm",
+          showHeaderFooter: false
+        },
         reportName: "InventoryBarcode",
         reportParams: [
           {
@@ -447,18 +436,55 @@ const printBarcode = ($this, row, e) => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Item Barcode";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
+      window.open(origin);
+      // window.document.title = "Item Barcode";
     }
   });
+
+  // algaehApiCall({
+  //   uri: "/report",
+  //   method: "GET",
+  //   module: "reports",
+  //   headers: {
+  //     Accept: "blob"
+  //   },
+  //   others: { responseType: "blob" },
+  //   data: {
+  //     report: {
+  //       reportName: "InventoryBarcode",
+  //       reportParams: [
+  //         {
+  //           name: "hims_f_inventory_stock_detail_id",
+  //           value: row.hims_f_inventory_stock_detail_id
+  //         }
+  //       ],
+  //       outputFileType: "PDF"
+  //     }
+  //   },
+  //   onSuccess: res => {
+  //     const url = URL.createObjectURL(res.data);
+  //     let myWindow = window.open(
+  //       "{{ product.metafields.google.custom_label_0 }}",
+  //       "_blank"
+  //     );
+
+  //     myWindow.document.write(
+  //       "<iframe src= '" + url + "' width='100%' height='100%' />"
+  //     );
+  //     myWindow.document.title = "Item Barcode";
+  //   }
+  // });
 };
 const salesPriceEvent = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -471,19 +497,22 @@ const salesPriceEvent = ($this, ctrl, e) => {
 const onChamgeGridQuantity = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let _index = inventory_stock_detail.indexOf(row);
   let extended_cost = 0;
   if (value !== "") {
     extended_cost = parseFloat(row.unit_cost) * value;
-
     extended_cost = extended_cost.toFixed(2);
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   } else {
     row[name] = value;
     row["extended_cost"] = extended_cost;
-    row.update();
   }
+  inventory_stock_detail[_index] = row;
+  $this.setState({
+    inventory_stock_detail: inventory_stock_detail
+  });
 };
 
 const updateInitialStock = ($this, row) => {
@@ -504,7 +533,9 @@ const EditGrid = ($this, cancelRow) => {
     _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
   }
   $this.setState({
-    saveEnable: !$this.state.saveEnable,
+    saveEnable:
+      $this.state.dataExitst === true ? true : !$this.state.saveEnable,
+    postEnable: !$this.state.postEnable,
     inventory_stock_detail: _inventory_stock_detail
   });
 };

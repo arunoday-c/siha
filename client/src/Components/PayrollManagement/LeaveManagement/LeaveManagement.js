@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import "./leave_mgmt.scss";
 import LeaveAuth from "./LeaveAuthorization/LeaveAuthorization";
-import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
+// import LeaveEncashmentProcess from "./LeaveEncashmentProcess/LeaveEncashmentProcess";
 import LeaveEncashAuth from "./LeaveEncashmentAuth/LeaveEncashmentAuth";
-import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
+// import LeaveSalaryProcess from "./LeaveSalaryProcess/LeaveSalaryProcess";
 import LeaveYearlyProcess from "./LeaveYearlyProcess/LeaveYearlyProcess";
-//import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
-
+// import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 export default class LeaveManagement extends Component {
   constructor(props) {
@@ -30,93 +30,50 @@ export default class LeaveManagement extends Component {
 
   render() {
     return (
-      <div className="row leave_mgmt">
-        <div className="tabMaster toggle-section">
-          <ul className="nav">
-            <li
-              algaehtabs={"LeaveAuth"}
-              className={"nav-item tab-button active"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
+      <div className="leave_mgmt">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "Leave Authorization"
                   }}
                 />
-              }
-            </li>
-            <li
-              algaehtabs={"LeaveEncashmentProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Encashment Process"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"LeaveEncashAuth"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
+              ),
+              children: <LeaveAuth />,
+              componentCode: "PAY_LEV_AUTH"
+            },
+            {
+              title: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "Encashment Authorization"
                   }}
                 />
-              }
-            </li>
-            <li
-              algaehtabs={"LeaveSalaryProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Leave Salary Process"
-                  }}
-                />
-              }
-            </li>
-            <li
-              algaehtabs={"LeaveYearlyProcess"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
+              ),
+              children: <LeaveEncashAuth />,
+              componentCode: "PAY_ENC_AUTH"
+            },
+            {
+              title: (
                 <AlgaehLabel
                   label={{
                     forceLabel: "Yearly Leave Process"
                   }}
                 />
-              }
-            </li>
-          </ul>
-        </div>
-
-        <div className="col-12 leave-section">
-          {this.state.pageDisplay === "LeaveAuth" ? (
-            <LeaveAuth />
-          ) : this.state.pageDisplay === "LeaveEncashmentProcess" ? (
-            <LeaveEncashmentProcess />
-          ) : this.state.pageDisplay === "LeaveEncashAuth" ? (
-            <LeaveEncashAuth />
-          ) : this.state.pageDisplay === "LeaveSalaryProcess" ? (
-            <LeaveSalaryProcess />
-          ) : this.state.pageDisplay === "LeaveYearlyProcess" ? (
-            <LeaveYearlyProcess />
-          ) : // : this.state.pageDisplay === "LeaveSalaryAccural" ? (
-          //   <LeaveSalaryAccural />
-          null}
-        </div>
+              ),
+              children: <LeaveYearlyProcess />,
+              componentCode: "PAY_YEA_LEV_SAL"
+            }
+          ]}
+          renderClass="leaveSection"
+        />
       </div>
     );
   }
 }
+// function ChildrenItem({ children }) {
+//   return <div className="Leave-Management-section">{children}</div>;
+// }

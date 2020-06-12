@@ -3,6 +3,7 @@ import GratuityAccrual from "./GratuityAccrual/GratuityAccrual";
 import EOSGratuity from "./EOSGratuity/EOSGratuity";
 import FinalSettlement from "./FinalSettlement/FinalSettlement";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 import "./ExitManagement.scss";
 class ExitManagement extends Component {
@@ -35,63 +36,52 @@ class ExitManagement extends Component {
   render() {
     return (
       <div className="exit_mgmt">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"GratuityAccrual"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Gratuity Accrual"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"EOSGratuity"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "EOS / Gratuity"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"FinalSettlement"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Final Settlement"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="payroll-setion">
-          {this.state.pageDisplay === "GratuityAccrual" ? (
-            <GratuityAccrual parent={this} />
-          ) : this.state.pageDisplay === "EOSGratuity" ? (
-            <EOSGratuity parent={this} />
-          ) : this.state.pageDisplay === "FinalSettlement" ? (
-            <FinalSettlement />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Gratuity Accrual"
+                  }}
+                />
+              ),
+              children: <GratuityAccrual parent={this} />,
+              componentCode: "EXT_GRT_ACC"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "EOS / Gratuity"
+                  }}
+                />
+              ),
+              children: <EOSGratuity parent={this} />,
+              componentCode: "EXT_EOS_GRT"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Final Settlement"
+                  }}
+                />
+              ),
+              children: <FinalSettlement />,
+              componentCode: "EXT_FIN_STL"
+            }
+          ]}
+          renderClass="ExitMgmtSection"
+        />
       </div>
     );
   }
 }
+
+// function ChildrenItem({ children }) {
+//   return <div className="exit-management-section">{children}</div>;
+// }
 
 export default ExitManagement;

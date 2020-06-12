@@ -27,7 +27,7 @@ export default class RadTemplate extends PureComponent {
     this.props.onClose && this.props.onClose(0);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (
       newProps.radTempobj !== null &&
       this.state.hims_d_rad_template_detail_id === null &&

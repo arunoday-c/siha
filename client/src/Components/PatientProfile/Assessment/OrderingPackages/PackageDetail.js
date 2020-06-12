@@ -19,7 +19,7 @@ import {
 import _ from "lodash";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class PackageDetail extends Component {
   constructor(props) {
@@ -35,7 +35,7 @@ class PackageDetail extends Component {
     this.props.onClose && this.props.onClose(this.state);
   };
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     
     if (newProps.package_detail !== null) {
       this.setState({ ...this.state, ...newProps.package_detail });
@@ -234,7 +234,7 @@ class PackageDetail extends Component {
                             forceLabel: "Actual Amount"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.actual_amount)}</h6>
+                        <h6>{GetAmountFormart(this.state.actual_amount)}</h6>
                       </div>
                       <div className="col-2 form-group">
                         <AlgaehLabel
@@ -242,7 +242,7 @@ class PackageDetail extends Component {
                             forceLabel: "Package Price"
                           }}
                         />
-                        <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                        <h6>{GetAmountFormart(this.state.unit_cost)}</h6>
                       </div>
 
                       {/*<div className="col-3 customRadio form-group">

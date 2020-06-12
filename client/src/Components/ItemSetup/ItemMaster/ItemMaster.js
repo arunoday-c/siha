@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ItemDetails from "./ItemDetails/ItemDetails";
+// import ItemDetails from "./ItemDetails/ItemDetails";
 import "./../../../styles/site.scss";
 import "./ItemMaster.scss";
 import {
@@ -22,7 +22,6 @@ import { algaehApiCall } from "../../../utils/algaehApiCall";
 import {
   radioChange,
   BatchExpRequired,
-  CptCodesSearch,
   VatAppilicable,
   texthandle,
   AddUom,
@@ -36,6 +35,7 @@ import {
   numberEventHandaler
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { MainContext } from "algaeh-react-components/context";
 
 class ItemMaster extends Component {
   constructor(props) {
@@ -81,16 +81,25 @@ class ItemMaster extends Component {
     this.props.onClose && this.props.onClose(false);
   };
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ItemSetup.inputParam();
     this.setState({ ...this.state, ...IOputs });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
+  }
+
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    })
   }
 
   render() {
@@ -294,15 +303,15 @@ class ItemMaster extends Component {
                         >
                           <input
                             type="checkbox"
-                            name="exp_date_not_required"
+                            name="exp_date_required"
                             checked={
-                              this.state.exp_date_not_required === "Y"
+                              this.state.exp_date_required === "Y"
                                 ? true
                                 : false
                             }
                             onChange={BatchExpRequired.bind(this, this)}
                           />
-                          <span>Not Required</span>
+                          <span>Required</span>
                         </label>
                       </div>
                     </div>
@@ -332,11 +341,9 @@ class ItemMaster extends Component {
 
                     <div className="col-12">
                       <div className="row">
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{ fieldName: "vat_applicable" }}
-                          />
-                          <div className=" customCheckbox ">
+                        <div className="col-3">
+                          <label>Vat Applicable</label>
+                          <div className="customCheckbox">
                             <label className="checkbox inline">
                               <input
                                 type="checkbox"
@@ -353,10 +360,18 @@ class ItemMaster extends Component {
                             </label>
                           </div>
                         </div>
+
                         <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
+                          div={{
+                            className:
+                              this.state.vat_applicable === "Y"
+                                ? "col-3 mandatory form-group"
+                                : "col-3 form-group"
+                          }}
                           label={{
-                            fieldName: "vat_percent"
+                            fieldName: "vat_percent",
+                            isImp:
+                              this.state.vat_applicable === "Y" ? true : false
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
@@ -458,13 +473,13 @@ class ItemMaster extends Component {
                     />
 
                     <div className="col actions" style={{ paddingLeft: 0 }}>
-                      <a
+                      <button
                         onClick={AddUom.bind(this, this)}
                         style={{ marginTop: 19 }}
                         className="btn btn-primary btn-circle active"
                       >
                         <i className="fas fa-plus" />
-                      </a>
+                      </button>
                     </div>
                   </div>
 
@@ -506,9 +521,9 @@ class ItemMaster extends Component {
                                 this.props.itemuom === undefined
                                   ? []
                                   : this.props.itemuom.filter(
-                                      f =>
-                                        f.hims_d_pharmacy_uom_id === row.uom_id
-                                    );
+                                    f =>
+                                      f.hims_d_pharmacy_uom_id === row.uom_id
+                                  );
 
                               return (
                                 <span>
@@ -637,7 +652,7 @@ class ItemMaster extends Component {
                         paging={{ page: 0, rowsPerPage: 5 }}
                         events={{
                           onDelete: deleteUOM.bind(this, this),
-                          onEdit: row => {},
+                          onEdit: row => { },
                           onDone: updateUOM.bind(this, this)
                         }}
                       />
@@ -667,7 +682,7 @@ class ItemMaster extends Component {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                      //forceUpdate={true}
+                    //forceUpdate={true}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
@@ -726,10 +741,9 @@ class ItemMaster extends Component {
                     />*/}
 
                     <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
+                      div={{ className: "col-4 form-group" }}
                       label={{
-                        fieldName: "purchase_cost",
-                        isImp: true
+                        fieldName: "purchase_cost"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -748,7 +762,8 @@ class ItemMaster extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "price"
+                        fieldName: "price",
+                        isImp: true
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -842,8 +857,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemMaster)
+  connect(mapStateToProps, mapDispatchToProps)(ItemMaster)
 );

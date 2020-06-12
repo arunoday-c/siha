@@ -23,19 +23,18 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
+import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import {
   imageToByteArray,
   AlgaehValidation,
-  AlgaehOpenContainer
+  setGlobal
 } from "../../utils/GlobalFunctions";
-import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import Options from "../../Options.json";
 import {
-  generateBillDetails,
   ShowRefundScreen,
   ClearData,
   ShowAdvanceScreen,
@@ -47,12 +46,14 @@ import {
   getCtrlCode,
   ShowPackageUtilize,
   ClosePackageUtilize,
-  UpdatePatientDetail
+  UpdatePatientDetail,
+  showAdvanceRefundList
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
 import _ from "lodash";
+import { MainContext } from "algaeh-react-components/context";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -65,24 +66,40 @@ class RegistrationPatient extends Component {
 
     this.state = {
       AdvanceOpen: false,
+      AdvanceRefundOpen: false,
       RefundOpen: false,
       visittypeselect: true,
       clearEnable: false,
       isPackUtOpen: false,
-      UpdatepatientDetail: false
+      UpdatepatientDetail: false,
+      employee_id_required: "N",
+      hospital_id: ""
     };
-    this.employee_id_required = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    ).requied_emp_id;
   }
-
-  componentWillMount() {
+  static contextType = MainContext;
+  UNSAFE_componentWillMount() {
+    const userToken = this.context.userToken;
     let IOputs = emptyObject;
+    IOputs.employee_id_required = userToken.requied_emp_id;
+    IOputs.hospital_id = userToken.hims_d_hospital_id;
+    IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
+    IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
+    IOputs.default_pay_type = userToken.default_pay_type;
+    IOputs.service_dis_percentage = userToken.service_dis_percentage;
+
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
   }
 
   componentDidMount() {
+    // const userToken = this.context.userToken;
+    //
+    // this.setState({
+    //   employee_id_required: userToken.requied_emp_id,
+    //   hospital_id: userToken.hims_d_hospital_id,
+    //   Cashchecked: userToken.default_pay_type === "CH" ? true : false,
+    //   Cardchecked: userToken.default_pay_type === "CD" ? true : false
+    // });
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -195,6 +212,12 @@ class RegistrationPatient extends Component {
     );
   }
 
+  CloseAdvanceRefundList(e) {
+    this.setState({
+      AdvanceRefundOpen: !this.state.AdvanceRefundOpen
+    });
+  }
+
   CloseUpdatePatientDetail(e) {
     // AlgaehLoader({ show: true });
     this.setState(
@@ -269,7 +292,7 @@ class RegistrationPatient extends Component {
     }
   }
 
-  componentWillReceiveProps() {
+  UNSAFE_componentWillReceiveProps() {
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
       setGlobal({ selectedLang: prevLang });
@@ -341,11 +364,15 @@ class RegistrationPatient extends Component {
       this.props.visittypes.length > 0
     ) {
       const exit_consultation = _.find(this.props.visittypes, f => {
-        return f.consultation == "Y";
+        return f.consultation === "Y";
       });
       if (exit_consultation.hims_d_visit_type_id !== null) {
-        this.state.visit_type = exit_consultation.hims_d_visit_type_id;
-        this.state.consultation = "Y";
+        this.setState({
+          visit_type: exit_consultation.hims_d_visit_type_id,
+          consultation: "Y"
+        })
+        // this.state.visit_type = exit_consultation.hims_d_visit_type_id;
+        // this.state.consultation = "Y";
       }
     }
   }
@@ -380,10 +407,6 @@ class RegistrationPatient extends Component {
                   const _patInsuranceFrontImg =
                     $this.state.patInsuranceFrontImg;
                   const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
-                  const _patSecInsuranceFrontImg =
-                    $this.state.patSecInsuranceFrontImg;
-                  const _patSecInsuranceBackImg =
-                    $this.state.patSecInsuranceBackImg;
                   delete patientdata.patSecInsuranceFrontImg;
                   delete patientdata.patientIdCard;
                   delete patientdata.patInsuranceFrontImg;
@@ -393,6 +416,8 @@ class RegistrationPatient extends Component {
                   delete patientdata.countrystates;
                   delete patientdata.cities;
                   delete patientdata.doctors;
+
+                  patientdata.ScreenCode = getCookie("ScreenCode");
 
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
@@ -763,7 +788,7 @@ class RegistrationPatient extends Component {
             jsonFile: {
               fileName: "spotlightSearch",
               fieldName:
-                this.employee_id_required === "N"
+                this.state.employee_id_required === "N"
                   ? "frontDesk.patients"
                   : "frontDesk.emp_id_patients"
             },
@@ -780,8 +805,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -792,18 +817,32 @@ class RegistrationPatient extends Component {
               onClick: UpdatePatientDetail.bind(this, this)
             }
           }}
-          printArea={{
-            menuitems: [
-              {
-                label: "ID Card",
-                events: {
-                  onClick: () => {
-                    generateIdCard(this, this);
+          printArea={
+            this.state.patient_code !== null &&
+              this.state.patient_code !== undefined &&
+              this.state.patient_code !== ""
+              ? {
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(this, this);
+                      }
+                    }
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        showAdvanceRefundList(this, this);
+                      }
+                    }
                   }
-                }
+                ]
               }
-            ]
-          }}
+              : ""
+          }
           selectedLang={this.state.selectedLang}
         />
 
@@ -958,6 +997,29 @@ class RegistrationPatient extends Component {
                     }}
                   />
 
+                  <AdvanceRefundListModal
+                    show={this.state.AdvanceRefundOpen}
+                    onClose={this.CloseAdvanceRefundList.bind(this)}
+                    selectedLang={this.state.selectedLang}
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          // fieldName: "advance_caption",
+                          forceLabel: "Advance/Refund List",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    Advance={true}
+                    NumberLabel="receipt_number"
+                    DateLabel="receipt_date"
+                    inputsparameters={{
+                      patient_code: this.state.patient_code,
+                      full_name: this.state.full_name,
+                      hims_f_patient_id: this.state.hims_d_patient_id
+                    }}
+                  />
+
                   <UpdatePatientPopup
                     show={this.state.UpdatepatientDetail}
                     onClose={this.CloseUpdatePatientDetail.bind(this)}
@@ -1081,8 +1143,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(RegistrationPatient)
+  connect(mapStateToProps, mapDispatchToProps)(RegistrationPatient)
 );

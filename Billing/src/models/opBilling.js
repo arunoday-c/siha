@@ -14,12 +14,9 @@ export default {
       //Bill
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_BILL"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["PAT_BILL", "RECEIPT"],
+          table_name: "hims_f_app_numgen"
         })
         .then(generatedNumbers => {
           req.connection = {
@@ -27,27 +24,9 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.body.bill_number = generatedNumbers[0];
-
-          //Receipt
-          _mysql
-            .generateRunningNumber({
-              modules: ["RECEIPT"],
-              tableName: "hims_f_app_numgen",
-              identity: {
-                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                hospital_id: req.userIdentity["x-branch"]
-              }
-            })
-            .then(generatedNumbers => {
-              req.body.receipt_number = generatedNumbers[0];
-              next();
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+          req.body.bill_number = generatedNumbers.PAT_BILL;
+          req.body.receipt_number = generatedNumbers.RECEIPT;
+          next();
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -331,10 +310,11 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT *,emp.full_name as doctor_name, bh.patient_payable as patient_payable_h  FROM hims_f_billing_header bh \
+            "SELECT *,emp.full_name as doctor_name, bh.patient_payable as patient_payable_h, VST.sub_department_id \
+             FROM hims_f_billing_header bh \
           left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id\
           inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
-          inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
+          inner join hims_f_patient_visit as VST on bh.visit_id = VST.hims_f_patient_visit_id\
           where bh.record_status='A' AND bh.bill_number='" +
             req.query.bill_number +
             "'",

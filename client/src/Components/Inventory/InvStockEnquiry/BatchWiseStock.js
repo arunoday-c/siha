@@ -15,12 +15,13 @@ import {
   dateFormater,
   updateStockDetils,
   datehandle,
-  texthandle
+  texthandle,
+  printBarcode
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 
 class BatchWiseStock extends Component {
   constructor(props) {
@@ -50,6 +51,23 @@ class BatchWiseStock extends Component {
                   id="inv_initial_stock"
                   columns={[
                     {
+                      fieldName: "action",
+                      label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              onClick={printBarcode.bind(this, this, row)}
+                              className="fas fa-barcode"
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        filterable: false
+                      }
+                    },
+                    {
                       fieldName: "inventory_location_id",
                       label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
                       displayTemplate: row => {
@@ -57,10 +75,10 @@ class BatchWiseStock extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                              f =>
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
+                            );
 
                         return (
                           <span>
@@ -75,10 +93,10 @@ class BatchWiseStock extends Component {
                           this.props.inventorylocations === undefined
                             ? []
                             : this.props.inventorylocations.filter(
-                                f =>
-                                  f.hims_d_inventory_location_id ===
-                                  row.inventory_location_id
-                              );
+                              f =>
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
+                            );
 
                         return (
                           <span>
@@ -101,10 +119,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                                f =>
-                                  f.hims_d_inventory_item_master_id ===
-                                  row.item_id
-                              );
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
+                            );
 
                         return (
                           <span>
@@ -119,10 +137,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemlist === undefined
                             ? []
                             : this.props.inventoryitemlist.filter(
-                                f =>
-                                  f.hims_d_inventory_item_master_id ===
-                                  row.item_id
-                              );
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
+                            );
 
                         return (
                           <span>
@@ -144,10 +162,10 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f =>
-                                  f.hims_d_inventory_uom_id ===
-                                  row.stocking_uom_id
-                              );
+                              f =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
+                            );
 
                         return (
                           <span>
@@ -169,8 +187,8 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f => f.hims_d_inventory_uom_id === row.sales_uom
-                              );
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
 
                         return (
                           <span>
@@ -186,8 +204,8 @@ class BatchWiseStock extends Component {
                           this.props.inventoryitemuom === undefined
                             ? []
                             : this.props.inventoryitemuom.filter(
-                                f => f.hims_d_inventory_uom_id === row.sales_uom
-                              );
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
 
                         return (
                           <span>
@@ -199,18 +217,19 @@ class BatchWiseStock extends Component {
                       },
                       others: { filterable: false }
                     },
-                    {
-                      fieldName: "barcode",
-                      label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                      disabled: true,
-                      others: { filterable: false }
-                    },
+                    // {
+                    //   fieldName: "barcode",
+                    //   label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                    //   disabled: true,
+                    //   others: { filterable: false, minWidth: 150 }
+                    // },
                     {
                       fieldName: "batchno",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                       ),
-                      disabled: true
+                      disabled: true,
+                      others: { minWidth: 150 }
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -257,17 +276,6 @@ class BatchWiseStock extends Component {
                       others: { filterable: false }
                     },
                     {
-                      fieldName: "git_qty",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "GIT Quantity" }} />
-                      ),
-                      displayTemplate: row => {
-                        return parseFloat(row.git_qty);
-                      },
-                      disabled: true,
-                      others: { filterable: false }
-                    },
-                    {
                       fieldName: "avgcost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
@@ -275,7 +283,7 @@ class BatchWiseStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.avgcost, {
+                            {GetAmountFormart(row.avgcost, {
                               appendSymbol: false
                             })}
                           </span>
@@ -292,7 +300,7 @@ class BatchWiseStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.sale_price, {
+                            {GetAmountFormart(row.sale_price, {
                               appendSymbol: false
                             })}
                           </span>
@@ -330,7 +338,7 @@ class BatchWiseStock extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: updateStockDetils.bind(this, this)
                   }}
                 />

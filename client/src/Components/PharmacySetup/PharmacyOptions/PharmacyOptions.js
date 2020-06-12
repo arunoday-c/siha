@@ -14,7 +14,8 @@ export default class PharmacyOptions extends Component {
     this.state = {
       hims_d_pharmacy_options_id: null,
       notification_before: 0,
-      notification_type: "D"
+      notification_type: "D",
+      requisition_auth_level: "1"
     };
 
     this.getPharmacyOptions();
@@ -93,15 +94,25 @@ export default class PharmacyOptions extends Component {
 
   render() {
     return (
-      <div className="row LeaveSalarySetupScreen">
-        <div className="col-12">
-          <div className="portlet portlet-bordered  transactionSettings">
+      <div className="row" style={{ paddingTop: 15 }}>
+        <div className="col-3">
+          <div className="portlet portlet-bordered marginBottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Item Notification Settings</h3>
+              </div>
+            </div>
             <div className="portlet-body">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{
+                    className: "col-6",
+                    others: {
+                      style: { paddingRight: 0 }
+                    }
+                  }}
                   label={{
-                    forceLabel: "Notification Before",
+                    forceLabel: "Notify Expiry Before",
                     isImp: true
                   }}
                   textBox={{
@@ -116,9 +127,11 @@ export default class PharmacyOptions extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-2" }}
+                  div={{
+                    className: "col"
+                  }}
                   label={{
-                    forceLabel: "Notification Type",
+                    forceLabel: "",
                     isImp: true
                   }}
                   selector={{
@@ -130,26 +143,67 @@ export default class PharmacyOptions extends Component {
                       valueField: "value",
                       data: GlobalVariables.NOTIFICATION_TYPE
                     },
-                    onChange: this.changeTexts.bind(this)
+                    onChange: this.changeTexts.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        notification_type: null
+                      });
+                    }
                   }}
                 />
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
+        <div className="col-3">
+          <div className="portlet portlet-bordered marginBottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">
+                  Material Requestion Settings
+                </h3>
               </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Requisition Auth level",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "requisition_auth_level",
+                    value: this.state.requisition_auth_level,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.AUTH_LEVEL2
+                    },
+                    onChange: this.changeTexts.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        requisition_auth_level: null
+                      });
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+              </button>
             </div>
           </div>
         </div>

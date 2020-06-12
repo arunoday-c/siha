@@ -78,13 +78,13 @@ class ProcedureSetup extends Component {
               <h3 className="caption-subject">Procedure Lists</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
               <Procedures
                 HeaderCaption="Procedure Details"
                 show={this.state.isOpen}
@@ -140,8 +140,8 @@ class ProcedureSetup extends Component {
                           this.props.procedureservices === undefined
                             ? []
                             : this.props.procedureservices.filter(
-                                f => f.hims_d_services_id === row.service_id
-                              );
+                              f => f.hims_d_services_id === row.service_id
+                            );
 
                         return (
                           <span>

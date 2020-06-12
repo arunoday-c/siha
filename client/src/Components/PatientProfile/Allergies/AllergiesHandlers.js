@@ -21,11 +21,12 @@ const getAllAllergies = ($this, callBack) => {
 };
 
 const getPatientAllergies = ($this, callBack) => {
+  const { current_patient } = Window.global;
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
     data: {
-      patient_id: Window.global["current_patient"]
+      patient_id: current_patient //Window.global["current_patient"]
     },
     cancelRequestId: "getPatientAllergies",
     redux: {
@@ -98,11 +99,12 @@ const texthandle = ($this, data, ctrl, e) => {
 };
 
 const updatePatientAllergy = ($this, row) => {
+  const { current_patient } = Window.global;
   algaehApiCall({
     uri: "/doctorsWorkbench/updatePatientAllergy",
     method: "PUT",
     data: {
-      patient_id: Window.global["current_patient"],
+      patient_id: current_patient, //Window.global["current_patient"],
       allergy_id: row.allergy_id,
       hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
       onset: row.allergy_onset,

@@ -78,7 +78,7 @@ let getVisitPrescriptionDetails = (req, res, next) => {
           D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time, D.start_date, D.item_status, D.service_id, D.uom_id,\
           D.item_category_id, D.item_group_id\
           from hims_f_prescription H,hims_f_prescription_detail D  WHERE H.hims_f_prescription_id = D.prescription_id and " +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -126,8 +126,8 @@ let getItemMoment = (req, res, next) => {
       }
       db.query(
         "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' and " +
-          whereOrder +
-          (where.condition == "" ? "" : " AND " + where.condition),
+        whereOrder +
+        (where.condition == "" ? "" : " AND " + where.condition),
         where.values,
 
         (error, result) => {
@@ -254,7 +254,7 @@ let getItemandLocationStock = (req, res, next) => {
         "SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
         avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
         from hims_m_item_location where record_status='A' and qtyhand>0 and " +
-          where.condition,
+        where.condition,
         where.values,
 
         (error, result) => {
@@ -360,14 +360,13 @@ let pharmacyReceiptInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
 
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                    receptSample.join(",") +
-                    ",hims_f_receipt_header_id) VALUES ? ",
+                  receptSample.join(",") +
+                  ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,
@@ -465,13 +464,12 @@ let pharmacyReceiptInsert = (req, res, next) => {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by",
-                  "card_type"
+                  "updated_by"
                 ];
                 connection.query(
                   "INSERT  INTO hims_f_receipt_details ( " +
-                    receptSample.join(",") +
-                    ",hims_f_receipt_header_id) VALUES ? ",
+                  receptSample.join(",") +
+                  ",hims_f_receipt_header_id) VALUES ? ",
                   [
                     jsonArrayToObject({
                       sampleInputObject: receptSample,

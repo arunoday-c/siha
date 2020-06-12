@@ -3,12 +3,8 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
-import {
-  SetBulkState,
-  AlgaehValidation
-} from "../../../../utils/GlobalFunctions";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -188,18 +184,13 @@ const InsuranceDetails = ($this, context, e) => {
   } else {
     ProcessInsure = false;
   }
-
-  const hospital = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  );
-
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
     },
     searchName: "insurance",
     uri: "/gloabelSearch/get",
-    inputs: "netoff.hospital_id = " + hospital.hims_d_hospital_id,
+    inputs: "netoff.hospital_id = " + $this.state.hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -432,7 +423,8 @@ const ProcessInsurance = ($this, context) => {
         secondary_insurance_provider_id:
           $this.state.secondary_insurance_provider_id,
         secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+        FollowUp: $this.state.follow_up
       }
     ];
 
@@ -460,6 +452,11 @@ const ProcessInsurance = ($this, context) => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
+                if ($this.state.default_pay_type === "CD") {
+                  response.data.records.card_amount = response.data.records.receiveable_amount
+                  response.data.records.cash_amount = 0
+                }
+
                 $this.setState({ ...response.data.records });
                 if (context !== null) {
                   context.updateState({ ...response.data.records });

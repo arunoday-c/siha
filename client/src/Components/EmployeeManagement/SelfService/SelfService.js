@@ -1,27 +1,34 @@
 import React, { Component } from "react";
 import "./SelfService.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import ActivityFeed from "./ActivityFeed/ActivityFeed";
 import SelfPersonalDetails from "./PersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
-import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
+
 import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
+import ApplyLeaveEncashment from ".././EmployeeServices/ApplyLeaveEncashment/ApplyLeaveEncashment";
 
 // import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-
+import { AlgaehTabs } from "algaeh-react-components";
 export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "AttendanceRegularization",
+      pageDisplay: "ApplyLeave",
       regularize: {},
-      leave: {}
+      leave: {},
+      employee_details: {},
+      loading: false,
     };
+  }
+
+  componentDidMount() {
     this.getEmployeeDetails();
     this.getLeaveSalaryOptions();
   }
@@ -31,80 +38,93 @@ export default class SelfService extends Component {
       uri: "/payrollOptions/getLeaveSalaryOptions",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            basic_earning_component: res.data.result[0].basic_earning_component
+            basic_earning_component: res.data.result[0].basic_earning_component,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  getEmployeeDetails() {
+  getEmployeeDetails = () => {
+    const { loading } = this.state;
+    AlgaehLoader({ loading });
     algaehApiCall({
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
-          this.setState({
-            employee_details: res.data.records[0]
-          });
+          this.setState(
+            {
+              employee_details: res.data.records[0],
+              loading: false,
+            },
+            () => {
+              AlgaehLoader({ loading });
+            }
+          );
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
+        this.setState({ loading: false });
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
-  }
+  };
 
-  openTab(e) {
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
-    this.setState({
-      pageDisplay: specified
-    });
-  }
+  // openTab(e) {
+  //   var element = document.querySelectorAll("[algaehtabs]");
+  //   for (var i = 0; i < element.length; i++) {
+  //     element[i].classList.remove("active");
+  //   }
+  //   e.currentTarget.classList.add("active");
+  //   var specified = e.currentTarget.getAttribute("algaehtabs");
 
-  ChangeRenderTabs(options) {
-    if (options.pageDisplay === "AttendanceRegularization") {
-      this.attReg.click();
-    } else if (options.pageDisplay === "ApplyLeave") {
-      this.attlv.click();
-    }
+  //   this.setState({
+  //     pageDisplay: specified
+  //   });
+  // }
 
-    this.setState({
-      ...this.state,
-      ...options
-    });
-  }
+  // ChangeRenderTabs(options) {
+  //   if (options.pageDisplay === "AttendanceRegularization") {
+  //     this.attReg.click();
+  //   } else if (options.pageDisplay === "ApplyLeave") {
+  //     this.attlv.click();
+  //   }
+
+  //   this.setState({
+  //     ...this.state,
+  //     ...options
+  //   });
+  // }
 
   render() {
     let empDetails =
       this.state.employee_details !== undefined
         ? this.state.employee_details
         : {};
+    if (this.state.loading) {
+      return null;
+    }
     return (
       <div className="selfServiceModule">
-        <button
+        {/* <button
           className="d-none"
           id="ep-dl"
           onClick={this.getEmployeeDetails.bind(this)}
-        />
+        /> */}
         <div className="row EmployeeProfile">
           <div className="EmployeeInfo-Top box-shadow-normal">
             <div className="EmployeeImg">
@@ -118,7 +138,7 @@ export default class SelfService extends Component {
                 serviceParameters={{
                   uniqueID: empDetails.employee_code,
                   destinationName: empDetails.employee_code,
-                  fileType: "Employees"
+                  fileType: "Employees",
                 }}
               />
             </div>
@@ -127,15 +147,15 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeDemographic">
               <span>
-                <i className="fas fa-user-tie" />{" "}
+                <i className="fas fa-user-tie" />
                 <b>{empDetails.employee_code}</b>
               </span>
               <span>
-                <i className="fas fa-mobile" />{" "}
+                <i className="fas fa-mobile" />
                 <b>{empDetails.primary_contact_no}</b>
               </span>
               <span>
-                <i className="fas fa-envelope" /> <b>{empDetails.email}</b>
+                <i className="fas fa-envelope" /> <b>{empDetails.work_email}</b>
               </span>
             </div>
             <div className="EmployeeDemographic">
@@ -156,8 +176,9 @@ export default class SelfService extends Component {
                 </b>
               </span>
               <span>
-                Reporting to:{" "}
+                Reporting to:
                 <b>
+                  {" "}
                   {empDetails.reporting_to_name !== null
                     ? empDetails.reporting_to_name
                     : "------"}
@@ -176,139 +197,134 @@ export default class SelfService extends Component {
             </div>
           </div>
         </div>
-        <div className="row EmployeeTopNav box-shadow-normal">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              {/* <li
-                algaehtabs={"ActivityFeed"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Activity Feed"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"TimeSheetSelf"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Time Sheet"
-                    }}
-                  />
-                }
-              </li> */}
-              <li
-                algaehtabs={"AttendanceRegularization active"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attReg => {
-                  this.attReg = attReg;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Attendance Regularization"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ApplyLeave"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-                ref={attlv => {
-                  this.attlv = attlv;
-                }}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Apply Leave"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoanRequest"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Loan / Advance Request"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"SelfPersonalDetails"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Personal Info"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"HolidayListSelf"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Holiday List"
-                    }}
-                  />
-                }
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="selfService-setion">
-          {this.state.pageDisplay === "ActivityFeed" ? (
-            <ActivityFeed parent={this} empData={this.state.employee_details} />
-          ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
-            <SelfPersonalDetails empData={this.state.employee_details} />
-          ) : this.state.pageDisplay === "AttendanceRegularization" ? (
-            <AttendanceRegularization
-              regularize={this.state.regularize}
-              empData={this.state.employee_details}
-            />
-          ) : this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave
-              leave={this.state.leave}
-              empData={this.state.employee_details}
-            />
-          ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest
-              empData={this.state.employee_details}
-              basic_earning_component={this.state.basic_earning_component}
-            />
-          ) : this.state.pageDisplay === "LeaveEncashment" ? (
-            <LeaveEncashment />
-          ) : this.state.pageDisplay === "TimeSheetSelf" ? (
-            <TimeSheetSelf />
-          ) : this.state.pageDisplay === "HolidayListSelf" ? (
-            <HolidayListSelf />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          tabClass="EmployeeTopNav"
+          removeCommonSection={true}
+          customRenderTag={() => {}}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Activity Feed",
+                  }}
+                />
+              ),
+              children: (
+                <ActivityFeed
+                  parent={this}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_ACT_FED",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Request Leave",
+                  }}
+                />
+              ),
+              children: (
+                <ApplyLeave
+                  leave={this.state.leave}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_APP_LEV",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Loan/ Advance Request",
+                  }}
+                />
+              ),
+              children: (
+                <LoanRequest
+                  empData={this.state.employee_details}
+                  basic_earning_component={this.state.basic_earning_component}
+                />
+              ),
+              componentCode: "SEL_LON_ADV_REQ",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Leave Encashment Request",
+                  }}
+                />
+              ),
+              children: (
+                <ApplyLeaveEncashment
+                  from_screen="SS"
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_LEV_ENC_REQ",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Attendance Regularisation",
+                  }}
+                />
+              ),
+              children: (
+                <AttendanceRegularization
+                  regularize={this.state.regularize}
+                  empData={this.state.employee_details}
+                />
+              ),
+              componentCode: "SEL_ATT_REG",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Personal Info",
+                  }}
+                />
+              ),
+              children: (
+                <SelfPersonalDetails
+                  empData={this.state.employee_details}
+                  refreshEmp={this.getEmployeeDetails}
+                />
+              ),
+              componentCode: "SEL_PER_INF",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Holiday List",
+                  }}
+                />
+              ),
+              children: (
+                <HolidayListSelf empData={this.state.employee_details} />
+              ),
+              componentCode: "SEL_HOL_LST",
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Self Timesheet",
+                  }}
+                />
+              ),
+              children: <TimeSheetSelf />,
+              componentCode: "SEL_TIM_SHE",
+            },
+          ]}
+          renderClass="selfServiceSection"
+        />
       </div>
     );
   }

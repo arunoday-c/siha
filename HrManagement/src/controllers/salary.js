@@ -3,14 +3,11 @@ import utlities from "algaeh-utilities";
 import salaryModels from "../models/salary";
 
 const {
-  processSalary,
   getSalaryProcess,
-  getSalaryProcessToPay,
   finalizedSalaryProcess,
-  SaveSalaryPayment,
-  getWpsEmployees,
   newProcessSalary,
-  detailSalaryStatement
+  detailSalaryStatement,
+  generateAccountingEntry
 } = salaryModels;
 
 export default () => {
@@ -25,10 +22,17 @@ export default () => {
     newProcessSalary,
     getSalaryProcess,
     (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
-      });
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
     }
   );
 
@@ -39,16 +43,10 @@ export default () => {
     });
   });
 
-  api.get("/getSalaryProcessToPay", getSalaryProcessToPay, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records
-    });
-  });
-
   api.put(
     "/finalizedSalaryProcess",
     finalizedSalaryProcess,
+    generateAccountingEntry,
     (req, res, next) => {
       let result = "";
       if (req.flag == 1) {
@@ -56,6 +54,7 @@ export default () => {
       } else {
         result = req.records;
       }
+
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: req.flag == 1 ? false : true,
         result: result
@@ -63,31 +62,11 @@ export default () => {
     }
   );
 
-  api.put("/SaveSalaryPayment", SaveSalaryPayment, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records
-    });
-  });
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
     });
-  });
-
-  api.get("/getWpsEmployees", getWpsEmployees, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        records: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
   });
 
   return api;

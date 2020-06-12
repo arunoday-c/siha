@@ -10,24 +10,23 @@ import {
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
-import swal from "sweetalert2";
+import Enumerable from "linq";
 
-//TODO
-//Inactive Different API Call Integration
 
 class VendorSetup extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      hims_d_vendor_id: null,
       openModal: false,
       vendors: [],
       countries: [],
       states: [],
       cities: [],
       vat_applicable: false,
-      btn_txt: "ADD",
-      hims_d_vendor_id: null
+      btn_txt: "ADD",      
+      vendor_status: "A"
     };
     this.getAllVendors();
     this.getCountries();
@@ -35,6 +34,7 @@ class VendorSetup extends Component {
 
   resetSaveState() {
     this.setState({
+      hims_d_vendor_id: null,
       vendor_code: "",
       vendor_name: "",
       business_registration_no: "",
@@ -51,9 +51,10 @@ class VendorSetup extends Component {
       city_id: null,
       postal_code: null,
       bank_name: null,
-      address: "",
-      hims_d_vendor_id: null,
-      openModal: false
+      address: "",      
+      openModal: false,
+      bank_account_no: null,
+      vat_number: null
     });
   }
 
@@ -128,7 +129,9 @@ class VendorSetup extends Component {
           postal_code: this.state.postal_code,
           bank_name: this.state.bank_name,
           address: this.state.address,
-          vendor_status: "A"
+          vendor_status: this.state.vendor_status,
+          bank_account_no: this.state.bank_account_no,
+          vat_number: this.state.vat_number
         };
 
         algaehApiCall({
@@ -163,6 +166,30 @@ class VendorSetup extends Component {
       btn_txt: "Update",
       ...data
     });
+    this.getStateCity(data.country_id, data.state_id)
+  }
+
+  getStateCity(country_id, state_id) {
+
+    let country = Enumerable.from(this.state.countries)
+      .where(w => w.hims_d_country_id === parseInt(country_id, 10))
+      .firstOrDefault();
+    let states = country !== undefined ? country.states : [];
+    if (this.state.countries !== undefined && states.length !== 0) {
+      let cities = Enumerable.from(states)
+        .where(w => w.hims_d_state_id === parseInt(state_id, 10))
+        .firstOrDefault();
+      if (cities !== undefined) {
+        this.setState({
+          states: states,
+          cities: cities.cities,
+        });
+      } else {
+        this.setState({
+          states: states
+        });
+      }
+    }
   }
 
   changeTexts(e) {
@@ -202,55 +229,62 @@ class VendorSetup extends Component {
     }
   }
 
-  deleteVendor(data, e) {
-    swal({
-      title: "Delete Vendor " + data.vendor_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/vendor/deleteVendorMaster",
-          module: "masterSettings",
-          data: {
-            hims_d_vendor_id: data.hims_d_vendor_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
+  // deleteVendor(data, e) {
+  //   swal({
+  //     title: "Delete Vendor " + data.vendor_name + "?",
+  //     type: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonText: "Yes",
+  //     confirmButtonColor: "#44b8bd",
+  //     cancelButtonColor: "#d33",
+  //     cancelButtonText: "No"
+  //   }).then(willDelete => {
+  //     if (willDelete.value) {
+  //       algaehApiCall({
+  //         uri: "/vendor/deleteVendorMaster",
+  //         module: "masterSettings",
+  //         data: {
+  //           hims_d_vendor_id: data.hims_d_vendor_id
+  //         },
+  //         method: "DELETE",
+  //         onSuccess: response => {
+  //           if (response.data.success) {
+  //             swalMessage({
+  //               title: "Record deleted successfully . .",
+  //               type: "success"
+  //             });
 
-              this.getAllVendors();
-              this.resetSaveState();
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
+  //             this.getAllVendors();
+  //             this.resetSaveState();
+  //           } else if (!response.data.success) {
+  //             swalMessage({
+  //               title: response.data.message,
+  //               type: "error"
+  //             });
+  //           }
+  //         },
+  //         onFailure: error => {
+  //           swalMessage({
+  //             title: error.message,
+  //             type: "error"
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+
+  radioChange(e) {
+    let vendor_status = "A";
+    if (e.target.value === "I") {
+      vendor_status = "I";
+    }
+    this.setState({
+      vendor_status: vendor_status
     });
   }
+
 
   render() {
     return (
@@ -269,7 +303,7 @@ class VendorSetup extends Component {
                 <hr style={{ margin: 0 }} />
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col mandatory" }}
                     label={{
                       fieldName: "vendor_code",
                       isImp: true
@@ -288,7 +322,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "vendor_name",
                       isImp: true
@@ -304,7 +338,7 @@ class VendorSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "business_registration_no",
                       isImp: true
@@ -319,7 +353,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "contact_number",
                       isImp: true
@@ -338,7 +372,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "email_id_1",
                       isImp: true
@@ -383,7 +417,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "address",
                       isImp: true
@@ -398,7 +432,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "country",
                       isImp: true
@@ -416,7 +450,7 @@ class VendorSetup extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "state",
                       isImp: true
@@ -465,17 +499,55 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
+
+                  {this.state.hims_d_vendor_id !== null ?
+                    <div className="col-3">
+                      <label>Vendor Status</label>
+                      <div className="customRadio" style={{ borderBottom: 0 }}>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            value="A"
+                            checked={this.state.vendor_status === "A" ? true : false}
+                            onChange={this.radioChange.bind(this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "active"
+                              }}
+                            />
+                          </span>
+                        </label>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            value="I"
+                            checked={this.state.vendor_status === "I" ? true : false}
+                            onChange={this.radioChange.bind(this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "inactive"
+                              }}
+                            />
+                          </span>
+                        </label>
+                      </div>
+                    </div> : null}
                 </div>
                 <h6 style={{ marginTop: 30 }}>Payment Details</h6>
                 <hr style={{ margin: 0 }} />
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-2 mandatory" }}
                     label={{
                       fieldName: "payment_terms",
                       isImp: true
                     }}
                     selector={{
+                      sort: "off",
                       name: "payment_terms",
                       className: "select-fld",
                       value: this.state.payment_terms,
@@ -489,7 +561,7 @@ class VendorSetup extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "payment_mode",
                       isImp: true
@@ -508,10 +580,26 @@ class VendorSetup extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      fieldName: "vat_number",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "vat_number",
+                      value: this.state.vat_number,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
                     label={{
                       fieldName: "bank_name",
-                      isImp: true
+                      isImp: this.state.payment_mode === "BT" ? true : false
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -522,15 +610,42 @@ class VendorSetup extends Component {
                       }
                     }}
                   />
-                  <div className="col-2" style={{ marginTop: 21 }}>
-                    <input
-                      name="vat_applicable"
-                      checked={this.state.vat_applicable}
-                      type="checkbox"
-                      style={{ marginRight: "5px" }}
-                      onChange={this.changeChecks.bind(this)}
-                    />
-                    <label>VAT Applicable</label>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "bank_account_no",
+                      isImp: this.state.payment_mode === "BT" ? true : false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "bank_account_no",
+                      value: this.state.bank_account_no,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+
+
+                  {/* <div
+                    className="col-2 customCheckbox"
+                    style={{ paddingTop: "10px" }}
+                  >
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        name="vat_applicable"
+                        value="Y"
+                        checked={this.state.vat_applicable}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>
+                        <AlgaehLabel
+                          label={{ forceLabel: "VAT Applicable" }}
+                        />
+                      </span>
+                    </label>
                   </div>
 
                   <AlagehFormGroup
@@ -553,7 +668,7 @@ class VendorSetup extends Component {
                         disabled: !this.state.vat_applicable
                       }
                     }}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -591,7 +706,7 @@ class VendorSetup extends Component {
               <h3 className="caption-subject">Vendors List</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 className="btn btn-primary btn-circle active"
                 onClick={() => {
                   this.setState({
@@ -601,7 +716,7 @@ class VendorSetup extends Component {
                 }}
               >
                 <i className="fas fa-plus" />
-              </a>
+              </button>
             </div>
           </div>
 
@@ -622,10 +737,10 @@ class VendorSetup extends Component {
                                 className="fas fa-pen"
                                 onClick={this.editVendor.bind(this, row)}
                               />
-                              <i
+                              {/* <i
                                 className="fas fa-trash-alt"
-                                onClick={this.deleteVendor.bind(this, row)}
-                              />
+                              onClick={this.deleteVendor.bind(this, row)}
+                              /> */}
                             </div>
                           </div>
                         );

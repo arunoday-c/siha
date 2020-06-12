@@ -1,9 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import _ from "lodash";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
 
 export default function NewPackageEvent() {
@@ -294,9 +291,6 @@ export default function NewPackageEvent() {
             InputObj.service_name = InputObj.package_name;
             InputObj.service_status = "A";
             InputObj.standard_fee = InputObj.package_amount;
-            InputObj.hospital_id = JSON.parse(
-              AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-            ).hims_d_hospital_id;
             algaehApiCall({
               uri: "/packagesetup/addPackage",
               module: "masterSettings",

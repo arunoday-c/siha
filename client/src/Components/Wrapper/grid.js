@@ -7,7 +7,6 @@ import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
-import "../Wrapper/wrapper.scss";
 const CreateCsv = React.lazy(() => import("./csvGenerator"));
 
 let ReactTableFixedColumns = withFixedColumns(ReactTable);
@@ -30,7 +29,7 @@ class DataGrid extends Component {
       inputParam: {},
       isEditable: false,
       uiUpdate: true,
-      forceRender: undefined
+      forceRender: undefined,
     };
 
     this.tmp = new Set();
@@ -102,7 +101,7 @@ class DataGrid extends Component {
     const _state =
       this.state.dummyUpdate === undefined ? false : !this.state.dummyUpdate;
     this.setState({
-      dummyUpdate: _state
+      dummyUpdate: _state,
     });
   }
   renderEditable = (templates, cellInfo) => {
@@ -169,16 +168,16 @@ class DataGrid extends Component {
               <AlgaehDateHandler
                 textBox={{
                   className: "txt-fld",
-                  name: "effective_start_date"
+                  name: "effective_start_date",
                 }}
                 events={{
-                  onChange: e => {
+                  onChange: (e) => {
                     this.onDateHandleEditChange(
                       e,
                       cellInfo.index,
                       cellInfo.column.id
                     );
-                  }
+                  },
                 }}
                 value={_value}
               />
@@ -194,13 +193,13 @@ class DataGrid extends Component {
                       : "",
                   value: _value,
                   events: {
-                    onChange: this.onTextHandleEditChange.bind(this)
+                    onChange: this.onTextHandleEditChange.bind(this),
                   },
                   others: {
                     "column-id": cellInfo.column.id,
-                    "row-id": cellInfo.index
+                    "row-id": cellInfo.index,
                   },
-                  ...isnumber
+                  ...isnumber,
                 }}
               />
             );
@@ -209,7 +208,7 @@ class DataGrid extends Component {
       }
     }
   };
-  toggleRowEditable = index => {
+  toggleRowEditable = (index) => {
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     const prevStateIndexData =
@@ -217,7 +216,7 @@ class DataGrid extends Component {
         ? this.props.dataSource.data[index]
         : this.state.data[index];
     let row = Enumerable.from(existsing)
-      .where(w => w.rowIdx === index)
+      .where((w) => w.rowIdx === index)
       .firstOrDefault();
     const _index = existsing.indexOf(row);
     if (_index > -1) {
@@ -238,8 +237,8 @@ class DataGrid extends Component {
       {
         editableRows: {
           ...this.state.editableRows,
-          [index]: !this.state.editableRows[index]
-        }
+          [index]: !this.state.editableRows[index],
+        },
       },
       () => {
         this.props.events.onEdit(this.state.data[index]);
@@ -249,7 +248,7 @@ class DataGrid extends Component {
   componentWillUnmount() {
     sessionStorage.removeItem(this.props.id);
   }
-  toggleRowCancel = index => {
+  toggleRowCancel = (index) => {
     const row = this.settingPreviousRowData(index);
     const data = [...this.state.data];
     data[row.rowIdx] = row;
@@ -257,9 +256,9 @@ class DataGrid extends Component {
       {
         editableRows: {
           ...this.state.editableRows,
-          [index]: !this.state.editableRows[index]
+          [index]: !this.state.editableRows[index],
         },
-        data
+        data,
       },
       () => {
         if (typeof this.props.events.onCancel === "function") {
@@ -268,11 +267,11 @@ class DataGrid extends Component {
       }
     );
   };
-  settingPreviousRowData = index => {
+  settingPreviousRowData = (index) => {
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
     let row = Enumerable.from(existsing)
-      .where(w => w.rowIdx === index)
+      .where((w) => w.rowIdx === index)
       .firstOrDefault();
     const _index = existsing.indexOf(row);
     if (_index > -1) {
@@ -286,7 +285,7 @@ class DataGrid extends Component {
     );
     return row;
   };
-  toggleRowDelete = index => {
+  toggleRowDelete = (index) => {
     if (
       this.props.events !== undefined &&
       this.props.events.onDelete !== undefined
@@ -296,12 +295,11 @@ class DataGrid extends Component {
       this.props.events.onDelete(_row);
     }
   };
-  toggleRowSave = index => {
-    debugger;
+  toggleRowSave = (index) => {
     const existsing = Enumerable.from(
       JSON.parse(sessionStorage.getItem(this.props.id))["collection"]
     )
-      .where(w => w.rowIdx === index)
+      .where((w) => w.rowIdx === index)
       .firstOrDefault();
 
     const row =
@@ -313,8 +311,8 @@ class DataGrid extends Component {
         this.setState({
           editableRows: {
             ...this.state.editableRows,
-            [index]: !this.state.editableRows[index]
-          }
+            [index]: !this.state.editableRows[index],
+          },
         });
         return;
       }
@@ -324,9 +322,9 @@ class DataGrid extends Component {
     if (this.props.datavalidate !== undefined) {
       AlgaehValidation({
         querySelector: this.props.datavalidate,
-        onCatch: val => {
+        onCatch: (val) => {
           isError = true;
-        }
+        },
       });
     }
     if (isError) return;
@@ -338,8 +336,8 @@ class DataGrid extends Component {
           {
             editableRows: {
               ...this.state.editableRows,
-              [index]: !this.state.editableRows[index]
-            }
+              [index]: !this.state.editableRows[index],
+            },
           },
           () => {
             this.props.events.onDone(row);
@@ -373,16 +371,16 @@ class DataGrid extends Component {
 
     let input = {
       ...inputProps,
-      ..._pagaeInput
+      ..._pagaeInput,
     };
-    debugger;
+
     new Promise((resolve, reject) => {
       if ($this.props.dataSource.validateBeforeServiceCall !== undefined) {
         resolve($this.props.dataSource.validateBeforeServiceCall($this));
       } else {
         resolve(true);
       }
-    }).then(result => {
+    }).then((result) => {
       if (result === true) {
         algaehApiCall({
           uri: $this.props.dataSource.uri,
@@ -390,7 +388,7 @@ class DataGrid extends Component {
           method: $this.props.dataSource.method
             ? $this.props.dataSource.method
             : "GET",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               let dataS = eval(
                 "response.data." + $this.props.dataSource.responseSchema.data
@@ -412,9 +410,9 @@ class DataGrid extends Component {
               console.error(response);
             }
           },
-          onFailure: data => {
+          onFailure: (data) => {
             console.error(data);
-          }
+          },
         });
       }
     });
@@ -428,19 +426,21 @@ class DataGrid extends Component {
 
   componentDidMount() {
     this.setState({
-      isEditable: this.props.isEditable
+      isEditable: this.props.isEditable,
     });
 
     if (this.state.columns.length === 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
-          .select(s => {
+          .select((s) => {
             const _displayTemp =
               s.displayTemplate === undefined
                 ? { accessor: s.fieldName }
-                : { accessor: row => s.displayTemplate(row, this.state.data) };
+                : {
+                    accessor: (row) => s.displayTemplate(row, this.state.data),
+                  };
             const _assignClass =
-              s.className !== undefined ? row => s.className(row) : "";
+              s.className !== undefined ? (row) => s.className(row) : "";
             const _disabled =
               s.disabled !== undefined ? { disabled: s.disabled } : {};
             return {
@@ -452,12 +452,12 @@ class DataGrid extends Component {
               style: { whiteSpace: "unset" },
               Cell: this.renderEditable.bind(this, {
                 displayTemp: s.displayTemplate,
-                editorTemp: s.editorTemplate
+                editorTemp: s.editorTemplate,
               }),
               assignTdClass: _assignClass,
               ..._displayTemp,
               ...s.others,
-              ..._disabled
+              ..._disabled,
             };
           })
           .toArray();
@@ -527,7 +527,7 @@ class DataGrid extends Component {
               );
             },
             style: { textAlign: "center" },
-            show: this.props.isEditable
+            show: this.props.isEditable,
           });
           //}
         }
@@ -535,7 +535,7 @@ class DataGrid extends Component {
           this.setState({
             columns: _columns,
             data: [],
-            inputParam: this.props.dataSource.inputParam
+            inputParam: this.props.dataSource.inputParam,
           });
           const that = this;
           this.apiCallingFunction(this, 0, (data, totalPages) => {
@@ -549,11 +549,10 @@ class DataGrid extends Component {
               data: data,
               totalPages: _total,
               rowsPerPage: that.props.paging.rowsPerPage,
-              recordsTotal: totalPages
+              recordsTotal: totalPages,
             });
           });
         } else {
-          debugger;
           const _total = Math.ceil(
             this.props.dataSource.uri === undefined
               ? this.props.dataSource.data !== undefined
@@ -583,7 +582,7 @@ class DataGrid extends Component {
                   : 10
                 : 10,
             recordsTotal: _data.length,
-            ..._loading
+            ..._loading,
           });
         }
       }
@@ -602,14 +601,103 @@ class DataGrid extends Component {
     if (this.state !== nextState) return true;
     else return false;
   }
-  componentWillReceiveProps(props) {
-    debugger;
+  UNSAFE_componentWillReceiveProps(props) {
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
     if (props.isEditable !== this.props.isEditable) {
       this.setState({
-        isEditable: props.isEditable
+        isEditable: props.isEditable,
+      });
+    }
+
+    if (props.columns !== undefined && props.columns.length !== 0) {
+      let _columns = Enumerable.from(props.columns)
+        .select((s) => {
+          const _displayTemp =
+            s.displayTemplate === undefined
+              ? { accessor: s.fieldName }
+              : { accessor: (row) => s.displayTemplate(row, this.state.data) };
+          const _assignClass =
+            s.className !== undefined ? (row) => s.className(row) : "";
+
+          return {
+            Header: s.label,
+            id: s.fieldName,
+            Cell: this.renderEditable.bind(this, {
+              displayTemp: s.displayTemplate,
+              editorTemp: s.editorTemplate,
+            }),
+            assignTdClass: _assignClass,
+            ..._displayTemp,
+            ...s.others,
+          };
+        })
+        .toArray();
+      const _allowEditButton =
+        props.actions === undefined
+          ? true
+          : props.actions.allowEdit !== undefined
+          ? props.actions.allowEdit
+          : true;
+      const _allowDeleteButton =
+        props.actions === undefined
+          ? true
+          : props.actions.allowDelete !== undefined
+          ? props.actions.allowDelete
+          : true;
+
+      if (props.isEditable !== undefined && props.isEditable === true) {
+        if (_allowEditButton || _allowDeleteButton) {
+          _columns.splice(0, 0, {
+            Header: "Actions",
+            headerClassName: "sticky",
+            fixed: "left",
+            filterable: false,
+            Cell: ({ index }) => {
+              const edit =
+                this.state.editableRows[index] === undefined
+                  ? false
+                  : this.state.editableRows[index];
+              return (
+                <React.Fragment>
+                  {_allowEditButton ? (
+                    edit ? (
+                      <i
+                        className="fas fa-save"
+                        onClick={() => this.toggleRowSave(index)}
+                      />
+                    ) : (
+                      <i
+                        className="fas fa-pen"
+                        onClick={() => this.toggleRowEditable(index)}
+                      />
+                    )
+                  ) : null}
+                  {_allowDeleteButton ? (
+                    edit ? (
+                      <i
+                        className="fas fa-times"
+                        onClick={() => this.toggleRowCancel(index)}
+                      />
+                    ) : (
+                      <i
+                        className="fas fa-trash-alt"
+                        onClick={() => this.toggleRowDelete(index)}
+                      />
+                    )
+                  ) : null}
+                </React.Fragment>
+              );
+            },
+            show: props.isEditable,
+            style: { textAlign: "center", maxWidth: "70px" },
+          });
+        }
+      }
+      this.setState({
+        columns: _columns,
+        inputParam: props.dataSource.inputParam,
       });
     }
 
@@ -617,96 +705,6 @@ class DataGrid extends Component {
       props.algaehSearch !== undefined ||
       (props.forceRender !== undefined && props.forceRender === true)
     ) {
-      if (props.columns !== undefined && props.columns.length !== 0) {
-        let _columns = Enumerable.from(props.columns)
-          .select(s => {
-            const _displayTemp =
-              s.displayTemplate === undefined
-                ? { accessor: s.fieldName }
-                : { accessor: row => s.displayTemplate(row, this.state.data) };
-            const _assignClass =
-              s.className !== undefined ? row => s.className(row) : "";
-
-            return {
-              Header: s.label,
-              id: s.fieldName,
-              Cell: this.renderEditable.bind(this, {
-                displayTemp: s.displayTemplate,
-                editorTemp: s.editorTemplate
-              }),
-              assignTdClass: _assignClass,
-              ..._displayTemp,
-              ...s.others
-            };
-          })
-          .toArray();
-        const _allowEditButton =
-          props.actions === undefined
-            ? true
-            : props.actions.allowEdit !== undefined
-            ? props.actions.allowEdit
-            : true;
-        const _allowDeleteButton =
-          props.actions === undefined
-            ? true
-            : props.actions.allowDelete !== undefined
-            ? props.actions.allowDelete
-            : true;
-
-        if (props.isEditable !== undefined && props.isEditable === true) {
-          if (_allowEditButton || _allowDeleteButton) {
-            _columns.splice(0, 0, {
-              Header: "Actions",
-              headerClassName: "sticky",
-              fixed: "left",
-              filterable: false,
-              Cell: ({ index }) => {
-                const edit =
-                  this.state.editableRows[index] === undefined
-                    ? false
-                    : this.state.editableRows[index];
-                return (
-                  <React.Fragment>
-                    {_allowEditButton ? (
-                      edit ? (
-                        <i
-                          className="fas fa-save"
-                          onClick={() => this.toggleRowSave(index)}
-                        />
-                      ) : (
-                        <i
-                          className="fas fa-pen"
-                          onClick={() => this.toggleRowEditable(index)}
-                        />
-                      )
-                    ) : null}
-                    {_allowDeleteButton ? (
-                      edit ? (
-                        <i
-                          className="fas fa-times"
-                          onClick={() => this.toggleRowCancel(index)}
-                        />
-                      ) : (
-                        <i
-                          className="fas fa-trash-alt"
-                          onClick={() => this.toggleRowDelete(index)}
-                        />
-                      )
-                    ) : null}
-                  </React.Fragment>
-                );
-              },
-              show: props.isEditable,
-              style: { textAlign: "center", maxWidth: "70px" }
-            });
-          }
-        }
-        this.setState({
-          columns: _columns,
-          inputParam: props.dataSource.inputParam
-        });
-      }
-
       this.apiCallingFunction(
         this,
         0,
@@ -726,7 +724,7 @@ class DataGrid extends Component {
                   : 10
                 : 10,
             recordsTotal: totalPages,
-            forceRender: props.forceRender
+            forceRender: props.forceRender,
           });
         },
         props.dataSource.inputParam
@@ -735,7 +733,7 @@ class DataGrid extends Component {
       if (this.props.isEditable !== props.isEditable) {
         this.state.columns[0] = {
           ...this.state.columns[0],
-          show: props.isEditable
+          show: props.isEditable,
         };
       }
       const _total = Math.ceil(
@@ -758,7 +756,7 @@ class DataGrid extends Component {
             : 0,
         ..._loading,
         inputParam: props.dataSource.inputParam,
-        forceRender: props.forceRender
+        forceRender: props.forceRender,
       });
     }
   }
@@ -780,7 +778,7 @@ class DataGrid extends Component {
           data: data,
           totalPages: _total,
           recordsTotal: totalPages,
-          showLoading: false
+          showLoading: false,
         });
       });
     }
@@ -808,7 +806,7 @@ class DataGrid extends Component {
             totalPages: _total,
             recordsTotal: totalPages,
             rowsPerPage: pageSize,
-            showLoading: false
+            showLoading: false,
           });
         },
         null,
@@ -819,11 +817,11 @@ class DataGrid extends Component {
       const _total = Math.ceil(_data / pageSize);
       this.setState({
         rowsPerPage: pageSize,
-        totalPages: _total
+        totalPages: _total,
       });
     }
   }
-  isRowSelected = rowID => {
+  isRowSelected = (rowID) => {
     return this.tmp.has(rowID);
   };
   RowClickHandler = (action, row, index) => {
@@ -839,7 +837,7 @@ class DataGrid extends Component {
     }
     this.setState(
       {
-        selectionChanged: !this.state.selectionChanged
+        selectionChanged: !this.state.selectionChanged,
       },
       () => {
         if (this.props.onRowSelect !== undefined) {
@@ -856,11 +854,11 @@ class DataGrid extends Component {
         _isRowSelected !== false ? "rowHighliter selected-grid-row " : "";
 
       return {
-        className: _selectedColor
+        className: _selectedColor,
       };
     } else {
       return {
-        className: ""
+        className: "",
       };
     }
   };
@@ -871,7 +869,7 @@ class DataGrid extends Component {
           event.stopPropagation();
           this.RowClickHandler("click", rowInfo.row._original, rowInfo.index);
           if (handleOriginal) handleOriginal();
-        }
+        },
       };
       const _rowSel =
         this.props.rowClassName !== undefined ? this.props.rowClassName : "";
@@ -881,16 +879,16 @@ class DataGrid extends Component {
       ) {
         return {
           className: column.assignTdClass(rowInfo.original),
-          ..._clickEvent
+          ..._clickEvent,
         };
       } else if (_rowSel !== "") {
         return {
-          className: _rowSel(rowInfo.original)
+          className: _rowSel(rowInfo.original),
         };
       } else {
         return {
           className: column.assignTdClass,
-          ..._clickEvent
+          ..._clickEvent,
         };
       }
     } else {
@@ -914,7 +912,6 @@ class DataGrid extends Component {
   }
 
   render() {
-    debugger;
     const _data =
       this.props.dataSource.data !== undefined
         ? this.state.data.length !== this.props.dataSource.data.length
@@ -925,7 +922,7 @@ class DataGrid extends Component {
       this.props.filter !== undefined
         ? {
             filterable: this.props.filter,
-            defaultFilterMethod: this.filterCaseInsensitive.bind(this)
+            defaultFilterMethod: this.filterCaseInsensitive.bind(this),
           }
         : {};
     const _noDataText =
@@ -936,7 +933,7 @@ class DataGrid extends Component {
       this.props.paging !== undefined
         ? this.props.paging.rowsPerPage !== undefined
           ? {
-              defaultPageSize: this.props.paging.rowsPerPage
+              defaultPageSize: this.props.paging.rowsPerPage,
             }
           : {}
         : {};
@@ -944,9 +941,9 @@ class DataGrid extends Component {
       this.props.expanded !== undefined
         ? this.props.expanded.detailTemplate !== undefined
           ? {
-              SubComponent: row => {
+              SubComponent: (row) => {
                 return this.props.expanded.detailTemplate(row.original);
-              }
+              },
             }
           : {}
         : {};
@@ -955,15 +952,15 @@ class DataGrid extends Component {
         ? this.props.expanded.events !== undefined
           ? this.props.expanded.events.onExpandRow !== undefined
             ? {
-                onExpandRow: row => {
+                onExpandRow: (row) => {
                   this.props.expanded.events.onExpandRow(row.original);
-                }
+                },
               }
             : {}
           : {}
         : {};
     const _decissionShowPaging =
-      this.state.recordsTotal >= 10
+      this.state.recordsTotal >= this.props.paging.rowsPerPage || 10
         ? this.props.paging !== undefined
           ? this.props.paging.showPagination !== undefined
             ? this.props.paging.showPagination
@@ -1038,7 +1035,7 @@ class DataGrid extends Component {
               {..._onExpandRow}
               style={{
                 maxHeight: "400px",
-                minHeight: "120px"
+                minHeight: "120px",
               }}
               getTdProps={this.getTdHandler.bind(this)}
               getTrProps={this.getTrHandler.bind(this)}

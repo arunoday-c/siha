@@ -20,7 +20,7 @@ class OtherInfo extends Component {
     this.setState({ ...this.state });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.patients !== undefined && nextProps.patients.length > 0) {
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
     }

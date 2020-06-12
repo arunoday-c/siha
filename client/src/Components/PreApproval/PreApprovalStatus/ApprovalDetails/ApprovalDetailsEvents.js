@@ -2,8 +2,9 @@ import moment from "moment";
 import _ from "lodash";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 
-const texthandle = ($this, row, e) => {
-  // e = e || ctrl;
+const texthandle = ($this, row, context, e) => {
+  let services_details = $this.state.services_details;
+  let _index = services_details.indexOf(row);
 
   const amount_from = _.find(
     $this.props.insurarProviders,
@@ -22,17 +23,28 @@ const texthandle = ($this, row, e) => {
         : row.net_amount;
     row.apprv_date = moment(new Date())._d;
   }
-  $this.setState({ append: !$this.state.append });
+  services_details[_index] = row;
+  $this.setState({
+    services_details: services_details
+  });
+
+  if (context !== null) {
+    context.updateState({
+      services_details: services_details
+    });
+  }
 };
 
-const numberhandle = ($this, row, e) => {
+const numberhandle = ($this, row, context, e) => {
+  let services_details = $this.state.services_details;
+  let _index = services_details.indexOf(row);
   const amount_from = _.find(
     $this.props.insurarProviders,
     f => f.hims_d_insurance_provider_id === $this.state.insurance_provider_id
   );
   let name = e.target.name;
   let value = e.target.value;
-  if (parseFloat(value) < 0) {
+  if (parseFloat(value) <= 0) {
     swalMessage({
       title: "Cannot be less than or equal to zero",
       type: "warning"
@@ -66,53 +78,57 @@ const numberhandle = ($this, row, e) => {
   }
 
   row[name] = value;
-  $this.setState({ append: !$this.state.append });
-};
+  services_details[_index] = row;
+  $this.setState({
+    services_details: services_details
+  });
 
-const datehandle = ($this, row, ctrl, e) => {
-  row[e] = moment(ctrl)._d;
-  $this.setState({ append: !$this.state.append });
-};
-
-const updateServices = ($this, context, row) => {
-  let service_array = [];
-
-  if (parseFloat(row.approved_qty) <= 0 || row.approved_qty === null) {
-    swalMessage({
-      title: "Please enter the quantity properly.",
-      type: "warning"
+  if (context !== null) {
+    context.updateState({
+      services_details: services_details
     });
-  } else {
-    row.update();
-    service_array.push(row);
-    if (context !== null) {
-      context.updateState({
-        update_pre_approval_service: service_array
-      });
-    }
   }
 };
-const deleteServices = ($this, context, row) => {};
 
-const dateValidate = ($this, row, value, event) => {
+const datehandle = ($this, row, context, ctrl, e) => {
+  let services_details = $this.state.services_details;
+  let _index = services_details.indexOf(row);
+  row[e] = moment(ctrl)._d;
+
+  services_details[_index] = row;
+  $this.setState({
+    services_details: services_details
+  });
+
+  if (context !== null) {
+    context.updateState({
+      services_details: services_details
+    });
+  }
+};
+
+const dateValidate = ($this, row, context, value, event) => {
   let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
       title: "Valid Upto date cannot be past Date.",
       type: "warning"
     });
+    let services_details = $this.state.services_details;
+    let _index = services_details.indexOf(row);
     event.target.focus();
     row[event.target.name] = null;
-    row.update();
-    $this.setState({ append: !$this.state.append });
+    services_details[_index] = row;
+    $this.setState({
+      services_details: services_details
+    });
+
+    if (context !== null) {
+      context.updateState({
+        services_details: services_details
+      });
+    }
   }
 };
 
-export {
-  texthandle,
-  datehandle,
-  updateServices,
-  deleteServices,
-  numberhandle,
-  dateValidate
-};
+export { texthandle, datehandle, numberhandle, dateValidate };

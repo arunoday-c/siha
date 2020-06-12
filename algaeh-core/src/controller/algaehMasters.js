@@ -4,6 +4,7 @@ import httpStatus from "../utils/httpStatus";
 
 import masterModels from "../model/algaehMasters";
 const {
+  updateScreenElementRoles,
   addAlgaehGroupMAster,
   updateAlgaehGroupMAster,
   deleteAlgaehGroupMAster,
@@ -11,6 +12,7 @@ const {
   updateAlgaehRoleMAster,
   deleteAlgaehRoleMAster,
   addAlgaehModule,
+  deleteAlgaehModule,
   getRoleBaseActiveModules, //Done
   getRoleBaseInActiveComponents, //Done
   getAlgaehModules,
@@ -32,7 +34,22 @@ const {
   assignComponents,
   updateAlgaehModules,
   deleteUserLogin,
-  getHrmsAuthLevels
+  getHrmsAuthLevels,
+  addLisMachineConfiguration,
+  getLisMachineConfiguration,
+  updateLisMachineConfiguration,
+  getAlgaehScreensWithModules,
+  getAlgaehComponentsWithScreens,
+  moduleScreenAssignment,
+  getComponentsForScreen,
+  assignComponentScreenPermissions,
+  getScreensWithComponents,
+  addScreensAndComponents,
+  getCurrentAssignedScreenAndComponent,
+  getAllAssignedScrens,
+  updateLandingScreen,
+  getScreenElementsRoles,
+  updateAlgaehComponent
 } = masterModels;
 const { releaseConnection } = utils;
 
@@ -176,20 +193,53 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
+  api.delete("/deleteAlgaehModule", deleteAlgaehModule, (req, res) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: "Successfully Deleted...."
+    });
+  });
+
   // created by irfan :to
   api.get(
     "/getRoleBaseActiveModules",
     getRoleBaseActiveModules,
     (req, res, next) => {
-      let result = req.records;
+      const { result, elements } = req.records;
       res.status(httpStatus.ok).json({
         success: true,
-        records: result
+        records: result,
+        elements: elements
       });
       next();
     }
   );
 
+  api.get(
+    "/getAlgaehScreensWithModules",
+    getAlgaehScreensWithModules,
+    (req, res) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
+  api.get(
+    "/getAlgaehComponentsWithScreens",
+    getAlgaehComponentsWithScreens,
+    (req, res) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
   // created by irfan :to add
   api.get(
     "/getRoleBaseInActiveComponents",
@@ -226,6 +276,15 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.get("/getComponentsForScreen", getComponentsForScreen, (req, res) => {
+    let result = req.records;
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+    delete req.records;
+  });
 
   // created by irfan :
   api.get(
@@ -294,6 +353,18 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/assignComponentScreenPermissions",
+    assignComponentScreenPermissions,
+    (req, res) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        message: "Successfully updated"
+      });
+    }
+  );
+
   // created by irfan :
   api.get(
     "/getAlgaehComponents",
@@ -316,6 +387,20 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.post(
+    "/moduleScreenAssignment",
+    moduleScreenAssignment,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        message: "Successfully updated"
+      });
+
+      next();
+    }
+  );
+
   // created by irfan :
   api.post(
     "/addAlgaehScreenElement",
@@ -596,5 +681,170 @@ export default ({ config, db }) => {
     next();
   });
 
+  api.post(
+    "/addLisMachineConfiguration",
+    addLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+
+  api.get(
+    "/getLisMachineConfiguration",
+    getLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+
+  api.put(
+    "/updateLisMachineConfiguration",
+    updateLisMachineConfiguration,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.get(
+    "/getScreensWithComponents",
+    getScreensWithComponents,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.post(
+    "/addScreensAndComponents",
+    addScreensAndComponents,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    }
+  );
+  api.get(
+    "/getCurrentAssignedScreenAndComponent",
+    getCurrentAssignedScreenAndComponent,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(httpStatus.internalServer).json({
+          success: false,
+          message: result.message
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    }
+  );
+  api.get("/getAllAssignedScrens", getAllAssignedScrens, (req, res) => {
+    let result = req.records;
+    const default_landing = result.find(f => f.default_land_screen_id !== null);
+
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: {
+          landing_page:
+            default_landing !== undefined
+              ? default_landing.default_land_screen_id
+              : undefined,
+
+          allScreens: result
+        }
+      })
+      .end();
+  });
+
+  api.put("/updateLandingScreen", updateLandingScreen, (req, res) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      message: "Successfully Done...."
+    });
+  });
+
+  api.get("/getScreenElementsRoles", getScreenElementsRoles, (req, res) => {
+    let result = req.records;
+    res
+      .status(httpStatus.ok)
+      .json({
+        success: true,
+        records: result
+      })
+      .end();
+    delete req.records;
+  });
+  api.post(
+    "/updateScreenElementRoles",
+    updateScreenElementRoles,
+    (req, res) => {
+      let result = req.records;
+      res
+        .status(httpStatus.ok)
+        .json(result)
+        .end();
+      delete req.records;
+    }
+  );
+
+  api.put(
+    "/updateAlgaehComponent",
+    updateAlgaehComponent,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    },
+    releaseConnection
+  );
   return api;
 };

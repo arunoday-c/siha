@@ -1,0 +1,49 @@
+{
+  "name": "algaeh-sales",
+  "version": "1.0.0",
+  "description": "Algaeh Sales",
+  "main": "index.js",
+  "scripts": {
+    "sales_server": "run-p run-webpack run-dev",
+    "build": "webpack --config webpack.prod.js",
+    "run-webpack": "webpack --watch --config webpack.dev.js",
+    "dev": "npm run sales_server",
+    "api": "npm run sales_server",
+    "lint": "eslint src && eslint test",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run-prod": "cross-env PORT=3021 NODE_ENV=production pm2 start  -i 2 build/app.js --name 'sales'",
+    "run-docker": "cross-env PORT=3021 NODE_ENV=production node build/app.js",
+    "start": "run-s build run-prod",
+    "run-dev": "cross-env PORT=3021 NODE_ENV=development nodemon --exec 'node build/app.js'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/node": "^7.7.4",
+    "@babel/polyfill": "^7.7.0",
+    "@babel/preset-env": "^7.7.6",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^2.0.2",
+    "npm-run-all": "^4.1.5",
+    "obfuscator-loader": "^1.1.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "algaeh-mysql": "^1.4.2",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.4",
+    "cross-env": "^5.1.4",
+    "express": "^4.17.1",
+    "mssql": "^6.0.1",
+    "node-linq": "0.0.5",
+    "winston": "^3.1.0",
+    "winston-daily-rotate-file": "^3.1.4"
+  }
+}

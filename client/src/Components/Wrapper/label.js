@@ -20,7 +20,6 @@ class Label extends PureComponent {
       let fileName =
         screenName + (langua === undefined || langua === "" ? "en" : langua);
       let fileImport = "./languages/" + fileName + ".json";
-
       let savePage = window.localStorage.getItem(fileName);
       if (savePage !== null && savePage !== "") {
         let getLanguageLables = JSON.parse(savePage);
@@ -96,7 +95,7 @@ class Label extends PureComponent {
       return null;
     }
   };
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     if (this.props.label !== undefined) {
       if (
         this.props.label.language !== undefined &&
@@ -125,7 +124,7 @@ class Label extends PureComponent {
       });
     }
   }
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
         if (nextProps.label !== undefined) {

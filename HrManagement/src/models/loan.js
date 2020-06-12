@@ -11,6 +11,45 @@ import leave from "../models/leave";
 const { getMaxAuth } = leave;
 
 export default {
+  getEmployeeLoanOpenBal: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+
+      let inputValues = [];
+
+      let strQry = "";
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select E.employee_code, E.full_name, LA.loan_amount, LA.approved_amount, LA.start_month, LA.start_year, \
+             LA.loan_tenure, LA.pending_tenure, LA.installment_amount, LA.pending_loan, L.loan_description, LA.hims_f_loan_application_id from hims_f_loan_application LA \
+             inner join hims_d_employee E on E.hims_d_employee_id=LA.employee_id \
+             inner join hims_d_loan L on L.hims_d_loan_id=LA.loan_id where E.hospital_id=? " +
+            strQry,
+          values: [input.hospital_id],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((e) => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
   //created by irfan:
   addLoanApplication: (req, res, next) => {
     const utilities = new algaehUtilities();
@@ -25,9 +64,9 @@ export default {
 
           values: [input.employee_id],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(emp => {
+        .then((emp) => {
           if (emp.length > 0) {
             let today = moment(new Date()).format("YYYY-MM-DD");
 
@@ -35,7 +74,7 @@ export default {
               _mysql.releaseConnection();
               req.records = {
                 invalid_input: true,
-                message: "Cant apply for loan ,your status is inactive"
+                message: "Cant apply for loan ,your status is inactive",
               };
               next();
               return;
@@ -43,7 +82,7 @@ export default {
               _mysql.releaseConnection();
               req.records = {
                 invalid_input: true,
-                message: "Cant apply for loan before joining date"
+                message: "Cant apply for loan before joining date",
               };
               next();
               return;
@@ -51,7 +90,7 @@ export default {
               _mysql.releaseConnection();
               req.records = {
                 invalid_input: true,
-                message: "Cant apply for loan for resigned employee"
+                message: "Cant apply for loan for resigned employee",
               };
               next();
               return;
@@ -59,14 +98,11 @@ export default {
               // console.log("userIdentity: ", req.userIdentity);
               _mysql
                 .generateRunningNumber({
-                  modules: ["EMPLOYEE_LOAN"],
-                  tableName: "hims_f_app_numgen",
-                  identity: {
-                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity.hospital_id
-                  }
+                  user_id: req.userIdentity.algaeh_d_app_user_id,
+                  numgen_codes: ["EMPLOYEE_LOAN"],
+                  table_name: "hims_f_hrpayroll_numgen",
                 })
-                .then(numGenLeave => {
+                .then((generatedNumbers) => {
                   _mysql
                     .executeQuery({
                       query:
@@ -75,7 +111,7 @@ export default {
                 installment_amount, pending_loan,created_date, created_by, updated_date, updated_by,hospital_id)\
                     VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                       values: [
-                        numGenLeave[0],
+                        generatedNumbers.EMPLOYEE_LOAN,
 
                         input.employee_id,
                         input.loan_id,
@@ -91,26 +127,26 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        req.userIdentity.hospital_id
+                        input.hospital_id,
                       ],
 
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(result => {
+                    .then((result) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = result;
                         next();
                       });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       utilities.logger().log("e: ", e);
                       _mysql.rollBackTransaction(() => {
                         next(e);
                       });
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
@@ -120,13 +156,13 @@ export default {
             _mysql.releaseConnection();
             req.records = {
               invalid_input: true,
-              message: "Employee doesn't exist"
+              message: "Employee doesn't exist",
             };
             next();
             return;
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -151,12 +187,12 @@ export default {
             input.loan_skip_months,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_f_loan_application_id
+            input.hims_f_loan_application_id,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           if (result.affectedRows > 0) {
             req.records = result;
@@ -164,19 +200,19 @@ export default {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid loan application id"
+              message: "please provide valid loan application id",
             };
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "please provide valid input",
       };
 
       next();
@@ -185,12 +221,24 @@ export default {
   },
 
   //created by irfan: to show loan application to authorize
-  getLoanApplication: (req, res, next) => {
+  getLoanApplication_bkp_09_06_2020: (req, res, next) => {
     let employee = "";
     let range = "";
 
     if (req.query.employee_id > 0) {
       employee = ` and employee_id=${req.query.employee_id} `;
+    }
+
+    console.log("req.query.loan_authorized ", req.query.loan_authorized);
+    if (
+      req.query.loan_authorized !== null &&
+      req.query.loan_authorized !== undefined
+    ) {
+      employee += ` and loan_authorized= '${req.query.loan_authorized}'`;
+    }
+
+    if (req.query.hospital_id > 0) {
+      employee += ` and  LA.hospital_id=${req.query.hospital_id} `;
     }
 
     if (
@@ -234,7 +282,7 @@ export default {
           start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
           authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
           hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
-           and E.record_status='A' where L.record_status='A' and LA.hospital_id=? " +
+           and E.record_status='A' where L.record_status='A' " +
           employee +
           "" +
           range +
@@ -245,16 +293,136 @@ export default {
           "" +
           loan_closed +
           " order by hims_f_loan_application_id desc",
-        values: [req.userIdentity.hospital_id],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: to show loan application to authorize
+  getLoanApplication: (req, res, next) => {
+    let input = req.query;
+    let employee = "";
+    let range = "";
+
+    if (input.employee_id > 0) {
+      employee = ` and LA.employee_id=${input.employee_id} `;
+    }
+
+    if (input.loan_authorized) {
+      employee += ` and loan_authorized= '${input.loan_authorized}'`;
+    }
+
+    // if (input.hospital_id > 0) {
+    //   employee += ` and  E.hospital_id=${input.hospital_id} `;
+    // }
+
+    if (input.from_date && input.to_date) {
+      range = ` and date(loan_application_date)
+      between date('${input.from_date}') and date('${input.to_date}') `;
+    }
+
+    let loan_issued = "";
+
+    if (input.loan_issued == "Y") {
+      loan_issued = " and loan_authorized='IS' ";
+    }
+
+    let loan_closed = "";
+    if (input.loan_closed == "Y" || input.loan_closed == "N") {
+      loan_closed = ` and LA.loan_closed='${input.loan_closed}' `;
+    }
+
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query: "select authorization_plan from hims_d_hrms_options;",
+      })
+      .then((options) => {
+        if (options.length > 0) {
+          let auth_level = "";
+
+          if (options[0]["authorization_plan"] == "A") {
+            if (input.auth_level == "1") {
+              auth_level =
+                " and authorized1='P'  and AUS.loan_level1=" +
+                req.userIdentity.employee_id;
+            } else if (input.auth_level == "2") {
+              auth_level =
+                " and authorized1='A' and authorized2='P'  and AUS.loan_level2=" +
+                req.userIdentity.employee_id;
+            }
+          } else {
+            switch (input.auth_level) {
+              case "1":
+                if (req.userIdentity.loan_authorize_privilege > 1) {
+                  auth_level = " and authorized1='P'  ";
+                } else {
+                  // auth_level =
+                  //   " and authorized1='P' AND E.reporting_to_id=" +
+                  //   req.userIdentity.employee_id;
+
+                  auth_level = " and authorized1='P'  ";
+                }
+                break;
+              case "2":
+                auth_level = " and authorized1='A' and authorized2='P' ";
+                break;
+            }
+          }
+
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_loan_application_id,loan_application_number, loan_skip_months , LA.employee_id,loan_id,L.loan_code,L.loan_description,\
+            L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.application_reason,\
+            loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,approved_amount,\
+            start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
+            authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
+            hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
+             and E.record_status='A'  left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id\
+             where L.record_status='A' " +
+                employee +
+                "" +
+                range +
+                "" +
+                auth_level +
+                "" +
+                loan_issued +
+                "" +
+                loan_closed +
+                " order by hims_f_loan_application_id desc ;",
+
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((e) => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            message: "Please define HRMS options",
+            invalid_input: true,
+          };
+          next();
+        }
+      })
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -307,22 +475,22 @@ export default {
       const _mysql = new algaehMysql();
       // get highest auth level
       getMaxAuth({
-        mysql: _mysql
+        mysql: _mysql,
       })
-        .then(maxAuth => {
+        .then((maxAuth) => {
           if (
             req.userIdentity.loan_authorize_privilege < maxAuth.MaxLoan ||
             input.auth_level < maxAuth.MaxLoan
           ) {
             //for lower level authorize
-            getLoanAuthFields(input.auth_level).then(authFields => {
+            getLoanAuthFields(input.auth_level).then((authFields) => {
               _mysql
                 .executeQueryWithTransaction({
                   query:
                     "UPDATE hims_f_loan_application SET " +
                     authFields +
                     ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?;",
                   values: [
                     input.authorized,
                     req.userIdentity.algaeh_d_app_user_id,
@@ -335,11 +503,11 @@ export default {
                     input.loan_tenure,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    input.hims_f_loan_application_id
+                    input.hims_f_loan_application_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
+                .then((result) => {
                   if (result.affectedRows > 0 && input.authorized == "R") {
                     _mysql
                       .executeQueryWithTransaction({
@@ -347,16 +515,16 @@ export default {
                           "update hims_f_loan_application set loan_authorized='REJ'\
                           where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=?",
                         values: [input.hims_f_loan_application_id],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(rejResult => {
+                      .then((rejResult) => {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = rejResult;
                           next();
                         });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -370,13 +538,14 @@ export default {
                   } else {
                     req.records = {
                       invalid_input: true,
-                      message: "Please provide valid loan application id "
+                      message: "Please provide valid loan application id ",
                     };
-                    _mysql.releaseConnection();
-                    next();
+                    _mysql.rollBackTransaction(() => {
+                      next();
+                    });
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -387,7 +556,7 @@ export default {
             input.auth_level >= maxAuth.MaxLoan
           ) {
             //if he has highest previlege
-            getLoanAuthFields(input.auth_level).then(authFields => {
+            getLoanAuthFields(input.auth_level).then((authFields) => {
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -407,11 +576,11 @@ export default {
                     input.loan_tenure,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    input.hims_f_loan_application_id
+                    input.hims_f_loan_application_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(result => {
+                .then((result) => {
                   if (
                     result.affectedRows > 0 &&
                     (input.authorized == "R" || input.authorized == "A")
@@ -437,16 +606,16 @@ export default {
                     _mysql
                       .executeQueryWithTransaction({
                         query: qry,
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(rejResult => {
+                      .then((rejResult) => {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = rejResult;
                           next();
                         });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -460,13 +629,13 @@ export default {
                   } else {
                     req.records = {
                       invalid_input: true,
-                      message: "Please provide valid loan application id "
+                      message: "Please provide valid loan application id ",
                     };
                     _mysql.releaseConnection();
                     next();
                   }
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
@@ -475,19 +644,19 @@ export default {
           } else {
             req.records = {
               invalid_user: true,
-              message: "Please provide valid Auth level"
+              message: "Please provide valid Auth level",
             };
             next();
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_user: true,
-        message: "you dont have authorization privilege"
+        message: "you dont have authorization privilege",
       };
       next();
     }
@@ -517,11 +686,11 @@ export default {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         if (result.insertId > 0) {
           _mysql
             .executeQuery({
@@ -529,9 +698,9 @@ export default {
                 "select hims_f_loan_application_id,pending_loan from\
               hims_f_loan_application where hims_f_loan_application_id=?",
               values: [input.loan_application_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(pendingResult => {
+            .then((pendingResult) => {
               const cur_pending_loan =
                 parseFloat(pendingResult[0]["pending_loan"]) -
                 parseFloat(input.recievable_amount) -
@@ -550,16 +719,16 @@ export default {
                       close_loan +
                       " where hims_f_loan_application_id=?",
                     values: [cur_pending_loan, input.loan_application_id],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(updateResult => {
+                  .then((updateResult) => {
                     mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = updateResult;
                       next();
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
@@ -568,13 +737,13 @@ export default {
                 _mysql.rollBackTransaction(() => {
                   req.records = {
                     invalid_input: true,
-                    message: "calculation incorrect"
+                    message: "calculation incorrect",
                   };
                   next();
                 });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -585,13 +754,13 @@ export default {
           _mysql.rollBackTransaction(() => {
             req.records = {
               invalid_input: true,
-              message: "Please provide valid input"
+              message: "Please provide valid input",
             };
             next();
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.rollBackTransaction(() => {
           next(error);
         });
@@ -616,39 +785,183 @@ export default {
                 where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
           values: [req.query.employee_id],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide employee id"
+        message: "please provide employee id",
       };
 
       next();
       return;
     }
-  }
+  },
+
+  //created by irfan:
+  getLoanLevels(req, res, next) {
+    try {
+      const userPrivilege = req.userIdentity.loan_authorize_privilege;
+
+      if (userPrivilege != "N") {
+        const _mysql = new algaehMysql();
+
+        _mysql
+          .executeQuery({
+            query: `SELECT authorization_plan FROM hims_d_hrms_options limit 1;\
+            select leave_level1 from hims_d_authorization_setup where leave_level1=
+              ${req.userIdentity.employee_id}  limit 1`,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+
+            if (result.length > 0) {
+              //----------------
+
+              let auth_levels = [];
+
+              if (result[0][0]["authorization_plan"] == "R") {
+                switch (userPrivilege.toString()) {
+                  case "1":
+                    auth_levels.push({ name: "Level 1", value: 1 });
+                    break;
+                  case "2":
+                    auth_levels.push(
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "3":
+                    auth_levels.push(
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "4":
+                    auth_levels.push(
+                      { name: "Level 4", value: 4 },
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                  case "5":
+                    auth_levels.push(
+                      { name: "Level 5", value: 5 },
+                      { name: "Level 4", value: 4 },
+                      { name: "Level 3", value: 3 },
+                      { name: "Level 2", value: 2 },
+                      { name: "Level 1", value: 1 }
+                    );
+                    break;
+                }
+              } else if (result[0][0]["authorization_plan"] == "A") {
+                ///------------------------
+
+                switch (userPrivilege.toString()) {
+                  case "1":
+                    if (result[1].length > 0) {
+                      auth_levels.push({ name: "Level 1", value: 1 });
+                    }
+
+                    break;
+                  case "2":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 2", value: 2 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 2", value: 2 });
+                    }
+
+                    break;
+                  case "3":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 3", value: 3 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 3", value: 3 });
+                    }
+
+                    break;
+                  case "4":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 4", value: 4 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 4", value: 4 });
+                    }
+
+                    break;
+                  case "5":
+                    if (result[1].length > 0) {
+                      auth_levels.push(
+                        { name: "Level 5", value: 5 },
+                        { name: "Level 1", value: 1 }
+                      );
+                    } else {
+                      auth_levels.push({ name: "Level 5", value: 5 });
+                    }
+
+                    break;
+                }
+              }
+              req.records = { auth_levels };
+              next();
+            } else {
+              req.records = {
+                invalid_input: true,
+                message: "you dont have privilege",
+              };
+
+              next();
+              return;
+            }
+          })
+          .catch((e) => {
+            _mysql.releaseConnection();
+            reject(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "you dont have privilege",
+        };
+
+        next();
+        return;
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
 };
 //created by irfan: to get database field for authorization
 function getLoanAuthFields(auth_level) {
   return new Promise((resolve, reject) => {
     let authFields;
-    switch (auth_level) {
+    switch (auth_level.toString()) {
       case "1":
         authFields = [
           "authorized1=?",
           "authorized1_by=?",
-          "authorized1_date=?"
+          "authorized1_date=?",
         ];
         break;
 
@@ -656,7 +969,7 @@ function getLoanAuthFields(auth_level) {
         authFields = [
           "authorized2=?",
           "authorized2_by=?",
-          "authorized2_date=?"
+          "authorized2_date=?",
         ];
         break;
 
@@ -664,7 +977,7 @@ function getLoanAuthFields(auth_level) {
         authFields = [
           "authorized3=?",
           "authorized3_by=?",
-          "authorized3_date=?"
+          "authorized3_date=?",
         ];
         break;
 
@@ -672,14 +985,14 @@ function getLoanAuthFields(auth_level) {
         authFields = [
           "authorized4=?",
           "authorized4_by=?",
-          "authorized4_date=?"
+          "authorized4_date=?",
         ];
         break;
       case "5":
         authFields = [
           "authorized5=?",
           "authorized5_by=?",
-          "authorized5_date=?"
+          "authorized5_date=?",
         ];
         break;
       default:

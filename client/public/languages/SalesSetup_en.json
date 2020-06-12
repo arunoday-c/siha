@@ -1,0 +1,11 @@
+{
+  "short_name": "Short Name",
+  "terms_cond_description": "Description",
+  "created_by": "Created By",
+  "created_date": "Created Date",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "action": "Action",
+  "terms_conditions": "Terms Conditions"
+}

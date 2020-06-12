@@ -24,7 +24,13 @@ const {
   updateItemMasterAndUom,
   updateLocationPermission,
   addProcedureItems,
-  getItemMasterWithSalesPrice
+  getItemMasterWithSalesPrice,
+  getInventoryOptions,
+  addInventoryOptions,
+  updateInventoryOptions,
+  addInvLocationReorder,
+  getInvLocationReorder,
+  updateInvLocationReorder
 } = invModels;
 
 const { addServices, updateServicesOthrs } = serviceModels;
@@ -85,7 +91,13 @@ export default () => {
     });
   });
 
-  api.post("/addItemMaster", addServices, addItemMaster, (req, res, next) => {
+  api.post("/addItemMaster", (req, res, next) => {
+    if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
+      addServices(req, res, next);
+    } else {
+      next();
+    }
+  }, addItemMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
@@ -161,7 +173,13 @@ export default () => {
 
   api.put(
     "/updateItemMasterAndUom",
-    updateServicesOthrs,
+    (req, res, next) => {
+      if (req.body.item_type === "STK" || req.body.item_type === "OITM") {
+        updateServicesOthrs(req, res, next);
+      } else {
+        next();
+      }
+    },
     updateItemMasterAndUom,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -199,6 +217,49 @@ export default () => {
       });
     }
   );
+
+  api.get("/getInventoryOptions", getInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addInventoryOptions", addInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateInventoryOptions", updateInventoryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+
+  api.post("/addInvLocationReorder", addInvLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get("/getInvLocationReorder", getInvLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateInvLocationReorder", updateInvLocationReorder, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

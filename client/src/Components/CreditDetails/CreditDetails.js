@@ -12,15 +12,11 @@ import {
 } from "../Wrapper/algaehWrapper";
 import MyContext from "../../utils/MyContext.js";
 import {
-  writeOffhandle,
-  EditGrid,
-  CancelGrid,
-  deleteCridetSettlement,
-  updateCridetSettlement,
+  writeOffhandle,  
   includeHandler,
   onchangegridcol
 } from "./CreditDetailsEvent";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../utils/GlobalFunctions";
 import { swalMessage } from "../../utils/algaehApiCall";
 
 class CreditDetails extends Component {
@@ -29,14 +25,14 @@ class CreditDetails extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.SettlementIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {}
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SettlementIOputs);
   }
 
@@ -230,7 +226,7 @@ class CreditDetails extends Component {
                         // forceLabel: "hgjhghj"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.receipt_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.receipt_amount)}</h6>
                   </div>
 
                   <AlagehFormGroup
@@ -262,7 +258,7 @@ class CreditDetails extends Component {
                         fieldName: "recievable_amount"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.recievable_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.recievable_amount)}</h6>
                   </div>
                 </div>
 

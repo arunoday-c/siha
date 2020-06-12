@@ -8,14 +8,14 @@ export default {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
+
       _mysql
         .executeQueryWithTransaction({
           query:
             "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
-          `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
-          `vat_percent`, `effective_start_date`\
-          , `created_by` ,`created_date`,`service_status`) \
-       VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
+              `vat_percent`, `effective_start_date` , `created_by` ,`created_date`, head_id, child_id ) \
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? , ?, ?)",
           values: [
             inputParam.service_code,
             inputParam.cpt_code,
@@ -31,7 +31,9 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.service_status
+
+            inputParam.head_id,
+            inputParam.child_id,
           ],
           printQuery: true
         })
@@ -52,7 +54,8 @@ export default {
             })
             .then(services_insurance_network => {
               const service_insurance = services_insurance_network[0];
-              const service_insurance_network = services_insurance_network[1];
+              const service_insurance_network =
+                services_insurance_network[1];
 
               if (
                 service_insurance.length == 0 &&
@@ -130,6 +133,7 @@ export default {
             next(error);
           });
         });
+
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -144,37 +148,60 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_services` \
-          SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
-          `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
-          `updated_by`=?, `updated_date`=?, `service_status`=? ,  `record_status`=?\
-          WHERE `hims_d_services_id`=?",
-          values: [
-            inputParam.service_code,
-            inputParam.cpt_code,
-            inputParam.service_name,
-            inputParam.hospital_id,
-            inputParam.service_type_id,
-            inputParam.sub_department_id,
-            inputParam.standard_fee,
-
-            inputParam.discount,
-            inputParam.vat_applicable,
-            inputParam.vat_percent,
-            inputParam.physiotherapy_service,
-
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            inputParam.service_status,
-            inputParam.record_status,
-            inputParam.hims_d_services_id
-          ],
+            "select product_type from hims_d_hospital where hims_d_hospital_id=? and \
+          (product_type='HIMS_ERP' or product_type='HRMS_ERP' or product_type='FINANCE_ERP');",
+          values: [req.userIdentity.hospital_id],
           printQuery: true
         })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then(appResult => {
+          let str = "";
+
+          if (appResult.length > 0) {
+            str = `,head_id= ${inputParam.head_id},child_id= 
+            ${inputParam.child_id},
+            insurance_head_id= ${inputParam.insurance_head_id},insurance_child_id=${inputParam.insurance_child_id} `;
+          }
+
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_d_services` \
+          SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
+          `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
+          `updated_by`=?, `updated_date`=?,  `record_status`=? " +
+                str +
+                "\
+          WHERE `hims_d_services_id`=?;",
+              values: [
+                inputParam.service_code,
+                inputParam.cpt_code,
+                inputParam.service_name,
+                inputParam.hospital_id,
+                inputParam.service_type_id,
+                inputParam.sub_department_id,
+                inputParam.standard_fee,
+
+                inputParam.discount,
+                inputParam.vat_applicable,
+                inputParam.vat_percent,
+                inputParam.physiotherapy_service,
+
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.record_status,
+                inputParam.hims_d_services_id
+              ],
+              printQuery: true
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
+            });
         })
         .catch(error => {
           _mysql.releaseConnection();
@@ -254,15 +281,14 @@ export default {
         _strAppend += "and procedure_type=?";
         inputValues.push(input.procedure_type);
       }
-
       _mysql
         .executeQuery({
           query:
             "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
-            sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
-            effective_start_date, effectice_end_date, procedure_type, physiotherapy_service from \
-            hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
-            WHERE S.record_status ='A' " +
+                sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
+                effective_start_date, effectice_end_date, procedure_type, physiotherapy_service, head_id, child_id from \
+                hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
+                WHERE S.record_status ='A' " +
             _strAppend +
             " order by hims_d_services_id desc",
           values: inputValues,
@@ -923,10 +949,11 @@ function InsertintoServiceInsurance(options) {
                 printQuery: true
               })
               .then(detailresult => {
-                resolve();
+                resolve(detailresult);
               })
               .catch(error => {
-                reject(e);
+                console.log("erroe", error);
+                reject(error);
               });
           }
         }
@@ -997,10 +1024,10 @@ function InsertintoServiceInsuranceNetwork(options) {
                 printQuery: true
               })
               .then(detailresult => {
-                resolve();
+                resolve(detailresult);
               })
               .catch(error => {
-                reject(e);
+                reject(error);
               });
           }
         }

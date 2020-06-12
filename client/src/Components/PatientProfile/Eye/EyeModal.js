@@ -3,28 +3,26 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 import "./Eye.scss";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup,
+  // AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import EyeModalEvent from "./EyeModalEvent"
+import EyeModalEvent from "./EyeModalEvent";
 import OptometricIOputs from "../../../Models/Optometric";
 
 class EyeModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-
-    };
+    this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = OptometricIOputs.inputParam();
     this.setState(IOputs);
   }
@@ -33,15 +31,13 @@ class EyeModal extends Component {
     this.props.onClose && this.props.onClose(e);
   }
 
-  ChangeEventHandler(e){
-    EyeModalEvent().ChangeEventHandler(this, e)
+  ChangeEventHandler(e) {
+    EyeModalEvent().ChangeEventHandler(this, e);
   }
 
-  radioChange(e){
-
-    EyeModalEvent().radioChange(this, e)
+  radioChange(e) {
+    EyeModalEvent().radioChange(this, e);
   }
-
 
   render() {
     return (
@@ -70,7 +66,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OD</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -81,7 +76,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -92,7 +86,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -103,7 +96,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -114,7 +106,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -125,7 +116,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -139,7 +129,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OS</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -150,7 +139,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -161,7 +149,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -172,7 +159,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -183,7 +169,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -194,7 +179,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -259,7 +243,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OD</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -270,7 +253,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -281,7 +263,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -292,7 +273,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -303,7 +283,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -314,7 +293,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -328,7 +306,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OS</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -339,7 +316,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -350,7 +326,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -361,7 +336,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -372,7 +346,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -383,7 +356,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -448,7 +420,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OD</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -459,7 +430,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -470,7 +440,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -481,7 +450,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -492,7 +460,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -503,7 +470,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -517,7 +483,6 @@ class EyeModal extends Component {
                   <tr>
                     <td>OS</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -528,7 +493,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -539,7 +503,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -550,7 +513,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -561,7 +523,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -572,7 +533,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -757,11 +717,9 @@ class EyeModal extends Component {
                   </tr>
                 </thead>
                 <tbody>
-
                   <tr>
                     <td>IOP</td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -772,7 +730,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td colspan="4">
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",
@@ -783,7 +740,6 @@ class EyeModal extends Component {
                       />
                     </td>
                     <td>
-
                       <AlagehAutoComplete
                         selector={{
                           name: "",

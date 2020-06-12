@@ -30,6 +30,28 @@ const texthandle = ($this, e) => {
         });
       }
     });
+
+    algaehApiCall({
+      uri: "/labmasters/getGroupComments",
+      module: "laboratory",
+      data: { micro_group_id: value },
+      method: "GET",
+      onSuccess: response => {
+
+        if (response.data.success) {
+          $this.setState({
+            comments_data: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
   } else if (name === "bacteria_name") {
     $this.setState({
       [name]: value
@@ -64,16 +86,19 @@ export function generateLabResultReport(data) {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
+      // const url = URL.createObjectURL(res.data);
+      // let myWindow = window.open(
+      //   "{{ product.metafields.google.custom_label_0 }}",
+      //   "_blank"
+      // );
 
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Lab Test Report";
+      // myWindow.document.write(
+      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
+      // );
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Lab Test Report`;
+      window.open(origin);
+      // window.document.title = "Lab Test Report";
     }
   });
 }
@@ -81,6 +106,7 @@ export function generateLabResultReport(data) {
 const UpdateLabOrder = ($this, status) => {
   $this.state.status = status;
 
+  $this.state.comments = $this.state.comment_list.join("<br/>")
   algaehApiCall({
     uri: "/laboratory/updateMicroResultEntry",
     module: "laboratory",
@@ -151,7 +177,7 @@ const onconfirm = $this => {
 
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  // let value = e.value || e.target.value;
   let microAntbiotic = $this.state.microAntbiotic;
   let _index = microAntbiotic.indexOf(row);
 
@@ -218,15 +244,65 @@ const getMicroResult = ($this, e) => {
           data_exists: data_exists
         });
       }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
+    }
+  });
+
+  algaehApiCall({
+    uri: "/laboratory/getLabOrderedComment",
+    module: "laboratory",
+    method: "GET",
+    data: { hims_f_lab_order_id: $this.state.hims_f_lab_order_id },
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          comment_list: response.data.records.comments !== null ? response.data.records.comments.split("<br/>") : []
+        })
+      }
     }
   });
 };
+
+const addComments = ($this) => {
+  if ($this.state.selcted_comments === "") {
+    swalMessage({
+      type: "warning",
+      title: "Comment cannot be blank."
+    });
+    return
+  }
+  let comment_list = $this.state.comment_list
+  comment_list.push($this.state.selcted_comments)
+
+  $this.setState({
+    comment_list: comment_list,
+    selcted_comments: "",
+    group_comments_id: null
+  })
+}
+
+
+const selectCommentEvent = ($this, e) => {
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    selcted_comments: e.selected.commet
+  });
+}
+
+
+const deleteComment = ($this, row) => {
+
+  let comment_list = $this.state.comment_list
+  let _index = comment_list.indexOf(row)
+  comment_list.splice(_index, 1)
+
+  $this.setState({
+    comment_list: comment_list
+  })
+}
 
 export {
   texthandle,
@@ -235,5 +311,8 @@ export {
   onconfirm,
   resultEntryUpdate,
   radioChange,
-  getMicroResult
+  getMicroResult,
+  addComments,
+  selectCommentEvent,
+  deleteComment
 };

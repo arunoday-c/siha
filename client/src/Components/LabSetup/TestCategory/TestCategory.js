@@ -16,7 +16,6 @@ import {
   changeTexts,
   onchangegridcol,
   insertTestCategory,
-  deleteTestCategory,
   updateTestCategory
 } from "./TestCategoryEvents";
 import Options from "../../../Options.json";
@@ -279,8 +278,8 @@ class TestCategory extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -295,8 +294,8 @@ class TestCategory extends Component {
                           this.props.userdrtails === undefined
                             ? []
                             : this.props.userdrtails.filter(
-                                f => f.algaeh_d_app_user_id === row.created_by
-                              );
+                              f => f.algaeh_d_app_user_id === row.created_by
+                            );
 
                         return (
                           <span>
@@ -382,7 +381,7 @@ class TestCategory extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //onDelete: deleteTestCategory.bind(this, this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: updateTestCategory.bind(this, this)
                   }}
                 />

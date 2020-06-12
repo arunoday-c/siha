@@ -6,221 +6,191 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete,
   AlgaehLabel,
-  Tooltip
 } from "../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import EquipmentPop from "./EquipmentPop"
+import { getCookie } from "../../../utils/algaehApiCall.js";
+import { getMachineAnalyte } from "./EquipmentEvent";
 
 class Equipment extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hims_d_lab_section_id: "",
-      description: "",
-      created_date: "",
-      // created_by: getCookie("UserID"),
-
-      description_error: false,
-      description_error_txt: ""
+      isOpen: false,
+      machine_ana_data: [],
+      selected_Machine_analyte: {}
     };
-    this.baseState = this.state;
   }
 
-  changeTexts(e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    this.setState({ [name]: value });
+
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
+    });
+
+    if (
+      this.props.labanalytes === undefined ||
+      this.props.labanalytes.length === 0
+    ) {
+      this.props.getLabAnalytes({
+        uri: "/labmasters/selectAnalytes",
+        module: "laboratory",
+        method: "GET",
+        redux: {
+          type: "ANALYTES_GET_DATA",
+          mappingName: "labanalytes"
+        }
+      });
+    }
+    this.props.getLisMachineConfiguration({
+      uri: "/algaehMasters/getLisMachineConfiguration",
+      method: "GET",
+      redux: {
+        type: "MACHINE_GET_DATA",
+        mappingName: "machinedata"
+      }
+    });
+    getMachineAnalyte(this, this)
+  }
+
+  ShowModel(data) {
+
+    this.setState({
+      isOpen: !this.state.isOpen,
+      selected_Machine_analyte: data
+    });
+  }
+
+  CloseModel(e) {
+    this.setState(
+      {
+        isOpen: !this.state.isOpen,
+        selected_Machine_analyte: {}
+      },
+      () => {
+        getMachineAnalyte(this, this);
+      }
+    );
   }
 
   render() {
     return (
-      <div className="lab_section">
-        {/* <LinearProgress id="myProg" style={{ display: "none" }} /> */}
-        <div className="container-fluid">
-          <form>
-            <div
-              className="row"
-              style={{
-                paddingTop: 20,
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "description",
-                  value: this.state.description,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-            </div>
-
-            <div
-              className="row"
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto"
-              }}
-            >
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "machine_analyte_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "machine_analyte_code",
-                  value: this.state.machine_analyte_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "lab_analyte",
-                  isImp: true
-                }}
-                selector={{
-                  name: "lab_analyte_id",
-                  className: "select-fld",
-                  value: this.state.lab_analyte_id,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_STORAGE_TYPE
-                  },
-                  onChange: this.changeTexts.bind(this)
-                }}
-              />
-              <div className="col-lg-2 go-button">
-                {/* <Tooltip id="tooltip-icon" title="Add To List">
-                  <IconButton className="" color="primary">
-                    <PlayCircleFilled
-                    //   onClick={ProcessInsurance.bind(this, this, context)}
-                    />
-                  </IconButton>
-                </Tooltip> */}
+      <div className="LisConfig">
+        <div className="row">
+          <div className="col-12" style={{ marginTop: 15 }}>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Lists of Machine</h3>
+                </div>
+                <div className="actions">
+                  <button
+                    className="btn btn-primary active"
+                    style={{ lineHeight: "22px" }}
+                    onClick={this.ShowModel.bind(this, {})}
+                  >
+                    Machine Analyte Mapping
+                  </button>
+                </div>
               </div>
-            </div>
-          </form>
 
-          <div className="row form-details">
-            <div className="col">
-              <AlgaehDataGrid
-                id="visa_grd"
-                columns={[
-                  {
-                    fieldName: "description",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.description,
-                            className: "txt-fld",
-                            name: "description",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="lis_configurationGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="machine_analyte_map"
+                      columns={[
+                        {
+                          fieldName: "action",
 
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "section_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.visa_status === "A" ? "Active" : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "section_status",
-                            className: "select-fld",
-                            value: row.section_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: this.onchangegridcol.bind(this, row)
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="hims_d_lab_section_id"
-                dataSource={{
-                  data:
-                    this.props.visatypes === undefined
-                      ? []
-                      : this.props.visatypes
-                }}
-                filter={true}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 5 }}
-                events={{
-                  // onDelete: this.deleteLabSection.bind(this),
-                  onEdit: row => {}
-                  // onDone: row => {
-                  //   alert(JSON.stringify(row));
-                  // }
-                  // onDone: this.updateLabSection.bind(this)
-                }}
-              />
-            </div>
-          </div>
+                          label: <AlgaehLabel label={{ forceLabel: "action" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-pen"
+                                  onClick={this.ShowModel.bind(this, row)}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 65,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "machine_name",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Machine Name" }} />
+                          )
+                        },
+                        {
+                          fieldName: "hospital_name",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Branch Name" }} />
+                          )
+                        },
+                        {
+                          fieldName: "created_by",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "created by" }} />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.userdrtails === undefined
+                                ? []
+                                : this.props.userdrtails.filter(
+                                  f => f.algaeh_d_app_user_id === row.created_by
+                                );
 
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                // onClick={this.SavePatientDetails.bind(this)}
-              >
-                Save
-              </button>
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].username
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="hims_d_lis_configuration_id"
+                      dataSource={{ data: this.state.machine_ana_data }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onEdit: "",
+                        onDelete: "",
+                        onDone: ""
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <EquipmentPop
+          HeaderCaption={
+            <AlgaehLabel
+              label={{
+                fieldName: "Machine Analyte Mapping",
+                align: "ltr"
+              }}
+            />
+          }
+          open={this.state.isOpen}
+          onClose={this.CloseModel.bind(this)}
+          selected_Machine_analyte={this.state.selected_Machine_analyte}
+          machine_ana_data={this.state.machine_ana_data}
+        />
       </div>
     );
   }
@@ -228,14 +198,17 @@ class Equipment extends Component {
 
 function mapStateToProps(state) {
   return {
-    visatypes: state.visatypes
+    labanalytes: state.labanalytes,
+    machinedata: state.machinedata,
+    userdrtails: state.userdrtails
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisatypes: AlgaehActions
+      getLabAnalytes: AlgaehActions,
+      getLisMachineConfiguration: AlgaehActions
     },
     dispatch
   );

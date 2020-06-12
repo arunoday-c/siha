@@ -57,10 +57,7 @@
       border: none;
     }
   }
-}
-.highlightGrey {
-  background: #e4e4e4;
-  border: 1px solid #d3d3d3;
+  margin-bottom: 15px;
 }
 .packageAvail {
   display: block;
@@ -70,5 +67,15 @@
 #opbillinggrid_Cntr {
   .ReactTable {
     max-height: 36vh !important;
+  }
+}
+.screenCardStyle {
+  background: #fff;
+  border: 1px solid #d3d3d3;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  .patientRespo {
+    background: #f8f8f8;
   }
 }

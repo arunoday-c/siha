@@ -1,8 +1,11 @@
+import React from "react";
 import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
+import Mediate from "./meadiate";
 
+// import { MainContext } from "algaeh-react-components/context";
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
 
@@ -23,7 +26,7 @@ export function decimalPointSet(value, decimal_point) {
   let data_value = value;
   if (typeof value === "string") {
     data_value = parseFloat(
-      value == "" || value == null || value == undefined ? "0" : value
+      value === "" || value === null || value === undefined ? "0" : value
     );
   }
 
@@ -46,6 +49,19 @@ export function getYears() {
     allYears.push({ name: x, value: x });
   }
   return allYears;
+}
+
+export function getYearswithMinMax(min, max) {
+  if (min < max) {
+    min = min - 20;
+    let allYears = [];
+    for (let x = min; x <= max; x++) {
+      allYears.push({ name: x, value: x });
+    }
+    return allYears;
+  } else {
+    return [{ name: "No selection available", value: "" }];
+  }
 }
 
 export function getDays() {
@@ -310,7 +326,7 @@ const loadJSON = (file, callback) => {
   var xobj = new XMLHttpRequest();
   xobj.overrideMimeType("application/json");
   xobj.open("GET", file, true);
-  xobj.onreadystatechange = function() {
+  xobj.onreadystatechange = function () {
     if (xobj.readyState === 4 && xobj.status === 200) {
       callback(JSON.parse(xobj.responseText));
     }
@@ -360,10 +376,10 @@ export function AlgaehValidation(options) {
           _checkVal = _Validateerror[i].getAttribute("checkvalidation");
         }
       }
-      let value = "";
+
       if (_checkVal !== null) {
         const _val = _element.value; //=== "" ? "''" : _element.value;
-        value = _val;
+        // value = _val;
         _checkVal = _checkVal.replace(/\$value/g, _val);
       }
       const _role = _element.getAttribute("data_role");
@@ -421,11 +437,11 @@ export function AlgaehValidation(options) {
           _title =
             _langua === "en"
               ? _lable
-                  .replace("*", "")
-                  .toLowerCase()
-                  .replace(/^\w/, c => {
-                    return c.toUpperCase();
-                  }) + "- Cannot be empty"
+                .replace("*", "")
+                .toLowerCase()
+                .replace(/^\w/, c => {
+                  return c.toUpperCase();
+                }) + "- Cannot be empty"
               : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
         }
         swalMessage({
@@ -460,14 +476,14 @@ export function AlgaehValidation(options) {
   // }
 }
 
-export function getAmountFormart(value, options) {
-  return numberFormater(value, options);
+export function GetAmountFormart(value, options) {
+  return <Mediate value={value} options={options} />;
+  // return <>{numberFormater(value, options, userContext.userToken)}</>;
+
+  //numberFormater(value, options).then(result => result);
 }
 
-export function numberFormater(value, options) {
-  let CurrencyDetail = JSON.parse(
-    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-  );
+export function numberFormater(value, options, CurrencyDetail) {
   const settings = {
     ...CurrencyDetail,
     ...{ appendSymbol: true },
@@ -496,8 +512,8 @@ export function numberFormater(value, options) {
   let s = prec
     ? toFixedFix(n, prec)
     : Math.round(n)
-        .toString()
-        .split(".");
+      .toString()
+      .split(".");
   if (s instanceof Array) {
     if (s[0].length > 3) {
       s[0] = s[0].replace(
@@ -597,27 +613,24 @@ export function SetBulkState(options) {
     return _objectCreation;
   }
 }
-const algorithm = "aes-256-ctr";
-const containerId = "algaeh_hims_erp_container_1.0.0";
+// const algorithm = "aes-256-ctr";
+// const containerId = "algaeh_hims_erp_container_1.0.0";
 export function AlgaehCloseContainer(string) {
-  let cipher = crypto.createCipher(algorithm, containerId);
-  let crypted = cipher.update(string, "utf8", "hex");
-  crypted += cipher.final("hex");
-  return crypted;
+  // let cipher = crypto.createCipher(algorithm, containerId);
+  // let crypted = cipher.update(string, "utf8", "hex");
+  // crypted += cipher.final("hex");
+  // return crypted;
+  return string;
 }
 export function AlgaehOpenContainer(string) {
-  var decipher = crypto.createDecipher(algorithm, containerId);
-  var dec = decipher.update(string, "hex", "utf8");
-  dec += decipher.final("utf8");
-  return dec;
+  // var decipher = crypto.createDecipher(algorithm, containerId);
+  // var dec = decipher.update(string, "hex", "utf8");
+  // dec += decipher.final("utf8");
+  // return dec;
+  return undefined;
 }
 export function checkSecurity(options) {
-  let currentSecurity =
-    sessionStorage.getItem("AlgaehScreener") !== null
-      ? JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("AlgaehScreener"))
-        )
-      : undefined;
+  let currentSecurity = undefined;
   if (currentSecurity !== undefined) {
     if (options.securityType === "componet") {
       const _hasComponets = Enumerable.from(
@@ -740,4 +753,10 @@ export function getUserPreferences(options) {
       reject(e);
     }
   });
+}
+export function encrypter(string) {
+  let cipher = crypto.createCipher("aes-256-ctr", "3BLqrRGAej");
+  let crypted = cipher.update(string, "utf8", "hex");
+  crypted += cipher.final("hex");
+  return crypted;
 }

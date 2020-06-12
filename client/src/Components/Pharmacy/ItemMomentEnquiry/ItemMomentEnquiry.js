@@ -23,7 +23,6 @@ import "./ItemMomentEnquiry.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -250,24 +249,27 @@ class ItemMomentEnquiry extends Component {
                         return row.transaction_type === "MR"
                           ? "Material Requisition"
                           : row.transaction_type === "ST"
-                          ? "Stock Transfer"
-                          : row.transaction_type === "POS"
-                          ? "Point of Sale"
-                          : row.transaction_type === "SRT"
-                          ? "Sales Return"
-                          : row.transaction_type === "INT"
-                          ? "Opening Stock"
-                          : row.transaction_type === "CS"
-                          ? "Consumption"
-                          : row.transaction_type === "REC"
-                          ? "Receipt"
-                          : row.transaction_type === "PO"
-                          ? "Purchase Order"
-                          : row.transaction_type === "DNA"
-                          ? "Delivery Note"
-                          : row.transaction_type === "ACK"
-                          ? "Transfer Acknowledge"
-                          : "";
+                            ? "Stock Transfer"
+                            : row.transaction_type === "POS"
+                              ? "Point of Sale"
+                              : row.transaction_type === "SRT"
+                                ? "Sales Return"
+                                : row.transaction_type === "INT"
+                                  ? "Opening Stock"
+                                  : row.transaction_type === "CS"
+                                    ? "Consumption"
+                                    : row.transaction_type === "REC"
+                                      ? "Receipt"
+                                      : row.transaction_type === "PO"
+                                        ? "Purchase Order"
+                                        : row.transaction_type === "DNA"
+                                          ? "Delivery Note"
+                                          : row.transaction_type === "ACK"
+                                            ? "Transfer Acknowledge"
+                                            : row.transaction_type === "PR"
+                                              ? "Purchase Return"
+                                              : row.transaction_type === "AD"
+                                                ? "Stock Adjustment" : "";
                       }
                     },
                     {
@@ -291,10 +293,10 @@ class ItemMomentEnquiry extends Component {
                           this.props.locations === undefined
                             ? []
                             : this.props.locations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.from_location_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.from_location_id
+                            );
 
                         return (
                           <span>
@@ -315,9 +317,9 @@ class ItemMomentEnquiry extends Component {
                           this.props.itemlist === undefined
                             ? []
                             : this.props.itemlist.filter(
-                                f =>
-                                  f.hims_d_item_master_id === row.item_code_id
-                              );
+                              f =>
+                                f.hims_d_item_master_id === row.item_code_id
+                            );
 
                         return (
                           <span>
@@ -330,13 +332,13 @@ class ItemMomentEnquiry extends Component {
                                   row.operation === "+"
                                     ? "fas fa-arrow-up green"
                                     : row.operation === "-"
-                                    ? "fas fa-arrow-down red"
-                                    : ""
+                                      ? "fas fa-arrow-down red"
+                                      : ""
                                 }
                               />
                             ) : (
-                              ""
-                            )}
+                                ""
+                              )}
                           </span>
                         );
                       }
@@ -353,10 +355,10 @@ class ItemMomentEnquiry extends Component {
                           this.props.itemuom === undefined
                             ? []
                             : this.props.itemuom.filter(
-                                f =>
-                                  f.hims_d_pharmacy_uom_id ===
-                                  row.transaction_uom
-                              );
+                              f =>
+                                f.hims_d_pharmacy_uom_id ===
+                                row.transaction_uom
+                            );
 
                         return (
                           <span>
@@ -388,21 +390,21 @@ class ItemMomentEnquiry extends Component {
                         return parseFloat(row.transaction_qty);
                       }
                     },
-                    {
-                      fieldName: "average_cost",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.average_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      }
-                    }
+                    // {
+                    //   fieldName: "average_cost",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return (
+                    //       <span>
+                    //         {getAmountFormart(row.average_cost, {
+                    //           appendSymbol: false
+                    //         })}
+                    //       </span>
+                    //     );
+                    //   }
+                    // }
                   ]}
                   keyId="item_id"
                   dataSource={{

@@ -4,9 +4,11 @@ import LoginUsers from "./LoginUsers/LoginUsers";
 import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";
 import ScreenAssignment from "./ScreenAssignment/ScreenAssignment";
-import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
+import AuditLog from "./AuditLog/AuditLog";
+// import ComponentElementAssignment from "./ComponentElementAssignment/ComponentElementAssignment";
+// import ApiConfig from "./APIConfig";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-
+import { AlgaehTabs } from "algaeh-react-components";
 class AdminSetup extends Component {
   constructor(props) {
     super(props);
@@ -28,159 +30,72 @@ class AdminSetup extends Component {
   render() {
     return (
       <div className="admin_setup">
-        <div className="row">
-          <div className="tabMaster toggle-section">
-            <ul className="nav">
-              <li
-                algaehtabs={"Groups"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "group"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Roles"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "role"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LoginUsers"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "login_users"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ScreenAssignment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "screen_assignment"
-                    }}
-                  />
-                }
-              </li>
-              {/* <li
-                algaehtabs={"ComponentElementAssignment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Component & Element Assignment"
-                    }}
-                  />
-                }
-              </li> */}
-              {/* <li
-                algaehtabs={"CategorySpeciality"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "category_speciality_map"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
-                algaehtabs={"Shift"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "shift"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Counter"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "counter"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"UserShiftMapping"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "users_shift"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Currency"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "currency"
-                    }}
-                  />
-                }
-              </li> */}
-            </ul>
-          </div>
-        </div>
-        <div className="admin-section">
-          {this.state.pageDisplay === "LoginUsers" ? (
-            <LoginUsers />
-          ) : this.state.pageDisplay === "Groups" ? (
-            <Groups />
-          ) : this.state.pageDisplay === "Roles" ? (
-            <Roles />
-          ) : this.state.pageDisplay === "ScreenAssignment" ? (
-            <ScreenAssignment />
-          ) : this.state.pageDisplay === "ComponentElementAssignment" ? (
-            <ComponentElementAssignment />
-          ) : null}
-        </div>
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Group"
+                  }}
+                />
+              ),
+              children: <Groups />,
+              componentCode: "AD_USER_GROUP"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Roles"
+                  }}
+                />
+              ),
+              children: <Roles />,
+              componentCode: "AD_USER_ROLES"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Login Users"
+                  }}
+                />
+              ),
+              children: <LoginUsers />,
+              componentCode: "AD_USER_LOGIN"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Screen Assignment"
+                  }}
+                />
+              ),
+              children: <ScreenAssignment />,
+              componentCode: "AD_SCR_ASSI"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Audit Log"
+                  }}
+                />
+              ),
+              children: <AuditLog />,
+              componentCode: "AD_AUD_LOG"
+            }
+          ]}
+          renderClass="adminSettingsSection"
+        />
       </div>
     );
   }
 }
-
+// function ChildrenItem({ children }) {
+//   return <div className="admin-section">{children}</div>;
+// }
 export default AdminSetup;

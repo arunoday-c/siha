@@ -1,5 +1,9 @@
 import Enumerable from "linq";
-import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie,
+} from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -7,6 +11,8 @@ import _ from "lodash";
 import swal from "sweetalert2";
 
 const SalaryProcess = ($this, inputs, from) => {
+  console.log("inputs", inputs);
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadSalary'",
@@ -14,7 +20,7 @@ const SalaryProcess = ($this, inputs, from) => {
       AlgaehLoader({ show: true });
 
       $this.setState(
-        prevState => {
+        (prevState) => {
           return { inputs: !inputs ? prevState.inputs : inputs };
         },
         () => {
@@ -22,7 +28,7 @@ const SalaryProcess = ($this, inputs, from) => {
           let inputObj = {
             year: inputs.year,
             month: inputs.month,
-            hospital_id: inputs.hospital_id
+            hospital_id: inputs.hospital_id,
           };
           if (inputs.hims_d_employee_id !== null) {
             inputObj.employee_id = inputs.hims_d_employee_id;
@@ -44,64 +50,73 @@ const SalaryProcess = ($this, inputs, from) => {
             module: "hrManagement",
             data: inputObj,
             method: "GET",
-            onSuccess: response => {
-              if (response.data.result.length > 0) {
-                let data = response.data.result[0];
-                let finalizeBtn = true;
-                let strMessage = "Salary Already Processed.";
-                let not_process = Enumerable.from(data.salaryprocess_header)
-                  .where(w => w.salary_processed === "N")
-                  .toArray();
-                if (not_process.length > 0) {
-                  finalizeBtn = false;
-                  strMessage = "Salary Loaded Successfully.";
-                }
-                $this.setState({
-                  salaryprocess_header: data.salaryprocess_header,
-                  salaryprocess_detail: data.salaryprocess_detail,
-                  finalizeBtn: finalizeBtn
-                });
-                AlgaehLoader({ show: false });
+            onSuccess: (response) => {
+              if (response.data.success) {
+                if (response.data.result.length > 0) {
+                  let data = response.data.result[0];
+                  let finalizeBtn = true;
+                  let strMessage =
+                    "Salary already finalized for selected criteria.";
+                  let not_process = Enumerable.from(data.salaryprocess_header)
+                    .where((w) => w.salary_processed === "N")
+                    .toArray();
+                  if (not_process.length > 0) {
+                    finalizeBtn = false;
+                    strMessage = "Salary Loaded Successfully.";
+                  }
+                  $this.setState({
+                    salaryprocess_header: data.salaryprocess_header,
+                    salaryprocess_detail: data.salaryprocess_detail,
+                    finalizeBtn: finalizeBtn,
+                  });
+                  AlgaehLoader({ show: false });
 
-                if (from === "load") {
+                  if (from === "load") {
+                    swalMessage({
+                      title: strMessage,
+                      type: "success",
+                    });
+                  }
+                } else {
+                  $this.setState({
+                    salaryprocess_header: [],
+                    salaryprocess_detail: [],
+                    finalizeBtn: true,
+                  });
+                  AlgaehLoader({ show: false });
                   swalMessage({
-                    title: strMessage,
-                    type: "success"
+                    title: "Attendance not processed for selected criteria.",
+                    type: "warning",
                   });
                 }
               } else {
-                $this.setState({
-                  salaryprocess_header: [],
-                  salaryprocess_detail: [],
-                  finalizeBtn: true
-                });
                 AlgaehLoader({ show: false });
                 swalMessage({
-                  title: "Attendance not processed for selected criteria.",
-                  type: "warning"
+                  title: response.data.result.message,
+                  type: "warning",
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               AlgaehLoader({ show: false });
               $this.setState({
                 salaryprocess_header: [],
                 salaryprocess_detail: [],
-                finalizeBtn: true
+                finalizeBtn: true,
               });
               swalMessage({
                 title: error.message || error.response.data.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
       );
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     year: moment().year(),
     month: moment(new Date()).format("M"),
@@ -129,50 +144,70 @@ const ClearData = $this => {
     loan_payable_amount: null,
     loan_due_amount: null,
     net_salary: null,
-    salary_dates: null
+    salary_dates: null,
   });
 };
 
-const FinalizeSalary = $this => {
+const FinalizeSalary = ($this) => {
+  const { salaryprocess_header } = $this.state;
+  const sortedList = salaryprocess_header.filter((f) => f.checked === true);
+  if (sortedList.length === 0) {
+    swalMessage({ title: "Please select atleast one item", type: "error" });
+    return;
+  }
   swal({
-    title: "Are you sure want to Finalize the Salary ?",
+    title: "You want to finalize the salary?",
+    text:
+      "Please verify all the information before finalize, Once finalize can't be revert back.",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes",
+    confirmButtonText: "Finalize",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willFinalize => {
+    cancelButtonText: "Cancel",
+  }).then((willFinalize) => {
     if (willFinalize.value) {
       AlgaehLoader({ show: true });
-      const { salaryprocess_header } = $this.state;
 
-      const salary_header_id = salaryprocess_header.map(o => {
+      const salary_header_id = sortedList.map((o) => {
         return o.hims_f_salary_id;
       });
 
-      const employee_id = salaryprocess_header.map(o => {
+      const employee_id = sortedList.map((o) => {
         return o.employee_id;
       });
-
-      const net_salary = salaryprocess_header.map(o => {
+      const net_salary = sortedList.map((o) => {
         return {
           net_salary: o.net_salary,
+          gross_salary: o.gross_salary,
           total_paid_days: o.total_paid_days,
-          employee_id: o.employee_id
+          employee_id: o.employee_id,
         };
       });
-      debugger;
-      const _leave_salary_acc = _.filter(salaryprocess_header, f => {
+
+      const _leave_salary_acc = _.filter(sortedList, (f) => {
         return f.leave_salary_accrual_amount > 0;
       });
 
-      const salary_date =
-        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
-      const salary_end_date = moment(salary_date)
+      let salary_date =
+        $this.state.inputs.year + "-" + +$this.state.inputs.month + "-01";
+      let salary_end_date = moment(salary_date)
         .endOf("month")
         .format("YYYY-MM-DD");
-
+      if ($this.state.hrms_options.attendance_starts === "PM") {
+        salary_date =
+          $this.state.hrms_options.at_st_date +
+          "-" +
+          $this.state.inputs.month +
+          "-" +
+          $this.state.inputs.year;
+        salary_end_date =
+          $this.state.inputs.year +
+          "-" +
+          $this.state.inputs.month +
+          "-" +
+          $this.state.hrms_options.at_end_date;
+      }
       let inputObj = {
         fron_salary: "Y",
         salary_end_date: salary_end_date,
@@ -182,7 +217,10 @@ const FinalizeSalary = $this => {
         month: $this.state.inputs.month,
         hospital_id: $this.state.inputs.hospital_id,
         net_salary: net_salary,
-        _leave_salary_acc: _leave_salary_acc
+        _leave_salary_acc: _leave_salary_acc,
+        annual_leave_calculation:
+          $this.state.hrms_options.annual_leave_calculation,
+        ScreenCode: getCookie("ScreenCode"),
       };
 
       algaehApiCall({
@@ -190,32 +228,33 @@ const FinalizeSalary = $this => {
         module: "hrManagement",
         data: inputObj,
         method: "PUT",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             SalaryProcess($this, null, "finalize");
+            $this.allChecked.indeterminate = false;
             $this.setState({
-              finalizeBtn: true
+              finalizeBtn: true,
             });
             AlgaehLoader({ show: false });
             swalMessage({
               title: "Finalized Successfully.",
-              type: "success"
+              type: "success",
             });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               title: response.data.result,
-              type: "error"
+              type: "error",
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message || error.response.data.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   });
@@ -225,19 +264,19 @@ const openSalaryComponents = ($this, row) => {
   const salaryprocess_Earning = Enumerable.from(
     $this.state.salaryprocess_detail[0]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Deduction = Enumerable.from(
     $this.state.salaryprocess_detail[1]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   const salaryprocess_Contribute = Enumerable.from(
     $this.state.salaryprocess_detail[2]
   )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .where((w) => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
   $this.setState({
@@ -260,15 +299,94 @@ const openSalaryComponents = ($this, row) => {
     total_leave: row.total_leave,
     paid_leave: row.paid_leave,
     unpaid_leave: row.unpaid_leave,
+    pending_unpaid_leave: row.pending_unpaid_leave,
     display_present_days: row.display_present_days,
     total_paid_days: row.total_paid_days,
-    dis_employee_name: row.full_name
+    dis_employee_name: row.full_name,
   });
 };
 
 const closeSalaryComponents = ($this, e) => {
   $this.setState({
-    isOpen: !$this.state.isOpen
+    isOpen: !$this.state.isOpen,
+  });
+};
+
+const getOptions = ($this) => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: (res) => {
+      if (res.data.success) {
+        $this.setState({ hrms_options: res.data.result[0] });
+      }
+    },
+    onFailure: (err) => {
+      swalMessage({
+        title: err.message,
+        type: "error",
+      });
+    },
+  });
+};
+
+const generateMonthlyLoanReport = ($this) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob",
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "monthlyLoanReport",
+        pageOrentation: "landscape",
+        reportParams: [
+          {
+            name: "hospital_id",
+            value: $this.state.hospital_id,
+          },
+          {
+            name: "year",
+            value: $this.state.year,
+          },
+          {
+            name: "month",
+            value: $this.state.month,
+          },
+          {
+            name: "department_id",
+            value: $this.state.department_id,
+          },
+          {
+            name: "sub_department_id",
+            value: $this.state.sub_department_id,
+          },
+          {
+            name: "designation_id",
+            value: $this.state.designation_id,
+          },
+          {
+            name: "group_id",
+            value: $this.state.group_id,
+          },
+          {
+            name: "hims_d_employee_id",
+            value: $this.state.hims_d_employee_id,
+          },
+        ],
+        outputFileType: "PDF",
+      },
+    },
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
+      // const documentName="Salary Slip"
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Monthly Loan Report`;
+      window.open(origin);
+    },
   });
 };
 
@@ -277,5 +395,7 @@ export {
   FinalizeSalary,
   ClearData,
   openSalaryComponents,
-  closeSalaryComponents
+  closeSalaryComponents,
+  getOptions,
+  generateMonthlyLoanReport,
 };

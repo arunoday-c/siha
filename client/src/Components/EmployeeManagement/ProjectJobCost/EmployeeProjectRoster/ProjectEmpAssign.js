@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./project_assign.scss";
 import {
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -20,14 +20,14 @@ class ProjectEmpAssign extends Component {
       projects: [],
       projEmp: [],
       allChecked: false,
-      loading_Process: false
+      loading_Process: false,
     };
   }
 
   componentDidMount() {
     if (this.props.open) {
       this.setState({
-        ...this.props.data
+        ...this.props.data,
       });
     }
   }
@@ -39,7 +39,7 @@ class ProjectEmpAssign extends Component {
   addEmployees(row) {
     let myArray = this.state.projEmp;
     let filtered = myArray.filter(
-      emp => emp.employee_code === row.employee_code
+      (emp) => emp.employee_code === row.employee_code
     );
     const filCheck = filtered.length === 0;
     let newArr;
@@ -47,12 +47,12 @@ class ProjectEmpAssign extends Component {
     if (filCheck) {
       myArray.push(row);
     } else {
-      newArr = myArray.filter(emp => emp.employee_code !== row.employee_code);
+      newArr = myArray.filter((emp) => emp.employee_code !== row.employee_code);
     }
 
     this.setState(
       {
-        projEmp: filCheck ? myArray : newArr
+        projEmp: filCheck ? myArray : newArr,
       },
       () => this.isAllChecked()
     );
@@ -62,7 +62,7 @@ class ProjectEmpAssign extends Component {
     const { projEmp, employees } = this.state;
     const check = isEqual(projEmp, employees);
     this.setState({
-      allChecked: check
+      allChecked: check,
     });
   }
   // componentWillReceiveProps(nextProps) {
@@ -86,42 +86,42 @@ class ProjectEmpAssign extends Component {
     switch (e.target.name) {
       case "searchEmployees":
         let search = e.target.value.toLowerCase(),
-          employees = this.state.employees.filter(el => {
+          employees = this.state.employees.filter((el) => {
             let searchValue = el.employee_name.toLowerCase();
             return searchValue.indexOf(search) !== -1;
           });
 
         this.setState({
           employeeList: employees,
-          searchEmployees: e.target.value
+          searchEmployees: e.target.value,
         });
         break;
 
       default:
         let ProjectSearch = e.target.value.toLowerCase(),
-          projects = this.state.projects.filter(el => {
+          projects = this.state.projects.filter((el) => {
             let searchValue = el.project_desc.toLowerCase();
             return searchValue.indexOf(ProjectSearch) !== -1;
           });
 
         this.setState({
           projectList: projects,
-          searchprojects: e.target.value
+          searchprojects: e.target.value,
         });
         break;
     }
   }
 
-  checkAll = e => {
+  checkAll = (e) => {
     if (e.target.checked) {
       this.setState({
         projEmp: this.state.employees,
-        allChecked: true
+        allChecked: true,
       });
     } else {
       this.setState({
         projEmp: [],
-        allChecked: false
+        allChecked: false,
       });
     }
   };
@@ -133,7 +133,7 @@ class ProjectEmpAssign extends Component {
     ) {
       swalMessage({
         title: "Please Select a project to assign",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.projEmp.length === 0 ||
@@ -141,7 +141,7 @@ class ProjectEmpAssign extends Component {
     ) {
       swalMessage({
         title: "Please select atleast one employee to asssign project",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       moment(this.state.from_date).format("YYYYMMDD") >
@@ -149,7 +149,7 @@ class ProjectEmpAssign extends Component {
     ) {
       swalMessage({
         title: "Please select a proper Date Range",
-        type: "warning"
+        type: "warning",
       });
     } else {
       this.setState({ loading_Process: true }, () => {
@@ -158,7 +158,7 @@ class ProjectEmpAssign extends Component {
           to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
           project_id: this.state.hims_d_project_id,
           employees: this.state.projEmp,
-          hospital_id: this.state.hospital_id
+          hospital_id: this.state.hospital_id,
         };
 
         algaehApiCall({
@@ -166,25 +166,25 @@ class ProjectEmpAssign extends Component {
           method: "POST",
           data: sendData,
           module: "hrManagement",
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.setState({ loading_Process: false }, () => {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
                 document.getElementById("clsProjAsgn").click();
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             this.setState({ loading_Process: false }, () => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
             });
-          }
+          },
         });
       });
 
@@ -211,7 +211,7 @@ class ProjectEmpAssign extends Component {
         title="Project Assign"
         openPopup={this.props.open}
         events={{
-          onClose: this.props.onClose
+          onClose: this.props.onClose,
         }}
         className="col-lg-12 ShiftAssign"
       >
@@ -222,21 +222,21 @@ class ProjectEmpAssign extends Component {
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Project Starts Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "from_date",
                   others: {
-                    tabIndex: "1"
-                  }
+                    tabIndex: "1",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      from_date: selDate
+                      from_date: selDate,
                     });
-                  }
+                  },
                 }}
                 minDate={from_date}
                 maxDate={to_date}
@@ -246,21 +246,21 @@ class ProjectEmpAssign extends Component {
                 div={{ className: "col-3 mandatory" }}
                 label={{
                   forceLabel: "Project End Date",
-                  isImp: true
+                  isImp: true,
                 }}
                 textBox={{
                   className: "txt-fld",
                   name: "to_date",
                   others: {
-                    tabIndex: "2"
-                  }
+                    tabIndex: "2",
+                  },
                 }}
                 events={{
-                  onChange: selDate => {
+                  onChange: (selDate) => {
                     this.setState({
-                      to_date: selDate
+                      to_date: selDate,
                     });
-                  }
+                  },
                 }}
                 minDate={from_date}
                 maxDate={to_date}
@@ -279,15 +279,15 @@ class ProjectEmpAssign extends Component {
                       name: "searchProjects",
                       value: this.state.searchprojects,
                       events: {
-                        onChange: this.SearchHandler.bind(this)
+                        onChange: this.SearchHandler.bind(this),
                       },
                       option: {
-                        type: "text"
+                        type: "text",
                       },
                       others: {
                         placeholder: "Search projects",
-                        tabIndex: "4"
-                      }
+                        tabIndex: "4",
+                      },
                     }}
                   />
                 </div>
@@ -306,7 +306,7 @@ class ProjectEmpAssign extends Component {
                         <label
                           htmlFor={data.project_id}
                           style={{
-                            width: "80%"
+                            width: "80%",
                           }}
                         >
                           <span>{data.project_desc}</span>
@@ -326,16 +326,16 @@ class ProjectEmpAssign extends Component {
                       name: "searchEmployees",
                       value: this.state.searchEmployees,
                       events: {
-                        onChange: this.SearchHandler.bind(this)
+                        onChange: this.SearchHandler.bind(this),
                       },
                       option: {
-                        type: "text"
+                        type: "text",
                       },
                       others: {
                         placeholder: "Search Employee By Name",
                         tabIndex: "3",
-                        disabled: this.state.allChecked
-                      }
+                        disabled: this.state.allChecked,
+                      },
                     }}
                   />
                 </div>
@@ -363,9 +363,11 @@ class ProjectEmpAssign extends Component {
                           onChange={this.addEmployees.bind(this, data)}
                         />
                       </span>
-                      <p htmlFor={data.employee_code}>
-                        <b>{data.employee_name}</b>
-                        <small>{data.employee_code}</small>
+                      <p>
+                        <label htmlFor={data.employee_code}>
+                          <small>{data.employee_code}</small>
+                          <b>{data.employee_name}</b>
+                        </label>
                       </p>
                     </li>
                   ))}
@@ -387,7 +389,7 @@ class ProjectEmpAssign extends Component {
                   onClick={this.processAssignment.bind(this)}
                   label={{
                     forceLabel: "PROCESS",
-                    returnText: true
+                    returnText: true,
                   }}
                 />
 

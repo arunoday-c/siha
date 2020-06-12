@@ -28,7 +28,6 @@ import PosListItems from "./PosListItems/PosListItems";
 import MyContext from "../../../utils/MyContext";
 import INVPOSIOputs from "../../../Models/INVPOS";
 import Options from "../../../Options.json";
-import Enumerable from "linq";
 import {
   algaehApiCall,
   swalMessage,
@@ -98,7 +97,7 @@ class InvPointOfSale extends Component {
     );
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = INVPOSIOputs.inputParam();
     this.setState(IOputs);
   }

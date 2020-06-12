@@ -16,7 +16,7 @@ export default {
             "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
             `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`,\
             `stocking_uom_id`, `service_id`,`addl_information`, `decimals`, `purchase_cost`, `markup_percent`,\
-            `sales_price`,`sfda_code`,`exp_date_not_required`, `reorder_qty`, `form_id`, `storage_id`,\
+            `sales_price`,`sfda_code`,`exp_date_required`, `reorder_qty`, `form_id`, `storage_id`,\
             `created_date`, `created_by`,`update_date`,`updated_by`)\
          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
@@ -37,23 +37,23 @@ export default {
             input.markup_percent,
             input.standard_fee,
             input.sfda_code,
-            input.exp_date_not_required,
+            input.exp_date_required,
             input.reorder_qty,
             input.form_id,
             input.storage_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.insertId != null) {
             const IncludeValues = [
               "uom_id",
               "stocking_uom",
-              "conversion_factor"
+              "conversion_factor",
             ];
             _mysql
               .executeQuery({
@@ -65,26 +65,26 @@ export default {
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date()
+                  updated_date: new Date(),
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: false,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = detailResult;
                   next();
                 });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -110,16 +110,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -143,16 +143,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -177,16 +177,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -210,16 +210,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -229,34 +229,153 @@ export default {
     }
   },
 
-  addPharmacyLocation: (req, res, next) => {
+  addPharmacyLocationBAKP_15_JAN_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let input = { ...req.body };
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, `hospital_id`,\
+            "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, \
+            `git_location`,`hospital_id`,\
             `created_date`, `created_by`, `updated_date`, `updated_by`)\
-          VALUE(?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?)",
           values: [
             input.location_description,
             input.location_type,
             input.allow_pos,
+            input.git_location,
             input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //modified by:irfan
+  addPharmacyLocation: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select finance_account_head_id from finance_account_head where account_code='1.2.2.1';",
+        })
+        .then((result) => {
+          if (
+            result[0][0]["product_type"] == "HIMS_ERP" ||
+            result[0][0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = result[1][0]["finance_account_head_id"];
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  input.location_description,
+                  head_id,
+                  "S",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                ],
+                printQuery: false,
+              })
+              .then((childRes) => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, \
+                  `git_location`,`hospital_id`,\
+                  `created_date`, `created_by`, `updated_date`, `updated_by`,head_id,child_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.location_description,
+                      input.location_type,
+                      input.allow_pos,
+                      input.git_location,
+                      input.hospital_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId,
+                    ],
+                    printQuery: false,
+                  })
+                  .then((locResult) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = locResult;
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, \
+              `git_location`,`hospital_id`,\
+              `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.location_description,
+                  input.location_type,
+                  input.allow_pos,
+                  input.git_location,
+                  input.hospital_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                ],
+                printQuery: false,
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
+        })
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -281,16 +400,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -315,16 +434,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -348,16 +467,16 @@ export default {
             input.location_id,
             input.allow,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -396,18 +515,19 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_item_master where record_status='A'" +
+            "select IM.*, S.vat_percent FROM hims_d_item_master IM inner join hims_d_services S on S.hims_d_services_id = IM.service_id \
+            where IM.record_status='A'" +
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -433,7 +553,7 @@ export default {
             MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description,\
              IM.structure_id, IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
-             IM.service_id , IM.purchase_cost,IM.addl_information, IM.exp_date_not_required,\
+             IM.service_id , IM.purchase_cost,IM.addl_information, IM.exp_date_required,\
              IM.sfda_code, IM.reorder_qty,IM.sales_price,S.vat_applicable,S.vat_percent from  \
              hims_d_item_master IM left join hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id\
              and IM.record_status='A' and MIU.record_status='A' left join hims_d_pharmacy_uom PH  on  \
@@ -441,14 +561,14 @@ export default {
              on IM.service_id = S.hims_d_services_id " +
             _strQry,
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -474,14 +594,14 @@ export default {
             _strQry +
             " order by hims_d_item_category_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -507,14 +627,14 @@ export default {
             _strQry +
             " order by hims_d_item_generic_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -540,14 +660,14 @@ export default {
             _strQry +
             " order by hims_d_item_group_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -573,14 +693,14 @@ export default {
             _strQry +
             " order by hims_d_pharmacy_uom_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -613,6 +733,13 @@ export default {
         _strQry += " and allow_pos='Y' ";
       }
 
+      if (
+        req.query.git_location !== null &&
+        req.query.git_location !== undefined
+      ) {
+        _strQry += `and git_location= '${req.query.git_location}'`;
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -620,14 +747,14 @@ export default {
             _strQry +
             " order by hims_d_pharmacy_location_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -653,14 +780,14 @@ export default {
             _strQry +
             " order by hims_d_item_form_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -686,14 +813,14 @@ export default {
             _strQry +
             " order by hims_m_location_permission_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -719,14 +846,14 @@ export default {
             _strQry +
             " order by hims_d_item_storage_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -752,16 +879,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_category_id
+            input.hims_d_item_category_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -788,16 +915,16 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             input.record_status,
-            input.hims_d_item_group_id
+            input.hims_d_item_group_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -823,16 +950,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_generic_id
+            input.hims_d_item_generic_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -857,16 +984,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_pharmacy_uom_id
+            input.hims_d_pharmacy_uom_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -884,27 +1011,28 @@ export default {
         .executeQuery({
           query:
             "UPDATE `hims_d_pharmacy_location` SET `location_description`=?, `location_status`=?, `location_type`=?, \
-            `allow_pos`=?, `hospital_id`=?, `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and \
+            `allow_pos`=?, `git_location`=?, `hospital_id`=?, `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and \
             `hims_d_pharmacy_location_id`=?;",
           values: [
             input.location_description,
             input.location_status,
             input.location_type,
             input.allow_pos,
+            input.git_location,
             input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_pharmacy_location_id
+            input.hims_d_pharmacy_location_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -930,16 +1058,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_form_id
+            input.hims_d_item_form_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -965,16 +1093,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_storage_id
+            input.hims_d_item_storage_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1001,16 +1129,16 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_m_location_permission_id
+            input.hims_m_location_permission_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1033,7 +1161,7 @@ export default {
             `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
             `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
             `addl_information`=?, `decimals`=?, `purchase_cost`=?, `markup_percent`=?, `sales_price`=?,`sfda_code`=?,`reorder_qty`=?,\
-            `exp_date_not_required`=?,`update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
+            `exp_date_required`=?,`update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
             `hims_d_item_master_id`=?",
           values: [
             input.item_code,
@@ -1057,15 +1185,15 @@ export default {
             input.standard_fee,
             input.sfda_code,
             input.reorder_qty,
-            input.exp_date_not_required,
+            input.exp_date_required,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_master_id
+            input.hims_d_item_master_id,
           ],
-          printQuery: true
+          printQuery: false,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult != null) {
             new Promise((resolve, reject) => {
               try {
@@ -1074,7 +1202,7 @@ export default {
                     "uom_id",
                     "item_master_id",
                     "stocking_uom",
-                    "conversion_factor"
+                    "conversion_factor",
                   ];
 
                   _mysql
@@ -1086,15 +1214,15 @@ export default {
                         created_by: req.userIdentity.algaeh_d_app_user_id,
                         created_date: new Date(),
                         updated_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_date: new Date()
+                        updated_date: new Date(),
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: false,
                     })
-                    .then(insertUomMapResult => {
+                    .then((insertUomMapResult) => {
                       return resolve(insertUomMapResult);
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                         reject(error);
@@ -1107,7 +1235,7 @@ export default {
                 reject(e);
               }
             })
-              .then(results => {
+              .then((results) => {
                 if (input.updateUomMapResult.length != 0) {
                   let qry = "";
                   let inputParam = req.body.updateUomMapResult;
@@ -1124,7 +1252,7 @@ export default {
                         inputParam[i].record_status,
                         moment().format("YYYY-MM-DD HH:mm"),
                         req.userIdentity.algaeh_d_app_user_id,
-                        inputParam[i].hims_m_item_uom_id
+                        inputParam[i].hims_m_item_uom_id,
                       ]
                     );
                   }
@@ -1132,16 +1260,16 @@ export default {
                   _mysql
                     .executeQuery({
                       query: qry,
-                      printQuery: true
+                      printQuery: false,
                     })
-                    .then(updateUomMapResult => {
+                    .then((updateUomMapResult) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = updateUomMapResult;
                         next();
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                         reject(error);
@@ -1155,7 +1283,7 @@ export default {
                   });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -1168,7 +1296,7 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -1200,14 +1328,14 @@ export default {
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,
-          printQuery: true
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1228,14 +1356,14 @@ export default {
             where E.record_status='A' and E.hospital_id=? and SD.department_type='PH'\
             and U.user_type in ('C','O');",
           values: [req.query.hospital_id],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1250,14 +1378,14 @@ export default {
       _mysql
         .executeQuery({
           query: "select * from hims_d_pharmacy_options;",
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1273,15 +1401,144 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_pharmacy_options` (`notification_before`, `notification_type`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-            VALUE(?, ?, ?, ?, ?, ?)",
+            "INSERT INTO `hims_d_pharmacy_options` (`notification_before`, `notification_type`, `requisition_auth_level`, \
+            `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?, ?, ?, ?, ?, ?, ?)",
           values: [
             input.notification_before,
             input.notification_type,
+            input.requisition_auth_level,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+          ],
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updatePharmacyOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_pharmacy_options` SET `notification_before`=?, `notification_type`=?, `requisition_auth_level` = ?, \
+                `updated_date`=?, `updated_by`=? \
+                WHERE `hims_d_pharmacy_options_id`=? ;",
+          values: [
+            input.notification_before,
+            input.notification_type,
+            input.requisition_auth_level,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_pharmacy_options_id,
+          ],
+          printQuery: false,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  addLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_phar_location_reorder` (`location_id`, `item_id`, `reorder_qty`, \
+            `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            VALUE(?,?,?,?,?,?,?)",
+          values: [
+            input.location_id,
+            input.item_id,
+            input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+
+      let strQuery = req.query.location_id != null ? ` and location_id = '${req.query.location_id}' ` : ""
+
+      _mysql
+        .executeQuery({
+          query:
+            "select * from `hims_d_phar_location_reorder` where item_id=? " + strQuery,
+          values: [req.query.item_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateLocationReorder: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_phar_location_reorder` SET `reorder_qty`=?, `updated_date`=?, `updated_by`=? \
+                WHERE `hims_d_phar_location_reorder_id`=? ;",
+          values: [
+            input.reorder_qty,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_phar_location_reorder_id
           ],
           printQuery: true
         })
@@ -1299,37 +1556,4 @@ export default {
       next(e);
     }
   },
-  updatePharmacyOptions: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let input = { ...req.body };
-      _mysql
-        .executeQuery({
-          query:
-            "UPDATE `hims_d_pharmacy_options` SET `notification_before`=?, `notification_type`=?,\
-                `updated_date`=?, `updated_by`=? \
-                WHERE `hims_d_pharmacy_options_id`=? ;",
-          values: [
-            input.notification_before,
-            input.notification_type,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            input.hims_d_pharmacy_options_id
-          ],
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  }
 };

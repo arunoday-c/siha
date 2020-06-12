@@ -38,7 +38,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class PosListItems extends Component {
@@ -52,7 +52,7 @@ class PosListItems extends Component {
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -108,7 +108,7 @@ class PosListItems extends Component {
     document.removeEventListener("keypress", this.onKeyPress, false);
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
 
@@ -128,7 +128,7 @@ class PosListItems extends Component {
                             <AlgaehAutoSearch
                               div={{ className: "col-3" }}
                               label={{ forceLabel: "Item Name (Ctrl + i)" }}
-                              title="Search Items"
+                              title="Type Item Name Here"
                               id="item_id_search"
                               template={result => {
                                 return (
@@ -142,7 +142,7 @@ class PosListItems extends Component {
                                       </div>
                                       <div className="col-4">
                                         <h6 className="price">
-                                          {getAmountFormart(
+                                          {GetAmountFormart(
                                             result.standard_fee
                                           )}
                                         </h6>
@@ -711,7 +711,7 @@ class PosListItems extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(
+                              {GetAmountFormart(
                                 this.state.patient_responsibility
                               )}
                             </h6>
@@ -723,7 +723,7 @@ class PosListItems extends Component {
                                 forceLabel: "Patient Tax"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                            <h6>{GetAmountFormart(this.state.patient_tax)}</h6>
                           </div>
 
                           <div className="col">
@@ -733,7 +733,7 @@ class PosListItems extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.patient_payable_h)}
+                              {GetAmountFormart(this.state.patient_payable_h)}
                             </h6>
                           </div>
                         </div>
@@ -746,7 +746,7 @@ class PosListItems extends Component {
                                 forceLabel: "Sub Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                           </div>
                           <div className="col-lg-4">
                             <AlgaehLabel
@@ -755,7 +755,7 @@ class PosListItems extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.discount_amount)}
+                              {GetAmountFormart(this.state.discount_amount)}
                             </h6>
                           </div>
 
@@ -765,7 +765,7 @@ class PosListItems extends Component {
                                 forceLabel: "Net Total"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_total)}</h6>
+                            <h6>{GetAmountFormart(this.state.net_total)}</h6>
                           </div>
                         </div>
                       </div>
@@ -783,7 +783,7 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.copay_amount)}
+                                {GetAmountFormart(this.state.copay_amount)}
                               </h6>
                             </div>
                           </div>
@@ -802,7 +802,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_responsibility
                                     )}
                                   </h6>
@@ -815,7 +815,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(this.state.company_tax)}
+                                    {GetAmountFormart(this.state.company_tax)}
                                   </h6>
                                 </div>
 
@@ -826,7 +826,7 @@ class PosListItems extends Component {
                                     }}
                                   />
                                   <h6>
-                                    {getAmountFormart(
+                                    {GetAmountFormart(
                                       this.state.company_payable
                                     )}
                                   </h6>
@@ -948,7 +948,7 @@ class PosListItems extends Component {
                                 }}
                               />
                               <h6>
-                                {getAmountFormart(this.state.advance_amount)}
+                                {GetAmountFormart(this.state.advance_amount)}
                               </h6>
                             </div>
 
@@ -958,7 +958,7 @@ class PosListItems extends Component {
                                   forceLabel: "Net Amount"
                                 }}
                               />
-                              <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                              <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                             </div>
 
                             <AlagehFormGroup
@@ -989,20 +989,14 @@ class PosListItems extends Component {
                               }}
                             />
 
-                            <div
-                              className="col-2"
-                              style={{
-                                background: " #44b8bd",
-                                color: " #fff"
-                              }}
-                            >
+                            <div className="col-2 highlightGreen">
                               <AlgaehLabel
                                 label={{
                                   forceLabel: "Receiveable Amount"
                                 }}
                               />
                               <h4>
-                                {getAmountFormart(
+                                {GetAmountFormart(
                                   this.state.receiveable_amount
                                 )}
                               </h4>
@@ -1016,7 +1010,7 @@ class PosListItems extends Component {
                               />
 
                               <h6>
-                                {getAmountFormart(this.state.balance_credit)}
+                                {GetAmountFormart(this.state.balance_credit)}
                               </h6>
                             </div>
                           </div>
@@ -1067,8 +1061,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PosListItems)
+  connect(mapStateToProps, mapDispatchToProps)(PosListItems)
 );

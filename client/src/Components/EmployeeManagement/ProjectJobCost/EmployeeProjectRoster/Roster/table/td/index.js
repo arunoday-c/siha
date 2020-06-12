@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 
 import { ProjectRosterContext } from "../../index";
-import {
-  algaehApiCall,
-  swalMessage
-} from "../../../../../../../utils/algaehApiCall";
+// import {
+//   algaehApiCall,
+//   swalMessage
+// } from "../../../../../../../utils/algaehApiCall";
 import { deleteProjectRoster } from "./index.event";
 import AlgaehLoader from "../../../../../../Wrapper/fullPageLoader";
 export default React.memo(function(props) {
@@ -64,8 +64,8 @@ export default React.memo(function(props) {
             : item.status === "N"
             ? {
                 style: {
-                  backgroundColor: "#f78fa2",
-                  color: "#000",
+                  backgroundColor: "rgb(255, 230, 234)",
+                  color: "rgb(228, 34, 69)",
                   cursor: "pointer"
                 }
               }

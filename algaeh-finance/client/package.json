@@ -8,6 +8,11 @@
     "@svgr/webpack": "4.3.2",
     "@typescript-eslint/eslint-plugin": "1.13.0",
     "@typescript-eslint/parser": "1.13.0",
+    "agentkeepalive": "^4.1.0",
+    "algaeh-react-components": "^1.6.0",
+    "antd": "^3.26.2",
+    "axios": "^0.19.0",
+    "axios-cancel": "^0.2.2",
     "babel-eslint": "10.0.2",
     "babel-jest": "^24.8.0",
     "babel-loader": "8.0.6",
@@ -15,7 +20,9 @@
     "babel-preset-react-app": "^9.0.1",
     "camelcase": "^5.2.0",
     "case-sensitive-paths-webpack-plugin": "2.2.0",
+    "client": "0.0.1",
     "cross-env": "^6.0.0",
+    "crypto": "^1.0.1",
     "css-loader": "2.1.1",
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
@@ -36,6 +43,7 @@
     "jest-environment-jsdom-fourteen": "0.1.0",
     "jest-resolve": "24.8.0",
     "jest-watch-typeahead": "0.3.1",
+    "linq": "^3.2.1",
     "mini-css-extract-plugin": "0.5.0",
     "node-sass": "^4.12.0",
     "optimize-css-assets-webpack-plugin": "5.0.3",
@@ -49,12 +57,18 @@
     "react-app-polyfill": "^1.0.2",
     "react-dev-utils": "^9.0.3",
     "react-dom": "^16.9.0",
+    "react-dropdown-tree-select": "^2.1.1",
     "react-router-dom": "^5.0.1",
+    "react-sortable-tree": "^2.6.2",
+    "react-to-print": "^2.5.0",
+    "recharts": "^1.8.5",
     "resolve": "1.12.0",
     "resolve-url-loader": "3.1.0",
     "sass-loader": "7.2.0",
+    "semantic-ui-react": "^0.88.1",
     "semver": "6.3.0",
     "style-loader": "1.0.0",
+    "sweetalert2": "^8.18.5",
     "terser-webpack-plugin": "1.4.1",
     "ts-pnp": "1.1.2",
     "url-loader": "2.1.0",
@@ -64,8 +78,8 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "start": "cross-env REACT_APP_CDN=development node scripts/start.js",
-    "build": "cross-env REACT_APP_CDN=production.min node scripts/build.js",
+    "start": "cross-env REACT_APP_CDN=development GENERATE_SOURCE_MAP=false node scripts/start.js",
+    "build": "cross-env REACT_APP_CDN=production.min GENERATE_SOURCE_MAP=false node scripts/build.js",
     "test": "node scripts/test.js",
     "type_check": "flow"
   },
@@ -140,6 +154,7 @@
   "devDependencies": {
     "assets-webpack-plugin": "^3.9.10",
     "babel-preset-flow": "^6.23.0",
+    "clean-webpack-plugin": "^3.0.0",
     "flow-bin": "^0.107.0"
   }
 }

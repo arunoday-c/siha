@@ -1,0 +1,19 @@
+#SaleOrderGrid {
+  .ReactTable {
+    max-height: 39vh !important;
+  }
+}
+#SaleOrderServiceGrid {
+  .ReactTable {
+    max-height: 57vh !important;
+  }
+}
+.textAreaLeft {
+  text-align: left;
+  margin-bottom: 50px;
+}
+
+.disableFinder {
+  opacity: 0.4;
+  pointer-events: none;
+}

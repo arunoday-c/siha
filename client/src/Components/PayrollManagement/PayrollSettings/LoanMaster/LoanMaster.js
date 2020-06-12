@@ -4,18 +4,55 @@ import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import { MainContext } from "algaeh-react-components/context";
 
 class LoanMaster extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.FIN_Active = false;
+    this.state = {
+      finance_account: [],
+    };
     this.getLoanMaster();
+  }
+
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
+
+    if (this.FIN_Active === true) {
+      this.getFinanceHeaders(this);
+    }
+  }
+
+  getFinanceHeaders() {
+    algaehApiCall({
+      uri: "/finance/getAccountHeadsForDropdown",
+      data: { finance_account_head_id: 1 },
+      method: "GET",
+      module: "finance",
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          this.setState({
+            finance_account: response.data.result,
+          });
+        }
+      },
+    });
   }
 
   clearState() {
@@ -24,7 +61,7 @@ class LoanMaster extends Component {
       loan_description: null,
       loan_account: null,
       loan_limit_type: null,
-      loan_maximum_amount: null
+      loan_maximum_amount: null,
     });
   }
 
@@ -33,19 +70,19 @@ class LoanMaster extends Component {
       uri: "/payrollsettings/getLoanMaster",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            loan_master: res.data.records
+            loan_master: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -62,26 +99,26 @@ class LoanMaster extends Component {
             loan_description: this.state.loan_description,
             loan_account: this.state.loan_account,
             loan_limit_type: this.state.loan_limit_type,
-            loan_maximum_amount: this.state.loan_maximum_amount
+            loan_maximum_amount: this.state.loan_maximum_amount,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearState();
               this.getLoanMaster();
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -97,24 +134,24 @@ class LoanMaster extends Component {
         loan_account: data.loan_account,
         loan_limit_type: data.loan_limit_type,
         loan_maximum_amount: data.loan_maximum_amount,
-        record_status: "A"
+        record_status: "A",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getLoanMaster();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -126,8 +163,8 @@ class LoanMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/payrollsettings/updateLoanMaster",
@@ -139,29 +176,24 @@ class LoanMaster extends Component {
             loan_account: data.loan_account,
             loan_limit_type: data.loan_limit_type,
             loan_maximum_amount: data.loan_maximum_amount,
-            record_status: "I"
+            record_status: "I",
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               this.getLoanMaster();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -169,13 +201,13 @@ class LoanMaster extends Component {
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   dropDownHandle(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -194,15 +226,15 @@ class LoanMaster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Loan Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "loan_code",
               value: this.state.loan_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -210,15 +242,15 @@ class LoanMaster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Loan Description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "loan_description",
               value: this.state.loan_description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -226,7 +258,7 @@ class LoanMaster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Loan Limit Type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "loan_limit_type",
@@ -235,9 +267,9 @@ class LoanMaster extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.LOAN_LMT_TYP
+                data: GlobalVariables.LOAN_LMT_TYP,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
 
@@ -245,7 +277,7 @@ class LoanMaster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Loan Limit Value",
-              isImp: this.state.loan_limit_type === "L" ? true : false
+              isImp: this.state.loan_limit_type === "L" ? true : false,
             }}
             textBox={{
               className: "txt-fld",
@@ -254,15 +286,15 @@ class LoanMaster extends Component {
               name: "loan_maximum_amount",
               value: this.state.loan_maximum_amount,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
-                disabled: this.state.loan_limit_type === "L" ? false : true
-              }
+                disabled: this.state.loan_limit_type === "L" ? false : true,
+              },
             }}
           />
 
-          <AlagehFormGroup
+          {/* <AlagehFormGroup
             div={{ className: "col" }}
             label={{
               forceLabel: "G/L Account",
@@ -276,12 +308,48 @@ class LoanMaster extends Component {
                 onChange: this.changeTexts.bind(this)
               }
             }}
-          />
+          /> */}
+
+          {/* {this.FIN_Active ?
+            <div className="col">
+              <AlgaehTreeSearch
+                div={{ className: "col form-group" }}
+                label={{
+                  forceLabel: "G/L Account",
+                  isImp: true,
+                  align: "ltr"
+                }}
+                tree={{
+                  treeDefaultExpandAll: true,
+                  onChange: value => {
+
+                    this.setState({
+                      selected_account: value
+                    })
+
+                  },
+                  data: this.state.finance_account || [],
+                  textField: "label",
+                  valueField: node => {
+                    if (node["leafnode"] === "Y") {
+                      return (
+                        node["head_id"] +
+                        "-" +
+                        node["finance_account_child_id"]
+                      );
+                    } else {
+                      return node["finance_account_head_id"];
+                    }
+                  },
+                  value: this.state.selected_account
+                }}
+              />
+            </div> : null} */}
 
           <div className="col-2 form-group">
             <button
               onClick={this.addLoanMaster.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               ADD TO LIST
@@ -310,7 +378,7 @@ class LoanMaster extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Loan Code" }} />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -319,16 +387,19 @@ class LoanMaster extends Component {
                               name: "loan_code",
                               value: row.loan_code,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Code - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "loan_description",
@@ -337,7 +408,7 @@ class LoanMaster extends Component {
                           label={{ forceLabel: "Loan Description" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -346,16 +417,19 @@ class LoanMaster extends Component {
                               name: "loan_description",
                               value: row.loan_description,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Code - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "loan_limit_type",
@@ -364,7 +438,7 @@ class LoanMaster extends Component {
                           label={{ forceLabel: "Loan Limit Type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.loan_limit_type === "L"
@@ -377,7 +451,7 @@ class LoanMaster extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
                             div={{ className: "col" }}
@@ -388,17 +462,17 @@ class LoanMaster extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.LOAN_LMT_TYP
+                                data: GlobalVariables.LOAN_LMT_TYP,
                               },
                               others: {
                                 errormessage: "Field cannot be blank",
-                                required: true
+                                required: true,
                               },
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             }}
                           />
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "loan_maximum_amount",
@@ -407,7 +481,7 @@ class LoanMaster extends Component {
                           label={{ forceLabel: "Loan Limit Value" }}
                         />
                       ),
-                      editorTemplate: row => {
+                      editorTemplate: (row) => {
                         return row.loan_limit_type === "L" ? (
                           <AlagehFormGroup
                             div={{ className: "col" }}
@@ -418,48 +492,51 @@ class LoanMaster extends Component {
                               name: "loan_maximum_amount",
                               value: row.loan_maximum_amount,
                               events: {
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               },
                               others: {
                                 errormessage: "Value - cannot be blank",
-                                required: true
-                              }
+                                required: true,
+                              },
                             }}
                           />
                         ) : (
                           row.loan_maximum_amount
                         );
-                      }
+                      },
                     },
-                    {
-                      fieldName: "loan_account",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "G/L Account" }} />
-                      ),
-                      editorTemplate: row => {
-                        return (
-                          <AlagehFormGroup
-                            div={{ className: "col" }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "loan_account",
-                              value: row.loan_account,
-                              events: {
-                                onChange: this.changeGridEditors.bind(this, row)
-                              },
-                              others: {
-                                errormessage: "Account - cannot be blank",
-                                required: true
-                              }
-                            }}
-                          />
-                        );
-                      }
-                    }
+                    // {
+                    //   fieldName: "loan_account",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "G/L Account" }} />
+                    //   ),
+                    //   editorTemplate: row => {
+                    //     return (
+                    //       <AlagehFormGroup
+                    //         div={{ className: "col" }}
+                    //         textBox={{
+                    //           className: "txt-fld",
+                    //           name: "loan_account",
+                    //           value: row.loan_account,
+                    //           events: {
+                    //             onChange: this.changeGridEditors.bind(this, row)
+                    //           },
+                    //           others: {
+                    //             errormessage: "Account - cannot be blank",
+                    //             required: true
+                    //           }
+                    //         }}
+                    //       />
+                    //     );
+                    //   }
+                    // }
                   ]}
                   keyId="hims_d_loan_id"
                   dataSource={{
-                    data: this.state.loan_master
+                    data: this.state.loan_master,
                   }}
                   isEditable={true}
                   filter={true}
@@ -467,7 +544,7 @@ class LoanMaster extends Component {
                   events={{
                     onEdit: () => {},
                     onDelete: this.deleteLoanMaster.bind(this),
-                    onDone: this.updateLoanMater.bind(this)
+                    onDone: this.updateLoanMater.bind(this),
                   }}
                 />
               </div>

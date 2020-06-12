@@ -122,11 +122,6 @@ class PatientType extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -222,223 +217,258 @@ class PatientType extends Component {
   render() {
     return (
       <div className="patient_type">
-        <div className="container-fluid">
-          <form>
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_type_code",
-                  value: this.state.patient_type_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },
-                  others: {
-                    tabIndex: "1",
-                    placeholder: this.state.patient_type_code_placeHolder
-                  }
-                }}
-              />
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2  form-group mandatory" }}
+            label={{
+              fieldName: "type_code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "patient_type_code",
+              value: this.state.patient_type_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                tabIndex: "1",
+                placeholder: this.state.patient_type_code_placeHolder
+              }
+            }}
+          />
 
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patitent_type_desc",
-                  value: this.state.patitent_type_desc,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
+          <AlagehFormGroup
+            div={{ className: "col-3  form-group mandatory" }}
+            label={{
+              fieldName: "type_desc",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "patitent_type_desc",
+              value: this.state.patitent_type_desc,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-              <AlagehFormGroup
-                div={{ className: "col-3 arabic-txt-fld" }}
-                label={{
-                  fieldName: "arabic_type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "arabic_patitent_type_desc",
-                  value: this.state.arabic_patitent_type_desc,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-                <button
-                  onClick={this.addPatientType.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to list
-                </button>
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
+            label={{
+              fieldName: "arabic_type_desc",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "arabic_patitent_type_desc",
+              value: this.state.arabic_patitent_type_desc,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <div className="col" style={{ marginTop: 19 }}>
+            <button
+              onClick={this.addPatientType.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to list
+            </button>
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col" data-validate="patTypeDiv">
+                    <AlgaehDataGrid
+                      datavalidate="data-validate='patTypeDiv'"
+                      id="patient_type_grd"
+                      columns={[
+                        {
+                          fieldName: "patient_type_code",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "type_code" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "patitent_type_desc",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "type_desc" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.patitent_type_desc,
+                                  className: "txt-fld",
+                                  name: "patitent_type_desc",
+                                  events: {
+                                    onChange: this.onchangegridcol.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Description - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "arabic_patitent_type_desc",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "arabic_type_desc" }}
+                            />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.arabic_patitent_type_desc,
+                                  className: "txt-fld",
+                                  name: "arabic_patitent_type_desc",
+                                  events: {
+                                    onChange: this.onchangegridcol.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Arabic Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "created_by",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "created_by" }} />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.userdrtails === undefined
+                                ? []
+                                : this.props.userdrtails.filter(
+                                    f =>
+                                      f.algaeh_d_app_user_id === row.created_by
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].username
+                                  : ""}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            let display =
+                              this.props.userdrtails === undefined
+                                ? []
+                                : this.props.userdrtails.filter(
+                                    f =>
+                                      f.algaeh_d_app_user_id === row.created_by
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].username
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "created_date",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Added Date" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>{this.dateFormater(row.created_date)}</span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "patient_status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.patient_status === "A"
+                              ? "Active"
+                              : "Inactive";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "patient_status",
+                                  className: "select-fld",
+                                  value: row.patient_status,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.FORMAT_STATUS
+                                  },
+                                  onChange: this.onchangegridcol.bind(
+                                    this,
+                                    row
+                                  ),
+                                  others: {
+                                    errormessage: "Status - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="patient_type_code"
+                      dataSource={{
+                        data:
+                          this.props.patienttypes === undefined
+                            ? []
+                            : this.props.patienttypes
+                      }}
+                      filter={true}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: this.deletePatientType.bind(this),
+                        onEdit: row => {},
+                        onDone: this.updatePatientType.bind(this)
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          </form>
-
-          <div className="row form-details">
-            <div className="col" data-validate="patTypeDiv">
-              <AlgaehDataGrid
-                datavalidate="data-validate='patTypeDiv'"
-                id="patient_type_grd"
-                columns={[
-                  {
-                    fieldName: "patient_type_code",
-                    label: <AlgaehLabel label={{ fieldName: "type_code" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patitent_type_desc",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.patitent_type_desc,
-                            className: "txt-fld",
-                            name: "patitent_type_desc",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Description - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "arabic_patitent_type_desc",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "arabic_type_desc" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.arabic_patitent_type_desc,
-                            className: "txt-fld",
-                            name: "arabic_patitent_type_desc",
-                            events: {
-                              onChange: this.onchangegridcol.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Arabic Name - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-
-                    label: <AlgaehLabel label={{ forceLabel: "Added Date" }} />,
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                  },
-                  {
-                    fieldName: "patient_status",
-                    label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                    displayTemplate: row => {
-                      return row.patient_status === "A" ? "Active" : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "patient_status",
-                            className: "select-fld",
-                            value: row.patient_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: this.onchangegridcol.bind(this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="patient_type_code"
-                dataSource={{
-                  data:
-                    this.props.patienttypes === undefined
-                      ? []
-                      : this.props.patienttypes
-                }}
-                filter={true}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: this.deletePatientType.bind(this),
-                  onEdit: row => {},
-                  onDone: this.updatePatientType.bind(this)
-                }}
-              />
             </div>
           </div>
         </div>
@@ -464,8 +494,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientType)
+  connect(mapStateToProps, mapDispatchToProps)(PatientType)
 );

@@ -1,5 +1,3 @@
-// @flow
-
 import React from "react";
 import type { Handler, anyObj, Label, Options } from "./Types";
 import AlgaehLabel from "./AlgaehLabel";

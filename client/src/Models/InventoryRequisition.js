@@ -1,9 +1,9 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
-      hims_f_pharamcy_material_header_id: null,
+      hims_f_inventory_material_header_id: null,
       material_requisition_number: null,
       from_location_type: null,
       from_location_id: null,
@@ -70,7 +70,8 @@ export default {
       requistion_type_name: null,
       requistion_from: null,
       barcode: null,
-      transaction_qty: null
+      transaction_qty: null,
+      requisition_auth_level: null
     };
     return output;
   }

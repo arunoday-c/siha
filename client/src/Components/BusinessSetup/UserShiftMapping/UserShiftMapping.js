@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import "./user_shift_mapping.scss";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 import {
   AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehDateHandler
+  AlgaehDateHandler,
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
@@ -24,7 +22,7 @@ class UserShiftMapping extends Component {
       year: moment(new Date()).format("YYYY"),
       month: moment(new Date()).format("M"),
       from_date: null,
-      to_date: null
+      to_date: null,
     };
     this.getShifts();
     this.getCashiers();
@@ -38,7 +36,7 @@ class UserShiftMapping extends Component {
   resetSaveState() {
     this.setState({
       hims_d_shift_id: "",
-      cashier_id: ""
+      cashier_id: "",
     });
   }
 
@@ -59,19 +57,19 @@ class UserShiftMapping extends Component {
       module: "masterSettings",
       method: "GET",
       data: { shift_status: "A" },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            shifts: response.data.records
+            shifts: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -86,20 +84,20 @@ class UserShiftMapping extends Component {
       uri: "/shiftAndCounter/getCashiers",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            cashiers: response.data.records
+            cashiers: response.data.records,
           });
           // console.log("Cashiers:", response.data.records);
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -108,19 +106,19 @@ class UserShiftMapping extends Component {
       uri: "/shiftAndCounter/getCashiersAndShiftMAP",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            cashiers_list: response.data.records
+            cashiers_list: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -131,13 +129,13 @@ class UserShiftMapping extends Component {
         if (this.state.from_date === null) {
           swalMessage({
             title: "From Date, is Mandatory",
-            type: "warning"
+            type: "warning",
           });
           return;
         } else if (this.state.to_date === null) {
           swalMessage({
             title: "To Date, is Mandatory",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -149,31 +147,31 @@ class UserShiftMapping extends Component {
             cashier_id: this.state.cashier_id,
             shift_id: this.state.hims_d_shift_id,
             from_date: this.state.from_date,
-            to_date: this.state.to_date
+            to_date: this.state.to_date,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
               this.resetSaveState();
               this.getMappedUsers();
             } else {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -184,29 +182,29 @@ class UserShiftMapping extends Component {
       method: "PUT",
       data: {
         hims_m_cashier_shift_id: data.hims_m_cashier_shift_id,
-        shift_id: data.shift_id
+        shift_id: data.shift_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.records) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
           this.getMappedUsers();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   datehandle(ctrl, e) {
     this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
   }
 
@@ -219,11 +217,11 @@ class UserShiftMapping extends Component {
       if (inRange) {
         swalMessage({
           title: "From Date cannot be grater than To Date.",
-          type: "warning"
+          type: "warning",
         });
         e.target.focus();
         this.setState({
-          [e.target.name]: null
+          [e.target.name]: null,
         });
       }
 
@@ -231,11 +229,11 @@ class UserShiftMapping extends Component {
       if (inRange) {
         swalMessage({
           title: "From Date cannot be Past Date.",
-          type: "warning"
+          type: "warning",
         });
         e.target.focus();
         this.setState({
-          [e.target.name]: null
+          [e.target.name]: null,
         });
       }
     } else if (e.target.name === "to_date") {
@@ -245,22 +243,22 @@ class UserShiftMapping extends Component {
       if (inRange) {
         swalMessage({
           title: "To Date cannot be less than From Date.",
-          type: "warning"
+          type: "warning",
         });
         e.target.focus();
         this.setState({
-          [e.target.name]: null
+          [e.target.name]: null,
         });
       }
       inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
       if (inRange) {
         swalMessage({
           title: "To Date cannot be Past Date.",
-          type: "warning"
+          type: "warning",
         });
         e.target.focus();
         this.setState({
-          [e.target.name]: null
+          [e.target.name]: null,
         });
       }
     }
@@ -274,42 +272,38 @@ class UserShiftMapping extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/deleteCashiersAndShiftMAP",
           module: "masterSettings",
           data: {
-            hims_m_cashier_shift_id: data.hims_m_cashier_shift_id
+            hims_m_cashier_shift_id: data.hims_m_cashier_shift_id,
           },
           method: "DELETE",
-          onSuccess: response => {
-            if (response.data.records.success) {
+          onSuccess: (response) => {
+            const { success, records } = response.data;
+            if (success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getMappedUsers();
             } else {
               swalMessage({
-                title: response.data.records.message,
-                type: "error"
+                title: records.message,
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
+          },
         });
       }
     });
@@ -323,7 +317,7 @@ class UserShiftMapping extends Component {
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "shift_type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hims_d_shift_id",
@@ -332,16 +326,16 @@ class UserShiftMapping extends Component {
               dataSource: {
                 textField: "shift_description",
                 valueField: "hims_d_shift_id",
-                data: this.state.shifts
+                data: this.state.shifts,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "select_cashier",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "cashier_id",
@@ -350,9 +344,9 @@ class UserShiftMapping extends Component {
               dataSource: {
                 textField: "cashier_name",
                 valueField: "cashier_id",
-                data: this.state.cashiers
+                data: this.state.cashiers,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
 
@@ -362,7 +356,7 @@ class UserShiftMapping extends Component {
             textBox={{ className: "txt-fld", name: "from_date" }}
             events={{
               onChange: this.datehandle.bind(this),
-              onBlur: this.dateValidate.bind(this)
+              onBlur: this.dateValidate.bind(this),
             }}
             value={this.state.from_date}
           />
@@ -372,7 +366,7 @@ class UserShiftMapping extends Component {
             textBox={{ className: "txt-fld", name: "to_date" }}
             events={{
               onChange: this.datehandle.bind(this),
-              onBlur: this.dateValidate.bind(this)
+              onBlur: this.dateValidate.bind(this),
             }}
             value={this.state.to_date}
           />
@@ -419,7 +413,7 @@ class UserShiftMapping extends Component {
           <div className="col">
             <button
               onClick={this.mapUserShift.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-primary"
             >
               Add to List
@@ -441,7 +435,7 @@ class UserShiftMapping extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -452,17 +446,20 @@ class UserShiftMapping extends Component {
                                 dataSource: {
                                   textField: "shift_description",
                                   valueField: "hims_d_shift_id",
-                                  data: this.state.shifts
+                                  data: this.state.shifts,
                                 },
                                 others: {
                                   errormessage: "Shift - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "cashier_name",
@@ -470,42 +467,42 @@ class UserShiftMapping extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Cashier" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return <span>{row.cashier_name}</span>;
-                        }
+                        },
                       },
                       {
                         fieldName: "from_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>{this.dateFormater(row.from_date)}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>{this.dateFormater(row.from_date)}</span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "to_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "To Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{this.dateFormater(row.to_date)}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return <span>{this.dateFormater(row.to_date)}</span>;
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_m_cashier_shift_id"
                     dataSource={{
-                      data: this.state.cashiers_list
+                      data: this.state.cashiers_list,
                     }}
                     filter={true}
                     isEditable={true}
@@ -513,7 +510,7 @@ class UserShiftMapping extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteCashiersAndShiftMAP.bind(this),
-                      onDone: this.updateCashiersAndShiftMAP.bind(this)
+                      onDone: this.updateCashiersAndShiftMAP.bind(this),
                     }}
                   />
                 </div>

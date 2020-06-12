@@ -18,7 +18,8 @@
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
   }
-  .Paper {background:#fff; 
+  .Paper {
+    background: #fff;
     padding: 10px;
     border: 1px solid #d3d3d3;
     margin-top: 10px;
@@ -37,5 +38,10 @@
   }
   .RichTextEditor__root___2QXK- {
     min-height: 40vh;
+  }
+  #templateGrid {
+    .ReactTable {
+      max-height: 50vh !important;
+    }
   }
 }

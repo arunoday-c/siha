@@ -18,7 +18,7 @@ export default class ActivityFeed extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     let data = nextProps.empData !== null ? nextProps.empData : {};
     this.setState(data, () => {
       this.getActivityFeed();
@@ -57,11 +57,11 @@ export default class ActivityFeed extends Component {
     sendData =
       type === "AttendanceRegularization"
         ? {
-            pageDisplay: type,
-            regularize: data
-          }
+          pageDisplay: type,
+          regularize: data
+        }
         : type === "absent"
-        ? {
+          ? {
             pageDisplay: "AttendanceRegularization",
             regularize: {
               login_date: data.absent_date,
@@ -69,7 +69,7 @@ export default class ActivityFeed extends Component {
               absent_id: data.hims_f_absent_id
             }
           }
-        : {
+          : {
             pageDisplay: type,
             leave: {
               from_date: data.absent_date,
@@ -97,7 +97,7 @@ export default class ActivityFeed extends Component {
     return (
       <div className="ActivityFeedScreen">
         <div className="row">
-          <div className="col-8">
+          <div className="col-lg-8 col-md-8 col-sm-12">
             <div className="activity-feed">
               {regz.length > 0 || abzs.length > 0 ? (
                 <React.Fragment>
@@ -108,23 +108,23 @@ export default class ActivityFeed extends Component {
                     >
                       <div className="feedCntr">
                         <div className="dateUser">
-                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}
                           by <i>{data.updated_by}</i>
                         </div>
                         <div className="text">
-                          Request to{" "}
-                          <a
+                          Request to
+                          <button
                             onClick={this.skipTab.bind(
                               this,
                               "AttendanceRegularization",
                               data
                             )}
                           >
-                            Regularize Attendance{" "}
-                          </a>{" "}
-                          for{" "}
+                            Regularize Attendance
+                          </button>
+                          for
                           <span className="reqDate">
-                            {moment(data.attendance_date).format("DD MMM YYYY")}{" "}
+                            {moment(data.attendance_date).format("DD MMM YYYY")}
                           </span>
                         </div>
                       </div>
@@ -134,42 +134,39 @@ export default class ActivityFeed extends Component {
                     <div key={data.hims_f_absent_id} className="feed-item">
                       <div className="feedCntr">
                         <div className="dateUser">
-                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}
                           by <i>{data.updated_by}</i>
                         </div>
                         <div className="text">
                           Request to
-                          <a onClick={this.skipTab.bind(this, "absent", data)}>
-                            Regularize Attendance{" "}
-                          </a>
+                          <button onClick={this.skipTab.bind(this, "absent", data)}>
+                            Regularize Attendance
+                          </button>
                           or
-                          <a
+                          <button
                             onClick={this.skipTab.bind(
                               this,
                               "ApplyLeave",
                               data
                             )}
                           >
-                            Apply Leave Attendance{" "}
-                          </a>
+                            Apply Leave Attendance
+                          </button>
                           for
                           <span className="reqDate">
-                            {" "}
-                            {moment(data.absent_date).format(
-                              "DD MMM YYYY"
-                            )}{" "}
+                            {moment(data.absent_date).format("DD MMM YYYY")}
                           </span>
                         </div>
                       </div>
                     </div>
-                  ))}{" "}
+                  ))}
                 </React.Fragment>
               ) : (
-                <div className="noActivityData">
-                  <h1>Relax! You don't have any activity</h1>
-                  <i className="fas fa-tasks" />
-                </div>
-              )}
+                  <div className="noActivityData">
+                    <h1>Relax! You don't have any activity</h1>
+                    <i className="fas fa-tasks" />
+                  </div>
+                )}
             </div>
           </div>
         </div>

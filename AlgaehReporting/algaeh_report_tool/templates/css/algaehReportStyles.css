@@ -1,0 +1,647 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  font-size: 11px;
+}
+
+.print-body {
+  border-right: 0 !important;
+  padding: 0 15px 0 !important;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+.print-body section h2 span {
+  background-color: #f2f2f2;
+  padding: 5px 15px;
+  color: #000000;
+  border: 1px solid #c5c5c5;
+
+  line-height: 29px;
+  border-radius: 5px 5px 0 0;
+  margin-bottom: 0;
+}
+
+.print-body section:after {
+  content: "";
+  display: table;
+  clear: both;
+  margin-bottom: 20px;
+}
+
+.print-body .tableForLabel,
+.tableTotal,
+.tableForLabelSignature,
+.tableNoBorder {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.print-body .tableForLabel tbody,
+.print-body .tableNoBorder tbody {
+  margin: 0;
+  padding: 0;
+}
+
+.print-body .tableForLabel td {
+  border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.print-body .tableNoBorder td {
+  border: none;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+}
+
+.print-body .tableForLabel td span {
+  font-weight: bold;
+}
+
+.print-body .tableForData {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #00dac4;
+  font-weight: normal;
+}
+
+.print-body .tableForData thead {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.print-body .tableForData thead th small {
+  display: block;
+}
+
+.print-body .tableForData tbody {
+  margin: 0;
+  padding: 0;
+}
+
+.print-body .tableForData .tableSubHdg {
+  font-weight: bold;
+  background-color: #e8feff !important;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.print-body .tableForData .tableSubHdg span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.print-body .tableForData .tableSubHdg small {
+  font-weight: normal;
+}
+
+.print-body .tableForData .tableSubHdgFirst {
+  font-weight: bold;
+  background: #ffc7a6;
+  border-bottom: 1px dotted #ffc7a6;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdgFirst span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.print-body .tableForData .tableSubHdg0 {
+  font-weight: bold;
+  background: #ffe3a6;
+  border-bottom: 1px dotted #fff8d2;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdg0 span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.print-body .tableForData .tableSubHdg2 {
+  background: #fffff5;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdg2 span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
+}
+
+.print-body span.textFloatRight {
+  text-align: right;
+  float: right;
+}
+
+.print-body .tableForData th {
+  background: #00a796 !important;
+  vertical-align: middle !important;
+  padding: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  border: 1px solid #00756a;
+  font-size: 10px;
+  color: #fff;
+}
+.print-body .tableForData th p {
+  font-size: 11px;
+  padding: 0;
+  margin: 3px 0 0;
+  font-family: "Calibri", sans-serif;
+}
+
+.print-body .tableForData td {
+  border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+}
+
+.print-body footer {
+  margin: 0 0 10px;
+  padding: 0 0 10px;
+  display: block;
+  width: 100%;
+}
+
+.print-body .hospitalSeal {
+  float: right;
+}
+
+.print-body .hospitalSeal img {
+  height: 75px;
+}
+
+.print-body .doctorName {
+  text-align: left;
+  margin: 0 auto;
+  padding: 0 1%;
+  width: 75%;
+  height: 55px;
+}
+
+.print-body .doctorName h6 {
+  margin: 0 0 5px;
+  padding: 0;
+}
+
+.print-body .doctorName p {
+  margin: 0;
+  padding: 0;
+  line-height: 15px;
+}
+
+.print-body .signatureDiv {
+  text-align: left;
+  float: left;
+  width: 15%;
+  height: 60px;
+}
+.textArRht {
+  text-align: right;
+  float: right;
+  width: 25%;
+  font-size: 11px;
+  font-family: "Calibri", sans-serif;
+}
+.textEnLft {
+  text-align: left;
+  float: left;
+  width: 25%;
+}
+
+.textArbRht {
+  text-align: right;
+}
+.textEngLft {
+  text-align: left;
+}
+.textEngCtr {
+  text-align: center;
+}
+
+.valueText {
+  margin-left: 10px;
+  text-align: left;
+}
+
+.valueTextSick {
+  text-align: left;
+}
+.footerTotalUp {
+  text-align: right;
+}
+.footerTotalDown {
+  background: #eee;
+  font-weight: bold !important;
+}
+
+.numberFld {
+  text-align: right !important;
+}
+.txtFld {
+  text-align: left !important;
+}
+.numberFldTotal {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+.numberFldTotalBottom {
+  background: #ffc7a6;
+  font-weight: bold;
+}
+
+.tableTotal {
+  width: 50%;
+  border-top: 1px solid #ccc;
+  margin-top: 20px;
+  float: right;
+}
+.tableTotal td {
+  border-bottom: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+}
+.tableTotal td:first-child {
+  text-align: left;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.tableTotal td:last-child {
+  text-align: right;
+  font-family: "Calibri", sans-serif;
+}
+
+.tableTotal .bold {
+  font-weight: bold;
+  background: #f2f2f2;
+}
+.appSlipFormat {
+  font-family: "Segoe UI", sans-serif;
+}
+.appSlipFormat .patient_name {
+  font-size: 1rem;
+  display: inline;
+}
+.appSlipFormat p {
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.appSlipFormat span {
+  font-weight: bold;
+}
+.noResultTextReport {
+  font-size: 5rem;
+  color: #000;
+}
+.groupTable {
+  padding: 5px 5px 0;
+  background: rgb(247, 247, 247);
+  margin-bottom: 10px;
+  border-bottom: 1px dashed #ccc;
+}
+
+.print-body .tableHeaderForData {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #bebebe;
+  font-weight: normal;
+  border-bottom: 2px dotted #bebebe;
+  margin-bottom: 2px;
+}
+
+.print-body .tableHeaderForData thead {
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.print-body .tableHeaderForData tbody {
+  margin: 0;
+  padding: 0;
+}
+
+.print-body .tableHeaderForData .tableSubHdg {
+  font-weight: 400;
+  background: #f2f2f2;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.print-body .tableHeaderForData .tableSubHdg small {
+  font-weight: normal;
+}
+
+.print-body .tableHeaderForData th {
+  border-bottom: 2px solid #dadada !important;
+  vertical-align: middle !important;
+  background-color: #f1f1f1 !important;
+  padding: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  border-right: 1px solid #bebebe;
+  font-size: 10px;
+  color: #000;
+}
+.print-body .tableHeaderForData th p {
+  font-size: 11px;
+  padding: 0;
+  margin: 3px 0 0;
+  font-family: "Calibri", sans-serif;
+}
+
+.print-body .tableHeaderForData td {
+  border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+}
+.barcodeLine {
+  position: relative;
+  margin: 0 0 20px;
+  padding: 0;
+  text-align: center;
+  height: 60px;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
+}
+.small-top-left {
+  display: block;
+  font-size: 7px;
+  margin-top: 7px;
+}
+.barcodeLine hr {
+  height: 0;
+  background-color: white;
+  width: 0;
+  border-color: white;
+}
+.barcodeLine img {
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+}
+.barcodeLine p {
+  margin: 0;
+  padding: 0;
+}
+.small-left {
+  font-size: 8px;
+  float: left;
+}
+.small-right {
+  font-size: 8px;
+  float: right;
+}
+
+.barcodeSpecimen {
+  position: relative;
+  width: 230px;
+  margin-bottom: 30px;
+  height: 100px;
+  border: 1px dashed #ccc;
+  padding: 5px;
+}
+
+.barcodeSpecimen img {
+  height: 70px;
+  width: 100%;
+  margin-bottom: 5px;
+  position: relative;
+  text-align: center;
+}
+.barcodeSpecimen p {
+  width: 50%;
+  float: left;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+}
+.labelBlock label {
+  display: block;
+  text-transform: uppercase;
+  width: 100%;
+}
+.labelBlock .valueText {
+  margin: 0;
+}
+.salaryWord {
+  text-transform: capitalize;
+}
+
+.print-body .tableForDataNoBorder {
+  width: 100%;
+  border-collapse: collapse;
+  font-weight: normal;
+  font-size: 11px;
+}
+
+.print-body .tableForDataNoBorder thead th {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+}
+.print-body .tableForDataNoBorder tbody td {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px dotted rgb(221, 221, 221);
+}
+
+.print-body .tableForDataNoBorder .tableSubHdg {
+  font-weight: bold;
+  background-color: #e8feff !important;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.analyteResult [data-value="N"] sup {
+  display: none;
+}
+.analyteResult [data-value="L"],
+.analyteResult [data-value="H"] {
+  color: rgb(255, 153, 0);
+}
+
+.analyteResult [data-value="CL"],
+.analyteResult [data-value="CH"] {
+  color: red;
+}
+.textTruncate {
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contractMgmnt td:first-child {
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.8rem;
+}
+.contractMgmnt td:last-child {
+  text-align: right;
+  vertical-align: top;
+  font-size: 0.9rem;
+}
+.termsCnd {
+  margin: 0;
+  padding: 0;
+}
+.termsCnd li {
+  margin: 0 0 0 15px;
+  padding: 0;
+}
+.tableForPharmacyDiv {
+  padding: 15px 0 0;
+}
+.tableForPharmacy {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+.tableForPharmacy td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.tableForPharmacy td:first-child {
+  text-align: left;
+  width: 15%;
+}
+
+.tableForPharmacy td:nth-child(2) {
+  text-align: left;
+  width: 35%;
+  font-weight: bolder;
+}
+
+.tableForPharmacy td:nth-child(3) {
+  width: 35%;
+  text-align: right;
+  font-weight: bolder;
+}
+
+.tableForPharmacy td:last-child {
+  text-align: right;
+  width: 15%;
+}
+
+.print-body .tableForLabelSignature tbody {
+  margin: 0;
+  padding: 0;
+}
+.print-body .tableForLabelSignature td {
+  padding: 3px 10px;
+  margin: 0;
+  font-size: 11px;
+}
+.print-body .tableForLabelSignature td .signArea {
+  border: 1px dotted #eee;
+  display: block;
+  height: 80px;
+  width: 100%;
+}
+.print-body .tableForLabelSignature td span {
+  font-weight: bold;
+  display: block;
+  /* border-top: 1px solid #ccc; */
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.customDvSalesOrder {
+  width: 100%;
+}
+.customDvSalesOrder div {
+  width: 50%;
+  float: left;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  margin: 0;
+}
+
+.customDvSalesOrder h3 {
+  font-weight: bold;
+  font-size: 11px;
+  margin: 0;
+  padding: 0;
+  /* border-bottom: 1px dashed #ccc; */
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+.customDvSalesOrder div p {
+  margin: 5px 0;
+  padding: 0;
+  font-size: 10px;
+}
+.customDvSalesOrder div p span {
+  display: block;
+  font-weight: bold;
+  margin: 0;
+}
+.footerSeal img {
+  height: 100px;
+  width: 180px;
+  float: right;
+}
+.footerSeal {
+  text-align: right;
+}
+.terms_loop {
+  margin: 0 20px;
+  padding: 0;
+}
+
+.terms_loop li {
+  margin: 0;
+  padding: 0;
+  line-height: 15px;
+  font-size: 11px;
+}
+.footerInfoSection p {
+  line-height: 8px;
+}

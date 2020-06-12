@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import "./InvestigationSetup.scss";
 import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
@@ -11,12 +11,14 @@ import { AlgaehActions } from "../../actions/algaehActions";
 
 import {
   getInvestigations,
-  EditInvestigationTest
+  EditInvestigationTest,
 } from "./InvestigationSetupEvent";
 
 import moment from "moment";
 import Options from "../../Options.json";
 import NewInvestigation from "./NewInvestigation/NewInvestigation";
+import InvestigationComments from "./InvestigationComments/InvestigationComments";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 
 class InvestigationSetup extends Component {
   constructor(props) {
@@ -31,7 +33,12 @@ class InvestigationSetup extends Component {
       lab_section_id: null,
       specimen_id: null,
       hims_d_investigation_test_id: null,
-      InvestigationPop: {}
+      InvestigationPop: {},
+      investigations_data: [],
+      isCommentsOpen: false,
+      investigation_test_id: null,
+      test_name: null,
+      comments_data: [],
     };
   }
 
@@ -46,8 +53,8 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "INVTESTCATEGORY_GET_DATA",
-          mappingName: "invtestcategory"
-        }
+          mappingName: "invtestcategory",
+        },
       });
     }
     if (
@@ -60,8 +67,8 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
-          mappingName: "labspecimen"
-        }
+          mappingName: "labspecimen",
+        },
       });
     }
     if (
@@ -74,24 +81,17 @@ class InvestigationSetup extends Component {
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",
-          mappingName: "labsection"
-        }
+          mappingName: "labsection",
+        },
       });
     }
-
-    if (
-      this.props.investigationdetails === undefined ||
-      this.props.investigationdetails.length === 0
-    ) {
-      getInvestigations(this, this);
-    }
+    getInvestigations(this, this);
   }
 
   ShowModel(e) {
     this.setState({
-      ...this.state,
       isOpen: !this.state.isOpen,
-      InvestigationPop: {}
+      InvestigationPop: {},
     });
 
     this.props.getTestCategory({
@@ -101,8 +101,8 @@ class InvestigationSetup extends Component {
       data: { investigation_type: "L" },
       redux: {
         type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
+        mappingName: "testcategory",
+      },
     });
   }
 
@@ -110,7 +110,7 @@ class InvestigationSetup extends Component {
     this.setState(
       {
         ...this.state,
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
       },
       () => {
         if (e === true) {
@@ -120,7 +120,38 @@ class InvestigationSetup extends Component {
     );
   }
 
-  changeDateFormat = date => {
+  CloseCommentModel(e) {
+    this.setState({
+      isCommentsOpen: !this.state.isCommentsOpen,
+      investigation_test_id: null,
+      test_name: null,
+      comments_data: [],
+    });
+  }
+
+  OpenComments(row) {
+    algaehApiCall({
+      uri: "/investigation/getTestComments",
+      module: "laboratory",
+      data: {
+        investigation_test_id: row.hims_d_investigation_test_id,
+        comment_status: "A",
+      },
+      method: "GET",
+      onSuccess: (response) => {
+        if (response.data.success === true) {
+          this.setState({
+            isCommentsOpen: !this.state.isCommentsOpen,
+            investigation_test_id: row.hims_d_investigation_test_id,
+            test_name: row.description,
+            comments_data: response.data.records,
+          });
+        }
+      },
+    });
+  }
+
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -128,7 +159,7 @@ class InvestigationSetup extends Component {
 
   setUpdateComponent(row, e) {
     this.setState({
-      isOpen: true
+      isOpen: true,
     });
   }
 
@@ -139,7 +170,7 @@ class InvestigationSetup extends Component {
         investigation_type: null,
         category_id: null,
         lab_section_id: null,
-        specimen_id: null
+        specimen_id: null,
       },
       () => {
         getInvestigations(this, this);
@@ -148,38 +179,38 @@ class InvestigationSetup extends Component {
   }
 
   render() {
-    let _Investigations = Enumerable.from(this.props.investigationdetails)
-      .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
-        let firstRecordSet = Enumerable.from(g).firstOrDefault();
-        return {
-          available_in_house: firstRecordSet.available_in_house,
-          category_id: firstRecordSet.category_id,
-          cpt_id: firstRecordSet.cpt_id,
-          description: firstRecordSet.description,
-          external_facility_required: firstRecordSet.external_facility_required,
-          facility_description: firstRecordSet.facility_description,
-          film_category: firstRecordSet.film_category,
-          film_used: firstRecordSet.film_used,
-          hims_d_investigation_test_id:
-            firstRecordSet.hims_d_investigation_test_id,
-          investigation_type: firstRecordSet.investigation_type,
-          lab_section_id: firstRecordSet.lab_section_id,
-          priority: firstRecordSet.priority,
-          restrict_by: firstRecordSet.restrict_by,
-          restrict_order: firstRecordSet.restrict_order,
-          screening_test: firstRecordSet.screening_test,
-          send_out_test: firstRecordSet.send_out_test,
-          short_description: firstRecordSet.short_description,
-          specimen_id: firstRecordSet.specimen_id,
-          services_id: firstRecordSet.services_id,
-          hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
-          analytes_required: firstRecordSet.test_section === "M" ? false : true,
-          container_id: firstRecordSet.container_id,
-          analytes: g.getSource(),
-          RadTemplate: g.getSource()
-        };
-      })
-      .toArray();
+    // let _Investigations = Enumerable.from(this.props.investigationdetails)
+    //   .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
+    //     let firstRecordSet = Enumerable.from(g).firstOrDefault();
+    //     return {
+    //       available_in_house: firstRecordSet.available_in_house,
+    //       category_id: firstRecordSet.category_id,
+    //       cpt_id: firstRecordSet.cpt_id,
+    //       description: firstRecordSet.description,
+    //       external_facility_required: firstRecordSet.external_facility_required,
+    //       facility_description: firstRecordSet.facility_description,
+    //       film_category: firstRecordSet.film_category,
+    //       film_used: firstRecordSet.film_used,
+    //       hims_d_investigation_test_id:
+    //         firstRecordSet.hims_d_investigation_test_id,
+    //       investigation_type: firstRecordSet.investigation_type,
+    //       lab_section_id: firstRecordSet.lab_section_id,
+    //       priority: firstRecordSet.priority,
+    //       restrict_by: firstRecordSet.restrict_by,
+    //       restrict_order: firstRecordSet.restrict_order,
+    //       screening_test: firstRecordSet.screening_test,
+    //       send_out_test: firstRecordSet.send_out_test,
+    //       short_description: firstRecordSet.short_description,
+    //       specimen_id: firstRecordSet.specimen_id,
+    //       services_id: firstRecordSet.services_id,
+    //       hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
+    //       analytes_required: firstRecordSet.test_section === "M" ? false : true,
+    //       container_id: firstRecordSet.container_id,
+    //       analytes: g.getSource(),
+    //       RadTemplate: g.getSource()
+    //     };
+    //   })
+    //   .toArray();
     return (
       <div className="hims_investigationsetup">
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -188,25 +219,44 @@ class InvestigationSetup extends Component {
               <h3 className="caption-subject">Investigation Lists</h3>
             </div>
             <div className="actions">
-              <a
+              <button
                 // href="javascript"
                 className="btn btn-primary btn-circle active"
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>
-              <NewInvestigation
+              </button>
+              {this.state.isOpen ? (
+                <NewInvestigation
+                  key={"unique"}
+                  HeaderCaption={
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "investigation_setup",
+                        align: "ltr",
+                      }}
+                    />
+                  }
+                  open={this.state.isOpen}
+                  onClose={this.CloseModel.bind(this)}
+                  InvestigationPop={this.state.InvestigationPop}
+                />
+              ) : null}
+
+              <InvestigationComments
                 HeaderCaption={
                   <AlgaehLabel
                     label={{
-                      fieldName: "investigation_setup",
-                      align: "ltr"
+                      forceLabel: "Test Comments",
+                      align: "ltr",
                     }}
                   />
                 }
-                open={this.state.isOpen}
-                onClose={this.CloseModel.bind(this)}
-                InvestigationPop={this.state.InvestigationPop}
+                open={this.state.isCommentsOpen}
+                onClose={this.CloseCommentModel.bind(this)}
+                investigation_test_id={this.state.investigation_test_id}
+                test_name={this.state.test_name}
+                comments_data={this.state.comments_data}
               />
             </div>
           </div>
@@ -219,7 +269,7 @@ class InvestigationSetup extends Component {
                     {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             <i
@@ -230,15 +280,25 @@ class InvestigationSetup extends Component {
                                 row
                               )}
                             />
+                            <i
+                              className="fas fa-plus"
+                              style={{
+                                pointerEvents:
+                                  row.investigation_type === "R" ? "none" : "",
+                                opacity:
+                                  row.investigation_type === "R" ? "0.1" : "",
+                              }}
+                              onClick={this.OpenComments.bind(this, row)}
+                            />
                           </span>
                         );
                       },
                       others: {
-                        maxWidth: 65,
+                        maxWidth: 90,
                         resizable: false,
                         filterable: false,
-                        style: { textAlign: "center" }
-                      }
+                        style: { textAlign: "center" },
+                      },
                     },
                     {
                       fieldName: "investigation_type",
@@ -247,15 +307,15 @@ class InvestigationSetup extends Component {
                           label={{ fieldName: "investigation_type" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.investigation_type === "L"
                           ? "Lab"
                           : "Radiology";
-                      }
+                      },
                     },
                     {
                       fieldName: "description",
-                      label: <AlgaehLabel label={{ fieldName: "test_name" }} />
+                      label: <AlgaehLabel label={{ fieldName: "test_name" }} />,
                     },
                     {
                       fieldName: "category_id",
@@ -263,12 +323,12 @@ class InvestigationSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "category_id" }} />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.invtestcategory === undefined
                             ? []
                             : this.props.invtestcategory.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_test_category_id === row.category_id
                               );
 
@@ -281,19 +341,19 @@ class InvestigationSetup extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "specimen_id",
                       label: (
                         <AlgaehLabel label={{ fieldName: "specimen_id" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display =
                           this.props.labspecimen === undefined
                             ? []
                             : this.props.labspecimen.filter(
-                                f =>
+                                (f) =>
                                   f.hims_d_lab_specimen_id === row.specimen_id
                               );
 
@@ -304,12 +364,12 @@ class InvestigationSetup extends Component {
                               : ""}
                           </span>
                         );
-                      }
-                    }
+                      },
+                    },
                   ]}
                   keyId="investigation_code"
                   dataSource={{
-                    data: _Investigations
+                    data: this.state.investigations_data,
                   }}
                   // isEditable={true}
                   filter={true}
@@ -330,7 +390,7 @@ function mapStateToProps(state) {
     invtestcategory: state.invtestcategory,
     labspecimen: state.labspecimen,
     labsection: state.labsection,
-    testcategory: state.testcategory
+    testcategory: state.testcategory,
   };
 }
 
@@ -340,15 +400,12 @@ function mapDispatchToProps(dispatch) {
       getInvestigationDetails: AlgaehActions,
       getTestCategory: AlgaehActions,
       getLabSpecimen: AlgaehActions,
-      getLabsection: AlgaehActions
+      getLabsection: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvestigationSetup)
+  connect(mapStateToProps, mapDispatchToProps)(InvestigationSetup)
 );

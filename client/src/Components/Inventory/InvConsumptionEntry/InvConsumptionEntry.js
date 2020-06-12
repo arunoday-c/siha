@@ -15,9 +15,7 @@ import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
 import ConsumptionIOputs from "../../../Models/InventoryConsumption";
 import Options from "../../../Options.json";
-import AlgaehReport from "../../Wrapper/printReports";
-import _ from "lodash";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 class InvConsumptionEntry extends Component {
   constructor(props) {
@@ -26,15 +24,13 @@ class InvConsumptionEntry extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = ConsumptionIOputs.inputParam();
     this.setState(IOputs);
   }
-
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -65,24 +61,19 @@ class InvConsumptionEntry extends Component {
       });
     }
 
-    if (
-      this.props.invuserwiselocations === undefined ||
-      this.props.invuserwiselocations.length === 0
-    ) {
-      this.props.getUserLocationPermission({
-        uri: "/inventoryGlobal/getUserLocationPermission",
-        module: "inventory",
-        method: "GET",
-        data: {
-          location_status: "A",
-          hospital_id: hospital.hims_d_hospital_id
-        },
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "invuserwiselocations"
-        }
-      });
-    }
+    this.props.getUserLocationPermission({
+      uri: "/inventoryGlobal/getUserLocationPermission",
+      module: "inventory",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: userToken.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "invuserwiselocations"
+      }
+    });
 
     if (
       this.props.consumption_number !== undefined &&
@@ -110,15 +101,6 @@ class InvConsumptionEntry extends Component {
   }
 
   render() {
-    const from_location_name =
-      this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, f => {
-            return (
-              f.hims_d_inventory_location_id === this.state.from_location_id
-            );
-          })
-        : [];
-
     return (
       <React.Fragment>
         <div>
@@ -176,8 +158,8 @@ class InvConsumptionEntry extends Component {
                   <h6>
                     {this.state.consumption_date
                       ? moment(this.state.consumption_date).format(
-                          Options.dateFormat
-                        )
+                        Options.dateFormat
+                      )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -186,19 +168,19 @@ class InvConsumptionEntry extends Component {
             printArea={
               this.state.hims_f_inventory_consumption_header_id !== null
                 ? {
-                    menuitems: [
-                      {
-                        label: "Print Receipt",
-                        events: {
-                          onClick: () => {
-                            ConsumptionItemsEvents().generateConsumptionRecpt(
-                              this.state.consumption_number
-                            );
-                          }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          ConsumptionItemsEvents().generateConsumptionRecpt(
+                            this.state.consumption_number
+                          );
                         }
                       }
-                    ]
-                  }
+                    }
+                  ]
+                }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -241,8 +223,8 @@ class InvConsumptionEntry extends Component {
                       ? this.state.location_type === "WH"
                         ? "Warehouse"
                         : this.state.location_type === "MS"
-                        ? "Main Store"
-                        : "Sub Store"
+                          ? "Main Store"
+                          : "Sub Store"
                       : "Location Type"}
                   </h6>
                 </div>
@@ -318,8 +300,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InvConsumptionEntry)
+  connect(mapStateToProps, mapDispatchToProps)(InvConsumptionEntry)
 );

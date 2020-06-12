@@ -6,7 +6,7 @@ import "./EmployeeMaster.scss";
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
-import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
+// import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
 import RulesDetails from "./RulesDetails/RulesDetails";
@@ -19,34 +19,21 @@ import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../utils/GlobalFunctions";
-
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
-
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const HIMS_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "FTDSK";
-    });
-
-    const HRMS_Active = Activated_Modueles.filter(f => {
-      return f.module_code === "PAYROLL";
-    });
     this.state = {
       pageDisplay: "PersonalDetails",
       personalDetails: {},
       department_and_other: {},
       payroll: {},
-      HIMS_Active: HIMS_Active.length > 0 ? true : false,
-      HRMS_Active: HRMS_Active.length > 0 ? true : false
+      HIMS_Active: false, //HIMS_Active.length > 0 ? true : false,
+      HRMS_Active: false, //HRMS_Active.length > 0 ? true : false
     };
   }
+  static contextType = MainContext;
 
   openTab(e) {
     AlgaehValidation({
@@ -65,16 +52,16 @@ class EmployeeMaster extends Component {
         e.currentTarget.classList.add("active");
 
         this.setState({
-          pageDisplay: specified
+          pageDisplay: specified,
         });
-      }
+      },
     });
   }
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
-        pageDisplay: "PersonalDetails"
+        pageDisplay: "PersonalDetails",
       },
       () => this.props.onClose && this.props.onClose(e)
     );
@@ -83,84 +70,105 @@ class EmployeeMaster extends Component {
   componentDidMount() {
     // let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
-
+    const userToken = this.context.userToken;
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
     IOputs.selectedLang = prevLang;
 
-    this.setState({
-      personalDetails: {
-        ...IOputs,
-        ...this.props.employeeDetailsPop
-      }
-    });
+    const HIMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_Finance"
+        ? true
+        : false;
+    const HRMS_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
 
-    if (
-      this.props.subdepartment === undefined ||
-      this.props.subdepartment.length === 0
-    ) {
-      this.props.getSubDepartment({
-        uri: "/department/get/subdepartment",
-        module: "masterSettings",
-        data: {
-          sub_department_status: "A"
+    this.setState(
+      {
+        personalDetails: {
+          ...IOputs,
+          ...this.props.employeeDetailsPop,
         },
-        method: "GET",
-        redux: {
-          type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
+        HIMS_Active: HIMS_Active,
+        HRMS_Active: HRMS_Active,
+        hospital_id: userToken.hims_d_hospital_id,
+      },
+      () => {
+        if (
+          this.props.subdepartment === undefined ||
+          this.props.subdepartment.length === 0
+        ) {
+          this.props.getSubDepartment({
+            uri: "/department/get/subdepartment",
+            module: "masterSettings",
+            data: {
+              sub_department_status: "A",
+            },
+            method: "GET",
+            redux: {
+              type: "SUB_DEPT_GET_DATA",
+              mappingName: "subdepartment",
+            },
+          });
         }
-      });
-    }
 
-    if (this.state.HIMS_Active === true) {
-      if (
-        this.props.empservicetype === undefined ||
-        this.props.empservicetype.length === 0
-      ) {
-        this.props.getServiceTypes({
-          uri: "/serviceType",
-          module: "masterSettings",
-          method: "GET",
-          redux: {
-            type: "SERVIES_TYPES_GET_DATA",
-            mappingName: "empservicetype"
+        if (this.state.HIMS_Active === true) {
+          if (
+            this.props.empservicetype === undefined ||
+            this.props.empservicetype.length === 0
+          ) {
+            this.props.getServiceTypes({
+              uri: "/serviceType",
+              module: "masterSettings",
+              method: "GET",
+              redux: {
+                type: "SERVIES_TYPES_GET_DATA",
+                mappingName: "empservicetype",
+              },
+            });
           }
-        });
-      }
-      if (
-        this.props.empservices === undefined ||
-        this.props.empservices.length === 0
-      ) {
-        this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "empservices"
+          if (
+            this.props.empservices === undefined ||
+            this.props.empservices.length === 0
+          ) {
+            this.props.getServices({
+              uri: "/serviceType/getService",
+              module: "masterSettings",
+              method: "GET",
+              redux: {
+                type: "SERVICES_GET_DATA",
+                mappingName: "empservices",
+              },
+            });
           }
-        });
-      }
-    }
-
-    if (
-      this.props.countries === undefined ||
-      this.props.countries.length === 0
-    ) {
-      this.props.getCountries({
-        uri: "/masters/get/countryStateCity",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "countries"
         }
-      });
-    }
+
+        if (
+          this.props.countries === undefined ||
+          this.props.countries.length === 0
+        ) {
+          this.props.getCountries({
+            uri: "/masters/get/countryStateCity",
+            method: "GET",
+            redux: {
+              type: "CTRY_GET_DATA",
+              mappingName: "countries",
+            },
+          });
+        }
+      }
+    );
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
@@ -168,20 +176,20 @@ class EmployeeMaster extends Component {
 
       if (IOputs.present_country_id === null) {
         this.setState({
-          personalDetails: { ...this.state.personalDetails, ...IOputs }
+          personalDetails: { ...this.state.personalDetails, ...IOputs },
         });
         return;
       }
       if (IOputs.present_country_id !== newProps.present_country_id) {
         let country = Enumerable.from(this.props.countries)
-          .where(w => w.hims_d_country_id === IOputs.present_country_id)
+          .where((w) => w.hims_d_country_id === IOputs.present_country_id)
           .firstOrDefault();
 
         let states = country !== undefined ? country.states : [];
         if (this.props.countries !== undefined && states.length !== 0) {
           if (newProps.present_state_id !== IOputs.present_state_id) {
             let cities = Enumerable.from(states)
-              .where(w => w.hims_d_state_id === IOputs.present_state_id)
+              .where((w) => w.hims_d_state_id === IOputs.present_state_id)
               .firstOrDefault();
             if (IOputs.present_country_id === IOputs.permanent_country_id) {
               IOputs.countrystates = states;
@@ -204,7 +212,9 @@ class EmployeeMaster extends Component {
               // });
             } else {
               country = Enumerable.from(this.props.countries)
-                .where(w => w.hims_d_country_id === IOputs.permanent_country_id)
+                .where(
+                  (w) => w.hims_d_country_id === IOputs.permanent_country_id
+                )
                 .firstOrDefault();
 
               let pres_states = country !== undefined ? country.states : [];
@@ -214,7 +224,9 @@ class EmployeeMaster extends Component {
               ) {
                 if (newProps.permanent_state_id !== IOputs.permanent_state_id) {
                   let pres_cities = Enumerable.from(pres_states)
-                    .where(w => w.hims_d_state_id === IOputs.permanent_state_id)
+                    .where(
+                      (w) => w.hims_d_state_id === IOputs.permanent_state_id
+                    )
                     .firstOrDefault();
 
                   IOputs.countrystates = states;
@@ -253,11 +265,11 @@ class EmployeeMaster extends Component {
         }
       }
       this.setState({
-        personalDetails: { ...this.state.personalDetails, ...IOputs }
+        personalDetails: { ...this.state.personalDetails, ...IOputs },
       });
     } else {
       this.setState({
-        personalDetails: { ...EmpMasterIOputs.inputParam() }
+        personalDetails: { ...EmpMasterIOputs.inputParam() },
       });
     }
   }
@@ -265,8 +277,8 @@ class EmployeeMaster extends Component {
     this.setState({
       personalDetails: {
         ...this.state.personalDetails,
-        ...options
-      }
+        ...options,
+      },
     });
   }
 
@@ -276,7 +288,7 @@ class EmployeeMaster extends Component {
         <AlgaehModalPopUp
           open={this.props.open}
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
@@ -294,7 +306,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            fieldName: "personal_details"
+                            fieldName: "personal_details",
                           }}
                         />
                       }
@@ -308,7 +320,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Official Details"
+                            forceLabel: "Official Details",
                           }}
                         />
                       }
@@ -336,7 +348,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Payroll Details"
+                              forceLabel: "Payroll Details",
                             }}
                           />
                         }
@@ -351,7 +363,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              fieldName: "commission_setup"
+                              fieldName: "commission_setup",
                             }}
                           />
                         }
@@ -366,7 +378,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Family & Identification Details"
+                              forceLabel: "Family & Identification Details",
                             }}
                           />
                         }
@@ -382,7 +394,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Rules Details"
+                              forceLabel: "Rules Details",
                             }}
                           />
                         }
@@ -399,7 +411,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            fieldName: "personal_details"
+                            fieldName: "personal_details",
                           }}
                         />
                       }
@@ -413,7 +425,7 @@ class EmployeeMaster extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Official Details"
+                            forceLabel: "Official Details",
                           }}
                         />
                       }
@@ -441,7 +453,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Payroll Details"
+                              forceLabel: "Payroll Details",
                             }}
                           />
                         }
@@ -456,7 +468,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              fieldName: "commission_setup"
+                              fieldName: "commission_setup",
                             }}
                           />
                         }
@@ -471,7 +483,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Family & Identification Details"
+                              forceLabel: "Family & Identification Details",
                             }}
                           />
                         }
@@ -487,7 +499,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Rules Details"
+                              forceLabel: "Rules Details",
                             }}
                           />
                         }
@@ -529,11 +541,8 @@ class EmployeeMaster extends Component {
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
-                  <div className="col-lg-4"> &nbsp;</div>
-
-                  <div className="col-lg-8">
+                  <div className="col-12">
                     <button
-                      // onClick={() => {}}
                       onClick={InsertUpdateEmployee.bind(this, this)}
                       type="button"
                       className="btn btn-primary"
@@ -549,7 +558,7 @@ class EmployeeMaster extends Component {
                       )}
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -557,13 +566,15 @@ class EmployeeMaster extends Component {
                     >
                       <AlgaehLabel label={{ fieldName: "btnCancel" }} />
                     </button>
+
                     {/* <button
-                        onClick={ClearEmployee.bind(this, this)}
-                        type="button"
-                        className="btn btn-other"
-                      >
-                        <AlgaehLabel label={{ fieldName: "btn_clear" }} />
-                      </button> */}
+                      onClick={generateEmployeeContract.bind(this, this)}
+                      type="button"
+                      className="btn btn-other"
+                      style={{ float: "left", margin: 0 }}
+                    >
+                      <AlgaehLabel label={{ forceLabel: "Print Contract" }} />
+                    </button> */}
                   </div>
                 </div>
               </div>
@@ -583,7 +594,7 @@ function mapStateToProps(state) {
     subdepartment: state.subdepartment,
     servTypeCommission: state.servTypeCommission,
     serviceComm: state.serviceComm,
-    countries: state.countries
+    countries: state.countries,
   };
 }
 
@@ -595,15 +606,12 @@ function mapDispatchToProps(dispatch) {
       getSubDepartment: AlgaehActions,
       getDoctorServiceTypeCommission: AlgaehActions,
       getDoctorServiceCommission: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeeMaster)
+  connect(mapStateToProps, mapDispatchToProps)(EmployeeMaster)
 );

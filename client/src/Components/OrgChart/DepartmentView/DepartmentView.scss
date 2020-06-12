@@ -1,4 +1,5 @@
 .DepartmentOrgView {
+  // padding-top: 15px;
   .eachShelf {
     margin: 0;
     padding: 0;
@@ -21,18 +22,20 @@
       position: relative;
       width: 280px;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 30px;
       margin-bottom: 10px;
-      // border: 2px solid #d6d6d6;
+      border: 2px solid #d6d6d6;
       background: #fff;
+      line-height: 19px;
+      height: 60px;
       .childCount {
         position: absolute;
         top: 0;
         right: 0;
         background: #fff;
-        width: auto;
+        width: 30px;
         height: 30px;
-        border-radius: 0 0 0 10px;
+        border-radius: 20px;
         color: #00a796;
         text-align: center;
         line-height: 26px;
@@ -40,12 +43,11 @@
         padding: 0 5px;
         font-size: 0.8rem;
         border: 2px solid #d6d6d6;
-        border-width: 0 0 2px 2px;
         font-weight: bold;
+        margin: 13px;
       }
       .imgSection {
         display: inline-block;
-        width: 50px;
         vertical-align: top;
         img {
           width: 50px;
@@ -67,7 +69,7 @@
       }
       .contentSection {
         display: inline-block;
-        width: calc(100% - 60px);
+        width: calc(100% - 100px);
         margin-left: 10px;
         h1 {
           font-size: 1rem;

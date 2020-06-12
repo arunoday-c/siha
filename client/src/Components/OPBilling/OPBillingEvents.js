@@ -9,11 +9,9 @@ import {
 import _ from "lodash";
 import Enumerable from "linq";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
-  let prevLang = getCookie("Language");
 
   let counter_id = 0;
   $this.props.getPatientPackage({
@@ -42,7 +40,7 @@ const ClearData = ($this, e) => {
       IOputs.s_service_type = null;
       IOputs.s_service = null;
       IOputs.pageDisplay = "BillingDetails";
-      IOputs.selectedLang = prevLang;
+      IOputs.selectedLang = getCookie("Language");
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
@@ -53,34 +51,50 @@ const ClearData = ($this, e) => {
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.card_amount > 0) {
-    if ($this.state.card_number === null || $this.state.card_number === "") {
+  // else if ($this.state.bank_card_id === null) {
+  //   isError = true;
+
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Select Card."
+  //   });
+
+  //   document.querySelector("[name='bank_card_id']").focus();
+  //   return isError;
+  // } 
+
+  if ($this.state.Cardchecked === true) {
+    if (
+      $this.state.card_check_number === null ||
+      $this.state.card_check_number === ""
+    ) {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Number cannot be blank."
+        title: "Card Number cannot be blank."
       });
 
       document.querySelector("[name='card_check_number']").focus();
       return isError;
-    }
-
-    if ($this.state.card_date === null || $this.state.card_date === "") {
+    } else if (parseFloat($this.state.card_amount) === 0) {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
+        title: "Enter Card Amount."
       });
 
-      document.querySelector("[name='card_date']").focus();
+      document.querySelector("[name='card_amount']").focus();
       return isError;
     }
-  } else if ($this.state.cheque_amount > 0) {
+  } else if ($this.state.Checkchecked === true) {
     if (
       $this.state.cheque_number === null ||
       $this.state.cheque_number === ""
     ) {
       isError = true;
+
       swalMessage({
         type: "warning",
         title: "Check Number cannot be blank."
@@ -88,19 +102,19 @@ const Validations = $this => {
 
       document.querySelector("[name='cheque_number']").focus();
       return isError;
-    }
-
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
+    } else if ($this.state.cheque_amount === 0) {
       isError = true;
+
       swalMessage({
         type: "warning",
-        title: "Cheque Date Cannot be blank."
+        title: "Enter Check Amount."
       });
 
-      document.querySelector("[name='cheque_date']").focus();
+      document.querySelector("[name='cheque_amount']").focus();
       return isError;
     }
-  } else if ($this.state.unbalanced_amount > 0) {
+  }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
     swalMessage({
       type: "warning",
@@ -188,16 +202,9 @@ const generateReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };
@@ -273,7 +280,14 @@ const selectVisit = $this => {
 
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
+                      response.data.records.balance_credit = 0;
+                      response.data.records.credit_amount = 0;
 
+                      if ($this.state.default_pay_type === "CD") {
+                        response.data.records.card_amount =
+                          response.data.records.receiveable_amount;
+                        response.data.records.cash_amount = 0;
+                      }
                       $this.setState({
                         ...response.data.records
                       });
@@ -386,13 +400,10 @@ const getPatientDetails = $this => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        let hospital_id = JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        );
 
         if (
-          hospital_id.local_vat_applicable === "N" &&
-          hospital_id.default_nationality ===
+          $this.context.userToken.local_vat_applicable === "N" &&
+          $this.context.userToken.default_nationality ===
             data.patientRegistration.nationality_id
         ) {
           data.patientRegistration.vat_applicable = "N";
@@ -437,6 +448,9 @@ const getPatientDetails = $this => {
           last_visitDetails.hims_f_patient_visit_id;
         data.patientRegistration.incharge_or_provider =
           last_visitDetails.doctor_id;
+
+        data.patientRegistration.sub_department_id =
+          last_visitDetails.sub_department_id;
 
         data.patientRegistration.insured = last_visitDetails.insured;
         data.patientRegistration.insurance_yesno = last_visitDetails.insured;

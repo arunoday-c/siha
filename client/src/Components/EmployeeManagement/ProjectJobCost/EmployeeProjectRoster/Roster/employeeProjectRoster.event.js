@@ -1,5 +1,5 @@
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 function getInputDates(inputs) {
   let yearMonth = inputs.year + "-" + inputs.month + "-01";
@@ -40,7 +40,7 @@ export function getEmployeesForProjectRoster(inputs) {
           employee_group_id: group_id
         },
         onSuccess: res => {
-          const { success, records, message } = res.data;
+          const { success, records } = res.data;
           if (success === true) {
             resolve({ records, fromDate, toDate });
           } else {
@@ -57,20 +57,56 @@ export function getEmployeesForProjectRoster(inputs) {
   });
 }
 
-export function getProjects() {
+export function getProjects(hospital_id) {
   return new Promise((resolve, reject) => {
     try {
       algaehApiCall({
         uri: "/projectjobcosting/getDivisionProject",
         module: "hrManagement",
         method: "GET",
+        // data: { division_id: hospital_id },
         onSuccess: response => {
+
           const { success, records, message } = response.data;
+          debugger
           if (success === true) {
             resolve(records);
           } else {
             reject(new Error(message));
           }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+export function createReport(input, options) {
+  return new Promise((resolve, reject) => {
+    try {
+      // const settings = { header: undefined, footer: undefined, ...options };
+      algaehApiCall({
+        uri: "/printReportRaw",
+        skipParse: true,
+        data: Buffer.from(input, "utf8"),
+        module: "reports",
+        method: "POST",
+        header: {
+          Accept: "blob"
+        },
+        others: {
+          responseType: "blob"
+        },
+        onSuccess: response => {
+          const url = URL.createObjectURL(response.data);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `newReport${moment().format()}.pdf`;
+          a.click();
+          resolve();
         },
         onCatch: error => {
           reject(error);

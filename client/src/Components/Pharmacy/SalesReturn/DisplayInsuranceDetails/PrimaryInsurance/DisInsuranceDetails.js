@@ -7,7 +7,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import Options from "../../../../../Options.json";
-import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
+// import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 export default class AddInsuranceForm extends Component {
   constructor(props) {
@@ -15,12 +15,12 @@ export default class AddInsuranceForm extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.SALESRETURNIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SALESRETURNIOputs);
   }
 

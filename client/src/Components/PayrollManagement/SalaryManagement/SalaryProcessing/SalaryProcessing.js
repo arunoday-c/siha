@@ -12,9 +12,9 @@ import {
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
   getYears,
-  getAmountFormart,
-  AlgaehOpenContainer
+  getAmountFormart
 } from "../../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 
 import {
   texthandle,
@@ -45,9 +45,7 @@ class SalaryProcessing extends Component {
       finalizeBtn: true,
       employee_id: null,
       employee_name: null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
 
       total_days: null,
       absent_days: null,
@@ -72,14 +70,18 @@ class SalaryProcessing extends Component {
       dis_employee_name: null
     };
   }
-
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
     ) {
       this.props.getOrganizations({
-        uri: "/organization/getOrganization",
+        uri: "/organization/getOrganizationByUser",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
@@ -318,7 +320,7 @@ class SalaryProcessing extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19 }}
                 onClick={SalaryProcess.bind(this, this, "load")}
               >
                 Load
@@ -436,10 +438,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {
@@ -458,10 +460,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {
@@ -591,9 +593,9 @@ class SalaryProcessing extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>

@@ -138,11 +138,6 @@ class DocumentMaster extends Component {
     //         });
     //       }
     //     });
-    //   } else {
-    //     swalMessage({
-    //       title: "Delete request cancelled",
-    //       type: "error"
-    //     });
     //   }
     // });
   }
@@ -183,151 +178,173 @@ class DocumentMaster extends Component {
 
   render() {
     return (
-      <div className="doc_master margin-top-15">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2" }}
-              label={{
-                forceLabel: "Description",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "document_description",
-                value: this.state.document_description,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+      <div className="doc_master">
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "document_description",
+              value: this.state.document_description,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col-2 form-group" }}
-              label={{ forceLabel: "Document Type", isImp: true }}
-              selector={{
-                name: "document_type",
-                value: this.state.document_type,
-                className: "select-fld",
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: DOC_TYPE
-                },
-                onChange: this.dropDownHandler.bind(this),
-                onClear: () => {
-                  this.setState({
-                    document_type: null
-                  });
-                },
-                others: {}
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{ forceLabel: "Document Type", isImp: true }}
+            selector={{
+              name: "document_type",
+              value: this.state.document_type,
+              className: "select-fld",
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: DOC_TYPE
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  document_type: null
+                });
+              },
+              others: {}
+            }}
+          />
 
-            <div className="col form-group">
-              <button
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-                id="srch-sch"
-                onClick={this.addDocType.bind(this)}
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col form-group">
+            <button
+              style={{ marginTop: 19 }}
+              className="btn btn-primary"
+              id="srch-sch"
+              onClick={this.addDocType.bind(this)}
+            >
+              Add to List
+            </button>
           </div>
-
-          <div id="docTypeDivGrid_Cntr" data-validate="docsDivGrid">
-            <AlgaehDataGrid
-              id="docTypeDivGrid"
-              data-validate="docsDivGrid"
-              columns={[
-                {
-                  fieldName: "document_description",
-                  label: <AlgaehLabel label={{ forceLabel: "Description" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "document_description",
-                          value: row.document_description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Description - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "document_type",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Document Type" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.document_type === "C"
-                          ? "Company"
-                          : row.document_type === "E"
-                          ? "Employee"
-                          : "------"}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        selector={{
-                          name: "document_type",
-                          value: row.document_type,
-                          className: "select-fld",
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: DOC_TYPE
-                          },
-                          onChange: this.changeGridEditors.bind(this, row),
-                          others: {
-                            errormessage: "Type - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "created_date",
-                  label: <AlgaehLabel label={{ forceLabel: "Created Date" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {moment(row.created_date).format("DD-MM-YYYY")}
-                      </span>
-                    );
-                  },
-                  disabled: true
-                }
-              ]}
-              keyId="hims_d_document_type_id"
-              dataSource={{
-                data: this.state.docs
-              }}
-              isEditable={true}
-              filter={true}
-              paging={{ page: 0, rowsPerPage: 20 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteDocument.bind(this),
-                onDone: this.updateDocument.bind(this)
-              }}
-            />
+        </div>
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Document Master List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div id="docTypeDivGrid_Cntr" data-validate="docsDivGrid">
+                  <AlgaehDataGrid
+                    id="docTypeDivGrid"
+                    data-validate="docsDivGrid"
+                    columns={[
+                      {
+                        fieldName: "document_description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "document_description",
+                                value: row.document_description,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Description - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "document_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Document Type" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.document_type === "C"
+                                ? "Company"
+                                : row.document_type === "E"
+                                ? "Employee"
+                                : "------"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              selector={{
+                                name: "document_type",
+                                value: row.document_type,
+                                className: "select-fld",
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: DOC_TYPE
+                                },
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+                                others: {
+                                  errormessage: "Type - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Created Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.created_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      }
+                    ]}
+                    keyId="hims_d_document_type_id"
+                    dataSource={{
+                      data: this.state.docs
+                    }}
+                    isEditable={true}
+                    filter={true}
+                    paging={{ page: 0, rowsPerPage: 20 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteDocument.bind(this),
+                      onDone: this.updateDocument.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

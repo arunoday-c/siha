@@ -16,8 +16,8 @@ import {
 import NewPackageEvent from "./NewPackageEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
-
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
 class NewPackage extends PureComponent {
@@ -52,12 +52,20 @@ class NewPackage extends PureComponent {
       cancellation_policy: "AC",
       cancellation_per: 0,
       cancellation_amount: 0,
-      cancellation_type: "P"
+      cancellation_type: "P",
+      hospital_id: null
     };
     this.baseState = this.state;
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id
+    });
+
     this.props.getServiceTypes({
       uri: "/serviceType",
       module: "masterSettings",
@@ -79,7 +87,7 @@ class NewPackage extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.from !== undefined && newProps.from === "doctor") {
       this.setState({ from: newProps.from, package_type: "D" });
     } else {
@@ -223,7 +231,7 @@ class NewPackage extends PureComponent {
                   <div className="" data-validate="packagedata">
                     <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col-2 form-group" }}
+                        div={{ className: "col-2 form-group mandatory" }}
                         label={{
                           fieldName: "package_code",
                           isImp: true
@@ -242,7 +250,7 @@ class NewPackage extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col form-group" }}
+                        div={{ className: "col form-group mandatory" }}
                         label={{
                           fieldName: "package_name",
                           isImp: true
@@ -261,7 +269,7 @@ class NewPackage extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-2 form-group" }}
+                        div={{ className: "col-2 form-group mandatory" }}
                         label={{
                           fieldName: "package_amount",
                           isImp: true
@@ -287,7 +295,7 @@ class NewPackage extends PureComponent {
                           }}
                         />
                         <h6>
-                          {getAmountFormart(this.state.total_service_amount)}
+                          {GetAmountFormart(this.state.total_service_amount)}
                         </h6>
                       </div>
 
@@ -298,13 +306,17 @@ class NewPackage extends PureComponent {
                           }}
                         />
                         <h6>
-                          {getAmountFormart(this.state.pl_amount)}
                           {this.state.profit_loss === null ? (
                             " "
                           ) : this.state.profit_loss === "P" ? (
-                            <span className="badge badge-success"> Profit</span>
+                            <span className="badge badge-success">
+                              {GetAmountFormart(this.state.pl_amount)} (Profit)
+                            </span>
                           ) : (
-                            <span className="badge badge-danger"> Loss</span>
+                            <span className="badge badge-danger">
+                              {" "}
+                              {GetAmountFormart(this.state.pl_amount)} (Loss)
+                            </span>
                           )}
                         </h6>
                       </div>
@@ -434,7 +446,7 @@ class NewPackage extends PureComponent {
                         <div className="col">
                           <div className="row">
                             <AlagehAutoComplete
-                              div={{ className: "col-3 form-group" }}
+                              div={{ className: "col form-group  mandatory" }}
                               label={{
                                 forceLabel: "Cancel Policy",
                                 isImp:
@@ -463,7 +475,7 @@ class NewPackage extends PureComponent {
                               }}
                             />
                             <AlagehFormGroup
-                              div={{ className: "col form-group" }}
+                              div={{ className: "col form-group  mandatory" }}
                               label={{
                                 fieldName: "expiry_days",
                                 isImp:
@@ -485,7 +497,7 @@ class NewPackage extends PureComponent {
                               }}
                             />
                             <AlagehAutoComplete
-                              div={{ className: "col-3 form-group" }}
+                              div={{ className: "col form-group  mandatory" }}
                               label={{
                                 forceLabel: "Adv. Type",
                                 isImp:
@@ -515,7 +527,7 @@ class NewPackage extends PureComponent {
                             />
                             {this.state.advance_type === "P" ? (
                               <AlagehFormGroup
-                                div={{ className: "col form-group" }}
+                                div={{ className: "col form-group  mandatory" }}
                                 label={{
                                   forceLabel: "Adv. Percent",
                                   isImp:
@@ -540,7 +552,7 @@ class NewPackage extends PureComponent {
                               />
                             ) : (
                               <AlagehFormGroup
-                                div={{ className: "col form-group" }}
+                                div={{ className: "col form-group  mandatory" }}
                                 label={{
                                   forceLabel: "Adv. Amount",
                                   isImp:
@@ -566,7 +578,7 @@ class NewPackage extends PureComponent {
                             )}
 
                             <AlagehAutoComplete
-                              div={{ className: "col-3 form-group" }}
+                              div={{ className: "col form-group" }}
                               label={{
                                 forceLabel: "Cancel Type"
                               }}
@@ -640,7 +652,7 @@ class NewPackage extends PureComponent {
                   </div>
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-3 form-group" }}
+                      div={{ className: "col-3 form-group  mandatory" }}
                       label={{
                         fieldName: "select_service_type",
                         isImp: true
@@ -670,7 +682,7 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
+                      div={{ className: "col form-group  mandatory" }}
                       label={{
                         fieldName: "select_service",
                         isImp: true
@@ -697,7 +709,7 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-2" }}
+                      div={{ className: "col-2  mandatory" }}
                       label={{
                         forceLabel: "Quantity",
                         isImp: true
@@ -869,7 +881,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.service_amount, {
+                                    {GetAmountFormart(row.service_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -886,7 +898,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.tot_service_amount, {
+                                    {GetAmountFormart(row.tot_service_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -903,7 +915,7 @@ class NewPackage extends PureComponent {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {getAmountFormart(row.appropriate_amount, {
+                                    {GetAmountFormart(row.appropriate_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>
@@ -1011,8 +1023,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(NewPackage)
+  connect(mapStateToProps, mapDispatchToProps)(NewPackage)
 );

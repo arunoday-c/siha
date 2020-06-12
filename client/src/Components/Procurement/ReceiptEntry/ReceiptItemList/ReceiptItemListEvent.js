@@ -1,7 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 import _ from "lodash";
 
@@ -218,14 +218,14 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
       extended_cost = extended_price - discount_amount;
 
       extended_price = parseFloat(
-        getAmountFormart(extended_price, {
+        GetAmountFormart(extended_price, {
           appendSymbol: false
         })
       );
-      discount_amount = getAmountFormart(discount_amount, {
+      discount_amount = GetAmountFormart(discount_amount, {
         appendSymbol: false
       });
-      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+      tax_amount = GetAmountFormart(tax_amount, { appendSymbol: false });
 
       row["outstanding_quantity"] =
         row.dn_quantity - row.quantity_recieved_todate - parseFloat(value);

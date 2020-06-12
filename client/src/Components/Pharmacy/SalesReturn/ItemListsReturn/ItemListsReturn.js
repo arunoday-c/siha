@@ -25,7 +25,7 @@ import Options from "../../../../Options.json";
 import moment from "moment";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class ItemListsReturn extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class ItemListsReturn extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.SALESRETURNIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -66,7 +66,7 @@ class ItemListsReturn extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SALESRETURNIOputs);
   }
 
@@ -150,7 +150,10 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
-                        disabled: true
+                        others: {
+                          disabled: true,
+                          minWidth: 150
+                        }
                       },
                       {
                         fieldName: "quantity",
@@ -274,7 +277,7 @@ class ItemListsReturn extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.unit_cost, {
+                              {GetAmountFormart(row.unit_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -283,7 +286,7 @@ class ItemListsReturn extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.unit_cost, {
+                              {GetAmountFormart(row.unit_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -303,7 +306,7 @@ class ItemListsReturn extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.extended_cost, {
+                              {GetAmountFormart(row.extended_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -312,7 +315,7 @@ class ItemListsReturn extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.extended_cost, {
+                              {GetAmountFormart(row.extended_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -328,7 +331,9 @@ class ItemListsReturn extends Component {
                             }}
                           />
                         ),
-                        disabled: true
+                        others: {
+                          disabled: true
+                        }
                       },
                       {
                         fieldName: "discount_amout",
@@ -338,7 +343,7 @@ class ItemListsReturn extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.discount_amout, {
+                              {GetAmountFormart(row.discount_amout, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -347,7 +352,7 @@ class ItemListsReturn extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.discount_amout, {
+                              {GetAmountFormart(row.discount_amout, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -365,7 +370,7 @@ class ItemListsReturn extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.net_extended_cost, {
+                              {GetAmountFormart(row.net_extended_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -374,7 +379,7 @@ class ItemListsReturn extends Component {
                         editorTemplate: row => {
                           return (
                             <span>
-                              {getAmountFormart(row.net_extended_cost, {
+                              {GetAmountFormart(row.net_extended_cost, {
                                 appendSymbol: false
                               })}
                             </span>
@@ -415,7 +420,7 @@ class ItemListsReturn extends Component {
                               forceLabel: "Return Sub Total"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
+                          <h6>{GetAmountFormart(this.state.sub_total)}</h6>
                         </div>
                         <div className="col-lg-4">
                           <AlgaehLabel
@@ -424,7 +429,7 @@ class ItemListsReturn extends Component {
                             }}
                           />
                           <h6>
-                            {getAmountFormart(this.state.discount_amount)}
+                            {GetAmountFormart(this.state.discount_amount)}
                           </h6>
                         </div>
 
@@ -434,7 +439,7 @@ class ItemListsReturn extends Component {
                               forceLabel: "Net Total"
                             }}
                           />
-                          <h6>{getAmountFormart(this.state.net_total)}</h6>
+                          <h6>{GetAmountFormart(this.state.net_total)}</h6>
                         </div>
                       </div>
                     </div>
@@ -450,7 +455,7 @@ class ItemListsReturn extends Component {
                                 forceLabel: "Copay Amount"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.copay_amount)}</h6>
+                            <h6>{GetAmountFormart(this.state.copay_amount)}</h6>
                           </div>
                         </div>
                         <div className="row">
@@ -468,7 +473,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(
+                                  {GetAmountFormart(
                                     this.state.patient_responsibility
                                   )}
                                 </h6>
@@ -481,7 +486,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(this.state.patient_tax)}
+                                  {GetAmountFormart(this.state.patient_tax)}
                                 </h6>
                               </div>
 
@@ -492,7 +497,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(
+                                  {GetAmountFormart(
                                     this.state.patient_payable_h
                                   )}
                                 </h6>
@@ -514,7 +519,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(
+                                  {GetAmountFormart(
                                     this.state.company_responsibility
                                   )}
                                 </h6>
@@ -527,7 +532,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(this.state.company_tax)}
+                                  {GetAmountFormart(this.state.company_tax)}
                                 </h6>
                               </div>
 
@@ -538,7 +543,7 @@ class ItemListsReturn extends Component {
                                   }}
                                 />
                                 <h6>
-                                  {getAmountFormart(this.state.company_payable)}
+                                  {GetAmountFormart(this.state.company_payable)}
                                 </h6>
                               </div>
                             </div>
@@ -557,7 +562,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(
+                              {GetAmountFormart(
                                 this.state.sheet_discount_percentage
                               )}
                             </h6>
@@ -569,7 +574,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(
+                              {GetAmountFormart(
                                 this.state.sheet_discount_amount
                               )}
                             </h6>
@@ -587,7 +592,7 @@ class ItemListsReturn extends Component {
                                 forceLabel: "Net Amount"
                               }}
                             />
-                            <h6>{getAmountFormart(this.state.net_amount)}</h6>
+                            <h6>{GetAmountFormart(this.state.net_amount)}</h6>
                           </div>
 
                           <div className="col-3">
@@ -597,7 +602,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h6>
-                              {getAmountFormart(this.state.credit_amount)}
+                              {GetAmountFormart(this.state.credit_amount)}
                             </h6>
                           </div>
 
@@ -614,7 +619,7 @@ class ItemListsReturn extends Component {
                               }}
                             />
                             <h4>
-                              {getAmountFormart(this.state.payable_amount)}
+                              {GetAmountFormart(this.state.payable_amount)}
                             </h4>
                           </div>
                         </div>
@@ -657,8 +662,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ItemListsReturn)
+  connect(mapStateToProps, mapDispatchToProps)(ItemListsReturn)
 );

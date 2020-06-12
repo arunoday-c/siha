@@ -4,7 +4,7 @@ import moment from "moment";
 import AlgaehModalPopUp from "../../../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../../../Wrapper/algaehButton";
 import { ProjectRosterContext } from "../index";
@@ -12,16 +12,16 @@ import { ProjectRosterContext } from "../index";
 import "../../project_assign.scss";
 import {
   algaehApiCall,
-  swalMessage
+  swalMessage,
 } from "../../../../../../utils/algaehApiCall";
-export default function(props) {
+export default function (props) {
   const {
     showPopup,
     onClose,
     loadingProjects,
     projects,
     isEditing,
-    onRefreshTable
+    onRefreshTable,
   } = props;
   const { getProjectRosterState } = useContext(ProjectRosterContext);
   const {
@@ -30,7 +30,7 @@ export default function(props) {
     filterTrue,
     toDate,
     fromDate,
-    inputs
+    inputs,
   } = getProjectRosterState();
   const [from_date, setFromDate] = useState("");
   const [to_date, setToDate] = useState("");
@@ -40,6 +40,7 @@ export default function(props) {
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [checkAllEmployees, setCheckAllEmployees] = useState(false);
   const [loadingProcess, setLoadingProcess] = useState(false);
+  const [selectHospitalId, setHospitalId] = useState(false);
   const [changeState, setChangeState] = useState(false);
 
   let from_dt =
@@ -61,10 +62,10 @@ export default function(props) {
       selectedEmployees,
       from_date,
       to_date,
-      hospital_id,
-      isEditing
+      isEditing,
+      selectHospitalId,
     } = data;
-    console.log("data", data);
+
     return new Promise((resolve, reject) => {
       try {
         if (isEditing === undefined) {
@@ -79,10 +80,15 @@ export default function(props) {
         }
         let rosters = selectedEmployees;
         let projectID = selectedProjectID;
+        let hospitalID = selectHospitalId;
+
         if (isEditing !== undefined) {
           rosters = [isEditing.hims_d_employee_id];
           projectID =
             selectedProjectID === "" ? isEditing.project_id : selectedProjectID;
+
+          hospitalID =
+            selectHospitalId === "" ? isEditing.hospital_id : selectHospitalId;
         }
 
         algaehApiCall({
@@ -93,35 +99,60 @@ export default function(props) {
             from_date: from_date,
             to_date: to_date,
             project_id: projectID,
-            roster: rosters
+            roster: rosters,
+            hospital_id: hospitalID,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             const { success, records } = res.data;
             if (success) {
               swalMessage({
                 title: "Records updated successfully",
-                type: "success"
+                type: "success",
               });
               onRefreshTable();
               resolve();
             } else if (!success) {
               swalMessage({
                 title: records.message,
-                type: "warning"
+                type: "warning",
               });
               reject();
             }
           },
-          onCatch: err => {
+          onCatch: (err) => {
             reject(err);
-          }
+          },
         });
       } catch (e) {
         reject(e);
       }
     });
   }
-
+  function searchProjectHandler(e) {
+    setSearchProject(e.target.value);
+  }
+  function projectSarchFilterResult() {
+    if (searchProject === "") {
+      return projects;
+    } else {
+      return projects.filter((f) =>
+        f.project_desc.toLowerCase().includes(searchProject.toLowerCase())
+      );
+    }
+  }
+  function employeeSearchFilterResult() {
+    if (searchEmployee === "") {
+      return employeeShow;
+    } else {
+      return employeeShow.filter(
+        (f) =>
+          f.employee_code
+            .toLowerCase()
+            .includes(searchEmployee.toLowerCase()) ||
+          f.employee_name.toLowerCase().includes(searchEmployee.toLowerCase())
+      );
+    }
+  }
   return (
     <AlgaehModalPopUp
       className="col-lg-12 ShiftAssign"
@@ -130,7 +161,7 @@ export default function(props) {
       events={{
         onClose: () => {
           onClose();
-        }
+        },
       }}
     >
       <div className="popupInner" data-validate="LvEdtGrd">
@@ -140,19 +171,19 @@ export default function(props) {
               div={{ className: "col-3 mandatory" }}
               label={{
                 forceLabel: "Project Starts Date",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "from_date",
                 others: {
-                  tabIndex: "1"
-                }
+                  tabIndex: "1",
+                },
               }}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   setFromDate(moment(selDate).format("YYYY-MM-DD"));
-                }
+                },
               }}
               maxDate={toDate}
               minDate={fromDate}
@@ -162,21 +193,21 @@ export default function(props) {
               div={{ className: "col-3 mandatory" }}
               label={{
                 forceLabel: "Project End Date",
-                isImp: true
+                isImp: true,
               }}
               textBox={{
                 className: "txt-fld",
                 name: "to_date",
                 others: {
-                  tabIndex: "2"
-                }
+                  tabIndex: "2",
+                },
               }}
               events={{
-                onChange: selDate => {
+                onChange: (selDate) => {
                   setToDate(moment(selDate).format("YYYY-MM-DD"));
-                }
+                },
               }}
-              maxDate={toDate}
+              //maxDate={toDate}
               minDate={fromDate}
               value={to_dt}
             />
@@ -198,16 +229,17 @@ export default function(props) {
                     name: "searchProjects",
                     value: searchProject,
                     events: {
-                      onChange: e => {
-                        setSearchProject(e.target.value);
-                      }
+                      onChange: searchProjectHandler,
+                      // (e) => {
+                      //   setSearchProject(e.target.value);
+                      // },
                     },
                     option: {
-                      type: "text"
+                      type: "text",
                     },
                     others: {
-                      placeholder: "Search projects"
-                    }
+                      placeholder: "Search projects",
+                    },
                   }}
                 />
               </div>
@@ -215,38 +247,36 @@ export default function(props) {
                 <p>Please wait loading Project's</p>
               ) : (
                 <ul className="projectList">
-                  {projects.map(data => {
-                    if (
-                      data.project_desc
-                        .toLowerCase()
-                        .indexOf(searchProject.toLowerCase()) === -1
-                    ) {
-                      return null;
-                    }
+                  {projectSarchFilterResult().map((data, index) => {
                     return (
-                      <li key={data.project_id}>
+                      <li key={index}>
                         <input
-                          id={data.project_id}
+                          id={`${data.project_id}_${index}`}
                           name="hims_d_project_id"
                           checked={
                             selectedProjectID === "" && isEditing !== undefined
-                              ? isEditing.project_id === data.project_id
-                              : selectedProjectID === data.project_id
+                              ? isEditing.project_id === data.project_id &&
+                                isEditing.hospital_id === data.hospital_id
+                              : selectedProjectID === data.project_id &&
+                                selectHospitalId === data.hospital_id
                               ? true
                               : false
                           }
-                          onChange={e => {
+                          onChange={(e) => {
                             setSelectedProjectID(data.project_id);
+                            setHospitalId(data.hospital_id);
                           }}
                           type="radio"
                         />
                         <label
-                          htmlFor={data.project_id}
+                          htmlFor={`${data.project_id}_${index}`}
                           style={{
-                            width: "80%"
+                            width: "80%",
                           }}
                         >
-                          <span>{data.project_desc}</span>
+                          <span>
+                            {data.project_desc + " / " + data.hospital_name}
+                          </span>
                         </label>
                       </li>
                     );
@@ -256,7 +286,7 @@ export default function(props) {
             </div>
 
             <div className="col-8">
-              <h6>Assign Employee</h6>
+              <h6>{`Selected Employees - (${selectedEmployees.length})`}</h6>
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -265,18 +295,18 @@ export default function(props) {
                     name: "searchEmployees",
                     value: searchEmployee,
                     events: {
-                      onChange: e => {
+                      onChange: (e) => {
                         setSearchEmployee(e.target.value);
-                      }
+                      },
                     },
                     option: {
-                      type: "text"
+                      type: "text",
                     },
                     others: {
-                      placeholder: "Search Employee By Name"
+                      placeholder: "Search employee by code / name ",
 
                       //disabled: this.state.allChecked
-                    }
+                    },
                   }}
                 />
               </div>
@@ -287,10 +317,11 @@ export default function(props) {
                       type="checkbox"
                       name="choose-all"
                       checked={checkAllEmployees}
-                      onChange={e => {
+                      disabled={isEditing === undefined ? false : true}
+                      onChange={(e) => {
                         setCheckAllEmployees(e.target.checked);
                         if (e.target.checked) {
-                          const checkedall = employeeShow.map(employee => {
+                          const checkedall = employeeShow.map((employee) => {
                             return employee.hims_d_employee_id;
                           });
                           setSelectedEmployees(checkedall);
@@ -300,20 +331,20 @@ export default function(props) {
                       }}
                     />
                   </span>
-                  <p>Employee Names</p>
+                  <p>Employee Codes & Names</p>
                 </li>
                 {isEditing === undefined ? (
-                  employeeShow.map(data => {
-                    if (
-                      data.employee_name
-                        .toLowerCase()
-                        .indexOf(searchEmployee.toLowerCase()) === -1
-                    ) {
-                      return null;
-                    }
+                  employeeSearchFilterResult().map((data, index) => {
+                    // if (
+                    //   data.employee_code
+                    //     .toLowerCase()
+                    //     .indexOf(searchEmployee.toLowerCase()) === -1
+                    // ) {
+                    //   return null;
+                    // }
 
                     return (
-                      <li key={data.hims_d_employee_id}>
+                      <li key={index}>
                         <span>
                           <input
                             id={data.employee_code}
@@ -321,7 +352,7 @@ export default function(props) {
                             checked={selectedEmployees.includes(
                               data.hims_d_employee_id
                             )}
-                            onChange={e => {
+                            onChange={(e) => {
                               setChangeState(!changeState);
                               let existingEmployees = selectedEmployees;
                               if (e.target.checked) {
@@ -329,7 +360,7 @@ export default function(props) {
                               } else {
                                 existingEmployees = _.filter(
                                   existingEmployees,
-                                  f => f !== data.hims_d_employee_id
+                                  (f) => f !== data.hims_d_employee_id
                                 );
                               }
 
@@ -339,8 +370,8 @@ export default function(props) {
                         </span>
                         <p>
                           <label htmlFor={data.employee_code}>
-                            <b>{data.employee_name}</b>
                             <small>{data.employee_code}</small>
+                            <b>{data.employee_name}</b>
                           </label>
                         </p>
                       </li>
@@ -358,8 +389,8 @@ export default function(props) {
                     </span>
                     <p>
                       <label htmlFor={isEditing.employee_code}>
-                        <b>{isEditing.employee_name}</b>
                         <small>{isEditing.employee_code}</small>
+                        <b>{isEditing.employee_name}</b>
                       </label>
                     </p>
                   </li>
@@ -398,31 +429,33 @@ export default function(props) {
                     selectedEmployees,
                     from_date: from_dt,
                     to_date: to_dt,
-                    hospital_id: inputs.hospital_id,
-                    isEditing
+                    selectHospitalId,
+                    isEditing,
                   })
                     .then(() => {
                       setLoadingProcess(false);
                       setSelectedProjectID("");
+                      setHospitalId("");
                       setSelectedEmployees([]);
                       setCheckAllEmployees(false);
                       setFromDate("");
                       setToDate("");
                       onClose();
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       setLoadingProcess(false);
                     });
                 }}
                 label={{
                   forceLabel: "PROCESS",
-                  returnText: true
+                  returnText: true,
                 }}
               />
 
               <button
                 onClick={() => {
                   setSelectedProjectID("");
+                  setHospitalId("");
                   setSelectedEmployees([]);
                   setCheckAllEmployees(false);
                   setFromDate("");

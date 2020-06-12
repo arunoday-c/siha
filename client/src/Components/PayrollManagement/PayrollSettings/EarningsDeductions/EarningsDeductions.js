@@ -3,25 +3,45 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import extend from "extend";
+// import extend from "extend";
 import "./earnings_deductions.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
-import swal from "sweetalert2";
+import { MainContext } from "algaeh-react-components/context";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { stat } from "fs";
+import { AlgaehTreeSearch } from "algaeh-react-components";
+import {
+  onEditHandler,
+  dropDownHandler,
+  changeTexts,
+  SpecificChecks,
+  changeChecks,
+  changeGridEditors,
+  OpenCalculator,
+  CLoseCalculator,
+  onChangeCalculatorInput,
+  onBackspaceHandler,
+  onClearCalculatorHandler,
+  onApplayFormulaHandler,
+  clearState,
+  getEarningDeductions,
+  getFinanceHeaders,
+  addEarningsDeductions,
+  compDownHandler,
+  getFinanceLibilityHeaders,
+} from "./EarningsDeductionsEvents";
 
 class EarningsDeductions extends Component {
   constructor(props) {
     super(props);
+    this.FIN_Active = false;
+
     this.state = {
       earning_deductions: [],
       shortage_deduction_applicable: false,
@@ -33,325 +53,44 @@ class EarningsDeductions extends Component {
       overtime_applicable: false,
       selectCalculate: "d-none",
       calculator_values: "",
-      displayNationality: false,
       specific_nationality: false,
       nationality_id: null,
       print_report: "N",
       print_order_by: 0,
       on_edit: false,
       hims_d_earning_deduction_id: null,
-      annual_salary_comp: false
+      annual_salary_comp: false,
+      finance_account: [],
+      laibility_finance_account: [],
+      child_id: null,
+      head_id: null,
+      li_child_id: null,
+      li_head_id: null,
+      selected_account: null,
+      indirect_selected_account: null,
+      selected_li_account: null,
       // selected_collections: []
     };
     this.selected_collections = [];
-    this.getEarningDeductions();
+    getEarningDeductions(this);
   }
 
-  clearState() {
-    this.setState({
-      miscellaneous_component: false,
-      earning_deduction_code: null,
-      earning_deduction_description: null,
-      short_desc: null,
-      component_category: null,
-      calculation_method: "FI",
-      component_frequency: null,
-      calculation_type: "F",
-      component_type: null,
-      shortage_deduction_applicable: false,
-      overtime_applicable: false,
-      limit_applicable: false,
-      limit_amount: null,
-      process_limit_required: false,
-      process_limit_days: null,
-      general_ledger: null,
-      allow_round_off: false,
-      round_off_type: null,
-      round_off_amount: null,
-      formula: null,
-      specific_nationality: false,
-      nationality_id: null,
-      hims_d_earning_deduction_id: null,
-      annual_salary_comp: false
-    });
-  }
-
-  updateEarningsDeductions(data) {
-    algaehApiCall({
-      // uri: "/employee/updateEarningDeduction",
-      uri: "/payrollsettings/updateEarningDeduction",
-      module: "hrManagement",
-      method: "PUT",
-      data: {
-        hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
-        earning_deduction_code: data.earning_deduction_code,
-        earning_deduction_description: data.earning_deduction_description,
-        short_desc: data.short_desc,
-        component_category: data.component_category,
-        calculation_method: data.calculation_method,
-        component_frequency: data.component_frequency,
-        calculation_type: data.calculation_type,
-        component_type: data.component_type,
-        shortage_deduction_applicable: data.shortage_deduction_applicable,
-        overtime_applicable: data.overtime_applicable,
-        limit_applicable: data.limit_applicable,
-        limit_amount: data.limit_amount,
-        process_limit_required: data.process_limit_required,
-        process_limit_days: data.process_limit_days,
-        general_ledger: data.general_ledger,
-        allow_round_off: data.allow_round_off,
-        round_off_type: data.round_off_type,
-        round_off_amount: data.round_off_amount,
-        specific_nationality: data.specific_nationality,
-        nationality_id: data.nationality_id,
-        print_report: data.print_report,
-        print_order_by: data.print_order_by,
-        record_status: "A"
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
-          });
-          this.getEarningDeductions();
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
-  deleteEarningsDeductions(data) {
-    swal({
-      title: "Are you sure you want to delete " + data.short_desc + " ?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/payrollsettings/updateEarningDeduction",
-          module: "hrManagement",
-          method: "PUT",
-          data: {
-            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
-            earning_deduction_code: data.earning_deduction_code,
-            earning_deduction_description: data.earning_deduction_description,
-            short_desc: data.short_desc,
-            component_category: data.component_category,
-            calculation_method: data.calculation_method,
-            component_frequency: data.component_frequency,
-            calculation_type: data.calculation_type,
-            component_type: data.component_type,
-            shortage_deduction_applicable: data.shortage_deduction_applicable,
-            overtime_applicable: data.overtime_applicable,
-            limit_applicable: data.limit_applicable,
-            limit_amount: data.limit_amount,
-            process_limit_required: data.process_limit_required,
-            process_limit_days: data.process_limit_days,
-            general_ledger: data.general_ledger,
-            allow_round_off: data.allow_round_off,
-            round_off_type: data.round_off_type,
-            round_off_amount: data.round_off_amount,
-            record_status: "I"
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getEarningDeductions();
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
-    });
-  }
-
-  addEarningsDeductions() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      pageState: this,
-      onSuccess: $this => {
-        if ($this.state.hims_d_earning_deduction_id === null) {
-          algaehApiCall({
-            // uri: "/employee/addEarningDeduction",
-            uri: "/payrollsettings/addEarningDeduction",
-            module: "hrManagement",
-            method: "POST",
-            data: {
-              miscellaneous_component: $this.state.miscellaneous_component
-                ? "Y"
-                : "N",
-              earning_deduction_code: $this.state.earning_deduction_code,
-              earning_deduction_description:
-                $this.state.earning_deduction_description,
-              short_desc: $this.state.short_desc,
-              component_category: $this.state.component_category,
-              calculation_method: $this.state.calculation_method,
-              component_frequency: $this.state.component_frequency,
-              calculation_type: $this.state.calculation_type,
-              component_type: $this.state.component_type,
-              shortage_deduction_applicable:
-                $this.state.shortage_deduction_applicable === true ? "Y" : "N",
-              overtime_applicable:
-                $this.state.overtime_applicable === true ? "Y" : "N",
-              limit_applicable:
-                $this.state.limit_applicable === true ? "Y" : "N",
-              limit_amount: $this.state.limit_amount,
-              process_limit_required:
-                $this.state.process_limit_required === true ? "Y" : "N",
-              process_limit_days: $this.state.process_limit_days,
-              general_ledger: $this.state.general_ledger,
-              allow_round_off: $this.state.allow_round_off === true ? "Y" : "N",
-              round_off_type: $this.state.round_off_type,
-              round_off_amount: $this.state.round_off_amount,
-              formula: $this.state.formula,
-              specific_nationality:
-                $this.state.specific_nationality === true ? "Y" : "N",
-              nationality_id: $this.state.nationality_id,
-              print_report: $this.state.print_report,
-              print_order_by: $this.state.print_order_by,
-              annual_salary_comp:
-                $this.state.annual_salary_comp === true ? "Y" : "N"
-            },
-            onSuccess: res => {
-              if (res.data.success) {
-                $this.clearState();
-                $this.getEarningDeductions();
-                swalMessage({
-                  title: "Record added successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: err => {}
-          });
-        } else {
-          algaehApiCall({
-            // uri: "/employee/addEarningDeduction",
-            uri: "/payrollsettings/updateEarningDeduction",
-            module: "hrManagement",
-            method: "PUT",
-            data: {
-              hims_d_earning_deduction_id:
-                $this.state.hims_d_earning_deduction_id,
-              miscellaneous_component: $this.state.miscellaneous_component
-                ? "Y"
-                : "N",
-              earning_deduction_code: $this.state.earning_deduction_code,
-              earning_deduction_description:
-                $this.state.earning_deduction_description,
-              short_desc: $this.state.short_desc,
-              component_category: $this.state.component_category,
-              calculation_method: $this.state.calculation_method,
-              component_frequency: $this.state.component_frequency,
-              calculation_type: $this.state.calculation_type,
-              component_type: $this.state.component_type,
-              shortage_deduction_applicable:
-                $this.state.shortage_deduction_applicable === true ? "Y" : "N",
-              overtime_applicable:
-                $this.state.overtime_applicable === true ? "Y" : "N",
-              limit_applicable:
-                $this.state.limit_applicable === true ? "Y" : "N",
-              limit_amount: $this.state.limit_amount,
-              process_limit_required:
-                $this.state.process_limit_required === true ? "Y" : "N",
-              process_limit_days: $this.state.process_limit_days,
-              general_ledger: $this.state.general_ledger,
-              allow_round_off: $this.state.allow_round_off === true ? "Y" : "N",
-              round_off_type: $this.state.round_off_type,
-              round_off_amount: $this.state.round_off_amount,
-              formula: $this.state.formula,
-              specific_nationality:
-                $this.state.specific_nationality === true ? "Y" : "N",
-              nationality_id: $this.state.nationality_id,
-              print_report: $this.state.print_report,
-              print_order_by: $this.state.print_order_by,
-              annual_salary_comp:
-                $this.state.annual_salary_comp === true ? "Y" : "N",
-              record_status: "A"
-            },
-            onSuccess: res => {
-              if (res.data.success) {
-                $this.clearState();
-                $this.getEarningDeductions();
-                swalMessage({
-                  title: "Record Updated successfully",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: err => {}
-          });
-        }
-      }
-    });
-  }
-
-  getEarningDeductions() {
-    algaehApiCall({
-      uri: "/payrollsettings/getEarningDeduction",
-      module: "hrManagement",
-      method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            earning_deductions: res.data.records
-          });
-        }
-      },
-
-      onFailure: err => {}
-    });
-  }
-
-  dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
-  }
-
-  changeTexts(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-
-  SpecificChecks(e) {
-    this.setState({
-      specific_nationality: !this.state.specific_nationality,
-      displayNationality: !this.state.displayNationality
-    });
-  }
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.FIN_Active =
+      userToken.product_type === "HIMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "NO_FINANCE"
+        ? true
+        : false;
+
+    if (this.FIN_Active === true) {
+      getFinanceHeaders(this, 5);
+      getFinanceLibilityHeaders(this);
+    }
     if (
       this.props.nationalities === undefined ||
       this.props.nationalities.length === 0
@@ -361,166 +100,16 @@ class EarningsDeductions extends Component {
         method: "GET",
         redux: {
           type: "NAT_GET_DATA",
-          mappingName: "nationalities"
-        }
+          mappingName: "nationalities",
+        },
       });
     }
   }
-  changeChecks(e) {
-    switch (e.target.name) {
-      case "shortage_deduction_applicable":
-        this.setState({
-          shortage_deduction_applicable: !this.state
-            .shortage_deduction_applicable
-        });
-        break;
-      case "miscellaneous_component":
-        this.setState({
-          miscellaneous_component: !this.state.miscellaneous_component
-        });
-        break;
 
-      case "limit_applicable":
-        this.setState({
-          limit_applicable: !this.state.limit_applicable
-        });
-        break;
-
-      case "process_limit_required":
-        this.setState({
-          process_limit_required: !this.state.process_limit_required
-        });
-        break;
-
-      case "calculation_type":
-        this.setState({
-          calculation_type: e.target.value
-        });
-        break;
-
-      case "calculation_method":
-        this.setState({
-          calculation_method: e.target.value
-        });
-        break;
-
-      case "overtime_applicable":
-        this.setState({
-          overtime_applicable: !this.state.overtime_applicable
-        });
-        break;
-
-      case "allow_round_off":
-        this.setState(
-          {
-            allow_round_off: !this.state.allow_round_off
-          },
-          () => {
-            this.setState({
-              round_off_type: this.state.allow_round_off
-                ? this.state.round_off_type
-                : null,
-              round_off_amount: this.state.allow_round_off
-                ? this.state.round_off_amount
-                : null
-            });
-          }
-        );
-        break;
-      case "print_report":
-        this.setState({
-          print_report: e.target.value
-        });
-        break;
-      case "annual_salary_comp":
-        this.setState({
-          annual_salary_comp: !this.state.annual_salary_comp
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  changeGridEditors(row, e) {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    row[name] = value;
-    row.update();
-  }
-
-  OpenCalculator(e) {
-    this.setState({
-      selectCalculate: "d-block"
-    });
-  }
-
-  CLoseCalculator(e) {
-    this.setState({
-      selectCalculate: "d-none"
-    });
-  }
-  onChangeCalculatorInput(e) {
-    this.selected_collections.push(e.target.value);
-    this.setState({
-      calculator_values: this.state.calculator_values + "" + e.target.value
-    });
-  }
-  onClearCalculatorHandler(e) {
-    this.setState({
-      calculator_values: ""
-    });
-  }
-  onBackspaceHandler(e) {
-    let calLength = this.selected_collections.length;
-    if (calLength === 0) {
-      return;
-    }
-    let lastCharacter = this.selected_collections[calLength - 1];
-    this.selected_collections.pop();
-    let calValues = this.state.calculator_values.replace(lastCharacter, "");
-    this.setState({
-      calculator_values: calValues
-    });
-  }
-
-  onApplayFormulaHandler(e) {
-    this.setState({
-      formula: this.state.calculator_values,
-      selectCalculate: "d-none"
-    });
-  }
-
-  onEditHandler(row) {
-    let edit_data = extend({}, row);
-    edit_data.on_edit = true;
-    edit_data.displayNationality =
-      row.displayNationality === "Y" ? true : false;
-    edit_data.specific_nationality =
-      row.specific_nationality === "Y" ? true : false;
-    edit_data.allow_round_off = row.allow_round_off === "Y" ? true : false;
-    edit_data.overtime_applicable =
-      row.overtime_applicable === "Y" ? true : false;
-    edit_data.shortage_deduction_applicable =
-      row.shortage_deduction_applicable === "Y" ? true : false;
-    edit_data.limit_applicable = row.limit_applicable === "Y" ? true : false;
-    edit_data.process_limit_required =
-      row.process_limit_required === "Y" ? true : false;
-    edit_data.miscellaneous_component =
-      row.miscellaneous_component === "Y" ? true : false;
-    edit_data.annual_salary_comp =
-      row.annual_salary_comp === "Y" ? true : false;
-    this.setState({
-      ...this.state,
-      ...edit_data
-    });
-  }
   render() {
-    // let i = 10;
-
     let earn_component = Enumerable.from(this.state.earning_deductions)
       .where(
-        w =>
+        (w) =>
           w.component_category === "E" &&
           w.calculation_method === "FI" &&
           w.miscellaneous_component === "N"
@@ -550,73 +139,73 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-4"
                   value="1"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="2"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="3"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="4"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="5"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="6"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="7"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="8"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="9"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="C"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="0"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="="
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
               </div>
               <div className="col-4 delimeter-sec">
@@ -624,49 +213,49 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-6"
                   value="+"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="-"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="*"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="/"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="("
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value=")"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="."
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="%"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
               </div>
               <div className="col-12 ComponentsFormula">
@@ -677,7 +266,7 @@ class EarningsDeductions extends Component {
                           type="button"
                           className="col-3"
                           value={menu.short_desc}
-                          onClick={this.onChangeCalculatorInput.bind(this)}
+                          onClick={onChangeCalculatorInput.bind(this, this)}
                         />
                       );
                     })
@@ -687,49 +276,49 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-3"
                   value="Basic"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="T.P.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="T.R.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="E.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="F.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="H.R.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="S.P.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="C.L.A"
-                  onClick={this.onChangeCalculatorInput.bind(this)}
+                  onClick={onChangeCalculatorInput.bind(this, this)}
                 /> */}
               </div>
               <div className="col-12 submitBtn">
@@ -737,25 +326,25 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-4"
                   value="Clear"
-                  onClick={this.onClearCalculatorHandler.bind(this)}
+                  onClick={onClearCalculatorHandler.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="Close"
-                  onClick={this.CLoseCalculator.bind(this)}
-                />{" "}
+                  onClick={CLoseCalculator.bind(this, this)}
+                />
                 <input
                   type="button"
                   className="col-4"
                   value="Backspace"
-                  onClick={this.onBackspaceHandler.bind(this)}
+                  onClick={onBackspaceHandler.bind(this, this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="Apply"
-                  onClick={this.onApplayFormulaHandler.bind(this)}
+                  onClick={onApplayFormulaHandler.bind(this, this)}
                 />
               </div>
             </div>
@@ -772,52 +361,52 @@ class EarningsDeductions extends Component {
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "earning_deduction_code",
                       value: this.state.earning_deduction_code,
                       events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Description",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "earning_deduction_description",
                       value: this.state.earning_deduction_description,
                       events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Short Description",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "short_desc",
                       value: this.state.short_desc,
                       events: {
-                        onChange: this.changeTexts.bind(this)
-                      }
+                        onChange: changeTexts.bind(this, this),
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Component Category",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "component_category",
@@ -826,16 +415,16 @@ class EarningsDeductions extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.COMPONENT_CATEGORY
+                        data: GlobalVariables.COMPONENT_CATEGORY,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: compDownHandler.bind(this, this),
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Component Frequency",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "component_frequency",
@@ -844,16 +433,16 @@ class EarningsDeductions extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.COMP_FREQ
+                        data: GlobalVariables.COMP_FREQ,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: dropDownHandler.bind(this, this),
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Component Type",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "component_type",
@@ -862,9 +451,9 @@ class EarningsDeductions extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.COMP_TYPE
+                        data: GlobalVariables.COMP_TYPE,
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: dropDownHandler.bind(this, this),
                     }}
                   />
                   <div className="col-8">
@@ -875,7 +464,7 @@ class EarningsDeductions extends Component {
                           type="checkbox"
                           name="allow_round_off"
                           checked={this.state.allow_round_off}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
@@ -885,7 +474,7 @@ class EarningsDeductions extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Round Off Type",
-                          isImp: this.state.allow_round_off
+                          isImp: this.state.allow_round_off,
                         }}
                         selector={{
                           name: "round_off_type",
@@ -896,31 +485,31 @@ class EarningsDeductions extends Component {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.ROUND_OFF_TYPE
+                            data: GlobalVariables.ROUND_OFF_TYPE,
                           },
-                          onChange: this.dropDownHandler.bind(this),
+                          onChange: dropDownHandler.bind(this, this),
                           others: {
-                            disabled: !this.state.allow_round_off
-                          }
+                            disabled: !this.state.allow_round_off,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Round Off Amount",
-                          isImp: this.state.allow_round_off
+                          isImp: this.state.allow_round_off,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "round_off_amount",
                           value: this.state.round_off_amount,
                           events: {
-                            onChange: this.changeTexts.bind(this)
+                            onChange: changeTexts.bind(this, this),
                           },
                           others: {
                             type: "number",
-                            disabled: !this.state.allow_round_off
-                          }
+                            disabled: !this.state.allow_round_off,
+                          },
                         }}
                       />
                     </div>
@@ -934,7 +523,7 @@ class EarningsDeductions extends Component {
                           value="FI"
                           name="calculation_method"
                           checked={this.state.calculation_method === "FI"}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Fixed</span>
                       </label>
@@ -944,7 +533,7 @@ class EarningsDeductions extends Component {
                           value="FO"
                           name="calculation_method"
                           checked={this.state.calculation_method === "FO"}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Formula</span>
                       </label>
@@ -953,20 +542,20 @@ class EarningsDeductions extends Component {
                     <AlagehFormGroup
                       label={{
                         forceLabel: "Formula",
-                        isImp: this.state.calculation_method === "FO"
+                        isImp: this.state.calculation_method === "FO",
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "formula",
                         value: this.state.formula,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: changeTexts.bind(this, this),
                         },
                         others: {
                           placeholder: "Eg: (a+b)/c",
                           disabled: this.state.calculation_method === "FI",
-                          onFocus: this.OpenCalculator.bind(this)
-                        }
+                          onFocus: OpenCalculator.bind(this, this),
+                        },
                       }}
                     />
                   </div>
@@ -979,7 +568,7 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="limit_applicable"
                           checked={this.state.limit_applicable}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
@@ -987,20 +576,20 @@ class EarningsDeductions extends Component {
                     <AlagehFormGroup
                       label={{
                         forceLabel: "Limit Amount",
-                        isImp: this.state.limit_applicable
+                        isImp: this.state.limit_applicable,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "limit_amount",
                         value: this.state.limit_amount,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: changeTexts.bind(this, this),
                         },
                         others: {
                           placeholder: "Limit Amount",
                           type: "number",
-                          disabled: !this.state.limit_applicable
-                        }
+                          disabled: !this.state.limit_applicable,
+                        },
                       }}
                     />
                   </div>
@@ -1013,7 +602,7 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="process_limit_required"
                           checked={this.state.process_limit_required}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
@@ -1022,71 +611,58 @@ class EarningsDeductions extends Component {
                     <AlagehFormGroup
                       label={{
                         forceLabel: "Limit Days",
-                        isImp: this.state.process_limit_required
+                        isImp: this.state.process_limit_required,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "process_limit_days",
                         value: this.state.process_limit_days,
                         events: {
-                          onChange: this.changeTexts.bind(this)
+                          onChange: changeTexts.bind(this, this),
                         },
                         others: {
                           placeholder: "Limit Days",
                           type: "number",
-                          disabled: !this.state.process_limit_required
-                        }
+                          disabled: !this.state.process_limit_required,
+                        },
                       }}
                     />
                   </div>
                   <div className="col-4">
+                    <label>Specific Nationality</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
                           type="checkbox"
                           name="specific_nationality"
                           checked={this.state.specific_nationality}
-                          onChange={this.SpecificChecks.bind(this)}
-                        />
-                        <span>Specific Nationality</span>
-                      </label>
-                    </div>
-
-                    {this.state.displayNationality === true ? (
-                      <AlagehAutoComplete
-                        div={{ className: "col mandatory" }}
-                        label={{
-                          forceLabel: "Nationality",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "nationality_id",
-                          className: "select-fld",
-                          value: this.state.nationality_id,
-                          dataSource: {
-                            textField: "nationality",
-                            valueField: "hims_d_nationality_id",
-                            data: this.props.nationalities
-                          },
-                          onChange: this.dropDownHandler.bind(this)
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                  <div className="col-4">
-                    <label>Shortage Deduction Applicable</label>
-                    <div className="customCheckbox">
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          value="yes"
-                          name="shortage_deduction_applicable"
-                          checked={this.state.shortage_deduction_applicable}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={SpecificChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
                     </div>
+
+                    <AlagehAutoComplete
+                      div={{ className: "" }}
+                      label={{
+                        forceLabel: "Nationality",
+                        isImp: this.state.specific_nationality,
+                      }}
+                      selector={{
+                        name: "nationality_id",
+                        className: "select-fld",
+                        value: this.state.nationality_id,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.props.nationalities,
+                        },
+                        onChange: dropDownHandler.bind(this, this),
+                        others: {
+                          disabled: !this.state.specific_nationality,
+                        },
+                      }}
+                    />
                   </div>
                   <div className="col-4">
                     <label>Overtime Applicable</label>
@@ -1097,14 +673,29 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="overtime_applicable"
                           checked={this.state.overtime_applicable}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
                     </div>
                   </div>
                   <div className="col-4">
-                    <label>Miscellaneous Component</label>
+                    <label>Shortage Applicable</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="shortage_deduction_applicable"
+                          checked={this.state.shortage_deduction_applicable}
+                          onChange={changeChecks.bind(this, this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <label>Misc. Component</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
@@ -1112,7 +703,7 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="miscellaneous_component"
                           checked={this.state.miscellaneous_component}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
@@ -1127,7 +718,7 @@ class EarningsDeductions extends Component {
                           value="yes"
                           name="annual_salary_comp"
                           checked={this.state.annual_salary_comp}
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                         />
                         <span>Yes</span>
                       </label>
@@ -1141,7 +732,7 @@ class EarningsDeductions extends Component {
                           type="radio"
                           value="F"
                           name="calculation_type"
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                           checked={this.state.calculation_type === "F"}
                         />
                         <span>Fixed</span>
@@ -1151,7 +742,7 @@ class EarningsDeductions extends Component {
                           type="radio"
                           value="V"
                           name="calculation_type"
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                           checked={this.state.calculation_type === "V"}
                         />
                         <span>Variables</span>
@@ -1166,7 +757,7 @@ class EarningsDeductions extends Component {
                           type="radio"
                           value="Y"
                           name="print_report"
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                           checked={this.state.print_report === "Y"}
                         />
                         <span>Yes</span>
@@ -1176,7 +767,7 @@ class EarningsDeductions extends Component {
                           type="radio"
                           value="N"
                           name="print_report"
-                          onChange={this.changeChecks.bind(this)}
+                          onChange={changeChecks.bind(this, this)}
                           checked={this.state.print_report === "N"}
                         />
                         <span>No</span>
@@ -1187,37 +778,139 @@ class EarningsDeductions extends Component {
                     div={{ className: "col-4 " }}
                     label={{
                       forceLabel: "Print Order",
-                      isImp: this.state.print_order_by
+                      isImp: this.state.print_order_by,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "print_order_by",
                       value: this.state.print_order_by,
                       events: {
-                        onChange: this.changeTexts.bind(this)
+                        onChange: changeTexts.bind(this, this),
                       },
                       others: {
                         placeholder: "Print Order",
-                        type: "number"
-                      }
+                        type: "number",
+                      },
                     }}
                   />
+
+                  {this.FIN_Active ? (
+                    <div className="col-8">
+                      <div className="row">
+                        <AlgaehTreeSearch
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "G/L Indirect Account",
+                            isImp: true,
+                            align: "ltr",
+                          }}
+                          tree={{
+                            treeDefaultExpandAll: true,
+                            onChange: (value) => {
+                              this.setState({
+                                selected_account: value,
+                              });
+                            },
+                            data: this.state.finance_account || [],
+                            textField: "label",
+                            valueField: (node) => {
+                              if (node["leafnode"] === "Y") {
+                                return (
+                                  node["head_id"] +
+                                  "-" +
+                                  node["finance_account_child_id"]
+                                );
+                              } else {
+                                return node["finance_account_head_id"];
+                              }
+                            },
+                            value: this.state.selected_account,
+                          }}
+                        />
+
+                        <AlgaehTreeSearch
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "G/L Direct Account",
+                            isImp: true,
+                            align: "ltr",
+                          }}
+                          tree={{
+                            treeDefaultExpandAll: true,
+                            onChange: (value) => {
+                              this.setState({
+                                indirect_selected_account: value,
+                              });
+                            },
+                            data: this.state.finance_account || [],
+                            textField: "label",
+                            valueField: (node) => {
+                              if (node["leafnode"] === "Y") {
+                                return (
+                                  node["head_id"] +
+                                  "-" +
+                                  node["finance_account_child_id"]
+                                );
+                              } else {
+                                return node["finance_account_head_id"];
+                              }
+                            },
+                            value: this.state.indirect_selected_account,
+                          }}
+                        />
+
+                        {this.state.component_category === "C" ? (
+                          <AlgaehTreeSearch
+                            div={{ className: "col-6 form-group" }}
+                            label={{
+                              forceLabel: "Laibility Account",
+                              isImp: true,
+                              align: "ltr",
+                            }}
+                            tree={{
+                              treeDefaultExpandAll: true,
+                              onChange: (value) => {
+                                this.setState({
+                                  selected_li_account: value,
+                                });
+                              },
+                              data: this.state.laibility_finance_account || [],
+                              textField: "label",
+                              valueField: (node) => {
+                                if (node["leafnode"] === "Y") {
+                                  return (
+                                    node["head_id"] +
+                                    "-" +
+                                    node["finance_account_child_id"]
+                                  );
+                                } else {
+                                  return node["finance_account_head_id"];
+                                }
+                              },
+                              value: this.state.selected_li_account,
+                            }}
+                          />
+                        ) : null}
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div
-                    className="col form-group"
+                    className="col-12 form-group"
                     style={{ paddingTop: 19, textAlign: "right" }}
                   >
                     <button
                       className="btn btn-default"
                       id="srch-sch"
                       style={{ marginRight: 10 }}
-                      onClick={this.clearState.bind(this)}
+                      onClick={clearState.bind(this, this)}
                     >
                       Cancel
                     </button>
                     <button
                       className="btn btn-primary"
                       id="srch-sch"
-                      onClick={this.addEarningsDeductions.bind(this)}
+                      onClick={addEarningsDeductions.bind(this, this)}
                     >
                       {this.state.on_edit === true ? "Update" : "Add to List"}
                     </button>
@@ -1244,11 +937,11 @@ class EarningsDeductions extends Component {
                       {
                         fieldName: "actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               <i
-                                onClick={this.onEditHandler.bind(this, row)}
+                                onClick={onEditHandler.bind(this, this, row)}
                                 className="fas fa-pen"
                               />
                             </span>
@@ -1258,13 +951,13 @@ class EarningsDeductions extends Component {
                           maxWidth: 65,
                           resizable: false,
                           filterable: false,
-                          style: { textAlign: "center" }
-                        }
+                          style: { textAlign: "center" },
+                        },
                       },
                       {
                         fieldName: "earning_deduction_code",
                         label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1273,26 +966,27 @@ class EarningsDeductions extends Component {
                                 name: "earning_deduction_code",
                                 value: row.earning_deduction_code,
                                 events: {
-                                  onChange: this.changeGridEditors.bind(
+                                  onChange: changeGridEditors.bind(
+                                    this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Code - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "earning_deduction_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1301,19 +995,20 @@ class EarningsDeductions extends Component {
                                 name: "earning_deduction_description",
                                 value: row.earning_deduction_description,
                                 events: {
-                                  onChange: this.changeGridEditors.bind(
+                                  onChange: changeGridEditors.bind(
+                                    this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "short_desc",
@@ -1322,7 +1017,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Short Description" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1331,20 +1026,21 @@ class EarningsDeductions extends Component {
                                 name: "short_desc",
                                 value: row.short_desc,
                                 events: {
-                                  onChange: this.changeGridEditors.bind(
+                                  onChange: changeGridEditors.bind(
+                                    this,
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Short Description - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "component_category",
@@ -1353,7 +1049,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Component Category" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.component_category === "A"
@@ -1368,7 +1064,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1379,18 +1075,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.COMPONENT_CATEGORY
+                                  data: GlobalVariables.COMPONENT_CATEGORY,
                                 },
                                 others: {
                                   errormessage:
                                     "Component Category cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "calculation_method",
@@ -1399,7 +1099,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Calculation Method" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.calculation_method === "FO"
@@ -1410,7 +1110,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1421,18 +1121,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.CALC_METHOD
+                                  data: GlobalVariables.CALC_METHOD,
                                 },
                                 others: {
                                   errormessage:
                                     "Calculation Method cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "component_frequency",
@@ -1441,7 +1145,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Component Frequency" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.component_frequency === "M"
@@ -1456,7 +1160,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1467,18 +1171,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.COMP_FREQ
+                                  data: GlobalVariables.COMP_FREQ,
                                 },
                                 others: {
                                   errormessage:
                                     "Component Frequency cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "calculation_type",
@@ -1487,7 +1195,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Calculation Type" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.calculation_type === "F"
@@ -1498,7 +1206,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1509,18 +1217,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.CALC_TYPE
+                                  data: GlobalVariables.CALC_TYPE,
                                 },
                                 others: {
                                   errormessage:
                                     "Calculation Type cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "component_type",
@@ -1529,7 +1241,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Component Type" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.component_type === "N"
@@ -1558,7 +1270,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1569,29 +1281,33 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.COMP_TYPE
+                                  data: GlobalVariables.COMP_TYPE,
                                 },
                                 others: {
                                   errormessage:
                                     "Calculation Type cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "shortage_deduction_applicable",
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Shortage Deduction Applicable"
+                              forceLabel: "Shortage Deduction Applicable",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.shortage_deduction_applicable === "Y"
@@ -1600,7 +1316,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1611,18 +1327,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Shortage Deduction Applicable Type cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "overtime_applicable",
@@ -1631,14 +1351,14 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Overtime Applicable" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.overtime_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1649,18 +1369,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Overtime Applicable cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "limit_applicable",
@@ -1669,14 +1393,14 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Limit Applicable" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.limit_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1687,25 +1411,29 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Limit Applicable cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "limit_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Limit Amount" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1717,18 +1445,18 @@ class EarningsDeductions extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Limit Amount - cannot be blank",
                                   required:
-                                    row.limit_applicable === "Y" ? true : false
-                                }
+                                    row.limit_applicable === "Y" ? true : false,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "process_limit_required",
@@ -1737,7 +1465,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Process Limit Required" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.process_limit_required === "Y"
@@ -1746,7 +1474,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1757,18 +1485,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Process Limit Required Type cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "process_limit_days",
@@ -1777,7 +1509,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Process Limit Days" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1789,7 +1521,7 @@ class EarningsDeductions extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
@@ -1797,12 +1529,12 @@ class EarningsDeductions extends Component {
                                   required:
                                     row.process_limit_required === "Y"
                                       ? true
-                                      : false
-                                }
+                                      : false,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "allow_round_off",
@@ -1811,14 +1543,14 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Allow Round Off" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.allow_round_off === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1829,18 +1561,22 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Allow Round Off Type cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "round_off_type",
@@ -1849,7 +1585,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Round off Type" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.round_off_type === "FL"
@@ -1862,7 +1598,7 @@ class EarningsDeductions extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1873,17 +1609,21 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.ROUND_OFF_TYPE
+                                  data: GlobalVariables.ROUND_OFF_TYPE,
                                 },
                                 others: {
                                   errormessage: "Field cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "round_off_amount",
@@ -1892,7 +1632,7 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Round off Amount" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1904,18 +1644,18 @@ class EarningsDeductions extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Round off Amount - cannot be blank",
                                   required:
-                                    row.allow_round_off === "Y" ? true : false
-                                }
+                                    row.allow_round_off === "Y" ? true : false,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
 
                       //
@@ -1926,14 +1666,14 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Specific Nationality" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.specific_nationality === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1944,30 +1684,34 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage:
                                     "Specific Nationality cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "nationality_id",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Nationality" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.nationalities === undefined
                               ? []
                               : this.props.nationalities.filter(
-                                  f =>
+                                  (f) =>
                                     f.hims_d_nationality_id ===
                                     row.nationality_id
                                 );
@@ -1981,7 +1725,7 @@ class EarningsDeductions extends Component {
                           );
                         },
 
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -1992,14 +1736,18 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "nationality",
                                   valueField: "hims_d_nationality_id",
-                                  data: this.props.nationalities
+                                  data: this.props.nationalities,
                                 },
 
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "print_report",
@@ -2008,14 +1756,14 @@ class EarningsDeductions extends Component {
                             label={{ forceLabel: "Print In Report" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.print_report === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -2026,24 +1774,28 @@ class EarningsDeductions extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
+                                  data: GlobalVariables.FORMAT_YESNO,
                                 },
                                 others: {
                                   errormessage: "Print Report cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "print_order_by",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Print Order" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -2055,31 +1807,31 @@ class EarningsDeductions extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Print Order - cannot be blank",
                                   required:
-                                    row.print_report === "Y" ? true : false
-                                }
+                                    row.print_report === "Y" ? true : false,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_employee_group_id"
                     dataSource={{
-                      data: this.state.earning_deductions
+                      data: this.state.earning_deductions,
                     }}
                     filter={true}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
-                    events={{
-                      onEdit: this.onEditHandler.bind(this),
-                      onDelete: this.deleteEarningsDeductions.bind(this),
-                      onDone: this.updateEarningsDeductions.bind(this)
-                    }}
+                    // events={{
+                    //   onEdit: this.onEditHandler.bind(this),
+                    //   onDelete: this.deleteEarningsDeductions.bind(this),
+                    //   onDone: this.updateEarningsDeductions.bind(this)
+                    // }}
                   />
                 </div>
               </div>
@@ -2093,22 +1845,19 @@ class EarningsDeductions extends Component {
 
 function mapStateToProps(state) {
   return {
-    nationalities: state.nationalities
+    nationalities: state.nationalities,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getNationalities: AlgaehActions
+      getNationalities: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EarningsDeductions)
+  connect(mapStateToProps, mapDispatchToProps)(EarningsDeductions)
 );

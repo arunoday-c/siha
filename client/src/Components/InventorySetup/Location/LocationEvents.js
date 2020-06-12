@@ -22,6 +22,18 @@ const onchangegridcol = ($this, row, e) => {
 };
 // Inventory
 const updateLocation = ($this, data) => {
+  let gitLoaction_Exists = _.find($this.props.inventorylocation,
+    f => f.git_location === "Y"
+  );
+
+  if (data.git_location === "Y" && gitLoaction_Exists !== undefined) {
+    swalMessage({
+      title: "GIT Location can be only one.",
+      type: "warning"
+    });
+    return
+  }
+
   algaehApiCall({
     uri: "/inventory/updateInventoryLocation",
     module: "inventory",
@@ -79,11 +91,6 @@ const showconfirmDialog = ($this, row) => {
           });
         }
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -134,6 +141,18 @@ const Validations = $this => {
 const insertLocation = ($this, e) => {
   e.preventDefault();
 
+  let gitLoaction_Exists = _.find($this.props.inventorylocation,
+    f => f.git_location === "Y"
+  );
+
+  if ($this.state.git_location === "Y" && gitLoaction_Exists !== undefined) {
+    swalMessage({
+      title: "GIT Location can be only one",
+      type: "warning"
+    });
+    return
+  }
+
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {
@@ -172,21 +191,39 @@ const insertLocation = ($this, e) => {
 };
 
 const getLocation = $this => {
+
+  algaehApiCall({
+    uri: "/inventory/getInventoryLocation",
+    module: "inventory",
+    method: "GET",
+    onSuccess: response => {
+
+      if (response.data.success === true) {
+        $this.setState({
+          inv_loactions: response.data.records
+        })
+      } else {
+        swalMessage({
+          title: response.data.message,
+          type: "error"
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+
   $this.props.getLocation({
     uri: "/inventory/getInventoryLocation",
     module: "inventory",
     method: "GET",
     redux: {
-      type: "ANALYTES_GET_DATA",
+      type: "INV_LOCATION_GET_DATA",
       mappingName: "inventorylocation"
-    },
-    afterSuccess: data => {
-      if (data.length === 0 || data.length === undefined) {
-        swalMessage({
-          title: "No Records Found",
-          type: "warning"
-        });
-      }
     }
   });
 };
@@ -202,6 +239,19 @@ const allowPos = ($this, e) => {
   });
 };
 
+
+const GITLoacation = ($this, e) => {
+  let git_location = "N";
+  if (!$this.state.gitloaction === true) {
+    git_location = "Y";
+  }
+  $this.setState({
+    git_location: git_location,
+    gitloaction: !$this.state.gitloaction
+  });
+};
+
+
 export {
   changeTexts,
   onchangegridcol,
@@ -209,5 +259,6 @@ export {
   updateLocation,
   deleteLocation,
   getLocation,
-  allowPos
+  allowPos,
+  GITLoacation
 };

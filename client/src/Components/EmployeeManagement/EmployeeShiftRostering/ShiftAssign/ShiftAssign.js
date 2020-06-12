@@ -19,7 +19,7 @@ class ShiftAssign extends PureComponent {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
       let myArray = this.state.shiftEmp;
       myArray.push(nextProps.sendRow);
@@ -86,8 +86,7 @@ class ShiftAssign extends PureComponent {
       {
         shiftEmp: myArray
       },
-      () => {
-      }
+      () => {}
     );
   }
 
@@ -178,6 +177,7 @@ class ShiftAssign extends PureComponent {
         events={{
           onClose: this.props.onClose
         }}
+        title="Assign Shift Rostering"
         className="col-lg-12 ShiftAssign"
       >
         <div className="popupInner" data-validate="LvEdtGrd">

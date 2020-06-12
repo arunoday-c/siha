@@ -1,4 +1,4 @@
-{{{importStyle 'css/creditinvoice.css'}}}
+{{{importStyle 'css/algaehReportStyles.css'}}}
 
 <body>
     <div class="print-body">
@@ -115,37 +115,37 @@
             <table class="tableTotal">
                 <tr class="bold">
                     <td>Total Amount before VAT</td>
-                    <td>{{total_gross_amount}}</td>
+                    <td class="numberFld">{{total_gross_amount}}</td class="numberFld">
                     <td>الإجمالي قبل الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Discount</td>
-                    <td>{{total_discount_amount}}</td>
+                    <td class="numberFld">{{total_discount_amount}}</td class="numberFld">
                     <td>الخصم</td>
                 </tr>
                 <tr>
                     <td>Net After Discount</td>
-                    <td>{{total_company_tax}}</td>
+                    <td class="numberFld">{{total_net_amount}}</td class="numberFld">
                     <td>الصافي بعد الخصم</td>
                 </tr>
                 <tr>
                     <td>Client VAT Amount</td>
-                    <td>{{total_patient_tax}}</td>
+                    <td class="numberFld">{{total_patient_tax}}</td class="numberFld">
                     <td>الضريبة المضافة على العميل</td>
                 </tr>
                 <tr>
                     <td>Due Amount + VAT</td>
-                    <td>{{total_net_claim}}</td>
+                    <td class="numberFld">{{total_net_claim}}</td class="numberFld">
                     <td>المبلغ المستحق + الضريبة المضافة</td>
                 </tr>
                 <tr class="bold">
                     <td>Paid Amount + VAT</td>
-                    <td>{{total_patient_share}}</td>
+                    <td class="numberFld">{{total_patient_share}}</td class="numberFld">
                     <td>المبلغ المدفوع + الضريبة المضافة</td>
                 </tr>
                 <tr>
                     <td>Remaining Amount</td>
-                    <td>{{total_net_claim}}</td>
+                    <td class="numberFld">{{total_net_claim}}</td class="numberFld">
                     <td>المبلغ المتبقي</td>
                 </tr>
             </table>

@@ -12,12 +12,16 @@ const {
   updatePharReqEntry,
   updateInvReqEntry,
   updatePurchaseOrderEntry,
+  getVendorQuotation,
+  raiseRequestForPO,
+  getraiseRequestForPO,
+  postPurchaseOrderEntry,
   releaseDB
 } = purchaseModels;
 
 export default () => {
   const api = Router();
-  const utilities = new algaehUtilities();
+
 
   api.get("/getPurchaseOrderEntry", getPurchaseOrderEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -55,22 +59,29 @@ export default () => {
     }
   );
 
+  api.get(
+    "/getVendorQuotation",
+    getVendorQuotation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
   api.post(
     "/addPurchaseOrderEntry",
     addPurchaseOrderEntry,
     (req, res, next) => {
-      utilities.logger().log("po_from: ", req.body.po_from);
       if (req.body.po_from == "PHR" && req.body.phar_requisition_id != null) {
-        utilities.logger().log("po_from: ", req.body.po_from);
         updatePharReqEntry(req, res, next);
       } else {
         next();
       }
     },
     (req, res, next) => {
-      utilities.logger().log("po_from: ", req.body.po_from);
       if (req.body.po_from == "INV" && req.body.inv_requisition_id != null) {
-        utilities.logger().log("po_from: ", req.body.po_from);
         updateInvReqEntry(req, res, next);
       } else {
         next();
@@ -88,6 +99,36 @@ export default () => {
   api.put(
     "/updatePurchaseOrderEntry",
     updatePurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/postPurchaseOrderEntry",
+    postPurchaseOrderEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/raiseRequestForPO",
+    raiseRequestForPO,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get(
+    "/getraiseRequestForPO",
+    getraiseRequestForPO,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

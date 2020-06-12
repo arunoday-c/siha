@@ -1,14 +1,7 @@
 import Enumerable from "linq";
-// import extend from "extend";
-import {
-  getCookie,
-  algaehApiCall,
-  swalMessage
-} from "../../../../../utils/algaehApiCall";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-} from "../../../../../utils/GlobalFunctions";
+import extend from "extend";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import _ from "lodash";
 
@@ -40,6 +33,8 @@ const earntexthandle = ($this, e) => {
     earn_disable: e.selected.calculation_method === "FO" ? true : false,
     earn_calculation_method: e.selected.calculation_method,
     earn_calculation_type: e.selected.calculation_type,
+    earn_limit_applicable: e.selected.limit_applicable,
+    earn_limit_amount: e.selected.limit_amount,
     earn_short_desc: e.selected.short_desc,
     earn_formula: formula
   });
@@ -73,7 +68,9 @@ const deducttexthandle = ($this, e) => {
     deduct_calculation_method: e.selected.calculation_method,
     deduct_calculation_type: e.selected.calculation_type,
     deduct_short_desc: e.selected.short_desc,
-    deduct_formula: formula
+    deduct_formula: formula,
+    deduct_limit_applicable: e.selected.limit_applicable,
+    deduct_limit_amount: e.selected.limit_amount
   });
 };
 
@@ -105,7 +102,9 @@ const contributtexthandle = ($this, e) => {
     contribut_calculation_method: e.selected.calculation_method,
     contribut_calculation_type: e.selected.calculation_type,
     contribut_short_desc: e.selected.short_desc,
-    contribut_formula: formula
+    contribut_formula: formula,
+    contribut_limit_applicable: e.selected.limit_applicable,
+    contribut_limit_amount: e.selected.limit_amount
   });
 };
 
@@ -145,18 +144,27 @@ const AddEarnComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.earn_formula;
       if ($this.state.earn_calculation_method === "FO") {
-        earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
+        var notExists = [];
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-        if (component_exist === 0) {
+        }).filter(f => f !== null);
+
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
@@ -174,7 +182,9 @@ const AddEarnComponent = ($this, e) => {
         calculation_method: $this.state.earn_calculation_method,
         calculation_type: $this.state.earn_calculation_type,
         formula: $this.state.earn_formula,
-        short_desc: $this.state.earn_short_desc
+        short_desc: $this.state.earn_short_desc,
+        limit_applicable: $this.state.earn_limit_applicable,
+        limit_amount: $this.state.earn_limit_amount
       });
 
       insertearnComp.push({
@@ -224,13 +234,10 @@ const AddDeductionComponent = ($this, e) => {
         return;
       }
 
-      const basic_earning_component = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).basic_earning_component;
 
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => f.earnings_id == basic_earning_component
+        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
@@ -241,20 +248,26 @@ const AddDeductionComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.deduct_formula;
       if ($this.state.deduct_calculation_method === "FO") {
-        $this.state.earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+        var notExists = [];
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
+        }).filter(f => f !== null);
 
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-
-        if (component_exist === 0) {
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
@@ -286,7 +299,9 @@ const AddDeductionComponent = ($this, e) => {
         calculation_method: $this.state.deduct_calculation_method,
         calculation_type: $this.state.deduct_calculation_type,
         formula: $this.state.deduct_formula,
-        short_desc: $this.state.deduct_short_desc
+        short_desc: $this.state.deduct_short_desc,
+        limit_applicable: $this.state.deduct_limit_applicable,
+        limit_amount: $this.state.deduct_limit_amount
       });
 
       insertDeductionComp.push({
@@ -336,13 +351,9 @@ const AddContributionComponent = ($this, e) => {
         return;
       }
 
-      const basic_earning_component = JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).basic_earning_component;
-
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => f.earnings_id == basic_earning_component
+        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
@@ -353,18 +364,27 @@ const AddContributionComponent = ($this, e) => {
         return;
       }
 
-      let component_exist = 0;
       let formulaCal = $this.state.contribut_formula;
       if ($this.state.contribut_calculation_method === "FO") {
-        $this.state.earningComponents.map(menu => {
-          if (formulaCal.indexOf(menu.short_desc) > -1) {
-            component_exist = 1;
+
+        const expression = new RegExp("Gross Salary", "g");
+        formulaCal = formulaCal.replace(expression, "GrossSalary");
+
+        let earn_comp = extend([], $this.state.earningComponents);
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+
+        var notExists = [];
+        const x = formulaCal.match(/[a-zA-Z]+/g);
+        notExists = x.map(function (item) {
+          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
+          if (rtn === undefined) {
+            return item;
+          } else {
+            return null;
           }
-        });
-        if (formulaCal.indexOf("Gross Salary") > -1) {
-          component_exist = 1;
-        }
-        if (component_exist === 0) {
+        }).filter(f => f !== null);
+
+        if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
@@ -396,7 +416,9 @@ const AddContributionComponent = ($this, e) => {
         calculation_method: $this.state.contribut_calculation_method,
         calculation_type: $this.state.contribut_calculation_type,
         formula: $this.state.contribut_formula,
-        short_desc: $this.state.contribut_short_desc
+        short_desc: $this.state.contribut_short_desc,
+        limit_applicable: $this.state.contribut_limit_applicable,
+        limit_amount: $this.state.contribut_limit_amount
       });
 
       insertContributeComp.push({
@@ -520,11 +542,6 @@ const deleteEarningComponent = ($this, row) => {
         deleteearnComp: deleteearnComp,
         insertearnComp: insertearnComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -620,11 +637,6 @@ const deleteDeductionComponent = ($this, row) => {
         deleteDeductionComp: deleteDeductionComp,
         insertDeductionComp: insertDeductionComp
       });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
-      });
     }
   });
 };
@@ -718,11 +730,6 @@ const deleteContibuteComponent = ($this, row) => {
         contributioncomponents: contributioncomponents,
         deleteContributeComp: deleteContributeComp,
         insertContributeComp: insertContributeComp
-      });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
       });
     }
   });
@@ -934,7 +941,13 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = formulaCal.replace(perexpression, "/100");
 
       formulaCal = eval(formulaCal);
-      earn_comp[x].amount = formulaCal;
+      // limit_applicable: e.selected.contribut_limit_applicable,
+      //   limit_amount: e.selected.contribut_limit_amount
+      if (earn_comp[x].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(earn_comp[x].limit_amount)) {
+        earn_comp[x].amount = earn_comp[x].limit_amount;
+      } else {
+        earn_comp[x].amount = formulaCal;
+      }
       earningComponents[_index] = earn_comp[x];
 
       updateearnComp.push(earn_comp[x]);
@@ -969,7 +982,13 @@ const CalculateBasedonFormula = ($this, from) => {
 
       // formulaCal = `${formulaCal}`;
       formulaCal = eval(formulaCal);
-      deduct_comp[y].amount = formulaCal;
+
+      if (deduct_comp[y].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(deduct_comp[y].limit_amount)) {
+        deduct_comp[y].amount = deduct_comp[y].limit_amount;
+      } else {
+        deduct_comp[y].amount = formulaCal;
+      }
+      // deduct_comp[y].amount = formulaCal;
       deductioncomponents[_index] = deduct_comp[y];
 
       updateDeductionComp.push(deduct_comp[y]);
@@ -1003,9 +1022,15 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
       const perexpression = new RegExp("%", "g");
       formulaCal = formulaCal.replace(perexpression, "/100");
-
       formulaCal = eval(formulaCal);
-      contribute_comp[z].amount = formulaCal;
+
+      if (contribute_comp[z].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(contribute_comp[z].limit_amount)) {
+        contribute_comp[z].amount = contribute_comp[z].limit_amount;
+      } else {
+        contribute_comp[z].amount = formulaCal;
+      }
+
+      // contribute_comp[z].amount = formulaCal;
       contributioncomponents[_index] = contribute_comp[z];
 
       updateContributeComp.push(contribute_comp[z]);
@@ -1042,6 +1067,25 @@ const CalculateBasedonFormula = ($this, from) => {
   );
 };
 
+const getOptions = $this => {
+  algaehApiCall({
+    uri: "/payrollOptions/getHrmsOptions",
+    method: "GET",
+    module: "hrManagement",
+    onSuccess: res => {
+      if (res.data.success) {
+        $this.setState({ basic_earning_component: res.data.result[0].basic_earning_component });
+      }
+    },
+    onFailure: err => {
+      swalMessage({
+        title: err.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   earntexthandle,
   deducttexthandle,
@@ -1060,5 +1104,6 @@ export {
   getEmpEarningComponents,
   getEmpDeductionComponents,
   getEmpContibuteComponents,
-  CalculateBasedonFormula
+  CalculateBasedonFormula,
+  getOptions
 };

@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -23,7 +23,7 @@ export default {
       updateUomMapResult: [],
       insertItemUomMap: [],
       service_id: null,
-      exp_date_not_required: "N",
+      exp_date_required: "N",
       item_code: null,
       cpt_code: null,
       cpt_code_data: null,

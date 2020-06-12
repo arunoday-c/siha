@@ -8,10 +8,8 @@ import {
   datehandle,
   cashtexthandle,
   cardtexthandle,
-  chequetexthandle,
   checkcashhandaler,
   checkcardhandaler,
-  checkcheckhandaler
 } from "./AddReciptFormHandaler";
 import {
   AlgaehDateHandler,
@@ -24,7 +22,7 @@ import MyContext from "../../../../../utils/MyContext";
 import "./AddReciptForm.scss";
 import "./../../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../../utils/GlobalFunctions"; //"../../../../../utils/GlobalFunctions"; //from "../../../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -36,12 +34,12 @@ class AddReciptForm extends Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let InputOutput = this.props.POSIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
 
@@ -98,8 +96,8 @@ class AddReciptForm extends Component {
                           this.state.postEnable === true
                             ? true
                             : this.state.posCancelled === true
-                            ? true
-                            : false
+                              ? true
+                              : false
                       },
                       onChange: texthandle.bind(this, this, context),
                       onClear: () => {
@@ -193,7 +191,9 @@ class AddReciptForm extends Component {
                         onChange: cardtexthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked,
+                        disabled: this.state.postEnable === true
+                          ? true
+                          : !this.state.Cardchecked,
                         placeholder: "0.00"
                       }
                     }}
@@ -212,7 +212,9 @@ class AddReciptForm extends Component {
                         onChange: texthandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: !this.state.Cardchecked
+                        disabled: this.state.postEnable === true
+                          ? true
+                          : !this.state.Cardchecked
                       }
                     }}
                   />
@@ -226,7 +228,9 @@ class AddReciptForm extends Component {
                       className: "txt-fld",
                       name: "card_date"
                     }}
-                    disabled={!this.state.Cardchecked}
+                    disabled={this.state.postEnable === true
+                      ? true
+                      : !this.state.Cardchecked}
                     minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this, context)
@@ -235,7 +239,7 @@ class AddReciptForm extends Component {
                   />
                 </div>
                 {/* Check */}
-                <div className="row secondary-box-container">
+                {/* <div className="row secondary-box-container">
                   <div
                     className="customCheckbox col-lg-2"
                     style={{ border: "none", marginTop: "28px" }}
@@ -310,7 +314,7 @@ class AddReciptForm extends Component {
                     }}
                     value={this.state.cheque_date}
                   />
-                </div>
+                </div> */}
                 <hr style={{ margin: 0 }} />
                 <div className="row secondary-box-container">
                   <div className="col-lg-2" />
@@ -320,7 +324,7 @@ class AddReciptForm extends Component {
                         forceLabel: "Unbalanced Amount"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.unbalanced_amount)}</h6>
+                    <h6>{GetAmountFormart(this.state.unbalanced_amount)}</h6>
                   </div>
                 </div>
               </div>
@@ -349,8 +353,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddReciptForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddReciptForm)
 );

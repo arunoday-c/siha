@@ -1,38 +1,50 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./LoanRequest.scss";
 import {
-  getAmountFormart,
-  AlgaehValidation
+  GetAmountFormart,
+  AlgaehValidation,
 } from "../../../../utils/GlobalFunctions";
 import { NO_OF_EMI, MONTHS } from "../../../../utils/GlobalVariables.json";
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
-import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+// import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import { MainContext } from "algaeh-react-components/context";
+import swal from "sweetalert2";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class LoanRequest extends Component {
   constructor(props) {
     super(props);
 
     this.inputRef = React.createRef();
+    const hospital = "";
 
     this.state = {
+      hospital_id: hospital.hims_d_hospital_id,
       hims_d_employee_id: null,
       selectedLang: this.props.SelectLanguage,
       loan_master: [],
       employee_loans: [],
       loan_limit: 0,
-      start_year: parseInt(moment().year(), 10),
+      start_year: moment().year(), //parseInt(moment().year(), 10),
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment().format("M"), 10) + 1
+      deducting_month: moment().add(1, "months").format("M"), //parseInt(, 10) + 1
       // request_type: "LO"
+      start_month: moment().add(1, "months").format("M"),
+      decimal_places: 0,
     };
     this.getLoanMaster();
   }
@@ -45,10 +57,28 @@ class LoanRequest extends Component {
   //   });
   // }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganizationByUser",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations",
+        },
+      });
+    }
     let request_type = this.props.type;
     this.setState({
-      request_type
+      hospital_id: userToken.hims_d_hospital_id,
+      decimal_places: userToken.decimal_places,
+      request_type,
     });
   }
 
@@ -59,7 +89,7 @@ class LoanRequest extends Component {
         loan_master: [],
         employee_loans: [],
         employee_advance: [],
-        forceRender: true
+        forceRender: true,
       };
     } else {
       return null;
@@ -68,7 +98,7 @@ class LoanRequest extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.request_type !== prevState.request_type) {
-      this.inputRef.current.onClearHandler();
+      // this.inputRef.current.onClearHandler();
       if (this.state.request_type === "LO") {
         this.clearEmployee();
         this.clearAdvanceState();
@@ -86,50 +116,87 @@ class LoanRequest extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
+          console.log("dtaa", res.data.records);
           this.setState({
-            employee_advance: res.data.records
+            employee_advance: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee,
+      },
+      searchName: "employee_branch_wise",
+      uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: (row) => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id,
+            hims_d_employee_id: row.hims_d_employee_id,
+            reporting_to_id: row.reporting_to_id,
+          },
+          () => {
+            this.state.request_type === "AD"
+              ? this.getEmployeeAdvances()
+              : this.getEmployeeLoans();
+            // if (this.state.request_type === "AD") {
+            //   this.getEmployeeAdvances();
+            // } else {
+            //   this.getLoanMaster();
+            // }
+          }
+        );
+      },
+    });
+  }
   getEmployeeLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
       module: "hrManagement",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
+          console.log("data", res.data.records);
           this.setState({
-            employee_loans: res.data.records
+            employee_loans: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
-  clearState() {
-    this.setState({
+  clearState(exclude = []) {
+    exclude = exclude || [];
+    let items = {
       loan_description: null,
       loan_id: null,
       loan_limit: 0,
@@ -137,17 +204,33 @@ class LoanRequest extends Component {
       loan_tenure: null,
       installment_amount: null,
       start_year: null,
-      start_month: null
+      start_month: null,
+      employee_name: null,
+      employee_id: null,
+      hims_d_employee_id: null,
+    };
+
+    exclude.map((item) => {
+      delete items[item];
     });
+    this.setState(items);
   }
 
-  clearAdvanceState() {
-    this.setState({
+  clearAdvanceState(exclude = []) {
+    exclude = exclude || [];
+    let items = {
       deducting_year: moment().year(),
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       advance_amount: null,
-      advance_reason: null
+      advance_reason: null,
+      employee_name: null,
+      employee_id: null,
+      hims_d_employee_id: null,
+    };
+    exclude.map((item) => {
+      delete items[item];
     });
+    this.setState(items);
   }
 
   clearEmployee() {
@@ -156,11 +239,16 @@ class LoanRequest extends Component {
       hims_d_employee_id: null,
       full_name: "",
       display_name: "",
-      forceRender: false
+      forceRender: false,
     });
   }
 
   applyAdvance() {
+    const {
+      employee_name: full_name,
+      reporting_to_id,
+      advance_amount,
+    } = this.state;
     const { deducting_month, deducting_year } = this.state;
     const current_year = parseInt(moment().format("YYYY"), 10);
     const current_month = parseInt(moment().format("M"), 10);
@@ -171,12 +259,12 @@ class LoanRequest extends Component {
         if (parseInt(deducting_year, 10) < current_year) {
           swalMessage({
             title: "Cannot Request advance for past year",
-            type: "warning"
+            type: "warning",
           });
         } else if (parseInt(deducting_month, 10) < current_month) {
           swalMessage({
             title: "Cannot Request advance for past month",
-            type: "warning"
+            type: "warning",
           });
         } else {
           algaehApiCall({
@@ -188,31 +276,48 @@ class LoanRequest extends Component {
               advance_amount: this.state.advance_amount,
               deducting_month: this.state.deducting_month,
               deducting_year: this.state.deducting_year,
-              advance_reason: this.state.advance_reason
+              advance_reason: this.state.advance_reason,
+              hospital_id: this.state.hospital_id,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
-                this.clearAdvanceState();
+                if (this.context.socket.connected) {
+                  this.context.socket.emit("/advance/applied", {
+                    full_name,
+                    reporting_to_id,
+                    advance_amount,
+                  });
+                }
                 this.getEmployeeAdvances();
+                this.clearAdvanceState(["employee_id", "hims_d_employee_id"]);
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
   applyLoan() {
+    const {
+      employee_name: full_name,
+      reporting_to_id,
+      loan_master,
+      loan_id,
+    } = this.state;
+    const [{ loan_description }] = loan_master.filter(
+      (loan) => loan.hims_d_loan_id === loan_id
+    );
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanApplyDiv'",
@@ -220,12 +325,12 @@ class LoanRequest extends Component {
         if (this.state.loan_amount === undefined || null) {
           swalMessage({
             title: "Please enter the loan amount",
-            type: "warning"
+            type: "warning",
           });
         } else if (this.state.loan_amount > this.state.loan_limit) {
           swalMessage({
             title: "Loan Amount Cannot be greater than max limit",
-            type: "warning"
+            type: "warning",
           });
         } else {
           algaehApiCall({
@@ -240,27 +345,42 @@ class LoanRequest extends Component {
               start_month: this.state.start_month,
               start_year: this.state.start_year,
               loan_tenure: this.state.loan_tenure,
-              installment_amount: this.state.installment_amount
+              installment_amount: this.state.installment_amount,
+              hospital_id: this.state.hospital_id,
             },
-            onSuccess: res => {
+            onSuccess: (res) => {
               if (res.data.success) {
                 swalMessage({
                   title: "Record Added Successfully",
-                  type: "success"
+                  type: "success",
                 });
-                this.clearState();
+                if (this.context.socket.connected) {
+                  this.context.socket.emit("/loan/applied", {
+                    full_name,
+                    reporting_to_id,
+                    loan_description,
+                  });
+                }
+
+                this.clearState([
+                  "start_year",
+                  "start_month",
+                  "employee_name",
+                  "employee_id",
+                  "hims_d_employee_id",
+                ]);
                 this.getEmployeeLoans();
               }
             },
-            onFailure: err => {
+            onFailure: (err) => {
               swalMessage({
                 title: err.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
-      }
+      },
     });
   }
 
@@ -270,22 +390,25 @@ class LoanRequest extends Component {
         if (e.target.value <= this.state.loan_limit) {
           this.setState({
             [e.target.name]: e.target.value,
-            installment_amount: e.target.value / this.state.loan_tenure
+
+            installment_amount: (
+              parseFloat(e.target.value) / parseFloat(this.state.loan_tenure)
+            ).toFixed(this.state.decimal_places),
           });
         } else {
           swalMessage({
             title: "Loan Amount cannot be greater than max limit",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            loan_amount: null
+            loan_amount: null,
           });
         }
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
         break;
     }
@@ -303,7 +426,7 @@ class LoanRequest extends Component {
             loan_limit: value.selected.loan_maximum_amount,
             loan_amount: null,
             loan_tenure: null,
-            installment_amount: null
+            installment_amount: null,
           });
         } else if (value.selected.loan_limit_type === "B") {
           algaehApiCall({
@@ -312,9 +435,9 @@ class LoanRequest extends Component {
             method: "GET",
             data: {
               employee_id: this.state.hims_d_employee_id,
-              earnings_id: this.props.basic_earning_component
+              earnings_id: this.props.basic_earning_component,
             },
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 let data = response.data.records;
                 this.setState({
@@ -322,16 +445,16 @@ class LoanRequest extends Component {
                   loan_limit: data.length > 0 ? data[0].amount : 0,
                   loan_amount: null,
                   loan_tenure: null,
-                  installment_amount: null
+                  installment_amount: null,
                 });
               }
             },
-            onFailure: error => {
+            onFailure: (error) => {
               swalMessage({
                 title: error.message,
-                type: "error"
+                type: "error",
               });
-            }
+            },
           });
         }
         break;
@@ -339,7 +462,9 @@ class LoanRequest extends Component {
       case "loan_tenure":
         this.setState({
           [value.name]: value.value,
-          installment_amount: this.state.loan_amount / value.value
+          installment_amount: (
+            parseFloat(this.state.loan_amount) / parseFloat(value.value)
+          ).toFixed(this.state.decimal_places),
         });
         break;
 
@@ -350,14 +475,14 @@ class LoanRequest extends Component {
         ) {
           swalMessage({
             title: "Start month must be future months",
-            type: "warning"
+            type: "warning",
           });
           this.setState({
-            [value.name]: null
+            [value.name]: null,
           });
         } else {
           this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
           });
         }
 
@@ -365,7 +490,7 @@ class LoanRequest extends Component {
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
         });
         break;
     }
@@ -376,19 +501,19 @@ class LoanRequest extends Component {
       uri: "/payrollsettings/getLoanMaster",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            loan_master: res.data.records
+            loan_master: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -398,13 +523,48 @@ class LoanRequest extends Component {
         sub_department_id: data.sub_department_id,
         hims_d_employee_id: data.hims_d_employee_id,
         full_name: data.full_name,
-        display_name: data.full_name
+        display_name: data.full_name,
       },
       () => {
         this.getEmployeeAdvances();
         this.getEmployeeLoans();
       }
     );
+  }
+
+  cancelAdvance(row) {
+    swal({
+      title: "Are you Sure you want to Cancel?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    }).then((willCancel) => {
+      if (willCancel.value) {
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/selfService/cancelAdvance",
+          module: "hrManagement",
+          method: "PUT",
+          data: {
+            hims_f_employee_advance_id: row.hims_f_employee_advance_id,
+            // hims_d_employee_id: this.state.hims_d_employee_id,
+          },
+          onSuccess: (res) => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Cancelled Successfully",
+                type: "success",
+              });
+              this.getEmployeeAdvances();
+              AlgaehLoader({ show: false });
+            }
+          },
+        });
+      }
+    });
   }
 
   renderList() {
@@ -427,7 +587,7 @@ class LoanRequest extends Component {
                     {
                       fieldName: "loan_authorized",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {row.loan_authorized === "PEN" ? (
@@ -453,15 +613,15 @@ class LoanRequest extends Component {
                         );
                       },
                       others: {
-                        minWidth: 80
-                      }
+                        minWidth: 80,
+                      },
                     },
                     {
                       fieldName: "loan_application_date",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Req. Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.loan_application_date).format(
@@ -470,31 +630,33 @@ class LoanRequest extends Component {
                           </span>
                         );
                       },
-                      others: { minWidth: 100 }
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "loan_description",
-                      label: <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                      ),
                     },
                     {
                       fieldName: "pending_loan",
                       label: <AlgaehLabel label={{ forceLabel: "Due Amt." }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
-                          <span>{getAmountFormart(row.pending_loan)}</span>
+                          <span>{GetAmountFormart(row.pending_loan)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "pending_tenure",
                       label: <AlgaehLabel label={{ forceLabel: "Due EMI" }} />,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.pending_tenure !== 0 ? (
                           <span>{row.pending_tenure} Month</span>
                         ) : (
                           <span className="badge badge-success">Closed</span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -502,29 +664,29 @@ class LoanRequest extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "EMI Amount" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
-                            {getAmountFormart(row.installment_amount)}
+                            {GetAmountFormart(row.installment_amount)}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "loan_tenure",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Total EMI" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return <span>{row.loan_tenure} Month</span>;
-                      }
+                      },
                     },
                     {
                       fieldName: "start_year",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Deducting From" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(
@@ -534,29 +696,29 @@ class LoanRequest extends Component {
                           </span>
                         );
                       },
-                      others: { minWidth: 130 }
+                      others: { minWidth: 130 },
                     },
                     {
                       fieldName: "loan_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Req. Amount" }} />
                       ),
-                      displayTemplate: row => {
-                        return <span>{getAmountFormart(row.loan_amount)}</span>;
+                      displayTemplate: (row) => {
+                        return <span>{GetAmountFormart(row.loan_amount)}</span>;
                       },
-                      others: { minWidth: 100 }
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "approved_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Appr. Amount" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
-                          <span>{getAmountFormart(row.approved_amount)}</span>
+                          <span>{GetAmountFormart(row.approved_amount)}</span>
                         );
                       },
-                      others: { minWidth: 100 }
+                      others: { minWidth: 100 },
                     },
                     {
                       fieldName: "loan_application_number",
@@ -564,31 +726,31 @@ class LoanRequest extends Component {
                         <AlgaehLabel label={{ forceLabel: "Request No." }} />
                       ),
                       others: {
-                        minWidth: 130
-                      }
+                        minWidth: 130,
+                      },
                     },
                     {
-                      fieldName: "loan_description",
+                      fieldName: "application_reason",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Reason For Loan" }}
                         />
                       ),
                       others: {
-                        minWidth: 250
-                      }
-                    }
+                        minWidth: 250,
+                      },
+                    },
                   ]}
                   keyId="hims_f_loan_application_id"
                   dataSource={{
-                    data: this.state.employee_loans
+                    data: this.state.employee_loans,
                   }}
                   isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onEdit: () => {},
                     onDelete: () => {},
-                    onDone: () => {}
+                    onDone: () => {},
                   }}
                 />
               </div>
@@ -619,10 +781,68 @@ class LoanRequest extends Component {
                   datavalidate="AdvanceRequestGrid"
                   columns={[
                     {
+                      fieldName: "action",
+
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Action",
+                          }}
+                        />
+                      ),
+                      displayTemplate: (row) => {
+                        return (
+                          <span
+                            style={{
+                              pointerEvents:
+                                row.advance_status !== "APR" ? "none" : null,
+                              opacity:
+                                row.advance_status !== "APR" ? "0.1" : null,
+                            }}
+                          >
+                            <i
+                              className="fas fa-times"
+                              onClick={this.cancelAdvance.bind(this, row)}
+                            ></i>
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 100,
+                        filterable: false,
+                      },
+                    },
+                    {
+                      fieldName: "advance_status",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: (row) => {
+                        return (
+                          <span>
+                            {row.advance_status === "APR" ? (
+                              <span className="badge badge-warning">
+                                Payment Pending
+                              </span>
+                            ) : row.advance_status === "PAI" ? (
+                              <span className="badge badge-success">Paid</span>
+                            ) : row.advance_status === "REJ" ? (
+                              <span className="badge badge-danger">
+                                Cancelled
+                              </span>
+                            ) : (
+                              "------"
+                            )}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 80,
+                      },
+                    },
+                    {
                       fieldName: "advance_number",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Request No." }} />
-                      )
+                      ),
                     },
 
                     {
@@ -630,31 +850,31 @@ class LoanRequest extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Requested Date" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(row.created_date).format("DD-MM-YYYY")}
                           </span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "advance_amount",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Requested Amt." }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
-                          <span>{getAmountFormart(row.advance_amount)}</span>
+                          <span>{GetAmountFormart(row.advance_amount)}</span>
                         );
-                      }
+                      },
                     },
                     {
                       fieldName: "deducting_year",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Deduction On" }} />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {moment(
@@ -666,7 +886,7 @@ class LoanRequest extends Component {
                             ).format("MMMM - YYYY")}
                           </span>
                         );
-                      }
+                      },
                     },
 
                     {
@@ -677,9 +897,9 @@ class LoanRequest extends Component {
                         />
                       ),
                       others: {
-                        minWidth: 250
-                      }
-                    }
+                        minWidth: 250,
+                      },
+                    },
                     // {
                     //   fieldName: "deducting_month",
                     //   label: (
@@ -736,12 +956,11 @@ class LoanRequest extends Component {
       return null;
     }
   }
-
   render() {
     let allYears = getYears();
     return (
       <div className="row loan_request">
-        <div className="col-3">
+        <div className="col-lg-3 col-md-3 col-sm-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -750,8 +969,41 @@ class LoanRequest extends Component {
             </div>
             <div className="portlet-body" data-validate="loanApplyDiv">
               <div className="row">
-                <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                <AlagehAutoComplete
+                  div={{ className: "col-12 form-group mandatory" }}
+                  label={{
+                    forceLabel: "Select Branch",
+                    isImp: true,
+                  }}
+                  selector={{
+                    name: "hospital_id",
+                    className: "select-fld",
+                    value: this.state.hospital_id,
+                    dataSource: {
+                      textField: "hospital_name",
+                      valueField: "hims_d_hospital_id",
+                      data: this.props.organizations,
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        hospital_id: null,
+                      });
+                    },
+                  }}
+                />
+                <div className="col-12 globalSearchCntr form-group mandatory">
+                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                  <h6 onClick={this.employeeSearch.bind(this)}>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "Search Employee"}
+                    <i className="fas fa-search fa-lg" />
+                  </h6>
+                </div>
+
+                {/* <AlgaehAutoSearch
+                  div={{ className: "col-12 form-group mandatory" }}
                   label={{
                     forceLabel: "Employee",
                     isImp: true
@@ -778,41 +1030,16 @@ class LoanRequest extends Component {
                   value={this.state.full_name}
                   searchName="employee"
                   onClick={this.searchSelect.bind(this)}
-                />
-                {/* <div className="col">
-                  <label>Request Type</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="request_type"
-                        value="LO"
-                        checked={this.state.request_type === "LO"}
-                        onChange={this.textHandle.bind(this)}
-                      />
-                      <span>Loan</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="request_type"
-                        value="AD"
-                        checked={this.state.request_type === "AD"}
-                        onChange={this.textHandle.bind(this)}
-                      />
-                      <span>Advance</span>
-                    </label>
-                  </div>
-                </div> */}
+                /> */}
               </div>
               <div className="myDiv">
                 {this.state.request_type === "LO" ? (
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Type",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "loan_id",
@@ -821,25 +1048,25 @@ class LoanRequest extends Component {
                         dataSource: {
                           textField: "loan_description",
                           valueField: "hims_d_loan_id",
-                          data: this.state.loan_master
+                          data: this.state.loan_master,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
-                    <div className="col">
+                    <div className="col form-group">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Max-Limit"
+                          forceLabel: "Max-Limit",
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.loan_limit)}</h6>
+                      <h6>{GetAmountFormart(this.state.loan_limit)}</h6>
                     </div>
 
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Loan Amount",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -847,16 +1074,16 @@ class LoanRequest extends Component {
                         name: "loan_amount",
                         value: this.state.loan_amount,
                         events: {
-                          onChange: this.textHandle.bind(this)
-                        }
+                          onChange: this.textHandle.bind(this),
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "No. of EMI",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         sort: "off",
@@ -866,26 +1093,26 @@ class LoanRequest extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: NO_OF_EMI
+                          data: NO_OF_EMI,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
 
-                    <div className="col-12">
+                    <div className="col-12 form-group ">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Installment Amount"
+                          forceLabel: "Installment Amount",
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.installment_amount)}</h6>
+                      <h6>{GetAmountFormart(this.state.installment_amount)}</h6>
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Year.",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "start_year",
@@ -894,21 +1121,21 @@ class LoanRequest extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: allYears
+                          data: allYears,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            start_year: null
+                            start_year: null,
                           });
-                        }
+                        },
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Start Month",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         sort: "off",
@@ -918,45 +1145,54 @@ class LoanRequest extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: MONTHS
+                          data: MONTHS,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         forceLabel: "Reason for Loan",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "loan_description",
                         value: this.state.loan_description,
                         events: {
-                          onChange: this.textHandle.bind(this)
-                        }
+                          onChange: this.textHandle.bind(this),
+                        },
                       }}
                     />
-                    <div className="col-3 margin-bottom-15">
+
+                    <div className="col-12" style={{ textAlign: "right" }}>
                       <button
+                        onClick={this.clearState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyLoan.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
-                        onClick={this.applyLoan.bind(this)}
+                        //disabled={this.state.Request_enable}
                       >
-                        Request
+                        Request Loan
                       </button>
                     </div>
                   </div>
                 ) : this.state.request_type === "AD" ? (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Advance Amount",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         decimal: { allowNegative: false },
@@ -964,16 +1200,16 @@ class LoanRequest extends Component {
                         name: "advance_amount",
                         value: this.state.advance_amount,
                         events: {
-                          onChange: this.textHandle.bind(this)
-                        }
+                          onChange: this.textHandle.bind(this),
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Year",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "deducting_year",
@@ -982,73 +1218,110 @@ class LoanRequest extends Component {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: allYears
+                          data: allYears,
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            deducting_year: null
+                            deducting_year: null,
                           });
-                        }
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-6" }}
+                      div={{ className: "col-6 form-group mandatory" }}
                       label={{
                         forceLabel: "Deducting Month",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         sort: "off",
                         name: "deducting_month",
                         className: "select-fld",
-                        value: this.state.deducting_month,
+                        value:
+                          typeof this.state.deducting_month === "number"
+                            ? String(this.state.deducting_month)
+                            : this.state.deducting_month,
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: MONTHS
+                          data: MONTHS,
                         },
-                        onChange: this.dropDownHandler.bind(this)
+                        onChange: this.dropDownHandler.bind(this),
                       }}
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-12" }}
+                      div={{ className: "col-12 form-group " }}
                       label={{
                         forceLabel: "Reason for Advance",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "advance_reason",
                         value: this.state.advance_reason,
                         events: {
-                          onChange: this.textHandle.bind(this)
-                        }
+                          onChange: this.textHandle.bind(this),
+                        },
                       }}
                     />
 
-                    <div className="col-12 margin-bottom-15">
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={this.clearAdvanceState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyAdvance.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        //disabled={this.state.Request_enable}
+                      >
+                        Request Advance
+                      </button>
+                    </div>
+
+                    {/* <div className="col-12 margin-bottom-15">
                       <button
                         type="button"
                         className="btn btn-primary"
-                        style={{ marginTop: 21 }}
+                        style={{ marginTop: 19 }}
                         onClick={this.applyAdvance.bind(this)}
                       >
                         Request
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 ) : null}
               </div>
             </div>
           </div>
         </div>
-        <div className="col-9">{this.renderList()}</div>
+        <div className="col-lg-9 col-md-9 col-sm-12">{this.renderList()}</div>
       </div>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    organizations: state.organizations,
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getOrganizations: AlgaehActions,
+    },
+    dispatch
+  );
+}
 
-export default LoanRequest;
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(LoanRequest)
+);

@@ -8,8 +8,8 @@ import {
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 import moment from "moment";
-import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import _ from "lodash";
+import Enumerable from "linq";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -18,12 +18,32 @@ const emptyObject = extend(
 
 const generateBillDetails = $this => {
   let zeroBill = false;
-  if ($this.state.from_package === true) {
+  let DoctorVisits = Enumerable.from($this.state.visitDetails)
+    .where(w => w.doctor_id === $this.state.doctor_id)
+    .toArray();
+
+  let FollowUp = false;
+  let currentDate = moment(new Date()).format("YYYY-MM-DD");
+  let expiryDate = 0;
+  if (DoctorVisits.length > 0) {
+    expiryDate = Enumerable.from(DoctorVisits).max(s => s.visit_expiery_date);
+  }
+
+  if (
+    ($this.state.department_type === "D" &&
+      $this.state.existing_plan === "Y") ||
+    $this.state.from_package === true
+  ) {
     zeroBill = true;
+  } else {
+    if (expiryDate > currentDate) {
+      FollowUp = true;
+    }
   }
   let serviceInput = [
     {
       zeroBill: zeroBill,
+      FollowUp: FollowUp,
       insured: $this.state.insured,
       vat_applicable: $this.state.vat_applicable,
       service_type_id: $this.state.service_type_id,
@@ -47,6 +67,8 @@ const generateBillDetails = $this => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+        response.data.records.follow_up = FollowUp;
+        response.data.records.existing_treat = zeroBill;
         $this.setState({ ...response.data.records });
 
         algaehApiCall({
@@ -59,6 +81,11 @@ const generateBillDetails = $this => {
               // if (context !==null) {
               //   context.updateState({ ...response.data.records });
               // }
+              if ($this.state.default_pay_type === "CD") {
+                response.data.records.card_amount =
+                  response.data.records.receiveable_amount;
+                response.data.records.cash_amount = 0;
+              }
               $this.setState({ ...response.data.records });
             }
             AlgaehLoader({ show: false });
@@ -143,6 +170,9 @@ const ClearData = ($this, from, patcode) => {
 
       IOputs.forceRefresh = true;
       IOputs.doctors = $this.props.frontproviders;
+      IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
+      IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
+
       $this.setState(IOputs, () => {
         $this.props.setSelectedInsurance({
           redux: {
@@ -191,9 +221,7 @@ const getHospitalDetails = $this => {
     uri: "/organization/getOrganization",
     method: "GET",
     data: {
-      hims_d_hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hsopital_id: $this.state.hsopital_id
     },
     redux: {
       type: "HOSPITAL_DETAILS_GET_DATA",
@@ -211,9 +239,7 @@ const getHospitalDetails = $this => {
 };
 
 const getCashiersAndShiftMAP = ($this, type) => {
-  // AlgaehLoader({ show: true });
-  let year = moment().format("YYYY");
-  let month = moment().format("M");
+
   let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
@@ -298,6 +324,23 @@ const ShowAdvanceScreen = ($this, e) => {
   }
 };
 
+const showAdvanceRefundList = ($this, e) => {
+  if (
+    $this.state.patient_code !== undefined &&
+    $this.state.patient_code !== ""
+  ) {
+    $this.setState({
+      ...$this.state,
+      AdvanceRefundOpen: !$this.state.AdvanceRefundOpen
+    });
+  } else {
+    swalMessage({
+      title: "Please select a patient to view advance for",
+      type: "warning"
+    });
+  }
+};
+
 const closePopup = $this => {
   $this.setState({ popUpGenereted: false });
 };
@@ -324,16 +367,10 @@ const generateIdCard = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "ID Card";
+      const urlBlob = URL.createObjectURL(res.data);
+      const reportName = `${$this.state.patient_code}-ID Card`;
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${reportName}`;
+      window.open(origin);
     }
   });
 };
@@ -360,16 +397,9 @@ const generateReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };
@@ -401,6 +431,21 @@ const getCtrlCode = ($this, patcode, row) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
+
+        let hospitaldetails = _.find(
+          $this.props.hospitaldetails,
+          f => f.hims_d_hospital_id === $this.state.hospital_id
+        );
+
+        data.patientRegistration.vat_applicable = "Y";
+
+        if (
+          hospitaldetails.local_vat_applicable === "N" &&
+          hospitaldetails.default_nationality ===
+          data.patientRegistration.nationality_id
+        ) {
+          data.patientRegistration.vat_applicable = "N";
+        }
 
         data.patientRegistration.visitDetails = data.visitDetails;
         data.patientRegistration.patient_id =
@@ -537,7 +582,6 @@ const ClosePackageUtilize = ($this, e) => {
             mappingName: "PatientPackageList"
           },
           afterSuccess: data => {
-            debugger;
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 primary_policy_num: $this.state.primary_policy_num,
@@ -612,5 +656,6 @@ export {
   getCtrlCode,
   ShowPackageUtilize,
   ClosePackageUtilize,
-  UpdatePatientDetail
+  UpdatePatientDetail,
+  showAdvanceRefundList
 };

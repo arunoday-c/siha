@@ -9,21 +9,18 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ManualAttendanceEvents from "./ManualAttendanceEvents.js";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import {
-  AlgaehValidation,
-  AlgaehOpenContainer
-  // getYears
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-
+import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 const handlers = ManualAttendanceEvents();
 
 class ManualAttendance extends Component {
@@ -37,9 +34,7 @@ class ManualAttendance extends Component {
       project_id: null,
       sub_department_id: null,
 
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
+      hospital_id: null,
       projects: [],
       employee_details: [],
       subdepartment: [],
@@ -48,15 +43,13 @@ class ManualAttendance extends Component {
       out_time: null,
       process_attend: true,
       apply_all: true,
-      manual_timesheet_entry: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).manual_timesheet_entry,
+      manual_timesheet_entry: null,
       month_wise: true,
       select_wise: "M",
       employee_id: null,
       employee_name: null,
       attendance_date: new Date(),
-      date_range: false
+      date_range: false,
     };
     handlers.getSubDepartment(this);
     handlers.getProjects(this);
@@ -66,38 +59,44 @@ class ManualAttendance extends Component {
   getOptions() {
     handlers
       .getOptions(this)
-      .then(res => {
+      .then((res) => {
         if (res.data.success) {
           this.setState({
-            manual_timesheet_entry: res.data.result[0].manual_timesheet_entry
+            manual_timesheet_entry: res.data.result[0].manual_timesheet_entry,
           });
         } else {
           swalMessage({
             title: res.data.message,
-            type: "error"
+            type: "error",
           });
         }
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
       });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
+
+    this.setState({
+      hospital_id: userToken.hims_d_hospital_id,
+    });
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
     ) {
       this.props.getOrganizations({
-        uri: "/organization/getOrganization",
+        uri: "/organization/getOrganizationByUser",
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
   }
@@ -112,7 +111,7 @@ class ManualAttendance extends Component {
       querySelector: "data-validate='loadEmployee'",
       onSuccess: () => {
         handlers.LoadEmployee(this);
-      }
+      },
     });
   }
 
@@ -153,7 +152,7 @@ class ManualAttendance extends Component {
         employee_name: null,
         employee_id: null,
         project_id: null,
-        employee_details: []
+        employee_details: [],
       });
     } else if (e.target.name === "date_range") {
       this.setState({
@@ -163,7 +162,7 @@ class ManualAttendance extends Component {
         employee_name: null,
         employee_id: null,
         project_id: null,
-        employee_details: []
+        employee_details: [],
       });
     }
   }
@@ -173,10 +172,6 @@ class ManualAttendance extends Component {
       selectedLang: this.props.SelectLanguage,
       employee_group_id: null,
       project_id: null,
-
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
       employee_details: [],
       worked_hours: null,
       in_time: null,
@@ -188,7 +183,7 @@ class ManualAttendance extends Component {
       employee_id: null,
       employee_name: null,
       attendance_date: null,
-      date_range: false
+      date_range: false,
     });
   }
 
@@ -202,12 +197,12 @@ class ManualAttendance extends Component {
         ? {
             textField: "sub_department_name",
             valueField: "hims_d_sub_department_id",
-            data: this.state.subdepartment
+            data: this.state.subdepartment,
           }
         : {
             textField: "project_desc",
             valueField: "hims_d_project_id",
-            data: this.state.projects
+            data: this.state.projects,
           };
 
     const drop_Down_Label =
@@ -222,7 +217,7 @@ class ManualAttendance extends Component {
             div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Select a Branch.",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -231,14 +226,14 @@ class ManualAttendance extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
           <div className="col-2">
@@ -271,7 +266,7 @@ class ManualAttendance extends Component {
                   div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Select Month.",
-                    isImp: this.state.select_wise === "M" ? true : false
+                    isImp: this.state.select_wise === "M" ? true : false,
                   }}
                   selector={{
                     sort: "off",
@@ -281,14 +276,14 @@ class ManualAttendance extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: GlobalVariables.MONTHS
+                      data: GlobalVariables.MONTHS,
                     },
                     onChange: this.eventHandaler.bind(this),
                     onClear: () => {
                       this.setState({
-                        month: null
+                        month: null,
                       });
-                    }
+                    },
                   }}
                 />
                 <div className="col" style={{ marginTop: 10 }}>
@@ -297,7 +292,7 @@ class ManualAttendance extends Component {
                     style={{
                       border: "1px solid #ced4d9",
                       borderRadius: 5,
-                      marginLeft: 0
+                      marginLeft: 0,
                     }}
                   >
                     <div className="col">
@@ -317,7 +312,7 @@ class ManualAttendance extends Component {
                         style={{
                           paddingTop: 17,
                           paddingLeft: 3,
-                          cursor: "pointer"
+                          cursor: "pointer",
                         }}
                         onClick={this.employeeSearch.bind(this)}
                       />
@@ -334,15 +329,15 @@ class ManualAttendance extends Component {
                   div={{ className: "col-3" }}
                   label={{
                     forceLabel: "Select Date",
-                    isImp: this.state.select_wise === "D" ? true : false
+                    isImp: this.state.select_wise === "D" ? true : false,
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "attendance_date"
+                    name: "attendance_date",
                   }}
                   maxDate={new Date()}
                   events={{
-                    onChange: this.datehandle.bind(this)
+                    onChange: this.datehandle.bind(this),
                   }}
                   value={this.state.attendance_date}
                 />
@@ -350,7 +345,7 @@ class ManualAttendance extends Component {
                   div={{ className: "col" }}
                   label={{
                     forceLabel: drop_Down_Label,
-                    isImp: this.state.select_wise === "D" ? true : false
+                    isImp: this.state.select_wise === "D" ? true : false,
                   }}
                   selector={{
                     name: timesheet_entry,
@@ -364,12 +359,12 @@ class ManualAttendance extends Component {
                     onClear: () => {
                       this.state.manual_timesheet_entry === "D"
                         ? this.setState({
-                            sub_department_id: null
+                            sub_department_id: null,
                           })
                         : this.setState({
-                            project_id: null
+                            project_id: null,
                           });
-                    }
+                    },
                   }}
                 />
               </div>
@@ -442,7 +437,7 @@ class ManualAttendance extends Component {
 
                   <div className="col">
                     <button
-                      style={{ marginTop: 21 }}
+                      style={{ marginTop: 19 }}
                       className="btn btn-default"
                       onClick={this.AddToAll.bind(this)}
                       disabled={this.state.apply_all}
@@ -650,8 +645,8 @@ class ManualAttendance extends Component {
                             />
                           ),
                           others: {
-                            maxWidth: 150
-                          }
+                            maxWidth: 150,
+                          },
                         },
                         {
                           fieldName: "full_name",
@@ -659,7 +654,7 @@ class ManualAttendance extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Name" }}
                             />
-                          )
+                          ),
                         },
                         {
                           fieldName: "designation",
@@ -669,8 +664,8 @@ class ManualAttendance extends Component {
                             />
                           ),
                           others: {
-                            maxWidth: 200
-                          }
+                            maxWidth: 200,
+                          },
                         },
                         {
                           fieldName: "project_desc",
@@ -678,8 +673,8 @@ class ManualAttendance extends Component {
                             <AlgaehLabel label={{ forceLabel: "Project" }} />
                           ),
                           others: {
-                            maxWidth: 200
-                          }
+                            maxWidth: 200,
+                          },
                         },
                         {
                           fieldName: "attendance_date",
@@ -688,7 +683,7 @@ class ManualAttendance extends Component {
                               label={{ forceLabel: "Selected Date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.attendance_date).format(
@@ -698,8 +693,8 @@ class ManualAttendance extends Component {
                             );
                           },
                           others: {
-                            maxWidth: 100
-                          }
+                            maxWidth: 100,
+                          },
                         },
 
                         {
@@ -707,13 +702,13 @@ class ManualAttendance extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hour" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 textBox={{
                                   number: {
                                     allowNegative: false,
-                                    thousandSeparator: ","
+                                    thousandSeparator: ",",
                                   },
                                   className: "txt-fld",
                                   name: "worked_hours",
@@ -723,16 +718,16 @@ class ManualAttendance extends Component {
                                     onChange: this.gridEventHandaler.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
                           },
                           others: {
-                            maxWidth: 100
-                          }
-                        }
+                            maxWidth: 100,
+                          },
+                        },
                       ]}
                       keyId="hims_f_daily_time_sheet_id"
                       dataSource={{ data: this.state.employee_details }}
@@ -760,12 +755,12 @@ class ManualAttendance extends Component {
                             callBack
                           );
                         },
-                        updateRecords: data => {
+                        updateRecords: (data) => {
                           this.setState({
                             employee_details: data,
-                            process_attend: false
+                            process_attend: false,
                           });
-                        }
+                        },
                       }}
                     />
                   </div>
@@ -777,13 +772,21 @@ class ManualAttendance extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
-                className="btn btn-primary"
-                onClick={this.ProcessAttendance.bind(this)}
-                disabled={this.state.process_attend}
-              >
-                Process Attendance
-              </button>
+              <AlgaehSecurityElement
+                elementCode="READ_ONLY_ACCESS"
+                render={(data) => {
+                  return (
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.ProcessAttendance.bind(this)}
+                      disabled={this.state.process_attend}
+                    >
+                      Process Attendance
+                    </button>
+                  );
+                }}
+              />
+
               <button
                 onClick={this.clearState.bind(this)}
                 // style={{ marginTop: 21, marginLeft: 5 }}
@@ -802,7 +805,7 @@ class ManualAttendance extends Component {
 function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
-    organizations: state.organizations
+    organizations: state.organizations,
     // emp_groups: state.emp_groups
   };
 }
@@ -811,7 +814,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getSubDepartment: AlgaehActions,
-      getOrganizations: AlgaehActions
+      getOrganizations: AlgaehActions,
       // getEmpGroups: AlgaehActions
     },
     dispatch
@@ -819,8 +822,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ManualAttendance)
+  connect(mapStateToProps, mapDispatchToProps)(ManualAttendance)
 );

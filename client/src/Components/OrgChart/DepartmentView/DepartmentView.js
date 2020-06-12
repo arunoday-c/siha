@@ -1,9 +1,8 @@
 import React, { Component } from "react";
-import isEqual from "lodash/isEqual";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./DepartmentView.scss";
 
-export default class DepartmentView extends Component {
+export class DepartmentView extends Component {
   constructor(props) {
     super(props);
     this.deptHeight = 0;
@@ -11,7 +10,7 @@ export default class DepartmentView extends Component {
     this.state = {
       subDepts: [],
       toggleDept: false,
-      toggleSubDept: false
+      toggleSubDept: false,
     };
   }
 
@@ -28,7 +27,7 @@ export default class DepartmentView extends Component {
           enterActive: "eachChild animated slideInLeft faster",
           enterDone: "eachChild",
           exitActive: "eachChild animated slideOutLeft faster",
-          exitDone: "eachChild"
+          exitDone: "eachChild",
         }}
         unmountOnExit
         timeout={500}
@@ -36,7 +35,7 @@ export default class DepartmentView extends Component {
       >
         <li
           id="sub-child"
-          onClick={e => {
+          onClick={(e) => {
             funcExist && clickMethod(data.id, e);
           }}
         >
@@ -52,8 +51,8 @@ export default class DepartmentView extends Component {
     );
   };
 
-  removeClassFrom = name => {
-    name.forEach(el => {
+  removeClassFrom = (name) => {
+    name.forEach((el) => {
       if (el.classList.contains("clickedLi")) {
         el.classList.remove("clickedLi");
       }
@@ -66,7 +65,7 @@ export default class DepartmentView extends Component {
       e.currentTarget.classList.remove("clickedLi");
       this.setState({
         toggleDept: false,
-        toggleSubDept: false
+        toggleSubDept: false,
       });
     } else {
       const els = document.querySelectorAll("#branch");
@@ -74,7 +73,7 @@ export default class DepartmentView extends Component {
       e.currentTarget.classList.add("clickedLi");
       this.setState(
         {
-          toggleDept: true
+          toggleDept: true,
         },
         () => this.props.api.getDeptForBranch(id)
       );
@@ -86,7 +85,7 @@ export default class DepartmentView extends Component {
     if (check) {
       e.currentTarget.classList.remove("clickedLi");
       this.setState({
-        toggleSubDept: false
+        toggleSubDept: false,
       });
     } else {
       const els = document.querySelectorAll("#sub-child");
@@ -109,12 +108,12 @@ export default class DepartmentView extends Component {
               // style={{ minHeight: "85vh" }}
             >
               {allBranches &&
-                allBranches.map(branch => (
+                allBranches.map((branch) => (
                   <li
                     id="branch"
                     className="eachChild"
                     key={branch.hosipital_code}
-                    onClick={e =>
+                    onClick={(e) =>
                       this.onBranchClick(branch.hims_d_hospital_id, e)
                     }
                   >
@@ -123,8 +122,8 @@ export default class DepartmentView extends Component {
                       <i>BR</i>
                     </span>
                     <span className="contentSection">
-                      <h1>{branch.hospital_name}</h1>
-                      <h1>{branch.hospital_code}</h1>
+                      <p>{branch.hospital_name}</p>
+                      <small>{branch.hospital_code}</small>
                     </span>
                   </li>
                 ))}
@@ -134,12 +133,12 @@ export default class DepartmentView extends Component {
             <TransitionGroup component={null}>
               <ul
                 style={{
-                  minHeight: toggleDept ? "85vh" : "0"
+                  minHeight: toggleDept ? "85vh" : "0",
                 }}
                 className="eachShelf"
               >
                 {reqDepts.length !== 0 ? (
-                  reqDepts.map(item => (
+                  reqDepts.map((item) => (
                     <CSSTransition
                       in={this.state.toggleDept}
                       appear={false}
@@ -147,7 +146,7 @@ export default class DepartmentView extends Component {
                         enterActive: "eachChild animated slideInLeft faster",
                         enterDone: "eachChild",
                         exitActive: "eachChild animated slideOutLeft faster",
-                        exitDone: "eachChild"
+                        exitDone: "eachChild",
                       }}
                       unmountOnExit
                       timeout={500}
@@ -155,7 +154,7 @@ export default class DepartmentView extends Component {
                     >
                       <li
                         id="sub-child"
-                        onClick={e => this.onDeptClick(item, e)}
+                        onClick={(e) => this.onDeptClick(item, e)}
                       >
                         <span className="childCount">
                           {item.subDepts.length}
@@ -166,7 +165,7 @@ export default class DepartmentView extends Component {
                           </i>
                         </span>
                         <span className="contentSection">
-                          <h1>{item.department_name}</h1>
+                          <p>{item.department_name}</p>
                         </span>
                       </li>
                     </CSSTransition>
@@ -179,7 +178,7 @@ export default class DepartmentView extends Component {
                       enterActive: "eachChild animated slideInLeft faster",
                       enterDone: "eachChild",
                       exitActive: "eachChild animated slideOutLeft faster",
-                      exitDone: "eachChild"
+                      exitDone: "eachChild",
                     }}
                     unmountOnExit
                     timeout={500}
@@ -200,11 +199,11 @@ export default class DepartmentView extends Component {
               <ul
                 className="eachShelf"
                 style={{
-                  minHeight: toggleSubDept ? "85vh" : "0"
+                  minHeight: toggleSubDept ? "85vh" : "0",
                 }}
               >
                 {subDepts &&
-                  subDepts.map(item => (
+                  subDepts.map((item) => (
                     <CSSTransition
                       in={this.state.toggleSubDept}
                       appear={false}
@@ -212,7 +211,7 @@ export default class DepartmentView extends Component {
                         enterActive: "eachChild animated slideInLeft faster",
                         enterDone: "eachChild",
                         exitActive: "eachChild animated slideOutLeft faster",
-                        exitDone: "eachChild"
+                        exitDone: "eachChild",
                       }}
                       unmountOnExit
                       timeout={500}

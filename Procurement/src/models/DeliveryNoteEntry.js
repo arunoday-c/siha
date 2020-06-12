@@ -3,37 +3,44 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 export default {
   generateNumber: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
-      req.mySQl = _mysql;
-      //Bill
-      _mysql
-        .generateRunningNumber({
-          modules: ["DN_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
-        })
-        .then(generatedNumbers => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
-          };
-          req.body.delivery_note_number = generatedNumbers[0];
-          next();
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
+      let buffer = "";
+      req.on("data", (chunk) => {
+        buffer += chunk.toString();
+      });
+
+      req.on("end", () => {
+        let input = JSON.parse(buffer);
+        req.mySQl = _mysql;
+        req.body = input;
+        //Bill
+        _mysql
+          .generateRunningNumber({
+            user_id: req.userIdentity.algaeh_d_app_user_id,
+            numgen_codes: ["DN_NUM"],
+            table_name: "hims_f_procurement_numgen",
+          })
+          .then((generatedNumbers) => {
+            req.connection = {
+              connection: _mysql.connection,
+              isTransactionConnection: _mysql.isTransactionConnection,
+              pool: _mysql.pool,
+            };
+            req.body.delivery_note_number = generatedNumbers.DN_NUM;
+            next();
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
           });
-        });
+      });
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -57,9 +64,9 @@ export default {
             from  hims_f_procurement_dn_header DNH, hims_f_procurement_po_header POH \
             where DNH.purchase_order_id=POH.hims_f_procurement_po_header_id and DNH.delivery_note_number=?",
           values: [req.query.delivery_note_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             let strQuery = "";
             if (headerResult[0].dn_from == "INV") {
@@ -100,17 +107,17 @@ export default {
             _mysql
               .executeQuery({
                 query: strQuery,
-                printQuery: true
+                printQuery: true,
               })
-              .then(dn_entry_detail => {
+              .then((dn_entry_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ dn_entry_detail }
+                  ...{ dn_entry_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -120,7 +127,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -136,11 +143,7 @@ export default {
     const _mysql = new algaehMysql(_options);
 
     try {
-      let input = req.body;
-
-      const utilities = new algaehUtilities();
-      utilities.logger().log("addDeliveryNoteEntry: ");
-
+      const input = req.body;
       let year = moment().format("YYYY");
       let today = moment().format("YYYY-MM-DD");
       let month = moment().format("MM");
@@ -183,46 +186,47 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.body.transaction_id = headerResult.insertId;
           req.body.year = year;
           req.body.period = period;
           let dn_entry_detail = [];
+          const async = require("async");
 
-          for (let i = 0; i < input.po_entry_detail.length; i++) {
-            // if (input.dn_from == "PHR") {
-            //   dn_entry_detail = input.po_entry_detail[i].dn_entry_detail;
-            // } else {
-            //   dn_entry_detail = input.po_entry_detail[i].dn_entry_detail;
-            // }
+          async.eachSeries(input.po_entry_detail, (inputObj, nextLoop) => {
+            // console.log("inputObj", inputObj);
+            const i = input.po_entry_detail.indexOf(inputObj);
+            console.log("index", i);
             updateItemMaster({
-              stock_detail: input.po_entry_detail[i].dn_entry_detail,
+              stock_detail: inputObj.dn_entry_detail,
               po_entry_detail: input.po_entry_detail,
               stock_insert_detail: i,
               _mysql: _mysql,
               req: req,
               next: next,
-              dn_from: input.dn_from
+              dn_from: input.dn_from,
             })
-              .then(ItemBatchGen => {
-                utilities
-                  .logger()
-                  .log("resolve: ", input.po_entry_detail[i].dn_entry_detail);
+              .then((ItemBatchGen) => {
+                // console.log("ItemBatchGen", ItemBatchGen);
+                // utilities
+                //   .logger()
+                //   .log("resolve: ", input.po_entry_detail[i].dn_entry_detail);
+
                 _mysql
                   .executeQuery({
                     query:
                       "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
-                      inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
-                      quantity_outstanding,\
-                      pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
-                      net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
-                      batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
-                      vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
-                      VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
+                        quantity_outstanding,\
+                        pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
+                        net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
+                        batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
+                        vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                     values: [
                       input.po_entry_detail[i]["phar_item_category"],
                       input.po_entry_detail[i]["phar_item_group"],
@@ -254,12 +258,12 @@ export default {
                       input.po_entry_detail[i]["barcode"],
                       input.po_entry_detail[i]["sales_price"],
                       input.po_entry_detail[i]["free_qty"],
-                      headerResult.insertId
+                      headerResult.insertId,
                     ],
 
-                    printQuery: false
+                    printQuery: true,
                   })
-                  .then(detailResult => {
+                  .then((detailResult) => {
                     console.log("detailResult: ", detailResult.insertId.length);
                     let IncludeSubValues = [
                       "phar_item_category",
@@ -291,7 +295,7 @@ export default {
                       "vendor_batchno",
                       "barcode",
                       "sales_price",
-                      "free_qty"
+                      "free_qty",
                     ];
 
                     _mysql
@@ -301,58 +305,39 @@ export default {
                         values: input.po_entry_detail[i].dn_entry_detail,
                         includeValues: IncludeSubValues,
                         extraValues: {
-                          hims_f_procurement_dn_detail_id: detailResult.insertId
+                          hims_f_procurement_dn_detail_id:
+                            detailResult.insertId,
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: false
+                        printQuery: false,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         if (i == input.po_entry_detail.length - 1) {
-                          // req.connection = {
-                          //   connection: _mysql.connection,
-                          //   isTransactionConnection:
-                          //     _mysql.isTransactionConnection,
-                          //   pool: _mysql.pool
-                          // };
-                          // req.flag = 1;
-
-                          // _mysql.commitTransaction(() => {
-                          //   _mysql.releaseConnection();
                           req.records = {
                             delivery_note_number: input.delivery_note_number,
                             hims_f_procurement_dn_header_id:
-                              headerResult.insertId
+                              headerResult.insertId,
                           };
                           next();
-                          // });
+                        } else {
+                          nextLoop();
                         }
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
-            // if (input.dn_from == "PHR") {
-            //
-            // } else {
-            //   updateInventoryItemMaster({
-            //     inventory_stock_detail:
-            //       input.po_entry_detail[i].dn_entry_detail,
-            //     _mysql: _mysql,
-            //     req: req,
-            //     next: next
-            //   });
-            // }
-          }
+          });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -412,11 +397,11 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           let dn_entry_detail = [];
           if (input.dn_from == "PHR") {
             dn_entry_detail = input.pharmacy_stock_detail;
@@ -454,7 +439,7 @@ export default {
             "purchase_order_detail_id",
             "vendor_batchno",
             "barcode",
-            "sales_price"
+            "sales_price",
           ];
 
           _mysql
@@ -463,30 +448,30 @@ export default {
               values: dn_entry_detail,
               includeValues: IncludeValues,
               extraValues: {
-                hims_f_procurement_dn_header_id: headerResult.insertId
+                hims_f_procurement_dn_header_id: headerResult.insertId,
               },
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(detailResult => {
+            .then((detailResult) => {
               utilities.logger().log("detailResult: ", detailResult);
               // _mysql.commitTransaction(() => {
               //   _mysql.releaseConnection();
               req.records = {
                 delivery_note_number: input.delivery_note_number,
-                hims_f_procurement_dn_header_id: headerResult.insertId
+                hims_f_procurement_dn_header_id: headerResult.insertId,
               };
               next();
               // });
             })
-            .catch(error => {
+            .catch((error) => {
               utilities.logger().log("erroe: ", error);
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -514,15 +499,15 @@ export default {
             inputParam.authorize1,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_procurement_po_header_id
+            inputParam.hims_f_procurement_po_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           if (headerResult != null) {
             let details = inputParam.pharmacy_stock_detail;
@@ -539,20 +524,20 @@ export default {
                   details[i].rejected_quantity,
                   details[i].quantity_recieved,
                   details[i].quantity_outstanding,
-                  details[i].hims_f_procurement_po_detail_id
+                  details[i].hims_f_procurement_po_detail_id,
                 ]
               );
             }
             _mysql
               .executeQuery({
                 query: qry,
-                printQuery: true
+                printQuery: true,
               })
-              .then(detailResult => {
+              .then((detailResult) => {
                 req.records = detailResult;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
@@ -564,7 +549,7 @@ export default {
             });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -581,9 +566,9 @@ export default {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("updatePOEntry: ");
+      // utilities.logger().log("updatePOEntry: ");
       let inputParam = { ...req.body };
-
+      console.log("inputParam", inputParam);
       let complete = "Y";
 
       let dn_entry_detail = [];
@@ -606,9 +591,9 @@ export default {
       _mysql
         .executeQuery({
           query: qry,
-          printQuery: true
+          printQuery: true,
         })
-        .then(update_detailResult => {
+        .then((update_detailResult) => {
           _mysql
             .executeQuery({
               query:
@@ -616,12 +601,12 @@ export default {
                  WHERE H.hims_f_procurement_po_header_id = D.procurement_header_id and\
                 hims_f_procurement_po_header_id=?",
               values: [inputParam.purchase_order_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(detailResult => {
+            .then((detailResult) => {
               //Update
               const partial_recived = new LINQ(detailResult)
-                .Where(w => w.quantity_outstanding != 0)
+                .Where((w) => w.quantity_outstanding != 0)
                 .ToArray();
 
               if (partial_recived.length > 0) {
@@ -638,28 +623,28 @@ export default {
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
-                    inputParam.purchase_order_id
+                    inputParam.purchase_order_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(headerResult => {
+                .then((headerResult) => {
                   utilities.logger().log("headerResult: ");
                   req.porecords = headerResult;
                   next();
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -703,18 +688,18 @@ export default {
             req.userIdentity.hospital_id,
             req.query.delivery_note_number,
             req.userIdentity.hospital_id,
-            req.query.delivery_note_number
+            req.query.delivery_note_number,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           let header = result[0][0];
           let details = result[1];
           let subDetails = result[2];
           let outputArray = [];
 
-          details.forEach(item => {
-            let dn_entry_detail = subDetails.filter(sub => {
+          details.forEach((item) => {
+            let dn_entry_detail = subDetails.filter((sub) => {
               return (
                 sub["hims_f_procurement_dn_detail_id"] ==
                 item["hims_f_procurement_dn_detail_id"]
@@ -727,7 +712,7 @@ export default {
           req.records = { ...header, po_entry_detail: outputArray };
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -735,12 +720,13 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
 
 function updateItemMaster(options) {
   return new Promise((resolve, reject) => {
     try {
+      console.log("updateItemMaster: ");
       let dn_from = options.dn_from;
       let _mysql = options._mysql;
       let req = options.req;
@@ -750,18 +736,24 @@ function updateItemMaster(options) {
 
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("updateItemMaster: ", stock_detail);
-      utilities.logger().log("stock_insert_detail: ", stock_insert_detail);
+      // console.log("updateItemMaster: ", stock_detail);
+      console.log("stock_insert_detail: ", stock_insert_detail);
+      // console.log("po_entry_detail: ", po_entry_detail);
 
       for (let i = 0; i < stock_detail.length; i++) {
-        utilities.logger().log("i: ", i);
+        console.log("i: ", i);
+
         let prev_length =
           stock_insert_detail > 0
-            ? po_entry_detail[stock_insert_detail - 1].dn_entry_detail.length +
-              i
+            ? po_entry_detail[stock_insert_detail].dn_entry_detail.length + i
             : i;
 
-        utilities.logger().log("prev_length: ", prev_length);
+        console.log("prev_length: ", prev_length);
+        console.log(
+          "length: ",
+          po_entry_detail[stock_insert_detail].dn_entry_detail.length
+        );
+
         let strQuery = "";
         if (dn_from == "PHR") {
           strQuery += mysql.format(
@@ -777,81 +769,80 @@ function updateItemMaster(options) {
         _mysql
           .executeQuery({
             query: strQuery,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             var date = new Date();
             var hours = date.getHours();
             var minutes = date.getMinutes();
             var seconds = date.getSeconds();
-            var chars =
-              String(hours) +
-              String(minutes) +
-              String(seconds) +
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var day = date.getDate();
+            var year = String(new Date().getFullYear()).substring(2, 4);
+            var month = date.getMonth();
+
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
             var length = 2;
-            var resultString = "";
+            var resultString = year + month + day + hours + minutes + seconds;
             for (var j = length; j > 0; --j)
               resultString += chars[Math.floor(Math.random() * chars.length)];
-            resultString +=
-              req.userIdentity.algaeh_d_app_user_id +
-              req.userIdentity.hospital_id;
+            resultString += req.userIdentity.hospital_id;
 
-            let batch_no = parseInt(result[0].batch_no) + 1;
-            let barcode = result[0].item_code + "B" + resultString;
+            // let batch_no = parseInt(result[0].batch_no) + 1;
+            // let barcode = result[0].item_code + "B" + resultString;
 
             console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+            // console.log("barcode", barcode);
 
+            console.log("dn_index", stock_detail[i].dn_index);
             if (dn_from == "PHR") {
-              // req.body.pharmacy_stock_detail;
-              // let SelectedItem = _.filter(req.body.pharmacy_stock_detail, f => {
-              //   return f.item_id === stock_detail[i].item_id;
-              // });
-              // utilities.logger().log("SelectedItem: ", SelectedItem);
-              // for (let j = 0; j < SelectedItem.length; j++) {
-              //   let _phr_index = req.body.pharmacy_stock_detail.indexOf(
-              //     SelectedItem[j]
-              //   );
-              //   utilities.logger().log("_phr_index: ", _phr_index);
-              //   SelectedItem[j].barcode = barcode;
-              //   SelectedItem[j].batchno = "B" + resultString;
-              //   req.body.pharmacy_stock_detail[_phr_index] = SelectedItem[j];
-              // }
+              const phar_stock_data = _.find(
+                req.body.pharmacy_stock_detail,
+                (f) => f.dn_index === stock_detail[i].dn_index
+              );
 
-              console.log("prev_length", prev_length);
-              req.body.pharmacy_stock_detail[prev_length].batchno =
+              const _phar_index = req.body.pharmacy_stock_detail.indexOf(
+                phar_stock_data
+              );
+
+              console.log("_phar_index", _phar_index);
+
+              req.body.pharmacy_stock_detail[_phar_index].batchno =
                 "B" + resultString;
-              req.body.pharmacy_stock_detail[prev_length].barcode = barcode;
-
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
+              req.body.pharmacy_stock_detail[_phar_index].barcode =
+                "B" + resultString;
             } else {
-              req.body.inventory_stock_detail[i].batchno = "B" + resultString;
-              req.body.inventory_stock_detail[i].barcode = barcode;
+              const inv_stock_data = _.find(
+                req.body.inventory_stock_detail,
+                (f) => f.dn_index === stock_detail[i].dn_index
+              );
 
-              utilities
-                .logger()
-                .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+              const _inv_index = req.body.inventory_stock_detail.indexOf(
+                inv_stock_data
+              );
+
+              req.body.inventory_stock_detail[_inv_index].batchno =
+                "B" + resultString;
+              req.body.inventory_stock_detail[_inv_index].barcode =
+                "B" + resultString;
             }
-
+            // console.log("length: ", po_entry_detail[stock_insert_detail - 1].dn_entry_detail.length);
             stock_detail[i].batchno = "B" + resultString;
-            stock_detail[i].barcode = barcode;
+            stock_detail[i].barcode = "B" + resultString;
 
             if (i == stock_detail.length - 1) {
-              utilities.logger().log("resolve: ");
+              console.log("resolve: ");
               resolve();
             }
           })
-          .catch(e => {
+          .catch((e) => {
             reject(e);
           });
       }
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -874,9 +865,9 @@ function updateItemMasterBackup(options) {
               query:
                 "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
               values: [],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               var date = new Date();
               var hours = date.getHours();
               var minutes = date.getMinutes();
@@ -912,7 +903,7 @@ function updateItemMasterBackup(options) {
                 resolve();
               }
             })
-            .catch(e => {
+            .catch((e) => {
               reject(e);
             });
         }
@@ -927,9 +918,9 @@ function updateItemMasterBackup(options) {
               query:
                 "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
               values: [stock_detail[i].item_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               var date = new Date();
               var hours = date.getHours();
               var minutes = date.getMinutes();
@@ -965,7 +956,7 @@ function updateItemMasterBackup(options) {
                 resolve();
               }
             })
-            .catch(error => {
+            .catch((error) => {
               reject(error);
             });
         }
@@ -973,7 +964,7 @@ function updateItemMasterBackup(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }
@@ -997,9 +988,9 @@ function updateInventoryItemMaster(options) {
             query:
               "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
             values: [inventory_stock_detail[i].item_id],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             var date = new Date();
             var hours = date.getHours();
             var minutes = date.getMinutes();
@@ -1035,14 +1026,14 @@ function updateInventoryItemMaster(options) {
               resolve();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       }
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }

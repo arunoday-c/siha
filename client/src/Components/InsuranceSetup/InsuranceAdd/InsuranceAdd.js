@@ -53,7 +53,7 @@ class InsuranceAdd extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     let IOputs = InsuranceSetup.inputParam();
     this.setState(IOputs);
   }
@@ -67,7 +67,7 @@ class InsuranceAdd extends PureComponent {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     // if (
     //   nextProps.insuranceprovider !== undefined &&
     //   nextProps.insuranceprovider.length !== 0
@@ -80,8 +80,7 @@ class InsuranceAdd extends PureComponent {
     //     IOputs.selectedLang = prevLang;
     //     this.setState(IOputs);
     //   }
-    // }
-
+    // }  
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0
@@ -144,7 +143,7 @@ class InsuranceAdd extends PureComponent {
         });
       }
     }
-    
+
     let IOputs = InsuranceSetup.inputParam();
     IOputs.activeStep = 0;
     IOputs.screenName = "InsuranceProvider";
@@ -183,8 +182,8 @@ class InsuranceAdd extends PureComponent {
                       <li
                         className={
                           this.state.screenName === "SubInsurance" ||
-                          this.state.screenName === "NetworkPlan" ||
-                          this.state.screenName === "Services"
+                            this.state.screenName === "NetworkPlan" ||
+                            this.state.screenName === "Services"
                             ? "active"
                             : ""
                         }
@@ -194,7 +193,7 @@ class InsuranceAdd extends PureComponent {
                       <li
                         className={
                           this.state.screenName === "NetworkPlan" ||
-                          this.state.screenName === "Services"
+                            this.state.screenName === "Services"
                             ? "active"
                             : ""
                         }
@@ -277,50 +276,50 @@ class InsuranceAdd extends PureComponent {
               </div>
             </AlgaehModalPopUp>
           ) : (
-            <AlgaehModalPopUp
-              events={{
-                onClose: this.onClose.bind(this)
-              }}
-              title={this.props.HeaderCaption}
-              openPopup={this.props.open}
-            >
-              <MyContext.Provider
-                value={{
-                  state: this.state,
-                  updateState: obj => {
-                    this.setState({ ...obj });
-                  }
+              <AlgaehModalPopUp
+                events={{
+                  onClose: this.onClose.bind(this)
                 }}
+                title={this.props.HeaderCaption}
+                openPopup={this.props.open}
               >
-                <div className="popupInner">
-                  {getStepContent(this.props.opencomponent, this)}
-                </div>
-
-                <div className="popupFooter">
-                  <div className="col-lg-12">
-                    {this.props.opencomponent === "1" ? (
-                      <button
-                        onClick={updatedata.bind(this, this)}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Update
-                      </button>
-                    ) : null}
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      Close
-                    </button>
+                <MyContext.Provider
+                  value={{
+                    state: this.state,
+                    updateState: obj => {
+                      this.setState({ ...obj });
+                    }
+                  }}
+                >
+                  <div className="popupInner">
+                    {getStepContent(this.props.opencomponent, this)}
                   </div>
-                </div>
-              </MyContext.Provider>
-            </AlgaehModalPopUp>
-          )}
+
+                  <div className="popupFooter">
+                    <div className="col-lg-12">
+                      {this.props.opencomponent === "1" ? (
+                        <button
+                          onClick={updatedata.bind(this, this)}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Update
+                      </button>
+                      ) : null}
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={e => {
+                          this.onClose(e);
+                        }}
+                      >
+                        Close
+                    </button>
+                    </div>
+                  </div>
+                </MyContext.Provider>
+              </AlgaehModalPopUp>
+            )}
         </div>
       </React.Fragment>
     );
@@ -346,10 +345,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(InsuranceAdd)
+  connect(mapStateToProps, mapDispatchToProps)(InsuranceAdd)
 );
 
 // export default withStyles(styles)(InsuranceAdd);

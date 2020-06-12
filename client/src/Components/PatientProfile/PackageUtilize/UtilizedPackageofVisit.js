@@ -10,8 +10,7 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import {
-  getCookie,
+import {  
   algaehApiCall,
   swalMessage
 } from "../../../utils/algaehApiCall";

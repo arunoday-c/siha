@@ -1,14 +1,13 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
-      const utilities = new algaehUtilities();
+
       let str = "";
       let input = {};
       let params = options.args.reportParams;
 
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -28,6 +27,17 @@ const executePDF = function executePDFMethod(options) {
         str += ` and E.employee_group_id= ${input.employee_group_id}`;
       }
 
+      if (input.department_id > 0) {
+        str += ` and SD.department_id=${input.department_id}`;
+      }
+      let is_local = "";
+
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
+
       // 	const month_number =
       // 	req.query.yearAndMonth === undefined ? req.query.month : moment(req.query.yearAndMonth).format('M');
       // const year =
@@ -41,17 +51,21 @@ const executePDF = function executePDFMethod(options) {
 					year,month,AM.hospital_id,AM.sub_department_id,\
 					total_days,present_days,display_present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
 					total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
-					shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
+					shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours,(COALESCE(ot_weekoff_hours,0)+COALESCE(ot_holiday_hours,0)) as total_ot_hr from hims_f_attendance_monthly AM \
 					inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
-					where AM.record_status='A' and AM.year= ? and AM.month=? ${str} `,
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
+          	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+					where AM.record_status='A' and AM.year= ? and AM.month=? ${is_local} ${str} `,
           values: [input.year, input.month],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
-          // utilities.logger().log("result: ", result);
-          resolve({ result: result });
+        .then((result) => {
+          resolve({
+            result: result,
+            no_employees: result.length,
+          });
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {

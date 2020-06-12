@@ -8,13 +8,15 @@ export default {
     let _stringData = " ";
     let intValue = [];
     if (req.query.component_category != null) {
-      _stringData = " and component_category=? ";
+      _stringData += " and component_category=? ";
       intValue.push(req.query.component_category);
-    } else if (req.query.miscellaneous_component != null) {
-      _stringData = " and miscellaneous_component=? ";
+    }
+    if (req.query.miscellaneous_component != null) {
+      _stringData += " and miscellaneous_component=? ";
       intValue.push(req.query.miscellaneous_component);
-    } else if (req.query.component_type != null) {
-      _stringData = " and component_type=? ";
+    }
+    if (req.query.component_type != null) {
+      _stringData += " and component_type=? ";
       intValue.push(req.query.component_type);
     }
 
@@ -25,7 +27,7 @@ export default {
           short_desc,component_category,calculation_method,component_frequency,calculation_type,\
           component_type,shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-          round_off_amount from hims_d_earning_deduction\
+          round_off_amount,head_id,child_id from hims_d_earning_deduction\
           where record_status='A' " +
           _stringData,
         values: intValue,
@@ -63,7 +65,7 @@ export default {
       });
   },
 
-  addLoanMaster: (req, res, next) => {
+  addLoanMaster_JAN_23_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
 
@@ -94,6 +96,118 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //modified by:irfan to add vendor
+  addLoanMaster: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+        })
+        .then(result => {
+          if (
+            result[0]["product_type"] == "HIMS_ERP" ||
+            result[0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = 23;
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,head_id,created_from\
+                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?)",
+                values: [
+                  input.loan_description,
+                  head_id,
+                  "S",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: false
+              })
+              .then(childRes => {
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_d_loan (loan_code,loan_description, loan_account,loan_limit_type,\
+                          loan_maximum_amount, created_date,created_by,updated_date,updated_by,head_id,child_id) \
+                          values(?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.loan_code,
+                      input.loan_description,
+                      input.loan_account,
+                      input.loan_limit_type,
+                      input.loan_maximum_amount,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      head_id,
+                      childRes.insertId
+                    ]
+                  })
+                  .then(inserted_loan => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = inserted_loan;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_d_loan (loan_code,loan_description, loan_account,loan_limit_type,\
+              loan_maximum_amount, created_date,created_by,updated_date,updated_by) \
+              values(?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.loan_code,
+                  input.loan_description,
+                  input.loan_account,
+                  input.loan_limit_type,
+                  input.loan_maximum_amount,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ]
+              })
+              .then(inserted_loan => {
+                _mysql.releaseConnection();
+                req.records = inserted_loan;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   },
 
   updateLoanMaster: (req, res, next) => {
@@ -136,8 +250,8 @@ export default {
       input.year > 0
         ? input.year
         : moment()
-            .startOf("year")
-            .format("YYYY-MM-DD");
+          .startOf("year")
+          .format("YYYY-MM-DD");
 
     const start_of_year = moment(year, "YYYY")
       .startOf("year")
@@ -385,6 +499,9 @@ export default {
   getEarningDeduction: (req, res, next) => {
     const _mysql = new algaehMysql();
 
+    let _stringData = req.query.miscellaneous_component != null ? ` and miscellaneous_component= '${req.query.miscellaneous_component}'` : ""
+    console.log("_stringData", _stringData)
+
     _mysql
       .executeQuery({
         query:
@@ -392,8 +509,8 @@ export default {
           short_desc,component_category,calculation_method,component_frequency,calculation_type, specific_nationality, nationality_id,\
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-          round_off_amount,formula, print_report, print_order_by, annual_salary_comp from hims_d_earning_deduction\
-          where record_status='A'  order by hims_d_earning_deduction_id desc",
+          round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id, \
+          direct_head_id, direct_child_id from hims_d_earning_deduction where record_status='A'" + _stringData + " order by hims_d_earning_deduction_id desc",
         printQuery: true
       })
       .then(result => {
@@ -417,8 +534,10 @@ export default {
             component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
             shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
             process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-            round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, annual_salary_comp,created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, \
+            annual_salary_comp, head_id, child_id, li_head_id, li_child_id, direct_head_id, direct_child_id, \
+            created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -445,6 +564,12 @@ export default {
           input.print_report,
           input.print_order_by,
           input.annual_salary_comp,
+          input.head_id,
+          input.child_id,
+          input.li_head_id,
+          input.li_child_id,
+          input.direct_head_id,
+          input.direct_child_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
@@ -473,8 +598,9 @@ export default {
           component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
           allow_round_off=?,round_off_type=?,formula=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
-          print_report=?,print_order_by=?,annual_salary_comp=?,record_status=?,\
-            updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
+          print_report=?,print_order_by=?,annual_salary_comp=?, \
+          head_id = ?, child_id=?, li_head_id=?, li_child_id=?, direct_head_id=?, direct_child_id=?,\
+          record_status=?,updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
         values: [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -501,6 +627,12 @@ export default {
           input.print_report,
           input.print_order_by,
           input.annual_salary_comp,
+          input.head_id,
+          input.child_id,
+          input.li_head_id,
+          input.li_child_id,
+          input.direct_head_id,
+          input.direct_child_id,
           input.record_status,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,

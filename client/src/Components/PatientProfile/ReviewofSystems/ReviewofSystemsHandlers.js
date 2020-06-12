@@ -29,12 +29,13 @@ const getReviewOfSystemsDetails = ($this, type) => {
 };
 
 const getPatientROS = $this => {
+  const { current_patient, episode_id } = Window.global;
   $this.props.getReviewOfSystems({
     uri: "/doctorsWorkBench/getPatientROS",
     method: "GET",
     data: {
-      patient_id: Window.global["current_patient"],
-      episode_id: Window.global["episode_id"]
+      patient_id: current_patient, // Window.global["current_patient"],
+      episode_id: episode_id //Window.global["episode_id"]
     },
     cancelRequestId: "getPatientROS",
     redux: {

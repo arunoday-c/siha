@@ -1,6 +1,7 @@
 import { Validations } from "./InsuranceAddValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import InsuranceSetup from "../../../Models/InsuranceSetup";
 
 const handleNext = ($this, setp, e) => {
   // if (setp === "Close") {
@@ -15,7 +16,7 @@ const handleNext = ($this, setp, e) => {
         //Save Insurance
         $this.state.preapp_valid_days =
           $this.state.preapp_valid_days === "" ||
-          $this.state.preapp_valid_days === null
+            $this.state.preapp_valid_days === null
             ? 0
             : $this.state.preapp_valid_days;
         algaehApiCall({
@@ -140,7 +141,7 @@ const updatedata = ($this, e) => {
     if (isError === false) {
       $this.state.preapp_valid_days =
         $this.state.preapp_valid_days === "" ||
-        $this.state.preapp_valid_days === null
+          $this.state.preapp_valid_days === null
           ? 0
           : $this.state.preapp_valid_days;
       algaehApiCall({
@@ -150,11 +151,33 @@ const updatedata = ($this, e) => {
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
+            if ($this.state.buttonenable === true) {
+              if (
+                $this.props.insuranceprovider !== undefined &&
+                $this.props.insuranceprovider.length !== 0
+              ) {
+                $this.props.initialStateInsurance({
+                  redux: {
+                    type: "INSURANCE_INT_DATA",
+                    mappingName: "insuranceprovider",
+                    data: []
+                  }
+                });
+              }
+            }
+
+            let IOputs = InsuranceSetup.inputParam();
+            IOputs.activeStep = 0;
+            IOputs.screenName = "InsuranceProvider";
+
+            $this.setState(IOputs, () => {
+              $this.props.onClose && $this.props.onClose(e);
+            });
+
             swalMessage({
               title: "Updated successfully . .",
               type: "success"
             });
-            $this.props.onClose && $this.props.onClose(e);
           }
         }
       });

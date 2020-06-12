@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
+import mysql from "mysql";
+
 export default {
   generateNumber: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -9,12 +11,9 @@ export default {
       //Bill
       _mysql
         .generateRunningNumber({
-          modules: ["INV_STK_DOC"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
+          user_id: req.userIdentity.algaeh_d_app_user_id,
+          numgen_codes: ["INV_STK_DOC"],
+          table_name: "hims_f_inventory_numgen"
         })
         .then(generatedNumbers => {
           req.connection = {
@@ -22,7 +21,7 @@ export default {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.body.document_number = generatedNumbers[0];
+          req.body.document_number = generatedNumbers.INV_STK_DOC;
           next();
         })
         .catch(e => {
@@ -168,16 +167,16 @@ export default {
               printQuery: true
             })
             .then(detailResult => {
-              // _mysql.commitTransaction(() => {
-              // _mysql.releaseConnection();
-              req.records = {
-                document_number: input.document_number,
-                hims_f_inventory_stock_header_id: headerResult.insertId,
-                year: year,
-                period: period
-              };
-              next();
-              // });
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = {
+                  document_number: input.document_number,
+                  hims_f_inventory_stock_header_id: headerResult.insertId,
+                  year: year,
+                  period: period
+                };
+                next();
+              });
             })
             .catch(error => {
               _mysql.rollBackTransaction(() => {
@@ -198,14 +197,15 @@ export default {
   },
 
   updateInventoryInitialStock: (req, res, next) => {
-    const _mysql = new algaehMysql();
 
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       req.mySQl = _mysql;
       let inputParam = { ...req.body };
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "UPDATE `hims_f_inventory_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
             WHERE `record_status`='A' and `hims_f_inventory_stock_header_id`=?",
@@ -218,14 +218,31 @@ export default {
           printQuery: true
         })
         .then(headerResult => {
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
-          };
-          // _mysql.releaseConnection();
-          // req.records = headerResult;
-          next();
+          let UpdateQry = ""
+          for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
+            UpdateQry += mysql.format(
+              "UPDATE `hims_f_inventory_stock_detail` SET barcode=?, batchno=? \
+                where hims_f_inventory_stock_detail_id=?;",
+              [
+                inputParam.inventory_stock_detail[i].barcode,
+                inputParam.inventory_stock_detail[i].batchno,
+                inputParam.inventory_stock_detail[i].hims_f_inventory_stock_detail_id
+              ]
+            );
+          }
+          _mysql
+            .executeQuery({
+              query: UpdateQry,
+              printQuery: true
+            })
+            .then(result => {
+              next();
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

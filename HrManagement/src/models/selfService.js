@@ -11,21 +11,21 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "select hims_d_leave_id, leave_code,  leave_description, leave_category, calculation_type,\
-                leave_type, include_weekoff, encashment_percentage, religion_required,\
+              "select hims_d_leave_id, leave_code,  leave_description, leave_category, calculation_type,reset_leave,\
+                leave_type, include_weekoff, encashment_percentage, religion_required,avail_if_no_balance, \
             include_holiday, holiday_reimbursement,  leave_mode, leave_accrual, leave_encash, leave_carry_forward,\
-            exit_permit_required,  proportionate_leave, document_mandatory, carry_forward_percentage,\
-              leave_status, religion_id , religion_required \
+            exit_permit_required,  proportionate_leave,avail_if_no_balance, document_mandatory, carry_forward_percentage,\
+              leave_status, religion_id , religion_required ,encash_calc_method \
               from hims_d_leave where record_status='A' and leave_status='A'",
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             reject(error);
             next(error);
@@ -34,7 +34,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -54,7 +54,7 @@ export default {
                E.present_state_id,S.state_name as present_state_name ,\
                E.present_country_id,C.country_name present_country_name,\
                E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-               E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
+               E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,E.work_email,\
                E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
                E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name ,\
                 E.effective_start_date,E.effective_end_date, E.employee_bank_ifsc_code ,\
@@ -73,15 +73,15 @@ export default {
                left join hims_d_sub_department DEP on E.sub_department_id=DEP.hims_d_sub_department_id and DEP.record_status='A'\
            where E.record_status='A'  and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             reject(error);
             next(error);
@@ -90,7 +90,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -110,15 +110,15 @@ export default {
             left join hims_d_identity_document ID on ED.dependent_identity_type=ID.hims_d_identity_document_id \
             and ID.record_status='A' where E.record_status='A' and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             reject(error);
             next(error);
@@ -127,7 +127,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -147,15 +147,15 @@ export default {
             left join hims_d_identity_document ID on EI.identity_documents_id=ID.hims_d_identity_document_id \
             and  ID.record_status='A' where  E.record_status='A' and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: false
+            printQuery: false,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             resolve(result);
             next();
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             reject(error);
             next(error);
@@ -164,7 +164,7 @@ export default {
         _mysql.releaseConnection();
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -189,16 +189,16 @@ export default {
           input.alert_date,
           new Date(),
           input.updated_by,
-          input.hims_d_employee_identification_id
+          input.hims_d_employee_identification_id,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -220,17 +220,17 @@ export default {
           input.dependent_identity_no,
           new Date(),
           input.updated_by,
-          input.hims_d_employee_dependents_id
+          input.hims_d_employee_dependents_id,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
 
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -258,16 +258,16 @@ export default {
           input.email,
           new Date(),
           input.updated_by,
-          input.hims_d_employee_id
+          input.hims_d_employee_id,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -292,16 +292,16 @@ export default {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -327,20 +327,20 @@ export default {
           from hims_f_employee_advance where record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
           next(e);
         });
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -352,35 +352,33 @@ export default {
 
     _mysql
       .generateRunningNumber({
-        modules: ["EMPLOYEE_ADVANCE"],
-        tableName: "hims_f_app_numgen",
-        identity: {
-          algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-          hospital_id: req.userIdentity.hospital_id
-        }
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        numgen_codes: ["EMPLOYEE_ADVANCE"],
+        table_name: "hims_f_hrpayroll_numgen",
       })
-      .then(generatedNumbers => {
+      .then((generatedNumbers) => {
         _mysql
           .executeQuery({
             query:
               "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
-                deducting_year, advance_reason,created_date,created_by,updated_date,updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?)",
+                deducting_year, advance_reason, hospital_id, created_date,created_by,updated_date,updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
             values: [
-              generatedNumbers[0],
+              generatedNumbers.EMPLOYEE_ADVANCE,
               input.employee_id,
               input.advance_amount,
               input.deducting_month,
               input.deducting_year,
               input.advance_reason,
+              input.hospital_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              req.userIdentity.algaeh_d_app_user_id
+              req.userIdentity.algaeh_d_app_user_id,
             ],
-            printQuery: false
+            printQuery: false,
           })
-          .then(employee_advance => {
+          .then((employee_advance) => {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = employee_advance;
@@ -388,13 +386,13 @@ export default {
               next();
             });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
@@ -422,16 +420,16 @@ export default {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(error => {
+      .catch((error) => {
         _mysql.releaseConnection();
         next(error);
       });
@@ -447,21 +445,21 @@ export default {
             query:
               "SELECT E.hims_d_employee_id, E.employee_code, E.full_name, E.last_salary_process_date, \
                 SD.sub_department_name, D.department_name, EG.group_description, LA.from_date, \
-                LA.to_date FROM hims_d_employee E \
+                LA.to_date, LA.hims_f_leave_application_id FROM hims_d_employee E \
                 inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
                 left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
-                where E.record_status = 'A' and E.suspend_salary = 'Y' ",
-            printQuery: true
+                where E.record_status = 'A' and E.suspend_salary = 'Y' and LA.status='APR' and LA.processed='Y' ;",
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -469,11 +467,48 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
-  }
+  },
+  cancelAdvance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        // const utilities = new algaehUtilities();
+
+        _mysql
+          .executeQuery({
+            query:
+              "update hims_f_employee_advance set advance_status='REJ', updated_date=?, updated_by=? \
+              where hims_f_employee_advance_id=?",
+            values: [
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              req.body.hims_f_employee_advance_id,
+            ],
+            printQuery: true,
+          })
+          .then((result) => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch((e) => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch((e) => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
 
   //TODO
   //DELETE API IN MICRO SERVICE(TASK DUE NOOR MOHSIN)

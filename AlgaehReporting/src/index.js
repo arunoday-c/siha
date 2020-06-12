@@ -6,11 +6,17 @@ import compression from "compression";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
+import algaehKeys from "algaeh-keys";
 import reportGen from "./report_generation";
-import algaehUtilities from "algaeh-utilities/utilities";
+import utliites from "algaeh-utilities/utilities";
+import { getKPIDetails, generateReport } from "./docsReports";
+// import algaehUtilities from "algaeh-utilities/utilities";
+// import { userSecurity } from "algaeh-utilities/checksecurity";
+import { authentication } from "algaeh-utilities/authentication";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
+const keys = algaehKeys.default;
 app.server = http.createServer(app);
 
 const {
@@ -18,14 +24,17 @@ const {
   getReportMultiPrint,
   merdgeTosingleReport,
   getExcelReport,
-  getRawReport
+  getRawReport,
+  printReportRaw,
 } = reportGen;
+
+process.env.MYSQL_KEYS = JSON.stringify(keys);
 
 app.use(cors());
 const _port = process.env.PORT;
 app.use(
   bodyParser.json({
-    limit: "200kb"
+    limit: "200kb",
   })
 );
 // app.use(
@@ -34,18 +43,24 @@ app.use(
 //   )
 // );
 app.use(compression());
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 process.setMaxListeners(0);
-process.on("warning", warning => {
-  console.warning("warning", warning);
+process.on("warning", (warning) => {
+  new utliites().logger().log("warning-Reports", warning, "warn");
 });
-process.on("uncaughtException", error => {
-  console.error("Uncaught Exception", error);
+process.on("uncaughtException", (error) => {
+  new utliites().logger().log("uncaughtException-Reports", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection", { reason: reason, promise: promise });
+  new utliites()
+    .logger()
+    .log(
+      "unhandledRejection-Reports",
+      { reason: reason, promise: promise },
+      "error"
+    );
 });
 app.use("/barcode", (req, res) => {
   if (req.url.indexOf("/?bcid=") != 0) {
@@ -55,50 +70,8 @@ app.use("/barcode", (req, res) => {
     bwipjs(req, res);
   }
 });
-
 app.use((req, res, next) => {
-  const reqH = req.headers;
-  const _token = reqH["x-api-key"];
-  const utilities = new algaehUtilities();
-  utilities.logger().log("Xapi", _token, "debug");
-  const _verify = utilities.tokenVerify(_token);
-  if (_verify) {
-    let header = reqH["x-app-user-identity"];
-    if (header != null && header != "" && header != "null") {
-      header = utilities.decryption(header);
-      // req.userIdentity = header;
-      req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
-      let reqUser = utilities.getTokenData(_token).id;
-      utilities.logger("res-tracking").log(
-        "",
-        {
-          dateTime: new Date().toLocaleString(),
-          requestIdentity: {
-            requestClient: reqH["x-client-ip"],
-            requestAPIUser: reqUser,
-            reqUserIdentity: req.userIdentity
-          },
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          },
-          requestMethod: req.method
-        },
-        "info"
-      );
-    }
-
-    res.setHeader("connection", "keep-alive");
-    next();
-  } else {
-    res.status(utilities.httpStatus().unAuthorized).json({
-      success: false,
-      message: "unauthorized access"
-    });
-  }
+  authentication(req, res, next);
 });
 
 app.use("/api/v1/report", getReport);
@@ -143,7 +116,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
     (_jsonParam.outputFileType == "EXCEL" ? "xlsx" : _jsonParam.outputFileType);
   exec(
     "java -jar " + _path + "/pentaho_reporting.jar " + argumentString,
-    function(err, stdout, stderr) {
+    function (err, stdout, stderr) {
       if (err) {
         console.log(err);
         res.writeHead(400, { "Content-Type": "text/plain" });
@@ -152,7 +125,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
       console.log(stdout);
       const _outFile = path.join(_path, "Output", _outputFile);
 
-      fs.exists(_outFile, exists => {
+      fs.exists(_outFile, (exists) => {
         if (exists) {
           res.writeHead(200, {
             "Content-type":
@@ -161,7 +134,7 @@ app.use("/api/v1/pentahoreport", (req, res) => {
                 ? "vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 : _jsonParam.outputFileType),
             // "content-type": "application/xml", //vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "Content-Disposition": "attachment; filename=" + _outputFile
+            "Content-Disposition": "attachment; filename=" + _outputFile,
           });
           fs.createReadStream(_outFile).pipe(res);
         } else {
@@ -172,17 +145,8 @@ app.use("/api/v1/pentahoreport", (req, res) => {
     }
   );
 });
-
-process.on("warning", warning => {
-  console.log("Waring := ", warning);
-});
-process.on("uncaughtException", error => {
-  console.log("uncatched Exception :=", error);
-});
-process.on("unhandledRejection", (reason, promise) => {
-  console.log("Unhandled rejection :=", { reason: reason, promise: promise });
-});
-
+app.use("/api/v1/printReportRaw", printReportRaw);
+app.use("/api/v1/getDocsReports", getKPIDetails, generateReport);
 app.server.listen(_port);
 console.log(`Report Server is running  on PORT  - ${_port} *`);
 export default app;

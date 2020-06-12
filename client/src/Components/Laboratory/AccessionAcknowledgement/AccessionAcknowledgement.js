@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./AccessionAcknowledgement.scss";
 import "./../../../styles/site.scss";
 
 import {
   texthandle,
-  PatientSearch,
   datehandle,
   getSampleCollectionDetails,
   AcceptandRejectSample,
@@ -19,16 +17,11 @@ import {
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import Enumerable from "linq";
-import {
-  FORMAT_PRIORITY,
-  FORMAT_TEST_STATUS
-} from "../../../utils/GlobalVariables.json";
+
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -87,7 +80,7 @@ class AccessionAcknowledgement extends Component {
   }
 
   render() {
-    let _Ordered = [];
+    // let _Ordered = [];
 
     let _Collected = [];
 
@@ -96,9 +89,9 @@ class AccessionAcknowledgement extends Component {
 
     let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
-      _Ordered = _.filter(this.state.sample_collection, f => {
-        return f.status === "O";
-      });
+      // _Ordered = _.filter(this.state.sample_collection, f => {
+      //   return f.status === "O";
+      // });
 
       _Collected = _.filter(this.state.sample_collection, f => {
         return f.status === "CL";
@@ -393,10 +386,10 @@ class AccessionAcknowledgement extends Component {
                           return row.test_type === "S" ? (
                             <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-secondary">
-                              Routine
+                              <span className="badge badge-secondary">
+                                Routine
                             </span>
-                          );
+                            );
                         },
                         disabled: true,
                         others: {
@@ -499,10 +492,10 @@ class AccessionAcknowledgement extends Component {
                               Confirmed
                             </span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
+                                  <span className="badge badge-success">
+                                    Validated
                             </span>
-                          );
+                                );
                         },
                         disabled: true,
                         others: {

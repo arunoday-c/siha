@@ -27,6 +27,7 @@ const ClearData = ($this, e) => {
         PatRegIOputs.inputParam(),
         BillingIOputs.inputParam()
       );
+      IOputs.selectedLang = getCookie("Language");
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
       IOputs.cancel_remarks = null;
@@ -165,6 +166,7 @@ const getBillDetails = $this => {
     data: { bill_number: $this.state.bill_number },
     onSuccess: response => {
       if (response.data.success) {
+
         let data = response.data.records;
 
         let x = Enumerable.from($this.props.patienttype)
@@ -185,6 +187,7 @@ const getBillDetails = $this => {
         data.shift_id = $this.state.shift_id || null;
         data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
         data.saveEnable = false;
+
         $this.setState(data);
         if (data.insured === "Y") {
           $this.props.getPatientInsurance({
@@ -300,16 +303,9 @@ const generateReceipt = $this => {
       }
     },
     onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = "Receipt";
+      const urlBlob = URL.createObjectURL(res.data);
+      const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
+      window.open(origin);
     }
   });
 };

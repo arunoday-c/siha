@@ -35,8 +35,8 @@ import {
 import "./InitialStock.scss";
 import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
-import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { MainContext } from "algaeh-react-components/context";
+import { GetAmountFormart } from "../../../utils/GlobalFunctions";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 
@@ -73,10 +73,9 @@ class InitialStock extends Component {
     };
   }
 
+  static contextType = MainContext;
   componentDidMount() {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+    const userToken = this.context.userToken;
 
     this.props.getItems({
       uri: "/pharmacy/getItemMasterWithSalesPrice",
@@ -93,8 +92,9 @@ class InitialStock extends Component {
       module: "pharmacy",
       method: "GET",
       data: {
+        git_location: "N",
         location_status: "A",
-        hospital_id: hospital.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id
       },
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -252,6 +252,17 @@ class InitialStock extends Component {
                       }
                     }}
                   />
+                  {this.state.dataExitst === true ? (
+                    <div className="col">
+                      <h6>
+                        {this.state.posted === "Y" ? (
+                          <span className="badge badge-success">Posted</span>
+                        ) : (
+                            <span className="badge badge-danger">Not Posted</span>
+                          )}
+                      </h6>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="row" data-validate="IntialStock">
                   <AlagehAutoComplete
@@ -285,6 +296,7 @@ class InitialStock extends Component {
                               <h4 className="title">
                                 {result.item_description}
                               </h4>
+                              <small>{result.item_code}</small>
                               <small>{result.generic_name}</small>
                               <small>{result.stock_uom_desc}</small>
                             </div>
@@ -421,7 +433,7 @@ class InitialStock extends Component {
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Expiry Date",
-                      isImp: this.state.required_batchno === "N" ? true : false
+                      isImp: this.state.required_batchno === "Y" ? true : false
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     events={{
@@ -513,7 +525,7 @@ class InitialStock extends Component {
                   <div className="col">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 21 }}
+                      style={{ marginTop: 19 }}
                       onClick={AddItems.bind(this, this)}
                       disabled={this.state.dataExitst}
                     >
@@ -530,32 +542,26 @@ class InitialStock extends Component {
                   columns={[
                     {
                       fieldName: "action",
-                      label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
+                      label: <AlgaehLabel label={{ forceLabel: "Action/Print" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
                             <i
                               style={{
-                                pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
-                                opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                pointerEvents: this.state.saveEnable === true
+                                  ? "none"
+                                  : "",
+                                opacity: this.state.saveEnable === true ? "0.1" : ""
                               }}
-                              onClick={printBarcode.bind(this, this, row)}
-                              className="fas fa-barcode"
+                              onClick={deleteInitialStock.bind(this, this, row)}
+                              className="fas fa-trash-alt"
                             />
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <span>
                             <i
                               style={{
                                 pointerEvents:
-                                  this.state.dataExitst === false ? "none" : "",
+                                  this.state.posted === "N" ? "none" : "",
                                 opacity:
-                                  this.state.dataExitst === false ? "0.1" : ""
+                                  this.state.posted === "N" ? "0.1" : ""
                               }}
                               onClick={printBarcode.bind(this, this, row)}
                               className="fas fa-barcode"
@@ -573,10 +579,10 @@ class InitialStock extends Component {
                           this.props.intlocations === undefined
                             ? []
                             : this.props.intlocations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.location_id
+                            );
 
                         return (
                           <span>
@@ -586,24 +592,7 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.intlocations === undefined
-                            ? []
-                            : this.props.intlocations.filter(
-                                f =>
-                                  f.hims_d_pharmacy_location_id ===
-                                  row.location_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].location_description
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         minWidth: 150,
                         filterable: false
@@ -620,10 +609,10 @@ class InitialStock extends Component {
                           this.props.intitemcategory === undefined
                             ? []
                             : this.props.intitemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id ===
-                                  row.item_category_id
-                              );
+                              f =>
+                                f.hims_d_item_category_id ===
+                                row.item_category_id
+                            );
 
                         return (
                           <span>
@@ -633,24 +622,7 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.intitemcategory === undefined
-                            ? []
-                            : this.props.intitemcategory.filter(
-                                f =>
-                                  f.hims_d_item_category_id ===
-                                  row.item_category_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].category_desc
-                              : ""}
-                          </span>
-                        );
-                      },
 
                       others: {
                         minWidth: 250,
@@ -668,9 +640,9 @@ class InitialStock extends Component {
                           this.props.intitemgroup === undefined
                             ? []
                             : this.props.intitemgroup.filter(
-                                f =>
-                                  f.hims_d_item_group_id === row.item_group_id
-                              );
+                              f =>
+                                f.hims_d_item_group_id === row.item_group_id
+                            );
 
                         return (
                           <span>
@@ -680,23 +652,7 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.intitemgroup === undefined
-                            ? []
-                            : this.props.intitemgroup.filter(
-                                f =>
-                                  f.hims_d_item_group_id === row.item_group_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].group_description
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         minWidth: 150,
                         filterable: false
@@ -713,8 +669,8 @@ class InitialStock extends Component {
                           this.props.intitemlist === undefined
                             ? []
                             : this.props.intitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
 
                         return (
                           <span>
@@ -724,22 +680,7 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.intitemlist === undefined
-                            ? []
-                            : this.props.intitemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         minWidth: 250
                       }
@@ -765,9 +706,6 @@ class InitialStock extends Component {
                       displayTemplate: row => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
                       },
-                      editorTemplate: row => {
-                        return <span>{dateFormater(row.expiry_date)}</span>;
-                      },
                       others: {
                         filterable: false
                       }
@@ -775,13 +713,14 @@ class InitialStock extends Component {
                     {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+
+                      // displayTemplate: row => {
+                      //   return row.quantity !== ""
+                      //     ? parseFloat(row.quantity)
+                      //     : "";
+                      // },
                       displayTemplate: row => {
-                        return row.quantity !== ""
-                          ? parseFloat(row.quantity)
-                          : "";
-                      },
-                      editorTemplate: row => {
-                        return (
+                        return this.state.dataExitst === false ? (
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
@@ -808,7 +747,7 @@ class InitialStock extends Component {
                               }
                             }}
                           />
-                        );
+                        ) : parseFloat(row.quantity);
                       },
                       others: {
                         filterable: false
@@ -822,16 +761,7 @@ class InitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.unit_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.unit_cost, {
+                            {GetAmountFormart(row.unit_cost, {
                               appendSymbol: false
                             })}
                           </span>
@@ -849,16 +779,7 @@ class InitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.sales_price, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.sales_price, {
+                            {GetAmountFormart(row.sales_price, {
                               appendSymbol: false
                             })}
                           </span>
@@ -877,16 +798,7 @@ class InitialStock extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.extended_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.extended_cost, {
+                            {GetAmountFormart(row.extended_cost, {
                               appendSymbol: false
                             })}
                           </span>
@@ -901,7 +813,7 @@ class InitialStock extends Component {
                   dataSource={{
                     data: this.state.pharmacy_stock_detail
                   }}
-                  isEditable={!this.state.dataExitst}
+                  isEditable={false}
                   byForceEvents={true}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -939,7 +851,7 @@ class InitialStock extends Component {
                     />
                   </button>
 
-                  {/*<button
+                  <button
                     type="button"
                     className="btn btn-other"
                     onClick={PostInitialStock.bind(this, this)}
@@ -951,7 +863,7 @@ class InitialStock extends Component {
                         returnText: true
                       }}
                     />
-                  </button>*/}
+                  </button>
                 </div>
               </div>
             </div>

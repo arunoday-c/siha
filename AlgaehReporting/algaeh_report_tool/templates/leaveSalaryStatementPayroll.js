@@ -1,16 +1,21 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     try {
       let input = {};
+      const decimal_places = options.args.crypto.decimal_places;
       let params = options.args.reportParams;
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
 
       let strData = "";
+
+      if (input.employee_group_id > 0) {
+        strData += ` and E.employee_group_id= ${input.employee_group_id}`;
+      }
 
       if (input.department_id > 0) {
         strData += " and SD.department_id=" + input.department_id;
@@ -19,20 +24,25 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
+      let is_local = "";
 
+      if (input.is_local === "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local === "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
       options.mysql
         .executeQuery({
-          query: `select employee_id,S.total_earnings,S.total_deductions,S.total_contributions,S.salary_number,
-              S.total_days,S.display_present_days,
-            S.net_salary,S.advance_due,S.loan_due_amount,E.employee_code,full_name as employee_name,
+          query: `select S.salary_amount,S.leave_amount,S.airfare_amount,S.total_amount,
+            S.leave_salary_number,E.employee_code,full_name as employee_name,
             E.mode_of_payment,SD.hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name,
-            DP.hims_d_department_id, DP.department_name, NA.nationality,HO.hospital_name
-            from hims_f_salary S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id
+            DP.hims_d_department_id, DP.department_name, NA.nationality,H.hospital_name
+            from hims_f_leave_salary_header S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id
             left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
-            left join  hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id
-            WHERE S.salary_type='LS' and E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
+               	left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id \
+            WHERE  E.hospital_id=? and S.year=? and S.month=? ${is_local} ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })
@@ -64,11 +74,28 @@ const executePDF = function executePDFMethod(options) {
               });
             }
 
+            const total_salary_amount = _.sumBy(ress, s =>
+              parseFloat(s.salary_amount)
+            ).toFixed(decimal_places);
+            const total_leave_amount = _.sumBy(ress, s =>
+              parseFloat(s.leave_amount)
+            ).toFixed(decimal_places);
+            const total_airfare_amount = _.sumBy(ress, s =>
+              parseFloat(s.airfare_amount)
+            ).toFixed(decimal_places);
+            const net_total_amount = _.sumBy(ress, s =>
+              parseFloat(s.total_amount)
+            ).toFixed(decimal_places);
+
             const result = {
-              details: outputArray
+              details: outputArray,
+              total_salary_amount: total_salary_amount,
+              total_leave_amount: total_leave_amount,
+              total_airfare_amount: total_airfare_amount,
+              net_total_amount: net_total_amount
             };
 
-            utilities.logger().log("outputArray:", result);
+            // utilities.logger().log("outputArray:", result);
             resolve(result);
           } else {
             resolve({

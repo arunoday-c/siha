@@ -8,10 +8,11 @@ export default function AddDoctorModal(props) {
         onClose: props.handleClose
       }}
       title={props.title}
+      class="addDoctorSchedule"
       openPopup={props.isOpen}
     >
       <div className="popupInner">
-        <div className="col-lg-12 divInner">
+        <div className="col-12 popRightDiv">
           <div className="physicianList">
             <ul>
               {props.availDoctors.map((data, index) => {
@@ -32,32 +33,36 @@ export default function AddDoctorModal(props) {
                       <i className="fas fa-check" />
                     </span>
                     <span className="physicianListName">{data.full_name}</span>
-                    <span className="physicianListSlot">
-                      {/* <AlagehAutoComplete
-                                  div={{ className: "col-12" }}
-                                  selector={{
-                                    name: "slot",
-                                    className: "select-fld",
-                                    value: "",
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: ""
-                                    },
-                                    onChange: ""
-                                  }}
-                                /> */}
-                    </span>
+                    {/* <span className="physicianListSlot"></span> */}
                   </li>
                 );
               })}
+              {props.availDoctors.length === 0 ? (
+                <li className="noResultLi">
+                  No doctors available for schedule
+                </li>
+              ) : null}
             </ul>
-            <button
-              className="btn btn-primary"
-              onClick={props.addDoctorsToSchedule}
-            >
-              Add to Schdule
-            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="popupFooter">
+        <div className="col-12">
+          <div className="row">
+            <div className="col-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={props.addDoctorsToSchedule}
+              >
+                <label className="style_Label ">Add to Schedule</label>
+              </button>
+
+              {/* <button type="button" className="btn btn-default">
+                <label className="style_Label ">Cancel</label>
+              </button> */}
+            </div>
           </div>
         </div>
       </div>

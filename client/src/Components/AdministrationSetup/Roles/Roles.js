@@ -6,26 +6,28 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  cancelRequest
+} from "../../../utils/algaehApiCall";
 import { ROLE_TYPE, FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 
 class Roles extends Component {
+  _isMounted = false;
   constructor(props) {
     super(props);
 
-    this.initCall();
     this.state = {
       groups: [],
       roles: []
     };
-    this.getGroups();
-    this.getRoles();
-    this.getAuthPrivilege();
   }
 
   initCall() {
+    this._isMounted = true;
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -36,7 +38,7 @@ class Roles extends Component {
         keyFieldName: "app_d_app_roles_id"
       },
       onSuccess: response => {
-        if (response.data.success === true) {
+        if (response.data.success === true && this._isMounted === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
@@ -135,11 +137,6 @@ class Roles extends Component {
             });
           }
         });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
       }
     });
   }
@@ -183,11 +180,13 @@ class Roles extends Component {
   }
 
   getGroups() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
+      cancelRequestId: "selectAppGroup",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             groups: res.data.records
           });
@@ -202,11 +201,13 @@ class Roles extends Component {
     });
   }
   getRoles() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehappuser/selectRoles",
       method: "GET",
+      cancelRequestId: "selectRoles",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             roles: res.data.records
           });
@@ -221,11 +222,13 @@ class Roles extends Component {
     });
   }
   getAuthPrivilege() {
+    this._isMounted = true;
     algaehApiCall({
       uri: "/algaehMasters/getHrmsAuthLevels",
       method: "GET",
+      cancelRequestId: "getHrmsAuthLevels",
       onSuccess: res => {
-        if (res.data.success) {
+        if (res.data.success === true && this._isMounted === true) {
           this.setState({
             leave_levels: res.data.records.leave_levels,
             loan_levels: res.data.records.loan_levels
@@ -247,452 +250,490 @@ class Roles extends Component {
     row[name] = value;
     row.update();
   }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    cancelRequest("selectAppGroup");
+    cancelRequest("selectRoles");
+    cancelRequest("getHrmsAuthLevels");
+  }
+  componentDidMount() {
+    this.initCall();
+    this.getGroups();
+    this.getRoles();
+    this.getAuthPrivilege();
+  }
+
   render() {
     return (
       <div className="roles">
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-body">
-            <div className="row">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Select Group",
-                  isImp: true
-                }}
-                selector={{
-                  name: "app_group_id",
-                  className: "select-fld",
-                  value: this.state.app_group_id,
-                  dataSource: {
-                    textField: "app_group_name",
-                    valueField: "algaeh_d_app_group_id",
-                    data: this.state.groups
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Role Code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "role_code",
-                  value: this.state.role_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },
-                  others: {
-                    tabIndex: "1",
-                    placeholder: this.state.role_code_placeHolder
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Role Name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "role_name",
-                  value: this.state.role_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Role Description",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "role_discreption",
-                  value: this.state.role_discreption,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Role Type",
+              isImp: true
+            }}
+            selector={{
+              name: "role_type",
+              className: "select-fld",
+              value: this.state.role_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: ROLE_TYPE
+              },
 
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Role Type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "role_type",
-                  className: "select-fld",
-                  value: this.state.role_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: ROLE_TYPE
-                  },
-
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Authorize Loan",
-                  isImp: true
-                }}
-                selector={{
-                  name: "loan_authorize_privilege",
-                  className: "select-fld",
-                  value: this.state.loan_authorize_privilege,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: this.state.loan_levels
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Authorize Leave",
-                  isImp: true
-                }}
-                selector={{
-                  name: "leave_authorize_privilege",
-                  className: "select-fld",
-                  value: this.state.leave_authorize_privilege,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: this.state.leave_levels
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Edit Monthly Attendance",
-                  isImp: true
-                }}
-                selector={{
-                  name: "edit_monthly_attendance",
-                  className: "select-fld",
-                  value: this.state.edit_monthly_attendance,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: FORMAT_YESNO
-                  },
-                  onChange: this.dropDownHandle.bind(this)
-                }}
-              />
-
-              <div className="col">
-                <button
-                  type="submit"
-                  style={{ marginTop: 21 }}
-                  onClick={this.addRoles.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
-              </div>
-            </div>
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Select User Group",
+              isImp: true
+            }}
+            selector={{
+              name: "app_group_id",
+              className: "select-fld",
+              value: this.state.app_group_id,
+              dataSource: {
+                textField: "app_group_name",
+                valueField: "algaeh_d_app_group_id",
+                data: this.state.groups
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />{" "}
+          <AlagehFormGroup
+            div={{ className: "col-1 mandatory form-group" }}
+            label={{
+              forceLabel: "Role Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "role_code",
+              value: this.state.role_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              },
+              others: {
+                tabIndex: "1",
+                placeholder: this.state.role_code_placeHolder
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Role Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "role_name",
+              value: this.state.role_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          {/* <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Role Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "role_discreption",
+              value: this.state.role_discreption,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          /> */}
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Authorize Loan",
+              isImp: true
+            }}
+            selector={{
+              name: "loan_authorize_privilege",
+              className: "select-fld",
+              value: this.state.loan_authorize_privilege,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: this.state.loan_levels
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Authorize Leave",
+              isImp: true
+            }}
+            selector={{
+              name: "leave_authorize_privilege",
+              className: "select-fld",
+              value: this.state.leave_authorize_privilege,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: this.state.leave_levels
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              forceLabel: "Edit Monthly Attendance",
+              isImp: true
+            }}
+            selector={{
+              name: "edit_monthly_attendance",
+              className: "select-fld",
+              value: this.state.edit_monthly_attendance,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: FORMAT_YESNO
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <div className="col">
+            <button
+              type="submit"
+              style={{ marginTop: 19 }}
+              onClick={this.addRoles.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
         </div>
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Roles List</h3>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <div data-validate="shiftDiv" id="RolesGrid_Cntr">
-              <AlgaehDataGrid
-                id="shift-grid"
-                datavalidate="data-validate='shiftDiv'"
-                columns={[
-                  {
-                    fieldName: "app_group_name",
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Group Name"
-                        }}
-                      />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "role_code",
+        <div className="row">
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Roles List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div data-validate="shiftDiv" id="RolesGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="shift-grid"
+                    datavalidate="data-validate='shiftDiv'"
+                    columns={[
+                      {
+                        fieldName: "role_type",
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Role Code"
-                        }}
-                      />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "role_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Role Type"
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(ROLE_TYPE)
+                            .where(w => w.value === row.role_type)
+                            .firstOrDefault();
+                          return (
+                            <span>
+                              {x !== undefined ? x.name : "Unknown user"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col mandatory form-group" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "role_type",
+                                value: row.role_type,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: ROLE_TYPE
+                                },
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Role Name"
-                        }}
-                      />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "role_name",
-                            value: row.role_name,
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Role Name- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "role_discreption",
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Role Description"
-                        }}
-                      />
-                    ),
+                                others: {
+                                  errormessage: "Role type- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "app_group_name",
 
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "role_discreption",
-                            value: row.role_discreption,
-                            events: {
-                              onChange: this.changeGridEditors.bind(this, row)
-                            },
-                            others: {
-                              errormessage: "Description Name- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "role_type",
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Group Name"
+                            }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "role_code",
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Role Type"
-                        }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      let x = Enumerable.from(ROLE_TYPE)
-                        .where(w => w.value === row.role_type)
-                        .firstOrDefault();
-                      return (
-                        <span>{x !== undefined ? x.name : "Unknown user"}</span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          selector={{
-                            className: "txt-fld",
-                            name: "role_type",
-                            value: row.role_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: ROLE_TYPE
-                            },
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Role Code"
+                            }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "role_name",
 
-                            onChange: this.changeGridEditors.bind(this, row),
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Role Name"
+                            }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col mandatory form-group" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "role_name",
+                                value: row.role_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Role Name- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      // {
+                      //   fieldName: "role_discreption",
 
-                            others: {
-                              errormessage: "Role type- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "loan_authorize_privilege",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{
+                      //         forceLabel: "Role Description"
+                      //       }}
+                      //     />
+                      //   ),
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Authorize Loan"
-                        }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      let x = Enumerable.from(this.state.loan_levels)
-                        .where(w => w.value === row.loan_authorize_privilege)
-                        .firstOrDefault();
-                      return <span>{x !== undefined ? x.name : "--"}</span>;
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          selector={{
-                            className: "txt-fld",
-                            name: "loan_authorize_privilege",
-                            value: row.loan_authorize_privilege,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: this.state.loan_levels
-                            },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehFormGroup
+                      //         div={{ className: "col-2 mandatory form-group" }}
+                      //         textBox={{
+                      //           className: "txt-fld",
+                      //           name: "role_discreption",
+                      //           value: row.role_discreption,
+                      //           events: {
+                      //             onChange: this.changeGridEditors.bind(
+                      //               this,
+                      //               row
+                      //             )
+                      //           },
+                      //           others: {
+                      //             errormessage:
+                      //               "Description Name- cannot be blank",
+                      //             required: true
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // },
+                      {
+                        fieldName: "loan_authorize_privilege",
 
-                            onChange: this.changeGridEditors.bind(this, row),
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Authorize Loan"
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(this.state.loan_levels)
+                            .where(
+                              w => w.value === row.loan_authorize_privilege
+                            )
+                            .firstOrDefault();
+                          return <span>{x !== undefined ? x.name : "--"}</span>;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col mandatory form-group" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "loan_authorize_privilege",
+                                value: row.loan_authorize_privilege,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: this.state.loan_levels
+                                },
 
-                            others: {
-                              errormessage: "LOAN PRIVILEGE- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "leave_authorize_privilege",
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Authorize Leave"
-                        }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      let x = Enumerable.from(this.state.leave_levels)
-                        .where(w => w.value === row.leave_authorize_privilege)
-                        .firstOrDefault();
-                      return <span>{x !== undefined ? x.name : "--"}</span>;
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          selector={{
-                            className: "txt-fld",
-                            name: "leave_authorize_privilege",
-                            value: row.leave_authorize_privilege,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: this.state.leave_levels
-                            },
+                                others: {
+                                  errormessage:
+                                    "LOAN PRIVILEGE- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "leave_authorize_privilege",
 
-                            onChange: this.changeGridEditors.bind(this, row),
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Authorize Leave"
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(this.state.leave_levels)
+                            .where(
+                              w => w.value === row.leave_authorize_privilege
+                            )
+                            .firstOrDefault();
+                          return <span>{x !== undefined ? x.name : "--"}</span>;
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col mandatory form-group" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "leave_authorize_privilege",
+                                value: row.leave_authorize_privilege,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: this.state.leave_levels
+                                },
 
-                            others: {
-                              errormessage: "LEAVE PRIVILEGE- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "edit_monthly_attendance",
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
 
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Edit Monthly Attendance "
-                        }}
-                      />
-                    ),
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.edit_monthly_attendance === "Y" ? (
-                            <span>YES </span>
-                          ) : (
-                            "NO"
-                          )}
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          selector={{
-                            className: "txt-fld",
-                            name: "edit_monthly_attendance",
-                            value: row.edit_monthly_attendance,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: FORMAT_YESNO
-                            },
+                                others: {
+                                  errormessage:
+                                    "LEAVE PRIVILEGE- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "edit_monthly_attendance",
 
-                            onChange: this.changeGridEditors.bind(this, row),
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Edit Monthly Attendance "
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.edit_monthly_attendance === "Y" ? (
+                                <span>YES </span>
+                              ) : (
+                                "NO"
+                              )}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col mandatory form-group" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "edit_monthly_attendance",
+                                value: row.edit_monthly_attendance,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: FORMAT_YESNO
+                                },
 
-                            others: {
-                              errormessage: "LEAVE PRIVILEGE- cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="app_d_app_roles_id"
-                dataSource={{
-                  data: this.state.roles
-                }}
-                filter={true}
-                isEditable={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onEdit: () => {},
-                  onDelete: this.deleteRoles.bind(this),
-                  onDone: this.updateRoles.bind(this)
-                }}
-              />
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+
+                                others: {
+                                  errormessage:
+                                    "LEAVE PRIVILEGE- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="app_d_app_roles_id"
+                    dataSource={{
+                      data: this.state.roles
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteRoles.bind(this),
+                      onDone: this.updateRoles.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import Components from "./Components/Components";
 import Screens from "./Screens/Screens";
 import ScreenElements from "./ScreenElements/ScreenElements";
 import Formula from "./Formula/Formula";
+import LisConfigList from "./LisConfig/LisConfigList";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import "./algaeh.scss";
@@ -84,7 +85,6 @@ class Algaeh extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"Formula"}
                 className={"nav-item tab-button"}
@@ -97,12 +97,25 @@ class Algaeh extends Component {
                     }}
                   />
                 }
+              </li>{" "}
+              <li
+                algaehtabs={"LisConfig"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "LIS Configuration"
+                    }}
+                  />
+                }
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="algaeh-section">
+        <div className="" style={{ marginTop: 33 }}>
           {this.state.pageDisplay === "Modules" ? (
             <Modules />
           ) : this.state.pageDisplay === "Screens" ? (
@@ -113,6 +126,8 @@ class Algaeh extends Component {
             <ScreenElements />
           ) : this.state.pageDisplay === "Formula" ? (
             <Formula />
+          ) : this.state.pageDisplay === "LisConfig" ? (
+            <LisConfigList />
           ) : null}
         </div>
       </div>

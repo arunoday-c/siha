@@ -1,0 +1,23 @@
+{
+  "customer_code": "زبون الشفرة",
+  "customer_name": "زبون اسم",
+  "business_registration_no": "رقم تسجيل العمل",
+  "email_id_1": "البريد الإلكتروني 1",
+  "email_id_2": "البريد الإلكتروني 2",
+  "contact_number": "رقم الاتصال",
+  "website": "موقع الكتروني",
+  "customer_status": "حالة زبون",
+  "action": "عمل",
+  "country": "بلد",
+  "state": "حالة",
+  "city": "مدينة",
+  "address": "عنوان",
+  "postal_code": "الرمز البريدي",
+  "payment_terms": "شروط الدفع",
+  "payment_mode": "طريقة الدفع",
+  "bank_name": "اسم البنك",
+  "vat_applicable": "ضريبة القيمة المضافة قابلة للتطبيق",
+  "vat_percentage": "نسبة ضريبة القيمة المضافة",
+  "active": "نشط",
+  "inactive": "غير نشط"
+}

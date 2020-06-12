@@ -18,7 +18,7 @@ export default {
               from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
               where IL.sales_uom = IU.hims_d_inventory_uom_id and IL.item_id = IM.hims_d_inventory_item_master_id\
               and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
-              and (date(expirydt) > date(CURDATE()) || exp_date_not_required='Y') order by date(expirydt)",
+              and (date(expirydt) > date(CURDATE()) || exp_date_required='N') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -155,6 +155,10 @@ export default {
               intValues.push(req.query.hospital_id);
             }
 
+            if (req.query.git_location == "N") {
+              _strQry += " and git_location='N' ";
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -231,64 +235,81 @@ export default {
   },
 
   updateInventoryItemMaster: (req, res, next) => {
-    const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options);
+    const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
     utilities.logger().log("updateInventoryItemMaster: ");
 
     try {
       const utilities = new algaehUtilities();
       let inputParam = req.body;
-      let execute_query = "";
 
-      utilities.logger().log("updateItemMaster: ", inputParam);
+      _mysql
+        .executeQueryWithTransaction({
+          query: "select 1=1",
+          printQuery: true
+        })
+        .then(openconn => {
+          for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
+                values: [inputParam.inventory_stock_detail[i].item_id],
+                printQuery: true
+              })
+              .then(result => {
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
+                var date = new Date();
+                var hours = date.getHours();
+                var minutes = date.getMinutes();
+                var seconds = date.getSeconds();
+                var day = date.getDate();
+                var year = String(new Date().getFullYear()).substring(2, 4);
+                var month = date.getMonth();
+                if (String(month).length == 1) {
+                  month = "0" + month;
+                }
 
-      for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
-        _mysql
-          .executeQuery({
-            query:
-              "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
-            values: [inputParam.inventory_stock_detail[i].item_id],
-            printQuery: true
-          })
-          .then(result => {
-            var date = new Date();
-            var hours = date.getHours();
-            var minutes = date.getMinutes();
-            var seconds = date.getSeconds();
-            var chars =
-              String(hours) +
-              String(minutes) +
-              String(seconds) +
-              "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            var length = 2;
-            var resultString = "";
-            for (var j = length; j > 0; --j)
-              resultString += chars[Math.floor(Math.random() * chars.length)];
-            resultString +=
-              req.userIdentity.algaeh_d_app_user_id +
-              req.userIdentity.hospital_id;
+                var chars =
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-            let batch_no = parseInt(result[0].batch_no) + 1;
-            let barcode = result[0].item_code + "B" + resultString;
+                var length = 2;
+                var resultString = year + month + day + hours + minutes + seconds;
+                for (var j = length; j > 0; --j)
+                  resultString += chars[Math.floor(Math.random() * chars.length)];
+                resultString +=
+                  req.userIdentity.algaeh_d_app_user_id +
+                  req.userIdentity.hospital_id;
 
-            console.log("batch_no", "B" + resultString);
-            console.log("barcode", barcode);
+                // let batch_no = parseInt(result[0].batch_no) + 1;
+                // let barcode = result[0].item_code + "B" + resultString;
 
-            req.body.inventory_stock_detail[i].batchno = "B" + resultString;
-            req.body.inventory_stock_detail[i].barcode = barcode;
-            utilities
-              .logger()
-              .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
-            if (i == inputParam.inventory_stock_detail.length - 1) {
-              next();
-            }
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
-      }
+                // console.log("batch_no", "B" + resultString);
+                // console.log("barcode", barcode);
+
+                req.body.inventory_stock_detail[i].batchno = "B" + resultString;
+                req.body.inventory_stock_detail[i].barcode = "B" + resultString;
+                utilities
+                  .logger()
+                  .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+                if (i == inputParam.inventory_stock_detail.length - 1) {
+                  next();
+                }
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
@@ -297,10 +318,10 @@ export default {
   getItemLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let intValues = [];
+      let intValues = [req.query.inventory_location_id];
       let strAppend = "";
       if (req.query.item_id != null) {
-        strAppend += " and item_id=?";
+        strAppend += " and IL.item_id=?";
         intValues.push(req.query.item_id);
       }
       if (req.query.inventory_location_id != null) {
@@ -310,12 +331,15 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_description, IM.stocking_uom_id,coalesce(IM.reorder_qty,0) as reorder_qty, hims_m_inventory_item_location_id, item_id,\
-            inventory_location_id, item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, \
-            qtypo, cost_uom,avgcost, last_purchase_cost, grn_id, grnno, sale_price, mrp_price, sales_uom,\
-            CASE WHEN sum(qtyhand)<=IM.reorder_qty THEN 'R'   else 'NR' END as reorder from \
-            hims_d_inventory_item_master IM left  join hims_m_inventory_item_location IL on\
-            IM.hims_d_inventory_item_master_id=IL.item_id where qtyhand>0" +
+            "SELECT IM.item_code,IM.item_description, IM.stocking_uom_id,coalesce(ILR.reorder_qty, IM.reorder_qty,0) as reorder_qty, \
+            hims_m_inventory_item_location_id, IL.item_id, inventory_location_id, item_location_status, \
+            batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, \
+            grn_id, grnno, sale_price, mrp_price, sales_uom,\
+            CASE WHEN sum(qtyhand)<=coalesce(ILR.reorder_qty, IM.reorder_qty,0) THEN 'R'   else 'NR' END as reorder \
+            from hims_d_inventory_item_master IM \
+            left  join hims_m_inventory_item_location IL on IM.hims_d_inventory_item_master_id=IL.item_id \
+            left  join hims_d_inv_location_reorder ILR on ILR.item_id=IL.item_id and location_id=? \
+            where qtyhand>0" +
             strAppend +
             "group by item_id order by date(expirydt)",
           values: intValues,
@@ -365,5 +389,33 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+
+  getListUomSelectedItem: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_inventory_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor,\
+              IIU.uom_status, IU.uom_description  from hims_m_inventory_item_uom IIU \
+              inner join hims_d_inventory_uom IU  on IIU.uom_id = IU.hims_d_inventory_uom_id \
+              where IIU.record_status='A' and IIU.item_master_id=?;",
+          values: [req.query.item_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 };

@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import {
+  AlagehFormGroup,
+  AlgaehLabel,
+  AlagehAutoComplete,
+} from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./EOSGratuity.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 // import { parse } from "url";
+import { MainContext } from "algaeh-react-components/context";
 
 class EOSGratuity extends Component {
   constructor(props) {
@@ -15,35 +20,64 @@ class EOSGratuity extends Component {
       loading: false,
       eos: [],
       data: {
-        componentList: []
+        componentList: [],
       },
       previous_gratuity_amount: 0,
       saveDisabled: true,
       gratuity_done: false,
-      gratuity_status: "PRO"
+      gratuity_status: "PRO",
+      branches: [],
+      hospital_id: undefined,
+      gratuity_encash: 0,
+      actual_maount: 0,
     };
   }
-
+  static contextType = MainContext;
+  componentDidMount() {
+    const userToken = this.context.userToken;
+    this.setState({ hospital_id: userToken.hims_d_hospital_id });
+    algaehApiCall({
+      uri: "/organization/getOrganizationByUser",
+      method: "GET",
+      onSuccess: (response) => {
+        const { data } = response;
+        const { records, success, message } = data;
+        if (success === true) this.setState({ branches: records });
+        else {
+          swalMessage({
+            title: message,
+            type: "error",
+          });
+        }
+      },
+      onCatch: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
+  }
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   changeChecks(e) {
     if (e.target.checked) {
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
       });
     } else if (!e.target.checked) {
       this.setState({
-        [e.target.name]: null
+        [e.target.name]: null,
       });
     }
   }
@@ -51,7 +85,7 @@ class EOSGratuity extends Component {
   clearState() {
     this.setState({
       data: {
-        componentList: []
+        componentList: [],
       },
       previous_gratuity_amount: 0,
       employee_name: null,
@@ -60,27 +94,29 @@ class EOSGratuity extends Component {
       payable_amount: null,
       remarks: "",
       saveDisabled: true,
-      gratuity_done: false
+      gratuity_done: false,
+      gratuity_encash: 0,
+      actual_maount: 0,
     });
   }
 
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "exit_employees",
-      inputs: "gratuity_applicable = 'Y'",
+      inputs: `gratuity_applicable = 'Y' and hospital_id=${this.state.hospital_id}`,
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState({
           employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id
+          hims_d_employee_id: row.hims_d_employee_id,
         });
-      }
+      },
     });
   }
 
@@ -96,7 +132,7 @@ class EOSGratuity extends Component {
       computed_amount: _sub_data.computed_amount,
       paybale_amout: _sub_data.paybale_amout,
       gratuity_status: this.state.gratuity_status,
-      remarks: this.state.remarks
+      remarks: this.state.remarks,
     };
 
     algaehApiCall({
@@ -104,24 +140,24 @@ class EOSGratuity extends Component {
       method: "POST",
       module: "hrManagement",
       data: send_data,
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Added Successfully",
-            type: "success"
+            type: "success",
           });
           // this.clearState();
           this.setState({
-            saveDisabled: true
+            saveDisabled: true,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -132,11 +168,11 @@ class EOSGratuity extends Component {
     ) {
       swalMessage({
         title: "Please Select an Employee",
-        type: "warning"
+        type: "warning",
       });
     } else {
       this.setState({
-        loading: true
+        loading: true,
       });
 
       algaehApiCall({
@@ -144,39 +180,47 @@ class EOSGratuity extends Component {
         method: "GET",
         module: "hrManagement",
         data: {
-          hims_d_employee_id: this.state.hims_d_employee_id
+          hims_d_employee_id: this.state.hims_d_employee_id,
         },
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             if (res.data.result.endofServexit) {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.computed_amount,
+                calculated_gratutity_amount: res.data.result.gratuity_amount,
+                computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
+                entitled_amount: res.data.result.entitled_amount,
                 saveDisabled: true,
-                gratuity_done: true
+                gratuity_done: true,
+                actual_maount: res.data.result.actual_maount,
+                gratuity_encash: res.data.result.gratuity_encash,
               });
             } else {
               this.setState({
                 loading: false,
                 data: res.data.result,
-                calculated_gratutity_amount: res.data.result.computed_amount,
+                calculated_gratutity_amount: res.data.result.gratuity_amount,
+                computed_amount: res.data.result.computed_amount,
                 payable_amount: res.data.result.paybale_amout,
-                saveDisabled: false
+                entitled_amount: res.data.result.entitled_amount,
+                saveDisabled: false,
+                actual_maount: res.data.result.actual_maount,
+                gratuity_encash: res.data.result.gratuity_encash,
               });
             }
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.response.data.message || err.message,
-            type: "error"
+            type: "error",
           });
           this.setState({
-            loading: false
+            loading: false,
           });
-        }
+        },
       });
     }
   }
@@ -186,6 +230,28 @@ class EOSGratuity extends Component {
     return (
       <div className="EOSGratuityScreen">
         <div className="row  inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              forceLabel: "Select Branch",
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.branches,
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: undefined,
+                });
+              },
+            }}
+          />
           {/* <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Search by EOS/Gratuity No.", isImp: false }}
@@ -193,14 +259,14 @@ class EOSGratuity extends Component {
               name: "hims_f_end_of_service_id",
               className: "select-fld",
               dataSource: {
-                textField: "end_of_service_number",
-                valueField: "hims_f_end_of_service_id",
-                data: this.state.eos
+            textField: "end_of_service_number",
+            valueField: "hims_f_end_of_service_id",
+            data: this.state.eos
               },
               onChange: this.dropDownHandler.bind(this)
             }}
-          />
-          <AlagehAutoComplete
+            />
+            <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "End of Service Type", isImp: true }}
             selector={{
@@ -208,15 +274,23 @@ class EOSGratuity extends Component {
               value: this.state.exit_type,
               className: "select-fld",
               dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.EXIT_TYPE
+            textField: "name",
+            valueField: "value",
+            data: GlobalVariables.EXIT_TYPE
               },
               onChange: this.dropDownHandler.bind(this)
             }}
           /> */}
 
-          <div className="col-lg-3" style={{ marginTop: 10 }}>
+          <div className="col-3 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name ? this.state.employee_name : "------"}
+              <i className="fas fa-search fa-lg" />
+            </h6>
+          </div>
+
+          {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -248,12 +322,19 @@ class EOSGratuity extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className="col form-group">
+          <div className="col">
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 19 }}
+              className="btn btn-default"
+            >
+              Clear
+            </button>{" "}
             <button
               onClick={this.loadEmployeeDetails.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19, marginLeft: 5 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
@@ -262,161 +343,77 @@ class EOSGratuity extends Component {
                 <i className="fas fa-spinner fa-spin" />
               )}
             </button>
-
-            <button
-              onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
-            >
-              CLEAR
-            </button>
           </div>
 
-          <div className="col form-group">
+          <div className="col">
+            <label className="style_Label ">Payment Status</label>
             {this.state.gratuity_done === true ? (
-              <h3 style={{ paddingTop: "19px" }}>
-                <font color="green">Gratuity Done</font>
-              </h3>
+              <p>
+                {" "}
+                <span className="badge badge-success">
+                  Already send for payment
+                </span>
+              </p>
             ) : (
-              ""
+              <p>
+                {" "}
+                <span>------</span>
+              </p>
             )}
           </div>
         </div>
 
         <div className="row">
           <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="col-12" style={{ marginTop: 7 }}>
-                  <div className="row">
-                    <div className="col-lg-8 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">
-                        Employee Information
-                      </label>
-                      <div className="row">
-                        <div className="col-3">
-                          <label className="style_Label ">Employee Code</label>
-                          <h6>
-                            {EosData.employee_code
-                              ? EosData.employee_code
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">Employee Name</label>
-                          <h6>
-                            {EosData.full_name ? EosData.full_name : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">Date of Birth</label>
-                          <h6>
-                            {EosData.date_of_birth
-                              ? moment(EosData.date_of_birth).format(
-                                  "DD-MMM-YYYY"
-                                )
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">Gender</label>
-                          <h6>{EosData.sex ? EosData.sex : "------"}</h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">Sub Department</label>
-                          <h6>
-                            {EosData.sub_department_name
-                              ? EosData.sub_department_name
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">
-                            Date of Joining
-                          </label>
-                          <h6>
-                            {EosData.date_of_joining
-                              ? moment(EosData.date_of_joining).format(
-                                  "DD-MMM-YYYY"
-                                )
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">
-                            Date of Leaving
-                          </label>
-                          <h6>
-                            {EosData.date_of_resignation
-                              ? moment(EosData.exit_date).format("DD-MMM-YYYY")
-                              : "------"}
-                          </h6>
-                        </div>
-
-                        <div className="col-3">
-                          <label className="style_Label ">
-                            Year of Service
-                          </label>
-                          <h6>
-                            {EosData.endOfServiceYears
-                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
-                              : 0}{" "}
-                            yrs
-                          </h6>
-                        </div>
-                        <div className="col-3">
-                          <label className="style_Label ">Eligiable Days</label>
-                          <h6>
-                            {" "}
-                            {EosData.eligible_day
-                              ? parseFloat(EosData.eligible_day).toFixed(3)
-                              : 0}{" "}
-                            Day(s)
-                          </h6>
-                        </div>
-                      </div>
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Details</h3>
                     </div>
-                    <div className="col-4 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">
-                        Components Included
-                      </label>
-                      <div className="row">
-                        {/* <ul>
-                            {EosData.componentList.map((data, index) => (
-                              <li >
-                                <span>{data.short_desc}</span> ->
-                                <span>{getAmountFormart(data.amount)}</span>
-                              </li>
-                            ))}
-                          </ul> */}
-                        {EosData.componentList.map((data, index) => (
-                          <div
-                            className="col-4"
-                            key={data.hims_d_employee_earnings_id}
-                          >
-                            <label className="style_Label ">
-                              {data.short_desc}
-                            </label>
-                            <h6>{getAmountFormart(data.amount)}</h6>
-                          </div>
-                        ))}
+                    <div className="actions" />
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col">
+                        <label className="style_Label ">Employee Code</label>
+                        <h6>
+                          {EosData.employee_code
+                            ? EosData.employee_code
+                            : "------"}
+                        </h6>
                       </div>
-                      <div
-                        className="row"
-                        style={{ borderTop: "1px solid #c1c1c1" }}
-                      >
-                        <div className="col-12">
-                          <label className="style_Label ">Total</label>
-                          <h6>
-                            {getAmountFormart(EosData.totalEarningComponents)}
-                          </h6>
-                        </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Employee Name</label>
+                        <h6>
+                          {EosData.full_name ? EosData.full_name : "------"}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Date of Birth</label>
+                        <h6>
+                          {EosData.date_of_birth
+                            ? moment(EosData.date_of_birth).format(
+                                "DD-MMM-YYYY"
+                              )
+                            : "------"}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <label className="style_Label ">Gender</label>
+                        <h6>{EosData.sex ? EosData.sex : "------"}</h6>
+                      </div>
+                      <div className="col">
+                        <label className="style_Label ">Sub Department</label>
+                        <h6>
+                          {EosData.sub_department_name
+                            ? EosData.sub_department_name
+                            : "------"}
+                        </h6>
                       </div>
                     </div>
                   </div>
@@ -424,111 +421,207 @@ class EOSGratuity extends Component {
               </div>
             </div>
           </div>
-
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  {/* <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Opening Gratuity Amount",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "previous_gratuity_amount",
-                      value: this.state.previous_gratuity_amount,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
-
-                  <div className="col-3">
-                    <label className="style_Label ">
-                      Opening Gratuity Amount
-                    </label>
-                    <h6>
-                      {this.state.previous_gratuity_amount
-                        ? getAmountFormart(this.state.previous_gratuity_amount)
-                        : getAmountFormart(0)}
-                    </h6>
-                  </div>
-
-                  {/* <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Computed Amount",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "calculated_gratutity_amount",
-                      value: this.state.calculated_gratutity_amount,
-                      events: {},
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
-
-                  <div className="col-3">
-                    <label className="style_Label ">Computed Amount</label>
-                    <h6 style={{ fontSize: "2em" }}>
-                      {this.state.calculated_gratutity_amount
-                        ? getAmountFormart(
-                            this.state.calculated_gratutity_amount
-                          )
-                        : getAmountFormart(0)}
-                    </h6>
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Payable Amount",
-                      isImp: false
-                    }}
-                    textBox={{
-                      decimal: {
-                        allowNegative: false
-                      },
-                      className: "txt-fld",
-                      name: "payable_amount",
-                      value: this.state.payable_amount,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      others: {
-                        disabled: this.state.gratuity_done
-                        // type: "number"
-                      }
-                    }}
-                  />
-                  <div className="col">
-                    <div className="customCheckbox" style={{ marginTop: 24 }}>
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          onChange={this.changeChecks.bind(this)}
-                          value="FOR"
-                          name="gratuity_status"
-                        />
-                        <span>Forfeiture</span>
-                      </label>
+          <div className="col-12" style={{ marginBottom: 50 }}>
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Gratuity Details</h3>
                     </div>
+                    <div className="actions" />
                   </div>
-                  <div className="col-12">
-                    <label>Remarks</label>
-                    <textarea
-                      name="remarks"
-                      value={this.state.remarks}
-                      onChange={this.textHandler.bind(this)}
-                      className="textArea"
-                    />
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-4">
+                        <div className="row">
+                          {EosData.componentList.map((data, index) => (
+                            <div
+                              className="col-12"
+                              key={data.hims_d_employee_earnings_id}
+                            >
+                              <label className="style_Label ">
+                                {data.short_desc === null
+                                  ? data.earning_deduction_description
+                                  : data.short_desc}
+                              </label>
+                              <h6>{GetAmountFormart(data.amount)}</h6>
+                            </div>
+                          ))}{" "}
+                          <div className="col-12">
+                            <label className="style_Label ">Total</label>
+                            <h6>
+                              {GetAmountFormart(EosData.totalEarningComponents)}
+                            </h6>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-8">
+                        <div className="row">
+                          <div className="col">
+                            <label className="style_Label ">
+                              Date of Joining
+                            </label>
+                            <h6>
+                              {EosData.date_of_joining
+                                ? moment(EosData.date_of_joining).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Date of Resign
+                            </label>
+                            <h6>
+                              {EosData.date_of_resignation
+                                ? moment(EosData.date_of_resignation).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">Date of Exit</label>
+                            <h6>
+                              {EosData.exit_date
+                                ? moment(EosData.exit_date).format(
+                                    "DD-MMM-YYYY"
+                                  )
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Year of Service
+                            </label>
+                            <h6>
+                              {EosData.endOfServiceYears
+                                ? EosData.endOfServiceYears
+                                : 0}
+                              {/* {EosData.endOfServiceYears
+                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
+                              : 0}{" "} */}
+                              yrs
+                            </h6>
+                          </div>
+                          <div className="col">
+                            {EosData.entitled_amount === undefined ? (
+                              <>
+                                <label className="style_Label ">
+                                  Eligiable Days
+                                </label>
+                                <h6>
+                                  {" "}
+                                  {EosData.eligible_day
+                                    ? parseFloat(EosData.eligible_day).toFixed(
+                                        3
+                                      )
+                                    : 0}{" "}
+                                  Day(s)
+                                </h6>
+                              </>
+                            ) : (
+                              <>
+                                <label className="style_Label ">
+                                  Entitled Amount
+                                </label>
+                                <h6>
+                                  {GetAmountFormart(EosData.entitled_amount)}
+                                </h6>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <hr />
+                        <div className="row">
+                          <div className="col">
+                            <label className="style_Label ">
+                              Total Gratuity Amount
+                            </label>
+                            <h6>
+                              {this.state.actual_maount
+                                ? GetAmountFormart(this.state.actual_maount)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <i className="fas fa-minus calcSybmbol"></i>
+                          <div className="col">
+                            <label className="style_Label ">
+                              Gratuity Encashed Amount
+                            </label>
+                            <h6>
+                              {this.state.gratuity_encash
+                                ? GetAmountFormart(this.state.gratuity_encash)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <i className="fas fa-equals calcSybmbol"></i>
+
+                          <div className="col">
+                            <label className="style_Label ">
+                              Computed Amount
+                            </label>
+                            <h6>
+                              {this.state.computed_amount
+                                ? GetAmountFormart(this.state.computed_amount)
+                                : GetAmountFormart(0)}
+                            </h6>
+                          </div>
+                          <AlagehFormGroup
+                            div={{ className: "col final_color" }}
+                            label={{
+                              forceLabel: "Payable Amount",
+                              isImp: false,
+                            }}
+                            textBox={{
+                              decimal: {
+                                allowNegative: false,
+                              },
+                              className: "txt-fld",
+                              name: "payable_amount",
+                              value: this.state.payable_amount,
+                              events: {
+                                onChange: this.textHandler.bind(this),
+                              },
+                              others: {
+                                disabled: this.state.gratuity_done,
+                                // type: "number"
+                              },
+                            }}
+                          />
+                        </div>
+                        <div className="row">
+                          <div className="col-5">
+                            <div
+                              className="customCheckbox"
+                              style={{ marginTop: 24 }}
+                            >
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  onChange={this.changeChecks.bind(this)}
+                                  value="FOR"
+                                  name="gratuity_status"
+                                />
+                                <span>Forfeiture</span>
+                              </label>
+                            </div>
+                          </div>
+                          <div className="col-12">
+                            <label>Remarks</label>
+                            <textarea
+                              name="remarks"
+                              value={this.state.remarks}
+                              onChange={this.textHandler.bind(this)}
+                              className="textArea"
+                              disabled={this.state.gratuity_done}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -545,10 +638,12 @@ class EOSGratuity extends Component {
                 onClick={this.saveEos.bind(this)}
                 disabled={this.state.saveDisabled}
               >
-                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
+                <AlgaehLabel
+                  label={{ forceLabel: "Send for payment", returnText: true }}
+                />
               </button>
 
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-default"
                 onClick={this.clearState.bind(this)}
@@ -556,12 +651,12 @@ class EOSGratuity extends Component {
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}
                 />
-              </button>
+              </button> */}
 
-              <button type="button" className="btn btn-other">
+              {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Delete"
+                    forceLabel: "Delete",
                     //   returnText: true
                   }}
                 />
@@ -569,11 +664,11 @@ class EOSGratuity extends Component {
               <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Print"
+                    forceLabel: "Print",
                     //   returnText: true
                   }}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

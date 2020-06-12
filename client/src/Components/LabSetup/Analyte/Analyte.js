@@ -16,11 +16,11 @@ import {
   changeTexts,
   onchangegridcol,
   insertLabAnalytes,
-  updateLabAnalytes,
-  deleteLabAnalytes
+  updateLabAnalytes  
 } from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
+import AnalytesRange from "./AnalytesRange";
 
 class LabAnalyte extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ class LabAnalyte extends Component {
       description: "",
       analyte_type: null,
       result_unit: null,
-
+      active: {},
       description_error: false,
       description_error_txt: ""
     };
@@ -56,17 +56,6 @@ class LabAnalyte extends Component {
           type: "ANALYTES_GET_DATA",
           mappingName: "labanalytes"
         }
-        // afterSuccess: data => {
-        //   if (data.length === 0 || data.length === undefined) {
-        //     if (data.response.data.success === false) {
-        //       successfulMessage({
-        //         message: data.response.data.message,
-        //         title: "Warning",
-        //         icon: "warning"
-        //       });
-        //     }
-        //   }
-        // }
       });
     }
   }
@@ -77,6 +66,19 @@ class LabAnalyte extends Component {
     }
   }
 
+  ShowModel = row => {
+    this.setState({
+      isOpen: !this.state.isOpen,
+      active: row
+    });
+  };
+
+  CloseModel(e) {
+    this.setState({
+      isOpen: !this.state.isOpen,
+      active: {}
+    });
+  }
   render() {
     return (
       <div className="lab_section">
@@ -140,6 +142,14 @@ class LabAnalyte extends Component {
           </div>
         </div>
 
+        <AnalytesRange
+          HeaderCaption="Range"
+          open={this.state.isOpen}
+          active={this.state.active}
+          onClose={this.CloseModel.bind(this)}
+          // InvestigationPop={this.state.InvestigationPop}
+        />
+
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-body">
             <div className="row" data-validate="analyteDiv">
@@ -148,6 +158,38 @@ class LabAnalyte extends Component {
                   datavalidate="data-validate='analyteDiv'"
                   id="labAnalyteGrid"
                   columns={[
+                    {
+                      fieldName: "analyteRange",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Analyte Range" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-plus"
+                              onClick={() => this.ShowModel(row)}
+                            />
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              className="fas fa-plus"
+                              onClick={this.ShowModel.bind(this)}
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 120,
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "description",
                       label: (
@@ -215,12 +257,20 @@ class LabAnalyte extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "result_unit" }} />
                       ),
+                      displayTemplate: row => {
+                        return row.result_unit === "NULL"
+                          ? "--"
+                          : row.result_unit;
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
-                              value: row.result_unit,
+                              value:
+                                row.result_unit === "NULL"
+                                  ? ""
+                                  : row.result_unit,
                               className: "txt-fld",
                               name: "result_unit",
                               events: {
@@ -338,7 +388,7 @@ class LabAnalyte extends Component {
                   }}
                   isEditable={true}
                   actions={{
-                    allowEdit: false
+                    allowDelete: false
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
@@ -375,8 +425,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(LabAnalyte)
+  connect(mapStateToProps, mapDispatchToProps)(LabAnalyte)
 );

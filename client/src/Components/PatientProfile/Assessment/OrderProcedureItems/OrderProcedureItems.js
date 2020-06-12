@@ -100,7 +100,7 @@ class OrderProcedureItems extends Component {
     this.getDepartments();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -154,7 +154,7 @@ class OrderProcedureItems extends Component {
             title="Procedure Items"
             openPopup={this.props.show}
           >
-            <div className="row">
+            <div className="row procedureClinicalDesk">
               <div className="col-lg-12 popupInner">
                 <div className="popRightDiv">
                   <div className="row">
@@ -217,7 +217,7 @@ class OrderProcedureItems extends Component {
                           {/* <label>Working Days</label> */}
                           <div
                             className="customRadio"
-                            style={{ marginTop: 21 }}
+                            style={{ marginTop: 19 }}
                           >
                             <label className="radio inline">
                               <input
@@ -246,30 +246,14 @@ class OrderProcedureItems extends Component {
                           </div>
                         </div>
 
-                        <div className="col-4  margin-top-15">
-                          <div className="row spotlightSearchBox">
-                            <div className="col-lg-9">
-                              <AlgaehLabel
-                                label={{ forceLabel: "Search Items" }}
-                              />
-                              <h6>
-                                {this.state.item_description
-                                  ? this.state.item_description
-                                  : "----------"}
-                              </h6>
-                            </div>
-                            <div className="col spotlightSearchIconBox">
-                              <i
-                                className="fas fa-search fa-lg"
-                                style={{
-                                  paddingTop: 17,
-                                  paddingLeft: 3,
-                                  cursor: "pointer"
-                                }}
-                                onClick={this.itemSearch.bind(this, this)}
-                              />
-                            </div>
-                          </div>
+                        <div className="col globalSearchCntr form-group">
+                          <AlgaehLabel label={{ forceLabel: "Search Items" }} />
+                          <h6 onClick={this.itemSearch.bind(this, this)}>
+                            {this.state.item_description
+                              ? this.state.item_description
+                              : "Search Items"}
+                            <i className="fas fa-search fa-lg"></i>
+                          </h6>
                         </div>
 
                         <AlagehFormGroup
@@ -290,7 +274,7 @@ class OrderProcedureItems extends Component {
                             events: { onChange: this.quantityEvent.bind(this) }
                           }}
                         />
-                        <div className="col-2">
+                        <div className="col-1">
                           <button
                             className="btn btn-primary"
                             style={{ float: "right", marginTop: 19 }}
@@ -451,8 +435,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrderProcedureItems)
+  connect(mapStateToProps, mapDispatchToProps)(OrderProcedureItems)
 );

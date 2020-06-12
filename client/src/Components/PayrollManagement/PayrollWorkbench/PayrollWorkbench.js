@@ -1,18 +1,17 @@
 import React, { Component } from "react";
 import "./payroll_wb.scss";
-import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
-import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import EmployeeReceipts from "./EmployeeReceipts/EmployeeReceipts";
 import EmployeePayments from "./EmployeePayments/EmployeePayments";
 import EmployeePaymentCancel from "./EmployeePaymentCancel/EmployeePaymentCancel";
-import OpeningBalance from "./OpeningBalance/OpeningBalance";
+import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehTabs } from "algaeh-react-components";
 
 class PayrollWorkbench extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EmployeePayments"
+      pageDisplay: "NewSalaryPayments"
     };
   }
 
@@ -31,23 +30,103 @@ class PayrollWorkbench extends Component {
   render() {
     return (
       <div className="payroll_wb">
-        <div className="row">
+        <AlgaehTabs
+          removeCommonSection={true}
+          content={[
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Salary Payments"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <NewSalaryPayments />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_SAL_PAY"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Other Payments"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeePayments />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_OTR_PAY"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Payment Cancellation"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeePaymentCancel />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_PAY_CAN"
+            },
+            {
+              title: (
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee Receipts"
+                  }}
+                />
+              ),
+              children: (
+                <ChildrenItem>
+                  <EmployeeReceipts />
+                </ChildrenItem>
+              ),
+              componentCode: "PAY_EMP_RCP"
+            }
+          ]}
+          renderClass="PayrollWorkSection"
+        />
+
+        {/* <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              {" "}
               <li
-                algaehtabs={"EmployeePayments"}
+                algaehtabs={"NewSalaryPayments"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Payments"
+                      forceLabel: "Salary Payments"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"EmployeePayments"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Other Payments"
                     }}
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"EmployeePaymentCancel"}
                 className={"nav-item tab-button"}
@@ -56,12 +135,11 @@ class PayrollWorkbench extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Payment Cancellation"
+                      forceLabel: "Payment Cancellation"
                     }}
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"EmployeeReceipts"}
                 className={"nav-item tab-button"}
@@ -75,66 +153,27 @@ class PayrollWorkbench extends Component {
                   />
                 }
               </li>
-              <li
-                algaehtabs={"OverTimeMgmt"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "OverTime Management"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"LeaveSalaryAccural"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Salary Airfare Accrual"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"OpeningBalance"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Opening Balance"
-                    }}
-                  />
-                }
-              </li>
             </ul>
           </div>
         </div>
         <div className="payroll-setion">
-          {this.state.pageDisplay === "OverTimeMgmt" ? (
-            <OverTimeMgmt />
-          ) : this.state.pageDisplay === "LeaveSalaryAccural" ? (
-            <LeaveSalaryAccural />
-          ) : this.state.pageDisplay === "EmployeeReceipts" ? (
+          {this.state.pageDisplay === "EmployeeReceipts" ? (
             <EmployeeReceipts />
           ) : this.state.pageDisplay === "EmployeePayments" ? (
             <EmployeePayments />
           ) : this.state.pageDisplay === "EmployeePaymentCancel" ? (
             <EmployeePaymentCancel />
-          ) : this.state.pageDisplay === "OpeningBalance" ? (
-            <OpeningBalance />
+          ) : this.state.pageDisplay === "NewSalaryPayments" ? (
+            <NewSalaryPayments />
           ) : null}
-        </div>
+        </div> */}
       </div>
     );
   }
+}
+
+function ChildrenItem({ children }) {
+  return <div className="payroll-workbench-section">{children}</div>;
 }
 
 export default PayrollWorkbench;

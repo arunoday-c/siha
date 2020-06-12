@@ -187,7 +187,7 @@ function LeaveDetails(props) {
           <button
             onClick={myParent.addLeaveDetails.bind(myParent)}
             className="btn btn-primary"
-            style={{ marginTop: 21 }}
+            style={{ marginTop: 19 }}
           >
             Add to List
           </button>
