@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -18,7 +18,7 @@ import {
   CptCodesSearch,
   clearData,
   numberEventHandaler,
-  getFinanceHeaders
+  getFinanceHeaders,
 } from "./HospitalServicesEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -64,7 +64,8 @@ class HospitalServices extends PureComponent {
       insurance_head_id: null,
       insurance_child_id: null,
       selected_gl_account: null,
-      finance_account: []
+      finance_account: [],
+      service_status: "A",
     };
 
     // if (this.FIN_Active === true) {
@@ -80,17 +81,17 @@ class HospitalServices extends PureComponent {
       data: {
         fields: "service_code",
         tableName: "hims_d_services",
-        keyFieldName: "hims_d_services_id"
+        keyFieldName: "hims_d_services_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            service_code_placeHolder: placeHolder.service_code
+            service_code_placeHolder: placeHolder.service_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -101,7 +102,8 @@ class HospitalServices extends PureComponent {
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -111,7 +113,7 @@ class HospitalServices extends PureComponent {
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
   }
 
@@ -140,13 +142,13 @@ class HospitalServices extends PureComponent {
         ...this.state,
         ...IOputs,
         cashPatientAccount: IOputs.cash_child_account,
-        insurancePatientAccount: IOputs.insurance_child_account
+        insurancePatientAccount: IOputs.insurance_child_account,
       });
     } else {
       clearData(this, this);
     }
   }
-  onClose = e => {
+  onClose = (e) => {
     clearData(this, this);
     this.props.onClose && this.props.onClose(false);
   };
@@ -164,7 +166,7 @@ class HospitalServices extends PureComponent {
             class="HospitalServicesPopup"
             openPopup={this.props.open}
             events={{
-              onClose: this.onClose.bind(this)
+              onClose: this.onClose.bind(this),
             }}
             className="popUpHospitalServices"
           >
@@ -198,7 +200,7 @@ class HospitalServices extends PureComponent {
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "hospital_id",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "hospital_id",
@@ -210,50 +212,50 @@ class HospitalServices extends PureComponent {
                           ? "hospital_name"
                           : "arabic_hospital_name",
                       valueField: "hims_d_hospital_id",
-                      data: this.props.hospitaldetails
+                      data: this.props.hospitaldetails,
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "service_code",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "service_code",
                     value: this.state.service_code,
                     events: {
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
                     },
                     others: {
                       tabIndex: "1",
-                      placeholder: this.state.service_code_placeHolder
-                    }
+                      placeholder: this.state.service_code_placeHolder,
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-6 form-group mandatory" }}
                   label={{
                     fieldName: "service_name",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "service_name",
                     value: this.state.service_name,
                     events: {
-                      onChange: texthandle.bind(this, this)
-                    }
+                      onChange: texthandle.bind(this, this),
+                    },
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     fieldName: "service_type_id",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "service_type_id",
@@ -265,16 +267,16 @@ class HospitalServices extends PureComponent {
                           ? "service_type"
                           : "arabic_service_type",
                       valueField: "hims_d_service_type_id",
-                      data: this.props.servicetype
+                      data: this.props.servicetype,
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col form-group mandatory" }}
                   label={{
                     fieldName: "standard_fee",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     decimal: { allowNegative: false },
@@ -282,8 +284,8 @@ class HospitalServices extends PureComponent {
                     name: "standard_fee",
                     value: this.state.standard_fee,
                     events: {
-                      onChange: texthandle.bind(this, this)
-                    }
+                      onChange: texthandle.bind(this, this),
+                    },
                   }}
                 />{" "}
                 <div className="col-3">
@@ -311,7 +313,7 @@ class HospitalServices extends PureComponent {
                 <AlagehAutoComplete
                   div={{ className: "col-6 form-group" }}
                   label={{
-                    fieldName: "sub_department_id"
+                    fieldName: "sub_department_id",
                   }}
                   selector={{
                     name: "sub_department_id",
@@ -323,9 +325,9 @@ class HospitalServices extends PureComponent {
                           ? "sub_department_name"
                           : "arabic_sub_department_name",
                       valueField: "hims_d_sub_department_id",
-                      data: this.props.subdepartments
+                      data: this.props.subdepartments,
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
                   }}
                 />
                 <div className="col-3">
@@ -347,11 +349,11 @@ class HospitalServices extends PureComponent {
                   div={{
                     className: this.state.Applicable
                       ? "col-3 mandatory"
-                      : "col-3"
+                      : "col-3",
                   }}
                   label={{
                     fieldName: "vat_percent",
-                    isImp: this.state.Applicable
+                    isImp: this.state.Applicable,
                   }}
                   textBox={{
                     decimal: { allowNegative: false },
@@ -359,11 +361,11 @@ class HospitalServices extends PureComponent {
                     name: "vat_percent",
                     value: this.state.vat_percent,
                     events: {
-                      onChange: numberEventHandaler.bind(this, this)
+                      onChange: numberEventHandaler.bind(this, this),
                     },
                     others: {
-                      disabled: !this.state.Applicable
-                    }
+                      disabled: !this.state.Applicable,
+                    },
                   }}
                 />
                 {this.FIN_Active ? (
@@ -374,18 +376,18 @@ class HospitalServices extends PureComponent {
                         label={{
                           forceLabel: "G/L Account",
                           isImp: true,
-                          align: "ltr"
+                          align: "ltr",
                         }}
                         tree={{
                           treeDefaultExpandAll: true,
-                          onChange: value => {
+                          onChange: (value) => {
                             this.setState({
-                              selected_gl_account: value
+                              selected_gl_account: value,
                             });
                           },
                           data: this.state.finance_account || [],
                           textField: "label",
-                          valueField: node => {
+                          valueField: (node) => {
                             if (node["leafnode"] === "Y") {
                               return (
                                 node["head_id"] +
@@ -396,7 +398,7 @@ class HospitalServices extends PureComponent {
                               return node["finance_account_head_id"];
                             }
                           },
-                          value: this.state.selected_gl_account
+                          value: this.state.selected_gl_account,
                         }}
                       />
                     </div>
@@ -480,7 +482,7 @@ class HospitalServices extends PureComponent {
                       )}
                     </button>
                     <button
-                      onClick={e => {
+                      onClick={(e) => {
                         this.onClose(e);
                       }}
                       type="button"
@@ -515,7 +517,7 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     subdepartments: state.subdepartments,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
   };
 }
 
@@ -524,7 +526,7 @@ function mapDispatchToProps(dispatch) {
     {
       getServiceTypes: AlgaehActions,
       getSubDepatments: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
     },
     dispatch
   );

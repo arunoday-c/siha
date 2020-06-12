@@ -3,7 +3,7 @@ import "./NewSalaryPayments.scss";
 import {
   // AlagehFormGroup,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import {
   LoadSalaryPayment,
@@ -13,12 +13,13 @@ import {
   selectAll,
   generatePaySlip,
   selectToGeneratePaySlip,
-  selectAllPaySlip
+  selectAllPaySlip,
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 class NewSalaryPayment extends Component {
   constructor(props) {
     super(props);
@@ -35,7 +36,7 @@ class NewSalaryPayment extends Component {
       paysalaryBtn: true,
       checkAll: false,
       checkAllPayslip: false,
-      generatePayslip: true
+      generatePayslip: true,
     };
   }
 
@@ -44,7 +45,7 @@ class NewSalaryPayment extends Component {
       <React.Fragment>
         <div className="hptl-SalaryPayment-form">
           <EmployeeFilter
-            loadFunc={inputs => LoadSalaryPayment(this, inputs)}
+            loadFunc={(inputs) => LoadSalaryPayment(this, inputs)}
           />
           <div className="row">
             <div className="col-12">
@@ -98,12 +99,12 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Select To Pay"
+                                      forceLabel: "Select To Pay",
                                     }}
                                   />
                                 ),
                                 //disabled: true
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       <input
@@ -128,8 +129,8 @@ class NewSalaryPayment extends Component {
                                 },
                                 others: {
                                   maxWidth: 100,
-                                  filterable: false
-                                }
+                                  filterable: false,
+                                },
                               },
                               {
                                 fieldName: "SalaryPayment_checkBox",
@@ -137,12 +138,12 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Generate Pay Slip"
+                                      forceLabel: "Generate Pay Slip",
                                     }}
                                   />
                                 ),
                                 //disabled: true
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       <input
@@ -167,8 +168,8 @@ class NewSalaryPayment extends Component {
                                 },
                                 others: {
                                   maxWidth: 150,
-                                  filterable: false
-                                }
+                                  filterable: false,
+                                },
                               },
                               {
                                 fieldName: "salary_paid",
@@ -176,21 +177,21 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Paid"
+                                      forceLabel: "Salary Paid",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return row.salary_paid === "N" ? (
                                     <span className="badge badge-warning">
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
-                                }
+                                  );
+                                },
                               },
                               {
                                 fieldName: "salary_number",
@@ -198,23 +199,23 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Number"
+                                      forceLabel: "Salary Number",
                                     }}
                                   />
-                                )
+                                ),
                               },
                               {
                                 fieldName: "employee_code",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Emp. Code"
+                                      forceLabel: "Emp. Code",
                                     }}
                                   />
                                 ),
                                 others: {
-                                  minWidth: 160
-                                }
+                                  minWidth: 160,
+                                },
                               },
                               {
                                 fieldName: "full_name",
@@ -222,14 +223,14 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Employee Name"
+                                      forceLabel: "Employee Name",
                                     }}
                                   />
                                 ),
                                 others: {
                                   minWidth: 150,
-                                  maxWidth: 250
-                                }
+                                  maxWidth: 250,
+                                },
                               },
                               {
                                 fieldName: "display_present_days",
@@ -237,10 +238,10 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Present Days"
+                                      forceLabel: "Present Days",
                                     }}
                                   />
-                                )
+                                ),
                                 //disabled: true
                               },
 
@@ -250,18 +251,18 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Advance"
+                                      forceLabel: "Advance",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {" "}
                                       {GetAmountFormart(row.advance_due)}
                                     </span>
                                   );
-                                }
+                                },
                                 //disabled: true
                               },
                               {
@@ -270,18 +271,18 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Due Amount"
+                                      forceLabel: "Loan Due Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {" "}
                                       {GetAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -289,11 +290,11 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Loan Payable Amount"
+                                      forceLabel: "Loan Payable Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {" "}
@@ -302,7 +303,7 @@ class NewSalaryPayment extends Component {
                                       )}
                                     </span>
                                   );
-                                }
+                                },
                               },
                               {
                                 fieldName: "net_salary",
@@ -310,24 +311,24 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Total Amount"
+                                      forceLabel: "Total Amount",
                                     }}
                                   />
                                 ),
-                                displayTemplate: row => {
+                                displayTemplate: (row) => {
                                   return (
                                     <span>
                                       {" "}
                                       {GetAmountFormart(row.net_salary)}
                                     </span>
                                   );
-                                }
+                                },
                                 //disabled: true
-                              }
+                              },
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: this.state.salary_payment
+                              data: this.state.salary_payment,
                             }}
                             filter={true}
                             isEditable={false}
@@ -341,41 +342,43 @@ class NewSalaryPayment extends Component {
               </div>
             </div>
           </div>
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={PaySalary.bind(this, this)}
-                  disabled={this.state.paysalaryBtn}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Pay Salary", returnText: true }}
-                  />
-                </button>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={PaySalary.bind(this, this)}
+                    disabled={this.state.paysalaryBtn}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Pay Salary", returnText: true }}
+                    />
+                  </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
 
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  onClick={generatePaySlip.bind(this, this)}
-                  disabled={this.state.generatePayslip}
-                >
-                  Generate Payslip PDF
-                </button>
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    onClick={generatePaySlip.bind(this, this)}
+                    disabled={this.state.generatePayslip}
+                  >
+                    Generate Payslip PDF
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </AlgaehSecurityElement>
         </div>
       </React.Fragment>
     );

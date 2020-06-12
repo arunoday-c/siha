@@ -1,8 +1,7 @@
 import React, { PureComponent } from "react";
-import {
-  checkSecurity  
-} from "../../utils/GlobalFunctions";
-import Label from "../Wrapper/label";
+import { checkSecurity } from "../../utils/GlobalFunctions";
+import { AlgaehLabel as Label } from "algaeh-react-components";
+// import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
 import { Input, TextArea } from "semantic-ui-react";
@@ -25,9 +24,9 @@ export default class FormGroup extends PureComponent {
         thousandSeparator: ",",
         decimalSeparator: ".",
         decimalScale: 2,
-        allowNegative: true
+        allowNegative: true,
       },
-      cardIcon: "fas fa-credit-card"
+      cardIcon: "fas fa-credit-card",
     };
     if (props.textBox.decimal !== undefined) {
       this.decimalOnChangeHandler = this.decimalOnChangeHandler.bind(this);
@@ -59,7 +58,7 @@ export default class FormGroup extends PureComponent {
         screen_element_code: _security.screen_element_code,
         hasSecurity: () => {
           hasSecurity = true;
-        }
+        },
       });
     }
     return hasSecurity;
@@ -75,7 +74,7 @@ export default class FormGroup extends PureComponent {
           if (evt.target.value !== "") {
             evt.target.value = "";
             this.setState({
-              value: evt.target.min
+              value: evt.target.min,
             });
           }
           return false;
@@ -88,7 +87,7 @@ export default class FormGroup extends PureComponent {
           if (evt.target.value !== "") {
             evt.target.value = evt.target.max;
             this.setState({
-              value: evt.target.max
+              value: evt.target.max,
             });
           }
           return false;
@@ -131,7 +130,7 @@ export default class FormGroup extends PureComponent {
     ) {
       const _key = _.find(
         this.props.textBox.dontAllowKeys,
-        f => String(f).toUpperCase() === String(evt.key).toUpperCase()
+        (f) => String(f).toUpperCase() === String(evt.key).toUpperCase()
       );
       if (_key !== undefined) {
         evt.preventDefault();
@@ -162,7 +161,7 @@ export default class FormGroup extends PureComponent {
       if (!decimal) {
         this.setState({
           decimal_separator_code: settings.decimal_separator.charCodeAt(0),
-          thousand_separator_code: settings.thousand_separator.charCodeAt(0)
+          thousand_separator_code: settings.thousand_separator.charCodeAt(0),
         });
       } else {
         this.setState({
@@ -171,8 +170,8 @@ export default class FormGroup extends PureComponent {
             decimalSeparator: settings.decimal_separator,
             decimalScale: parseInt(settings.decimal_places, 10),
             allowNegative: true,
-            ...this.props.textBox.decimal
-          }
+            ...this.props.textBox.decimal,
+          },
         });
       }
     } catch (e) {
@@ -195,7 +194,7 @@ export default class FormGroup extends PureComponent {
       disabled:
         this.props.textBox.disabled !== undefined
           ? this.props.textBox.disabled
-          : false
+          : false,
     });
   }
   UNSAFE_componentWillReceiveProps(props) {
@@ -211,7 +210,7 @@ export default class FormGroup extends PureComponent {
         error: props.textBox.error,
         helperText: props.textBox.helperText,
         disabled:
-          props.textBox.disabled !== undefined ? props.textBox.disabled : false
+          props.textBox.disabled !== undefined ? props.textBox.disabled : false,
       });
     }
   }
@@ -268,8 +267,8 @@ export default class FormGroup extends PureComponent {
           name: this.props.textBox.name,
           formattedValue: e.formattedValue,
           rawValue: e.value,
-          value: e.floatValue
-        }
+          value: e.floatValue,
+        },
       });
     }
   }
@@ -306,7 +305,7 @@ export default class FormGroup extends PureComponent {
         this.props.textBox.helperText !== undefined
           ? {
               onInvalid: this.errorInvoid.bind(this),
-              onBlur: this.errorInvoid.bind(this)
+              onBlur: this.errorInvoid.bind(this),
             }
           : {};
       const _onChange =
@@ -375,7 +374,7 @@ export default class FormGroup extends PureComponent {
           creditCard: true,
           delimiter: "-",
           onCreditCardTypeChanged: this.cardTypeChangeHandler.bind(this),
-          ...this.props.textBox.card
+          ...this.props.textBox.card,
         };
         return (
           <React.Fragment>

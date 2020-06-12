@@ -170,6 +170,28 @@ const otEntitleHandaler = ($this, e) => {
   });
 };
 
+const ondiscountChange = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+
+
+  if (parseFloat(value) > 100) {
+    swalMessage({
+      title: "Discount % cannot be greater than 100.",
+      type: "warning"
+    });
+    value = 0
+  }
+  $this.setState({
+    [name]: value,
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value,
+  });
+
+};
+
 export {
   texthandle,
   datehandle,
@@ -177,5 +199,6 @@ export {
   employeeStatusHandler,
   dateFormater,
   bankEventhandle,
-  otEntitleHandaler
+  otEntitleHandaler,
+  ondiscountChange
 };

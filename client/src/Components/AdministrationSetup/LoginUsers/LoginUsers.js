@@ -69,7 +69,8 @@ class LoginUsers extends Component {
 
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -77,7 +78,8 @@ class LoginUsers extends Component {
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "HRMS" ||
       userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     let USER_TYPE =

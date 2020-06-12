@@ -41,7 +41,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "insurance",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS Ins.hims_d_insurance_provider_id,Ins.insurance_provider_name, Ins.effective_end_date,Ins.effective_start_date,\
-          sIns.hims_d_insurance_sub_id, sIns.insurance_sub_name,\
+          sIns.hims_d_insurance_sub_id, sIns.insurance_sub_name,Ins.insurance_type,\
           net.hims_d_insurance_network_id,  net.network_type, net.effective_start_date as net_effective_start_date, net.effective_end_date as net_effective_end_date, \
           netoff.hims_d_insurance_network_office_id, netoff.policy_number from \
           (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
@@ -287,8 +287,9 @@ let algaehSearchConfig = (searchName, req) => {
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
-            where authorize1 = 'Y' and cancelled='N' and  PO.hospital_id=" +
-          hospitalId,
+            where authorize1 = 'Y' and cancelled='N' ",
+        //   and  PO.hospital_id=" +
+        // hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc",
       },
       {

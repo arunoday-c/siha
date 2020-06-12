@@ -112,7 +112,7 @@ let authUser = (req, res, next) => {
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
      role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,finance_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect,E.full_name,E.arabic_name \
+      U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect,E.full_name,E.arabic_name, E.service_dis_percentage \
      FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
      inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
      inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
@@ -126,8 +126,8 @@ let authUser = (req, res, next) => {
    H.default_currency, H.default_slot, H.default_patient_type, H.standard_from_time, H.standard_to_time, H.hospital_name, \
    H.arabic_hospital_name, H.hospital_address, H.city_id, organization_id, H.effective_start_date, H.effective_end_date, \
    hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,ORG.organization_name,ORG.organization_code,ORG.country_id as org_country_id,\
-   decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id, default_pay_type FROM \
-   hims_d_hospital H, hims_d_currency CUR,hims_d_organization ORG WHERE H.record_status='A' AND \
+   decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id, mrn_num_sep_cop_client, \
+   default_pay_type FROM hims_d_hospital H, hims_d_currency CUR,hims_d_organization ORG WHERE H.record_status='A' AND \
    CUR.hims_d_currency_id=default_currency AND ORG.hims_d_organization_id = H.organization_id AND H.hims_d_hospital_id=?;",
         values: [
           inputData.password,
@@ -140,6 +140,7 @@ let authUser = (req, res, next) => {
       .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
+        req.hospital_id = inputData.item_id;
         next();
       })
       .catch((error) => {
@@ -167,7 +168,7 @@ let apiAuthentication = (req, res, next) => {
          password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
          role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
          algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-          U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect\
+          U.employee_id, E.sub_department_id,UEM.hospital_id,S.page_to_redirect, E.service_dis_percentage\
          FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
          inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
          inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
@@ -181,7 +182,8 @@ let apiAuthentication = (req, res, next) => {
        default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
        arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
        hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
-       decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,unique_id_for_appointmt, requied_emp_id FROM \
+       decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator,\
+       unique_id_for_appointmt, requied_emp_id, mrn_num_sep_cop_client FROM \
        hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
        CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?;",
         values: [inputData.username, inputData.item_id, inputData.item_id],

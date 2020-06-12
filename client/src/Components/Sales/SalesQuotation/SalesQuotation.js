@@ -89,7 +89,7 @@ class SalesQuotation extends Component {
       detele_items: [],
       edit_mode: false,
       total_item_amount: 0,
-      total_service_amount: 0
+      total_service_amount: 0,
     };
     getSalesOptions(this, this);
   }
@@ -109,9 +109,10 @@ class SalesQuotation extends Component {
 
     this.HRMNGMT_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HRMS" ||
-        userToken.product_type === "HRMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "HRMS" ||
+      userToken.product_type === "HRMS_ERP" ||
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 
@@ -236,8 +237,8 @@ class SalesQuotation extends Component {
                   <h6>
                     {this.state.sales_quotation_date
                       ? moment(this.state.sales_quotation_date).format(
-                        Options.dateFormat
-                      )
+                          Options.dateFormat
+                        )
                       : Options.dateFormat}
                   </h6>
                 </div>
@@ -261,8 +262,8 @@ class SalesQuotation extends Component {
                           Quotation Cancelled
                         </span>
                       ) : (
-                              <span className="badge badge-success">Closed</span>
-                            )}
+                        <span className="badge badge-success">Closed</span>
+                      )}
                     </h6>
                   </div>
                 ) : null}
@@ -271,17 +272,17 @@ class SalesQuotation extends Component {
             printArea={
               this.state.sales_quotation_number !== null
                 ? {
-                  menuitems: [
-                    {
-                      label: "Print Quotation",
-                      events: {
-                        onClick: () => {
-                          generateSalesQuotation(this, this.state);
+                    menuitems: [
+                      {
+                        label: "Print Quotation",
+                        events: {
+                          onClick: () => {
+                            generateSalesQuotation(this, this.state);
+                          },
                         },
                       },
-                    },
-                  ],
-                }
+                    ],
+                  }
                 : ""
             }
             selectedLang={this.state.selectedLang}
@@ -370,25 +371,25 @@ class SalesQuotation extends Component {
                     </h6>
                   </div>
                 ) : (
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Name of Sales Person",
-                        isImp: false,
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sales_man",
-                        value: this.state.sales_man,
-                        events: {
-                          onChange: changeTexts.bind(this, this),
-                        },
-                        others: {
-                          disabled: this.state.dataExists,
-                        },
-                      }}
-                    />
-                  )}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Name of Sales Person",
+                      isImp: false,
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sales_man",
+                      value: this.state.sales_man,
+                      events: {
+                        onChange: changeTexts.bind(this, this),
+                      },
+                      others: {
+                        disabled: this.state.dataExists,
+                      },
+                    }}
+                  />
+                )}
                 <AlgaehDateHandler
                   div={{ className: "col mandatory" }}
                   label={{ forceLabel: "quote validity", isImp: true }}
@@ -502,14 +503,20 @@ class SalesQuotation extends Component {
                             <label className="style_Label ">
                               Total Item Amount
                             </label>
-                            <h6>{GetAmountFormart(this.state.total_item_amount)}</h6>
+                            <h6>
+                              {GetAmountFormart(this.state.total_item_amount)}
+                            </h6>
                           </div>
                           <i className="fas fa-plus calcSybmbol"></i>
                           <div className="col-3">
                             <label className="style_Label ">
                               Total Service Amount
                             </label>
-                            <h6>{GetAmountFormart(this.state.total_service_amount)}</h6>
+                            <h6>
+                              {GetAmountFormart(
+                                this.state.total_service_amount
+                              )}
+                            </h6>
                           </div>
                           <i className="fas fa-equals calcSybmbol"></i>
                           <div className="col-3">
@@ -526,7 +533,6 @@ class SalesQuotation extends Component {
               </div>
               <div className="col-12">
                 <div className="row">
-
                   <MyContext.Provider
                     value={{
                       state: this.state,
@@ -536,11 +542,9 @@ class SalesQuotation extends Component {
                     }}
                   >
                     <div className="col-6">
-
                       <SalesListItems SALESIOputs={this.state} />
                     </div>
                     <div className="col-6">
-
                       {this.state.services_required === "Y" ? (
                         <SalesListService SALESIOputs={this.state} />
                       ) : null}
@@ -599,7 +603,6 @@ class SalesQuotation extends Component {
                         </div>
                         {this.state.dataExists ? null : (
                           <div className="col" style={{ textAlign: "right" }}>
-
                             <button
                               type="button"
                               className="btn btn-primary"
@@ -616,24 +619,24 @@ class SalesQuotation extends Component {
                       <ol className="ViewTC">
                         {this.state.comment_list.length > 0
                           ? this.state.comment_list.map((row, index) => {
-                            return (
-                              <React.Fragment key={index}>
-                                <li key={index}>
-                                  <span>{row}</span>
-                                  {this.state.dataExists ? null : (
-                                    <i
-                                      className="fas fa-times"
-                                      onClick={deleteComment.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    ></i>
-                                  )}
-                                </li>
-                              </React.Fragment>
-                            );
-                          })
+                              return (
+                                <React.Fragment key={index}>
+                                  <li key={index}>
+                                    <span>{row}</span>
+                                    {this.state.dataExists ? null : (
+                                      <i
+                                        className="fas fa-times"
+                                        onClick={deleteComment.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      ></i>
+                                    )}
+                                  </li>
+                                </React.Fragment>
+                              );
+                            })
                           : null}
                       </ol>
                     </div>

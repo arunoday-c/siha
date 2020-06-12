@@ -393,28 +393,23 @@ export default function Filter(props) {
         </h6>
       </div>
       <div className="col" style={{ paddingTop: 19 }}>
-        <AlgaehSecurityElement
-          elementCode="READ_ONLY_ACCESS"
-          render={(data) => {
-            return (
-              <div className="uploadManualDiv   btn-with-icon">
-                <input
-                  className="inputfile"
-                  type="file"
-                  name="manualTimeSheet"
-                  ref={fileInput}
-                  onChange={(e) => {
-                    if (e.target.files.length > 0)
-                      UploadTimesheet(e.target.files, props);
-                  }}
-                />
-                <label onClick={() => fileInput.current.click()}>
-                  <i className="fas fa-file-upload"></i> Upload
-                </label>
-              </div>
-            );
-          }}
-        />
+        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+          <div className="uploadManualDiv btn-with-icon">
+            <input
+              className="inputfile"
+              type="file"
+              name="manualTimeSheet"
+              ref={fileInput}
+              onChange={(e) => {
+                if (e.target.files.length > 0)
+                  UploadTimesheet(e.target.files, props);
+              }}
+            />
+            <label onClick={() => fileInput.current.click()}>
+              <i className="fas fa-file-upload"></i> Upload
+            </label>
+          </div>
+        </AlgaehSecurityElement>
         <button
           onClick={() => {
             if (hospitalID !== "" && fromDate !== "" && toDate !== "") {

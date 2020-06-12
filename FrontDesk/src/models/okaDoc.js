@@ -30,6 +30,8 @@ export function sendPatientAppointment(req) {
       `${appointment_date} ${appointment_to_time}`,
       "YYYY-MM-DD HH:mm:ss"
     ).format("YYYY-MM-DDTHH:mm:ssZ");
+    const dob = moment(date_of_birth).format("YYYY-MM-DD");
+
     const status =
       send_to_provider === "Y"
         ? "attended"
@@ -42,23 +44,31 @@ export function sendPatientAppointment(req) {
     for (let i = 1; i < name.length; i++) {
       lastName += `${name[i]} `;
     }
-
+    const payLoad = {
+      bookingID: bookingID.toString(),
+      doctorID: doctorID, //"EMP0018", //doctorID,
+      clinicID: clinicID, // "SUBDEP10038", //clinicID,
+      serviceID: "1",
+      time: from_time,
+      end_time: to_time,
+      status: status,
+      patient: {
+        gender: gender.toLowerCase(),
+        firstname: firstName,
+        lastname: lastName === "" ? " " : lastName,
+        email: email,
+        phone: contact_number.includes("+")
+          ? contact_number
+          : `+${contact_number}`,
+        dateofbirth: dob,
+      },
+    };
     axios
-      .post(`${okaDocURL}/sync`, {
-        bookingID: bookingID,
-        doctorID: doctorID,
-        clinicID: clinicID,
-        serviceID: 1,
-        time: from_time,
-        end_time: to_time,
-        "Status of Appointment": status,
-        patient: {
-          gender: gender.toLowerCase(),
-          firstname: firstName,
-          lastname: lastName === "" ? " " : lastName,
-          email: email,
-          phone: contact_number,
-          dateofbirth: date_of_birth,
+      .post(`${okaDocURL}/sync`, payLoad, {
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `${koaDocKeys.userName}:${koaDocKeys.password}`
+          ).toString("base64")}`,
         },
       })
       .then((result) => {
@@ -90,25 +100,43 @@ export function updatePatientAppointment(req) {
     const fromTime = moment(
       `${appointment_date} ${appointment_from_time}`,
       "YYYY-MM-DD HH:mm:ss"
-    ).format("YYYY-MM-DD HH-mm-ss");
+    ).format("YYYY-MM-DD HH:mm:ss");
     const toTime = moment(
       `${appointment_date} ${appointment_to_time}`,
       "YYYY-MM-DD HH:mm:ss"
-    ).format("YYYY-MM-DD HH-mm-ss");
+    ).format("YYYY-MM-DD HH:mm:ss");
 
+    const { hims_f_patient_appointment_id } = req.body;
+    let payload = {};
+    let url = "";
+    if (appointment_status === "RS") {
+      payload["reason"] = "Rescheduing from ALGAEH front desk";
+      payload["time"] = fromTime;
+      payload["end_time"] = toTime;
+      url = `${okaDocURL}/reschedule/${hims_f_patient_appointment_id}`;
+    } else if (appointment_status === "CAN") {
+      payload["reason"] = cancel_reason;
+      url = `${okaDocURL}/cancel/${hims_f_patient_appointment_id}`;
+    } else if (appointment_status === "NS") {
+      payload["status"] = "noshow";
+      url = `${okaDocURL}/update/${hims_f_patient_appointment_id}`;
+    }
+    //  console.log("payload", payload);
     axios
-      .post(`${okaDocURL}/update`, {
-        time: fromTime,
-        end_time: toTime,
-        newBookingID: bookingID,
-        cancel_reason: cancel_reason,
-        status: appointment_status,
+      .post(url, payload, {
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            `${koaDocKeys.userName}:${koaDocKeys.password}`
+          ).toString("base64")}`,
+        },
       })
       .then((response) => {
         console.log("Successfully Update", response.data);
       })
       .catch((error) => {
-        console.error("Update has issue : " + error.response.data);
+        console.error(
+          "Update has issue : " + JSON.stringify(error.response.data)
+        );
       });
   }
 }

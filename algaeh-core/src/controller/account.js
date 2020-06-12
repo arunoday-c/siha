@@ -130,6 +130,7 @@ export default ({ config, db }) => {
                 },
                 false
               ),
+              hospital_id: req.hospital_id,
               // keyResources: keyData,
               keyData: specfic_date,
               secureModels: req.secureModels,

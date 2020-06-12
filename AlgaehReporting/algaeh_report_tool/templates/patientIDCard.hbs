@@ -14,7 +14,8 @@
         <p>DOB: <b>{{dateTime header.date_of_birth "date"}}</b></p>
         <div class="barCodeImg"><img src={{barcode "code128" header.patient_code}}  /></div>
     </div>
-    <div class="imageSection"> <img src="{{imageSource 'images/userIdImg.png'}}" /></div>
+    <div class="imageSection"><img src={{imageUrl header.patient_code 0 "a" "b" "Patients" "none"}} /></div>
+    {{!-- <div class="imageSection"> <img src="{{imageUrl header.patient_code 0 "" "" "Patients" "" }}" /></div> --}}
 
 </div>
       </div>

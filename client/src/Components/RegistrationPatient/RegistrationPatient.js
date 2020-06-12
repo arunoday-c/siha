@@ -85,6 +85,8 @@ class RegistrationPatient extends Component {
     IOputs.Cashchecked = userToken.default_pay_type === "CH" ? true : false;
     IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
     IOputs.default_pay_type = userToken.default_pay_type;
+    IOputs.service_dis_percentage = userToken.service_dis_percentage;
+    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
 
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });

@@ -50,7 +50,8 @@ class SalesQuotationList extends Component {
       userToken.product_type === "HIMS_ERP" ||
       userToken.product_type === "HRMS" ||
       userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
 

@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -30,7 +30,7 @@ class BankMaster extends Component {
       contact_number: null,
       card_name: "",
       card_list: [],
-      HIMS_Active: false
+      HIMS_Active: false,
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
@@ -42,14 +42,15 @@ class BankMaster extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     if (active === true) {
       // this.getCardkMaster();
     }
     this.setState({
-      HIMS_Active: active
+      HIMS_Active: active,
     });
   }
 
@@ -58,7 +59,7 @@ class BankMaster extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -69,7 +70,7 @@ class BankMaster extends Component {
       bank_short_name: null,
       address1: null,
       contact_person: null,
-      contact_number: null
+      contact_number: null,
     });
   }
 
@@ -80,8 +81,8 @@ class BankMaster extends Component {
       method: "GET",
       redux: {
         type: "BANK_GET_DATA",
-        mappingName: "banks"
-      }
+        mappingName: "banks",
+      },
     });
   }
 
@@ -90,19 +91,19 @@ class BankMaster extends Component {
       uri: "/bankmaster/getBankCards",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            card_list: response.data.records
+            card_list: response.data.records,
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   addBank(e) {
@@ -122,27 +123,27 @@ class BankMaster extends Component {
             bank_short_name: this.state.bank_short_name,
             address1: this.state.address1,
             contact_person: this.state.contact_person,
-            contact_number: this.state.contact_number
+            contact_number: this.state.contact_number,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Bank added Successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getBankMaster();
               this.clearState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -157,25 +158,25 @@ class BankMaster extends Component {
         bank_short_name: data.bank_short_name,
         address1: data.address1,
         contact_person: data.contact_person,
-        contact_number: data.contact_number
+        contact_number: data.contact_number,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getBankMaster();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -187,37 +188,37 @@ class BankMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/bankmaster/deleteBank",
           module: "masterSettings",
           data: {
-            hims_d_bank_id: data.hims_d_bank_id
+            hims_d_bank_id: data.hims_d_bank_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getBankMaster();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -234,7 +235,7 @@ class BankMaster extends Component {
     if (this.state.card_name === "") {
       swalMessage({
         type: "warning",
-        title: "Card Number can't blank."
+        title: "Card Number can't blank.",
       });
       return;
     }
@@ -242,28 +243,28 @@ class BankMaster extends Component {
       uri: "/bankmaster/addBankCards",
       module: "masterSettings",
       data: {
-        card_name: this.state.card_name
+        card_name: this.state.card_name,
       },
       method: "POST",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
         } else {
           swalMessage({
             title: response.data.message,
-            type: "error"
+            type: "error",
           });
         }
       },
-      onCatch: error => {
+      onCatch: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -282,7 +283,7 @@ class BankMaster extends Component {
                   div={{ className: "col-3 form-group mandatory" }}
                   label={{
                     forceLabel: "Bank Full Name",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -290,15 +291,15 @@ class BankMaster extends Component {
                     value: this.state.bank_name,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
-                      type: "text"
-                    }
+                      type: "text",
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "Bank Short Name",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -306,15 +307,15 @@ class BankMaster extends Component {
                     value: this.state.bank_short_name,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
-                      type: "text"
-                    }
+                      type: "text",
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-2 mandatory" }}
                   label={{
                     forceLabel: "BIC (SWIFT) Code",
-                    isImp: true
+                    isImp: true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -322,8 +323,8 @@ class BankMaster extends Component {
                     value: this.state.bank_code,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
-                      type: "text"
-                    }
+                      type: "text",
+                    },
                   }}
                 />
 
@@ -331,7 +332,7 @@ class BankMaster extends Component {
                   div={{ className: "col-5" }}
                   label={{
                     forceLabel: "Address",
-                    isImp: false
+                    isImp: false,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -339,15 +340,15 @@ class BankMaster extends Component {
                     value: this.state.address1,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
-                      type: "text"
-                    }
+                      type: "text",
+                    },
                   }}
                 />
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
                     forceLabel: "Contact Person",
-                    isImp: false
+                    isImp: false,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -355,15 +356,15 @@ class BankMaster extends Component {
                     value: this.state.contact_person,
                     events: { onChange: this.texthandle.bind(this) },
                     option: {
-                      type: "text"
-                    }
+                      type: "text",
+                    },
                   }}
                 />
 
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Contact Number"
+                    forceLabel: "Contact Number",
                   }}
                   textBox={{
                     value: this.state.contact_number,
@@ -371,12 +372,12 @@ class BankMaster extends Component {
                     name: "contact_number",
 
                     events: {
-                      onChange: this.texthandle.bind(this)
+                      onChange: this.texthandle.bind(this),
                     },
                     others: {
                       placeholder: "(+01)123-456-7890",
-                      type: "number"
-                    }
+                      type: "number",
+                    },
                   }}
                 />
 
@@ -406,7 +407,7 @@ class BankMaster extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Bank Name" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -418,23 +419,23 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "bank_short_name",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Short Name" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -446,17 +447,17 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Short Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "bank_code",
@@ -465,7 +466,7 @@ class BankMaster extends Component {
                               label={{ forceLabel: "BIC ( SWIFT)" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -477,23 +478,23 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "BIC - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "address1",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Address" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -505,12 +506,12 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "contact_person",
@@ -519,7 +520,7 @@ class BankMaster extends Component {
                               label={{ forceLabel: "Contact Person" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -531,12 +532,12 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "contact_number",
@@ -545,7 +546,7 @@ class BankMaster extends Component {
                               label={{ forceLabel: "Contact Number" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{ className: "col" }}
@@ -557,19 +558,19 @@ class BankMaster extends Component {
                                     onChange: this.changeGridEditors.bind(
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "active_status",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.active_status === "A"
@@ -578,7 +579,7 @@ class BankMaster extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{ className: "col" }}
@@ -589,37 +590,39 @@ class BankMaster extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
+                                    data: GlobalVariables.FORMAT_STATUS,
                                   },
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
+                                    required: true,
                                   },
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="BankMasterGrid"
                       dataSource={{
                         data:
-                          this.props.banks === undefined ? [] : this.props.banks
+                          this.props.banks === undefined
+                            ? []
+                            : this.props.banks,
                       }}
                       filter={true}
                       isEditable={true}
                       actions={{
-                        allowDelete: false
+                        allowDelete: false,
                       }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onEdit: () => { },
+                        onEdit: () => {},
                         onDelete: this.deleteBankMaster.bind(this),
-                        onDone: this.updateBankMaster.bind(this)
+                        onDone: this.updateBankMaster.bind(this),
                       }}
                       others={{}}
                     />
@@ -766,14 +769,14 @@ class BankMaster extends Component {
 
 function mapStateToProps(state) {
   return {
-    banks: state.banks
+    banks: state.banks,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getBanks: AlgaehActions
+      getBanks: AlgaehActions,
     },
     dispatch
   );

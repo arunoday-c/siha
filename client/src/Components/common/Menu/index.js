@@ -9,6 +9,8 @@ import Items from "./item";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import BreadCrum from "./breadcrum";
 import localSrc from "./algaehlogo.png";
+import i18next from "algaeh-react-components/translation/i18next";
+
 function NavBars(props) {
   const {
     userLanguage,
@@ -62,6 +64,7 @@ function NavBars(props) {
     const { lang } = e.target;
     if (userLanguage !== lang) {
       setUserLanguage(lang);
+      i18next.changeLanguage(lang);
     }
   }
 

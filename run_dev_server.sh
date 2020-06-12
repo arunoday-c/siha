@@ -36,7 +36,7 @@ startServer () {
   startServer "./client" "client"
   startServer "./MasterSettings" "master_settings_server" 
   startServer "./DocumentManagement" "document_server" 
-  # startServer "./AlgaehReporting" "report_server"
+  startServer "./AlgaehReporting" "report_server"
   startServer "./Sockets" "sockets"
 
   # # # # # HRMS Modules #
@@ -56,11 +56,11 @@ startServer () {
    startServer "./Radiology" "radiology_server" 
 
   # # # # # Pharmacy Modules # 
-  #  startServer "./Pharmacy" "pharmacy_server" 
-  #  startServer "./Procurement" "procurement_server"
+   startServer "./Pharmacy" "pharmacy_server" 
+   startServer "./Procurement" "procurement_server"
 
   # # # # Inventory Modules # 
-  #  startServer "./Inventory" "inventory_server" 
+   startServer "./Inventory" "inventory_server" 
    startServer "./Sales" "sales"  
 
   # Finance Modules # 

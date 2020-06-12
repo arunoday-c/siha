@@ -465,10 +465,6 @@ const generateEmployeeContract = ($this, empEvent) => {
     }
   });
 };
-// const ClearEmployee = $this => {
-//   let IOputs = EmpMasterIOputs.inputParam();
-//   IOputs.pageDisplay = "PersonalDetails";
-//   $this.setState(IOputs);
-// };
+
 
 export { InsertUpdateEmployee, generateEmployeeContract };

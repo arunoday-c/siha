@@ -1,0 +1,85 @@
+#DNGrid {
+  .ReactTable {
+    max-height: 32vh !important;
+  }
+}
+
+.reqTransList {
+  min-height: 49vh !important;
+  max-height: 49vh !important;
+  li {
+    margin: 0;
+    padding: 8px 0 0 !important;
+    border-bottom: 1px solid #d6d6d6;
+    list-style: none;
+    .itemReq {
+      width: 100% !important;
+      padding: 0 8px;
+      h6 {
+        font-size: 1.1rem !important;
+      }
+      .progressCntr {
+        // height: 12px; /* Can be anything */
+        position: relative;
+        background: #f7f7f7;
+        border: 1px solid #d6d6d6;
+        border-radius: 8px;
+        padding: 1px;
+
+        p {
+          display: block;
+          border-top-right-radius: 8px;
+          border-bottom-right-radius: 8px;
+          border-top-left-radius: 20px;
+          border-bottom-left-radius: 20px;
+          background-color: #00a796;
+          position: relative;
+          overflow: hidden;
+          height: 11px;
+          font-size: 9px;
+          text-align: center;
+          color: #fff;
+          font-weight: bold;
+        }
+      }
+      .progressLegend {
+        small {
+          display: inline-block;
+          font-size: 10px;
+          &:first-child {
+            text-align: left !important;
+            float: left !important;
+            span {
+              text-align: left !important;
+              width: 50%;
+            }
+          }
+          &:last-child {
+            text-align: right !important;
+            float: right !important;
+            span {
+              text-align: right !important;
+              width: 50%;
+            }
+          }
+        }
+      }
+    }
+    .itemAction {
+      width: 100% !important;
+      float: none !important;
+      .btn-edit-list {
+        display: block;
+        border-radius: 0;
+        width: 100%;
+        padding: 3px 0;
+        min-height: 25px;
+        border-top: 1px solid #d6d6d6;
+        &:hover {
+          background-color: #00a796;
+          color: #fff;
+        }
+      }
+    }
+  }
+}

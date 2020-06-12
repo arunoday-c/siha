@@ -19,7 +19,7 @@ class CommonSetup extends Component {
     super(props);
     this.state = {
       pageDisplay: "",
-      HIMS_Active: false
+      HIMS_Active: false,
     };
   }
 
@@ -31,7 +31,7 @@ class CommonSetup extends Component {
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
-      pageDisplay: specified
+      pageDisplay: specified,
     });
   }
 
@@ -40,12 +40,13 @@ class CommonSetup extends Component {
     const userToken = this.context.userToken;
     const active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "HIMS_CLINICAL"
+      userToken.product_type === "HIMS_CLINICAL" ||
+      userToken.product_type === "NO_FINANCE"
         ? true
         : false;
     this.setState({
       pageDisplay: active ? "VisitType" : "VisaType",
-      HIMS_Active: active
+      HIMS_Active: active,
     });
 
     this.props.getUserDetails({
@@ -53,8 +54,8 @@ class CommonSetup extends Component {
       method: "GET",
       redux: {
         type: "USER_DETAILS_GET_DATA",
-        mappingName: "userdrtails"
-      }
+        mappingName: "userdrtails",
+      },
     });
   }
 
@@ -73,7 +74,7 @@ class CommonSetup extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        fieldName: "visit_type"
+                        fieldName: "visit_type",
                       }}
                     />
                   }
@@ -87,7 +88,7 @@ class CommonSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "visa_type"
+                      fieldName: "visa_type",
                     }}
                   />
                 }
@@ -101,7 +102,7 @@ class CommonSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      fieldName: "identification_type"
+                      fieldName: "identification_type",
                     }}
                   />
                 }
@@ -115,7 +116,7 @@ class CommonSetup extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        fieldName: "patient_type"
+                        fieldName: "patient_type",
                       }}
                     />
                   }
@@ -167,14 +168,14 @@ class CommonSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getUserDetails: AlgaehActions
+      getUserDetails: AlgaehActions,
     },
     dispatch
   );

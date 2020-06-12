@@ -168,7 +168,7 @@ export default {
                 "UPDATE `hims_d_services` \
           SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
           `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
-          `updated_by`=?, `updated_date`=?, `service_status`=? ,  `record_status`=? " +
+          `updated_by`=?, `updated_date`=?,  `record_status`=? " +
                 str +
                 "\
           WHERE `hims_d_services_id`=?;",
@@ -188,7 +188,6 @@ export default {
 
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                inputParam.service_status,
                 inputParam.record_status,
                 inputParam.hims_d_services_id
               ],

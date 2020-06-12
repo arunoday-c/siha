@@ -667,6 +667,12 @@ const calculateAmount = ($this, row, e) => {
       type: "warning",
     });
     discount_percentage = 0;
+  } else if (parseFloat(discount_percentage) > parseFloat($this.state.service_dis_percentage)) {
+    swalMessage({
+      title: "You dont have privilage to give discount More than." + $this.state.service_dis_percentage,
+      type: "warning"
+    });
+    discount_percentage = 0;
   } else if (discount_amout > parseFloat(row.unit_cost)) {
     swalMessage({
       title: "Discount Amount cannot be greater than Unit Cost.",

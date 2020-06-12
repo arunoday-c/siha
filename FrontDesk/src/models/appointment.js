@@ -1171,26 +1171,28 @@ export default {
 
       let selectDoctor = "";
 
-      if (input.provider_id != "null" && input.provider_id != null) {
+      if (input.provider_id > 0) {
         selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
         //provider_id = req.query.provider_id;
       }
 
       _mysql
         .executeQuery({
-          query: `select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
-        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
-        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
-         hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
-         ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified \
-         from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD,hims_d_employee E ,\
-         hims_d_appointment_clinic C,hims_d_appointment_room R,hims_d_sub_department SD where \
-         SH.record_status='A' and E.record_status='A' and C.record_status='A' and  SD.record_status='A'\
-     and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
-         SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
-         and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
-          and sub_dept_id= SD.hims_d_sub_department_id  and SH.hospital_id=?  ${selectDoctor} ${qry} `,
+          query: `select  hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,
+          from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,
+          to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,
+          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,
+          ASD.schedule_status as todays_schedule_status, slot,schedule_date, modified 
+          from hims_d_appointment_schedule_header SH inner join  hims_d_appointment_schedule_detail ASD  on
+          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id 
+          and SH.record_status='A' and ASD.record_status='A'
+          inner join  hims_d_employee E  on ASD.provider_id=E.hims_d_employee_id and E.record_status='A'
+          left join hims_d_appointment_clinic C   on ASD.clinic_id=C.hims_d_appointment_clinic_id
+          left join hims_d_appointment_room R  on C.room_id=R.hims_d_appointment_room_id   
+          left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
+          SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
+          printQuery: true,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -2064,8 +2066,14 @@ export default {
   //created by irfan: to add patient appointment
   addPatientAppointment: (req, res, next) => {
     const _mysql = new algaehMysql();
-
     let input = req.body;
+    if (input.contact_number.length < 10) {
+      next(
+        new Error("Contact number is not valid please provide valid number")
+      );
+      return;
+    }
+
     let strQry = "";
     if (
       req.userIdentity.unique_id_for_appointmt == "PID" &&
@@ -2200,7 +2208,7 @@ export default {
         or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;\
         select employee_code,sub_department_code from hims_d_employee as e inner join hims_d_sub_department as d \
         on d.hims_d_sub_department_id = e.sub_department_id where e.hims_d_employee_id =?;\
-        SELECT description FROM hims_d_appointment_status where hims_d_appointment_status_id=?; ",
+        SELECT description,default_status FROM hims_d_appointment_status where hims_d_appointment_status_id=?; ",
         values: [
           input.appointment_date,
           input.provider_id,
@@ -2272,7 +2280,7 @@ export default {
                 req.employee_code = slotResult[1][0]["employee_code"];
                 req.sub_department_code =
                   slotResult[1][0]["sub_department_code"];
-                req.appointment_status = slotResult[2][0]["description"];
+                req.appointment_status = slotResult[2][0]["default_status"];
                 updatePatientAppointment(req);
               }
               next();
@@ -2380,6 +2388,8 @@ export default {
       .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
+        req.appointment_status = "CAN";
+        updatePatientAppointment(req);
         next();
       })
       .catch((e) => {
@@ -2394,12 +2404,11 @@ export default {
     let input = req.body;
     _mysql
       .executeQuery({
-        query:
-          "select hims_f_patient_appointment_id ,full_name, appointment_date from hims_f_patient_appointment A\
-          inner join  hims_d_employee E on A.provider_id=E.hims_d_employee_id\
-          where date(appointment_date) between date(?) and  date(?)\
-          and A.sub_department_id=? and A.hospital_id=? and A.provider_id in (?)\
-          group by A.provider_id ;",
+        query: `select hims_f_patient_appointment_id ,full_name, appointment_date from hims_f_patient_appointment A 
+          inner join  hims_d_employee E on A.provider_id=E.hims_d_employee_id 
+          where date(appointment_date) between date(?) and  date(?) 
+          and A.sub_department_id=? and A.hospital_id=? and A.provider_id in (?) 
+          group by A.provider_id ;`,
         values: [
           input.from_date,
           input.to_date,

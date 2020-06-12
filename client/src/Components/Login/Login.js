@@ -344,6 +344,7 @@ function Login(props) {
                 const redirect = (redPage) => {
                   setLoginLoad(false);
                   setCookie("ScreenName", redPage);
+                  setCookie("HospitalId", records.hospital_id);
                   history.push(`/${redPage}`);
                 };
                 getUserPrefrencesDetails({ user_id: records.keyData.user_id })

@@ -32,8 +32,8 @@ class PatientVisitDetails extends Component {
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
-          mappingName: "patienttype"
-        }
+          mappingName: "patienttype",
+        },
       });
     }
 
@@ -47,13 +47,13 @@ class PatientVisitDetails extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "opcacelproviders"
+          mappingName: "opcacelproviders",
         },
-        afterSuccess: data => {
+        afterSuccess: (data) => {
           this.setState({
-            doctors: data
+            doctors: data,
           });
-        }
+        },
       });
     }
   }
@@ -64,24 +64,24 @@ class PatientVisitDetails extends Component {
 
   render() {
     let provider_name = null;
-    if (this.state.incharge_or_provider !== null) {
+    debugger;
+    if (this.state.doctor_id !== null) {
       provider_name = Enumerable.from(this.props.opcacelproviders)
-        .where(w => w.hims_d_employee_id === this.state.incharge_or_provider)
-        .select(s => s.full_name)
+        .where((w) => w.hims_d_employee_id === this.state.doctor_id)
+        .select((s) => s.full_name)
         .firstOrDefault();
     }
 
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-display-patient-form">
               <div
                 className="row inner-top-search"
                 style={{ paddingTop: 10, paddingBottom: 10 }}
               >
                 {/* Patient code */}
-
 
                 <div
                   className="col-3 globalSearchCntr"
@@ -91,15 +91,17 @@ class PatientVisitDetails extends Component {
                       this.state.Billexists === true
                         ? "none"
                         : this.state.patient_code
-                          ? "none"
-                          : ""
+                        ? "none"
+                        : "",
                   }}
                 >
                   <AlgaehLabel label={{ fieldName: "bill_number" }} />
                   <h6 onClick={BillSearch.bind(this, this, context)}>
-                    {this.state.bill_number
-                      ? this.state.bill_number
-                      : <AlgaehLabel label={{ fieldName: "bill_number" }} />}
+                    {this.state.bill_number ? (
+                      this.state.bill_number
+                    ) : (
+                      <AlgaehLabel label={{ fieldName: "bill_number" }} />
+                    )}
                     <i className="fas fa-search fa-lg"></i>
                   </h6>
                 </div>
@@ -143,7 +145,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "full_name"
+                          fieldName: "full_name",
                         }}
                       />
                       <h6>
@@ -156,7 +158,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "patient_type"
+                          fieldName: "patient_type",
                         }}
                       />
                       <h6>
@@ -169,7 +171,7 @@ class PatientVisitDetails extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          fieldName: "mode_of_pay"
+                          fieldName: "mode_of_pay",
                         }}
                       />
                       <h6>
@@ -192,7 +194,7 @@ class PatientVisitDetails extends Component {
 function mapStateToProps(state) {
   return {
     patienttype: state.patienttype,
-    opcacelproviders: state.opcacelproviders
+    opcacelproviders: state.opcacelproviders,
   };
 }
 
@@ -200,15 +202,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientType: AlgaehActions,
-      getProviderDetails: AlgaehActions
+      getProviderDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PatientVisitDetails)
+  connect(mapStateToProps, mapDispatchToProps)(PatientVisitDetails)
 );

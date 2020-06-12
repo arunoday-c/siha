@@ -8,7 +8,7 @@ import {
 
 import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-
+import { AlgaehSecurityElement } from "algaeh-react-components";
 export default class EncashmentAuthDtls extends Component {
   constructor(props) {
     super(props);
@@ -102,25 +102,28 @@ export default class EncashmentAuthDtls extends Component {
             </div>
           </div>
         </div>
-        <div className="popupFooter">
-          <div className="col-12">
-            <button
-              onClick={AuthorizeLEaveEncash.bind(this, this, "APR")}
-              className="btn btn-primary"
-            >
-              Authorize
-            </button>
-            <button
-              onClick={AuthorizeLEaveEncash.bind(this, this, "REJ")}
-              className="btn btn-danger"
-            >
-              Reject
-            </button>
-            <button onClick={this.props.onClose} className="btn btn-default">
-              Close
-            </button>
+
+        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+          <div className="popupFooter">
+            <div className="col-12">
+              <button
+                onClick={AuthorizeLEaveEncash.bind(this, this, "APR")}
+                className="btn btn-primary"
+              >
+                Authorize
+              </button>
+              <button
+                onClick={AuthorizeLEaveEncash.bind(this, this, "REJ")}
+                className="btn btn-danger"
+              >
+                Reject
+              </button>
+              <button onClick={this.props.onClose} className="btn btn-default">
+                Close
+              </button>
+            </div>
           </div>
-        </div>
+        </AlgaehSecurityElement>
       </AlgaehModalPopUp>
     );
   }

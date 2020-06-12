@@ -14,7 +14,7 @@ import {
   getProjects,
 } from "./bulkTimeSheet.events";
 import EditAttendencePerDay from "./EditAttendencePerDay";
-
+import { AlgaehSecurityElement } from "algaeh-react-components";
 function BulkTimeSheet(props) {
   const [filter, setFilter] = useState({});
   const [data, setData] = useState([]);
@@ -257,65 +257,67 @@ function BulkTimeSheet(props) {
         ) : null}
       </div>
 
-      <div className="hptl-phase1-footer">
-        <div className="row">
-          <div className="col-lg-12">
-            <button
-              disabled={process}
-              type="button"
-              className="btn btn-primary"
-              onClick={() => {
-                setLoadingProcess(true);
-                processDetails(
-                  filter,
-                  (errorMessage) => {
-                    setProcess(true);
-                    setLoadingProcess(false);
+      <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                disabled={process}
+                type="button"
+                className="btn btn-primary"
+                onClick={() => {
+                  setLoadingProcess(true);
+                  processDetails(
+                    filter,
+                    (errorMessage) => {
+                      setProcess(true);
+                      setLoadingProcess(false);
 
-                    if (
-                      errorMessage.response !== undefined &&
-                      typeof errorMessage.response.data.message === "string"
-                    ) {
-                      const hasLi = errorMessage.response.data.message.includes(
-                        "<li>"
-                      );
-                      if (hasLi) {
-                        setErrorHtml(errorMessage.response.data.message);
+                      if (
+                        errorMessage.response !== undefined &&
+                        typeof errorMessage.response.data.message === "string"
+                      ) {
+                        const hasLi = errorMessage.response.data.message.includes(
+                          "<li>"
+                        );
+                        if (hasLi) {
+                          setErrorHtml(errorMessage.response.data.message);
+                        } else {
+                          swalMessage({
+                            type: "error",
+                            title: errorMessage,
+                          });
+                        }
                       } else {
                         swalMessage({
                           type: "error",
-                          title: errorMessage,
+                          title: errorMessage.response.data.message.sqlMessage,
                         });
                       }
-                    } else {
+                    },
+                    (result) => {
+                      setLoadingProcess(false);
+                      setProcess(true);
                       swalMessage({
-                        type: "error",
-                        title: errorMessage.response.data.message.sqlMessage,
+                        type: "success",
+                        title: "Posted Successfully",
                       });
                     }
-                  },
-                  (result) => {
-                    setLoadingProcess(false);
-                    setProcess(true);
-                    swalMessage({
-                      type: "success",
-                      title: "Posted Successfully",
-                    });
-                  }
-                );
-              }}
-            >
-              {!loadingProcess ? (
-                <AlgaehLabel
-                  label={{ forceLabel: "Process", returnText: true }}
-                />
-              ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
-            </button>
+                  );
+                }}
+              >
+                {!loadingProcess ? (
+                  <AlgaehLabel
+                    label={{ forceLabel: "Process", returnText: true }}
+                  />
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>{" "}
+            </div>
           </div>
         </div>
-      </div>
+      </AlgaehSecurityElement>
     </div>
   );
 }

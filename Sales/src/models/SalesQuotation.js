@@ -32,7 +32,7 @@ export function getSalesQuotation(req, res, next) {
               query: "select QI.*, IM.item_description, IU.uom_description from hims_f_sales_quotation_items QI \
               inner join hims_d_inventory_item_master IM on IM.hims_d_inventory_item_master_id = QI.item_id \
               inner join hims_d_inventory_uom IU on IU.hims_d_inventory_uom_id = QI.uom_id where sales_quotation_id=?;\
-              select QS.*, S.service_name from hims_f_sales_quotation_services QS \
+              select QS.*,QS.comments as service_comments, S.service_name from hims_f_sales_quotation_services QS \
               inner join hims_d_services S on S.hims_d_services_id = QS.services_id where sales_quotation_id=?;",
               values: [headerResult[0].hims_f_sales_quotation_id, headerResult[0].hims_f_sales_quotation_id],
               printQuery: true
@@ -397,7 +397,8 @@ export function updateSalesQuotation(req, res, next) {
                 "net_extended_cost",
                 "tax_percentage",
                 "tax_amount",
-                "total_amount"
+                "total_amount",
+                "comments"
               ];
 
               _mysql
@@ -589,7 +590,8 @@ function InsertSalesItemService(options) {
               "net_extended_cost",
               "tax_percentage",
               "tax_amount",
-              "total_amount"
+              "total_amount",
+              "comments"
             ];
 
             _mysql
@@ -676,7 +678,8 @@ function UpdateItemServiceComb(options) {
               "net_extended_cost",
               "tax_percentage",
               "tax_amount",
-              "total_amount"
+              "total_amount",
+              "comments"
             ];
 
             _mysql
