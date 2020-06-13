@@ -133,6 +133,7 @@ class ItemLocationReorder extends Component {
         // style={{ marginTop: 10 }}
       >
         <AlgaehModalPopUp
+          class="ReorderLocationWisePopup"
           events={{
             onClose: this.onClose.bind(this),
           }}

@@ -129,6 +129,7 @@ class ItemLocationReorder extends Component {
     return (
       <div className="ReorderQtyMasterPharmacyScreen">
         <AlgaehModalPopUp
+          class="ReorderLocationWisePopup"
           events={{
             onClose: this.onClose.bind(this),
           }}
@@ -138,7 +139,7 @@ class ItemLocationReorder extends Component {
           <div className="popupInner" data-validate="ItemMaster">
             <div className="col-12 popRightDiv">
               <div className="row">
-                <div className="col">
+                <div className="col-12">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Item Name",
@@ -152,7 +153,7 @@ class ItemLocationReorder extends Component {
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-8 mandatory" }}
                   label={{ forceLabel: "Select Location", isImp: true }}
                   selector={{
                     name: "location_id",
@@ -169,7 +170,7 @@ class ItemLocationReorder extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-4 mandatory" }}
                   label={{
                     forceLabel: "Reorder Quantity",
                     isImp: true,
@@ -190,9 +191,9 @@ class ItemLocationReorder extends Component {
                   }}
                 />
 
-                <div className="col">
+                <div className="col-12" style={{ textAlign: "right" }}>
                   <button
-                    style={{ marginTop: 19 }}
+                    style={{ marginTop: 15 }}
                     className="btn btn-primary"
                     onClick={this.addLocationWiseReorder.bind(this)}
                   >
