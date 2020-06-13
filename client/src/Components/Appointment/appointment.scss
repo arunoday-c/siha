@@ -82,6 +82,22 @@
       height: 52vh;
       overflow: auto;
       display: grid;
+      position: relative;
+      .schedulePosition {
+        height: 0;
+        width: 100%;
+        display: block;
+        position: absolute;
+        top: 7px;
+        border: 1px dashed red;
+        i {
+          color: red;
+          font-size: 1.5rem;
+          position: absolute;
+          right: 0;
+          top: -10px;
+        }
+      }
       td.tg-baqh {
         word-break: normal;
         border: 1px solid lightgrey;
