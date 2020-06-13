@@ -2,6 +2,8 @@ import React, { memo, useEffect, useState } from "react";
 import moment from "moment";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
+import { newAlgaehApi } from "../../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 import { AlgaehTable } from "algaeh-react-components";
 function PLYear({ data, layout }) {
@@ -9,7 +11,7 @@ function PLYear({ data, layout }) {
   const [totals, setTotals] = useState({});
   const [columns, setColumn] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hospitalDetails, setHospitalDeytails] = useState([]);
+  const [organisation, setOrganisation] = useState({});
 
   useEffect(() => {
     const { months, expense, income, totals } = data;
@@ -31,22 +33,40 @@ function PLYear({ data, layout }) {
     setincomeExpence([income, expense]);
     setTotals(totals);
     setLoading(false);
-    getItem("token").then((result) => {
-      const details = jwtDecode(result);
-      setHospitalDeytails(details);
-    });
+    newAlgaehApi({
+      uri: "/organization/getMainOrganization",
+      method: "GET",
+    })
+      .then((result) => {
+        const { records, success, message } = result.data;
+        if (success === true) {
+          setOrganisation(records);
+        } else {
+          AlgaehMessagePop({
+            display: message,
+            type: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
   }, [data]);
+  const { organization_name, address1, address2, full_name } = organisation;
 
   return (
     <>
       <div className="financeReportHeader">
         <div>
-          {hospitalDetails.organization_name}
+          {organization_name}
 
           {/* Twareat Medical Centre */}
         </div>
         <div>
-          {hospitalDetails.hospital_address}
+          {address1 + address2}
 
           {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
         </div>

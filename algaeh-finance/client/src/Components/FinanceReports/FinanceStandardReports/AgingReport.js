@@ -5,11 +5,15 @@ import "./antTableCustomStyle.scss";
 import { AlgaehTable } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
+import { newAlgaehApi } from "../../../hooks";
+
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
+import { AlgaehMessagePop } from "algaeh-react-components";
+
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
@@ -19,17 +23,36 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
-  const [hospitalDetails, setHospitalDeytails] = useState([]);
+  const [organisation, setOrganisation] = useState({});
 
   useEffect(() => {
     loadReport();
-    getItem("token").then((result) => {
-      const details = jwtDecode(result);
-      setHospitalDeytails(details);
-      console.log("dat", details);
-    });
+    newAlgaehApi({
+      uri: "/organization/getMainOrganization",
+      method: "GET",
+    })
+      .then((result) => {
+        const { records, success, message } = result.data;
+        if (success === true) {
+          setOrganisation(records);
+        } else {
+          AlgaehMessagePop({
+            display: message,
+            type: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, dates]);
+
+  const { organization_name, address1, address2, full_name } = organisation;
 
   function loadReport(excel) {
     let extraHeaders = {};
@@ -86,12 +109,12 @@ export default function AgingReport({ style, result, layout, type, dates }) {
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
           <div>
-            {hospitalDetails.organization_name}
+            {organization_name}
 
             {/* Twareat Medical Centre */}
           </div>
           <div>
-            {hospitalDetails.hospital_address}
+            {address1 + address2}
             {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>

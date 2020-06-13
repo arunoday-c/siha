@@ -4,6 +4,8 @@ import moment from "moment";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
 import { dateFomater } from "../../../utils/algaehApiCall";
+import { newAlgaehApi } from "../../../hooks";
+import { AlgaehMessagePop } from "algaeh-react-components";
 
 export default function TrailBalaceReport({
   style,
@@ -11,15 +13,34 @@ export default function TrailBalaceReport({
   nonZero = true,
   layout,
 }) {
-  const [hospitalDetails, setHospitalDeytails] = useState([]);
+  const [organisation, setOrganisation] = useState({});
   useEffect(() => {
-    getItem("token").then((result) => {
-      const details = jwtDecode(result);
-      setHospitalDeytails(details);
-    });
+    newAlgaehApi({
+      uri: "/organization/getMainOrganization",
+      method: "GET",
+    })
+      .then((result) => {
+        const { records, success, message } = result.data;
+        if (success === true) {
+          setOrganisation(records);
+        } else {
+          AlgaehMessagePop({
+            display: message,
+            type: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const { organization_name, address1, address2, full_name } = organisation;
 
   const { asset, expense, liability, capital, income } = data;
   const accounts = [asset, expense, liability, capital, income];
@@ -29,11 +50,11 @@ export default function TrailBalaceReport({
         <div>
           <div className="financeReportHeader">
             <div>
-              {hospitalDetails.organization_name}
+              {organization_name}
               {/* Twareat Medical Centre */}
             </div>
             <div>
-              {hospitalDetails.hospital_address}
+              {address1 + address2}
 
               {/* Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
             </div>
