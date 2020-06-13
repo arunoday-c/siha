@@ -6,15 +6,45 @@ import { PlotUI } from "./plotui";
 import { newAlgaehApi } from "../../../hooks";
 import { handleFile } from "../FinanceReportEvents";
 import { AlgaehMessagePop } from "algaeh-react-components";
-
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import jwtDecode from "jwt-decode";
 export default function BalanceSheet({ style, footer, layout, dates }) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
+  const [hospitalDetails, setHospitalDeytails] = useState([]);
 
   useEffect(() => {
     loadBalanceSheet();
+    getItem("token").then((result) => {
+      const details = jwtDecode(result);
+      setHospitalDeytails(details);
+    });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dates]);
+  // .then(([detailResult]) => {
+  //   debugger;
+  //   const headerToken = detailResult.length > 0 ? detailResult[0] : "";
+  //   const userTokenDetails =
+  //     headerToken !== "" ? tokenDecode(headerToken) : {};
+  //   setHospitalDeytails(userTokenDetails);
+  //   return;
+  // });
+
+  // // Promise.all([getItem("token")])
+  //   .then((detailResult) => {
+  //     // const myIP = getNewLocalIp();
+  //     const headerToken = detailResult.length > 0 ? detailResult[0] : "";
+  //     const userTokenDetails =
+  //       headerToken !== "" ? tokenDecode(headerToken) : {};
+  //     const x_branch = userTokenDetails.hims_d_hospital_id;
+  //     setHospitalDeytails(userTokenDetails);
+
+  //     return;
+  // //   })
+  //   .catch((error) => {
+  //     console.error("error", error);
+  //   });
 
   function loadBalanceSheet(excel) {
     let extraHeaders = {};
@@ -109,9 +139,13 @@ export default function BalanceSheet({ style, footer, layout, dates }) {
           onClick={() => loadBalanceSheet(true)}
         />
         <div className="financeReportHeader">
-          <div>Twareat Medical Centre</div>
           <div>
-            Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            {hospitalDetails.organization_name}
+            {/* Twareat Medica.l Centre */}
+          </div>
+          <div>
+            {hospitalDetails.hospital_address}
+            {/* Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>
 

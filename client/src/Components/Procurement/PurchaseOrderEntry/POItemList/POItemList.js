@@ -11,6 +11,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import {
   itemchangeText,
@@ -37,6 +39,7 @@ class POItemList extends Component {
 
   UNSAFE_componentWillMount() {
     let InputOutput = this.props.POEntry;
+    // debugger;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -54,7 +57,56 @@ class POItemList extends Component {
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <AlagehAutoComplete
+                      <AlgaehAutoSearch
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{ forceLabel: "Item Name" }}
+                        title="Search Items"
+                        id="item_id_search"
+                        template={(result) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-12">
+                                  <h4 className="title">
+                                    {result.item_description}
+                                  </h4>
+                                  <small>{result.uom_description}</small>
+                                </div>
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name={
+                          this.state.po_from === "PHR"
+                            ? "hims_d_item_master_id"
+                            : "hims_d_inventory_item_master_id"
+                        }
+                        columns={
+                          this.state.po_from === "PHR"
+                            ? spotlightSearch.Items.Pharmacyitemmaster
+                            : spotlightSearch.Items.Invitemmaster
+                        }
+                        // value={
+                        //   this.state.po_from === "PHR"
+                        //     ? this.state.phar_item_id
+                        //     : this.state.inv_item_id
+                        // }
+                        displayField="item_description"
+                        value={this.state.item_description}
+                        searchName={
+                          this.state.po_from === "PHR"
+                            ? "PurchaseOrderForPharmacy"
+                            : "PurchaseOrderForInventry"
+                        }
+                        onClick={itemchangeText.bind(this, this, context)}
+                        // ref={(attReg) => {
+                        //   this.attReg = attReg;
+                        // }}
+                        others={{
+                          disabled: this.state.dataExists,
+                        }}
+                      />
+                      {/* <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{ forceLabel: "Item Name" }}
                         selector={{
@@ -80,7 +132,7 @@ class POItemList extends Component {
                           },
                           onChange: itemchangeText.bind(this, this, context),
                         }}
-                      />
+                      /> */}
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{ forceLabel: "Item Category" }}
@@ -301,80 +353,79 @@ class POItemList extends Component {
                           filter={true}
                           columns={[
                             {
-                              fieldName:
-                                this.state.po_from === "PHR"
-                                  ? "phar_item_id"
-                                  : "inv_item_id",
+                              fieldName: "item_description",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
                               displayTemplate: (row) => {
-                                let display;
+                                return row.item_description;
+                                // let display;
 
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemlist === undefined
-                                        ? []
-                                        : this.props.poitemlist.filter(
-                                            (f) =>
-                                              f.hims_d_item_master_id ===
-                                              row.phar_item_id
-                                          ))
-                                  : (display =
-                                      this.props.poitemlist === undefined
-                                        ? []
-                                        : this.props.poitemlist.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_item_master_id ===
-                                              row.inv_item_id
-                                          ));
+                                // this.state.po_from === "PHR"
+                                //   ? (display =
+                                //       this.props.poitemlist === undefined
+                                //         ? []
+                                //         : this.props.poitemlist.filter(
+                                //             (f) =>
+                                //               f.hims_d_item_master_id ===
+                                //               row.phar_item_id
+                                //           ))
+                                //   : (display =
+                                //       this.props.poitemlist === undefined
+                                //         ? []
+                                //         : this.props.poitemlist.filter(
+                                //             (f) =>
+                                //               f.hims_d_inventory_item_master_id ===
+                                //               row.inv_item_id
+                                //           ));
 
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
+                                // return (
+                                //   <span>
+                                //     {display !== undefined &&
+                                //     display.length !== 0
+                                //       ? display[0].item_description
+                                //       : ""}
+                                //   </span>
+                                // );
                               },
                               editorTemplate: (row) => {
-                                let display;
+                                return row.item_description;
+                                //   let display;
 
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemlist === undefined
-                                        ? []
-                                        : this.props.poitemlist.filter(
-                                            (f) =>
-                                              f.hims_d_item_master_id ===
-                                              row.phar_item_id
-                                          ))
-                                  : (display =
-                                      this.props.poitemlist === undefined
-                                        ? []
-                                        : this.props.poitemlist.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_item_master_id ===
-                                              row.inv_item_id
-                                          ));
+                                //   this.state.po_from === "PHR"
+                                //     ? (display =
+                                //         this.props.poitemlist === undefined
+                                //           ? []
+                                //           : this.props.poitemlist.filter(
+                                //               (f) =>
+                                //                 f.hims_d_item_master_id ===
+                                //                 row.phar_item_id
+                                //             ))
+                                //     : (display =
+                                //         this.props.poitemlist === undefined
+                                //           ? []
+                                //           : this.props.poitemlist.filter(
+                                //               (f) =>
+                                //                 f.hims_d_inventory_item_master_id ===
+                                //                 row.inv_item_id
+                                //             ));
 
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              others: {
-                                minWidth: 150,
+                                //   return (
+                                //     <span>
+                                //       {display !== undefined &&
+                                //       display.length !== 0
+                                //         ? display[0].item_description
+                                //         : ""}
+                                //     </span>
+                                //   );
+                                // },
+                                // others: {
+                                //   minWidth: 150,
+                                // },
                               },
                             },
-
                             {
                               fieldName:
                                 this.state.po_from === "PHR"

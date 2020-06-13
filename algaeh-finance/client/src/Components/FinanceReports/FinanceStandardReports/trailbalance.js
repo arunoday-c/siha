@@ -1,12 +1,26 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { AlgaehTable } from "algaeh-react-components";
+import moment from "moment";
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import jwtDecode from "jwt-decode";
+import { dateFomater } from "../../../utils/algaehApiCall";
 
 export default function TrailBalaceReport({
   style,
   data,
   nonZero = true,
-  layout
+  layout,
 }) {
+  const [hospitalDetails, setHospitalDeytails] = useState([]);
+  useEffect(() => {
+    getItem("token").then((result) => {
+      const details = jwtDecode(result);
+      setHospitalDeytails(details);
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const { asset, expense, liability, capital, income } = data;
   const accounts = [asset, expense, liability, capital, income];
   if (data.asset) {
@@ -14,14 +28,19 @@ export default function TrailBalaceReport({
       <>
         <div>
           <div className="financeReportHeader">
-            <div>Twareat Medical Centre</div>
             <div>
-              Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+              {hospitalDetails.organization_name}
+              {/* Twareat Medical Centre */}
+            </div>
+            <div>
+              {hospitalDetails.hospital_address}
+
+              {/* Al Fanar Mall، 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
             </div>
             <hr></hr>
             <h3>Trail Balance</h3>
             <p>
-              As on: <b>12/02/2020</b>
+              As on: <b>{moment().format("D/M/Y")}</b>
             </p>
           </div>
           <div className="reportTableStyle" style={{ border: "none" }}>
@@ -31,24 +50,24 @@ export default function TrailBalaceReport({
                 {
                   fieldName: "label",
                   label: "Paticulars",
-                  filterable: true
+                  filterable: true,
                 },
                 {
                   fieldName: "op_amount",
-                  label: "Opening Balance"
+                  label: "Opening Balance",
                 },
                 {
                   fieldName: "tr_debit_amount",
-                  label: "Transactions Debit"
+                  label: "Transactions Debit",
                 },
                 {
                   fieldName: "tr_credit_amount",
-                  label: "Transaction Credit"
+                  label: "Transaction Credit",
                 },
                 {
                   fieldName: "cb_amount",
-                  label: "Closing Balance"
-                }
+                  label: "Closing Balance",
+                },
               ]}
               isFilterable={true}
               row_unique_id="label"
