@@ -393,7 +393,7 @@ class ScreenAssignment extends Component {
                           // }
                         />
 
-                        <ul className="mainmenu" style={{ maxHeight: "58vh" }}>
+                        <ul className="mainmenu">
                           {this.state.assignedScreenElements.map((element) => {
                             const {
                               algaeh_app_screens_id,
