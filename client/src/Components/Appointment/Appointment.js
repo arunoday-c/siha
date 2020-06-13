@@ -1599,7 +1599,7 @@ class Appointment extends PureComponent {
 
     let brk_bg_color = data.mark_as_break
       ? "activeSlotOpacity"
-      : this.isInactiveTimeSlot(data.time)
+      : this.isInactiveTimeSlot(data.time) && patient === undefined
       ? "inActiveSlotOpacity"
       : "activeSlotOpacity";
 
@@ -1623,25 +1623,9 @@ class Appointment extends PureComponent {
         : "#ffffff";
 
     return (
-      <>
-        <tr>
-          <td>
-            {" "}
-            <span
-              className="schedulePosition"
-              style={{
-                top: 130,
-              }}
-            >
-              <i className="fas fa-caret-left"></i>
-            </span>
-          </td>
-        </tr>
-        <tr
-          className={brk_bg_color}
-          style={{ cursor: "pointer" }}
-          key={data.counter}
-        >
+      <React.Fragment key={data.counter}>
+        <tr>{this.checkCurrentTime(data)}</tr>
+        <tr className={brk_bg_color} style={{ cursor: "pointer" }}>
           <td
             className="tg-baqh" //highlight-Drop
             {...colspan}
@@ -1745,10 +1729,31 @@ class Appointment extends PureComponent {
             </td>
           ) : null}
         </tr>
-      </>
+      </React.Fragment>
     );
   }
-
+  checkCurrentTime(data) {
+    const currentDate = moment().format("YYYYMMDD");
+    const selectedDate = moment(this.state.activeDateHeader).format("YYYYMMDD");
+    if (parseInt(selectedDate, 10) > parseInt(currentDate, 10)) {
+      return <td></td>;
+    }
+    if (data.mark_as_break === true) {
+      return <td></td>;
+    }
+    const inactiveTime = this.isInactiveTimeSlot(data.time);
+    if (inactiveTime === false) {
+      return (
+        <td activetime="true">
+          <span className="schedulePosition">
+            <i className="fas fa-caret-left"></i>
+          </span>
+        </td>
+      );
+    } else {
+      return <td></td>;
+    }
+  }
   nullifyState(name) {
     this.setState({
       [name]: null,

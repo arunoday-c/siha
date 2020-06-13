@@ -7,13 +7,14 @@ export default function examination() {
         algaehApiCall({
           uri: "/examinationDiagram/getMaster",
           method: "GET",
-          onSuccess: response => {
+          onSuccess: (response) => {
+            console.log("response", response);
             if (response.data.success) {
               resolve(response.data.records);
             } else {
               reject(response);
             }
-          }
+          },
         });
       });
     },
@@ -23,13 +24,13 @@ export default function examination() {
           uri: "/examinationDiagram/getExistingDiagramHeader",
           method: "GET",
           data: { patient_id: Window.global["current_patient"] },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               resolve(response.data.records);
             } else {
               reject(response);
             }
-          }
+          },
         });
       });
     },
@@ -39,15 +40,15 @@ export default function examination() {
           uri: "/examinationDiagram/getExistingDiagramDetails",
           method: "GET",
           data: {
-            hims_f_examination_diagram_header_id: that
+            hims_f_examination_diagram_header_id: that,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               resolve(response.data.records);
             } else {
               reject(response);
             }
-          }
+          },
         });
       });
     },
@@ -58,7 +59,7 @@ export default function examination() {
         if (that.saveAsChecked !== "new") {
           const _header = _.find(
             that.existingDiagram,
-            f =>
+            (f) =>
               f.hims_f_examination_diagram_header_id ===
               that.hims_f_examination_diagram_header_id
           );
@@ -80,54 +81,54 @@ export default function examination() {
           encounter_id: Window.global["encounter_id"],
           remarks: that.remarks,
           saveAsNew: that.saveAsChecked,
-          header_datetime: _header_datetime
+          header_datetime: _header_datetime,
         };
 
         algaehApiCall({
           uri: "/examinationDiagram/saveDiagram",
           method: "POST",
           data: _data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               resolve(response.data.records);
             } else {
               reject(response.data.message);
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             reject(error);
-          }
+          },
         });
       });
     },
-    deleteDetaiDiagram: details => {
+    deleteDetaiDiagram: (details) => {
       return new Promise((resolve, reject) => {
         algaehApiCall({
           uri: "/examinationDiagram/deleteDiagram",
           method: "DELETE",
           data: {
-            examination_diagrams_id: details.examination_diagrams_id
+            examination_diagrams_id: details.examination_diagrams_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               algaehApiCall({
                 uri: "/Document/delete",
                 method: "DELETE",
                 module: "documentManagement",
                 data: { fileType: "DepartmentImages", unique: details.unique },
-                onSuccess: result => {
+                onSuccess: (result) => {
                   resolve("Deleted successfully");
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   reject(error);
-                }
+                },
               });
             } else {
               reject(response);
             }
-          }
+          },
         });
       });
-    }
+    },
   };
 }

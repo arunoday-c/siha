@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import moment from "moment";
 import {
   AlagehAutoComplete,
@@ -14,6 +14,24 @@ import "./appointment.scss";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {
+  useLayoutEffect(() => {
+    const getAllTables = document.getElementsByTagName("table");
+    for (let i = 0; i < getAllTables.length; i++) {
+      const table = getAllTables[i];
+      const td = table.querySelector("td[activetime='true']");
+      if (td === null) {
+        break;
+      }
+      const offBody = table.offsetTop;
+      const offElement = td.parentNode.offsetTop;
+      const topOffSet = offElement - offBody; //td.offsetTop;
+      td.firstChild.setAttribute(
+        "style",
+        `top:${td.offsetTop}px;display:block;`
+      );
+      table.lastElementChild.scroll(0, topOffSet);
+    }
+  }, [props.state.appointmentSchedule]);
   return (
     <div>
       <div className="appointment">
