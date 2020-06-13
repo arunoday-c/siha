@@ -763,13 +763,7 @@ function AppointmentComponent(props) {
                               </tr>
                             </tbody>
                           ) : (
-                            <tbody>
-                              {" "}
-                              <span className="schedulePosition">
-                                <i className="fas fa-caret-left"></i>
-                              </span>
-                              {props.generateTimeslots(data)}
-                            </tbody>
+                            <tbody>{props.generateTimeslots(data)}</tbody>
                           )}
                         </table>
                       ))

@@ -9,7 +9,7 @@ import moment from "moment";
 import {
   setGlobal,
   AlgaehValidation,
-  SetBulkState
+  SetBulkState,
 } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -21,7 +21,7 @@ import swal from "sweetalert2";
 import AppointmentComponent from "./AppointmentComponent";
 import {
   generateTimeslotsForDoctor,
-  generateReport
+  generateReport,
 } from "./AppointmentHelper";
 import sockets from "../../sockets";
 import { MainContext } from "algaeh-react-components/context";
@@ -50,7 +50,7 @@ class Appointment extends PureComponent {
       width: 0,
       byPassValidation: true,
       patient_name: "",
-      requied_emp_id: "N"
+      requied_emp_id: "N",
     };
     this.appSock = sockets;
   }
@@ -67,10 +67,10 @@ class Appointment extends PureComponent {
       method: "GET",
       redux: {
         type: "VISITTYPE_GET_DATA",
-        mappingName: "visittypes"
-      }
+        mappingName: "visittypes",
+      },
     });
-    this.appSock.on("refresh_appointment", patient => {
+    this.appSock.on("refresh_appointment", (patient) => {
       const { provider_id, sub_department_id } = this.state;
       if (
         sub_department_id === patient.sub_department_id ||
@@ -78,7 +78,7 @@ class Appointment extends PureComponent {
       ) {
         this.setState(
           {
-            byPassValidation: true
+            byPassValidation: true,
           },
           this.getAppointmentSchedule
         );
@@ -99,7 +99,7 @@ class Appointment extends PureComponent {
             provider_id: x.provider_id,
             activeDateHeader: x.schedule_date,
             doctors: x.doctors,
-            byPassValidation: true
+            byPassValidation: true,
           },
           () => this.getAppointmentSchedule()
         );
@@ -118,12 +118,12 @@ class Appointment extends PureComponent {
     ) {
       swalMessage({
         title: "Cannot cancel previous appointments",
-        type: "error"
+        type: "error",
       });
     } else if (row.appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Cannot cancel checked in Patients",
-        type: "error"
+        type: "error",
       });
     } else {
       swal({
@@ -133,36 +133,36 @@ class Appointment extends PureComponent {
         confirmButtonText: "Yes",
         confirmButtonColor: "#44b8bd",
         cancelButtonColor: "#d33",
-        cancelButtonText: "No"
-      }).then(willDelete => {
+        cancelButtonText: "No",
+      }).then((willDelete) => {
         if (willDelete.value) {
           let data = {
             cancel_reason: "Cancelled",
-            hims_f_patient_appointment_id: row.hims_f_patient_appointment_id
+            hims_f_patient_appointment_id: row.hims_f_patient_appointment_id,
           };
           algaehApiCall({
             uri: "/appointment/cancelPatientAppointment",
             module: "frontDesk",
             data: data,
             method: "PUT",
-            onSuccess: response => {
+            onSuccess: (response) => {
               if (response.data.success) {
                 this.setState(
                   {
-                    openPatEdit: false
+                    openPatEdit: false,
                   },
                   () => {
                     this.clearSaveState();
                     swalMessage({
                       title: "Record cancelled successfully . .",
-                      type: "success"
+                      type: "success",
                     });
                   }
                 );
               }
               this.getAppointmentSchedule();
             },
-            onFailure: error => { }
+            onFailure: (error) => {},
           });
         }
       });
@@ -181,7 +181,7 @@ class Appointment extends PureComponent {
     let doc = Enumerable.from(
       this.state.doctors.length !== 0 ? this.state.doctors : null
     )
-      .where(w => w.employee_id === parseInt(id, 10))
+      .where((w) => w.employee_id === parseInt(id, 10))
       .firstOrDefault();
     return doc !== undefined ? doc.full_name : "";
   }
@@ -190,32 +190,32 @@ class Appointment extends PureComponent {
     let dept = Enumerable.from(
       this.state.departments.length !== 0 ? this.state.departments : null
     )
-      .where(w => w.sub_department_id === parseInt(id, 10))
+      .where((w) => w.sub_department_id === parseInt(id, 10))
       .firstOrDefault();
     return dept !== undefined ? dept.sub_department_name : "";
   }
 
   getColorCode(id) {
     return Enumerable.from(this.state.appointmentStatus)
-      .where(w => w.hims_d_appointment_status_id === id)
+      .where((w) => w.hims_d_appointment_status_id === id)
       .firstOrDefault() !== undefined
       ? Enumerable.from(this.state.appointmentStatus)
-        .where(w => w.hims_d_appointment_status_id === id)
-        .firstOrDefault().color_code
+          .where((w) => w.hims_d_appointment_status_id === id)
+          .firstOrDefault().color_code
       : "#ffffff";
   }
 
   patientSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.frontDesk.patients
+        columns: spotlightSearch.frontDesk.patients,
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         // console.log("Selected Row:", row);
         this.setState({
           fromSearch: true,
@@ -228,9 +228,9 @@ class Appointment extends PureComponent {
           contact_number: row.contact_number,
           email: row.email,
           arabic_name: row.arabic_name,
-          title_id: row.title_id
+          title_id: row.title_id,
         });
-      }
+      },
     });
   }
 
@@ -244,21 +244,21 @@ class Appointment extends PureComponent {
           "YYYY-MM-DD"
         ),
         provider_id: this.state.provider_id,
-        sub_department_id: this.state.sub_department_id
+        sub_department_id: this.state.sub_department_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            patientAppointments: response.data.records
+            patientAppointments: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -276,7 +276,7 @@ class Appointment extends PureComponent {
       appointment_remarks: "",
       timeSlots: [],
       edit_appt_date: "",
-      fromSearch: false
+      fromSearch: false,
     });
   }
 
@@ -326,18 +326,16 @@ class Appointment extends PureComponent {
               confirmed: "N",
               cancelled: "N",
               is_stand_by: this.state.is_stand_by,
-              title_id: this.state.title_id
+              title_id: this.state.title_id,
             };
             algaehApiCall({
               uri: "/appointment/addPatientAppointment",
               module: "frontDesk",
               method: "POST",
               data: send_data,
-              onSuccess: response => {
+              onSuccess: (response) => {
                 if (response.data.success) {
-
                   if (this.appSock.connected) {
-
                     this.appSock.emit("appointment_created", send_data);
                   }
                   if (
@@ -348,7 +346,7 @@ class Appointment extends PureComponent {
                     this.clearSaveState();
                     swalMessage({
                       title: "Appointment Created Successfully",
-                      type: "success"
+                      type: "success",
                     });
                     this.setState({ showApt: false });
                     this.getAppointmentSchedule();
@@ -356,20 +354,20 @@ class Appointment extends PureComponent {
                 } else {
                   swalMessage({
                     title: response.data.records.message,
-                    type: "warning"
+                    type: "warning",
                   });
                 }
               },
-              onFailure: error => {
+              onFailure: (error) => {
                 swalMessage({
                   title: error.message,
-                  type: "error"
+                  type: "error",
                 });
-              }
+              },
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -378,22 +376,22 @@ class Appointment extends PureComponent {
       uri: "/department/selectDoctorsAndClinic",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState(
             {
-              departments: response.data.records.departmets
+              departments: response.data.records.departmets,
             },
             () => this.restoreOldState()
           );
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -401,19 +399,19 @@ class Appointment extends PureComponent {
     algaehApiCall({
       uri: "/masters/get/title",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            titles: response.data.records
+            titles: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -422,27 +420,27 @@ class Appointment extends PureComponent {
       uri: "/appointment/getAppointmentStatus",
       module: "frontDesk",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ appointmentStatus: response.data.records }, () => {
             let DefaultStatus = Enumerable.from(this.state.appointmentStatus)
-              .where(w => w.default_status === "Y")
+              .where((w) => w.default_status === "Y")
               .firstOrDefault();
 
             let CheckedIn = Enumerable.from(this.state.appointmentStatus)
-              .where(w => w.default_status === "C")
+              .where((w) => w.default_status === "C")
               .firstOrDefault();
 
             let Reschedule = Enumerable.from(this.state.appointmentStatus)
-              .where(w => w.default_status === "RS")
+              .where((w) => w.default_status === "RS")
               .firstOrDefault();
 
             let Cancelled = Enumerable.from(this.state.appointmentStatus)
-              .where(w => w.default_status === "CAN")
+              .where((w) => w.default_status === "CAN")
               .firstOrDefault();
 
             let NoShow = Enumerable.from(this.state.appointmentStatus)
-              .where(w => w.default_status === "NS")
+              .where((w) => w.default_status === "NS")
               .firstOrDefault();
 
             this.setState({
@@ -466,17 +464,17 @@ class Appointment extends PureComponent {
               noShowId:
                 NoShow !== undefined
                   ? NoShow.hims_d_appointment_status_id
-                  : null
+                  : null,
             });
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -493,7 +491,7 @@ class Appointment extends PureComponent {
           schedule_date: moment(this.state.activeDateHeader).format(
             "YYYY-MM-DD"
           ),
-          provider_id: this.state.provider_id
+          provider_id: this.state.provider_id,
         };
 
         localStorage.setItem(
@@ -504,7 +502,7 @@ class Appointment extends PureComponent {
               "YYYY-MM-DD"
             ),
             provider_id: this.state.provider_id,
-            doctors: this.state.doctors
+            doctors: this.state.doctors,
           })
         );
 
@@ -514,7 +512,7 @@ class Appointment extends PureComponent {
           module: "frontDesk",
           method: "GET",
           data: send_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length > 0) {
               this.setState(
@@ -528,42 +526,42 @@ class Appointment extends PureComponent {
                     width:
                       response.data.records !== undefined
                         ? 318 * response.data.records.length
-                        : 0
+                        : 0,
                   });
                 }
               );
             } else {
               this.setState({
-                appointmentSchedule: []
+                appointmentSchedule: [],
               });
 
               swalMessage({
                 title: "No Schedule Available",
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   onSelectedDateHandler(e) {
     this.setState(
       {
-        activeDateHeader: e.target.getAttribute("date")
+        activeDateHeader: e.target.getAttribute("date"),
       },
       () => {
         this.getAppointmentSchedule();
@@ -579,11 +577,11 @@ class Appointment extends PureComponent {
   deptDropDownHandler(value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
-        .where(w => w.sub_dept_id === this.state.sub_department_id)
+        .where((w) => w.sub_dept_id === this.state.sub_department_id)
         .firstOrDefault();
       this.setState({
         doctors: dept.doctors,
-        department_id: value.selected.department_id
+        department_id: value.selected.department_id,
       });
     });
   }
@@ -601,7 +599,7 @@ class Appointment extends PureComponent {
     if (!e.value) {
       this.setState({
         gender: null,
-        [e.name]: null
+        [e.name]: null,
       });
     } else {
       if (e.selected.title === "Mr" || e.selected.title === "Master") {
@@ -615,7 +613,7 @@ class Appointment extends PureComponent {
       }
       this.setState({
         gender: setGender,
-        [e.name]: e.value
+        [e.name]: e.value,
       });
     }
   }
@@ -623,7 +621,7 @@ class Appointment extends PureComponent {
   handleClose() {
     this.setState({
       showApt: false,
-      openPatEdit: false
+      openPatEdit: false,
     });
     this.clearSaveState();
   }
@@ -633,9 +631,9 @@ class Appointment extends PureComponent {
       state: this,
       callback: () => {
         this.setState({
-          age: moment().diff(this.state.date_of_birth, "years")
+          age: moment().diff(this.state.date_of_birth, "years"),
         });
-      }
+      },
     });
   }
 
@@ -646,12 +644,12 @@ class Appointment extends PureComponent {
       this.setState(
         {
           date_of_birth: null,
-          age: null
+          age: null,
         },
         () => {
           swalMessage({
             title: "Date of Birth must be a Past date",
-            type: "error"
+            type: "error",
           });
         }
       );
@@ -671,9 +669,9 @@ class Appointment extends PureComponent {
       state: this,
       callback: () => {
         this.setState({
-          date_of_birth: birth_date
+          date_of_birth: birth_date,
         });
-      }
+      },
     });
   }
 
@@ -686,14 +684,14 @@ class Appointment extends PureComponent {
     if (inRange) {
       swalMessage({
         title: "Appointment date cannot be past Date.",
-        type: "warning"
+        type: "warning",
       });
       event.target.focus();
       this.setState({
         [event.target.name]: null,
         edit_appt_time: null,
         timeSlots: [],
-        schAvailable: false
+        schAvailable: false,
       });
     } else {
       const provider_id = this.state.edit_provider_id;
@@ -714,7 +712,7 @@ class Appointment extends PureComponent {
     if (timeCheck) {
       swalMessage({
         title: "Patient Appointment is expired",
-        type: "info"
+        type: "info",
       });
     } else {
       this.handleCheckIn(result);
@@ -741,7 +739,7 @@ class Appointment extends PureComponent {
       generatedLi.push({
         day: dt.format("DD"),
         currentdate: dt._d,
-        dayName: dt.format("ddd")
+        dayName: dt.format("ddd"),
       });
       initialDate.setDate(initialDate.getDate() + 1);
     }
@@ -769,8 +767,8 @@ class Appointment extends PureComponent {
                           ? " activeDate CurrentDate"
                           : " activeDate"
                         : _currDate === moment().format("YYYYMMDD")
-                          ? " CurrentDate"
-                          : ""
+                        ? " CurrentDate"
+                        : ""
                     }
                     onClick={this.onSelectedDateHandler.bind(this)}
                   >
@@ -809,12 +807,12 @@ class Appointment extends PureComponent {
       swalMessage({
         title:
           "Only Patients with appointment for today are allowed to checkin",
-        type: "warning"
+        type: "warning",
       });
       return null;
     }
     setGlobal({
-      "FD-STD": "RegistrationPatient"
+      "FD-STD": "RegistrationPatient",
     });
     // for new patient who are not yet registered
     if (!patient.patient_code) {
@@ -857,18 +855,18 @@ class Appointment extends PureComponent {
       (moment(patient.appointment_to_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(patient.appointment_date).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't edit past appointments",
-        type: "error"
+        type: "error",
       });
     } else if (patient.appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Visit already created, cannot edit the appointment",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let openPatEdit = false;
@@ -901,7 +899,7 @@ class Appointment extends PureComponent {
           patient_code: patient.patient_code,
           edit_no_of_slots: patient.number_of_slot,
           edit_is_stand_by: openPatEdit ? "N" : patient.is_stand_by,
-          edit_title_id: patient.title_id
+          edit_title_id: patient.title_id,
         },
         () => {
           if (
@@ -920,7 +918,7 @@ class Appointment extends PureComponent {
   updatePatientAppointment(data) {
     if (data !== null) {
       this.setState({
-        edit_appointment_status_id: data.hims_d_appointment_status_id
+        edit_appointment_status_id: data.hims_d_appointment_status_id,
       });
     }
     AlgaehValidation({
@@ -934,8 +932,8 @@ class Appointment extends PureComponent {
           confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
-          cancelButtonText: "No"
-        }).then(willUpdate => {
+          cancelButtonText: "No",
+        }).then((willUpdate) => {
           let new_to_time = moment(this.state.edit_appt_time, "HH:mm:ss").add(
             this.state.edit_no_of_slots * this.state.slot,
             "minutes"
@@ -945,12 +943,12 @@ class Appointment extends PureComponent {
             if (
               this.state.edit_appointment_status_id === this.state.checkInId &&
               moment(this.state.edit_appt_date).format("YYYYMMDD") !==
-              moment(new Date()).format("YYYYMMDD")
+                moment(new Date()).format("YYYYMMDD")
             ) {
               swalMessage({
                 title:
                   "Only Patients with Today's appointments can be Checked In",
-                type: "warning"
+                type: "warning",
               });
             } else {
               let edit_details = {
@@ -981,7 +979,7 @@ class Appointment extends PureComponent {
                 appointment_remarks: this.state.edit_appointment_remarks,
                 is_stand_by: this.state.edit_is_stand_by,
                 number_of_slot: this.state.edit_no_of_slots,
-                title_id: this.state.edit_title_id
+                title_id: this.state.edit_title_id,
               };
               if (edit_details.appointment_status_id === this.state.checkInId) {
                 this.handleCheckIn(edit_details);
@@ -995,31 +993,31 @@ class Appointment extends PureComponent {
                   module: "frontDesk",
                   method: "PUT",
                   data: edit_details,
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       this.clearSaveState();
                       swalMessage({
                         title: "Appointment Updated Successfully",
-                        type: "success"
+                        type: "success",
                       });
                       this.setState({
-                        openPatEdit: false
+                        openPatEdit: false,
                       });
                       this.getAppointmentSchedule();
                     }
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
               }
             }
           }
         });
-      }
+      },
     });
   }
 
@@ -1045,16 +1043,16 @@ class Appointment extends PureComponent {
       (moment(appt_time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Can't create appointment for past time",
-        type: "error"
+        type: "error",
       });
       this.setState({
-        showApt: false
+        showApt: false,
       });
     } else {
       const to_work_hr = e.currentTarget.getAttribute("to_work_hr");
@@ -1089,7 +1087,7 @@ class Appointment extends PureComponent {
         apptSubDept: sub_dept_id,
         apptSubDeptName: sub_dep_name,
         apptProviderName: doc_name,
-        is_stand_by: is_stand_by
+        is_stand_by: is_stand_by,
       });
     }
   }
@@ -1111,19 +1109,19 @@ class Appointment extends PureComponent {
       (moment(appt_time, "HH:mm:ss").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(appt_date).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot re-schedule past appointments",
-        type: "error"
+        type: "error",
       });
       ev.preventDefault();
     } else if (pat.appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Cannot re-schedule checked In patients",
-        type: "error"
+        type: "error",
       });
       ev.preventDefault();
     } else {
@@ -1145,7 +1143,7 @@ class Appointment extends PureComponent {
         edit_appointment_date: pat.appointment_date,
         patient_code: pat.patient_code,
         edit_no_of_slots: pat.number_of_slot,
-        edit_title_id: pat.title_id
+        edit_title_id: pat.title_id,
       });
     }
   }
@@ -1164,18 +1162,18 @@ class Appointment extends PureComponent {
       (moment(new_from_time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD")
+        moment(new Date()).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Cannot create schedule for past time",
-        type: "error"
+        type: "error",
       });
     } else if (this.state.edit_appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Cannot change schedule for CheckedIn Patients",
-        type: "error"
+        type: "error",
       });
     } else {
       let prov_id = ev.currentTarget.children[1].getAttribute("provider_id");
@@ -1192,7 +1190,7 @@ class Appointment extends PureComponent {
           edit_from_time: moment(new_from_time, "HH:mm a").format("HH:mm:ss"),
           edit_to_time: moment(new_to_time).format("HH:mm:ss"),
           edit_provider_id: prov_id,
-          edit_appointment_status_id: this.state.RescheduleId
+          edit_appointment_status_id: this.state.RescheduleId,
         },
         () => {
           swal({
@@ -1202,8 +1200,8 @@ class Appointment extends PureComponent {
             confirmButtonText: "Yes",
             confirmButtonColor: "#",
             cancelButtonColor: "#d33",
-            cancelButtonText: "No"
-          }).then(willUpdate => {
+            cancelButtonText: "No",
+          }).then((willUpdate) => {
             if (willUpdate.value) {
               let edit_details = {
                 hims_f_patient_appointment_id: this.state.edit_appointment_id,
@@ -1233,7 +1231,7 @@ class Appointment extends PureComponent {
                 cancel_reason: null,
                 appointment_remarks: this.state.edit_appointment_remarks,
                 is_stand_by: "N",
-                number_of_slot: this.state.edit_no_of_slots
+                number_of_slot: this.state.edit_no_of_slots,
               };
 
               algaehApiCall({
@@ -1241,29 +1239,29 @@ class Appointment extends PureComponent {
                 module: "frontDesk",
                 method: "PUT",
                 data: edit_details,
-                onSuccess: response => {
+                onSuccess: (response) => {
                   if (response.data.success) {
                     this.clearSaveState();
                     swalMessage({
                       title: "Appointment Updated Successfully",
-                      type: "success"
+                      type: "success",
                     });
                     this.setState({ openPatEdit: false });
                     this.getAppointmentSchedule();
                   }
                 },
-                onFailure: error => {
+                onFailure: (error) => {
                   swalMessage({
                     title:
                       "Appointment already present for the selected time cannot re-schedule",
-                    type: "error"
+                    type: "error",
                   });
-                }
+                },
               });
             } else {
               swalMessage({
                 title: "Re-Schedule Cancelled",
-                type: "error"
+                type: "error",
               });
             }
           });
@@ -1283,11 +1281,11 @@ class Appointment extends PureComponent {
     }
     const patient = Enumerable.from(patients)
       .where(
-        w =>
+        (w) =>
           (moment(w.appointment_to_time, "hh:mm:ss") >
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") <=
-            moment(data.time, "hh:mm a")) ||
+              moment(data.time, "hh:mm a")) ||
           (moment(w.appointment_from_time, "hh:mm:ss") <=
             moment(data.time, "hh:mm a") &&
             moment(w.appointment_to_time, "hh:mm:ss") >= newEndTime)
@@ -1304,18 +1302,18 @@ class Appointment extends PureComponent {
       patient === null || patient === undefined
         ? "N"
         : patient.is_stand_by === "Y"
-          ? "Y"
-          : patient.cancelled === "Y"
-            ? "N"
-            : null;
+        ? "Y"
+        : patient.cancelled === "Y"
+        ? "N"
+        : null;
 
     let date_time_val =
       (moment(data.time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD");
+        moment(new Date()).format("YYYYMMDD");
 
     if (_isstandby !== null && !date_time_val) {
       return (
@@ -1347,9 +1345,9 @@ class Appointment extends PureComponent {
       (moment(data.time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm") ||
         moment(this.state.activeDateHeader).format("YYYYMMDD") <
-        moment(new Date()).format("YYYYMMDD")) &&
+          moment(new Date()).format("YYYYMMDD")) &&
       moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-      moment(new Date()).format("YYYYMMDD");
+        moment(new Date()).format("YYYYMMDD");
 
     if (!date_time_val) {
       return (
@@ -1392,13 +1390,13 @@ class Appointment extends PureComponent {
                       <i
                         className="fas fa-check"
                         onClick={this.handlePatient.bind(this, item, {
-                          hims_d_appointment_status_id: this.state.checkInId
+                          hims_d_appointment_status_id: this.state.checkInId,
                         })}
                       />
                       <i
                         className="fas fa-clock"
                         onClick={this.handlePatient.bind(this, item, {
-                          hims_d_appointment_status_id: this.state.RescheduleId
+                          hims_d_appointment_status_id: this.state.RescheduleId,
                         })}
                       />
                       <i
@@ -1431,7 +1429,7 @@ class Appointment extends PureComponent {
           ? this.state.appointmentStatus
           : []
       )
-        .where(w => w.hims_d_appointment_status_id === sel_stat_id)
+        .where((w) => w.hims_d_appointment_status_id === sel_stat_id)
         .firstOrDefault();
 
       let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
@@ -1439,12 +1437,12 @@ class Appointment extends PureComponent {
       let status =
         sel_stat_id !== null
           ? Enumerable.from(
-            this.state.appointmentStatus !== undefined
-              ? this.state.appointmentStatus
-              : []
-          )
-            .where(w => w.steps > sel_steps)
-            .toArray()
+              this.state.appointmentStatus !== undefined
+                ? this.state.appointmentStatus
+                : []
+            )
+              .where((w) => w.steps > sel_steps)
+              .toArray()
           : [];
       let isTodayActive = moment(this.state.activeDateHeader).isSame(
         moment(),
@@ -1452,7 +1450,7 @@ class Appointment extends PureComponent {
       );
       if (!isTodayActive) {
         status = status.filter(
-          stat => stat.hims_d_appointment_status_id !== this.state.checkInId
+          (stat) => stat.hims_d_appointment_status_id !== this.state.checkInId
         );
       }
       if (_firstPatient !== undefined) {
@@ -1470,26 +1468,26 @@ class Appointment extends PureComponent {
                 </span>
               </div>
             ) : (
-                <div
-                  appt-pat={JSON.stringify(_firstPatient)}
-                  className="dynPatient"
-                  style={{ background: "#f2f2f2" }}
-                >
-                  <span>
-                    {_firstPatient.patient_name}
-                    <br />
-                    {_firstPatient.contact_number}
-                  </span>
+              <div
+                appt-pat={JSON.stringify(_firstPatient)}
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+              >
+                <span>
+                  {_firstPatient.patient_name}
+                  <br />
+                  {_firstPatient.contact_number}
+                </span>
 
-                  <i
-                    className="fas fa-times"
-                    onClick={this.cancelAppt.bind(this, _firstPatient)}
-                  />
-                  <div className="appStatusListCntr">
-                    <i className="fas fa-clock" />
-                    <ul className="appStatusList">
-                      {status !== undefined
-                        ? status.map((data, index) => (
+                <i
+                  className="fas fa-times"
+                  onClick={this.cancelAppt.bind(this, _firstPatient)}
+                />
+                <div className="appStatusListCntr">
+                  <i className="fas fa-clock" />
+                  <ul className="appStatusList">
+                    {status !== undefined
+                      ? status.map((data, index) => (
                           <li
                             key={index}
                             onClick={this.handlePatient.bind(
@@ -1500,28 +1498,28 @@ class Appointment extends PureComponent {
                           >
                             <span
                               style={{
-                                backgroundColor: data.color_code
+                                backgroundColor: data.color_code,
                               }}
                             >
                               {data.statusDesc}
                             </span>
                           </li>
                         ))
-                        : null}
-                      <li
-                        onClick={generateReport.bind(
-                          this,
-                          _firstPatient,
-                          "appointmentSlip",
-                          "Appointment Slip"
-                        )}
-                      >
-                        <span>Print App. Slip</span>
-                      </li>
-                    </ul>
-                  </div>
+                      : null}
+                    <li
+                      onClick={generateReport.bind(
+                        this,
+                        _firstPatient,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )}
+                    >
+                      <span>Print App. Slip</span>
+                    </li>
+                  </ul>
                 </div>
-              )}
+              </div>
+            )}
             {this.loadSubStandBy(standByPatients)}
           </React.Fragment>
         );
@@ -1548,24 +1546,24 @@ class Appointment extends PureComponent {
   generateChildren(data) {
     const colspan = data.mark_as_break
       ? {
-        colSpan: 2,
-        style: {
-          width: "300px",
-          background: "rgb(255, 238, 214)",
-          textTransform: "uppercase"
+          colSpan: 2,
+          style: {
+            width: "300px",
+            background: "rgb(255, 238, 214)",
+            textTransform: "uppercase",
+          },
         }
-      }
       : {};
     const _patientList = this.plotPatients({
       time: data.time,
       slot: data.slot,
-      patients: data.patients
+      patients: data.patients,
     });
     const patient =
       _patientList !== null
         ? Enumerable.from(_patientList)
-          .where(w => w.is_stand_by === "N" && w.cancelled === "N")
-          .firstOrDefault()
+            .where((w) => w.is_stand_by === "N" && w.cancelled === "N")
+            .firstOrDefault()
         : undefined;
 
     const sel_stat_id =
@@ -1576,7 +1574,7 @@ class Appointment extends PureComponent {
         ? this.state.appointmentStatus
         : []
     )
-      .where(w => w.hims_d_appointment_status_id === sel_stat_id)
+      .where((w) => w.hims_d_appointment_status_id === sel_stat_id)
       .firstOrDefault();
 
     let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
@@ -1584,26 +1582,26 @@ class Appointment extends PureComponent {
     let status =
       sel_stat_id !== null
         ? Enumerable.from(
-          this.state.appointmentStatus !== undefined
-            ? this.state.appointmentStatus
-            : []
-        )
-          .where(w => w.steps > sel_steps)
-          .toArray()
+            this.state.appointmentStatus !== undefined
+              ? this.state.appointmentStatus
+              : []
+          )
+            .where((w) => w.steps > sel_steps)
+            .toArray()
         : [];
 
     const _standByPatients =
       _patientList !== null
         ? Enumerable.from(_patientList)
-          .where(w => w.is_stand_by === "Y" && w.cancelled === "N")
-          .toArray()
+            .where((w) => w.is_stand_by === "Y" && w.cancelled === "N")
+            .toArray()
         : undefined;
 
     let brk_bg_color = data.mark_as_break
       ? "activeSlotOpacity"
       : this.isInactiveTimeSlot(data.time)
-        ? "inActiveSlotOpacity"
-        : "activeSlotOpacity";
+      ? "inActiveSlotOpacity"
+      : "activeSlotOpacity";
 
     let isTodayActive = moment(this.state.activeDateHeader).isSame(
       moment(),
@@ -1611,7 +1609,7 @@ class Appointment extends PureComponent {
     );
     if (!isTodayActive) {
       status = status.filter(
-        stat => stat.hims_d_appointment_status_id !== this.state.checkInId
+        (stat) => stat.hims_d_appointment_status_id !== this.state.checkInId
       );
     }
 
@@ -1619,34 +1617,48 @@ class Appointment extends PureComponent {
       patient != null
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
-          ? "#f2f2f2"
-          : this.isInactiveTimeSlot(data.time)
-            ? "#fbfbfb"
-            : "#ffffff";
+        ? "#f2f2f2"
+        : this.isInactiveTimeSlot(data.time)
+        ? "#fbfbfb"
+        : "#ffffff";
 
     return (
-      <tr
-        className={brk_bg_color}
-        style={{ cursor: "pointer" }}
-        key={data.counter}
-      >
-        <td
-          className="tg-baqh" //highlight-Drop
-          {...colspan}
-          onDrop={this.drop.bind(this)}
-          onDragOver={this.allowDrop.bind(this)}
-          onDragEnter={this.enterDrag.bind(this)}
-          onDragLeave={this.leaveDrag.bind(this)}
+      <>
+        <tr>
+          <td>
+            {" "}
+            <span
+              className="schedulePosition"
+              style={{
+                top: 130,
+              }}
+            >
+              <i className="fas fa-caret-left"></i>
+            </span>
+          </td>
+        </tr>
+        <tr
+          className={brk_bg_color}
+          style={{ cursor: "pointer" }}
+          key={data.counter}
         >
-          {data.mark_as_break === false ? (
-            <span className="dynSlot">{data.time}</span>
-          ) : null}
+          <td
+            className="tg-baqh" //highlight-Drop
+            {...colspan}
+            onDrop={this.drop.bind(this)}
+            onDragOver={this.allowDrop.bind(this)}
+            onDragEnter={this.enterDrag.bind(this)}
+            onDragLeave={this.leaveDrag.bind(this)}
+          >
+            {data.mark_as_break === false ? (
+              <span className="dynSlot">{data.time}</span>
+            ) : null}
 
-          {data.mark_as_break === false ? (
-            <React.Fragment>
-              {this.plotAddIcon(patient, data)}
+            {data.mark_as_break === false ? (
+              <React.Fragment>
+                {this.plotAddIcon(patient, data)}
 
-              {patient != null &&
+                {patient != null &&
                 patient.is_stand_by === "N" &&
                 patient.cancelled === "N" ? (
                   patient.appointment_status_id === this.state.noShowId ? (
@@ -1660,30 +1672,30 @@ class Appointment extends PureComponent {
                       </span>
                     </div>
                   ) : (
-                      <div
-                        appt-pat={JSON.stringify(patient)}
-                        className="dynPatient"
-                        style={{ background: bg_color }}
-                        draggable={true}
-                        onDragStart={this.drag.bind(this)}
+                    <div
+                      appt-pat={JSON.stringify(patient)}
+                      className="dynPatient"
+                      style={{ background: bg_color }}
+                      draggable={true}
+                      onDragStart={this.drag.bind(this)}
+                    >
+                      <span
+                      // onClick={this.openEditModal.bind(this, patient, null)}
                       >
-                        <span
-                        // onClick={this.openEditModal.bind(this, patient, null)}
-                        >
-                          {patient.patient_name}
-                          <br />
-                          {patient.contact_number}
-                        </span>
+                        {patient.patient_name}
+                        <br />
+                        {patient.contact_number}
+                      </span>
 
-                        <i
-                          className="fas fa-times"
-                          onClick={this.cancelAppt.bind(this, patient)}
-                        />
-                        <div className="appStatusListCntr">
-                          <i className="fas fa-clock" />
-                          <ul className="appStatusList">
-                            {status !== undefined
-                              ? status.map((data, index) => (
+                      <i
+                        className="fas fa-times"
+                        onClick={this.cancelAppt.bind(this, patient)}
+                      />
+                      <div className="appStatusListCntr">
+                        <i className="fas fa-clock" />
+                        <ul className="appStatusList">
+                          {status !== undefined
+                            ? status.map((data, index) => (
                                 <li
                                   key={index}
                                   onClick={this.handlePatient.bind(
@@ -1694,51 +1706,52 @@ class Appointment extends PureComponent {
                                 >
                                   <span
                                     style={{
-                                      backgroundColor: data.color_code
+                                      backgroundColor: data.color_code,
                                     }}
                                   >
                                     {data.statusDesc}
                                   </span>
                                 </li>
                               ))
-                              : null}
-                            <li
-                              onClick={generateReport.bind(
-                                this,
-                                patient,
-                                "appointmentSlip",
-                                "Appointment Slip"
-                              )}
-                            >
-                              <span>Print App. Slip</span>
-                            </li>
-                          </ul>
-                        </div>
+                            : null}
+                          <li
+                            onClick={generateReport.bind(
+                              this,
+                              patient,
+                              "appointmentSlip",
+                              "Appointment Slip"
+                            )}
+                          >
+                            <span>Print App. Slip</span>
+                          </li>
+                        </ul>
                       </div>
-                    )
+                    </div>
+                  )
                 ) : null}
-            </React.Fragment>
-          ) : (
+              </React.Fragment>
+            ) : (
               <React.Fragment>
                 <span>Break Time</span>
               </React.Fragment>
             )}
-        </td>
-
-        {data.mark_as_break === false ? (
-          <td className="tg-baqh">
-            <span className="dynSlot">{data.time}</span>
-            {this.plotStandByAddIcon(patient, data)}
-            {this.renderStandByMultiple(_standByPatients)}
           </td>
-        ) : null}
-      </tr>
+
+          {data.mark_as_break === false ? (
+            <td className="tg-baqh">
+              <span className="dynSlot">{data.time}</span>
+              {this.plotStandByAddIcon(patient, data)}
+              {this.renderStandByMultiple(_standByPatients)}
+            </td>
+          ) : null}
+        </tr>
+      </>
     );
   }
 
   nullifyState(name) {
     this.setState({
-      [name]: null
+      [name]: null,
     });
   }
 
@@ -1749,22 +1762,22 @@ class Appointment extends PureComponent {
     let send_data = {
       sub_dept_id: this.state.sub_department_id,
       schedule_date: moment(this.state.edit_appt_date).format("YYYY-MM-DD"),
-      provider_id: this.state.edit_provider_id
+      provider_id: this.state.edit_provider_id,
     };
     algaehApiCall({
       uri: "/appointment/getDoctorScheduleDateWise",
       module: "frontDesk",
       method: "GET",
       data: send_data,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success && response.data.records.length > 0) {
           schedule = response.data.records;
           data = schedule.filter(
-            doc => doc.provider_id === this.state.edit_provider_id
+            (doc) => doc.provider_id === this.state.edit_provider_id
           );
           const result = generateTimeslotsForDoctor(data[0]);
           let timeSlots = [];
-          result.forEach(time => {
+          result.forEach((time) => {
             if (time !== "break") {
               if (
                 !this.isInactiveTimeSlot(time, apptDate) &&
@@ -1772,13 +1785,13 @@ class Appointment extends PureComponent {
                   this.plotPatients({
                     time,
                     slot: data[0].slot,
-                    patients: data[0].patientList
+                    patients: data[0].patientList,
                   })
                 )
               ) {
                 timeSlots.push({
                   name: moment(time, "HH:mm:ss").format("hh:mm a"),
-                  value: time
+                  value: time,
                 });
               }
             }
@@ -1787,24 +1800,24 @@ class Appointment extends PureComponent {
         } else {
           swalMessage({
             title: "There is no schedule Available for the doctor",
-            type: "error"
+            type: "error",
           });
           return this.setState({
             timeSlots: [],
-            schAvailable: false
+            schAvailable: false,
           });
         }
       },
-      onFailure: response => {
+      onFailure: (response) => {
         swalMessage({
           title: "There is no schedule Available for the doctor",
-          type: "error"
+          type: "error",
         });
         return this.setState({
           timeSlots: [],
-          schAvailable: false
+          schAvailable: false,
         });
-      }
+      },
     });
   }
 
@@ -1821,19 +1834,19 @@ class Appointment extends PureComponent {
       sch_header_id,
       sch_detail_id,
       sub_dept_id,
-      patientList
+      patientList,
     } = data;
 
     const timeSlots = generateTimeslotsForDoctor(data);
     let isPrevbreak = null;
     let count = 0;
     let tds = [];
-    timeSlots.forEach(time => {
+    timeSlots.forEach((time) => {
       let isBreak = time === "break";
       if (isBreak) {
         isPrevbreak = {
           counter: count,
-          mark_as_break: isBreak
+          mark_as_break: isBreak,
         };
       } else {
         if (isPrevbreak !== null) {
@@ -1856,7 +1869,7 @@ class Appointment extends PureComponent {
             sch_detail_id,
             sub_dept_id,
             mark_as_break: isBreak,
-            patients: patientList
+            patients: patientList,
           })
         );
       }
@@ -1871,23 +1884,23 @@ class Appointment extends PureComponent {
       <AppointmentComponent
         state={this.state}
         setState={this.setState}
-        texthandle={e => this.texthandle(e)}
-        handleClose={e => this.handleClose(e)}
-        editDateHandler={selectedDate => this.editDateHandler(selectedDate)}
+        texthandle={(e) => this.texthandle(e)}
+        handleClose={(e) => this.handleClose(e)}
+        editDateHandler={(selectedDate) => this.editDateHandler(selectedDate)}
         editDateValidate={this.editDateValidate}
-        dropDownHandle={e => this.dropDownHandle(e)}
-        nullifyState={name => this.nullifyState(name)}
-        updatePatientAppointment={data => this.updatePatientAppointment(data)}
+        dropDownHandle={(e) => this.dropDownHandle(e)}
+        nullifyState={(name) => this.nullifyState(name)}
+        updatePatientAppointment={(data) => this.updatePatientAppointment(data)}
         ageHandler={() => this.ageHandler()}
-        dobHandler={e => this.dobHandler(e)}
+        dobHandler={(e) => this.dobHandler(e)}
         patientSearch={() => this.patientSearch()}
-        validateAge={e => this.validateAge(e)}
-        deptDropDownHandler={value => this.deptDropDownHandler(value)}
+        validateAge={(e) => this.validateAge(e)}
+        deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
         getAppointmentSchedule={() => this.getAppointmentSchedule()}
-        addPatientAppointment={e => this.addPatientAppointment(e)}
-        monthChangeHandler={e => this.monthChangeHandler(e)}
+        addPatientAppointment={(e) => this.addPatientAppointment(e)}
+        monthChangeHandler={(e) => this.monthChangeHandler(e)}
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
-        generateTimeslots={data => this.generateTimeslots(data)}
+        generateTimeslots={(data) => this.generateTimeslots(data)}
         AppointmentSearch={(result, name) =>
           this.AppointmentSearch(result, name)
         }
@@ -1899,14 +1912,14 @@ class Appointment extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    visittypes: state.visittypes
+    visittypes: state.visittypes,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getVisittypes: AlgaehActions
+      getVisittypes: AlgaehActions,
     },
     dispatch
   );
