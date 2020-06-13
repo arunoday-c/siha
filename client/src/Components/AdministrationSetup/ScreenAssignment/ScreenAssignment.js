@@ -6,7 +6,7 @@ import {
   ScreenAssignmentEvents,
   getComponentsForScreen,
   assignLandingPage,
-  updateScreenElementRoles
+  updateScreenElementRoles,
 } from "./ScreenAssignmentEvents";
 import { MainContext } from "algaeh-react-components/context";
 import { Checkbox, Button } from "algaeh-react-components";
@@ -33,7 +33,7 @@ class ScreenAssignment extends Component {
       assignedScrens: [],
       landing_page: undefined,
       assignedScreenElements: [],
-      loading_update_element: false
+      loading_update_element: false,
     };
   }
 
@@ -72,11 +72,11 @@ class ScreenAssignment extends Component {
   onSearchAllModules(e) {
     const value = e.target.value;
     let result = [];
-    let userMenu = this.context.userMenu.filter(f => f.module_code !== "APM");
+    let userMenu = this.context.userMenu.filter((f) => f.module_code !== "APM");
     if (value !== "") {
-      result = userMenu.filter(f => {
+      result = userMenu.filter((f) => {
         const screens = f.ScreenList.filter(
-          s =>
+          (s) =>
             s.screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
             s.s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1
         );
@@ -91,7 +91,7 @@ class ScreenAssignment extends Component {
     }
     this.setState({
       modules: result,
-      selectedText: value
+      selectedText: value,
     });
   }
   checkAllScreenWise(sub_menu, e) {
@@ -105,7 +105,7 @@ class ScreenAssignment extends Component {
     let screens = existingModules[sub_menu.screen_code];
     existingModules[sub_menu.screen_code] = {
       ...screens,
-      [sub_menu.component_code]: true
+      [sub_menu.component_code]: true,
     };
 
     this.setState({ selectedScreen: { ...existingModules } });
@@ -129,13 +129,13 @@ class ScreenAssignment extends Component {
 
   onClickScreenToComponents(data, e) {
     getComponentsForScreen(data.screen_id)
-      .then(result => {
+      .then((result) => {
         this.setState({ components: result, selectedScreen: data });
       })
-      .catch(error => {
+      .catch((error) => {
         swalMessage({
           title: error,
-          type: "error"
+          type: "error",
         });
       });
   }
@@ -159,7 +159,7 @@ class ScreenAssignment extends Component {
               dataSource: {
                 textField: "app_group_name",
                 valueField: "algaeh_d_app_group_id",
-                data: this.state.groups
+                data: this.state.groups,
               },
               onChange: this.dropDownEvent.bind(this),
               onClear: () => {
@@ -168,9 +168,9 @@ class ScreenAssignment extends Component {
                   role_id: null,
                   module_id: null,
                   roles: [],
-                  ScreenList: []
+                  ScreenList: [],
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
@@ -183,16 +183,16 @@ class ScreenAssignment extends Component {
               dataSource: {
                 textField: "role_name",
                 valueField: "app_d_app_roles_id",
-                data: this.state.roles
+                data: this.state.roles,
               },
               onChange: this.dropDownEvent.bind(this),
               onClear: () => {
                 this.setState({
                   role_id: null,
                   module_id: null,
-                  ScreenList: []
+                  ScreenList: [],
                 });
-              }
+              },
             }}
           />{" "}
           <AlagehAutoComplete
@@ -205,15 +205,15 @@ class ScreenAssignment extends Component {
               dataSource: {
                 textField: "module_name",
                 valueField: "algaeh_d_module_id",
-                data: this.state.algaeh_modules
+                data: this.state.algaeh_modules,
               },
               onChange: this.dropDownEvent.bind(this),
               onClear: () => {
                 this.setState({
                   module_id: null,
-                  ScreenList: []
+                  ScreenList: [],
                 });
-              }
+              },
             }}
           />
           <div className="col">
@@ -235,7 +235,7 @@ class ScreenAssignment extends Component {
                 div={{ className: "col-10 mandatory" }}
                 label={{
                   forceLabel: "Assign Landing Screen",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "landing_page",
@@ -244,9 +244,9 @@ class ScreenAssignment extends Component {
                   dataSource: {
                     textField: "screen_name",
                     valueField: "algaeh_app_screens_id",
-                    data: this.state.assignedScrens
+                    data: this.state.assignedScrens,
                   },
-                  onChange: this.dropDownEvent.bind(this)
+                  onChange: this.dropDownEvent.bind(this),
                 }}
               />
               <div className="col-2">
@@ -272,18 +272,26 @@ class ScreenAssignment extends Component {
                       Define Screen/Components
                     </h3>
                   </div>
+                  <div className="actions">
+                    <div className="col">
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input type="checkbox" value="" name="" />
+                          <span>Select All</span>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="portlet-body">
-                  {" "}
-                  <div className="row margin-top-15"></div>
                   <div className="row">
                     <div className="col-12">
                       <div className="moduleList list-group-check">
                         <input
                           type="text"
                           className="moduleSearchInput"
-                          placeholder="Search Module"
+                          placeholder="Search Screen/Components"
                           onChange={this.onSearchAllModules.bind(this)}
                           disabled={
                             this.state.ScreenList.length === 0 ? true : false
@@ -358,6 +366,16 @@ class ScreenAssignment extends Component {
                     <h3 className="caption-subject">
                       Define Element Permissions for Role
                     </h3>
+                  </div>{" "}
+                  <div className="actions">
+                    <div className="col">
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input type="checkbox" value="" name="" />
+                          <span>Select All</span>
+                        </label>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="portlet-body">
@@ -365,12 +383,22 @@ class ScreenAssignment extends Component {
                     {" "}
                     <div className="col-12">
                       <div className="moduleList list-group-check">
-                        <ul className="mainmenu" style={{ maxHeight: "58vh" }}>
-                          {this.state.assignedScreenElements.map(element => {
+                        <input
+                          type="text"
+                          className="moduleSearchInput"
+                          placeholder="Search Element Permissions"
+                          // onChange={this.onSearchAllModules.bind(this)}
+                          // disabled={
+                          //   this.state.ScreenList.length === 0 ? true : false
+                          // }
+                        />
+
+                        <ul className="mainmenu">
+                          {this.state.assignedScreenElements.map((element) => {
                             const {
                               algaeh_app_screens_id,
                               screen_name,
-                              component
+                              component,
                             } = element;
                             return (
                               <li key={algaeh_app_screens_id}>
@@ -378,11 +406,11 @@ class ScreenAssignment extends Component {
                                   <span> {screen_name}</span>
                                 </label>
                                 <ul className="submenu">
-                                  {component.map(comp => {
+                                  {component.map((comp) => {
                                     const {
                                       component_name,
                                       component_code,
-                                      elements
+                                      elements,
                                     } = comp;
                                     return (
                                       <li key={component_code}>
@@ -390,12 +418,12 @@ class ScreenAssignment extends Component {
                                           <span> {component_name}</span>
                                         </label>
                                         <ul className="submenu">
-                                          {elements.map(items => {
+                                          {elements.map((items) => {
                                             const {
                                               algaeh_d_app_scrn_elements_id,
                                               screen_element_name,
                                               stages,
-                                              checked
+                                              checked,
                                             } = items;
                                             return (
                                               <React.Fragment
@@ -416,31 +444,31 @@ class ScreenAssignment extends Component {
                                                     </Checkbox>
                                                   </li>
                                                 ) : (
-                                                    <React.Fragment>
-                                                      {stages.map(stage => {
-                                                        const {
-                                                          checked,
-                                                          value,
-                                                          text
-                                                        } = stage;
-                                                        return (
-                                                          <li key={value}>
-                                                            <Checkbox
-                                                              defaultChecked={
-                                                                checked
-                                                              }
-                                                              onChange={this.onClickElementClick.bind(
-                                                                this,
-                                                                stage
-                                                              )}
-                                                            >
-                                                              {text}
-                                                            </Checkbox>
-                                                          </li>
-                                                        );
-                                                      })}
-                                                    </React.Fragment>
-                                                  )}
+                                                  <React.Fragment>
+                                                    {stages.map((stage) => {
+                                                      const {
+                                                        checked,
+                                                        value,
+                                                        text,
+                                                      } = stage;
+                                                      return (
+                                                        <li key={value}>
+                                                          <Checkbox
+                                                            defaultChecked={
+                                                              checked
+                                                            }
+                                                            onChange={this.onClickElementClick.bind(
+                                                              this,
+                                                              stage
+                                                            )}
+                                                          >
+                                                            {text}
+                                                          </Checkbox>
+                                                        </li>
+                                                      );
+                                                    })}
+                                                  </React.Fragment>
+                                                )}
                                               </React.Fragment>
                                             );
                                           })}
@@ -470,12 +498,12 @@ class ScreenAssignment extends Component {
             </div>
           </div>
         ) : (
-            <div className="selectGroupRole">
-              {" "}
-              <h5>Select a Group & Role</h5>
-              <p>To the define Screens/Component/Element/Authorizations</p>
-            </div>
-          )}
+          <div className="selectGroupRole">
+            {" "}
+            <h5>Select a Group & Role</h5>
+            <p>To the define Screens/Component/Element/Authorizations</p>
+          </div>
+        )}
       </div>
     );
   }
