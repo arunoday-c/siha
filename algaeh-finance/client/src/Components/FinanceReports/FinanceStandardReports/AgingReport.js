@@ -114,7 +114,7 @@ export default function AgingReport({ style, result, layout, type, dates }) {
             {/* Twareat Medical Centre */}
           </div>
           <div>
-            {address1 + address2}
+            {address1}, {address2}
             {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>
