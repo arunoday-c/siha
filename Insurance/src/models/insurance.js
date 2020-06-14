@@ -128,12 +128,11 @@ export default {
         qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
       }
 
+      // left join finance_account_head P on I.head_id=P.finance_account_head_id\
+      //     left join finance_account_child C on I.child_id=C.finance_account_child_id \ 
       _mysql
         .executeQuery({
-          query: `select I.*, P.account_name as insurance_head_account,C.child_name as insurance_child_account  from hims_d_insurance_sub I \
-          left join finance_account_head P on I.head_id=P.finance_account_head_id\
-          left join finance_account_child C on I.child_id=C.finance_account_child_id \ 
-          where record_status='A' ${qryStr} `,
+          query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
 
           printQuery: true
         })
@@ -163,9 +162,9 @@ export default {
             "INSERT INTO hims_d_insurance_provider(`insurance_provider_code`,`insurance_provider_name`,`arabic_provider_name`,\
           `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`, `payer_id`,\
           `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
-          `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`company_service_price_type`,`ins_rej_per`,`effective_start_date`,\
-          `effective_end_date`,`created_by`)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`company_service_price_type`,`ins_rej_per`,\
+          `prefix`,`effective_start_date`, `effective_end_date`,`created_by`)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputparam.insurance_provider_code,
             inputparam.insurance_provider_name,
@@ -190,6 +189,7 @@ export default {
             inputparam.resubmit_all,
             inputparam.company_service_price_type,
             inputparam.ins_rej_per,
+            inputparam.prefix,
             inputparam.effective_start_date,
             inputparam.effective_end_date,
             inputparam.created_by
@@ -224,8 +224,8 @@ export default {
             "update hims_d_insurance_provider SET `insurance_provider_code`=?,`insurance_provider_name`=?,`arabic_provider_name`=?,\
           `deductible_proc`=?,`deductible_lab`=?,`co_payment`=?,`insurance_type`=?,`package_claim`=?,`hospital_id`=?, `payer_id`=?,\
           `credit_period`=?,`insurance_limit`=?,`payment_type`=?,`insurance_remarks`=?,`cpt_mandate`=?,`child_id`=?,`currency`=?,\
-          `preapp_valid_days`=?,`claim_submit_days`=?,`lab_result_check`=?,`resubmit_all`=?,`company_service_price_type`=?,`ins_rej_per`=?,`effective_start_date`=?,\
-          `effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_provider_id`=? AND `record_status`='A'",
+          `preapp_valid_days`=?,`claim_submit_days`=?,`lab_result_check`=?,`resubmit_all`=?,`company_service_price_type`=?,`ins_rej_per`=?,\
+          `prefix`=?, `effective_start_date`=?, `effective_end_date`=?,`updated_by`=? WHERE  `hims_d_insurance_provider_id`=? AND `record_status`='A'",
           values: [
             inputparam.insurance_provider_code,
             inputparam.insurance_provider_name,
@@ -250,6 +250,7 @@ export default {
             inputparam.resubmit_all,
             inputparam.company_service_price_type,
             inputparam.ins_rej_per,
+            inputparam.prefix,
             inputparam.effective_start_date,
             inputparam.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
@@ -286,10 +287,7 @@ export default {
         "card_format",
         "transaction_number",
         "effective_start_date",
-        "effective_end_date",
-
-        "head_id",
-        "child_id"
+        "effective_end_date"
       ];
 
       _mysql
@@ -884,7 +882,7 @@ export default {
             qryStr,
           values: [val_inputs],
 
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

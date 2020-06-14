@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import moment from "moment";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehLabel,
   AlgaehDateHandler,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
@@ -14,6 +14,24 @@ import "./appointment.scss";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {
+  useLayoutEffect(() => {
+    const getAllTables = document.getElementsByTagName("table");
+    for (let i = 0; i < getAllTables.length; i++) {
+      const table = getAllTables[i];
+      const td = table.querySelector("td[activetime='true']");
+      if (td === null) {
+        break;
+      }
+      const offBody = table.offsetTop;
+      const offElement = td.parentNode.offsetTop;
+      const topOffSet = offElement - offBody; //td.offsetTop;
+      td.firstChild.setAttribute(
+        "style",
+        `top:${td.offsetTop}px;display:block;`
+      );
+      table.lastElementChild.scroll(0, topOffSet);
+    }
+  }, [props.state.appointmentSchedule]);
   return (
     <div>
       <div className="appointment">
@@ -29,7 +47,7 @@ function AppointmentComponent(props) {
               // })}
               title="Reschedule Patient"
               events={{
-                onClose: props.handleClose
+                onClose: props.handleClose,
               }}
               openPopup={props.state.openPatEdit}
             >
@@ -39,11 +57,11 @@ function AppointmentComponent(props) {
                     <div className="row margin-top-15">
                       <AlagehFormGroup
                         div={{
-                          className: "col-6  form-group mandatory"
+                          className: "col-6  form-group mandatory",
                         }}
                         label={{
                           fieldName: "full_name",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
@@ -51,35 +69,35 @@ function AppointmentComponent(props) {
                           value: props.state.edit_patient_name,
                           disabled: true,
                           events: {
-                            onChange: props.texthandle
-                          }
+                            onChange: props.texthandle,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{
-                          className: "col-6 form-group mandatory"
+                          className: "col-6 form-group mandatory",
                         }}
                         label={{
                           fieldName: "contact_number",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "contact_number",
                           others: {
                             type: "number",
-                            disabled: true
+                            disabled: true,
                           },
                           value: props.state.edit_contact_number,
                           events: {
-                            onChange: props.texthandle
-                          }
+                            onChange: props.texthandle,
+                          },
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group mandatory" }}
                         label={{
-                          forceLabel: "Choose Doctor"
+                          forceLabel: "Choose Doctor",
                         }}
                         selector={{
                           name: "edit_provider_id",
@@ -88,30 +106,30 @@ function AppointmentComponent(props) {
                           dataSource: {
                             textField: "full_name",
                             valueField: "provider_id",
-                            data: props.state.doctors
+                            data: props.state.doctors,
                           },
                           onChange: props.dropDownHandle,
                           onClear: () => props.nullifyState("provider_id"),
-                          autoComplete: "off"
+                          autoComplete: "off",
                         }}
                       />
                       <AlgaehDateHandler
                         div={{ className: "col-6 form-group mandatory" }}
                         label={{
                           fieldName: "appoDate",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "edit_appt_date",
                           others: {
-                            disabled: false
-                          }
+                            disabled: false,
+                          },
                         }}
                         minDate={new Date()}
                         events={{
                           onChange: props.editDateHandler,
-                          onBlur: props.editDateValidate
+                          onBlur: props.editDateValidate,
                         }}
                         value={props.state.edit_appt_date}
                       />
@@ -121,7 +139,7 @@ function AppointmentComponent(props) {
                         div={{ className: "col-6 form-group mandatory" }}
                         label={{
                           fieldName: "appoTime",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "edit_appt_time",
@@ -130,20 +148,20 @@ function AppointmentComponent(props) {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: props.state.timeSlots
+                            data: props.state.timeSlots,
                           },
                           others: {
-                            disabled: !props.state.schAvailable
+                            disabled: !props.state.schAvailable,
                           },
                           onChange: props.dropDownHandle,
-                          sort: "off"
+                          sort: "off",
                         }}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-6 form-group mandatory " }}
                         label={{
                           fieldName: "selectSlot",
-                          isImp: true
+                          isImp: true,
                         }}
                         selector={{
                           name: "edit_no_of_slots",
@@ -152,16 +170,16 @@ function AppointmentComponent(props) {
                           dataSource: {
                             textField: "name",
                             valueField: "value",
-                            data: GlobalVariables.NO_OF_SLOTS
+                            data: GlobalVariables.NO_OF_SLOTS,
                           },
                           others: {
                             checkvalidation: "$value >" + props.state.maxSlots,
                             errormessage:
                               "Maximum " +
                               props.state.maxSlots +
-                              " slot(s) avilable "
+                              " slot(s) avilable ",
                           },
-                          onChange: props.dropDownHandle
+                          onChange: props.dropDownHandle,
                         }}
                       />
                     </div>
@@ -175,7 +193,7 @@ function AppointmentComponent(props) {
                       className="btn btn-primary"
                     >
                       {getLabelFromLanguage({
-                        fieldName: "btn_update"
+                        fieldName: "btn_update",
                       })}
                     </button>
                     <button
@@ -184,7 +202,7 @@ function AppointmentComponent(props) {
                       className="btn btn-other"
                     >
                       {getLabelFromLanguage({
-                        fieldName: "btn_close"
+                        fieldName: "btn_close",
                       })}
                     </button>
                   </div>
@@ -197,10 +215,10 @@ function AppointmentComponent(props) {
             <AlgaehModalPopUp
               class="appoPopupWidth"
               title={getLabelFromLanguage({
-                fieldName: "bookAppo"
+                fieldName: "bookAppo",
               })}
               events={{
-                onClose: props.handleClose
+                onClose: props.handleClose,
               }}
               openPopup={props.state.showApt}
             >
@@ -210,7 +228,7 @@ function AppointmentComponent(props) {
                     <div className="col-2 form-group">
                       <AlgaehLabel
                         label={{
-                          fieldName: "appoDate"
+                          fieldName: "appoDate",
                         }}
                       />
                       <h6>
@@ -223,7 +241,7 @@ function AppointmentComponent(props) {
                     <div className="col-2 form-group">
                       <AlgaehLabel
                         label={{
-                          fieldName: "appoTime"
+                          fieldName: "appoTime",
                         }}
                       />
                       <h6>{props.state.apptFromTime}</h6>
@@ -231,11 +249,11 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col-2  form-group mandatory"
+                        className: "col-2  form-group mandatory",
                       }}
                       label={{
                         fieldName: "selectSlot",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "no_of_slots",
@@ -244,9 +262,9 @@ function AppointmentComponent(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.NO_OF_SLOTS
+                          data: GlobalVariables.NO_OF_SLOTS,
                         },
-                        onChange: props.dropDownHandle
+                        onChange: props.dropDownHandle,
                       }}
                     />
 
@@ -264,11 +282,11 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehAutoComplete
                       div={{
-                        className: "col-2  form-group mandatory"
+                        className: "col-2  form-group mandatory",
                       }}
                       label={{
                         fieldName: "title_id",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "title_id",
@@ -277,54 +295,54 @@ function AppointmentComponent(props) {
                         dataSource: {
                           textField: "title",
                           valueField: "his_d_title_id",
-                          data: props.state.titles
+                          data: props.state.titles,
                         },
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
                         onChange: props.dropDownHandle,
-                        onClear: props.dropDownHandle
+                        onClear: props.dropDownHandle,
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{
-                        className: "col-5  form-group mandatory"
+                        className: "col-5  form-group mandatory",
                       }}
                       label={{
                         fieldName: "full_name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "patient_name",
                         value: props.state.patient_name,
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
                         events: {
-                          onChange: props.texthandle
-                        }
+                          onChange: props.texthandle,
+                        },
                       }}
                     />
                     <AlagehFormGroup
                       div={{
-                        className: "col-5  form-group mandatory arabic-txt-fld"
+                        className: "col-5  form-group mandatory arabic-txt-fld",
                       }}
                       label={{
                         fieldName: "arabic_name",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "arabic_name",
                         value: props.state.arabic_name,
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
                         events: {
-                          onChange: props.texthandle
-                        }
+                          onChange: props.texthandle,
+                        },
                       }}
                     />
                   </div>
@@ -332,60 +350,60 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlgaehDateHandler
                       div={{
-                        className: "col-3   form-group mandatory"
+                        className: "col-3   form-group mandatory",
                       }}
                       label={{
                         fieldName: "date_of_birth",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "date_of_birth",
                         others: {
-                          disabled: props.state.fromSearch || false
-                        }
+                          disabled: props.state.fromSearch || false,
+                        },
                       }}
                       maxDate={new Date()}
                       events={{
                         onChange: props.ageHandler,
-                        onBlur: props.validateAge
+                        onBlur: props.validateAge,
                       }}
                       value={props.state.date_of_birth}
                     />
 
                     <AlagehFormGroup
                       div={{
-                        className: "col-2  form-group mandatory"
+                        className: "col-2  form-group mandatory",
                       }}
                       label={{
                         fieldName: "age",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "age",
                         number: {
-                          allowNegative: false
+                          allowNegative: false,
                         },
                         others: {
                           type: "number",
                           onBlur: props.validateAge,
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
-                        value: props.state.age,                        
+                        value: props.state.age,
                         events: {
-                          onChange: props.dobHandler
-                        }
+                          onChange: props.dobHandler,
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col-2  form-group mandatory"
+                        className: "col-2  form-group mandatory",
                       }}
                       label={{
                         fieldName: "gender",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "gender",
@@ -394,22 +412,22 @@ function AppointmentComponent(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_GENDER
+                          data: GlobalVariables.FORMAT_GENDER,
                         },
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
-                        onChange: props.dropDownHandle
+                        onChange: props.dropDownHandle,
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col form-group mandatory AutoCompleteRight"
+                        className: "col form-group mandatory AutoCompleteRight",
                       }}
                       label={{
                         fieldName: "selectStatus",
-                        isImp: true
+                        isImp: true,
                       }}
                       selector={{
                         name: "appointment_status_id",
@@ -418,8 +436,8 @@ function AppointmentComponent(props) {
                         dataSource: {
                           textField: "statusDesc",
                           valueField: "hims_d_appointment_status_id",
-                          data: props.state.appointmentStatus
-                        }
+                          data: props.state.appointmentStatus,
+                        },
                       }}
                     />
                   </div>
@@ -427,44 +445,44 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehFormGroup
                       div={{
-                        className: "col-6 form-group mandatory"
+                        className: "col-6 form-group mandatory",
                       }}
                       label={{
                         fieldName: "contact_number",
-                        isImp: true
+                        isImp: true,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "contact_number",
                         others: {
                           type: "number",
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
-                        value: props.state.contact_number,                        
+                        value: props.state.contact_number,
                         events: {
-                          onChange: props.texthandle
-                        }
+                          onChange: props.texthandle,
+                        },
                       }}
                     />
 
                     <AlagehFormGroup
                       div={{
-                        className: "col-6 form-group"
+                        className: "col-6 form-group",
                       }}
                       label={{
                         fieldName: "email",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "email",
                         value: props.state.email,
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
                         events: {
-                          onChange: props.texthandle
-                        }
+                          onChange: props.texthandle,
+                        },
                       }}
                     />
                   </div>
@@ -472,22 +490,22 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehFormGroup
                       div={{
-                        className: "col-12 form-group margin-bottom-15"
+                        className: "col-12 form-group margin-bottom-15",
                       }}
                       label={{
                         fieldName: "remarks",
-                        isImp: false
+                        isImp: false,
                       }}
                       textBox={{
                         className: "txt-fld",
                         name: "appointment_remarks",
                         value: props.state.appointment_remarks,
                         others: {
-                          disabled: props.state.fromSearch || false
+                          disabled: props.state.fromSearch || false,
                         },
                         events: {
-                          onChange: props.texthandle
-                        }
+                          onChange: props.texthandle,
+                        },
                       }}
                     />
                   </div>
@@ -503,7 +521,7 @@ function AppointmentComponent(props) {
                     className="btn btn-primary"
                   >
                     {getLabelFromLanguage({
-                      fieldName: "btn_save"
+                      fieldName: "btn_save",
                     })}
                   </button>
                   <button
@@ -512,7 +530,7 @@ function AppointmentComponent(props) {
                     className="btn btn-other"
                   >
                     {getLabelFromLanguage({
-                      fieldName: "btn_close"
+                      fieldName: "btn_close",
                     })}
                   </button>
                 </div>
@@ -559,7 +577,7 @@ function AppointmentComponent(props) {
                 div={{ className: "col-3  mandatory" }}
                 label={{
                   fieldName: "department_name",
-                  isImp: true
+                  isImp: true,
                 }}
                 selector={{
                   name: "sub_department_id",
@@ -568,18 +586,18 @@ function AppointmentComponent(props) {
                   dataSource: {
                     textField: "sub_department_name",
                     valueField: "sub_dept_id",
-                    data: props.state.departments
+                    data: props.state.departments,
                   },
                   onChange: props.deptDropDownHandler,
                   onClear: () => props.nullifyState("sub_department_id"),
-                  autoComplete: "off"
+                  autoComplete: "off",
                 }}
               />
 
               <AlagehAutoComplete
                 div={{ className: "col-3 " }}
                 label={{
-                  fieldName: "filterbyDoctor"
+                  fieldName: "filterbyDoctor",
                 }}
                 selector={{
                   name: "provider_id",
@@ -588,11 +606,11 @@ function AppointmentComponent(props) {
                   dataSource: {
                     textField: "full_name",
                     valueField: "provider_id",
-                    data: props.state.doctors
+                    data: props.state.doctors,
                   },
                   onChange: props.dropDownHandle,
                   onClear: () => props.nullifyState("provider_id"),
-                  autoComplete: "off"
+                  autoComplete: "off",
                 }}
               />
 
@@ -611,7 +629,7 @@ function AppointmentComponent(props) {
                 label={{ forceLabel: "Patient Search" }}
                 title="Search Patient"
                 id="patient_id_search"
-                template={result => {
+                template={(result) => {
                   return (
                     <section className="resultSecStyles patient">
                       <div className="row">
@@ -662,7 +680,7 @@ function AppointmentComponent(props) {
                 extraParameters={{
                   appointment_date: moment(props.state.activeDateHeader).format(
                     "YYYY-MM-DD"
-                  )
+                  ),
                 }}
               />
             </div>
@@ -675,7 +693,7 @@ function AppointmentComponent(props) {
                 padding: 0,
                 background: "none",
                 boxShadow: "none",
-                border: "none"
+                border: "none",
               }}
             >
               {/* Portlet Top Bar Start */}
@@ -686,7 +704,7 @@ function AppointmentComponent(props) {
                 <div className="caption">
                   <h3 className="caption-subject">
                     {getLabelFromLanguage({
-                      fieldName: "doctorsAvailability"
+                      fieldName: "doctorsAvailability",
                     })}
                   </h3>
                 </div>
@@ -697,7 +715,7 @@ function AppointmentComponent(props) {
                           <li key={index}>
                             <span
                               style={{
-                                backgroundColor: data.color_code
+                                backgroundColor: data.color_code,
                               }}
                             />
                             {data.statusDesc}
@@ -729,7 +747,7 @@ function AppointmentComponent(props) {
                                   {/* <span>{data.clinic_name}</span> */}
                                   <span>
                                     {getLabelFromLanguage({
-                                      fieldName: "roomNo"
+                                      fieldName: "roomNo",
                                     })}
                                     : {data.room_name}
                                   </span>
@@ -740,12 +758,12 @@ function AppointmentComponent(props) {
                               {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={props.showModal.bind(props)} className="fas fa-plus"/></td> */}
                               <th className="tbl-subHdg">
                                 {getLabelFromLanguage({
-                                  fieldName: "booked"
+                                  fieldName: "booked",
                                 })}
                               </th>
                               <th className="tbl-subHdg">
                                 {getLabelFromLanguage({
-                                  fieldName: "standBy"
+                                  fieldName: "standBy",
                                 })}
                               </th>
                             </tr>
@@ -756,7 +774,7 @@ function AppointmentComponent(props) {
                                 <td>
                                   <span className="doctorLeaveCntr">
                                     {getLabelFromLanguage({
-                                      fieldName: "doctorLeave"
+                                      fieldName: "doctorLeave",
                                     })}
                                   </span>
                                 </td>

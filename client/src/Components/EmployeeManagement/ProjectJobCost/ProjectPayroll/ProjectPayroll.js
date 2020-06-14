@@ -124,7 +124,30 @@ class ProjectPayroll extends Component {
       <div className="projectPayrollScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
+            div={{ className: "col-2 mandatory" }}
+            label={{
+              forceLabel: "Filter by Branch",
+              isImp: true,
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations,
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null,
+                });
+              },
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col-1 mandatory" }}
             label={{
               forceLabel: "Year",
               isImp: true,
@@ -149,7 +172,7 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
+            div={{ className: "col-2 mandatory" }}
             label={{
               forceLabel: "Month",
               isImp: true,
@@ -173,32 +196,8 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          {/* <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
-            label={{
-              forceLabel: "Filter by Branch",
-              isImp: true,
-            }}
-            selector={{
-              name: "hospital_id",
-              className: "select-fld",
-              value: this.state.hospital_id,
-              dataSource: {
-                textField: "hospital_name",
-                valueField: "hims_d_hospital_id",
-                data: this.props.organizations,
-              },
-              onChange: this.eventHandaler.bind(this),
-              onClear: () => {
-                this.setState({
-                  hospital_id: null,
-                });
-              },
-            }}
-          /> */}
-
           <AlagehAutoComplete
-            div={{ className: "col form-group mandatory" }}
+            div={{ className: "col-2 form-group mandatory" }}
             label={{
               forceLabel: "Select Project",
               isImp: true,
@@ -221,7 +220,7 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          <div className="col-3 globalSearchCntr">
+          <div className="col-3 globalSearchCntr mandatory">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6
               onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}

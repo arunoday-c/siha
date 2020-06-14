@@ -847,6 +847,24 @@
         "fieldName": "item_code",
         "label": "Item Code"
       }
+    ],
+    "Pharmacyitemmaster": [
+      {
+        "fieldName": "item_description",
+        "label": "Item Name"
+      },
+      {
+        "fieldName": "category_desc",
+        "label": "Item Category"
+      },
+      {
+        "fieldName": "group_description",
+        "label": "Item Category"
+      },
+      {
+        "fieldName": "item_code",
+        "label": "Item Code"
+      }
     ]
   },
   "Sales": {

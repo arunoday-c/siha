@@ -2,10 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 let translationSchema = new Schema({
   fieldName: String,
-  translations: {
-    type: Map,
-    of: String,
-  },
+  en: String,
+  ar: String,
 });
 
 const translationModel = mongoose.model(

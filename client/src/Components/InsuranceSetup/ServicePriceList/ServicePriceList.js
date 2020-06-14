@@ -34,7 +34,8 @@ class ServicePriceList extends PureComponent {
       applicable: null,
       corporate_discount: 0,
       dummy: true,
-      view_by: "C"
+      view_by: "C",
+      state_change: true
     };
     this.baseState = this.state;
   }
@@ -94,7 +95,7 @@ class ServicePriceList extends PureComponent {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans"
         },
-        afterSuccess: data => {}
+        afterSuccess: data => { }
       });
       this.setState({
         [e.target.name]: e.target.value,
@@ -521,7 +522,7 @@ class ServicePriceList extends PureComponent {
                   paging={{ page: 0, rowsPerPage: 5 }}
                   events={{
                     // onDelete: this.deleteVisaType.bind(this),
-                    onEdit: row => {},
+                    onEdit: row => { },
                     onDone: updatePriceList.bind(this, this)
                   }}
                 />

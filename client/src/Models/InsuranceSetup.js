@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
 
     output = {
@@ -36,7 +36,8 @@ export default {
       update_network_plan_insurance: [],
 
       snackeropen: false,
-      service_type_id: null
+      service_type_id: null,
+      prefix: null
     };
     return output;
   }

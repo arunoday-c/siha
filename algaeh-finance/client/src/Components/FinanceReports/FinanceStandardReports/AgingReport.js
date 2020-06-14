@@ -5,8 +5,15 @@ import "./antTableCustomStyle.scss";
 import { AlgaehTable } from "algaeh-react-components";
 // import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
+import { newAlgaehApi } from "../../../hooks";
+
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import { handleFile } from "../FinanceReportEvents";
+import { getItem, tokenDecode } from "algaeh-react-components/storage";
+import moment from "moment";
+import jwtDecode from "jwt-decode";
+import { AlgaehMessagePop } from "algaeh-react-components";
+
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {
     payable: { url: "getAccountPayableAging", title: "Payable" },
@@ -16,10 +23,36 @@ export default function AgingReport({ style, result, layout, type, dates }) {
   const createPrintObject = useRef(undefined);
   const [data, setData] = useState([]);
   const [footerData, setFooterData] = useState({});
+  const [organisation, setOrganisation] = useState({});
+
   useEffect(() => {
     loadReport();
+    newAlgaehApi({
+      uri: "/organization/getMainOrganization",
+      method: "GET",
+    })
+      .then((result) => {
+        const { records, success, message } = result.data;
+        if (success === true) {
+          setOrganisation(records);
+        } else {
+          AlgaehMessagePop({
+            display: message,
+            type: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        AlgaehMessagePop({
+          display: error.message,
+          type: "error",
+        });
+      });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, dates]);
+
+  const { organization_name, address1, address2, full_name } = organisation;
 
   function loadReport(excel) {
     let extraHeaders = {};
@@ -75,14 +108,19 @@ export default function AgingReport({ style, result, layout, type, dates }) {
       <i className="fas fa-file-download" onClick={() => loadReport(true)} />
       <div ref={createPrintObject}>
         <div className="financeReportHeader">
-          <div>Twareat Medical Centre</div>
           <div>
-            Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia
+            {organization_name}
+
+            {/* Twareat Medical Centre */}
+          </div>
+          <div>
+            {address1}, {address2}
+            {/* Al Fanar Mall, 1 Street, Ar Rawabi, Al Khobar 34421, Saudi Arabia */}
           </div>
           <hr></hr>
           <h3>{`Account ${DIFF[type].title} Aging Report`}</h3>
           <p>
-            As on: <b>12/02/2020</b>
+            As on: <b>{moment(dates[1]).format("D/M/Y")}</b>
           </p>
         </div>
 
