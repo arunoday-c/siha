@@ -3588,14 +3588,13 @@ function getOtManagement(options) {
           .split(".");
 
         normal_ot_hours =
-          normal_ot_hours_mins[0] +
-          "." +
+          parseInt(normal_ot_hours_mins[0]) +
           parseInt(normal_ot_hours_mins[1]) / 60;
 
         wot_hours =
-          wot_ot_hours_mins[0] + "." + parseInt(wot_ot_hours_mins[1]) / 60;
+          parseInt(wot_ot_hours_mins[0]) + parseInt(wot_ot_hours_mins[1]) / 60;
         hot_hours =
-          hot_ot_hours_mins[0] + "." + parseInt(hot_ot_hours_mins[1]) / 60;
+          parseInt(hot_ot_hours_mins[0]) + parseInt(hot_ot_hours_mins[1]) / 60;
 
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -3667,11 +3666,6 @@ function getOtManagement(options) {
               ot_hours != 0 &&
               leave_salary != "Y"
             ) {
-              // let ot_hours =
-              //   parseFloat(empResult["ot_work_hours"]) +
-              //   parseFloat(empResult["ot_weekoff_hours"]) +
-              //   parseFloat(empResult["ot_holiday_hours"]);
-
               let earn_amount = _.chain(_earnings)
                 .filter((f) => {
                   if (f.earnings_id == obj.earnings_id) {
