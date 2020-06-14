@@ -12,7 +12,6 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
       let strData = "";
-      let groupBy = " group by PWP.employee_id ";
 
       if (input.project_id > 0) {
         strData += " and PWP.project_id=" + input.project_id;
@@ -26,29 +25,24 @@ const executePDF = function executePDFMethod(options) {
       }
       if (input.employee_group_id > 0) {
         strData += " and E.employee_group_id=" + input.employee_group_id;
-        groupBy = " group by PWP.project_id ";
       }
 
       options.mysql
         .executeQuery({
-          query: `select hims_f_project_wise_payroll_id, PWP.employee_id,E.employee_code,E.full_name,d.designation, 
-          project_id, P.project_code,P.project_desc, PWP.month, PWP.year,sum(worked_hours) as worked_hours, 
-          sum(worked_minutes) as worked_minutes, sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, 
-           DPT.department_name,coalesce(SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours,0)as ot_hr, 
-           coalesce(SAL.total_working_hours,0) as basic_hr,  coalesce (SE.amount, 0) as ot_amount,SE.component_type,
-           (sum(cost)-coalesce (SE.amount, 0)) as basic_amt from hims_f_project_wise_payroll PWP 
+          query: `Select hims_f_project_wise_payroll_id,employee_id,  month, year,group_description,
+          E.employee_code,E.full_name,d.designation, project_id, P.project_code,P.project_desc,SD.sub_department_name,
+          COALESCE(worked_hours,0) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0)
+          as total_hours,COALESCE(basic_hours,0) + COALESCE(concat(floor(basic_minutes/60)  ,'.',basic_minutes%60),0)
+          as basic_hours,COALESCE(ot_hours,0) + COALESCE(concat(floor(ot_minutes/60)  ,'.',ot_minutes%60),0)
+          as ot_hours,COALESCE(wot_hours,0) + COALESCE(concat(floor(wot_minutes/60)  ,'.',wot_minutes%60),0)
+          as wot_hours,COALESCE(hot_hours,0) + COALESCE(concat(floor(hot_minutes/60)  ,'.',hot_minutes%60),0)
+          as hot_hours,basic_cost, ot_cost, wot_cost, hot_cost, cost from hims_f_project_wise_payroll PWP 
           inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
           inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
           left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
           left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id
-          inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id 
-          left join hims_f_salary SAL on SAL.employee_id = PWP.employee_id and  SAL.month = PWP.month and 
-          SAL.year = PWP.year left join 
-          (select ER.*,ERD.component_type from  hims_f_salary_earnings ER 
-          inner join hims_d_earning_deduction ERD on ER.earnings_id=ERD.hims_d_earning_deduction_id 
-          and ERD.component_type='OV') as SE on SAL.hims_f_salary_id=SE.salary_header_id 
-          where  PWP.year=? and PWP.month=? and PWP.hospital_id=? ${strData} ${groupBy};`,
+          where year=? and month=? and PWP.hospital_id=? ${strData}  ;`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true,
         })
