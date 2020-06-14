@@ -120,16 +120,14 @@ export default {
             printQuery: true,
           })
           .then((empResult) => {
-
             if (empResult.length == 0) {
               if (req.connection == null) {
-
                 req.connection = {
                   connection: _mysql.connection,
                   isTransactionConnection: _mysql.isTransactionConnection,
                   pool: _mysql.pool,
                 };
-                req.query.project_employee_id = []
+                req.query.project_employee_id = [];
                 // _mysql.releaseConnection();
                 req.records = empResult;
                 next();
@@ -153,7 +151,7 @@ export default {
               resolve({});
               return;
             }
-            req.query.project_employee_id = _myemp
+            req.query.project_employee_id = _myemp;
 
             let avail_till_date = "";
             if (input.month != 1) {
@@ -229,7 +227,7 @@ export default {
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'A';\
-            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
+            select hims_d_hrms_options_id,basic_earning_component,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
               OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
@@ -271,11 +269,17 @@ export default {
               .then((Salaryresults) => {
                 let _headerQuery = "";
 
+                let basic_id = Salaryresults[8][0]["basic_earning_component"];
+
                 let final_earning_amt_array = [];
                 let final_deduction_amt_array = [];
                 let final_contribution_amt_array = [];
                 let final_loan_array = [];
                 let salary_header_id = 0;
+
+                let pjc_hour_price = {};
+                let employee_basic_earned = {};
+
                 new Promise((resolve, reject) => {
                   try {
                     for (let i = 0; i < empResult.length; i++) {
@@ -326,6 +330,16 @@ export default {
                             earningOutput.final_earning_amount;
                           leave_salary_accrual_amount =
                             earningOutput.accrual_amount;
+
+                          const basic_erned = current_earning_amt_array.find(
+                            (f) => {
+                              return f.earnings_id == basic_id;
+                            }
+                          );
+
+                          employee_basic_earned[
+                            empResult[i]["employee_id"]
+                          ] = basic_erned;
 
                           const _deduction = _.filter(results[1], (f) => {
                             return f.employee_id == empResult[i]["employee_id"];
@@ -380,7 +394,7 @@ export default {
                                 loanPayable: _loanPayable,
                                 next: next,
                                 decimal_places: req.userIdentity.decimal_places,
-                                empResult: empResult[i]
+                                empResult: empResult[i],
                               }).then((loanOutput) => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
@@ -443,6 +457,18 @@ export default {
                                     current_earning_amt_array = current_earning_amt_array.concat(
                                       OTManagement.current_ot_amt_array
                                     );
+
+                                    //pJC hour price
+                                    pjc_hour_price[
+                                      empResult[i]["employee_id"]
+                                    ] = {
+                                      employee_id: empResult[i]["employee_id"],
+                                      normal_ot_cost:
+                                        OTManagement["normal_ot_cost"],
+                                      wot_cost: OTManagement["wot_cost"],
+                                      hot_cost: OTManagement["hot_cost"],
+                                    };
+
                                     // ShoartAge
                                     getShortAge({
                                       earnings: _earnings,
@@ -499,19 +525,19 @@ export default {
                                           ) === 0
                                             ? 0
                                             : empResult[i]["gross_salary"] /
-                                            empResult[i]["total_days"];
+                                              empResult[i]["total_days"];
 
-                                        let _salary_number = empResult[i]["partial_attendance"] ==
+                                        let _salary_number =
+                                          empResult[i]["partial_attendance"] ==
                                           "Y"
-                                          ? "FS-"
-                                          : req.query.leave_salary == null
+                                            ? "FS-"
+                                            : req.query.leave_salary == null
                                             ? "NS-"
                                             : "LS-";
 
-                                        _salary_number +=
-                                          empResult[i][
-                                            "employee_code"
-                                          ].trim();
+                                        _salary_number += empResult[i][
+                                          "employee_code"
+                                        ].trim();
                                         _salary_number +=
                                           "-" + month_number + "-" + year;
 
@@ -561,30 +587,30 @@ export default {
                                               empResult[i]["absent_days"],
                                               empResult[i]["total_work_days"],
                                               empResult[i][
-                                              "total_weekoff_days"
+                                                "total_weekoff_days"
                                               ],
                                               empResult[i]["total_holidays"],
                                               empResult[i]["total_leave"],
                                               empResult[i]["paid_leave"],
                                               empResult[i]["unpaid_leave"],
                                               empResult[i][
-                                              "pending_unpaid_leave"
+                                                "pending_unpaid_leave"
                                               ],
 
                                               empResult[i]["total_hours"],
                                               empResult[i][
-                                              "total_working_hours"
+                                                "total_working_hours"
                                               ],
                                               empResult[i]["ot_work_hours"],
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
                                               leave_salary_accrual_amount,
                                               empResult[i][
-                                              "total_applied_days"
+                                                "total_applied_days"
                                               ],
                                               empResult[i]["shortage_hours"],
                                               empResult[i][
-                                              "display_present_days"
+                                                "display_present_days"
                                               ],
 
                                               total_loan_payable_amount,
@@ -759,12 +785,16 @@ export default {
                                     inputParam: req.query,
                                     decimal_places:
                                       req.userIdentity.decimal_places,
+
+                                    pjc_hour_price: pjc_hour_price,
+                                    employee_basic_earned: employee_basic_earned,
                                   })
                                     .then((Employee_Leave_Salary) => {
                                       if (req.connection == null) {
                                         req.connection = {
                                           connection: _mysql.connection,
-                                          isTransactionConnection: _mysql.isTransactionConnection,
+                                          isTransactionConnection:
+                                            _mysql.isTransactionConnection,
                                           pool: _mysql.pool,
                                         };
                                         req.records = detailresult;
@@ -779,7 +809,6 @@ export default {
                                         next(e);
                                       });
                                     });
-
                                 })
                                 .catch((error) => {
                                   _mysql.rollBackTransaction(() => {
@@ -1900,11 +1929,11 @@ export default {
             const _salaryHeader_id =
               inputParam.salary_type === "LS"
                 ? salary_process.map((item) => {
-                  return item.hims_f_salary_id;
-                })
+                    return item.hims_f_salary_id;
+                  })
                 : _salary_data.map((item) => {
-                  return item.hims_f_salary_id;
-                });
+                    return item.hims_f_salary_id;
+                  });
             salaryprocess_header =
               inputParam.salary_type === "LS" ? salary_process : _salary_data;
 
@@ -1921,7 +1950,6 @@ export default {
                 printQuery: true,
               })
               .then((result) => {
-
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
                   req.records = [
@@ -1939,7 +1967,6 @@ export default {
                   reject(error);
                 });
               });
-
           } else {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
@@ -2150,8 +2177,7 @@ export default {
                                 })
                                   .then((gratuity_provision) => {
                                     if (
-                                      inputParam._leave_salary_acc
-                                        .length > 0
+                                      inputParam._leave_salary_acc.length > 0
                                     ) {
                                       UpdateLeaveSalaryProvission({
                                         inputParam: inputParam,
@@ -2160,23 +2186,19 @@ export default {
                                         decimal_places:
                                           req.userIdentity.decimal_places,
                                       })
-                                        .then(
-                                          (Leave_Salary_Provission) => {
-                                            // _mysql.commitTransaction(() => {
-                                            //   _mysql.releaseConnection();
-                                            req.records = {
-                                              leave_salary_number: leave_salary_number,
-                                            };
-                                            next();
-                                            // });
-                                          }
-                                        )
+                                        .then((Leave_Salary_Provission) => {
+                                          // _mysql.commitTransaction(() => {
+                                          //   _mysql.releaseConnection();
+                                          req.records = {
+                                            leave_salary_number: leave_salary_number,
+                                          };
+                                          next();
+                                          // });
+                                        })
                                         .catch((e) => {
-                                          _mysql.rollBackTransaction(
-                                            () => {
-                                              next(e);
-                                            }
-                                          );
+                                          _mysql.rollBackTransaction(() => {
+                                            next(e);
+                                          });
                                         });
                                     } else {
                                       // _mysql.commitTransaction(() => {
@@ -3060,7 +3082,7 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
 
 function InsertEmployeeLeaveSalary(options) {
@@ -3373,7 +3395,7 @@ function InsertEmployeeLeaveSalary(options) {
   });
 }
 
-function getOtManagement(options) {
+function getOtManagement_bkp_13_06_2020(options) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
@@ -3468,12 +3490,12 @@ function getOtManagement(options) {
               if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                  parseFloat(empResult["total_days"])
+                    parseFloat(empResult["total_days"])
                 );
               } else if (hrms_option[0].ot_calculation == "P") {
                 _per_day_salary = parseFloat(
                   parseFloat(earn_amount[0].amount) /
-                  parseFloat(empResult["total_days"])
+                    parseFloat(empResult["total_days"])
                 );
               } else if (hrms_option[0].ot_calculation == "A") {
                 _per_day_salary =
@@ -3531,6 +3553,210 @@ function getOtManagement(options) {
   });
 }
 
+function getOtManagement(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      const utilities = new algaehUtilities();
+      const _earnings = options.earnings;
+      const empResult = options.empResult;
+
+      const hrms_option = options.hrms_option;
+      const over_time_comp = options.over_time_comp;
+      const over_time = options.over_time[0];
+      const current_earning_amt_array = options.current_earning_amt_array;
+      const leave_salary = options.leave_salary;
+      const decimal_places = options.decimal_places;
+
+      let final_earning_amount = 0;
+      let current_ot_amt_array = [];
+
+      let normal_ot_hours,
+        wot_hours,
+        hot_hours = 0;
+      let normal_ot_cost,
+        wot_cost,
+        hot_cost = 0;
+      if (options.over_time.length > 0) {
+        let normal_ot_hours_mins = empResult["ot_work_hours"]
+          .toString()
+          .split(".");
+        let wot_ot_hours_mins = empResult["ot_weekoff_hours"]
+          .toString()
+          .split(".");
+        let hot_ot_hours_mins = empResult["ot_holiday_hours"]
+          .toString()
+          .split(".");
+
+        normal_ot_hours =
+          normal_ot_hours_mins[0] +
+          "." +
+          parseInt(normal_ot_hours_mins[1]) / 60;
+
+        wot_hours =
+          wot_ot_hours_mins[0] + "." + parseInt(wot_ot_hours_mins[1]) / 60;
+        hot_hours =
+          hot_ot_hours_mins[0] + "." + parseInt(hot_ot_hours_mins[1]) / 60;
+
+        let ot_hours =
+          parseFloat(empResult["ot_work_hours"]) +
+          parseFloat(empResult["ot_weekoff_hours"]) +
+          parseFloat(empResult["ot_holiday_hours"]);
+
+        let Noof_Working_Hours =
+          parseFloat(hrms_option[0].standard_working_hours) -
+          parseFloat(hrms_option[0].standard_break_hours);
+        if (_earnings.length == 0) {
+          resolve({ current_ot_amt_array, final_earning_amount });
+        }
+
+        if (over_time["payment_type"] === "RT") {
+          let working_day_amt = 0;
+          let weekoff_day_amt = 0;
+          let holiday_amt = 0;
+
+          if (over_time["working_day_rate"] > 0) {
+            working_day_amt =
+              parseFloat(over_time["working_day_rate"]) *
+              parseFloat(normal_ot_hours);
+
+            normal_ot_cost = over_time["working_day_rate"];
+          }
+          if (over_time["weekoff_day_rate"] > 0) {
+            weekoff_day_amt =
+              parseFloat(over_time["weekoff_day_rate"]) * parseFloat(wot_hours);
+
+            wot_cost = over_time["weekoff_day_rate"];
+          }
+          if (over_time["holiday_rate"] > 0) {
+            holiday_amt =
+              parseFloat(over_time["holiday_rate"]) * parseFloat(hot_hours);
+
+            hot_cost = over_time["holiday_rate"];
+          }
+
+          let total_ot_salary = working_day_amt + weekoff_day_amt + holiday_amt;
+
+          if (total_ot_salary > 0) {
+            total_ot_salary = utilities.decimalPoints(
+              total_ot_salary,
+              decimal_places
+            );
+            current_ot_amt_array.push({
+              earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+              amount: total_ot_salary,
+            });
+          }
+
+          final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
+            return parseFloat(s.amount);
+          });
+
+          resolve({
+            current_ot_amt_array,
+            final_earning_amount,
+            normal_ot_cost,
+            wot_cost,
+            hot_cost,
+          });
+        } else {
+          _earnings.map((obj) => {
+            // //OT Calculation
+
+            if (
+              obj["overtime_applicable"] == "Y" &&
+              ot_hours != 0 &&
+              leave_salary != "Y"
+            ) {
+              // let ot_hours =
+              //   parseFloat(empResult["ot_work_hours"]) +
+              //   parseFloat(empResult["ot_weekoff_hours"]) +
+              //   parseFloat(empResult["ot_holiday_hours"]);
+
+              let earn_amount = _.chain(_earnings)
+                .filter((f) => {
+                  if (f.earnings_id == obj.earnings_id) {
+                    return parseFloat(f.amount);
+                  }
+                })
+                .value();
+
+              let _per_day_salary = 0;
+              let per_hour_salary = 0;
+
+              if (hrms_option[0].ot_calculation == "F") {
+                _per_day_salary = parseFloat(
+                  parseFloat(earn_amount[0].amount) /
+                    parseFloat(empResult["total_days"])
+                );
+              } else if (hrms_option[0].ot_calculation == "P") {
+                _per_day_salary = parseFloat(
+                  parseFloat(earn_amount[0].amount) /
+                    parseFloat(empResult["total_days"])
+                );
+              } else if (hrms_option[0].ot_calculation == "A") {
+                _per_day_salary =
+                  (parseFloat(earn_amount[0].amount) * 12) / 365;
+              }
+
+              per_hour_salary = _per_day_salary / Noof_Working_Hours;
+
+              // let ot_work_hours = empResult["ot_work_hours"].split(".");
+
+              normal_ot_cost = per_hour_salary * over_time["working_day_hour"];
+
+              let ot_hour_price = normal_ot_cost * normal_ot_hours;
+
+              wot_cost = per_hour_salary * over_time["weekoff_day_hour"];
+              let ot_weekoff_price = wot_cost * wot_hours;
+
+              hot_cost = per_hour_salary * over_time["holiday_hour"];
+              let ot_holiday_price = hot_cost * hot_hours;
+
+              let final_price =
+                ot_hour_price + ot_weekoff_price + ot_holiday_price;
+
+              if (final_price > 0) {
+                final_price = utilities.decimalPoints(
+                  final_price,
+                  decimal_places
+                );
+                current_ot_amt_array.push({
+                  earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+                  amount: final_price,
+                });
+              }
+            }
+          });
+
+          final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
+            return parseFloat(s.amount);
+          });
+
+          resolve({
+            current_ot_amt_array,
+            final_earning_amount,
+            normal_ot_cost,
+            wot_cost,
+            hot_cost,
+          });
+        }
+      } else {
+        resolve({
+          current_ot_amt_array,
+          final_earning_amount,
+          normal_ot_cost,
+          wot_cost,
+          hot_cost,
+        });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch((e) => {
+    options.next(e);
+  });
+}
+
 function getShortAge(options) {
   return new Promise((resolve, reject) => {
     try {
@@ -3563,7 +3789,7 @@ function getShortAge(options) {
 
             let _per_day_salary = parseFloat(
               parseFloat(earn_amount[0].amount) /
-              parseFloat(empResult["total_days"])
+                parseFloat(empResult["total_days"])
             );
 
             let per_hour_salary = _per_day_salary / Noof_Working_Hours;
@@ -3681,10 +3907,9 @@ function getEarningComponents(options) {
 
           let annual_per_day_sal = 0;
 
-          console.log("total_days", empResult["total_days"])
-          console.log("leave_salary", leave_salary)
+          console.log("total_days", empResult["total_days"]);
+          console.log("leave_salary", leave_salary);
           if (leave_salary == null || leave_salary == undefined) {
-
             let total_paid_days =
               parseFloat(empResult["total_paid_days"]) - leave_period;
             current_earning_per_day_salary = parseFloat(
@@ -3707,7 +3932,6 @@ function getEarningComponents(options) {
             ) {
               current_earning_amt = obj["limit_amount"];
             }
-
           } else if (leave_salary == "N") {
             leave_salary_days =
               parseFloat(empResult["total_days"]) -
@@ -3830,7 +4054,7 @@ function getEarningComponents(options) {
               if (
                 obj["limit_applicable"] === "Y" &&
                 parseFloat(current_earning_amt) >
-                parseFloat(obj["limit_amount"])
+                  parseFloat(obj["limit_amount"])
               ) {
                 current_earning_amt = obj["limit_amount"];
               }
@@ -3920,7 +4144,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -3941,7 +4165,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -3974,7 +4198,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -3992,7 +4216,7 @@ function getDeductionComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_deduction_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_deduction_amt = obj["limit_amount"];
             }
@@ -4065,7 +4289,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4086,7 +4310,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4119,7 +4343,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4136,7 +4360,7 @@ function getContrubutionsComponents(options) {
             if (
               obj["limit_applicable"] === "Y" &&
               parseFloat(current_contribution_amt) >
-              parseFloat(obj["limit_amount"])
+                parseFloat(obj["limit_amount"])
             ) {
               current_contribution_amt = obj["limit_amount"];
             }
@@ -4183,7 +4407,7 @@ function getLoanDueandPayable(options) {
     try {
       const _loan = options.loan;
       const _loanPayable = options.loanPayable;
-      const empResult = options.empResult
+      const empResult = options.empResult;
 
       let total_loan_due_amount = 0;
       let total_loan_payable_amount = 0;
@@ -4346,22 +4570,24 @@ function getMiscellaneous(options) {
   });
 }
 
-function UpdateProjectWisePayroll(options) {
-  console.log("UpdateProjectWisePayroll")
+function UpdateProjectWisePayroll_backp_13_06_2020(options) {
+  console.log("UpdateProjectWisePayroll");
   return new Promise((resolve, reject) => {
     try {
       let _mysql = options._mysql;
 
       const decimal_places = options.decimal_places;
-      const inputParam = options.inputParam
+      const inputParam = options.inputParam;
       let strQry = "";
-
 
       const utilities = new algaehUtilities();
 
-      console.log("inputParam.project_employee_id", inputParam.project_employee_id)
+      console.log(
+        "inputParam.project_employee_id",
+        inputParam.project_employee_id
+      );
       if (inputParam.project_employee_id.length === 0) {
-        resolve()
+        resolve();
         return;
       }
       _mysql
@@ -4377,13 +4603,13 @@ function UpdateProjectWisePayroll(options) {
             inputParam.month,
             inputParam.project_employee_id,
             inputParam.year,
-            inputParam.month
+            inputParam.month,
           ],
-          printQuery: true
+          printQuery: true,
         })
         .then((result) => {
-          let project_wise_payroll = result[0]
-          let salary_data = result[1]
+          let project_wise_payroll = result[0];
+          let salary_data = result[1];
 
           if (project_wise_payroll.length > 0) {
             let finalData = {};
@@ -4400,7 +4626,9 @@ function UpdateProjectWisePayroll(options) {
 
             for (let z = 0; z < project_wise_payroll.length; z++) {
               let cost = 0;
-              let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
+              let complete_hours = parseInt(
+                project_wise_payroll[z]["worked_hours"]
+              );
               let total_complete_hours =
                 finalData[project_wise_payroll[z]["employee_id"]];
               let worked_minutes = project_wise_payroll[z]["worked_minutes"];
@@ -4434,44 +4662,51 @@ function UpdateProjectWisePayroll(options) {
                 hims_f_salary S inner join hims_f_salary_deductions SD on S.hims_f_salary_id=SD.salary_header_id WHERE \
                 employee_id = ${project_wise_payroll[z].employee_id} and month= ${project_wise_payroll[z].month} \
                 and year=${project_wise_payroll[z].year}`,
-                  printQuery: true
+                  printQuery: true,
                 })
                 .then((project_payroll_breakup) => {
-                  const earning_result = project_payroll_breakup[0]
-                  const deduction_result = project_payroll_breakup[1]
+                  const earning_result = project_payroll_breakup[0];
+                  const deduction_result = project_payroll_breakup[1];
 
                   strQry += _mysql.mysqlQueryFormat(
                     "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
-                    [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
+                    [
+                      cost,
+                      project_wise_payroll[z].hims_f_project_wise_payroll_id,
+                    ]
                   );
 
                   for (let x = 0; x < earning_result.length; x++) {
-                    strQry += _mysql.mysqlQueryFormat(`INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
+                    strQry += _mysql.mysqlQueryFormat(
+                      `INSERT INTO hims_f_project_wise_earnings(project_wise_payroll_id, earnings_id, amount) \
                     VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE amount = ?;`,
                       [
                         earning_result[x].project_wise_payroll_id,
                         earning_result[x].earnings_id,
                         earning_result[x].amount,
-                        earning_result[x].amount
-                      ]);
+                        earning_result[x].amount,
+                      ]
+                    );
                   }
                   for (let y = 0; y < deduction_result.length; y++) {
-                    strQry += _mysql.mysqlQueryFormat(`INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
+                    strQry += _mysql.mysqlQueryFormat(
+                      `INSERT INTO hims_f_project_wise_deductions(project_wise_payroll_id, deductions_id, amount) \
                     VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE amount = ?;`,
                       [
                         deduction_result[y].project_wise_payroll_id,
                         deduction_result[y].deductions_id,
                         deduction_result[y].amount,
-                        deduction_result[y].amount
-                      ]);
+                        deduction_result[y].amount,
+                      ]
+                    );
                   }
 
                   if (z === project_wise_payroll.length - 1) {
-                    console.log("strQry", strQry)
+                    console.log("strQry", strQry);
                     _mysql
                       .executeQuery({
                         query: strQry,
-                        printQuery: true
+                        printQuery: true,
                       })
                       .then((project_payroll) => {
                         resolve();
@@ -4487,13 +4722,137 @@ function UpdateProjectWisePayroll(options) {
             }
 
             // console.log("Project Job Costong")
-
-
           } else {
             resolve();
           }
         })
         .catch((e) => {
+          reject(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch((e) => {
+    options.next(e);
+  });
+}
+//created by:irfan
+function UpdateProjectWisePayroll(options) {
+  console.log("UpdateProjectWisePayroll");
+  return new Promise((resolve, reject) => {
+    try {
+      let _mysql = options._mysql;
+
+      const decimal_places = options.decimal_places;
+      const inputParam = options.inputParam;
+      let strQry = "";
+
+      const utilities = new algaehUtilities();
+
+      if (inputParam.project_employee_id.length === 0) {
+        resolve();
+        return;
+      }
+
+      let pjc_hour_price = options.pjc_hour_price;
+
+      let employee_basic_earned = options.employee_basic_earned;
+
+      _mysql
+        .executeQuery({
+          query: `Select hims_f_project_wise_payroll_id,employee_id, month, year,
+            coalesce(basic_hours+floor(basic_minutes/60)  +round((basic_minutes%60)/60,2),0) as basic_hours,
+            coalesce(ot_hours+floor(ot_minutes/60)  +round((ot_minutes%60)/60,2),0) as ot_hours,
+            coalesce(wot_hours+floor(wot_minutes/60)  +round((wot_minutes%60)/60,2),0) as wot_hours,
+            coalesce(hot_hours+floor(hot_minutes/60)  +round((hot_minutes%60)/60,2),0) as hot_hours,
+            coalesce(worked_hours+floor(worked_minutes/60) +round((worked_minutes%60)/60,2),0) as worked_hours
+            from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?);
+            Select hims_f_project_wise_payroll_id,employee_id, month, year,
+            coalesce(sum(basic_hours)+floor(sum(basic_minutes)/60)  +round((sum(basic_minutes)%60)/60,2),0) as basic_hours,
+            coalesce(sum(ot_hours)+floor(sum(ot_minutes)/60)  +round((sum(ot_minutes)%60)/60,2),0) as ot_hours,
+            coalesce(sum(wot_hours)+floor(sum(wot_minutes)/60)  +round((sum(wot_minutes)%60)/60,2),0) as wot_hours,
+            coalesce(sum(hot_hours)+floor(sum(hot_minutes)/60)  +round((sum(hot_minutes)%60)/60,2),0) as hot_hours,
+            coalesce(sum(worked_hours)+floor(sum(worked_minutes)/60) +round((sum(worked_minutes)%60)/60,2),0) as worked_hours
+            from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?) group by employee_id;
+             ;`,
+          values: [
+            inputParam.year,
+            inputParam.month,
+            inputParam.project_employee_id,
+            inputParam.year,
+            inputParam.month,
+            inputParam.project_employee_id,
+          ],
+          printQuery: true,
+        })
+        .then((result) => {
+          // console.log("employee_basic_earned:", employee_basic_earned);
+          inputParam.project_employee_id.forEach((employee_id) => {
+            let worked_hr = result[1].find((f) => {
+              return f.employee_id == employee_id;
+            });
+
+            let total_basic_hours = worked_hr["basic_hours"];
+            let basic_salary = employee_basic_earned[employee_id]["amount"];
+
+            let basic_cost =
+              parseFloat(basic_salary) / parseFloat(total_basic_hours);
+
+            pjc_hour_price[employee_id] = {
+              ...pjc_hour_price[employee_id],
+              basic_cost,
+            };
+          });
+
+          console.log("pjc_hour_price:", pjc_hour_price);
+
+          if (result[0].length > 0) {
+            result[0].forEach((project) => {
+              let price_list = pjc_hour_price[project["employee_id"]];
+
+              let basic_cost,
+                ot_cost,
+                wot_cost,
+                hot_cost,
+                cost = 0;
+
+              basic_cost =
+                parseFloat(project["basic_hours"]) *
+                parseFloat(price_list["basic_cost"]);
+              ot_cost =
+                parseFloat(project["ot_hours"]) *
+                parseFloat(price_list["normal_ot_cost"]);
+              wot_cost =
+                parseFloat(project["wot_hours"]) *
+                parseFloat(price_list["wot_cost"]);
+              hot_cost =
+                parseFloat(project["hot_hours"]) *
+                parseFloat(price_list["hot_cost"]);
+
+              cost = basic_cost + ot_cost + wot_cost + hot_cost;
+
+              strQry += ` UPDATE hims_f_project_wise_payroll set basic_cost=${basic_cost}, ot_cost=${ot_cost},
+              wot_cost=${wot_cost}, hot_cost=${hot_cost},cost=${cost} where hims_f_project_wise_payroll_id=${project.hims_f_project_wise_payroll_id}; `;
+            });
+
+            _mysql
+              .executeQuery({
+                query: strQry,
+                printQuery: true,
+              })
+              .then((project_payroll) => {
+                resolve();
+              })
+              .catch((e) => {
+                reject(e);
+              });
+          } else {
+            resolve();
+          }
+          //----------------------------
+        })
+        .catch((e) => {
+          console.log("ERR90:", e);
           reject(e);
         });
     } catch (e) {
@@ -4602,43 +4961,43 @@ function InsertGratuityProvision(options) {
                         if (
                           _employee[k].endOfServiceYears >= 0 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range1
+                            _optionsDetals.from_service_range1
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days1;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range1 &&
+                            _optionsDetals.from_service_range1 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range2
+                            _optionsDetals.from_service_range2
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days2;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range2 &&
+                            _optionsDetals.from_service_range2 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range3
+                            _optionsDetals.from_service_range3
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days3;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range3 &&
+                            _optionsDetals.from_service_range3 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range4
+                            _optionsDetals.from_service_range4
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
                             _optionsDetals.eligible_days4;
                         } else if (
                           _employee[k].endOfServiceYears >=
-                          _optionsDetals.from_service_range4 &&
+                            _optionsDetals.from_service_range4 &&
                           _employee[k].endOfServiceYears <=
-                          _optionsDetals.from_service_range5
+                            _optionsDetals.from_service_range5
                         ) {
                           _eligibleDays =
                             _employee[k].endOfServiceYears *
@@ -4652,7 +5011,9 @@ function InsertGratuityProvision(options) {
                             _optionsDetals.eligible_days5;
                         }
                       } else if (_optionsDetals.end_of_service_type == "H") {
-                        const empEOSYears = parseFloat(_employee[k].endOfServiceYears);
+                        const empEOSYears = parseFloat(
+                          _employee[k].endOfServiceYears
+                        );
                         let difference =
                           empEOSYears - _optionsDetals.from_service_range1;
                         if (difference > 0) {
@@ -4660,37 +5021,45 @@ function InsertGratuityProvision(options) {
                             _optionsDetals.from_service_range1 *
                             _optionsDetals.eligible_days1;
                           _eligibleDays = hirearchical;
-                          difference = empEOSYears - _optionsDetals.from_service_range2;
+                          difference =
+                            empEOSYears - _optionsDetals.from_service_range2;
                           if (difference > 0) {
                             hirearchical =
                               empEOSYears - _optionsDetals.from_service_range2;
                             if (hirearchical > 0) {
                               hirearchical =
-                                empEOSYears - _optionsDetals.from_service_range3;
+                                empEOSYears -
+                                _optionsDetals.from_service_range3;
                               if (hirearchical > 0) {
                                 hirearchical =
-                                  empEOSYears - _optionsDetals.from_service_range4;
+                                  empEOSYears -
+                                  _optionsDetals.from_service_range4;
 
                                 _eligibleDays +=
-                                  (empEOSYears - _optionsDetals.from_service_range3) *
+                                  (empEOSYears -
+                                    _optionsDetals.from_service_range3) *
                                   _optionsDetals.eligible_days5;
                               } else {
                                 _eligibleDays +=
-                                  (empEOSYears - _optionsDetals.from_service_range3) *
+                                  (empEOSYears -
+                                    _optionsDetals.from_service_range3) *
                                   _optionsDetals.eligible_days4;
                               }
                             } else {
                               _eligibleDays +=
-                                (empEOSYears - _optionsDetals.from_service_range2) *
+                                (empEOSYears -
+                                  _optionsDetals.from_service_range2) *
                                 _optionsDetals.eligible_days3;
                             }
                           } else {
                             _eligibleDays +=
-                              (empEOSYears - _optionsDetals.from_service_range1) *
+                              (empEOSYears -
+                                _optionsDetals.from_service_range1) *
                               _optionsDetals.eligible_days2;
                           }
                         } else {
-                          _eligibleDays = empEOSYears * _optionsDetals.eligible_days1;
+                          _eligibleDays =
+                            empEOSYears * _optionsDetals.eligible_days1;
                         }
                         // let by =
                         //   _employee[k].endOfServiceYears -
