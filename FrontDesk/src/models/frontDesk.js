@@ -41,9 +41,9 @@ export default {
            WHERE `record_status`='A'" +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(patient_details => {
+        .then((patient_details) => {
           if (patient_details[1].length > 0) {
             const utilities = new algaehUtilities();
 
@@ -82,24 +82,24 @@ export default {
                   _string_Data +
                   "  ORDER BY hims_f_patient_visit_id desc",
                 values: input_Values,
-                printQuery: true
+                printQuery: true,
               })
-              .then(visit_detsils => {
+              .then((visit_detsils) => {
                 req.connection = {
                   connection: _mysql.connection,
                   isTransactionConnection: _mysql.isTransactionConnection,
-                  pool: _mysql.pool
+                  pool: _mysql.pool,
                 };
                 // _mysql.releaseConnection();
                 let result = {
                   patientRegistration: patient_details[1][0],
-                  visitDetails: visit_detsils
+                  visitDetails: visit_detsils,
                 };
                 req.records = result;
 
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
@@ -107,7 +107,7 @@ export default {
             next(new Error("Selected patient does not exists"));
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -120,25 +120,43 @@ export default {
     const _mysql = new algaehMysql();
     try {
       req.mySQl = _mysql;
-      console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client)
-      console.log("insurance_type", req.body.insurance_type)
-      if (req.body.mrn_num_sep_cop_client === "Y" && req.body.insurance_type === "Y") {
-
+      console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client);
+      console.log("insurance_type", req.body.insurance_type);
+      const { primary_insurance_provider_id } = req.body;
+      let custom = {};
+      let numGens = ["PAT_VISIT", "PAT_BILL", "RECEIPT"];
+      if (
+        req.body.mrn_num_sep_cop_client === "Y" &&
+        req.body.insurance_type === "C"
+      ) {
+        custom = {
+          custom: {
+            returnKey: "PAT_REGS",
+            primaryKeyName: "hims_d_insurance_provider_id",
+            tableName: "hims_d_insurance_provider",
+            primaryKeyValue: "2",
+            descriptionKeyName: "insurance_provider_name",
+          },
+        };
       } else {
-
+        numGens.push("PAT_REGS");
+        custom = {};
       }
+      console.log("custom", custom);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
-          numgen_codes: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
-          table_name: "hims_f_app_numgen"
+          // numgexn_codes: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
+          numgen_codes: numGens,
+          table_name: "hims_f_app_numgen",
+          ...custom,
         })
 
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           req.body.patient_code = generatedNumbers.PAT_REGS;
           req.body.visit_code = generatedNumbers.PAT_VISIT;
@@ -146,7 +164,7 @@ export default {
           req.body.receipt_number = generatedNumbers.RECEIPT;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -165,20 +183,20 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           req.body.visit_code = generatedNumbers.PAT_VISIT;
           req.body.bill_number = generatedNumbers.PAT_BILL;
           req.body.receipt_number = generatedNumbers.RECEIPT;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -216,14 +234,14 @@ export default {
             date(daily_handover_date)=date(?) " +
             shift_status,
           values: [req.query.shift_id, req.query.daily_handover_date],
-          printQuery: true
+          printQuery: true,
         })
-        .then(cash_handover_header => {
+        .then((cash_handover_header) => {
           _mysql.releaseConnection();
           req.records = cash_handover_header;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -275,11 +293,11 @@ export default {
             req.userIdentity.hospital_id,
             req.query.daily_handover_date,
             req.userIdentity.hospital_id,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           let header = result[0];
           let details = result[1];
@@ -295,11 +313,11 @@ export default {
 
               cashiers: new LINQ(details)
                 .Where(
-                  w =>
+                  (w) =>
                     w.hims_f_cash_handover_header_id ==
                     header[i]["hims_f_cash_handover_header_id"]
                 )
-                .Select(S => {
+                .Select((S) => {
                   return {
                     hims_f_cash_handover_header_id:
                       S.hims_f_cash_handover_header_id,
@@ -331,10 +349,10 @@ export default {
                     employee_code: S.employee_code,
                     employee_arabic_name: S.employee_arabic_name,
                     collected_cash: S.collected_cash,
-                    refunded_cash: S.refunded_cash
+                    refunded_cash: S.refunded_cash,
                   };
                 })
-                .ToArray()
+                .ToArray(),
             });
           }
           for (let i = 0; i < open_shift_hedr.length; i++) {
@@ -343,11 +361,11 @@ export default {
 
               cashiers: new LINQ(open_shift_detail)
                 .Where(
-                  w =>
+                  (w) =>
                     w.hims_f_cash_handover_header_id ==
                     open_shift_hedr[i]["hims_f_cash_handover_header_id"]
                 )
-                .Select(S => {
+                .Select((S) => {
                   return {
                     hims_f_cash_handover_header_id:
                       S.hims_f_cash_handover_header_id,
@@ -380,17 +398,17 @@ export default {
                     employee_arabic_name: S.employee_arabic_name,
 
                     collected_cash: S.collected_cash,
-                    refunded_cash: S.refunded_cash
+                    refunded_cash: S.refunded_cash,
                   };
                 })
-                .ToArray()
+                .ToArray(),
             });
           }
 
           req.records = { cash_collection, previous_opend_shift };
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -428,16 +446,16 @@ export default {
             input.remarks,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_f_cash_handover_detail_id
+            input.hims_f_cash_handover_detail_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -445,5 +463,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };

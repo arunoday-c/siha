@@ -1192,6 +1192,7 @@ export default {
           left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
           SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
+          printQuery: true,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -2565,20 +2566,6 @@ function getDaysArray(start, end, days) {
     if (days.indexOf(day) > -1) {
       arr.push(dat);
     }
-
-    //moment(dat).format("YYYY-MM-DD")
-    // if (nightShift == 1) {
-    //   if (days.indexOf(day) > -1) {
-    //     arr.push(dat);
-
-    //     dat.setDate(dat.getDate() + 1);
-    //     arr.push(dat);
-    //   }
-    // } else {
-    //   if (days.indexOf(day) > -1) {
-    //     arr.push(dat);
-    //   }
-    // }
   }
 
   return arr;
