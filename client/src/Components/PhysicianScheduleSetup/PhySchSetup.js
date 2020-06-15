@@ -140,7 +140,7 @@ class PhySchSetup extends Component {
     });
   }
 
-  clearState() {
+  clearState(noEvent) {
     this.setState(
       {
         doctors: [],
@@ -184,8 +184,11 @@ class PhySchSetup extends Component {
         scheduleDisable: true,
         leave: false,
         openEdit: false,
+        portlet_sub_department: "",
       },
-      () => this.getApptSchedule()
+      () => {
+        if (noEvent === undefined) this.getApptSchedule();
+      }
     );
   }
 
@@ -705,7 +708,9 @@ class PhySchSetup extends Component {
     row["modified"] = "M";
     row.update();
   }
-
+  onDepartmentClear() {
+    this.clearState(true);
+  }
   changeCheckBox(row, e) {
     if (row.modified !== undefined) {
       if (row.modified === "L") row.modified = "N";
@@ -1393,6 +1398,7 @@ class PhySchSetup extends Component {
                         data: this.state.departments,
                       },
                       onChange: this.deptDropDownHandler.bind(this),
+                      onClear: this.onDepartmentClear.bind(this),
                     }}
                     error={this.state.department_error}
                     helperText={this.state.department_error_text}
