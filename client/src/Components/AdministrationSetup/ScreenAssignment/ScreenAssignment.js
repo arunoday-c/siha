@@ -34,6 +34,13 @@ class ScreenAssignment extends Component {
       landing_page: undefined,
       assignedScreenElements: [],
       loading_update_element: false,
+      checkAll: false,
+      filterArray: [],
+      searchText: "",
+      filterArrayRoles: [],
+      searchRollText: "",
+      checkAllRoles: false,
+      checkAllIntermediate: undefined,
     };
   }
 
@@ -70,30 +77,32 @@ class ScreenAssignment extends Component {
     ScreenAssignmentEvents().clearState(this);
   }
   onSearchAllModules(e) {
-    const value = e.target.value;
-    let result = [];
-    let userMenu = this.context.userMenu.filter((f) => f.module_code !== "APM");
-    if (value !== "") {
-      result = userMenu.filter((f) => {
-        const screens = f.ScreenList.filter(
-          (s) =>
-            s.screen_name.toLowerCase().indexOf(value.toLowerCase()) > -1 ||
-            s.s_other_language.toLowerCase().indexOf(value.toLowerCase()) > -1
-        );
-        if (screens.length > 0) {
-          return { ...f, ScreenList: screens };
-        } else {
-          return false;
-        }
-      });
-    } else {
-      result = userMenu;
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterArray: [], searchText: e.target.value });
     }
+    const filterd = this.state.ScreenList.filter((f) =>
+      f.screen_name.toLowerCase().includes(value)
+    );
+    this.setState({ filterArray: filterd, searchText: e.target.value });
+  }
+  onSearchRoles(e) {
+    const value = e.target.value.toLowerCase();
+    if (value === "") {
+      this.setState({ filterArrayRoles: [], searchRollText: e.target.value });
+    }
+
+    const filterd = this.state.assignedScreenElements.filter((f) => {
+      debugger;
+      return f.screen_name.toLowerCase().includes(value);
+    });
+
     this.setState({
-      modules: result,
-      selectedText: value,
+      filterArrayRoles: filterd,
+      searchRollText: e.target.value,
     });
   }
+
   checkAllScreenWise(sub_menu, e) {
     const checked = e.target.checked;
     let existingModules = this.state.selectedScreen;
@@ -144,8 +153,47 @@ class ScreenAssignment extends Component {
     const { checked } = e.target;
     data.checked = checked;
   }
+  selectAll(e) {
+    const status = e.target.checked;
+    const allScreeList = this.state.ScreenList.map((data, index) => {
+      const allComponentList = data.componentList.map((sub_menu, index) => {
+        return {
+          ...sub_menu,
+          checked: status,
+        };
+      });
+      return {
+        ...data,
+        checked: status,
+        componentList: allComponentList,
+        // indeterminate: false,
+      };
+    });
+
+    this.setState({
+      // dummyValue: !this.state.dummyValue,
+      ScreenList: allScreeList,
+      checkAll: status,
+
+      // checkAllIntermediate: false,
+    });
+  }
 
   render() {
+    const assignedScreens =
+      this.state.searchText !== "" && this.state.filterArray.length === 0
+        ? this.state.filterArray
+        : this.state.searchText === "" && this.state.filterArray.length === 0
+        ? this.state.ScreenList
+        : this.state.filterArray;
+    const assignedRoles =
+      this.state.searchRollText !== "" &&
+      this.state.filterArrayRoles.length === 0
+        ? this.state.filterArrayRoles
+        : this.state.searchRollText === "" &&
+          this.state.filterArrayRoles.length === 0
+        ? this.state.assignedScreenElements
+        : this.state.filterArrayRoles;
     return (
       <div className="screen_assignment">
         <div className="row inner-top-search">
@@ -191,6 +239,9 @@ class ScreenAssignment extends Component {
                   role_id: null,
                   module_id: null,
                   ScreenList: [],
+                  filterArray: [],
+                  searchText: "",
+                  searchRollText: "",
                 });
               },
             }}
@@ -212,6 +263,7 @@ class ScreenAssignment extends Component {
                 this.setState({
                   module_id: null,
                   ScreenList: [],
+                  selectAll: false,
                 });
               },
             }}
@@ -274,12 +326,14 @@ class ScreenAssignment extends Component {
                   </div>
                   <div className="actions">
                     <div className="col">
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input type="checkbox" value="" name="" />
-                          <span>Select All</span>
-                        </label>
-                      </div>
+                      <Checkbox
+                        className="selectAllCheck"
+                        checked={this.state.checkAll}
+                        onChange={this.selectAll.bind(this)}
+                        indeterminate={this.state.checkAllIntermediate}
+                      >
+                        Select All
+                      </Checkbox>
                     </div>
                   </div>
                 </div>
@@ -299,7 +353,7 @@ class ScreenAssignment extends Component {
                         />
 
                         <ul className="mainmenu">
-                          {this.state.ScreenList.map((data, index) => {
+                          {assignedScreens.map((data, index) => {
                             return (
                               <li key={data.module_id}>
                                 <Checkbox
@@ -367,16 +421,18 @@ class ScreenAssignment extends Component {
                       Define Element Permissions for Role
                     </h3>
                   </div>{" "}
-                  <div className="actions">
+                  {/* <div className="actions">
                     <div className="col">
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input type="checkbox" value="" name="" />
-                          <span>Select All</span>
-                        </label>
-                      </div>
+                      <Checkbox
+                        className="selectAllCheck"
+                        checked={this.state.checkAllRoles}
+                        onChange={this.selectAllRoles.bind(this)}
+                        // indeterminate={this.state.checkAllIntermediate}
+                      >
+                        Select All
+                      </Checkbox>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -387,19 +443,20 @@ class ScreenAssignment extends Component {
                           type="text"
                           className="moduleSearchInput"
                           placeholder="Search Element Permissions"
-                          // onChange={this.onSearchAllModules.bind(this)}
-                          // disabled={
-                          //   this.state.ScreenList.length === 0 ? true : false
-                          // }
+                          onChange={this.onSearchRoles.bind(this)}
+                          disabled={
+                            this.state.ScreenList.length === 0 ? true : false
+                          }
                         />
 
                         <ul className="mainmenu">
-                          {this.state.assignedScreenElements.map((element) => {
+                          {assignedRoles.map((element) => {
                             const {
                               algaeh_app_screens_id,
                               screen_name,
                               component,
                             } = element;
+
                             return (
                               <li key={algaeh_app_screens_id}>
                                 <label className="mainHeader">
@@ -434,7 +491,7 @@ class ScreenAssignment extends Component {
                                                 {stages.length === 0 ? (
                                                   <li>
                                                     <Checkbox
-                                                      defaultChecked={checked}
+                                                      checked={checked}
                                                       onChange={this.onClickElementClick.bind(
                                                         this,
                                                         items
@@ -454,9 +511,7 @@ class ScreenAssignment extends Component {
                                                       return (
                                                         <li key={value}>
                                                           <Checkbox
-                                                            defaultChecked={
-                                                              checked
-                                                            }
+                                                            checked={checked}
                                                             onChange={this.onClickElementClick.bind(
                                                               this,
                                                               stage
