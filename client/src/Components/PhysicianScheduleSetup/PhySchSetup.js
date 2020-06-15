@@ -998,7 +998,7 @@ class PhySchSetup extends Component {
         schedule_detail: [],
         availDoctors: [],
       },
-      () => this.resetSaveState()
+      () => this.getApptSchedule() //this.resetSaveState()
     );
   }
 
