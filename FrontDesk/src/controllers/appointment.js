@@ -28,7 +28,7 @@ const {
   getEmployeeServiceID,
   cancelPatientAppointment,
   deleteSchedule,
-  getAppointmentSlip
+  getAppointmentSlip,
 } = appointmentModels;
 
 export default () => {
@@ -36,39 +36,39 @@ export default () => {
   api.post("/addAppointmentStatus", addAppointmentStatus, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.post("/addAppointmentRoom", addAppointmentRoom, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
   api.post("/addAppointmentClinic", addAppointmentClinic, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getAppointmentStatus", getAppointmentStatus, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getAppointmentRoom", getAppointmentRoom, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getAppointmentClinic", getAppointmentClinic, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.put(
@@ -77,7 +77,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -87,14 +87,14 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
   api.put("/updateAppointmentRoom", updateAppointmentRoom, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.delete(
@@ -103,7 +103,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -113,7 +113,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -124,12 +124,12 @@ export default () => {
     if (result.schedule_exist == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
   });
@@ -140,7 +140,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -148,15 +148,16 @@ export default () => {
     "/getDoctorScheduleDateWise",
     getDoctorScheduleDateWise,
     (req, res, next) => {
-      if (req.records.invalid_input == true) {
+      if (req.records.invalid_input === true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.records
+          records: req.records,
         });
       } else {
+        console.log("is res");
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: req.records
+          records: req.records,
         });
       }
     }
@@ -167,7 +168,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -177,7 +178,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -188,12 +189,12 @@ export default () => {
       if (req.records.invalid_opertaion == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: req.records
+          records: req.records,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: req.records
+          records: req.records,
         });
       }
     }
@@ -201,7 +202,7 @@ export default () => {
   api.put("/updateSchedule", updateSchedule, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.post(
@@ -210,7 +211,7 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
@@ -224,12 +225,12 @@ export default () => {
       if (result.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
     }
@@ -244,12 +245,12 @@ export default () => {
       if (req.records.slotExist == true || req.records.bookedtwice == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          records: result
+          records: result,
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          records: result
+          records: result,
         });
       }
     }
@@ -258,13 +259,13 @@ export default () => {
   api.get("/getPatientAppointment", getPatientAppointment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
   api.get("/getEmployeeServiceID", getEmployeeServiceID, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
     });
   });
 
@@ -274,20 +275,20 @@ export default () => {
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   );
   api.delete("/deleteSchedule", deleteSchedule, (req, res, next) => {
     if (req.records.invalid_opertaion == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().internalServer).json({
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        message: req.records.message
+        message: req.records.message,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: req.records
+        records: req.records,
       });
     }
   });
@@ -298,12 +299,12 @@ export default () => {
     if (result.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        records: result
+        records: result,
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        records: result
+        records: result,
       });
     }
   });

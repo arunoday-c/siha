@@ -10,7 +10,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import "./phy_sch_setup.scss";
@@ -63,7 +63,7 @@ class PhySchSetup extends Component {
       modify: [],
       scheduleDisable: true,
       leave: false,
-      openEdit: false
+      openEdit: false,
     };
   }
 
@@ -74,7 +74,7 @@ class PhySchSetup extends Component {
   changeTexts(e) {
     const { name, value } = e.target;
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -85,14 +85,14 @@ class PhySchSetup extends Component {
       sub_department_id: null,
       openScheduler: true,
       scheduleDoctors: [],
-      doctors: []
+      doctors: [],
     });
   }
 
   openEditSchedule() {
     this.setState({
       openEdit: true,
-      schedule_detail: this.state.scheduleDoctors
+      schedule_detail: this.state.scheduleDoctors,
     });
   }
 
@@ -100,11 +100,11 @@ class PhySchSetup extends Component {
     const { doctors, scheduleDoctors } = this.state;
     let docIds = scheduleDoctors.map(({ provider_id }) => provider_id);
     let availDoctors = doctors.filter(
-      item => !docIds.includes(item.provider_id)
+      (item) => !docIds.includes(item.provider_id)
     );
     this.setState({
       openAddDoctor: true,
-      availDoctors
+      availDoctors,
     });
   };
 
@@ -135,8 +135,8 @@ class PhySchSetup extends Component {
       from_break_hr1: "",
       to_break_hr1: "",
       from_break_hr2: "",
-      to_break_hr2: "",      
-      schedule_detail: []
+      to_break_hr2: "",
+      schedule_detail: [],
     });
   }
 
@@ -165,7 +165,7 @@ class PhySchSetup extends Component {
         openModifier: false,
         send_obj: {},
         slot: "",
-        schedule_status: "Y",        
+        schedule_status: "Y",
         from_work_hr: "",
         to_work_hr: "",
         work_break1: "",
@@ -183,7 +183,7 @@ class PhySchSetup extends Component {
         modify: [],
         scheduleDisable: true,
         leave: false,
-        openEdit: false
+        openEdit: false,
       },
       () => this.getApptSchedule()
     );
@@ -207,7 +207,7 @@ class PhySchSetup extends Component {
         work_break2: data.work_break2,
         from_break_hr2: data.from_break_hr2,
         to_break_hr2: data.to_break_hr2,
-        modified: data.modified
+        modified: data.modified,
       };
     } else {
       send_data = {
@@ -225,7 +225,7 @@ class PhySchSetup extends Component {
         to_break_hr2: data.to_break_hr2,
         modified: data.modified,
         hims_d_appointment_schedule_detail_id:
-          data.hims_d_appointment_schedule_detail_id
+          data.hims_d_appointment_schedule_detail_id,
       };
     }
 
@@ -234,7 +234,7 @@ class PhySchSetup extends Component {
       module: "frontDesk",
       method: "PUT",
       data: send_data,
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.getDoctorScheduleToModify(
             data.hims_d_appointment_schedule_header_id,
@@ -242,35 +242,39 @@ class PhySchSetup extends Component {
           );
           swalMessage({
             title: "Schedule Updated Successfully",
-            type: "success"
+            type: "success",
           });
         }
-      }
+      },
     });
   }
 
   deleteSchedule(data) {
-    const docs = Enumerable.from(this.state.scheduleDoctors)
+    let docs = Enumerable.from(this.state.scheduleDoctors)
       .where(
-        w =>
+        (w) =>
           w.appointment_schedule_header_id ===
           data.hims_d_appointment_schedule_header_id
       )
-      .select(s => {
+      .select((s) => {
         return s.provider_id;
       })
       .toArray();
+    docs =
+      docs.length === 0
+        ? this.state.scheduleDoctors.map((f) => f.provider_id)
+        : docs;
 
     swal({
-      title: "Delete Schedule?",
-      text: data.description,
+      title: `Do you want to delete schedule '${data.description}'?`,
+      text: `This will delete all doctors which has no appointments`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Delete",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "Cancel"
-    }).then(willDelete => {
+      cancelButtonText: "Cancel",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/deleteSchedule",
@@ -282,30 +286,24 @@ class PhySchSetup extends Component {
               data.hims_d_appointment_schedule_header_id,
             from_date: this.state.from_date,
             to_date: this.state.to_date,
-            sub_department_id: this.state.sub_department_id
+            sub_department_id: this.state.sub_department_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Schedule Deleted Successfully",
-                type: "success"
+                type: "success",
               });
               this.clearState();
             } else {
               swalMessage({
-                // title: response.data.records.message,
-                title: "Network Error, Try Again",
-                type: "error"
+                title: response.data.message,
+                type: "warning",
               });
+              this.getApptSchedule();
+              // this.clearState();
             }
           },
-          onFailure: error => {
-            swalMessage({
-              // title: error.message,
-              title: "Network Error, Try Again",
-              type: "error"
-            });
-          }
         });
       }
     });
@@ -326,7 +324,7 @@ class PhySchSetup extends Component {
     myRow.to_break_hr2 = this.state.to_break_hr2;
 
     const item = Enumerable.from(this.state.schedule_detail)
-      .where(w => w.provider_id === myRow.provider_id)
+      .where((w) => w.provider_id === myRow.provider_id)
       .firstOrDefault();
     if (item !== undefined) {
       docsArray.splice(docsArray.indexOf(item), 1);
@@ -338,7 +336,7 @@ class PhySchSetup extends Component {
 
     this.setState({
       schedule_detail: docsArray,
-      doctors
+      doctors,
     });
   };
 
@@ -359,7 +357,7 @@ class PhySchSetup extends Component {
     myRow.to_break_hr2 = this.state.to_break_hr2;
 
     const item = Enumerable.from(this.state.schedule_detail)
-      .where(w => w.provider_id === myRow.provider_id)
+      .where((w) => w.provider_id === myRow.provider_id)
       .firstOrDefault();
     if (item !== undefined) {
       docsArray.splice(docsArray.indexOf(item), 1);
@@ -371,25 +369,25 @@ class PhySchSetup extends Component {
 
     this.setState({
       schedule_detail: docsArray,
-      availDoctors
+      availDoctors,
     });
   };
 
   addDoctorsToSchedule = () => {
     const {
       hims_d_appointment_schedule_header_id,
-      schedule_detail
+      schedule_detail,
     } = this.state;
     if (!hims_d_appointment_schedule_header_id) {
       swalMessage({
         title: "Please select the correct schedule",
-        type: "error"
+        type: "error",
       });
       return null;
     } else if (!Array.isArray(schedule_detail) && !schedule_detail.length) {
       swalMessage({
         title: "Please select doctors",
-        type: "error"
+        type: "error",
       });
     } else {
       algaehApiCall({
@@ -398,35 +396,35 @@ class PhySchSetup extends Component {
         method: "POST",
         data: {
           hims_d_appointment_schedule_header_id,
-          schedule_detail
+          schedule_detail,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             if (response.data.records.schedule_exist) {
               swalMessage({
                 title: response.data.records.message,
-                type: "info"
+                type: "info",
               });
             } else {
               swalMessage({
                 title: "Schedule added successfully . .",
-                type: "success"
+                type: "success",
               });
             }
             this.getApptSchedule();
           } else if (response.data.success === false) {
             swalMessage({
               title: response.data.records.message,
-              type: "warning"
+              type: "warning",
             });
           }
         },
-        onFailure: response => {
+        onCatch: (response) => {
           swalMessage({
             title: response.data.records.message,
-            type: "warning"
+            type: "warning",
           });
-        }
+        },
       });
     }
   };
@@ -449,62 +447,62 @@ class PhySchSetup extends Component {
       friday,
       saturday,
       sunday,
-      openEdit
+      openEdit,
     } = this.state;
     console.log(this.state, "from validation");
     const type = "warning";
     if (!sub_department_id) {
       swalMessage({
         title: "Please select a department",
-        type
+        type,
       });
       return false;
     } else if (!description) {
       swalMessage({
         title: "Please Enter the Description",
-        type
+        type,
       });
       return false;
     } else if (!schedule_detail.length) {
       swalMessage({
         title: "Please Select Doctors to add to this schedule.",
-        type
+        type,
       });
       return false;
     } else if (!openEdit && !slot) {
       swalMessage({
         title: "Please Select a Slot.",
-        type
+        type,
       });
       return false;
     } else if (!from_date) {
       swalMessage({
         title: "Please enter From Date",
-        type
+        type,
       });
       return false;
     } else if (!to_date) {
       swalMessage({
         title: "Please enter To Date",
-        type
+        type,
       });
       return false;
     } else if (moment(from_date).isSameOrAfter(moment(to_date), "day")) {
       swalMessage({
         title: "Please Select a proper date range",
-        type
+        type,
       });
       return false;
     } else if (!from_work_hr) {
       swalMessage({
         title: "Please enter From Time",
-        type
+        type,
       });
       return false;
     } else if (!to_work_hr) {
       swalMessage({
         title: "Please enter To Time",
-        type
+        type,
       });
       return false;
     } else if (
@@ -518,7 +516,7 @@ class PhySchSetup extends Component {
     ) {
       swalMessage({
         title: "Please Select Working days",
-        type
+        type,
       });
       return false;
     } else {
@@ -592,28 +590,28 @@ class PhySchSetup extends Component {
           module: "frontDesk",
           method: this.state.openEdit ? "PUT" : "POST",
           data: this.state.send_obj,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               document.getElementById("srch-sch").click();
               this.resetSaveState();
 
               swalMessage({
                 title: "Schedule added successfully . .",
-                type: "success"
+                type: "success",
               });
             } else if (response.data.success === false) {
               swalMessage({
                 title: response.data.records.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       });
     }
@@ -621,7 +619,7 @@ class PhySchSetup extends Component {
 
   changeDate(date, field) {
     this.setState({
-      [field]: date
+      [field]: date,
     });
   }
 
@@ -668,34 +666,34 @@ class PhySchSetup extends Component {
     if (e.target.name === "All") {
       this.setState(
         {
-          all: !this.state.all
+          all: !this.state.all,
         },
         () => {
           this.state.all
             ? this.setState({
-              monday: true,
-              tuesday: true,
-              wednesday: true,
-              thursday: true,
-              friday: true,
-              saturday: true,
-              sunday: true,
-              days: [0, 1, 2, 3, 4, 5, 6]
-            })
+                monday: true,
+                tuesday: true,
+                wednesday: true,
+                thursday: true,
+                friday: true,
+                saturday: true,
+                sunday: true,
+                days: [0, 1, 2, 3, 4, 5, 6],
+              })
             : this.setState({
-              monday: false,
-              tuesday: false,
-              wednesday: false,
-              thursday: false,
-              friday: false,
-              saturday: false,
-              sunday: false
-            });
+                monday: false,
+                tuesday: false,
+                wednesday: false,
+                thursday: false,
+                friday: false,
+                saturday: false,
+                sunday: false,
+              });
         }
       );
     } else {
       this.setState({
-        [e.target.name]: e.target.checked
+        [e.target.name]: e.target.checked,
       });
     }
   }
@@ -729,7 +727,7 @@ class PhySchSetup extends Component {
   deptDropDownHandler(value) {
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
-        .where(w => w.sub_dept_id === this.state[value.name])
+        .where((w) => w.sub_dept_id === this.state[value.name])
         .firstOrDefault();
       this.setState({ doctors: dept.doctors, schedule_detail: [] });
     });
@@ -748,12 +746,13 @@ class PhySchSetup extends Component {
 
     let docs = Enumerable.from(this.state.scheduleList)
       .where(
-        w => w.hims_d_appointment_schedule_header_id === parseInt(header_id, 10)
+        (w) =>
+          w.hims_d_appointment_schedule_header_id === parseInt(header_id, 10)
       )
       .firstOrDefault();
 
     const dept = Enumerable.from(this.state.departments)
-      .where(w => w.sub_dept_id === docs.sub_dept_id)
+      .where((w) => w.sub_dept_id === docs.sub_dept_id)
       .firstOrDefault();
 
     this.setState(
@@ -780,7 +779,7 @@ class PhySchSetup extends Component {
         friday: docs.friday === "Y" ? true : false,
         saturday: docs.saturday === "Y" ? true : false,
         from_date: docs.from_date,
-        to_date: docs.to_date
+        to_date: docs.to_date,
       },
       () => this.isPastSchedule(docs)
     );
@@ -790,7 +789,7 @@ class PhySchSetup extends Component {
     const { to_date } = docs;
     const result = moment(to_date).isBefore(moment().format("YYYY-MM-DD"));
     this.setState({
-      pastSchedule: result
+      pastSchedule: result,
     });
   }
 
@@ -803,7 +802,7 @@ class PhySchSetup extends Component {
       provider_id: provider_id,
       from_date: this.state.from_date,
       to_date: this.state.from_date,
-      sub_department_id: this.state.sub_department_id
+      sub_department_id: this.state.sub_department_id,
     };
 
     swal({
@@ -813,34 +812,34 @@ class PhySchSetup extends Component {
       showCancelButton: true,
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/deleteDoctorFromSchedule",
           module: "frontDesk",
           method: "DELETE",
           data: send_data,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Doctor deleted successfully . .",
-                type: "success"
+                type: "success",
               });
               document.getElementById("srch-sch").click();
             } else {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "warning"
+              type: "warning",
             });
-          }
+          },
         });
       }
     });
@@ -853,12 +852,12 @@ class PhySchSetup extends Component {
       this.setState(
         {
           department_error: true,
-          department_error_text: "Please Select a department"
+          department_error_text: "Please Select a department",
         },
         () =>
           swalMessage({
             title: this.state.department_error_text,
-            type: "error"
+            type: "error",
           })
       );
     } else {
@@ -871,9 +870,9 @@ class PhySchSetup extends Component {
           sub_dept_id: this.state.portlet_sub_department,
           month: this.state.month,
           year: this.state.year,
-          provider_id: null
+          provider_id: null,
         },
-        onSuccess: response => {
+        onSuccess: (response) => {
           console.log(response.data.records, "From API");
           if (response.data.success) {
             AlgaehLoader({ show: false });
@@ -883,7 +882,7 @@ class PhySchSetup extends Component {
                 scheduleList: response.data.records,
                 scheduleDoctors: response.data.records.detail,
                 department_error_text: "",
-                department_error: false
+                department_error: false,
               },
               () => {
                 if (
@@ -898,13 +897,13 @@ class PhySchSetup extends Component {
             );
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -945,21 +944,21 @@ class PhySchSetup extends Component {
       method: "GET",
       data: {
         appointment_schedule_header_id: header_id,
-        provider_id: provider_id
+        provider_id: provider_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            modify: response.data.records
+            modify: response.data.records,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -968,19 +967,19 @@ class PhySchSetup extends Component {
       uri: "/department/selectDoctorsAndClinic",
       module: "masterSettings",
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({
-            departments: response.data.records.departmets
+            departments: response.data.records.departmets,
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -992,7 +991,7 @@ class PhySchSetup extends Component {
         openEdit: false,
         openAddDoctor: false,
         schedule_detail: [],
-        availDoctors: []
+        availDoctors: [],
       },
       () => this.resetSaveState()
     );
@@ -1005,7 +1004,7 @@ class PhySchSetup extends Component {
         {/* Doctor Schedule Modify Modal Start */}
         <AlgaehModalPopUp
           events={{
-            onClose: this.handleClose.bind(this)
+            onClose: this.handleClose.bind(this),
           }}
           title="Modify Working Hours"
           openPopup={this.state.openModifier}
@@ -1018,18 +1017,18 @@ class PhySchSetup extends Component {
                     div={{ className: "col-6" }}
                     label={{
                       fieldName: "selected_doctor",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "selected_doctor",
                       value: this.state.selected_doctor,
                       events: {
-                        onChange: null
+                        onChange: null,
                       },
                       others: {
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     }}
                   />
                   {/* <AlgaehDateHandler
@@ -1083,25 +1082,25 @@ class PhySchSetup extends Component {
                     fieldName: "schedule_date",
                     label: <AlgaehLabel label={{ fieldName: "appt_date" }} />,
                     disabled: true,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {moment(row.schedule_date).format("DD-MM-YYYY")}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <span>
                           {moment(row.schedule_date).format("DD-MM-YYYY")}
                         </span>
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "modified",
                     label: <AlgaehLabel label={{ fieldName: "leave" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <input
                           style={{ pointerEvents: "none" }}
@@ -1111,7 +1110,7 @@ class PhySchSetup extends Component {
                         />
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <input
                           type="checkbox"
@@ -1120,12 +1119,12 @@ class PhySchSetup extends Component {
                           onChange={this.changeCheckBox.bind(this, row)}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "from_work_hr",
                     label: <AlgaehLabel label={{ fieldName: "from_wrk_hr" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {moment(row.from_work_hr, "hh:mm:ss").format(
@@ -1134,7 +1133,7 @@ class PhySchSetup extends Component {
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1143,27 +1142,27 @@ class PhySchSetup extends Component {
                             name: "from_work_hr",
                             value: row.from_work_hr,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "to_work_hr",
                     label: <AlgaehLabel label={{ fieldName: "to_wrk_hr" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {moment(row.to_work_hr, "hh:mm:ss").format("hh:mm A")}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1172,31 +1171,31 @@ class PhySchSetup extends Component {
                             name: "to_work_hr",
                             value: row.to_work_hr,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "from_break_hr1",
                     label: <AlgaehLabel label={{ fieldName: "frm_brk_1" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.work_break1 === "Y"
                             ? moment(row.from_break_hr1, "hh:mm:ss").format(
-                              "hh:mm A"
-                            )
+                                "hh:mm A"
+                              )
                             : "--"}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1205,31 +1204,31 @@ class PhySchSetup extends Component {
                             name: "from_break_hr1",
                             value: row.from_break_hr1,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "to_break_hr1",
                     label: <AlgaehLabel label={{ fieldName: "to_brk_1" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.work_break1 === "Y"
                             ? moment(row.to_break_hr1, "hh:mm:ss").format(
-                              "hh:mm A"
-                            )
+                                "hh:mm A"
+                              )
                             : "--"}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1238,31 +1237,31 @@ class PhySchSetup extends Component {
                             name: "to_break_hr1",
                             value: row.to_break_hr1,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "from_break_hr2",
                     label: <AlgaehLabel label={{ fieldName: "frm_brk_2" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.work_break2 === "Y"
                             ? moment(row.from_break_hr2, "hh:mm:ss").format(
-                              "hh:mm A"
-                            )
+                                "hh:mm A"
+                              )
                             : "--"}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1271,31 +1270,31 @@ class PhySchSetup extends Component {
                             name: "from_break_hr2",
                             value: row.from_break_hr2,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
+                    },
                   },
                   {
                     fieldName: "to_break_hr2",
                     label: <AlgaehLabel label={{ fieldName: "to_brk_2" }} />,
-                    displayTemplate: row => {
+                    displayTemplate: (row) => {
                       return (
                         <span>
                           {row.work_break2 === "Y"
                             ? moment(row.to_break_hr2, "hh:mm:ss").format(
-                              "hh:mm A"
-                            )
+                                "hh:mm A"
+                              )
                             : "--"}
                         </span>
                       );
                     },
-                    editorTemplate: row => {
+                    editorTemplate: (row) => {
                       return (
                         <AlagehFormGroup
                           div={{ className: "" }}
@@ -1304,27 +1303,27 @@ class PhySchSetup extends Component {
                             name: "to_break_hr2",
                             value: row.to_break_hr2,
                             events: {
-                              onChange: this.changeGridEditors.bind(this, row)
+                              onChange: this.changeGridEditors.bind(this, row),
                             },
                             others: {
-                              type: "time"
-                            }
+                              type: "time",
+                            },
                           }}
                         />
                       );
-                    }
-                  }
+                    },
+                  },
                 ]}
                 keyId="hims_d_appointment_status_id"
                 dataSource={{
-                  data: this.state.modify
+                  data: this.state.modify,
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  onEdit: () => { },
-                  onDelete: () => { },
-                  onDone: this.updateDoctorScheduleDateWise.bind(this)
+                  onEdit: () => {},
+                  onDelete: () => {},
+                  onDone: this.updateDoctorScheduleDateWise.bind(this),
                 }}
               />
             </div>
@@ -1339,8 +1338,8 @@ class PhySchSetup extends Component {
             this.state.openEdit
               ? "Edit Schedule"
               : this.state.openScheduler
-                ? "Create Schedule"
-                : ""
+              ? "Create Schedule"
+              : ""
           }
           deptDropDownHandler={this.deptDropDownHandler.bind(this)}
           changeTexts={this.changeTexts.bind(this)}
@@ -1382,7 +1381,7 @@ class PhySchSetup extends Component {
                     div={{ className: "col-12 form-group" }}
                     label={{
                       forceLabel: "Select Department",
-                      isImp: true
+                      isImp: true,
                     }}
                     selector={{
                       name: "portlet_sub_department",
@@ -1391,9 +1390,9 @@ class PhySchSetup extends Component {
                       dataSource: {
                         textField: "sub_department_name",
                         valueField: "sub_dept_id",
-                        data: this.state.departments
+                        data: this.state.departments,
                       },
-                      onChange: this.deptDropDownHandler.bind(this)
+                      onChange: this.deptDropDownHandler.bind(this),
                     }}
                     error={this.state.department_error}
                     helperText={this.state.department_error_text}
@@ -1403,26 +1402,26 @@ class PhySchSetup extends Component {
                     div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Year",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "year",
                       value: this.state.year,
                       events: {
-                        onChange: this.changeTexts.bind(this)
+                        onChange: this.changeTexts.bind(this),
                       },
                       others: {
                         type: "number",
-                        min: moment().year()
-                      }
+                        min: moment().year(),
+                      },
                     }}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-5" }}
                     label={{
                       forceLabel: "Month",
-                      isImp: false
+                      isImp: false,
                     }}
                     selector={{
                       sort: "off",
@@ -1432,10 +1431,10 @@ class PhySchSetup extends Component {
                       dataSource: {
                         textField: "name",
                         valueField: "value",
-                        data: GlobalVariables.MONTHS
+                        data: GlobalVariables.MONTHS,
                       },
                       onChange: this.dropDownHandler.bind(this),
-                      onClear: () => this.setState({ month: "" })
+                      onClear: () => this.setState({ month: "" }),
                     }}
                   />
 
@@ -1479,16 +1478,16 @@ class PhySchSetup extends Component {
                         </li>
                       ))
                     ) : (
-                        <span className="noDataStyle">
-                          <h1>
-                            <i className="fas fa-calendar-check" />
-                          </h1>
-                          <p>
-                            Select Year & Department to <br />
-                            View Schedule List
+                      <span className="noDataStyle">
+                        <h1>
+                          <i className="fas fa-calendar-check" />
+                        </h1>
+                        <p>
+                          Select Year & Department to <br />
+                          View Schedule List
                         </p>
-                        </span>
-                      )}
+                      </span>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -1512,7 +1511,7 @@ class PhySchSetup extends Component {
                           this.deleteSchedule({
                             hims_d_appointment_schedule_header_id: this.state
                               .hims_d_appointment_schedule_header_id,
-                            description: this.state.description
+                            description: this.state.description,
                           });
                         }}
                         disabled={this.state.pastSchedule}
@@ -1542,15 +1541,15 @@ class PhySchSetup extends Component {
                                 <AlgaehLabel
                                   label={{
                                     forceLabel: "From Date",
-                                    isImp: true
+                                    isImp: true,
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.from_date
                                     ? moment(this.state.from_date).format(
-                                      "DD-MM-YYYY"
-                                    )
+                                        "DD-MM-YYYY"
+                                      )
                                     : "DD/MM/YYYY"}
                                 </h6>
                               </div>
@@ -1559,15 +1558,15 @@ class PhySchSetup extends Component {
                                 <AlgaehLabel
                                   label={{
                                     forceLabel: "To Date",
-                                    isImp: true
+                                    isImp: true,
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.to_date
                                     ? moment(this.state.to_date).format(
-                                      "DD-MM-YYYY"
-                                    )
+                                        "DD-MM-YYYY"
+                                      )
                                     : "DD/MM/YYYY"}
                                 </h6>
                               </div>
@@ -1582,16 +1581,16 @@ class PhySchSetup extends Component {
                                 <AlgaehLabel
                                   label={{
                                     fieldName: "frm_time",
-                                    isImp: true
+                                    isImp: true,
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.from_work_hr
                                     ? moment(
-                                      this.state.from_work_hr,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.from_work_hr,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "00:00"}
                                 </h6>
                               </div>
@@ -1600,16 +1599,16 @@ class PhySchSetup extends Component {
                                 <AlgaehLabel
                                   label={{
                                     forceLabel: "To Time",
-                                    isImp: true
+                                    isImp: true,
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.to_work_hr
                                     ? moment(
-                                      this.state.to_work_hr,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.to_work_hr,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "00:00"}
                                 </h6>
                               </div>
@@ -1626,15 +1625,15 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    fieldName: "frm_time"
+                                    fieldName: "frm_time",
                                   }}
                                 />
                                 <h6>
                                   {this.state.work_break1 === "Y"
                                     ? moment(
-                                      this.state.from_break_hr1,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.from_break_hr1,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1642,16 +1641,16 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "To Time"
+                                    forceLabel: "To Time",
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.work_break1 === "Y"
                                     ? moment(
-                                      this.state.to_break_hr1,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.to_break_hr1,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1665,16 +1664,16 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    fieldName: "frm_time"
+                                    fieldName: "frm_time",
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.work_break2 === "Y"
                                     ? moment(
-                                      this.state.from_break_hr2,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.from_break_hr2,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1682,16 +1681,16 @@ class PhySchSetup extends Component {
                               <div className="col-6">
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "To Time"
+                                    forceLabel: "To Time",
                                   }}
                                 />
 
                                 <h6>
                                   {this.state.work_break2 === "Y"
                                     ? moment(
-                                      this.state.to_break_hr2,
-                                      "hh:mm:ss"
-                                    ).format("hh:mm a")
+                                        this.state.to_break_hr2,
+                                        "hh:mm:ss"
+                                      ).format("hh:mm a")
                                     : "--"}
                                 </h6>
                               </div>
@@ -1705,7 +1704,7 @@ class PhySchSetup extends Component {
                           <AlgaehLabel
                             label={{
                               fieldName: "wrkng_days",
-                              isImp: true
+                              isImp: true,
                             }}
                           />
 
@@ -1736,31 +1735,31 @@ class PhySchSetup extends Component {
                                   <span>{data.full_name}</span>
                                 </li>
                               ) : (
-                                  <li key={index}>
-                                    <i
-                                      provider-name={data.full_name}
-                                      provider-id={data.provider_id}
-                                      id={data.appointment_schedule_header_id}
-                                      onClick={this.openModifierPopup.bind(this)}
-                                      className="fas fa-pen"
-                                    />
-                                    <i
-                                      onClick={this.deleteDocFromSchedule.bind(
-                                        this
-                                      )}
-                                      provider-id={data.provider_id}
-                                      id={data.appointment_schedule_header_id}
-                                      className="fas fa-trash-alt"
-                                    />
-                                    <span>{data.full_name}</span>
-                                  </li>
-                                )
+                                <li key={index}>
+                                  <i
+                                    provider-name={data.full_name}
+                                    provider-id={data.provider_id}
+                                    id={data.appointment_schedule_header_id}
+                                    onClick={this.openModifierPopup.bind(this)}
+                                    className="fas fa-pen"
+                                  />
+                                  <i
+                                    onClick={this.deleteDocFromSchedule.bind(
+                                      this
+                                    )}
+                                    provider-id={data.provider_id}
+                                    id={data.appointment_schedule_header_id}
+                                    className="fas fa-trash-alt"
+                                  />
+                                  <span>{data.full_name}</span>
+                                </li>
+                              )
                             )
                           ) : (
-                              <span className="noDataStyle">
-                                Select schedule to view doctors
+                            <span className="noDataStyle">
+                              Select schedule to view doctors
                             </span>
-                            )}
+                          )}
                         </ul>
                       </div>
                       <button
@@ -1774,13 +1773,13 @@ class PhySchSetup extends Component {
                   </div>
                 </div>
               ) : (
-                  <span className="noDataStyle">
-                    <h1>
-                      <i className="fas fa-info-circle" />
-                    </h1>
-                    <p>Select a Schedule for more details</p>
-                  </span>
-                )}
+                <span className="noDataStyle">
+                  <h1>
+                    <i className="fas fa-info-circle" />
+                  </h1>
+                  <p>Select a Schedule for more details</p>
+                </span>
+              )}
             </div>
           </div>
         </div>

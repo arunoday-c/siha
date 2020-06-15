@@ -735,56 +735,54 @@ function AppointmentComponent(props) {
                   >
                     {/* Table Start */}
                     {props.state.appointmentSchedule.length !== 0 ? (
-                      props.state.appointmentSchedule.map((data, index) => (
-                        <table key={index} className="tg">
-                          <thead>
-                            <tr>
-                              {/* <th className="tg-c3ow">Time</th> */}
-                              <th className="tg-amwm" colSpan="2">
-                                <h6>{data.doctor_name}</h6>
-                                <p>
-                                  {/* <span>{data.sub_department_name}</span> */}
-                                  {/* <span>{data.clinic_name}</span> */}
-                                  <span>
-                                    {getLabelFromLanguage({
-                                      fieldName: "roomNo",
-                                    })}
-                                    : {data.room_name}
-                                  </span>
-                                </p>
-                              </th>
-                            </tr>
-                            <tr>
-                              {/* <td className="tg-baqh"><span class="dynSlot">09:00 AM</span><i onClick={props.showModal.bind(props)} className="fas fa-plus"/></td> */}
-                              <th className="tbl-subHdg">
-                                {getLabelFromLanguage({
-                                  fieldName: "booked",
-                                })}
-                              </th>
-                              <th className="tbl-subHdg">
-                                {getLabelFromLanguage({
-                                  fieldName: "standBy",
-                                })}
-                              </th>
-                            </tr>
-                          </thead>
-                          {data.modified === "L" ? (
-                            <tbody>
+                      <>
+                        {props.state.appointmentSchedule.map((data, index) => (
+                          <table key={index} className="tg">
+                            <thead>
                               <tr>
-                                <td>
-                                  <span className="doctorLeaveCntr">
-                                    {getLabelFromLanguage({
-                                      fieldName: "doctorLeave",
-                                    })}
-                                  </span>
-                                </td>
+                                <th className="tg-amwm" colSpan="2">
+                                  <h6>{data.doctor_name}</h6>
+                                  <p>
+                                    <span>
+                                      {getLabelFromLanguage({
+                                        fieldName: "roomNo",
+                                      })}
+                                      : {data.room_name}
+                                    </span>
+                                  </p>
+                                </th>
                               </tr>
-                            </tbody>
-                          ) : (
-                            <tbody>{props.generateTimeslots(data)}</tbody>
-                          )}
-                        </table>
-                      ))
+                              <tr>
+                                <th className="tbl-subHdg">
+                                  {getLabelFromLanguage({
+                                    fieldName: "booked",
+                                  })}
+                                </th>
+                                <th className="tbl-subHdg">
+                                  {getLabelFromLanguage({
+                                    fieldName: "standBy",
+                                  })}
+                                </th>
+                              </tr>
+                            </thead>
+                            {data.modified === "L" ? (
+                              <tbody>
+                                <tr>
+                                  <td>
+                                    <span className="doctorLeaveCntr">
+                                      {getLabelFromLanguage({
+                                        fieldName: "doctorLeave",
+                                      })}
+                                    </span>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            ) : (
+                              <tbody>{props.generateTimeslots(data)}</tbody>
+                            )}
+                          </table>
+                        ))}
+                      </>
                     ) : (
                       <span className="noDoctor">
                         {getLabelFromLanguage({ fieldName: "noDoctorAvail" })}

@@ -513,23 +513,32 @@ class Appointment extends PureComponent {
           method: "GET",
           data: send_data,
           onSuccess: (response) => {
+            debugger;
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length > 0) {
-              this.setState(
-                { appointmentSchedule: response.data.records },
-                () => {
-                  this.setState({
-                    slot:
-                      this.state.appointmentSchedule !== undefined
-                        ? this.state.appointmentSchedule[0].slot
-                        : null,
-                    width:
-                      response.data.records !== undefined
-                        ? 318 * response.data.records.length
-                        : 0,
-                  });
-                }
-              );
+              const dataArray = Array.isArray(response.data.records)
+                ? response.data.records
+                : [];
+              const slot = dataArray.length > 0 ? dataArray[0].slot : null;
+              const width = 318 * dataArray;
+              console.log("dataArray", dataArray);
+              this.setState({ slot, width, appointmentSchedule: dataArray });
+              // this.setState(
+              //   { appointmentSchedule: response.data.records },
+              //   () => {
+              //     debugger;
+              //     this.setState({
+              //       slot:
+              //         this.state.appointmentSchedule !== undefined
+              //           ? this.state.appointmentSchedule[0].slot
+              //           : null,
+              //       width:
+              //         response.data.records !== undefined
+              //           ? 318 * response.data.records.length
+              //           : 0,
+              //     });
+              //   }
+              // );
             } else {
               this.setState({
                 appointmentSchedule: [],
@@ -541,7 +550,8 @@ class Appointment extends PureComponent {
               });
             }
           },
-          onFailure: (error) => {
+          onCatch: (error) => {
+            algaehLoader({ show: false });
             swalMessage({
               title: error.message,
               type: "error",
@@ -1846,6 +1856,7 @@ class Appointment extends PureComponent {
     let isPrevbreak = null;
     let count = 0;
     let tds = [];
+    // console.log("timeSlots", timeSlots);
     timeSlots.forEach((time) => {
       let isBreak = time === "break";
       if (isBreak) {

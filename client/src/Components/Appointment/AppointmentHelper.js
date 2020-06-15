@@ -13,7 +13,8 @@ export function generateTimeslotsForDoctor(data) {
   let result = [];
   let count = 0;
   let newFrom = from_work_hr.clone();
-  for (; ;) {
+
+  for (;;) {
     let isBreak = false;
 
     newFrom = count === 0 ? newFrom : newFrom.add(slot, "minutes");
@@ -44,6 +45,7 @@ export function generateTimeslotsForDoctor(data) {
     }
     count = count + 1;
   }
+
   return result;
 }
 
@@ -53,7 +55,7 @@ export function generateReport($this, rpt_name, rpt_desc) {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -62,17 +64,17 @@ export function generateReport($this, rpt_name, rpt_desc) {
         reportParams: [
           {
             name: "hims_f_patient_appointment_id",
-            value: $this.hims_f_patient_appointment_id
-          }
+            value: $this.hims_f_patient_appointment_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
-       const urlBlob = URL.createObjectURL(res.data);
+    onSuccess: (res) => {
+      const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=${rpt_desc}`;
       window.open(origin);
       // myWindow.document.title = rpt_desc;
-    }
+    },
   });
 }

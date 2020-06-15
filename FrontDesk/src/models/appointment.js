@@ -1115,7 +1115,7 @@ export default {
         if (result.length > 0) {
           _mysql
             .executeQuery({
-              query: `select distinct provider_id,appointment_schedule_header_id,E.full_name from 
+              query: `select distinct provider_id,appointment_schedule_header_id,E.full_name,slot from 
                         hims_d_appointment_schedule_detail D inner join  hims_d_employee E
                         on D.provider_id=E.hims_d_employee_id  
                         where appointment_schedule_header_id in (${header_ids} ) and D.record_status='A' and E.record_status='A';`,
@@ -1192,7 +1192,6 @@ export default {
           left join hims_d_sub_department SD on SH.sub_dept_id= SD.hims_d_sub_department_id  where
           SH.hospital_id=?  ${selectDoctor} ${qry} `,
           values: [req.userIdentity.hospital_id],
-          printQuery: true,
         })
         .then((result) => {
           if (result.length > 0) {
@@ -1216,8 +1215,6 @@ export default {
                         values: [
                           result[j]["hims_d_appointment_schedule_detail_id"],
                         ],
-
-                        printQuery: true,
                       })
                       .then((modifyResult) => {
                         result[j] = modifyResult[0];
@@ -1514,10 +1511,6 @@ export default {
         printQuery: false,
       })
       .then((result) => {
-        // _mysql.releaseConnection();
-        // req.records = result;
-        // next();
-
         if (result.length > 0) {
           _mysql.releaseConnection();
           req.records = {
@@ -2404,7 +2397,8 @@ export default {
     let input = req.body;
     _mysql
       .executeQuery({
-        query: `select hims_f_patient_appointment_id ,full_name, appointment_date from hims_f_patient_appointment A 
+        query: `select hims_f_patient_appointment_id ,full_name, appointment_date,
+          E.hims_d_employee_id from hims_f_patient_appointment A 
           inner join  hims_d_employee E on A.provider_id=E.hims_d_employee_id 
           where date(appointment_date) between date(?) and  date(?) 
           and A.sub_department_id=? and A.hospital_id=? and A.provider_id in (?) 
@@ -2419,50 +2413,108 @@ export default {
         printQuery: true,
       })
       .then((result) => {
-        // _mysql.releaseConnection();
-        // req.records = result;
-        // next();
-
-        if (result.length > 0) {
-          _mysql.releaseConnection();
-          req.records = {
-            invalid_opertaion: true,
-            message: `Cant delete ,${result[0]["full_name"]} has appointments on  ${result[0]["appointment_date"]} `,
-          };
-          next();
-        } else {
-          _mysql
-            .executeQueryWithTransaction({
-              query:
-                "delete M from hims_d_appointment_schedule_detail D inner join\
-                hims_d_appointment_schedule_modify M on D.hims_d_appointment_schedule_detail_id=M.appointment_schedule_detail_id\
-                where D.appointment_schedule_header_id=? and D.provider_id in (?);\
-                delete from hims_d_appointment_schedule_detail\
-                where appointment_schedule_header_id=? and provider_id in (?);\
-                delete H from hims_d_appointment_schedule_header H left join hims_d_appointment_schedule_detail D\
-                on H.hims_d_appointment_schedule_header_id=D.appointment_schedule_header_id where  hims_d_appointment_schedule_header_id=?\
-                and  D.appointment_schedule_header_id  is null ",
-              values: [
-                input.appointment_schedule_header_id,
-                input.providers,
-                input.appointment_schedule_header_id,
-                input.providers,
-                input.appointment_schedule_header_id,
-              ],
-            })
-            .then((delDesult) => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = delDesult;
-                next();
-              });
-            })
-            .catch((e) => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+        let scheduledAppointments =
+          "Cant delete already appointments are scheduled for,\n";
+        let newListProvider = input.providers;
+        let showCanNotDeleted = false;
+        for (let i = 0; i < result.length; i++) {
+          if (i == 0) showCanNotDeleted = true;
+          scheduledAppointments += `${result[i]["full_name"]} \n`;
+          const index = newListProvider.indexOf(
+            result[i]["hims_d_employee_id"]
+          );
+          newListProvider.splice(index, 1);
         }
+        if (newListProvider.length === 0) {
+          _mysql.releaseConnection();
+          if (showCanNotDeleted === true) {
+            next(new Error("Doctor'(s) has already link to this schedule"));
+            return;
+          } else {
+            next(new Error("Please provide doctor'(s) list"));
+            return;
+          }
+        }
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "delete M from hims_d_appointment_schedule_detail D inner join\
+            hims_d_appointment_schedule_modify M on D.hims_d_appointment_schedule_detail_id=M.appointment_schedule_detail_id\
+            where D.appointment_schedule_header_id=? and D.provider_id in (?);\
+            delete from hims_d_appointment_schedule_detail\
+            where appointment_schedule_header_id=? and provider_id in (?);\
+            delete H from hims_d_appointment_schedule_header H left join hims_d_appointment_schedule_detail D\
+            on H.hims_d_appointment_schedule_header_id=D.appointment_schedule_header_id where  hims_d_appointment_schedule_header_id=?\
+            and  D.appointment_schedule_header_id  is null ",
+            values: [
+              input.appointment_schedule_header_id,
+              newListProvider,
+              input.appointment_schedule_header_id,
+              newListProvider,
+              input.appointment_schedule_header_id,
+            ],
+          })
+          .then((delDesult) => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              if (showCanNotDeleted === true) {
+                req.records = {
+                  invalid_opertaion: true,
+                  message: scheduledAppointments,
+                };
+              } else {
+                req.records = delDesult;
+              }
+
+              next();
+            });
+          })
+          .catch((e) => {
+            _mysql.rollBackTransaction(() => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+          });
+        // if (result.length > 0) {
+        //   _mysql.releaseConnection();
+        //   req.records = {
+        //     invalid_opertaion: true,
+        //     message: `Cant delete ,${result[0]["full_name"]} has appointments on  ${result[0]["appointment_date"]} `,
+        //   };
+        //   next();
+        // } else {
+        //   _mysql
+        //     .executeQueryWithTransaction({
+        //       query:
+        //         "delete M from hims_d_appointment_schedule_detail D inner join\
+        //         hims_d_appointment_schedule_modify M on D.hims_d_appointment_schedule_detail_id=M.appointment_schedule_detail_id\
+        //         where D.appointment_schedule_header_id=? and D.provider_id in (?);\
+        //         delete from hims_d_appointment_schedule_detail\
+        //         where appointment_schedule_header_id=? and provider_id in (?);\
+        //         delete H from hims_d_appointment_schedule_header H left join hims_d_appointment_schedule_detail D\
+        //         on H.hims_d_appointment_schedule_header_id=D.appointment_schedule_header_id where  hims_d_appointment_schedule_header_id=?\
+        //         and  D.appointment_schedule_header_id  is null ",
+        //       values: [
+        //         input.appointment_schedule_header_id,
+        //         input.providers,
+        //         input.appointment_schedule_header_id,
+        //         input.providers,
+        //         input.appointment_schedule_header_id,
+        //       ],
+        //     })
+        //     .then((delDesult) => {
+        //       _mysql.commitTransaction(() => {
+        //         _mysql.releaseConnection();
+        //         req.records = delDesult;
+        //         next();
+        //       });
+        //     })
+        //     .catch((e) => {
+        //       _mysql.rollBackTransaction(() => {
+        //         next(e);
+        //       });
+        //     });
+        // }
       })
       .catch((e) => {
         _mysql.releaseConnection();

@@ -1,11 +1,12 @@
 import React from "react";
 import AlgaehModalPopUp from "../Wrapper/modulePopUp";
-
+// import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
+import GlobalVariables from "../../utils/GlobalVariables.json";
 export default function AddDoctorModal(props) {
   return (
     <AlgaehModalPopUp
       events={{
-        onClose: props.handleClose
+        onClose: props.handleClose,
       }}
       title={props.title}
       class="addDoctorSchedule"
@@ -16,10 +17,12 @@ export default function AddDoctorModal(props) {
           <div className="physicianList">
             <ul>
               {props.availDoctors.map((data, index) => {
+                data["slot"] = data["slot"] === undefined ? 10 : data["slot"];
+
                 return (
                   <li
                     key={index}
-                    onClick={e =>
+                    onClick={(e) =>
                       e.currentTarget.firstElementChild.firstElementChild.click()
                     }
                   >
@@ -33,6 +36,21 @@ export default function AddDoctorModal(props) {
                       <i className="fas fa-check" />
                     </span>
                     <span className="physicianListName">{data.full_name}</span>
+                    <span className="physicianListSlot">
+                      <select
+                        defaultValue={data.slot === undefined ? 10 : data.slot}
+                        onChange={(e) => {
+                          data["slot"] = e.target.value;
+                        }}
+                        className="col"
+                      >
+                        {GlobalVariables.SLOTS.map((item, index) => (
+                          <option key={index} value={item.value}>
+                            {item.name}
+                          </option>
+                        ))}
+                      </select>
+                    </span>
                     {/* <span className="physicianListSlot"></span> */}
                   </li>
                 );
