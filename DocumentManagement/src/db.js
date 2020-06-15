@@ -7,6 +7,7 @@ export default (callBack) => {
     useNewUrlParser: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
+    useCreateIndex: true,
   });
   callBack(_db);
 };
