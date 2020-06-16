@@ -29,15 +29,15 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(patient_details => {
+          .then((patient_details) => {
             _mysql.releaseConnection();
             req.records = patient_details;
 
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
@@ -75,17 +75,17 @@ export default {
             inputParam.sub_department_id,
             inputParam.doctor_id,
             inputParam.patient_id,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -100,7 +100,7 @@ export default {
     try {
       const inputParam = { ...req.body };
       const utilities = new algaehUtilities();
-      utilities.logger().log("insertPatientVisitData: ");
+      // utilities.logger().log("insertPatientVisitData: ");
 
       let existingExparyDate = null;
       let currentPatientEpisodeNo = null;
@@ -108,7 +108,7 @@ export default {
 
       // inputParam.patient_id = req.body.patient_id;
 
-      utilities.logger().log("inputParam: ", inputParam);
+      // utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
         if (inputParam.age_in_years == null) {
@@ -181,11 +181,11 @@ export default {
               inputParam.new_visit_patient,
               req.userIdentity.hospital_id,
               inputParam.eligible,
-              inputParam.eligible_reference_number
+              inputParam.eligible_reference_number,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(visitresult => {
+          .then((visitresult) => {
             req.body.visit_id = visitresult.insertId;
             let patient_visit_id = visitresult.insertId;
 
@@ -202,11 +202,11 @@ export default {
                     inputParam.is_critical_message,
                     inputParam.message_active_till,
                     req.userIdentity.algaeh_d_app_user_id,
-                    new Date()
+                    new Date(),
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(resultData => {
+                .then((resultData) => {
                   if (req.connection == null) {
                     _mysql.commitTransaction(() => {
                       _mysql.visitresult();
@@ -217,14 +217,14 @@ export default {
                     next();
                   }
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -235,28 +235,31 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id, no_free_visit\
+              "SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id, no_free_visit\
                  from hims_f_patient_visit where\
                 patient_id=? and doctor_id=? and record_status='A' and  hospital_id=?;",
             values: [
               inputParam.patient_id,
               inputParam.doctor_id,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(expResult => {
-            utilities.logger().log("existing_plan: ", inputParam.existing_plan);
-            utilities.logger().log("expResult: ", expResult);
+          .then((expectedResult) => {
+            expectedResult.shift();
+            let expResult = expectedResult;
+
+            // utilities.logger().log("existing_plan: ", inputParam.existing_plan);
+            // utilities.logger().log("expResult: ", expResult);
             if (inputParam.existing_plan === "Y") {
               inputParam.visit_expiery_date = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
               inputParam.episode_id = expResult[0]["episode_id"];
               req.body.episode_id = inputParam.episode_id;
-              utilities
-                .logger()
-                .log("existing_plan: ", inputParam.existing_plan);
+              // utilities
+              //   .logger()
+              //   .log("existing_plan: ", inputParam.existing_plan);
               internalInsertPatientVisitData();
               //Data
             } else {
@@ -281,9 +284,9 @@ export default {
                     query:
                       "SELECT param_value,episode_id from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
                         and record_status='A';",
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(record => {
+                  .then((record) => {
                     if (record.length == 0) {
                       if (req.connection == null) {
                         _mysql.rollBackTransaction(() => {
@@ -315,19 +318,19 @@ export default {
                           query:
                             "update algaeh_d_app_config set episode_id=? where algaeh_d_app_config_id=11 and record_status='A';",
                           values: [nextEpisodeNo],
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(updateResult => {
+                        .then((updateResult) => {
                           internalInsertPatientVisitData();
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           _mysql.rollBackTransaction(() => {
                             next(e);
                           });
                         });
                     }
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     _mysql.rollBackTransaction(() => {
                       next(e);
                     });
@@ -339,7 +342,7 @@ export default {
               }
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -363,10 +366,12 @@ export default {
           });
         } else {
           req.options.onFailure(
-            utilities.httpStatus().generateError(
-              httpStatus.noContent,
-              "Please select consultation type"
-            )
+            utilities
+              .httpStatus()
+              .generateError(
+                httpStatus.noContent,
+                "Please select consultation type"
+              )
           );
         }
       }
@@ -402,11 +407,11 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(encounter_details => {
+          .then((encounter_details) => {
             _mysql
               .executeQuery({
                 query:
@@ -415,11 +420,11 @@ export default {
                 values: [
                   new Date(),
                   input.updated_by,
-                  input.hims_f_patient_appointment_id
+                  input.hims_f_patient_appointment_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(patAppointment => {
+              .then((patAppointment) => {
                 // if (req.connection == null) {
                 //   _mysql.commitTransaction(() => {
                 //     _mysql.releaseConnection();
@@ -435,7 +440,7 @@ export default {
                   bill_number: input.bill_number,
                   patient_visit_id: input.visit_id,
                   hims_d_patient_id: input.patient_id,
-                  hims_f_billing_header_id: input.hims_f_billing_header_id
+                  hims_f_billing_header_id: input.hims_f_billing_header_id,
                 };
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -443,13 +448,13 @@ export default {
                   next();
                 });
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -462,7 +467,7 @@ export default {
           bill_number: input.bill_number,
           patient_visit_id: input.visit_id,
           hims_d_patient_id: input.patient_id,
-          hims_f_billing_header_id: input.hims_f_billing_header_id
+          hims_f_billing_header_id: input.hims_f_billing_header_id,
         };
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
@@ -533,11 +538,11 @@ export default {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              new Date()
+              new Date(),
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(patient_insurance => {
+          .then((patient_insurance) => {
             if (req.connection == null) {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
@@ -548,7 +553,7 @@ export default {
               next();
             }
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -573,14 +578,14 @@ export default {
             FROM hims_d_employee E \
             left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
             where isdoctor = 'Y' and employee_status = 'A' and E.hospital_id=?;",
-          values: [req.userIdentity.hospital_id]
+          values: [req.userIdentity.hospital_id],
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -588,5 +593,5 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
 };
