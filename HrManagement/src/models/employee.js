@@ -1118,7 +1118,7 @@ export default {
           .executeQuery({
             query:
               "SELECT hims_d_employee_identification_id,employee_id,identity_documents_id,identity_number,\
-          valid_upto,hijri_valid_upto,issue_date,alert_required,alert_date from hims_d_employee_identification where \
+          valid_upto,issue_date,alert_required,alert_date from hims_d_employee_identification where \
           employee_id = ?; \
           SELECT hims_d_employee_dependents_id,employee_id,dependent_type,dependent_name,dependent_identity_type,\
           dependent_identity_no from hims_d_employee_dependents where employee_id = ?;",
@@ -2616,7 +2616,7 @@ function InsertEmployeeIdentification(options) {
           "identity_documents_id",
           "identity_number",
           "valid_upto",
-          "hijri_valid_upto",
+
           "issue_date",
           "alert_required",
           "alert_date",
@@ -2668,12 +2668,12 @@ function UpdateEmployeeIdentification(options) {
         for (let i = 0; i < req.body.updateIdDetails.length; i++) {
           qry += mysql.format(
             "UPDATE `hims_d_employee_identification` SET \
-            `identity_number`=?,`issue_date`=?, `valid_upto`=?,`hijri_valid_upto`=? where hims_d_employee_identification_id=?;",
+            `identity_number`=?,`issue_date`=?, `valid_upto`=?  where hims_d_employee_identification_id=?;",
             [
               inputParam[i].identity_number,
               moment(inputParam[i].issue_date).format("YYYY-MM-DD"),
               moment(inputParam[i].valid_upto).format("YYYY-MM-DD"),
-              moment(inputParam[i].hijri_valid_upto).format("YYYY-MM-DD"),
+
               inputParam[i].hims_d_employee_identification_id,
             ]
           );
