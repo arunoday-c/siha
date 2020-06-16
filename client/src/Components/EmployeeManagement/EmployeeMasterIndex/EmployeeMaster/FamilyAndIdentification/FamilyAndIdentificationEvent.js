@@ -3,13 +3,14 @@ import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import Options from "../../../../../Options.json";
+import hijri from "moment-hijri";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -21,28 +22,30 @@ const AddEmpId = ($this, e) => {
       if ($this.state.issue_date === null) {
         swalMessage({
           title: "Issue Date Cannot be Blank",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       if ($this.state.valid_upto === null) {
         swalMessage({
           title: "Expiry Date Cannot be Blank",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
-
+      let hijriConverted = hijri($this.state.valid_upto).format("iD-iM-iYYYY");
       let inpObj = {
         employee_id: $this.state.hims_d_employee_id,
         identity_documents_id: $this.state.identity_documents_id,
         identity_number: $this.state.identity_number,
         valid_upto: $this.state.valid_upto,
+        hijri_valid_upto: hijriConverted,
         issue_date: $this.state.issue_date,
+
         alert_required: $this.state.alert_required,
-        alert_date: $this.state.alert_date
+        alert_date: $this.state.alert_date,
       };
 
       idDetails.push(inpObj);
@@ -54,16 +57,17 @@ const AddEmpId = ($this, e) => {
         identity_documents_id: null,
         identity_number: null,
         valid_upto: null,
+        hijri_valid_upto: "",
         issue_date: null,
         alert_required: null,
-        alert_date: null
+        alert_date: null,
       });
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,
-        insertIdDetails: insertIdDetails
+        insertIdDetails: insertIdDetails,
       });
-    }
+    },
   });
 };
 const addDependentType = ($this, e) => {
@@ -79,7 +83,7 @@ const addDependentType = ($this, e) => {
         dependent_type: $this.state.dependent_type,
         dependent_name: $this.state.dependent_name,
         dependent_identity_no: $this.state.dependent_identity_no,
-        dependent_identity_type: $this.state.dependent_identity_type
+        dependent_identity_type: $this.state.dependent_identity_type,
       };
 
       dependentDetails.push(inpObj);
@@ -91,24 +95,24 @@ const addDependentType = ($this, e) => {
         dependent_type: null,
         dependent_name: null,
         dependent_identity_no: null,
-        dependent_identity_type: null
+        dependent_identity_type: null,
       });
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         dependentDetails: dependentDetails,
-        insertDependentDetails: insertDependentDetails
+        insertDependentDetails: insertDependentDetails,
       });
-    }
+    },
   });
 };
 
-const getFamilyIdentification = $this => {
+const getFamilyIdentification = ($this) => {
   algaehApiCall({
     uri: "/employee/getFamilyIdentification",
     module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
@@ -120,7 +124,7 @@ const getFamilyIdentification = $this => {
             dependentDetails:
               $this.state.dependentDetails.length > 0
                 ? $this.state.dependentDetails
-                : data[1]
+                : data[1],
           });
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
             idDetails:
@@ -131,17 +135,17 @@ const getFamilyIdentification = $this => {
               $this.state.dependentDetails.length > 0
                 ? $this.state.dependentDetails
                 : data[1],
-            dataFamIdsExists: true
+            dataFamIdsExists: true,
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -160,8 +164,8 @@ const deleteIdentifications = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
@@ -182,13 +186,13 @@ const deleteIdentifications = ($this, row) => {
       $this.setState({
         idDetails: idDetails,
         deleteIdDetails: deleteIdDetails,
-        insertIdDetails: insertIdDetails
+        insertIdDetails: insertIdDetails,
       });
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,
         deleteIdDetails: deleteIdDetails,
-        insertIdDetails: insertIdDetails
+        insertIdDetails: insertIdDetails,
       });
     }
   });
@@ -200,22 +204,28 @@ const updateIdentifications = ($this, row) => {
   let updateIdDetails = $this.state.updateIdDetails;
 
   if (row.hims_d_employee_identification_id !== undefined) {
+    let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
+
     let Updateobj = {
       hims_d_employee_identification_id: row.hims_d_employee_identification_id,
       identity_documents_id: row.identity_documents_id,
       identity_number: row.identity_number,
       issue_date: row.issue_date,
-      valid_upto: row.valid_upto
+      valid_upto: row.valid_upto,
+      hijri_valid_upto: hijriConverted,
     };
     updateIdDetails.push(Updateobj);
     idDetails[row.rowIdx] = Updateobj;
   } else {
     {
+      let hijriConverted = hijri(row.valid_upto).format("iD-iM-iYYYY");
+
       let Updateobj = {
         identity_documents_id: row.identity_documents_id,
         identity_number: row.identity_number,
         issue_date: row.issue_date,
-        valid_upto: row.valid_upto
+        valid_upto: row.valid_upto,
+        hijri_valid_upto: hijriConverted,
       };
       insertIdDetails[row.rowIdx] = Updateobj;
       idDetails[row.rowIdx] = Updateobj;
@@ -224,12 +234,12 @@ const updateIdentifications = ($this, row) => {
   $this.setState({
     idDetails: idDetails,
     updateIdDetails: updateIdDetails,
-    insertIdDetails: insertIdDetails
+    insertIdDetails: insertIdDetails,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     idDetails: idDetails,
     updateIdDetails: updateIdDetails,
-    insertIdDetails: insertIdDetails
+    insertIdDetails: insertIdDetails,
   });
 };
 
@@ -241,8 +251,8 @@ const deleteDependencies = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let dependentDetails = $this.state.dependentDetails;
       let insertDependentDetails = $this.state.insertDependentDetails;
@@ -263,12 +273,12 @@ const deleteDependencies = ($this, row) => {
       $this.setState({
         dependentDetails: dependentDetails,
         deleteDependentDetails: deleteDependentDetails,
-        insertDependentDetails: insertDependentDetails
+        insertDependentDetails: insertDependentDetails,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         dependentDetails: dependentDetails,
         deleteDependentDetails: deleteDependentDetails,
-        insertDependentDetails: insertDependentDetails
+        insertDependentDetails: insertDependentDetails,
       });
     }
   });
@@ -285,7 +295,7 @@ const updateDependencies = ($this, row) => {
       dependent_type: row.dependent_type,
       dependent_name: row.dependent_name,
       dependent_identity_type: row.dependent_identity_type,
-      dependent_identity_no: row.dependent_identity_no
+      dependent_identity_no: row.dependent_identity_no,
     };
     updateDependentDetails.push(Updateobj);
     dependentDetails[row.rowIdx] = Updateobj;
@@ -295,7 +305,7 @@ const updateDependencies = ($this, row) => {
         dependent_type: row.dependent_type,
         dependent_name: row.dependent_name,
         dependent_identity_type: row.dependent_identity_type,
-        dependent_identity_no: row.dependent_identity_no
+        dependent_identity_no: row.dependent_identity_no,
       };
       insertDependentDetails[row.rowIdx] = Updateobj;
       dependentDetails[row.rowIdx] = Updateobj;
@@ -304,16 +314,16 @@ const updateDependencies = ($this, row) => {
   $this.setState({
     dependentDetails: dependentDetails,
     updateDependentDetails: updateDependentDetails,
-    insertDependentDetails: insertDependentDetails
+    insertDependentDetails: insertDependentDetails,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     dependentDetails: dependentDetails,
     updateDependentDetails: updateDependentDetails,
-    insertDependentDetails: insertDependentDetails
+    insertDependentDetails: insertDependentDetails,
   });
 };
 
-const dateFormater = value => {
+const dateFormater = (value) => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
   }
@@ -321,34 +331,57 @@ const dateFormater = value => {
 
 const datehandlegrid = ($this, row, ctrl, e) => {
   row[e] = moment(ctrl)._d;
+  debugger;
+  if (e === "hijri_valid_date") {
+    row.valid_upto = ctrl;
+    row.update();
+  }
   $this.setState({ append: !$this.state.append });
 };
 
 const datehandle = ($this, ctrl, e) => {
   let intFailure = false;
   if (e === "issue_date") {
+    // const issueDate = Date.parse(moment(ctrl)._d);
+
     if (Date.parse($this.state.valid_upto) < Date.parse(moment(ctrl)._d)) {
       intFailure = true;
       swalMessage({
         title: "Issue Date cannot be grater than Expiry Date.",
-        type: "warning"
+        type: "warning",
       });
     }
+    // $this.setState({ hijri_issue_date: issueDate });
   } else if (e === "valid_upto") {
+    // const validDate = moment(ctrl)._d.format("iYYYY/iM/iD");
+
     if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.issue_date)) {
       intFailure = true;
       swalMessage({
         title: "Expiry Date cannot be less than Issue Date.",
-        type: "warning"
+        type: "warning",
       });
     }
+    // $this.setState({
+    //   hijri_valid_upto: validDate,
+    // });
   }
 
   if (intFailure === false) {
     $this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
   }
+};
+const hijriOnChange = ($this, e) => {
+  const gregorianDate = e.target.gregorianDate;
+  if (gregorianDate === undefined || gregorianDate === "") {
+    return;
+  }
+  const gDate = moment(gregorianDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+  $this.setState({
+    valid_upto: gDate,
+  });
 };
 
 export {
@@ -363,5 +396,6 @@ export {
   deleteDependencies,
   updateDependencies,
   dateFormater,
-  datehandle
+  datehandle,
+  hijriOnChange,
 };
