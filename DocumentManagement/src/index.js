@@ -17,6 +17,12 @@ app.use(
     limit: keys.bodyLimit,
   })
 );
+console.log(process.env.ENABLE_I18N);
+if (process.env.ENABLE_I18N) {
+  const pathUI = `${process.cwd()}/translation-ui/public`;
+  console.log(pathUI);
+  app.use(exxpress.static(pathUI));
+}
 
 process.env.MYSQL_KEYS = JSON.stringify(keys.default);
 //api routeres v1
