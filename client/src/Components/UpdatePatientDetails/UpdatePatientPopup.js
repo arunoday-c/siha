@@ -28,6 +28,8 @@ import { AlgaehActions } from "../../actions/algaehActions";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
 import { SetBulkState } from "../../utils/GlobalFunctions";
+import extend from "extend";
+import { MainContext } from "algaeh-react-components/context";
 
 class UpdatePatientDetails extends Component {
   constructor(props) {
@@ -46,11 +48,14 @@ class UpdatePatientDetails extends Component {
     setGlobal({ selectedLang: "en" });
   }
 
+  static contextType = MainContext;
   componentDidMount() {
+    const userToken = this.context.userToken;
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
     let IOputs = PatRegIOputs.inputParam();
+    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
   }
@@ -67,103 +72,116 @@ class UpdatePatientDetails extends Component {
     SetBulkState({
       state: this,
       callback: () => {
-        AlgaehValidation({
-          alertTypeIcon: "warning",
-          querySelector: "data-validate='demographicDetails'",
-          onSuccess: () => {
-            const err = Validations(this);
+        debugger
+        // AlgaehValidation({
+        //   alertTypeIcon: "warning",
+        //   querySelector: "data-validate='demographicDetails'",
+        //   onSuccess: () => {
+        const err = Validations(this);
 
-            if (!err) {
-              AlgaehLoader({ show: true });
+        if (!err) {
+          AlgaehLoader({ show: true });
 
-              let patientdata = {};
+          let patientdata = {};
 
-              if (this.state.filePreview !== null) {
-                patientdata = {
-                  ...this.state,
-                  patient_Image: imageToByteArray(this.state.filePreview)
-                };
-              } else {
-                patientdata = this.state;
-              }
-              const _patImage = this.state.patientImage;
-              const _patientIdCard = this.state.patientIdCard;
+          if (this.state.filePreview !== null) {
+            patientdata = {
+              ...this.state,
+              patient_Image: imageToByteArray(this.state.filePreview)
+            };
+          } else {
+            patientdata = this.state;
+          }
+          const _patImage = this.state.patientImage;
+          const _patientIdCard = this.state.patientIdCard;
 
-              delete patientdata.patSecInsuranceFrontImg;
-              delete patientdata.patientIdCard;
-              delete patientdata.patInsuranceFrontImg;
-              delete patientdata.patInsuranceBackImg;
-              delete patientdata.patSecInsuranceBackImg;
-              delete patientdata.patientImage;
-              delete patientdata.countrystates;
-              delete patientdata.cities;
+          delete patientdata.patSecInsuranceFrontImg;
+          delete patientdata.patientIdCard;
+          delete patientdata.patInsuranceFrontImg;
+          delete patientdata.patInsuranceBackImg;
+          delete patientdata.patSecInsuranceBackImg;
+          delete patientdata.patientImage;
+          delete patientdata.countrystates;
+          delete patientdata.cities;
 
-              algaehApiCall({
-                uri: "/patientRegistration/updatePatientData",
-                module: "frontDesk",
-                data: patientdata,
-                method: "PUT",
-                onSuccess: response => {
-                  // AlgaehLoader({ show: false });
-                  if (response.data.success) {
-                    let _arrayImages = [];
-                    if (_patImage !== undefined) {
-                      _arrayImages.push(
-                        new Promise((resolve, reject) => {
-                          _patImage.SavingImageOnServer(
-                            undefined,
-                            undefined,
-                            undefined,
-                            this.state.patient_code,
-                            () => {
-                              resolve();
-                            }
-                          );
-                        })
+          let strUri = ""
+          let strMethod = ""
+          if (patientdata.hims_d_patient_id === null) {
+            strUri = "/patientRegistration/registerPatient"
+            strMethod = "POST"
+          } else {
+            strUri = "/patientRegistration/updatePatientData"
+            strMethod = "PUT"
+          }
+
+          algaehApiCall({
+            uri: strUri,
+            module: "frontDesk",
+            data: patientdata,
+            method: strMethod,
+            onSuccess: response => {
+              // AlgaehLoader({ show: false });
+              if (response.data.success) {
+                let _arrayImages = [];
+                if (_patImage !== undefined) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _patImage.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        this.state.patient_code,
+                        () => {
+                          resolve();
+                        }
                       );
-                    }
-                    if (_patientIdCard !== undefined) {
-                      _arrayImages.push(
-                        new Promise((resolve, reject) => {
-                          _patientIdCard.SavingImageOnServer(
-                            undefined,
-                            undefined,
-                            undefined,
-                            this.state.primary_id_no,
-                            () => {
-                              resolve();
-                            }
-                          );
-                        })
-                      );
-                    }
-
-                    Promise.all(_arrayImages).then(result => {
-                      AlgaehLoader({ show: false });
-                      let IOputs = PatRegIOputs.inputParam();
-
-                      this.setState(IOputs, () => {
-                        this.props.onClose && this.props.onClose(true);
-                      });
-
-                      swalMessage({
-                        title: "Done Successfully",
-                        type: "success"
-                      });
-                    });
-                  }
-                },
-                onFailure: error => {
-                  AlgaehLoader({ show: false });
-                  swalMessage({
-                    title: error.message,
-                    type: "error"
-                  });
+                    })
+                  );
                 }
+                if (_patientIdCard !== undefined) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _patientIdCard.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        this.state.primary_id_no,
+                        () => {
+                          resolve();
+                        }
+                      );
+                    })
+                  );
+                }
+
+                Promise.all(_arrayImages).then(result => {
+                  AlgaehLoader({ show: false });
+                  let IOputs = PatRegIOputs.inputParam();
+                  debugger
+                  let tes = response.data.records.patient_code
+                  const patient_code = patientdata.hims_d_patient_id === null ? response.data.records.patient_code : this.state.patient_code
+                  this.setState(IOputs, () => {
+                    this.props.onClose && this.props.onClose({ data: true, patient_code: patient_code });
+                  });
+
+                  swalMessage({
+                    title: "Done Successfully",
+                    type: "success"
+                  });
+                });
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
               });
             }
-          }
-        });
+          });
+        }
+        // }
+        // });
       }
     });
   }
@@ -214,9 +232,11 @@ class UpdatePatientDetails extends Component {
 
   onClose = e => {
     let IOputs = PatRegIOputs.inputParam();
-
+    const exits_state = extend({}, this.state);
+    debugger
     this.setState(IOputs, () => {
-      this.props.onClose && this.props.onClose(false);
+      debugger
+      this.props.onClose && this.props.onClose({ data: false, patient_code: exits_state.patient_code });
     });
   };
 
@@ -231,6 +251,18 @@ class UpdatePatientDetails extends Component {
           openPopup={this.props.show}
           class={this.state.lang_sets + "advanceRefundModal"}
         >
+          <div className="col-12">
+            <AlgaehLabel
+              label={{
+                fieldName: "patient_code"
+              }}
+            />
+            <h6>
+              {this.state.patient_code
+                ? this.state.patient_code
+                : "--------"}
+            </h6>
+          </div>
           <div className="col-lg-12 popupInner">
             <MyContext.Provider
               value={{
@@ -258,7 +290,7 @@ class UpdatePatientDetails extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={this.SavePatientDetails.bind(this)}
-                    disabled={this.state.saveEnable}
+                  // disabled={this.state.saveEnable}
                   >
                     <AlgaehLabel
                       label={{ fieldName: "btn_save", returnText: true }}

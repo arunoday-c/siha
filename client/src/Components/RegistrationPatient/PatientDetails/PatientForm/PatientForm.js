@@ -450,7 +450,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                         label={{
-                          fieldName: "AGEMM",
+                          // fieldName: "AGEMM",
                           forceLabel: "",
                           isImp: false,
                         }}
@@ -482,7 +482,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                         label={{
-                          fieldName: "AGEDD",
+                          // fieldName: "AGEDD",
                           forceLabel: "",
                           isImp: false,
                         }}

@@ -284,8 +284,8 @@ class UpdatePatientDetails extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -383,7 +383,8 @@ class UpdatePatientDetails extends Component {
 function mapStateToProps(state) {
   return {
     patients: state.patients,
-    countries: state.countries
+    countries: state.countries,
+    insurarProviders: state.insurarProviders
   };
 }
 
@@ -391,7 +392,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientDetails: AlgaehActions,
-      getCountries: AlgaehActions
+      getCountries: AlgaehActions,
+      getInsuranceProviders: AlgaehActions
     },
     dispatch
   );

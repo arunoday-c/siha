@@ -5,6 +5,7 @@ export function Validations(state) {
 
   var tow_word_name = state.state.full_name.split(" ");
 
+  debugger
   if (state.state.full_name.length <= 0) {
     isError = true;
     swalMessage({
