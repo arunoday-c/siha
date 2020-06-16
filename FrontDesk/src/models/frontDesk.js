@@ -120,8 +120,8 @@ export default {
     const _mysql = new algaehMysql();
     try {
       req.mySQl = _mysql;
-      console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client);
-      console.log("insurance_type", req.body.insurance_type);
+      // console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client);
+      // console.log("insurance_type", req.body.insurance_type);
       const { primary_insurance_provider_id } = req.body;
       let custom = {};
       let numGens = ["PAT_VISIT", "PAT_BILL", "RECEIPT"];
@@ -142,7 +142,6 @@ export default {
         numGens.push("PAT_REGS");
         custom = {};
       }
-      console.log("custom", custom);
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
