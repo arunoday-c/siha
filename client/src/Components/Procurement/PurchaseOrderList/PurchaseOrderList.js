@@ -280,6 +280,10 @@ class PurchaseOrderList extends Component {
                             <span className="badge badge-danger">
                               Auth 2 Pending
                             </span>
+                          ) : row.status === null ? (
+                            <span className="badge badge-danger">
+                              Send for Authorization pending
+                            </span>
                           ) : null;
                         },
 
