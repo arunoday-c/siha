@@ -1229,6 +1229,10 @@ export default {
       strData += " and E.employee_group_id=" + input.employee_group_id;
     }
 
+    if (input.employee_id > 0) {
+      strData += " and PWP.employee_id=" + input.employee_id;
+    }
+
     if (input.year > 0 && input.month > 0) {
       _mysql
         .executeQuery({
