@@ -17,7 +17,7 @@ export default {
           returnKey: "PAT_REGS",
           primaryKeyName: "hims_d_insurance_provider_id",
           tableName: "hims_d_insurance_provider",
-          primaryKeyValue: "2",
+          primaryKeyValue: req.body.hims_d_insurance_provider_id,
           descriptionKeyName: "insurance_provider_name",
         },
       };
@@ -25,10 +25,6 @@ export default {
       numGens.push("PAT_REGS");
       custom = {};
     }
-
-    console.log("custom", custom)
-    console.log("req.body.mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client)
-    console.log("req.body.insurance_type", req.body.insurance_type)
 
     _mysql
       .generateRunningNumber({

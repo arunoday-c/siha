@@ -6,7 +6,7 @@ import Promise from "bluebird";
 import mysql from "mysql";
 import moment from "moment";
 
-const { debugLog } = logUtils
+const { debugLog } = logUtils;
 const {
   selectStatement,
   paging,
@@ -14,8 +14,8 @@ const {
   releaseDBConnection,
   runningNumberGen,
   deleteRecord,
-  jsonArrayToObject
-} = utils
+  jsonArrayToObject,
+} = utils;
 
 //api to add employee
 let addEmployee = (req, res, next) => {
@@ -30,7 +30,7 @@ let addEmployee = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -83,7 +83,7 @@ let addEmployee = (req, res, next) => {
             new Date(),
             input.created_by,
             new Date(),
-            input.updated_by
+            input.updated_by,
           ],
           (error, result) => {
             if (error) {
@@ -99,7 +99,7 @@ let addEmployee = (req, res, next) => {
                 "category_speciality_id",
                 "user_id",
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -111,8 +111,8 @@ let addEmployee = (req, res, next) => {
                     sampleInputObject: insurtColumns,
                     arrayObj: req.body.deptDetails,
                     newFieldToInsert: [result.insertId, new Date(), new Date()],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, departResult) => {
                   if (error) {
@@ -133,7 +133,7 @@ let addEmployee = (req, res, next) => {
                           "ip_cash_commission_percent",
                           "ip_credit_commission_percent",
                           "created_by",
-                          "updated_by"
+                          "updated_by",
                         ];
 
                         connection.query(
@@ -147,10 +147,10 @@ let addEmployee = (req, res, next) => {
                               newFieldToInsert: [
                                 result.insertId,
                                 new Date(),
-                                new Date()
+                                new Date(),
                               ],
-                              req: req
-                            })
+                              req: req,
+                            }),
                           ],
                           (error, serviceCommResult) => {
                             if (error) {
@@ -168,7 +168,7 @@ let addEmployee = (req, res, next) => {
                     } catch (e) {
                       reject(e);
                     }
-                  }).then(results => {
+                  }).then((results) => {
                     if (input.servTypeCommission.length > 0) {
                       const insurtColumns = [
                         "service_type_id",
@@ -177,7 +177,7 @@ let addEmployee = (req, res, next) => {
                         "ip_cash_commission_percent",
                         "ip_credit_commission_percent",
                         "created_by",
-                        "updated_by"
+                        "updated_by",
                       ];
 
                       connection.query(
@@ -191,10 +191,10 @@ let addEmployee = (req, res, next) => {
                             newFieldToInsert: [
                               result.insertId,
                               new Date(),
-                              new Date()
+                              new Date(),
                             ],
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, serviceTypeCommResult) => {
                           if (error) {
@@ -204,7 +204,7 @@ let addEmployee = (req, res, next) => {
                             });
                           }
 
-                          connection.commit(error => {
+                          connection.commit((error) => {
                             if (error) {
                               connection.rollback(() => {
                                 releaseDBConnection(db, connection);
@@ -218,7 +218,7 @@ let addEmployee = (req, res, next) => {
                         }
                       );
                     } else {
-                      connection.commit(error => {
+                      connection.commit((error) => {
                         if (error) {
                           connection.rollback(() => {
                             releaseDBConnection(db, connection);
@@ -332,7 +332,7 @@ let addEmployeeMaster = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -362,7 +362,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -380,7 +380,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                 "employee_designation_id",
                 "reporting_to_id",
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -394,10 +394,10 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                     newFieldToInsert: [
                       input.hims_d_employee_id,
                       new Date(),
-                      new Date()
+                      new Date(),
                     ],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, result) => {
                   if (error) {
@@ -420,7 +420,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
             reject(e);
           }
         })
-          .then(departmntResult => {
+          .then((departmntResult) => {
             debugLog("second");
             if (input != "null" && input != undefined) {
               connection.query(
@@ -456,7 +456,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                   input.weekoff_from,
                   new Date(),
                   input.updated_by,
-                  input.hims_d_employee_id
+                  input.hims_d_employee_id,
                 ],
                 (error, empResult) => {
                   if (error) {
@@ -473,7 +473,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
               return;
             }
           })
-          .then(employResult => {
+          .then((employResult) => {
             debugLog("third");
             if (input.idDetails.length > 0) {
               const insurtColumns = [
@@ -485,7 +485,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                 "alert_date",
 
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -499,10 +499,10 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                     newFieldToInsert: [
                       input.hims_d_employee_id,
                       new Date(),
-                      new Date()
+                      new Date(),
                     ],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, Identity_Result) => {
                   if (error) {
@@ -519,7 +519,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
               return;
             }
           })
-          .then(Identity_Result => {
+          .then((Identity_Result) => {
             debugLog("fourth");
 
             if (input.dependentDetails.length > 0) {
@@ -529,7 +529,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                 "dependent_identity_type",
                 "dependent_identity_no",
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -543,10 +543,10 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                     newFieldToInsert: [
                       input.hims_d_employee_id,
                       new Date(),
-                      new Date()
+                      new Date(),
                     ],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, Identity_Result) => {
                   if (error) {
@@ -556,7 +556,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
+                  connection.commit((error) => {
                     if (error) {
                       connection.rollback(() => {
                         releaseDBConnection(db, connection);
@@ -570,7 +570,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                 }
               );
             } else {
-              connection.commit(error => {
+              connection.commit((error) => {
                 if (error) {
                   connection.rollback(() => {
                     releaseDBConnection(db, connection);
@@ -603,7 +603,7 @@ let addEmployeeInfo = (req, res, next) => {
       if (error) {
         next(error);
       }
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -621,7 +621,7 @@ let addEmployeeInfo = (req, res, next) => {
                 "employee_designation_id",
                 "reporting_to_id",
                 "created_by",
-                "updated_by"
+                "updated_by",
               ];
 
               connection.query(
@@ -635,10 +635,10 @@ let addEmployeeInfo = (req, res, next) => {
                     newFieldToInsert: [
                       input.hims_d_employee_id,
                       new Date(),
-                      new Date()
+                      new Date(),
                     ],
-                    req: req
-                  })
+                    req: req,
+                  }),
                 ],
                 (error, result) => {
                   if (error) {
@@ -660,7 +660,7 @@ let addEmployeeInfo = (req, res, next) => {
           } catch (e) {
             reject(e);
           }
-        }).then(departmntResult => {
+        }).then((departmntResult) => {
           debugLog("second");
           if (input != "null" && input != undefined) {
             connection.query(
@@ -675,7 +675,7 @@ let addEmployeeInfo = (req, res, next) => {
                 input.sub_department_id,
                 new Date(),
                 input.updated_by,
-                input.hims_d_employee_id
+                input.hims_d_employee_id,
               ],
               (error, empResult) => {
                 if (error) {
@@ -684,7 +684,7 @@ let addEmployeeInfo = (req, res, next) => {
                     next(error);
                   });
                 }
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -698,7 +698,7 @@ let addEmployeeInfo = (req, res, next) => {
               }
             );
           } else {
-            connection.commit(error => {
+            connection.commit((error) => {
               if (error) {
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
@@ -743,7 +743,7 @@ let addEmployeeGroups = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -817,7 +817,7 @@ let updateEmployeeGroup = (req, res, next) => {
             input.airfare_amount,
             new Date(),
             input.updated_by,
-            input.hims_d_employee_group_id
+            input.hims_d_employee_group_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -862,13 +862,13 @@ let deleteEmployeeGroup = (req, res, next) => {
           id: req.body.hims_d_employee_group_id,
           query:
             "UPDATE hims_d_employee_group SET  record_status='I' WHERE hims_d_employee_group_id=?",
-          values: [req.body.hims_d_employee_group_id]
+          values: [req.body.hims_d_employee_group_id],
         },
-        result => {
+        (result) => {
           req.records = result;
           next();
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -893,7 +893,7 @@ let getEmployee = (req, res, next) => {
     date_of_joining: "ALL",
     date_of_resignation: "ALL",
     primary_contact_no: "ALL",
-    email: "ALL"
+    email: "ALL",
   };
 
   try {
@@ -918,9 +918,9 @@ let getEmployee = (req, res, next) => {
           condition.condition +
           " " +
           pagePaging,
-        values: condition.values
+        values: condition.values,
       },
-      result => {
+      (result) => {
         for (let i = 0; i < result.length; i++) {
           result[i].employee_id = result[i].hims_d_employee_id;
         }
@@ -928,7 +928,7 @@ let getEmployee = (req, res, next) => {
         req.records = result;
         next();
       },
-      error => {
+      (error) => {
         next(error);
       },
       true
@@ -951,7 +951,7 @@ let updateEmployee = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -1039,7 +1039,7 @@ let updateEmployee = (req, res, next) => {
 
             new Date(),
             input.updated_by,
-            input.hims_d_employee_id
+            input.hims_d_employee_id,
           ],
           (error, result) => {
             if (error) {
@@ -1064,7 +1064,7 @@ let updateEmployee = (req, res, next) => {
                       "reporting_to_id",
                       "from_date",
                       "created_by",
-                      "updated_by"
+                      "updated_by",
                     ];
 
                     connection.query(
@@ -1076,8 +1076,8 @@ let updateEmployee = (req, res, next) => {
                           sampleInputObject: insurtColumns,
                           arrayObj: req.body.insertdeptDetails,
                           newFieldToInsert: [new Date(), new Date()],
-                          req: req
-                        })
+                          req: req,
+                        }),
                       ],
                       (error, insertDepartResult) => {
                         if (error) {
@@ -1093,7 +1093,7 @@ let updateEmployee = (req, res, next) => {
                     resolve(result);
                   }
                 })
-                  .then(resultFrmInsertDept => {
+                  .then((resultFrmInsertDept) => {
                     debugLog("inside One then");
 
                     if (input.updatedeptDetails.length > 0) {
@@ -1119,7 +1119,7 @@ let updateEmployee = (req, res, next) => {
                             inputParam[i].record_status,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
-                            inputParam[i].hims_d_employee_department_id
+                            inputParam[i].hims_d_employee_department_id,
                           ]
                         );
                         debugLog("qry: ", qry);
@@ -1139,7 +1139,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Department Insert/Update
                   // End
-                  .then(updateDeptDetailResult => {
+                  .then((updateDeptDetailResult) => {
                     debugLog("inside 2 then");
                     // Doctor Service Commission Insert/Update
                     // Start
@@ -1154,7 +1154,7 @@ let updateEmployee = (req, res, next) => {
                         "ip_cash_commission_percent",
                         "ip_credit_commission_percent",
                         "created_by",
-                        "updated_by"
+                        "updated_by",
                       ];
 
                       connection.query(
@@ -1166,8 +1166,8 @@ let updateEmployee = (req, res, next) => {
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.insertserviceComm,
                             newFieldToInsert: [new Date(), new Date()],
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, serviceCommResult) => {
                           if (error) {
@@ -1181,7 +1181,7 @@ let updateEmployee = (req, res, next) => {
                       );
                     }
                   })
-                  .then(serviceCommResult => {
+                  .then((serviceCommResult) => {
                     debugLog("inside 3 then");
 
                     if (input.updateserviceComm.length > 0) {
@@ -1209,7 +1209,7 @@ let updateEmployee = (req, res, next) => {
                             inputParam[i].record_status,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
-                            inputParam[i].hims_m_doctor_service_commission_id
+                            inputParam[i].hims_m_doctor_service_commission_id,
                           ]
                         );
                       }
@@ -1229,7 +1229,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Doctor Service Commission Insert/Update
                   // End
-                  .then(updateServiceCommResult => {
+                  .then((updateServiceCommResult) => {
                     // Doctor Service Type Commission Insert/Update
                     // Start
                     debugLog("inside 4 then");
@@ -1243,7 +1243,7 @@ let updateEmployee = (req, res, next) => {
                         "ip_cash_commission_percent",
                         "ip_credit_commission_percent",
                         "created_by",
-                        "updated_by"
+                        "updated_by",
                       ];
 
                       connection.query(
@@ -1255,8 +1255,8 @@ let updateEmployee = (req, res, next) => {
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.insertservTypeCommission,
                             newFieldToInsert: [new Date(), new Date()],
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, insrtServiceTypeCommResult) => {
                           if (error) {
@@ -1270,7 +1270,7 @@ let updateEmployee = (req, res, next) => {
                       );
                     }
                   })
-                  .then(insrtServiceTypeCommResult => {
+                  .then((insrtServiceTypeCommResult) => {
                     debugLog("inside 5 then");
                     if (input.updateservTypeCommission.length > 0) {
                       debugLog("inside updateservTypeCommission");
@@ -1300,7 +1300,7 @@ let updateEmployee = (req, res, next) => {
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
                             inputParam[i]
-                              .hims_m_doctor_service_type_commission_id
+                              .hims_m_doctor_service_type_commission_id,
                           ]
                         );
                       }
@@ -1320,7 +1320,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Doctor Service Type Commission Insert/Update
                   // End
-                  .then(updateServiceCommResult => {
+                  .then((updateServiceCommResult) => {
                     debugLog("inside insertearnComp then");
 
                     // Earning Insert/Update
@@ -1337,7 +1337,7 @@ let updateEmployee = (req, res, next) => {
                         "revision_type",
                         "revision_date",
                         "revised_amount",
-                        "applicable_annual_leave"
+                        "applicable_annual_leave",
                       ];
 
                       connection.query(
@@ -1348,8 +1348,8 @@ let updateEmployee = (req, res, next) => {
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.insertearnComp,
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, insertearncomponent) => {
                           if (error) {
@@ -1363,7 +1363,7 @@ let updateEmployee = (req, res, next) => {
                       );
                     }
                   })
-                  .then(insertearncomponent => {
+                  .then((insertearncomponent) => {
                     debugLog("inside insertearncomponent then");
                     if (input.updateearnComp.length > 0) {
                       debugLog("inside updateearnComp");
@@ -1377,7 +1377,7 @@ let updateEmployee = (req, res, next) => {
                           [
                             inputParam[i].amount,
                             inputParam[i].allocate,
-                            inputParam[i].hims_d_employee_earnings_id
+                            inputParam[i].hims_d_employee_earnings_id,
                           ]
                         );
                       }
@@ -1394,7 +1394,7 @@ let updateEmployee = (req, res, next) => {
                       });
                     }
                   })
-                  .then(updateearncomponent => {
+                  .then((updateearncomponent) => {
                     debugLog("inside updateearncomponent then");
                     if (input.deleteearnComp.length > 0) {
                       debugLog("inside deleteearnComp");
@@ -1422,7 +1422,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Earning Insert/Update
                   // End
-                  .then(deleteearnComp => {
+                  .then((deleteearnComp) => {
                     // Deduction Insert/Update
                     // Start
                     debugLog("inside insertDeductionComp then");
@@ -1438,7 +1438,7 @@ let updateEmployee = (req, res, next) => {
                         "calculation_type",
                         "revision_type",
                         "revision_date",
-                        "revised_amount"
+                        "revised_amount",
                       ];
 
                       connection.query(
@@ -1449,8 +1449,8 @@ let updateEmployee = (req, res, next) => {
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.insertDeductionComp,
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, insertDeductionComp) => {
                           if (error) {
@@ -1465,7 +1465,7 @@ let updateEmployee = (req, res, next) => {
                     }
                   })
 
-                  .then(insertDeductionComp => {
+                  .then((insertDeductionComp) => {
                     debugLog("inside insertDeductionComp then");
                     if (input.updateDeductionComp.length > 0) {
                       debugLog("inside updateDeductionComp");
@@ -1483,7 +1483,7 @@ let updateEmployee = (req, res, next) => {
                           [
                             inputParam[i].amount,
                             inputParam[i].allocate,
-                            inputParam[i].hims_d_employee_deductions_id
+                            inputParam[i].hims_d_employee_deductions_id,
                           ]
                         );
                       }
@@ -1500,7 +1500,7 @@ let updateEmployee = (req, res, next) => {
                       });
                     }
                   })
-                  .then(updateDeductionComp => {
+                  .then((updateDeductionComp) => {
                     debugLog("inside updateDeductionComp then");
                     if (input.deleteDeductionComp.length > 0) {
                       debugLog("inside deleteDeductionComp");
@@ -1532,7 +1532,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Deduction Insert/Update
                   // End
-                  .then(deleteDeductionComp => {
+                  .then((deleteDeductionComp) => {
                     // Contributions Insert/Update
                     // Start
                     debugLog("inside deleteDeductionComp then");
@@ -1549,7 +1549,7 @@ let updateEmployee = (req, res, next) => {
                         "calculation_type",
                         "revision_type",
                         "revision_date",
-                        "revised_amount"
+                        "revised_amount",
                       ];
 
                       connection.query(
@@ -1560,8 +1560,8 @@ let updateEmployee = (req, res, next) => {
                           jsonArrayToObject({
                             sampleInputObject: insurtColumns,
                             arrayObj: req.body.insertContributeComp,
-                            req: req
-                          })
+                            req: req,
+                          }),
                         ],
                         (error, insertContributeComp) => {
                           if (error) {
@@ -1576,7 +1576,7 @@ let updateEmployee = (req, res, next) => {
                     }
                   })
 
-                  .then(insertContributeComp => {
+                  .then((insertContributeComp) => {
                     debugLog("inside insertContributeComp then");
                     if (input.updateContributeComp.length > 0) {
                       debugLog("inside updateContributeComp");
@@ -1597,7 +1597,7 @@ let updateEmployee = (req, res, next) => {
                           [
                             inputParam[i].amount,
                             inputParam[i].allocate,
-                            inputParam[i].hims_d_employee_contributions_id
+                            inputParam[i].hims_d_employee_contributions_id,
                           ]
                         );
                       }
@@ -1612,7 +1612,7 @@ let updateEmployee = (req, res, next) => {
                       });
                     }
                   })
-                  .then(updateContributeComp => {
+                  .then((updateContributeComp) => {
                     debugLog("inside updateContributeComp then");
                     if (input.deleteContributeComp.length > 0) {
                       debugLog("inside deleteContributeComp");
@@ -1645,7 +1645,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Contributions Insert/Update
                   // End
-                  .then(deleteContributeComp => {
+                  .then((deleteContributeComp) => {
                     debugLog("inside deleteContributeComp then");
                     // Employee Identification Insert/Update
                     // Start
@@ -1657,7 +1657,7 @@ let updateEmployee = (req, res, next) => {
                         "valid_upto",
                         "issue_date",
                         "alert_required",
-                        "alert_date"
+                        "alert_date",
                       ];
 
                       connection.query(
@@ -1673,9 +1673,9 @@ let updateEmployee = (req, res, next) => {
                               new Date(),
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              req.userIdentity.algaeh_d_app_user_id
-                            ]
-                          })
+                              req.userIdentity.algaeh_d_app_user_id,
+                            ],
+                          }),
                         ],
                         (error, insertIdDetails) => {
                           if (error) {
@@ -1689,7 +1689,7 @@ let updateEmployee = (req, res, next) => {
                     }
                   })
 
-                  .then(insertIdDetails => {
+                  .then((insertIdDetails) => {
                     debugLog("inside insertIdDetails then");
                     if (input.updateIdDetails.length > 0) {
                       debugLog("inside updateIdDetails");
@@ -1712,7 +1712,7 @@ let updateEmployee = (req, res, next) => {
                             moment(inputParam[i].valid_upto).format(
                               "YYYY-MM-DD"
                             ),
-                            inputParam[i].hims_d_employee_identification_id
+                            inputParam[i].hims_d_employee_identification_id,
                           ]
                         );
 
@@ -1729,7 +1729,7 @@ let updateEmployee = (req, res, next) => {
                       });
                     }
                   })
-                  .then(updateIdDetails => {
+                  .then((updateIdDetails) => {
                     debugLog("inside updateIdDetails then");
                     if (input.deleteIdDetails.length > 0) {
                       debugLog("inside deleteIdDetails");
@@ -1759,7 +1759,7 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Employee Identification Insert/Update
                   // End
-                  .then(deleteIdDetails => {
+                  .then((deleteIdDetails) => {
                     debugLog("inside deleteIdDetails then");
                     // Employee Dependents Insert/Update
                     // Start
@@ -1769,7 +1769,7 @@ let updateEmployee = (req, res, next) => {
                         "dependent_type",
                         "dependent_name",
                         "dependent_identity_type",
-                        "dependent_identity_no"
+                        "dependent_identity_no",
                       ];
 
                       connection.query(
@@ -1785,9 +1785,9 @@ let updateEmployee = (req, res, next) => {
                               new Date(),
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              req.userIdentity.algaeh_d_app_user_id
-                            ]
-                          })
+                              req.userIdentity.algaeh_d_app_user_id,
+                            ],
+                          }),
                         ],
                         (error, insertDependentDetails) => {
                           if (error) {
@@ -1801,7 +1801,7 @@ let updateEmployee = (req, res, next) => {
                     }
                   })
 
-                  .then(insertDependentDetails => {
+                  .then((insertDependentDetails) => {
                     debugLog("inside insertDependentDetails then");
                     if (input.updateDependentDetails.length > 0) {
                       debugLog("inside updateDependentDetails");
@@ -1824,7 +1824,7 @@ let updateEmployee = (req, res, next) => {
                             inputParam[i].dependent_name,
                             inputParam[i].dependent_identity_type,
                             inputParam[i].dependent_identity_no,
-                            inputParam[i].hims_d_employee_dependents_id
+                            inputParam[i].hims_d_employee_dependents_id,
                           ]
                         );
 
@@ -1841,7 +1841,7 @@ let updateEmployee = (req, res, next) => {
                       });
                     }
                   })
-                  .then(updateDependentDetails => {
+                  .then((updateDependentDetails) => {
                     debugLog("inside updateDependentDetails then");
                     if (input.deleteDependentDetails.length > 0) {
                       debugLog("inside deleteDependentDetails");
@@ -1874,9 +1874,9 @@ let updateEmployee = (req, res, next) => {
                   })
                   // Employee Dependents Insert/Update
                   // Ends
-                  .finally(allResult => {
+                  .finally((allResult) => {
                     debugLog("inside finally");
-                    connection.commit(error => {
+                    connection.commit((error) => {
                       if (error) {
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
@@ -1913,7 +1913,7 @@ let getEmployeeDetails = (req, res, next) => {
     date_of_joining: "ALL",
     date_of_resignation: "ALL",
     primary_contact_no: "ALL",
-    email: "ALL"
+    email: "ALL",
   };
   try {
     if (req.db == null) {
@@ -2080,7 +2080,7 @@ let addEarningDeduction = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2174,7 +2174,7 @@ let updateEarningDeduction = (req, res, next) => {
 
             new Date(),
             input.updated_by,
-            input.hims_d_earning_deduction_id
+            input.hims_d_earning_deduction_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -2219,13 +2219,13 @@ let deleteEarningDeduction = (req, res, next) => {
           id: req.body.hims_d_earning_deduction_id,
           query:
             "UPDATE hims_d_earning_deduction SET  record_status='I' WHERE hims_d_earning_deduction_id=?",
-          values: [req.body.hims_d_earning_deduction_id]
+          values: [req.body.hims_d_earning_deduction_id],
         },
-        result => {
+        (result) => {
           req.records = result;
           next();
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -2268,7 +2268,7 @@ let addEmployeeIdentification = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2349,7 +2349,7 @@ let updateEmployeeIdentification = (req, res, next) => {
             input.alert_date,
             new Date(),
             input.updated_by,
-            input.hims_d_employee_identification_id
+            input.hims_d_employee_identification_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -2394,9 +2394,9 @@ let deleteEmployeeIdentification = (req, res, next) => {
           id: req.body.hims_d_employee_identification_id,
           query:
             "UPDATE hims_d_employee_identification SET  record_status='I' WHERE hims_d_employee_identification_id=?",
-          values: [req.body.hims_d_employee_identification_id]
+          values: [req.body.hims_d_employee_identification_id],
         },
-        result => {
+        (result) => {
           if (result.records.affectedRows > 0) {
             req.records = result;
             next();
@@ -2405,7 +2405,7 @@ let deleteEmployeeIdentification = (req, res, next) => {
             next();
           }
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -2446,7 +2446,7 @@ let addLoanMaster = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2518,7 +2518,7 @@ let updateLoanMaster = (req, res, next) => {
             input.loan_maximum_amount,
             new Date(),
             input.updated_by,
-            input.hims_d_loan_id
+            input.hims_d_loan_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -2560,9 +2560,9 @@ let deleteLoanMaster = (req, res, next) => {
           id: req.body.hims_d_loan_id,
           query:
             "UPDATE hims_d_loan SET  record_status='I' WHERE hims_d_loan_id=?",
-          values: [req.body.hims_d_loan_id]
+          values: [req.body.hims_d_loan_id],
         },
-        result => {
+        (result) => {
           if (result.records.affectedRows > 0) {
             req.records = result;
             next();
@@ -2571,7 +2571,7 @@ let deleteLoanMaster = (req, res, next) => {
             next();
           }
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -2657,7 +2657,7 @@ let addEmployeeWorkExperience = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2692,9 +2692,9 @@ let deleteEmployeeWorkExperience = (req, res, next) => {
           id: req.body.hims_d_employee_experience_id,
           query:
             "UPDATE hims_d_employee_experience SET  record_status='I' WHERE hims_d_employee_experience_id=?",
-          values: [req.body.hims_d_employee_experience_id]
+          values: [req.body.hims_d_employee_experience_id],
         },
-        result => {
+        (result) => {
           if (result.records.affectedRows > 0) {
             req.records = result;
             next();
@@ -2703,7 +2703,7 @@ let deleteEmployeeWorkExperience = (req, res, next) => {
             next();
           }
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -2748,7 +2748,7 @@ let updateEmployeeWorkExperience = (req, res, next) => {
             input.experience_months,
             new Date(),
             input.updated_by,
-            input.hims_d_employee_experience_id
+            input.hims_d_employee_experience_id,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -2848,7 +2848,7 @@ let addEmployeeEducation = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2883,9 +2883,9 @@ let deleteEmployeeEducation = (req, res, next) => {
           id: req.body.hims_d_employee_education_id,
           query:
             "UPDATE hims_d_employee_education SET  record_status='I' WHERE hims_d_employee_education_id=?",
-          values: [req.body.hims_d_employee_education_id]
+          values: [req.body.hims_d_employee_education_id],
         },
-        result => {
+        (result) => {
           if (result.records.affectedRows > 0) {
             req.records = result;
             next();
@@ -2894,7 +2894,7 @@ let deleteEmployeeEducation = (req, res, next) => {
             next();
           }
         },
-        error => {
+        (error) => {
           next(error);
         },
         true
@@ -2935,9 +2935,9 @@ let updateEmployeeEducation = (req, res, next) => {
             input.university,
             new Date(),
             input.updated_by,
-            input.hims_d_employee_education_id
+            input.hims_d_employee_education_id,
           ],
-         
+
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -2965,7 +2965,7 @@ let updateEmployeeEducation = (req, res, next) => {
 
 let getEmployeeDepartments = (req, res, next) => {
   let employeeWhereCondition = {
-    employee_id: "ALL"
+    employee_id: "ALL",
   };
   try {
     if (req.db == null) {
@@ -3176,7 +3176,7 @@ let getEmployeesForMisED = (req, res, next) => {
             input.earning_deductions_id,
             input.year,
             input.hospital_id,
-            input.month
+            input.month,
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -3190,7 +3190,7 @@ let getEmployeesForMisED = (req, res, next) => {
             } else {
               req.records = {
                 invalid_input: true,
-                message: "please process Attendance first"
+                message: "please process Attendance first",
               };
               next();
               return;
@@ -3226,7 +3226,7 @@ let addMisEarnDedcToEmployees = (req, res, next) => {
           "employee_id",
           "amount",
           "created_by",
-          "updated_by"
+          "updated_by",
         ];
 
         connection.query(
@@ -3246,10 +3246,10 @@ let addMisEarnDedcToEmployees = (req, res, next) => {
                 input.month,
                 input.category,
                 new Date(),
-                new Date()
+                new Date(),
               ],
-              req: req
-            })
+              req: req,
+            }),
           ],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -3285,7 +3285,7 @@ let addEmployeeAdvance = (req, res, next) => {
         next(error);
       }
 
-      connection.beginTransaction(error => {
+      connection.beginTransaction((error) => {
         if (error) {
           connection.rollback(() => {
             releaseDBConnection(db, connection);
@@ -3298,12 +3298,12 @@ let addEmployeeAdvance = (req, res, next) => {
             runningNumberGen({
               db: connection,
               module_desc: ["EMPLOYEE_ADVANCE"],
-              onFailure: error => {
+              onFailure: (error) => {
                 reject(error);
               },
-              onSuccess: result => {
+              onSuccess: (result) => {
                 resolve(result);
-              }
+              },
             });
           } catch (e) {
             connection.rollback(() => {
@@ -3311,7 +3311,7 @@ let addEmployeeAdvance = (req, res, next) => {
               reject(e);
             });
           }
-        }).then(numGenAdv => {
+        }).then((numGenAdv) => {
           connection.query(
             "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
               deducting_year, advance_reason,created_date,created_by,updated_date,updated_by)\
@@ -3326,7 +3326,7 @@ let addEmployeeAdvance = (req, res, next) => {
               new Date(),
               input.created_by,
               new Date(),
-              input.updated_by
+              input.updated_by,
             ],
             (error, results) => {
               if (error) {
@@ -3337,7 +3337,7 @@ let addEmployeeAdvance = (req, res, next) => {
               }
               debugLog("inside employee advance");
               if (results.affectedRows > 0) {
-                connection.commit(error => {
+                connection.commit((error) => {
                   if (error) {
                     connection.rollback(() => {
                       releaseDBConnection(db, connection);
@@ -3369,7 +3369,7 @@ let addEmployeeAdvance = (req, res, next) => {
 //created by Adnan
 let getEmployeeAdvance = (req, res, next) => {
   let employeeWhereCondition = {
-    employee_id: "ALL"
+    employee_id: "ALL",
   };
 
   try {
@@ -3444,5 +3444,5 @@ export default {
   getEmployeesForMisED,
   addMisEarnDedcToEmployees,
   addEmployeeAdvance,
-  getEmployeeAdvance
+  getEmployeeAdvance,
 };

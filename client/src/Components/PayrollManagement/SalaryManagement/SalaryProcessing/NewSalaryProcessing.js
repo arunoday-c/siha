@@ -441,7 +441,7 @@ class NewSalaryProcessing extends Component {
                     />
                   </button>
                   {/* this.state.salaryprocess_header */}
-                  <button
+                  {/* <button
                     type="button"
                     className="btn btn-other"
                     // onClick={this.clearState.bind(this)}
@@ -458,7 +458,7 @@ class NewSalaryProcessing extends Component {
                         returnText: true,
                       }}
                     />
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>

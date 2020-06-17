@@ -157,6 +157,7 @@ class PurchaseOrderEntry extends Component {
                     : Options.dateFormat}
                 </h6>
               </div>
+
               {this.state.dataExitst === true ? (
                 <div className="col">
                   <AlgaehLabel
@@ -164,6 +165,7 @@ class PurchaseOrderEntry extends Component {
                       forceLabel: "PO Status",
                     }}
                   />
+
                   <h6>
                     {this.state.is_posted === "N" ? (
                       <span className="badge badge-danger">Not Posted</span>
@@ -185,6 +187,21 @@ class PurchaseOrderEntry extends Component {
                         Posted/Pending For Authorize
                       </span>
                     )}
+                  </h6>
+                </div>
+              ) : this.state.dataExitst === false &&
+                this.state.purchase_number !== null ? (
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "PO Status",
+                    }}
+                  />
+
+                  <h6>
+                    <span className="badge badge-danger">
+                      Send for Authorization pending
+                    </span>
                   </h6>
                 </div>
               ) : null}

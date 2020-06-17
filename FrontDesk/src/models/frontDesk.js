@@ -122,7 +122,7 @@ export default {
       req.mySQl = _mysql;
       // console.log("mrn_num_sep_cop_client", req.body.mrn_num_sep_cop_client);
       // console.log("insurance_type", req.body.insurance_type);
-      const { primary_insurance_provider_id } = req.body;
+      // const { primary_insurance_provider_id } = req.body;
       let custom = {};
       let numGens = ["PAT_VISIT", "PAT_BILL", "RECEIPT"];
       if (
@@ -134,7 +134,7 @@ export default {
             returnKey: "PAT_REGS",
             primaryKeyName: "hims_d_insurance_provider_id",
             tableName: "hims_d_insurance_provider",
-            primaryKeyValue: "2",
+            primaryKeyValue: req.body.primary_insurance_provider_id,
             descriptionKeyName: "insurance_provider_name",
           },
         };

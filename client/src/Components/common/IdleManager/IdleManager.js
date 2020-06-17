@@ -107,38 +107,60 @@ export function IdleManager() {
               closable={false}
               footer=""
             >
-              <div style={{ textAlign: "center" }}>
-                <i className="fas fa-hourglass-end"></i>
-                <h3>Your session is Locked.</h3>
-                <p>Please enter you password to unlock.</p>
-                <div className="row">
-                  <div className="col-4"></div>
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-4 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Password",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "password",
-                      type: "password",
-                      className: "txt-fld",
-                      placeholder: "Enter Password",
-                      value: password,
-                      onChange: (e) => setPassword(e.target.value),
-                    }}
-                  />
+              <div className="row">
+                <div className="col-12" style={{ textAlign: "center" }}>
+                  <i className="fas fa-hourglass-end"></i>
+                  <h3>Your session is Locked.</h3>
+                  <p>Please enter you password to unlock.</p>
                 </div>
-
-                <button className="btn btn-default btn-lg" onClick={onOk}>
-                  Unlock
-                </button>
-                <h4>- Or -</h4>
-                <button className="btn btn-default btn-lg" onClick={onLogout}>
-                  Logout
-                </button>
+                <div className="col-lg-4 col-sm-12 " style={{ margin: "auto" }}>
+                  <hr></hr>
+                  <div className="row">
+                    <AlgaehFormGroup
+                      div={{
+                        className: "col-lg-7 col-sm-12 form-group mandatory",
+                      }}
+                      label={{
+                        forceLabel: "Password",
+                        isImp: true,
+                      }}
+                      textBox={{
+                        name: "password",
+                        type: "password",
+                        className: "txt-fld",
+                        placeholder: "Enter Password to Unlock",
+                        value: password,
+                        onChange: (e) => setPassword(e.target.value),
+                      }}
+                    />
+                    <div
+                      className="col-lg-5 col-sm-12"
+                      style={{
+                        padding: 0,
+                        paddingTop: 21,
+                        textAlign: "center",
+                      }}
+                    >
+                      <button className="btn btn-primary" onClick={onOk}>
+                        Unlock
+                      </button>
+                      <span
+                        style={{
+                          marginTop: 15,
+                          marginRight: 15,
+                          marginBottom: 15,
+                          marginLeft: 10,
+                        }}
+                      >
+                        {" "}
+                        or
+                      </span>
+                      <button className="btn btn-other" onClick={onLogout}>
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </AlgaehModal>
           </div>
@@ -149,7 +171,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 15} // mins to milliseco
+          timeout={1000 * 60 * 20} // mins to milliseco
         />
       </>
     );
