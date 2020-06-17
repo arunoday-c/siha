@@ -150,6 +150,7 @@ class ScreenAssignment extends Component {
   }
 
   onClickElementClick(data, e) {
+    debugger;
     const { checked } = e.target;
     data.checked = checked;
   }
@@ -450,7 +451,7 @@ class ScreenAssignment extends Component {
                         />
 
                         <ul className="mainmenu">
-                          {assignedRoles.map((element) => {
+                          {this.state.assignedScreenElements.map((element) => {
                             const {
                               algaeh_app_screens_id,
                               screen_name,
@@ -491,7 +492,7 @@ class ScreenAssignment extends Component {
                                                 {stages.length === 0 ? (
                                                   <li>
                                                     <Checkbox
-                                                      checked={checked}
+                                                      defaultChecked={checked}
                                                       onChange={this.onClickElementClick.bind(
                                                         this,
                                                         items
@@ -511,7 +512,9 @@ class ScreenAssignment extends Component {
                                                       return (
                                                         <li key={value}>
                                                           <Checkbox
-                                                            checked={checked}
+                                                            defaultChecked={
+                                                              checked
+                                                            }
                                                             onChange={this.onClickElementClick.bind(
                                                               this,
                                                               stage
