@@ -1243,7 +1243,11 @@ export default {
         as basic_hours,COALESCE(ot_hours,0) + COALESCE(concat(floor(ot_minutes/60)  ,'.',ot_minutes%60),0)
         as ot_hours,COALESCE(wot_hours,0) + COALESCE(concat(floor(wot_minutes/60)  ,'.',wot_minutes%60),0)
         as wot_hours,COALESCE(hot_hours,0) + COALESCE(concat(floor(hot_minutes/60)  ,'.',hot_minutes%60),0)
-        as hot_hours,basic_cost, ot_cost, wot_cost, hot_cost, cost from hims_f_project_wise_payroll PWP 
+        as hot_hours,basic_cost, ot_cost, wot_cost, hot_cost, cost,
+        COALESCE(ot_hours+wot_hours+hot_hours,0)+COALESCE(concat(floor((ot_minutes+wot_minutes+hot_minutes)/60) 
+        ,'.',(ot_minutes+wot_minutes+hot_minutes)%60),0) as total_ot_hours,
+        COALESCE(ot_cost+ wot_cost+hot_cost,0) as total_ot_cost
+        from hims_f_project_wise_payroll PWP 
         inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
         inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
         left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
