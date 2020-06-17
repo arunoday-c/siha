@@ -3,6 +3,7 @@ export default {
     var output;
 
     output = {
+      item_description: "",
       hims_f_procurement_po_header_id: null,
       purchase_number: null,
       vendor_quotation_number: null,
@@ -80,8 +81,8 @@ export default {
       dataFinder: false,
       is_posted: "N",
       dataPosted: true,
-      delete_stock_detail: []
+      delete_stock_detail: [],
     };
     return output;
-  }
+  },
 };
