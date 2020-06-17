@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { withRouter } from "react-router-dom";
 import { MainContext } from "algaeh-react-components/context";
+import { clearItem } from "algaeh-react-components/storage";
 import "./AlgaehmainPage.scss";
 import Menu from "../Menu";
 import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
@@ -18,7 +19,7 @@ import {
 import Enumarable from "linq";
 import swal from "sweetalert2";
 import sockets from "../../../sockets";
-import { MainContext } from "algaeh-react-components/context";
+
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
@@ -457,9 +458,6 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
-    if (sockets.connected) {
-      sockets.emit("user_logout");
-    }
     algaehApiCall({
       uri: "/apiAuth/logout",
       method: "GET",
@@ -469,9 +467,14 @@ class PersistentDrawer extends React.Component {
           title: message,
           type: "success"
         });
+        if (sockets.connected) {
+          sockets.emit("user_logout");
+          sockets.disconnect()
+        }
+        clearItem()
         this.props.history.push("/");
         // window.location.href = window.location.origin + "/#";
-         window.location.reload();
+        //  window.location.reload();
       }
     });
   }

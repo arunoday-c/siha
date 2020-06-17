@@ -1,14 +1,8 @@
 //PatientDetals
 import axios from "axios";
-import {
-  collectIP,
-  algaehApiCall
-} from "../../utils/algaehApiCall";
+import { collectIP, algaehApiCall } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
-import {
-  successfulMessage,
-  encrypter
-} from "../../utils/GlobalFunctions";
+import { successfulMessage, encrypter } from "../../utils/GlobalFunctions";
 export function getTokenDetals(options) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
@@ -23,7 +17,7 @@ export function getTokenDetals(options) {
   //     }
   //   });
   // })
-  collectIP().then(myIP => {
+  collectIP().then((myIP) => {
     const _myRoute = config.routersAndPorts.default;
     const isProxy = window.location.port === "";
     const _localaddress =
@@ -34,16 +28,16 @@ export function getTokenDetals(options) {
     //     : _myRoute.url;
     const final_url = `${_localaddress}${
       isProxy ? _myRoute.path : `:${_myRoute.port}`
-      }${auth_url}`;
+    }${auth_url}`;
     axios({
       method: "GET",
       url: final_url,
       headers: {
         Authorization: basicAuth,
-        "x-client-ip": myIP
-      }
+        "x-client-ip": myIP,
+      },
     })
-      .then(response => {
+      .then((response) => {
         // setItem("token", response.data.token);
         // setToken(response.data.token, response.data.days);
         options.loading(false);
@@ -57,7 +51,7 @@ export function getTokenDetals(options) {
         //   loading: false
         // });
       })
-      .catch(err => {
+      .catch((err) => {
         options.loading(true);
         console.error("Error : ", err.message);
         successfulMessage({
@@ -66,7 +60,7 @@ export function getTokenDetals(options) {
               ? err.response.data.message
               : err.message,
           title: "Error",
-          icon: "error"
+          icon: "error",
         });
       });
   });
@@ -74,17 +68,17 @@ export function getTokenDetals(options) {
 
 export function checkUser({ userId }) {
   return new Promise((resolve, reject) => {
-    collectIP().then(ip => {
+    collectIP().then((ip) => {
       algaehApiCall({
         uri: "/apiAuth/userCheck",
         data: { userId: userId },
         notoken: true,
-        onSuccess: response => {
+        onSuccess: (response) => {
           resolve(response.data.records);
         },
-        onCatch: error => {
+        onCatch: (error) => {
           reject(error);
-        }
+        },
       });
     });
   });
@@ -93,20 +87,20 @@ export function checkUser({ userId }) {
 export function OnSubmitUser({ item_id, username, password }) {
   return new Promise((resolve, reject) => {
     try {
-      collectIP().then(identity => {
+      collectIP().then((identity) => {
         const dataSent = encrypter(
           JSON.stringify({
             username: username,
             password: password,
             item_id: item_id,
-            identity: identity
+            identity: identity,
           })
         );
         algaehApiCall({
           uri: "/apiAuth/authUser",
           data: { post: dataSent },
           notoken: true,
-          onSuccess: response => {
+          onSuccess: (response) => {
             const { success, records, message } = response.data;
             if (success === true) {
               resolve(records);
@@ -114,9 +108,9 @@ export function OnSubmitUser({ item_id, username, password }) {
               reject(message);
             }
           },
-          onCatch: error => {
+          onCatch: (error) => {
             reject(error);
-          }
+          },
         });
       });
     } catch (e) {
