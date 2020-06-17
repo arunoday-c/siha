@@ -37,7 +37,7 @@ class FamilyAndIdentification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      issue_date: null,
+      // issue_date: null,
       valid_upto: null,
 
       hijri_valid_upto: null,
@@ -75,11 +75,11 @@ class FamilyAndIdentification extends Component {
           <div className="row">
             <div className="col-6" data-validate="empIdGrid">
               <h5>
-                <span>Identification Details</span>
+                <span>Personal Identification Details</span>
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col-2 mandatory" }}
+                  div={{ className: "col-3 mandatory form-group" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true,
@@ -105,7 +105,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-2 mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true,
@@ -125,7 +125,7 @@ class FamilyAndIdentification extends Component {
                     },
                   }}
                 />
-                <AlgaehDateHandler
+                {/* <AlgaehDateHandler
                   div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Issue Date",
@@ -143,7 +143,7 @@ class FamilyAndIdentification extends Component {
                     onChange: datehandle.bind(this, this),
                   }}
                   value={this.state.issue_date}
-                />
+                /> */}
                 {/* <AlgaehHijriDatePicker
                   div={{
                     className: "col-lg-3",
@@ -178,8 +178,7 @@ class FamilyAndIdentification extends Component {
                 />
                 <AlgaehHijriDatePicker
                   div={{
-                    className: "col-lg-3",
-                    tabIndex: "6",
+                    className: "col-3",
                   }}
                   label={{ forceLabel: "Hijiri Valid Date" }}
                   textBox={{ className: "txt-fld" }}
@@ -189,20 +188,22 @@ class FamilyAndIdentification extends Component {
                     onChange: hijriOnChange.bind(this, this),
                   }}
                 ></AlgaehHijriDatePicker>
-                <div className="col">
+                <div className="col" style={{ textAlign: "right" }}>
                   <button
                     type="button"
                     className="btn btn-default"
-                    style={{ marginTop: 19 }}
                     onClick={AddEmpId.bind(this, this)}
                   >
                     Add
                   </button>
                 </div>
 
-                <div className="col-lg-12 margin-top-15">
+                <div
+                  className="col-lg-12 margin-top-15"
+                  id="employeeId_DetailsGrid_Cntr"
+                >
                   <AlgaehDataGrid
-                    id="employee-ids-grid"
+                    id="employeeId_DetailsGrid"
                     columns={[
                       {
                         fieldName: "identity_documents_id",
@@ -271,31 +272,31 @@ class FamilyAndIdentification extends Component {
                           );
                         },
                       },
-                      {
-                        fieldName: "issue_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
-                        ),
-                        displayTemplate: (row) => {
-                          return <span>{dateFormater(row.issue_date)}</span>;
-                        },
-                        editorTemplate: (row) => {
-                          return (
-                            <AlgaehDateHandler
-                              div={{ className: "" }}
-                              textBox={{
-                                className: "txt-fld hidden",
-                                name: "issue_date",
-                              }}
-                              minDate={new Date()}
-                              events={{
-                                onChange: datehandlegrid.bind(this, this, row),
-                              }}
-                              value={row.issue_date}
-                            />
-                          );
-                        },
-                      },
+                      // {
+                      //   fieldName: "issue_date",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Issue Date" }} />
+                      //   ),
+                      //   displayTemplate: (row) => {
+                      //     return <span>{dateFormater(row.issue_date)}</span>;
+                      //   },
+                      //   editorTemplate: (row) => {
+                      //     return (
+                      //       <AlgaehDateHandler
+                      //         div={{ className: "" }}
+                      //         textBox={{
+                      //           className: "txt-fld hidden",
+                      //           name: "issue_date",
+                      //         }}
+                      //         minDate={new Date()}
+                      //         events={{
+                      //           onChange: datehandlegrid.bind(this, this, row),
+                      //         }}
+                      //         value={row.issue_date}
+                      //       />
+                      //     );
+                      //   },
+                      // },
                       {
                         fieldName: "hijri_valid_upto",
                         label: (
@@ -363,7 +364,7 @@ class FamilyAndIdentification extends Component {
                     keyId=""
                     dataSource={{ data: this.state.idDetails }}
                     isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 5 }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteIdentifications.bind(this, this),
                       onEdit: (row) => {},
@@ -380,7 +381,7 @@ class FamilyAndIdentification extends Component {
               </h5>
               <div className="row paddin-bottom-5">
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-3 mandatory  form-group" }}
                   label={{
                     forceLabel: "Dependent Type",
                     isImp: true,
@@ -403,7 +404,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Dependent Name",
                     isImp: true,
@@ -419,7 +420,7 @@ class FamilyAndIdentification extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2 mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Id Type",
                     isImp: true,
@@ -442,7 +443,7 @@ class FamilyAndIdentification extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Id Number",
                     isImp: true,
@@ -457,19 +458,21 @@ class FamilyAndIdentification extends Component {
                     },
                   }}
                 />
-                <div className="col">
+                <div className="col" style={{ textAlign: "right" }}>
                   <button
                     type="button"
                     className="btn btn-default"
-                    style={{ marginTop: 19 }}
                     onClick={addDependentType.bind(this, this)}
                   >
                     Add
                   </button>
                 </div>
-                <div className="col-lg-12 margin-top-15">
+                <div
+                  className="col-lg-12 margin-top-15"
+                  id="employeeFamily_DetailsGrid_Cntr"
+                >
                   <AlgaehDataGrid
-                    id="dep-ids-grid"
+                    id="employeeFamily_DetailsGrid"
                     columns={[
                       {
                         //   textField: "name",
@@ -606,7 +609,7 @@ class FamilyAndIdentification extends Component {
                     keyId="dependent_type"
                     dataSource={{ data: this.state.dependentDetails }}
                     isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 5 }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteDependencies.bind(this, this),
                       onEdit: (row) => {},
