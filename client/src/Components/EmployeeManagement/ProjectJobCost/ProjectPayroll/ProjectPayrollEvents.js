@@ -10,9 +10,11 @@ export default function ProjectPayrollEvents() {
     texthandle: ($this, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
-
+      // let currency_code = e.target.currency_code;
+      debugger;
       $this.setState({
         [name]: value,
+        currency_code: e.selected.currency_code,
       });
     },
     // getAllDepartments: function getAllDepartments($this) {

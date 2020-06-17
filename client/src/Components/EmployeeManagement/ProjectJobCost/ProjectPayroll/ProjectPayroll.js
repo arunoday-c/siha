@@ -38,6 +38,7 @@ class ProjectPayroll extends Component {
       lbl_total: "Total Employees",
       decimal_places: 0,
       isOpen: false,
+      currency_code: "",
       // allDepartments: [],
     };
     // this.baseState = this.state;
@@ -422,7 +423,9 @@ class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
-
+                          displayTemplate: (row) => {
+                            return GetAmountFormart(row.basic_cost);
+                          },
                           others: {
                             maxWidth: 80,
                             resizable: false,
@@ -447,6 +450,9 @@ class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
+                          displayTemplate: (row) => {
+                            return GetAmountFormart(row.ot_cost);
+                          },
                           others: {
                             maxWidth: 80,
                             resizable: false,
@@ -488,6 +494,9 @@ class ProjectPayroll extends Component {
                               label={{ forceLabel: "Weekoff OT Amount" }}
                             />
                           ),
+                          displayTemplate: (row) => {
+                            return GetAmountFormart(row.wot_cost);
+                          },
                           others: {
                             maxWidth: 80,
                             resizable: false,
@@ -516,6 +525,9 @@ class ProjectPayroll extends Component {
                               label={{ forceLabel: "Holiday OT Amount" }}
                             />
                           ),
+                          displayTemplate: (row) => {
+                            return GetAmountFormart(row.hot_cost);
+                          },
                           others: {
                             maxWidth: 80,
                             resizable: false,
@@ -530,7 +542,9 @@ class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
                           ),
-
+                          displayTemplate: (row) => {
+                            return GetAmountFormart(row.cost);
+                          },
                           others: {
                             maxWidth: 100,
                             resizable: false,
@@ -587,7 +601,7 @@ class ProjectPayroll extends Component {
                         forceLabel: "Total Worked Hr",
                       }}
                     />
-                    <h6>{this.state.total_worked_hours} Hr</h6>
+                    <h6>{this.state.total_worked_hours.toFixed(2)} Hr</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel
