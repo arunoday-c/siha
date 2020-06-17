@@ -415,78 +415,80 @@ const ProcessInsurance = ($this, context) => {
       type: "error"
     });
   } else {
-    let serviceInput = [
-      {
-        insured: $this.state.insured,
-        vat_applicable: $this.state.vat_applicable,
-        hims_d_services_id: $this.state.hims_d_services_id,
-        primary_insurance_provider_id:
-          $this.state.primary_insurance_provider_id,
-        primary_network_office_id: $this.state.primary_network_office_id,
-        primary_network_id: $this.state.primary_network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id,
-        FollowUp: $this.state.follow_up
-      }
-    ];
+    if ($this.state.consultation !== "Y") {
+      let serviceInput = [
+        {
+          insured: $this.state.insured,
+          vat_applicable: $this.state.vat_applicable,
+          hims_d_services_id: $this.state.hims_d_services_id,
+          primary_insurance_provider_id:
+            $this.state.primary_insurance_provider_id,
+          primary_network_office_id: $this.state.primary_network_office_id,
+          primary_network_id: $this.state.primary_network_id,
+          sec_insured: $this.state.sec_insured,
+          secondary_insurance_provider_id:
+            $this.state.secondary_insurance_provider_id,
+          secondary_network_id: $this.state.secondary_network_id,
+          secondary_network_office_id: $this.state.secondary_network_office_id,
+          FollowUp: $this.state.follow_up
+        }
+      ];
 
-    AlgaehLoader({ show: true });
-    algaehApiCall({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      data: serviceInput,
-      onSuccess: response => {
-        if (response.data.success) {
-          // response.data.records.billdetails[0].insured =
-          //   response.data.records.billdetails[0].insurance_yesno;
-          $this.setState({ ...response.data.records });
-          if (context !== null) {
-            context.updateState({ ...response.data.records });
-          }
-
-          algaehApiCall({
-            uri: "/billing/billingCalculations",
-            module: "billing",
-            method: "POST",
-            data: response.data.records,
-            onSuccess: response => {
-              if (response.data.success) {
-                response.data.records.saveEnable = false;
-                response.data.records.ProcessInsure = true;
-                if ($this.state.default_pay_type === "CD") {
-                  response.data.records.card_amount = response.data.records.receiveable_amount
-                  response.data.records.cash_amount = 0
-                }
-
-                $this.setState({ ...response.data.records });
-                if (context !== null) {
-                  context.updateState({ ...response.data.records });
-                }
-              }
-              AlgaehLoader({ show: false });
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
+      AlgaehLoader({ show: true });
+      algaehApiCall({
+        uri: "/billing/getBillDetails",
+        module: "billing",
+        method: "POST",
+        data: serviceInput,
+        onSuccess: response => {
+          if (response.data.success) {
+            // response.data.records.billdetails[0].insured =
+            //   response.data.records.billdetails[0].insurance_yesno;
+            $this.setState({ ...response.data.records });
+            if (context !== null) {
+              context.updateState({ ...response.data.records });
             }
+
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              module: "billing",
+              method: "POST",
+              data: response.data.records,
+              onSuccess: response => {
+                if (response.data.success) {
+                  response.data.records.saveEnable = false;
+                  response.data.records.ProcessInsure = true;
+                  if ($this.state.default_pay_type === "CD") {
+                    response.data.records.card_amount = response.data.records.receiveable_amount
+                    response.data.records.cash_amount = 0
+                  }
+
+                  $this.setState({ ...response.data.records });
+                  if (context !== null) {
+                    context.updateState({ ...response.data.records });
+                  }
+                }
+                AlgaehLoader({ show: false });
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
           });
         }
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    }
   }
 };
 

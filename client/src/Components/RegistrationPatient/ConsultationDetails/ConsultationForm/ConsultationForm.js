@@ -131,7 +131,7 @@ class AddConsultationForm extends Component {
     const departments =
       this.props.deptanddoctors === undefined
         ? []
-        : this.props.deptanddoctors.departmets;    
+        : this.props.deptanddoctors.departmets;
 
     const Package_Exists =
       this.props.PatientPackageList === undefined
@@ -300,8 +300,8 @@ class AddConsultationForm extends Component {
                       <h6>
                         {this.state.visit_date
                           ? moment(this.state.visit_date).format(
-                              Options.dateFormat
-                            )
+                            Options.dateFormat
+                          )
                           : Options.dateFormat}
                       </h6>
                     </div>
@@ -309,65 +309,65 @@ class AddConsultationForm extends Component {
                   <div className="row">
                     <div className="col-lg-12">
                       {this.state.department_type === "D" &&
-                      this.state.hims_d_patient_id !== null ? (
-                        <div className="row">
-                          <div className="col-lg-4" style={{ paddingRight: 0 }}>
-                            <label>Existing Plan</label>
-                            <br />
+                        this.state.hims_d_patient_id !== null ? (
+                          <div className="row">
+                            <div className="col-lg-4" style={{ paddingRight: 0 }}>
+                              <label>Existing Plan</label>
+                              <br />
 
-                            <div className="customCheckbox">
-                              <label className="checkbox inline">
-                                <input
-                                  type="checkbox"
-                                  name="existing_plan"
-                                  value="Y"
-                                  checked={this.state.checked_existing_plan}
-                                  onChange={radioChange.bind(
-                                    this,
-                                    this,
-                                    context
-                                  )}
-                                />
-                                <span>
-                                  {this.state.selectedLang === "en"
-                                    ? "Yes"
-                                    : "نعم"}
-                                </span>
-                              </label>
+                              <div className="customCheckbox">
+                                <label className="checkbox inline">
+                                  <input
+                                    type="checkbox"
+                                    name="existing_plan"
+                                    value="Y"
+                                    checked={this.state.checked_existing_plan}
+                                    onChange={radioChange.bind(
+                                      this,
+                                      this,
+                                      context
+                                    )}
+                                  />
+                                  <span>
+                                    {this.state.selectedLang === "en"
+                                      ? "Yes"
+                                      : "نعم"}
+                                  </span>
+                                </label>
+                              </div>
                             </div>
-                          </div>
 
-                          <AlagehAutoComplete
-                            div={{ className: "col-lg-8" }}
-                            label={{
-                              fieldName: "treatment_plan_id",
-                              isImp: true
-                            }}
-                            selector={{
-                              name: "treatment_plan_id",
-                              className: "select-fld",
-                              value: this.state.treatment_plan_id,
-                              dataSource: {
-                                textField: "plan_name",
-                                valueField: "hims_f_treatment_plan_id",
-                                data: this.props.dentalplans
-                              },
-                              others: {
-                                disabled:
-                                  this.state.existing_plan === "Y"
-                                    ? false
-                                    : true
-                              },
-                              onChange: texthandle.bind(this, this, context),
-                              onClear: () => {
-                                this.setState({
-                                  treatment_plan_id: null
-                                });
-                              }
-                            }}
-                          />
-                        </div>
-                      ) : null}
+                            <AlagehAutoComplete
+                              div={{ className: "col-lg-8" }}
+                              label={{
+                                fieldName: "treatment_plan_id",
+                                isImp: true
+                              }}
+                              selector={{
+                                name: "treatment_plan_id",
+                                className: "select-fld",
+                                value: this.state.treatment_plan_id,
+                                dataSource: {
+                                  textField: "plan_name",
+                                  valueField: "hims_f_treatment_plan_id",
+                                  data: this.props.dentalplans
+                                },
+                                others: {
+                                  disabled:
+                                    this.state.existing_plan === "Y"
+                                      ? false
+                                      : true
+                                },
+                                onChange: texthandle.bind(this, this, context),
+                                onClear: () => {
+                                  this.setState({
+                                    treatment_plan_id: null
+                                  });
+                                }
+                              }}
+                            />
+                          </div>
+                        ) : null}
                     </div>
 
                     <div className="col-lg-12">
@@ -461,8 +461,8 @@ class AddConsultationForm extends Component {
                             this.props.visittypes === undefined
                               ? []
                               : this.props.visittypes.filter(
-                                  f => f.hims_d_visit_type_id === row.visit_type
-                                );
+                                f => f.hims_d_visit_type_id === row.visit_type
+                              );
 
                           return (
                             <span>
@@ -487,10 +487,10 @@ class AddConsultationForm extends Component {
                             this.props.viewsubdept === undefined
                               ? []
                               : (display = this.props.viewsubdept.filter(
-                                  f =>
-                                    f.hims_d_sub_department_id ===
-                                    row.sub_department_id
-                                ));
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              ));
 
                           return (
                             <span>
@@ -515,8 +515,8 @@ class AddConsultationForm extends Component {
                             this.props.frontproviders === undefined
                               ? []
                               : (display = this.props.frontproviders.filter(
-                                  f => f.hims_d_employee_id === row.doctor_id
-                                ));
+                                f => f.hims_d_employee_id === row.doctor_id
+                              ));
 
                           return (
                             <span>

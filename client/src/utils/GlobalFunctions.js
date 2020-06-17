@@ -367,7 +367,6 @@ export function AlgaehValidation(options) {
     "[algaeh_required='true']"
   );
   for (let i = 0; i < _Validateerror.length; i++) {
-    debugger
     try {
       let _element = _Validateerror[i];
       let _checkVal = _element.getAttribute("checkvalidation");

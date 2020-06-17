@@ -29,7 +29,7 @@ import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
 import { MainContext } from "algaeh-react-components/context";
-import moment from "moment";
+
 class AddPatientForm extends Component {
   constructor(props) {
     super(props);
@@ -267,6 +267,10 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "full_name",
                           value: this.state.full_name,
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "2",
+                          }
                         }}
                         events={{
                           onBlur: texthandle.bind(this, this),
@@ -452,7 +456,7 @@ class AddPatientForm extends Component {
                         }}
                         label={{
                           // fieldName: "AGEMM",
-                          forceLabel: "",
+                          forceLabel: "*",
                           isImp: false,
                         }}
                         textBox={{
@@ -484,7 +488,7 @@ class AddPatientForm extends Component {
                         }}
                         label={{
                           // fieldName: "AGEDD",
-                          forceLabel: "",
+                          forceLabel: "*",
                           isImp: false,
                         }}
                         textBox={{

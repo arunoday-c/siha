@@ -124,7 +124,7 @@ export default {
       // console.log("insurance_type", req.body.insurance_type);
       // const { primary_insurance_provider_id } = req.body;
       let custom = {};
-      let numGens = ["PAT_VISIT", "PAT_BILL", "RECEIPT"];
+      let numGens = ["PAT_VISIT"];
       if (
         req.body.mrn_num_sep_cop_client === "Y" &&
         req.body.insurance_type === "C"
@@ -142,6 +142,10 @@ export default {
         numGens.push("PAT_REGS");
         custom = {};
       }
+      if (req.body.consultation === "Y") {
+        numGens.push("PAT_BILL", "RECEIPT");
+      }
+      console.log("numGens", numGens)
       _mysql
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
