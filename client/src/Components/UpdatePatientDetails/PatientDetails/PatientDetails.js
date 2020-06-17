@@ -12,7 +12,8 @@ import {
   calculateAge,
   setAge,
   countryStatehandle,
-  nationalityhandle
+  hijriOnChange,
+  companyHandle
 } from "./UpdatePatientEvent.js";
 import MyContext from "../../../utils/MyContext.js";
 
@@ -21,6 +22,8 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
+import AlgaehHijriDatePicker from "algaeh-react-components/components/datehandler";
+
 import variableJson from "../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
@@ -151,6 +154,16 @@ class UpdatePatientForm extends Component {
       });
     }
 
+    this.props.getInsuranceProviders({
+      uri: "/insurance/getListOfInsuranceProvider",
+      module: "insurance",
+      method: "GET",
+      redux: {
+        type: "INSURANCE_PROVIDER_GET_DATA",
+        mappingName: "insurarProviders"
+      }
+    });
+
     this.getStateCity(this);
   }
 
@@ -251,7 +264,13 @@ class UpdatePatientForm extends Component {
                             data: this.props.titles
                           },
                           onChange: titlehandle.bind(this, this),
-                          onClear: titlehandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              gender: null,
+                              title_id: null,
+                              saveEnable: true
+                            });
+                          },
                           others: {
                             tabIndex: "1"
                           }
@@ -351,17 +370,19 @@ class UpdatePatientForm extends Component {
                         }
                       />
 
-                      <AlgaehDateHandler
+                      <AlgaehHijriDatePicker
                         div={{
-                          className: "col-lg-3 mandatory",
-                          tabIndex: "6"
+                          className: "col-lg-3",
+                          tabIndex: "6",
                         }}
-                        label={{ fieldName: "hijiri_date", isImp: false }}
+                        label={{ forceLabel: "Hijiri Date" }}
                         textBox={{ className: "txt-fld" }}
-                        maxDate={new Date()}
-                        disabled={this.state.existingPatient}
-                        value={this.state.hijiri_date}
-                      />
+                        type="hijri"
+                        gregorianDate={this.state.date_of_birth}
+                        events={{
+                          onChange: hijriOnChange.bind(this, this),
+                        }}
+                      ></AlgaehHijriDatePicker>
                       <AlagehFormGroup
                         div={{
                           className: "col mandatory ageYear",
@@ -398,7 +419,7 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                         label={{
-                          fieldName: "AGEMM",
+                          // fieldName: "AGEMM",
                           forceLabel: "",
                           isImp: false
                         }}
@@ -427,7 +448,7 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                         label={{
-                          fieldName: "AGEDD",
+                          // fieldName: "AGEDD",
                           forceLabel: "",
                           isImp: false
                         }}
@@ -542,7 +563,7 @@ class UpdatePatientForm extends Component {
                             valueField: "hims_d_nationality_id",
                             data: this.props.nationalities
                           },
-                          onChange: nationalityhandle.bind(this, this, context),
+                          onChange: texthandle.bind(this, this),
                           others: {
                             tabIndex: "13"
                           }
@@ -697,7 +718,7 @@ class UpdatePatientForm extends Component {
                         }}
                       />
                       <AlagehFormGroup
-                        div={{ className: "col" }}
+                        div={{ className: "col-lg-6" }}
                         label={{
                           fieldName: "address1"
                         }}
@@ -712,6 +733,27 @@ class UpdatePatientForm extends Component {
                             onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1",
                             tabIndex: "22"
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{ isImp: true, forceLabel: "Company Name" }}
+                        selector={{
+                          name: "hims_d_insurance_provider_id",
+                          className: "select-fld",
+                          value: this.state.hims_d_insurance_provider_id,
+                          dataSource: {
+                            textField: "insurance_provider_name",
+                            valueField: "hims_d_insurance_provider_id",
+                            data: this.props.insurarProviders
+                          },
+                          onChange: companyHandle.bind(this, this, context),
+                          onClear: () => {
+                            this.setState({
+                              hims_d_insurance_provider_id: null
+                            });
                           }
                         }}
                       />
@@ -971,7 +1013,8 @@ function mapStateToProps(state) {
     patients: state.patients,
     visatypes: state.visatypes,
     patienttype: state.patienttype,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    insurarProviders: state.insurarProviders
   };
 }
 
@@ -987,7 +1030,8 @@ function mapDispatchToProps(dispatch) {
       getStates: AlgaehActions,
       getVisatypes: AlgaehActions,
       getPatientType: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getInsuranceProviders: AlgaehActions
     },
     dispatch
   );

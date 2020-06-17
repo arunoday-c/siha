@@ -2,6 +2,55 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default {
+
+  registerPatient: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    //ss
+    let custom = {};
+    let numGens = ["PAT_REGS"];
+    if (
+      req.body.mrn_num_sep_cop_client === "Y" &&
+      req.body.insurance_type === "C"
+    ) {
+      custom = {
+        custom: {
+          returnKey: "PAT_REGS",
+          primaryKeyName: "hims_d_insurance_provider_id",
+          tableName: "hims_d_insurance_provider",
+          primaryKeyValue: req.body.hims_d_insurance_provider_id,
+          descriptionKeyName: "insurance_provider_name",
+        },
+      };
+    } else {
+      numGens.push("PAT_REGS");
+      custom = {};
+    }
+
+    _mysql
+      .generateRunningNumber({
+        user_id: req.userIdentity.algaeh_d_app_user_id,
+        // numgexn_codes: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"],
+        numgen_codes: numGens,
+        table_name: "hims_f_app_numgen",
+        ...custom,
+      })
+      .then(generatedNumbers => {
+        req.connection = {
+          connection: _mysql.connection,
+          isTransactionConnection: _mysql.isTransactionConnection,
+          pool: _mysql.pool,
+        };
+
+        req.body.patient_code = generatedNumbers.PAT_REGS;
+        next();
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
   insertPatientData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -9,7 +58,7 @@ export default {
       let inputparam = { ...req.body };
       const utilities = new algaehUtilities();
 
-      utilities.logger().log("genNumber: ", inputparam.patient_code);
+      console.log("genNumber: ", inputparam.patient_code);
       inputparam.registration_date = new Date();
       _mysql
         .executeQuery({
@@ -72,7 +121,6 @@ export default {
           printQuery: true
         })
         .then(result => {
-          console.log("Clear");
           req.body.patient_id = result.insertId;
 
           if (req.connection == null) {
@@ -346,5 +394,20 @@ export default {
       _mysql.releaseConnection();
       next(e);
     }
-  }
+  },
+  releaseDB: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = { patient_code: req.body.patient_code };
+        next();
+      });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
 };

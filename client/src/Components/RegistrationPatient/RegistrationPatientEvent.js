@@ -550,16 +550,19 @@ const ShowPackageUtilize = $this => {
   });
 };
 const UpdatePatientDetail = $this => {
-  if ($this.state.patient_code === null || $this.state.patient_code === "") {
-    swalMessage({
-      title: "Please Select the patient.",
-      type: "warning"
-    });
-  } else {
-    $this.setState({
-      UpdatepatientDetail: !$this.state.UpdatepatientDetail
-    });
-  }
+  // if ($this.state.patient_code === null || $this.state.patient_code === "") {
+  //   swalMessage({
+  //     title: "Please Select the patient.",
+  //     type: "warning"
+  //   });
+  // } else {
+  //   $this.setState({
+  //     UpdatepatientDetail: !$this.state.UpdatepatientDetail
+  //   });
+  // }
+  $this.setState({
+    UpdatepatientDetail: !$this.state.UpdatepatientDetail
+  });
 };
 
 const ClosePackageUtilize = ($this, e) => {

@@ -547,7 +547,7 @@ function getScreenElementsRoles($this, role_id) {
     onSuccess: (response) => {
       if (response.data.success) {
         const { records } = response.data;
-
+        debugger;
         $this.setState({
           assignedScreenElements: records,
         });

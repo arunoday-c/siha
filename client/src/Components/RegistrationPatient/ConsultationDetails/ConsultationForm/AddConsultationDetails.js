@@ -17,6 +17,19 @@ const DeptselectedHandeler = ($this, context, e) => {
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
           if (
+            $this.state.visit_type === null
+          ) {
+            context.updateState({
+              [e.name]: null
+            });
+            swalMessage({
+              title: "Please select Visit Type.",
+              type: "error"
+            });
+            document.querySelector("[name='visit_type']").focus();
+            return;
+          }
+          if (
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id === null ||
               $this.state.primary_network_office_id === null ||
@@ -175,6 +188,7 @@ const selectedHandeler = ($this, context, e) => {
               type: "error"
             });
           } else {
+            debugger
             $this.setState(
               {
                 [e.name]: e.value,
@@ -229,6 +243,19 @@ const doctorselectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
+          if (
+            $this.state.visit_type === null
+          ) {
+            context.updateState({
+              [e.name]: null
+            });
+            swalMessage({
+              title: "Please select Visit Type.",
+              type: "error"
+            });
+            document.querySelector("[name='visit_type']").focus();
+            return;
+          }
           if (
             $this.state.insured === "Y" &&
             ($this.state.primary_insurance_provider_id == null ||
@@ -302,9 +329,10 @@ const doctorselectedHandeler = ($this, context, e) => {
                           primary_policy_num: primary_policy_num
                         },
                         () => {
-                          if ($this.state.existing_plan !== "Y") {
+                          if ($this.state.existing_plan !== "Y" && $this.state.consultation !== "N") {
                             generateBillDetails($this, context);
                           }
+
                         }
                       );
                       if (context !== null) {
@@ -372,7 +400,9 @@ const doctorselectedHandeler = ($this, context, e) => {
                   primary_policy_num: primary_policy_num
                 },
                 () => {
-                  generateBillDetails($this, context);
+                  if ($this.state.consultation !== "N") {
+                    generateBillDetails($this, context);
+                  }
                 }
               );
               if (context !== null) {

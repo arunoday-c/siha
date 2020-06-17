@@ -16,6 +16,28 @@ const texthandle = ($this, e) => {
   });
 };
 
+const companyHandle = ($this, context, e) => {
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value,
+    insurance_type: e.selected.insurance_type,
+    insurance_provider_name: e.selected.insurance_provider_name
+  }, () => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value,
+        insurance_type: e.selected.insurance_type,
+        insurance_provider_name: e.selected.insurance_provider_name,
+        ...$this.state
+      });
+    }
+  });
+
+};
+
 const countryStatehandle = ($this, e) => {
   let name;
   let value;
@@ -58,24 +80,27 @@ const countryStatehandle = ($this, e) => {
 const titlehandle = ($this, e) => {
   let setGender = null;
 
-  if (e.value === undefined) {
-    $this.setState({
-      gender: setGender,
-      [e]: null,
-    });
-  } else {
-    if (e.selected.title === "Mr") {
-      setGender = "Male";
-    } else if (e.selected.title === "Mrs") {
-      setGender = "Female";
-    } else if (e.selected.title === "Ms") {
-      setGender = "Female";
-    }
-    $this.setState({
-      gender: setGender,
-      [e.name]: e.value,
-    });
+  if (e.selected.title === "Mr") {
+    setGender = "Male";
+  } else if (e.selected.title === "Mrs") {
+    setGender = "Female";
+  } else if (e.selected.title === "Ms") {
+    setGender = "Female";
   }
+  $this.setState({
+    gender: setGender,
+    [e.name]: e.value,
+    saveEnable: false
+  });
+
+  // if (context !== undefined) {
+  //   context.updateState({
+  //     gender: setGender,
+  //     [e.name]: e.value,
+  //     saveEnable: false
+  //   });
+  // }
+
 };
 
 const calculateAge = ($this, e) => {
@@ -151,129 +176,35 @@ const onDrop = ($this, file, fileType) => {
   });
 };
 
-const nationalityhandle = ($this, context, e) => {
-  SetBulkState({
-    state: $this,
-    callback: () => {
-      let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
-      //TODO HOSPITAL
+const hijriOnChange = ($this, e) => {
+  const { gregorianDate } = e.target;
+  if (gregorianDate === undefined || gregorianDate === "") {
+    return;
+  }
+  const gDate = parseInt(moment(gregorianDate).format("YYYYMMDD"));
+  const cDate = parseInt(moment().format("YYYYMMDD"));
+  if (gDate > cDate) {
+    swalMessage({
+      title: "Date can not be grater than todays date",
+      type: "warning",
+    });
+    return;
+  }
 
-      const { userToken } = $this.context;
-
-      // let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
-      //   .where((w) => w.hims_d_hospital_id === 1)
-      //   .firstOrDefault();
-
-      let vat_applicable = "Y";
-      if (
-        userToken.local_vat_applicable === "N" &&
-        userToken.default_nationality === value
-      ) {
-        vat_applicable = "N";
-      }
-
-      $this.setState(
-        {
-          [name]: value,
-          vat_applicable: vat_applicable,
-        },
-        () => {
-          if (
-            $this.state.appointment_patient === "Y" ||
-            $this.state.doctor_id !== null
-          ) {
-            if (context !== undefined) {
-              context.updateState({
-                [name]: value,
-                vat_applicable: vat_applicable,
-              });
-            }
-            // $this.processInsurance.Click();
-            generateBillDetails($this, context);
-          } else {
-            if (context !== undefined) {
-              context.updateState({
-                ...$this.state,
-              });
-            }
-          }
-        }
-      );
-    },
+  let fromDate = moment(gregorianDate);
+  let toDate = new Date();
+  let years = moment(toDate).diff(fromDate, "year");
+  fromDate.add(years, "years");
+  let months = moment(toDate).diff(fromDate, "months");
+  fromDate.add(months, "months");
+  let days = moment(toDate).diff(fromDate, "days");
+  $this.setState({
+    date_of_birth: gregorianDate,
+    age: years,
+    AGEMM: months,
+    AGEDD: days,
   });
-};
-
-const generateBillDetails = ($this, context) => {
-  SetBulkState({
-    state: $this,
-    callback: () => {
-      let serviceInput = [
-        {
-          insured: $this.state.insured,
-          // insured:
-          //   $this.state.primary_insurance_provider_id !== null ? "Y" : "N",
-          //TODO change middle ware to promisify function --added by Nowshad
-          vat_applicable: $this.state.vat_applicable,
-          hims_d_services_id: $this.state.hims_d_services_id,
-          primary_insurance_provider_id:
-            $this.state.primary_insurance_provider_id,
-          primary_network_office_id: $this.state.primary_network_office_id,
-          primary_network_id: $this.state.primary_network_id,
-          sec_insured: $this.state.sec_insured,
-          secondary_insurance_provider_id:
-            $this.state.secondary_insurance_provider_id,
-          secondary_network_id: $this.state.secondary_network_id,
-          secondary_network_office_id: $this.state.secondary_network_office_id,
-        },
-      ];
-      AlgaehLoader({ show: true });
-
-      algaehApiCall({
-        uri: "/billing/getBillDetails",
-        module: "billing",
-        method: "POST",
-        data: serviceInput,
-        onSuccess: (response) => {
-          if (response.data.success) {
-            if (context !== null) {
-              context.updateState({ ...response.data.records });
-            }
-
-            algaehApiCall({
-              uri: "/billing/billingCalculations",
-              module: "billing",
-              method: "POST",
-              data: response.data.records,
-              onSuccess: (response) => {
-                if (response.data.success) {
-                  if (context !== null) {
-                    context.updateState({ ...response.data.records });
-                  }
-                }
-                AlgaehLoader({ show: false });
-              },
-              onFailure: (error) => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: error.message,
-                  type: "error",
-                });
-              },
-            });
-          }
-        },
-        onFailure: (error) => {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error",
-          });
-        },
-      });
-    },
-  });
-};
+}
 
 export {
   texthandle,
@@ -282,6 +213,6 @@ export {
   setAge,
   onDrop,
   countryStatehandle,
-  nationalityhandle,
-  generateBillDetails,
+  hijriOnChange,
+  companyHandle
 };
