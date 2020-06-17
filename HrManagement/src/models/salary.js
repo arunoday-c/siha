@@ -3570,12 +3570,12 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
 
-      let normal_ot_hours,
-        wot_hours,
-        hot_hours = 0;
-      let normal_ot_cost,
-        wot_cost,
-        hot_cost = 0;
+      let normal_ot_hours = 0;
+      let wot_hours = 0;
+      let hot_hours = 0;
+      let normal_ot_cost = 0;
+      let wot_cost = 0;
+      let hot_cost = 0;
       if (options.over_time.length > 0) {
         let normal_ot_hours_mins = empResult["ot_work_hours"]
           .toString()
@@ -3666,46 +3666,53 @@ function getOtManagement(options) {
               ot_hours != 0 &&
               leave_salary != "Y"
             ) {
-              let earn_amount = _.chain(_earnings)
-                .filter((f) => {
-                  if (f.earnings_id == obj.earnings_id) {
-                    return parseFloat(f.amount);
-                  }
-                })
-                .value();
+              let earn_amount = obj["amount"];
 
               let _per_day_salary = 0;
               let per_hour_salary = 0;
 
               if (hrms_option[0].ot_calculation == "F") {
                 _per_day_salary = parseFloat(
-                  parseFloat(earn_amount[0].amount) /
-                    parseFloat(empResult["total_days"])
+                  parseFloat(earn_amount) / parseFloat(empResult["total_days"])
                 );
               } else if (hrms_option[0].ot_calculation == "P") {
                 _per_day_salary = parseFloat(
-                  parseFloat(earn_amount[0].amount) /
-                    parseFloat(empResult["total_days"])
+                  parseFloat(earn_amount) / parseFloat(empResult["total_days"])
                 );
               } else if (hrms_option[0].ot_calculation == "A") {
-                _per_day_salary =
-                  (parseFloat(earn_amount[0].amount) * 12) / 365;
+                _per_day_salary = (parseFloat(earn_amount) * 12) / 365;
               }
 
-              per_hour_salary = _per_day_salary / Noof_Working_Hours;
+              per_hour_salary =
+                parseFloat(_per_day_salary) / parseFloat(Noof_Working_Hours);
 
-              // let ot_work_hours = empResult["ot_work_hours"].split(".");
+              //ST--NORMAL OT
+              normal_ot_cost =
+                parseFloat(per_hour_salary) *
+                parseFloat(over_time["working_day_hour"]);
 
-              normal_ot_cost = per_hour_salary * over_time["working_day_hour"];
+              let ot_hour_price =
+                parseFloat(normal_ot_cost) * parseFloat(normal_ot_hours);
 
-              let ot_hour_price = normal_ot_cost * normal_ot_hours;
+              //END--NORMAL OT
 
-              wot_cost = per_hour_salary * over_time["weekoff_day_hour"];
-              let ot_weekoff_price = wot_cost * wot_hours;
+              //ST--WEEK OFF OT
+              wot_cost =
+                parseFloat(per_hour_salary) *
+                parseFloat(over_time["weekoff_day_hour"]);
+              let ot_weekoff_price =
+                parseFloat(wot_cost) * parseFloat(wot_hours);
 
-              hot_cost = per_hour_salary * over_time["holiday_hour"];
-              let ot_holiday_price = hot_cost * hot_hours;
+              //END--WEEK OFF OT
 
+              //ST--HOLIDAY OT
+              hot_cost =
+                parseFloat(per_hour_salary) *
+                parseFloat(over_time["holiday_hour"]);
+              let ot_holiday_price =
+                parseFloat(hot_cost) * parseFloat(hot_hours);
+
+              //ST--HOLIDAY OT
               let final_price =
                 ot_hour_price + ot_weekoff_price + ot_holiday_price;
 
@@ -3717,13 +3724,24 @@ function getOtManagement(options) {
                 current_ot_amt_array.push({
                   earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
                   amount: final_price,
+                  normal_ot_cost,
+                  wot_cost,
+                  hot_cost,
                 });
               }
             }
           });
 
-          final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
-            return parseFloat(s.amount);
+          // final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
+          //   return parseFloat(s.amount);
+          // });
+          current_ot_amt_array.forEach((item) => {
+            final_earning_amount +=
+              parseFloat(final_earning_amount) + parseFloat(item.amount);
+            normal_ot_cost +=
+              parseFloat(normal_ot_cost) + parseFloat(item.normal_ot_cost);
+            wot_cost += parseFloat(wot_cost) + parseFloat(item.wot_cost);
+            hot_cost += parseFloat(hot_cost) + parseFloat(item.hot_cost);
           });
 
           resolve({
