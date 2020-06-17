@@ -46,10 +46,14 @@ export default {
                    PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, PD.`tax_percentage`,\
                    PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`,\
                    PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IM.exp_date_required,\
-                   IU.uom_description,STOCK_UOM.uom_description as stock_uom_description,S.standard_fee as sales_price,IM.sales_uom_id from hims_f_procurement_po_detail PD,\
-                    hims_d_inventory_item_master IM ,hims_d_inventory_uom IU, hims_d_inventory_uom STOCK_UOM, hims_d_services S \
-                    where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
-                   and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.stocking_uom_id = STOCK_UOM.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id\
+                   IU.uom_description,STOCK_UOM.uom_description as stock_uom_description,S.standard_fee as sales_price,IM.sales_uom_id, \
+                   IC.category_desc,IG.group_description from hims_f_procurement_po_detail PD,\
+                   hims_d_inventory_item_master IM ,hims_d_inventory_uom IU, hims_d_inventory_uom STOCK_UOM, hims_d_services S, \
+                   hims_d_inventory_tem_category as IC,hims_d_inventory_item_group as IG \
+                   where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
+                   and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.stocking_uom_id = STOCK_UOM.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id \
+                   and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
+                   IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
                   strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
@@ -64,10 +68,13 @@ export default {
                 PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
                 PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
                 IM.item_code, IM.item_description,  IM.exp_date_required,\
-                PU.uom_description,STOCK_UOM.uom_description  as stock_uom_description, S.standard_fee as sales_price,IM.sales_uom_id\
-                from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
+                PU.uom_description,STOCK_UOM.uom_description  as stock_uom_description, S.standard_fee as sales_price,IM.sales_uom_id,\
+                 IG.group_description,IC.category_desc \
+                from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S,\
+                hims_d_item_group as IG,hims_d_item_category as IC \
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
-                and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and procurement_header_id=?" +
+                and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
+                IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
                   strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
