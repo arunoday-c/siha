@@ -27,9 +27,18 @@ startServer () {
 
 # installMysql() {
 #   echo "installing"
+#   cd $1
+#   npm i
+#   cd ..
+#   echo "done"
+# }
+
+# installMysql() {
+#   echo "installing"
 #   cp --parents -v $1/build/app.js ./build
 #   echo "done"
 # }
+
 
   # Core Modules #
   startServer "./algaeh-core" "core"
@@ -65,7 +74,6 @@ startServer () {
 
   # Finance Modules # 
    startServer "./algaeh-finance" "finance"   
-
 
 
 # installMysql "./algaeh-core" "core"

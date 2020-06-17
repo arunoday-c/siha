@@ -35,7 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: (query) => { },
+          printQuery: (query) => {},
           bulkInsertOrUpdate: true,
         })
         .then((result) => {
@@ -2616,6 +2616,7 @@ function InsertEmployeeIdentification(options) {
           "identity_documents_id",
           "identity_number",
           "valid_upto",
+
           "issue_date",
           "alert_required",
           "alert_date",
@@ -2667,11 +2668,12 @@ function UpdateEmployeeIdentification(options) {
         for (let i = 0; i < req.body.updateIdDetails.length; i++) {
           qry += mysql.format(
             "UPDATE `hims_d_employee_identification` SET \
-            `identity_number`=?,`issue_date`=?, `valid_upto`=? where hims_d_employee_identification_id=?;",
+            `identity_number`=?,`issue_date`=?, `valid_upto`=?  where hims_d_employee_identification_id=?;",
             [
               inputParam[i].identity_number,
               moment(inputParam[i].issue_date).format("YYYY-MM-DD"),
               moment(inputParam[i].valid_upto).format("YYYY-MM-DD"),
+
               inputParam[i].hims_d_employee_identification_id,
             ]
           );

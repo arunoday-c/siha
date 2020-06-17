@@ -24,13 +24,13 @@ function ChartEntry({ data = [], toggle = true }) {
 
   return (
     <>
-      <ul className="flex-container">
+      <ul className="eachShelf">
         {data.map((item) => {
           return (
             <li
               id="sub-child"
               onClick={(e) => toggleChild(item, e)}
-              className={`flex-item animated slideInLeft faster ${
+              className={`eachChild animated slideInLeft faster ${
                 current === item.hims_d_employee_id ? "clickedLi" : ""
               }`}
             >
@@ -88,7 +88,7 @@ export function EmployeeOrgChart() {
   }, []);
 
   return (
-    <div className="EmployeeOrgViewFlex">
+    <div className="EmployeeOrgView">
       <ChartEntry data={employees} toggle={true} />
     </div>
   );
