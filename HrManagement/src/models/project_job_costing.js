@@ -438,9 +438,9 @@ export default {
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
         where    E.hospital_id=?    ${strQry.replace(
-            /PR/gi,
-            "LA"
-          )} and (status= 'APR' or status= 'PEN' ) and
+          /PR/gi,
+          "LA"
+        )} and (status= 'APR' or status= 'PEN' ) and
           (    (  date(?)>=date(from_date) and	date(?)<=date(to_date)) or
           ( date(?)>=date(from_date) and   date(?)<=date(to_date))
         or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
@@ -812,10 +812,10 @@ export default {
             _days.map((date) => {
               if (
                 moment(date).format("YYYYMMDD") >=
-                moment(employee["date_of_joining"]).format("YYYYMMDD") &&
+                  moment(employee["date_of_joining"]).format("YYYYMMDD") &&
                 (employee["exit_date"] == null ||
                   moment(employee["exit_date"]).format("YYYYMMDD") <
-                  moment(date).format("YYYYMMDD"))
+                    moment(date).format("YYYYMMDD"))
               ) {
                 const week_off_Data = _.find(empHoliday, (f) => {
                   return (
@@ -1068,7 +1068,7 @@ export default {
   },
 
   //created by irfan:
-  getProjectWiseJobCost: (req, res, next) => {
+  getProjectWiseJobCost_backup_17_06_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.query;
 
@@ -1108,14 +1108,14 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-          console.log("result", result)
+          console.log("result", result);
           if (result.length === 0) {
             _mysql.releaseConnection();
             req.records = {
-              project_wise_payroll: []
-            }
+              project_wise_payroll: [],
+            };
             next();
-            return
+            return;
           }
           const _project_wise_payroll_id = result.map((item) => {
             return item.hims_f_project_wise_payroll_id;
@@ -1146,14 +1146,18 @@ export default {
                 let worked_minutes = result[i]["worked_minutes"];
 
                 complete_hours += parseInt(worked_minutes / 60);
-                let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+                let mins = String("0" + parseInt(worked_minutes % 60)).slice(
+                  -2
+                );
                 outputArray.push({
                   ...result[i],
                   complete_hours: complete_hours + "." + mins,
                 });
               }
 
-              total_cost = new LINQ(result).Sum((s) => parseFloat(s.project_cost));
+              total_cost = new LINQ(result).Sum((s) =>
+                parseFloat(s.project_cost)
+              );
 
               //ST---time calculation
 
@@ -1186,6 +1190,69 @@ export default {
           //   req.records = result;
           //   next();
           // }
+        })
+        .catch((e) => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input",
+      };
+      next();
+      return;
+    }
+  },
+
+  getProjectWiseJobCost: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let strData = "";
+
+    if (input.hospital_id > 0) {
+      strData += " and PWP.hospital_id=" + input.hospital_id;
+    }
+
+    if (input.project_id > 0) {
+      strData += " and PWP.project_id=" + input.project_id;
+    }
+    if (input.department_id > 0) {
+      strData += " and SD.department_id=" + input.department_id;
+    }
+
+    if (input.sub_department_id > 0) {
+      strData += " and E.sub_department_id=" + input.sub_department_id;
+    }
+    if (input.employee_group_id > 0) {
+      strData += " and E.employee_group_id=" + input.employee_group_id;
+    }
+
+    if (input.year > 0 && input.month > 0) {
+      _mysql
+        .executeQuery({
+          query: `Select hims_f_project_wise_payroll_id,employee_id,  month, year,group_description,
+        E.employee_code,E.full_name,d.designation, project_id, P.project_code,P.project_desc,SD.sub_department_name,
+        COALESCE(worked_hours,0) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0)
+        as total_hours,COALESCE(basic_hours,0) + COALESCE(concat(floor(basic_minutes/60)  ,'.',basic_minutes%60),0)
+        as basic_hours,COALESCE(ot_hours,0) + COALESCE(concat(floor(ot_minutes/60)  ,'.',ot_minutes%60),0)
+        as ot_hours,COALESCE(wot_hours,0) + COALESCE(concat(floor(wot_minutes/60)  ,'.',wot_minutes%60),0)
+        as wot_hours,COALESCE(hot_hours,0) + COALESCE(concat(floor(hot_minutes/60)  ,'.',hot_minutes%60),0)
+        as hot_hours,basic_cost, ot_cost, wot_cost, hot_cost, cost from hims_f_project_wise_payroll PWP 
+        inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
+        inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
+        left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
+        left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
+        left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id
+        where year=? and month=?   ${strData}  order by project_id ;`,
+          values: [input.year, input.month],
+          printQuery: true,
+        })
+        .then((result) => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
         })
         .catch((e) => {
           _mysql.releaseConnection();
@@ -1506,7 +1573,6 @@ export default {
           printQuery: true,
         })
         .then((result) => {
-
           // const outputArray = _.chain(result)
           //   .groupBy((g) => g.project_id)
           //   .map(function (detail, key) {
@@ -1521,17 +1587,17 @@ export default {
 
           const outputArray = _.chain(result)
             .groupBy((g) => g.project_id)
-            .map(m => {
+            .map((m) => {
               // console.log("M", m)
               return {
                 project_desc: m[0].project_desc,
                 project_id: m[0].project_id,
-                division_data: m
+                division_data: m,
               };
             })
             .value();
 
-          console.log("outputArray", outputArray)
+          console.log("outputArray", outputArray);
           _mysql.releaseConnection();
           req.records = outputArray;
           next();

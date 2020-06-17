@@ -42,14 +42,13 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
           left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id
-          where year=? and month=? and PWP.hospital_id=? ${strData}  ;`,
+          where year=? and month=? and PWP.hospital_id=? ${strData}  order by project_id ;`,
           values: [input.year, input.month, input.hospital_id],
           printQuery: true,
         })
         .then((result) => {
           // console.log("resut", result);
 
-          const outputArray = [];
           resolve({ result });
         })
         .catch((error) => {
