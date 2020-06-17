@@ -411,6 +411,7 @@ class AddPatientForm extends Component {
                           onChange: hijriOnChange.bind(this, this),
                         }}
                       ></AlgaehHijriDatePicker>
+
                       <AlagehFormGroup
                         div={{
                           className: "col mandatory ageYear",
@@ -444,7 +445,7 @@ class AddPatientForm extends Component {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory  ageMonth",
+                          className: "col mandatory ageMonth",
                           others: {
                             style: { paddingLeft: 0, paddingRight: 0 },
                           },
@@ -476,7 +477,7 @@ class AddPatientForm extends Component {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory   ageDay",
+                          className: "col mandatory ageDay",
                           others: {
                             style: { paddingLeft: 0 },
                           },
@@ -505,6 +506,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                       />
+
                       {/* <AlagehAutoComplete
                         div={{
                           className: "col-1 mandatory",
@@ -540,6 +542,7 @@ class AddPatientForm extends Component {
                           }
                         }}
                       /> */}
+
                       <AlagehFormGroup
                         div={{
                           className: "col-3 mandatory",

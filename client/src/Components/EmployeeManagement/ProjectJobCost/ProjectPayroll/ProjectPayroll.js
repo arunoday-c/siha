@@ -220,6 +220,7 @@ class ProjectPayroll extends Component {
             label={{
               forceLabel: "Select Project",
               // isImp: true,
+              // isImp: false,
             }}
             selector={{
               name: "project_id",
@@ -239,7 +240,7 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          <div className="col-3 globalSearchCntr mandatory">
+          <div className="col-3 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6
               onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}
@@ -455,6 +456,7 @@ class ProjectPayroll extends Component {
                         },
                         {
                           fieldName: "total_hours",
+
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
                           ),
@@ -465,6 +467,64 @@ class ProjectPayroll extends Component {
                             style: { textAlign: "center" },
                           },
                         },
+                        {
+                          fieldName: "wot_hours",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Weekoff OT Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "wot_cost",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Weekoff OT Amount" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "hot_hours",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Holiday OT Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "hot_cost",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Holiday OT Amount" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        // {
+                        //   fieldName: "complete_hours",
                         {
                           fieldName: "cost",
                           label: (
