@@ -17,6 +17,7 @@ import ProjectPayrollEvents from "./ProjectPayrollEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
 import ProjectPayrollSalaryBreakup from "./ProjectPayrollSalaryBreakup";
+// import { getBranchDetails, getHospitals } from "./ProjectPayrollEvents";
 
 class ProjectPayroll extends Component {
   constructor(props) {
@@ -25,8 +26,8 @@ class ProjectPayroll extends Component {
       selectedLang: this.props.SelectLanguage,
       year: moment().year(),
       month: moment(new Date()).format("M"),
-
       hospital_id: "",
+
       project_wise_payroll: [],
       noEmployees: 0,
       total_worked_hours: 0,
@@ -37,8 +38,9 @@ class ProjectPayroll extends Component {
       lbl_total: "Total Employees",
       decimal_places: 0,
       isOpen: false,
+      // allDepartments: [],
     };
-    this.baseState = this.state;
+    // this.baseState = this.state;
   }
 
   eventHandaler(e) {
@@ -56,7 +58,23 @@ class ProjectPayroll extends Component {
     });
   }
   clearState() {
-    this.setState(this.baseState);
+    this.setState({
+      selectedLang: this.props.SelectLanguage,
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      // hospital_id: "",
+
+      project_wise_payroll: [],
+      noEmployees: 0,
+      total_worked_hours: 0,
+      project_id: null,
+      employee_id: null,
+      employee_name: null,
+      total_cost: 0,
+      lbl_total: "Total Employees",
+      decimal_places: 0,
+      isOpen: false,
+    });
   }
 
   static contextType = MainContext;
@@ -66,6 +84,7 @@ class ProjectPayroll extends Component {
       hospital_id: userToken.hims_d_hospital_id,
       decimal_places: userToken.decimal_places,
     });
+
     if (
       this.props.organizations === undefined ||
       this.props.organizations.length === 0
@@ -88,7 +107,7 @@ class ProjectPayroll extends Component {
         uri: "/employee/get",
         module: "hrManagement",
         method: "GET",
-
+        // data: { hospital_id: this.state.hospital_id },
         redux: {
           type: "EMPLY_GET_DATA",
           mappingName: "all_employees",
@@ -132,7 +151,7 @@ class ProjectPayroll extends Component {
             selector={{
               name: "hospital_id",
               className: "select-fld",
-              value: this.state.hospital_id,
+              value: this.state.hospital_id || "",
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
@@ -197,10 +216,10 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group mandatory" }}
+            div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Select Project",
-              isImp: true,
+              // isImp: true,
             }}
             selector={{
               name: "project_id",
@@ -386,7 +405,7 @@ class ProjectPayroll extends Component {
                         },
 
                         {
-                          fieldName: "total_working_hours",
+                          fieldName: "basic_hours",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Basic Hrs" }} />
                           ),
@@ -398,16 +417,11 @@ class ProjectPayroll extends Component {
                           },
                         },
                         {
-                          fieldName: "project_cost",
+                          fieldName: "basic_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
-                          displayTemplate: (row) => {
-                            return (
-                              parseFloat(row.project_cost) -
-                              parseFloat(row.ot_amount)
-                            ).toFixed(this.state.decimal_places);
-                          },
+
                           others: {
                             maxWidth: 80,
                             resizable: false,
@@ -416,7 +430,7 @@ class ProjectPayroll extends Component {
                           },
                         },
                         {
-                          fieldName: "ot_work",
+                          fieldName: "ot_hours",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "OT Hrs" }} />
                           ),
@@ -428,7 +442,7 @@ class ProjectPayroll extends Component {
                           },
                         },
                         {
-                          fieldName: "ot_amount",
+                          fieldName: "ot_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
@@ -440,7 +454,7 @@ class ProjectPayroll extends Component {
                           },
                         },
                         {
-                          fieldName: "complete_hours",
+                          fieldName: "total_hours",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
                           ),
@@ -452,7 +466,7 @@ class ProjectPayroll extends Component {
                           },
                         },
                         {
-                          fieldName: "project_cost",
+                          fieldName: "cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
                           ),
