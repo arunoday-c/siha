@@ -478,16 +478,16 @@ const getCtrlCode = ($this, docNumber) => {
 
 const getData = ($this, po_from) => {
   if (po_from === "PHR") {
-    $this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      data: { item_status: "A" },
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "poitemlist",
-      },
-    });
+    // $this.props.getItems({
+    //   uri: "/pharmacy/getItemMaster",
+    //   data: { item_status: "A" },
+    //   module: "pharmacy",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ITEM_GET_DATA",
+    //     mappingName: "poitemlist",
+    //   },
+    // });
 
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
@@ -532,16 +532,16 @@ const getData = ($this, po_from) => {
       },
     });
   } else if (po_from === "INV") {
-    $this.props.getItems({
-      uri: "/inventory/getItemMaster",
-      data: { item_status: "A" },
-      module: "inventory",
-      method: "GET",
-      redux: {
-        type: "ITEM_GET_DATA",
-        mappingName: "poitemlist",
-      },
-    });
+    // $this.props.getItems({
+    //   uri: "/inventory/getItemMaster",
+    //   data: { item_status: "A" },
+    //   module: "inventory",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ITEM_GET_DATA",
+    //     mappingName: "poitemlist",
+    //   },
+    // });
 
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
