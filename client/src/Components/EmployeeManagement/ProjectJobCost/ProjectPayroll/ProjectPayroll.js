@@ -197,10 +197,10 @@ class ProjectPayroll extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-2 form-group mandatory" }}
+            div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Select Project",
-              isImp: true,
+              isImp: false,
             }}
             selector={{
               name: "project_id",
@@ -220,7 +220,7 @@ class ProjectPayroll extends Component {
             }}
           />
 
-          <div className="col-3 globalSearchCntr mandatory">
+          <div className="col-3 globalSearchCntr">
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6
               onClick={ProjectPayrollEvents().employeeSearch.bind(this, this)}
@@ -431,6 +431,62 @@ class ProjectPayroll extends Component {
                           fieldName: "ot_amount",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "weekoff_ot_hr",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Weekoff OT Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "weekoff_ot_amt",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Weekoff OT Amount" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "holiday_ot_hr",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Holiday OT Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 80,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
+                        {
+                          fieldName: "holiday_ot_amt",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Holiday OT Amount" }}
+                            />
                           ),
                           others: {
                             maxWidth: 80,
