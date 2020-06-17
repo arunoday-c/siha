@@ -41,17 +41,18 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  $this.setState(
-    {
+  $this.setState({
+    service_name: e.service_name,
+    s_service: e.hims_d_services_id,
+    s_service_type: e.service_type_id,
+    visittypeselect: false
+  });
+  if (context !== null) {
+    context.updateState({
       service_name: e.service_name,
       s_service: e.hims_d_services_id,
-      s_service_type: e.service_type_id,
-      visittypeselect: false
-    },
-    () => { }
-  );
-  if (context !== null) {
-    context.updateState({ s_service: e.hims_d_services_id, s_service_type: e.service_type_id });
+      s_service_type: e.service_type_id
+    });
   }
 
 };

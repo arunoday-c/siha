@@ -151,14 +151,13 @@ class AddOPBillingForm extends Component {
                   if (this.state.mode_of_pay === "Insurance") {
                     applydiscount = true;
                   }
-                  debugger
                   if (context !== null) {
                     context.updateState({
                       billdetails: existingservices,
                       applydiscount: applydiscount,
                       // s_service_type: null,
                       s_service: null,
-                      service_name: null,
+                      service_name: "",
                       saveEnable: false
                     });
                   }
