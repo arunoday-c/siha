@@ -32,6 +32,9 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import _ from "lodash";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -148,12 +151,14 @@ class AddOPBillingForm extends Component {
                   if (this.state.mode_of_pay === "Insurance") {
                     applydiscount = true;
                   }
+                  debugger
                   if (context !== null) {
                     context.updateState({
                       billdetails: existingservices,
                       applydiscount: applydiscount,
                       // s_service_type: null,
                       s_service: null,
+                      service_name: null,
                       saveEnable: false
                     });
                   }
@@ -353,11 +358,11 @@ class AddOPBillingForm extends Component {
             <div className="row">
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
                 <div className="screenCardStyle">
-                  {" "}
+
                   <div className="row">
                     <div className="col-12">
                       <div className="row">
-                        <AlagehAutoComplete
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "select_service_type"
@@ -408,6 +413,68 @@ class AddOPBillingForm extends Component {
                             onChange: serviceHandeler.bind(this, this, context),
                             onClear: serviceHandeler.bind(this, this, context)
                           }}
+                        /> */}
+
+                        <AlgaehAutoSearch
+                          div={{ className: "col customServiceSearch" }}
+                          label={{ forceLabel: "Search Investigation" }}
+                          title="Search Investigation"
+                          id="service_id_search"
+                          template={({
+                            covered,
+                            pre_approval,
+                            service_name,
+                            service_type,
+                          }) => {
+                            let properStyle;
+                            if (this.state.insured === "Y") {
+                              if (covered === "Y") {
+                                if (pre_approval === "Y") {
+                                  properStyle = "orange_Y_Y";
+                                } else {
+                                  properStyle = "green_Y_N";
+                                }
+                              } else {
+                                properStyle = "red_N_N";
+                              }
+                            } else {
+                              properStyle = "white_N_N";
+                            }
+                            return (
+                              <div className={`row resultSecStyles ${properStyle}`}>
+                                <div className="col-12 padd-10">
+                                  <h4 className="title">
+                                    {_.startCase(_.toLower(service_name))}
+                                  </h4>
+                                  <p className="searchMoreDetails">
+                                    <span>
+                                      Service Type:
+                                      <b>{_.startCase(_.toLower(service_type))}</b>
+                                    </span>
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          }}
+                          name="s_service"
+                          columns={spotlightSearch.Services.servicemaster}
+                          displayField="service_name"
+                          value={this.state.service_name}
+                          extraParameters={{
+                            insurance_id: this.state.insurance_provider_id,
+                          }}
+                          searchName="insservicemaster"
+                          onClick={serviceHandeler.bind(this, this, context)}
+                          onClear={() => {
+                            context.updateState({
+                              s_service: null,
+                              service_name: null,
+                              s_service_type: null
+                            });
+                          }}
+                          ref={(attReg) => {
+                            this.attReg = attReg;
+                          }}
                         />
                         <div className="col-lg-2">
                           <button
@@ -457,7 +524,7 @@ class AddOPBillingForm extends Component {
                             show={this.state.isOpen}
                             onClose={this.ShowBillDetails.bind(this)}
                           />
-                        </div>{" "}
+                        </div>
                         {Package_Exists.length > 0 ? (
                           <div className="col">
                             <div
@@ -519,10 +586,10 @@ class AddOPBillingForm extends Component {
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
 
                               return (
                                 <span>
@@ -539,10 +606,10 @@ class AddOPBillingForm extends Component {
                                 this.props.servicetype === undefined
                                   ? []
                                   : this.props.servicetype.filter(
-                                      f =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
+                                    f =>
+                                      f.hims_d_service_type_id ===
+                                      row.service_type_id
+                                  );
 
                               return (
                                 <span>
@@ -572,9 +639,9 @@ class AddOPBillingForm extends Component {
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
 
                               return (
                                 <span>
@@ -594,9 +661,9 @@ class AddOPBillingForm extends Component {
                                 this.props.serviceslist === undefined
                                   ? []
                                   : this.props.serviceslist.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
+                                    f =>
+                                      f.hims_d_services_id === row.services_id
+                                  );
 
                               return (
                                 <span>
@@ -689,8 +756,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -737,8 +804,8 @@ class AddOPBillingForm extends Component {
                                         this.state.insurance_yesno === "Y"
                                           ? true
                                           : row.trans_package_detail_id > 0
-                                          ? true
-                                          : this.state.Billexists,
+                                            ? true
+                                            : this.state.Billexists,
                                       onBlur: makeZeroIngrid.bind(
                                         this,
                                         this,
@@ -925,7 +992,7 @@ class AddOPBillingForm extends Component {
                             label={{
                               fieldName: "company_lbl"
                             }}
-                          />{" "}
+                          />
                           <hr style={{ marginTop: 0, marginBottom: 5 }} />
                           <div className="row insurance-details">
                             <div className="col-5">
