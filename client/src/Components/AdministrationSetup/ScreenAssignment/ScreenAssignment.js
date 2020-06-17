@@ -451,7 +451,7 @@ class ScreenAssignment extends Component {
                         />
 
                         <ul className="mainmenu">
-                          {this.state.assignedScreenElements.map((element) => {
+                          {assignedRoles.map((element) => {
                             const {
                               algaeh_app_screens_id,
                               screen_name,
