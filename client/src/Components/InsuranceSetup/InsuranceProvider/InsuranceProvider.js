@@ -124,7 +124,7 @@ class InsuranceProvider extends PureComponent {
                 {/* Services Details */}
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col-2 form-group mandatory" }}
                     label={{
                       fieldName: "insurance_provider_code",
                       isImp: true,

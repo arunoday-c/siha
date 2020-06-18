@@ -116,16 +116,14 @@ export default function ProjectPayrollEvents() {
         method: "GET",
         onSuccess: (response) => {
           debugger;
-          if (response.data.records.length > 0) {
+          if (response.data.records.pjc_array.length > 0) {
             let data = response.data.records;
             $this.setState({
-              project_wise_payroll: response.data.records,
+              project_wise_payroll: response.data.records.pjc_array,
               lbl_total: lbl_total,
-              total_worked_hours: _.sumBy(data, "total_hours"),
-              total_cost: _.sumBy(data, (item) => {
-                return parseFloat(item["cost"]);
-              }),
-              noEmployees: data.length,
+              total_worked_hours: data.total_worked_hours,
+              total_cost: data.total_cost,
+              noEmployees: data.no_employees,
             });
             debugger;
           } else {

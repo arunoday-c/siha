@@ -321,9 +321,9 @@ export default {
       employee += ` and loan_authorized= '${input.loan_authorized}'`;
     }
 
-    // if (input.hospital_id > 0) {
-    //   employee += ` and  E.hospital_id=${input.hospital_id} `;
-    // }
+    if (input.hospital_id > 0) {
+      employee += ` and  E.hospital_id=${input.hospital_id} `;
+    }
 
     if (input.from_date && input.to_date) {
       range = ` and date(loan_application_date)

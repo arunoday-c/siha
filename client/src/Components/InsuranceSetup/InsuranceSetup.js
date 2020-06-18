@@ -8,7 +8,7 @@ import "../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceAdd from "./InsuranceAdd/InsuranceAdd";
@@ -27,7 +27,7 @@ class InsuranceSetup extends Component {
       isOpen: false,
       opencomponent: 0,
       addfunctionality: true,
-      buttonenable: false
+      buttonenable: false,
     };
   }
 
@@ -42,8 +42,8 @@ class InsuranceSetup extends Component {
         method: "GET",
         redux: {
           type: "INSURANCE_PROVIDER_GET_DATA",
-          mappingName: "insProviders"
-        }
+          mappingName: "insProviders",
+        },
       });
     }
     let prevLang = getCookie("Language");
@@ -58,7 +58,7 @@ class InsuranceSetup extends Component {
       addfunctionality: true,
       buttonenable: false,
       insurance_provider_id: null,
-      insurance_provider_name: null
+      insurance_provider_name: null,
     });
   }
 
@@ -70,7 +70,7 @@ class InsuranceSetup extends Component {
         addfunctionality: true,
         buttonenable: false,
         insurance_provider_id: null,
-        insurance_provider_name: null
+        insurance_provider_name: null,
       },
       () => {
         this.props.getInsuranceProviders({
@@ -79,14 +79,14 @@ class InsuranceSetup extends Component {
           method: "GET",
           redux: {
             type: "INSURANCE_PROVIDER_GET_DATA",
-            mappingName: "insProviders"
-          }
+            mappingName: "insProviders",
+          },
         });
       }
     );
   }
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -99,7 +99,7 @@ class InsuranceSetup extends Component {
       insurance_provider_id: row.hims_d_insurance_provider_id,
       insurance_provider_name: row.insurance_provider_name,
       isOpen: true,
-      addfunctionality: false
+      addfunctionality: false,
     });
   }
 
@@ -124,7 +124,7 @@ class InsuranceSetup extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "add_insurance",
-                      align: "ltr"
+                      align: "ltr",
                     }}
                   />
                 }
@@ -150,10 +150,10 @@ class InsuranceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "edit_option" }} />
                       ),
                       disabled: false,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <AlagehAutoComplete
-                            div={{}}
+                            div={{ className: "noLabel" }}
                             selector={{
                               sort: "off",
                               name: "edit_option",
@@ -163,16 +163,16 @@ class InsuranceSetup extends Component {
                                 textField: "name",
                                 valueField: "value",
                                 data:
-                                  GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION
+                                  GlobalVariables.FORMAT_INSURANCE_EDIT_OPTION,
                               },
-                              onChange: this.setUpdateComponent.bind(this, row)
+                              onChange: this.setUpdateComponent.bind(this, row),
                             }}
                           />
                         );
                       },
                       others: {
-                        filterable: false
-                      }
+                        filterable: false,
+                      },
                     },
                     {
                       fieldName: "insurance_type",
@@ -180,13 +180,13 @@ class InsuranceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "insurance_type" }} />
                       ),
                       disabled: true,
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return row.insurance_type === "I"
                           ? "Insurance Company"
                           : row.insurance_type === "T"
-                            ? "TPA"
-                            : "Corporate Client";
-                      }
+                          ? "TPA"
+                          : "Corporate Client";
+                      },
                     },
                     // {
                     //   fieldName: "currency",
@@ -201,7 +201,7 @@ class InsuranceSetup extends Component {
                         />
                       ),
                       disabled: true,
-                      id: "insuranceProviderName"
+                      id: "insuranceProviderName",
                     },
                     {
                       fieldName: "insurance_provider_code",
@@ -211,7 +211,7 @@ class InsuranceSetup extends Component {
                         />
                       ),
                       disabled: true,
-                      accessor: "providerID"
+                      accessor: "providerID",
                     },
                     {
                       fieldName: "payment_type",
@@ -219,9 +219,9 @@ class InsuranceSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "payment_type" }} />
                       ),
 
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         let display = GlobalVariables.FORMAT_PAYMENT_TYPE.filter(
-                          f => f.value === row.payment_type
+                          (f) => f.value === row.payment_type
                         );
 
                         return (
@@ -235,14 +235,14 @@ class InsuranceSetup extends Component {
                         );
                       },
 
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "credit_period",
                       label: (
                         <AlgaehLabel label={{ fieldName: "credit_period" }} />
                       ),
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "effective_start_date",
@@ -251,14 +251,14 @@ class InsuranceSetup extends Component {
                           label={{ fieldName: "effective_start_date" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {this.changeDateFormat(row.effective_start_date)}
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
                     },
                     {
                       fieldName: "effective_end_date",
@@ -267,22 +267,22 @@ class InsuranceSetup extends Component {
                           label={{ fieldName: "effective_end_date" }}
                         />
                       ),
-                      displayTemplate: row => {
+                      displayTemplate: (row) => {
                         return (
                           <span>
                             {this.changeDateFormat(row.effective_end_date)}
                           </span>
                         );
                       },
-                      disabled: true
-                    }
+                      disabled: true,
+                    },
                   ]}
                   keyId="identity_document_code"
                   dataSource={{
                     data:
                       this.props.insProviders === undefined
                         ? []
-                        : this.props.insProviders
+                        : this.props.insProviders,
                   }}
                   filter={true}
                   // isEditable={true}
@@ -291,9 +291,9 @@ class InsuranceSetup extends Component {
                     defaultSorted: [
                       {
                         id: "insuranceProviderName",
-                        desc: false
-                      }
-                    ]
+                        desc: false,
+                      },
+                    ],
                   }}
                 />
               </div>
@@ -307,14 +307,14 @@ class InsuranceSetup extends Component {
 
 function mapStateToProps(state) {
   return {
-    insProviders: state.insProviders
+    insProviders: state.insProviders,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getInsuranceProviders: AlgaehActions
+      getInsuranceProviders: AlgaehActions,
     },
     dispatch
   );

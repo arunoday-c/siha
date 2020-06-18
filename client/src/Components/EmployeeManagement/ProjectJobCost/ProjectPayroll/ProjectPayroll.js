@@ -633,7 +633,7 @@ class ProjectPayroll extends Component {
                         forceLabel: "Total Worked Hr",
                       }}
                     />
-                    <h6>{this.state.total_worked_hours.toFixed(2)} Hr</h6>
+                    <h6>{this.state.total_worked_hours} Hr</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel
