@@ -378,6 +378,17 @@ class PurchaseOrderList extends Component {
                           style: { textAlign: "center" },
                         },
                       },
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Created By" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          // style: { textAlign: "left" },
+                        },
+                      },
                     ]}
                     keyId="purchase_number"
                     dataSource={{
