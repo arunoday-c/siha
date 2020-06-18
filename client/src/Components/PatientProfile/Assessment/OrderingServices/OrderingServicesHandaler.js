@@ -557,7 +557,7 @@ const deleteServices = ($this, row) => {
         orderservicesdata: orderservicesdata,
         preserviceInput: preserviceInput,
         approval_amt: app_amt,
-        // saved: saved,
+        saved: !deleteserviceInput.length,
       });
     }
   }
