@@ -35,6 +35,18 @@ const apsock = (socket) => {
       socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
     });
   });
+  socket.on("patient_checked", (patient) => {
+    const docMsg = `${patient.full_name} checked in for consultaion on ${patient.visit_date}`;
+    const docNoti = new notifiModel({
+      user_id: patient.provider_id,
+      message: docMsg,
+      title: "FrontDesk",
+    });
+    docNoti.save().then((doc) => {
+      console.log("saved");
+      socket.broadcast.to(`${patient.provider_id}`).emit("patient_added", doc);
+    });
+  });
 };
 
 export default apsock;

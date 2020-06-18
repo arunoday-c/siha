@@ -26,9 +26,9 @@ export default {
           where 1=1" +
             _strAppend,
           values: intValue,
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -43,17 +43,17 @@ export default {
                   from hims_f_inventory_transfer_detail TD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU \
                   where TD.transfer_header_id=? and TD.item_id = IM.hims_d_inventory_item_master_id and TD.uom_transferred_id = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_transfer_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(inventory_stock_detail => {
+              .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ inventory_stock_detail }
+                  ...{ inventory_stock_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -63,7 +63,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -103,11 +103,11 @@ export default {
               input.from_location_id,
               input.to_location_id,
               input.from_location_id,
-              input.to_location_id
+              input.to_location_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
 
             if (result[0].length > 0) {
@@ -120,33 +120,33 @@ export default {
               for (let i = 0; i < header.length; i++) {
                 let t_details = new LINQ(detail)
                   .Where(
-                    w =>
+                    (w) =>
                       w.transfer_header_id ==
                       header[i]["hims_f_inventory_transfer_header_id"]
                   )
-                  .Select(s => s)
+                  .Select((s) => s)
                   .ToArray();
 
                 let temp = [];
                 for (let m = 0; m < t_details.length; m++) {
                   let sub_details = new LINQ(subDetail)
                     .Where(
-                      w =>
+                      (w) =>
                         w.transfer_detail_id ==
                         t_details[m]["hims_f_inventory_transfer_detail_id"]
                     )
-                    .Select(s => s)
+                    .Select((s) => s)
                     .ToArray();
 
                   temp.push({
                     ...t_details[m],
-                    inventory_stock_detail: sub_details
+                    inventory_stock_detail: sub_details,
                   });
                 }
 
                 outputArray.push({
                   ...header[i],
-                  stock_detail: temp
+                  stock_detail: temp,
                 });
               }
 
@@ -157,14 +157,14 @@ export default {
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.releaseConnection();
             next(error);
           });
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide valid from_location and to_location id"
+          message: "Please provide valid from_location and to_location id",
         };
         next();
       }
@@ -188,9 +188,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["INV_TRN_NUM"],
-          table_name: "hims_f_inventory_numgen"
+          table_name: "hims_f_inventory_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           transfer_number = generatedNumbers.INV_TRN_NUM;
 
           let year = moment().format("YYYY");
@@ -230,11 +230,11 @@ export default {
                 input.outstanding_quantity,
                 input.cancelled,
                 input.cancelled_by,
-                input.cancelled_date
+                input.cancelled_date,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerResult => {
+            .then((headerResult) => {
               utilities.logger().log("headerResult: ", headerResult.insertId);
               let IncludeValues = [
                 "item_id",
@@ -257,7 +257,7 @@ export default {
                 "unit_cost",
                 "sales_uom",
                 "material_requisition_header_id",
-                "material_requisition_detail_id"
+                "material_requisition_detail_id",
               ];
 
               _mysql
@@ -267,12 +267,12 @@ export default {
                   values: input.inventory_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    transfer_header_id: headerResult.insertId
+                    transfer_header_id: headerResult.insertId,
                   },
                   bulkInsertOrUpdate: true,
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(detailResult => {
+                .then((detailResult) => {
                   utilities.logger().log("detailResult: ", detailResult);
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
@@ -280,24 +280,24 @@ export default {
                     transfer_number: transfer_number,
                     hims_f_inventory_transfer_header_id: headerResult.insertId,
                     year: year,
-                    period: period
+                    period: period,
                   };
                   next();
                   // });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -314,13 +314,13 @@ export default {
 
     try {
       let buffer = "";
-      req.on("data", chunk => {
+      req.on("data", (chunk) => {
         buffer += chunk.toString();
       });
 
       req.on("end", () => {
         let input = JSON.parse(buffer);
-        req.body = input
+        req.body = input;
         let transfer_number = "";
 
         // const utilities = new algaehUtilities();
@@ -330,10 +330,9 @@ export default {
           .generateRunningNumber({
             user_id: req.userIdentity.algaeh_d_app_user_id,
             numgen_codes: ["INV_TRN_NUM"],
-            table_name: "hims_f_inventory_numgen"
-
+            table_name: "hims_f_inventory_numgen",
           })
-          .then(generatedNumbers => {
+          .then((generatedNumbers) => {
             transfer_number = generatedNumbers.INV_TRN_NUM;
 
             let year = moment().format("YYYY");
@@ -376,11 +375,11 @@ export default {
                   input.cancelled,
                   input.cancelled_by,
                   input.cancelled_date,
-                  req.userIdentity.hospital_id
+                  req.userIdentity.hospital_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(headerResult => {
+              .then((headerResult) => {
                 req.body.transaction_id = headerResult.insertId;
                 req.body.year = year;
                 req.body.period = period;
@@ -418,11 +417,11 @@ export default {
                         input.stock_detail[i]["sales_uom"],
                         input.stock_detail[i]["material_requisition_header_id"],
                         input.stock_detail[i]["material_requisition_detail_id"],
-                        headerResult.insertId
+                        headerResult.insertId,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(detailResult => {
+                    .then((detailResult) => {
                       let IncludeSubValues = [
                         "transfer_detail_id",
                         "item_category_id",
@@ -443,29 +442,30 @@ export default {
                         "sales_price",
                         "ack_quantity",
                         "barcode",
-                        "vendor_batchno"
+                        "vendor_batchno",
                       ];
 
                       _mysql
                         .executeQuery({
                           query:
                             "INSERT INTO hims_f_inventory_transfer_batches(??) VALUES ?",
-                          values: input.stock_detail[i]["inventory_stock_detail"],
+                          values:
+                            input.stock_detail[i]["inventory_stock_detail"],
                           includeValues: IncludeSubValues,
                           extraValues: {
-                            transfer_detail_id: detailResult.insertId
+                            transfer_detail_id: detailResult.insertId,
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: true,
                         })
-                        .then(subResult => {
+                        .then((subResult) => {
                           if (i == input.stock_detail.length - 1) {
                             console.log("done: ", i);
                             req.connection = {
                               connection: _mysql.connection,
                               isTransactionConnection:
                                 _mysql.isTransactionConnection,
-                              pool: _mysql.pool
+                              pool: _mysql.pool,
                             };
                             req.flag = 1;
 
@@ -474,31 +474,31 @@ export default {
                               hims_f_inventory_transfer_header_id:
                                 headerResult.insertId,
                               year: year,
-                              period: period
+                              period: period,
                             };
                             next();
                           }
                         })
-                        .catch(error => {
+                        .catch((error) => {
                           _mysql.rollBackTransaction(() => {
                             next(error);
                           });
                         });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 }
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });
               });
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -526,15 +526,15 @@ export default {
             inputParam.ack_done,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.hims_f_inventory_transfer_header_id
+            inputParam.hims_f_inventory_transfer_header_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           let qry = "";
           for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
@@ -544,7 +544,7 @@ export default {
               [
                 inputParam.inventory_stock_detail[i].ack_quantity,
                 inputParam.inventory_stock_detail[i]
-                  .hims_f_inventory_transfer_batches_id
+                  .hims_f_inventory_transfer_batches_id,
               ]
             );
           }
@@ -553,14 +553,14 @@ export default {
           _mysql
             .executeQuery({
               query: qry,
-              printQuery: true
+              printQuery: true,
             })
-            .then(batch_detail => {
+            .then((batch_detail) => {
               req.flag = 1;
               req.records = headerResult;
               next();
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
               next(error);
             });
@@ -570,7 +570,7 @@ export default {
           // req.records = headerResult;
           // next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -593,9 +593,9 @@ export default {
             "SELECT * from  hims_f_inventory_material_header \
           where material_requisition_number=?",
           values: [inputParam.material_requisition_number],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -612,19 +612,19 @@ export default {
                   headerResult[0].hims_f_inventory_material_header_id,
                   headerResult[0].to_location_id,
                   headerResult[0].hims_f_inventory_material_header_id,
-                  headerResult[0].to_location_id
+                  headerResult[0].to_location_id,
                 ],
-                printQuery: true
+                printQuery: true,
               })
-              .then(inventory_stock_detail => {
+              .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ inventory_stock_detail }
+                  ...{ inventory_stock_detail },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -634,7 +634,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -655,37 +655,57 @@ export default {
             "SELECT * from  hims_f_inventory_material_header \
           where hims_f_inventory_material_header_id=?",
           values: [inputParam.hims_f_inventory_material_header_id],
-          printQuery: false
+          printQuery: false,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
-                query:
-                  "select D.*,LOC.*, IM.hims_d_inventory_item_master_id, IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
-                  left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
-                  inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
-                  inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
-                  where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
-                  and D.quantity_outstanding<>0 order by  date(LOC.expirydt) ",
+                query: `select D.hims_f_inventory_material_detail_id,D.inventory_header_id,
+                D.completed,D.item_category_id,D.item_group_id,D.item_id,D.from_qtyhand,
+                D.to_qtyhand,D.quantity_required,D.quantity_authorized,D.item_uom,D.quantity_recieved,
+                D.quantity_outstanding,D.po_created_date,D.po_created,D.po_created_quantity,
+                D.po_outstanding_quantity,D.po_completed,LOC.hims_m_inventory_item_location_id,
+                LOC.inventory_location_id,LOC.item_location_status,LOC.batchno,LOC.expirydt,LOC.barcode,
+                LOC.qtyhand,LOC.qtypo,LOC.cost_uom,LOC.avgcost,LOC.last_purchase_cost,LOC.item_type,
+                LOC.grn_id,LOC.grnno,LOC.sale_price,LOC.mrp_price,LOC.sales_uom,LOC.git_qty,LOC.vendor_batchno,
+                 IM.hims_d_inventory_item_master_id, IM.item_description,
+                 PU.uom_description from hims_f_inventory_material_detail D 
+                inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.item_uom 
+                 left join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id 
+                  left join hims_m_inventory_item_location LOC  on IM.hims_d_inventory_item_master_id=LOC.item_id 
+                  and  date(LOC.expirydt) > date(CURDATE()) and exp_date_required='Y' 
+                where D.inventory_header_id=?
+                and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
+                // "select D.*,LOC.*, IM.hims_d_inventory_item_master_id, IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
+                // left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
+                // inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
+                // inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
+                // where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
+                // and D.quantity_outstanding<>0 order by  date(LOC.expirydt) ",
                 values: [inputParam.hims_f_inventory_material_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(inventory_stock_detail => {
+              .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
 
                 var item_grp = _(inventory_stock_detail)
                   .groupBy("hims_d_inventory_item_master_id")
-                  .map((row, hims_d_inventory_item_master_id) => hims_d_inventory_item_master_id)
+                  .map(
+                    (row, hims_d_inventory_item_master_id) =>
+                      hims_d_inventory_item_master_id
+                  )
                   .value();
 
-                console.log("item_grp", item_grp)
+                console.log("item_grp", item_grp);
                 let outputArray = [];
 
                 for (let i = 0; i < item_grp.length; i++) {
                   let item = new LINQ(inventory_stock_detail)
-                    .Where(w => w.hims_d_inventory_item_master_id == item_grp[i])
-                    .Select(s => {
+                    .Where(
+                      (w) => w.hims_d_inventory_item_master_id == item_grp[i]
+                    )
+                    .Select((s) => {
                       return {
                         hims_f_inventory_material_detail_id:
                           s.hims_f_inventory_material_detail_id,
@@ -707,20 +727,20 @@ export default {
                         po_outstanding_quantity: s.po_outstanding_quantity,
                         po_completed: s.po_completed,
                         item_description: s.item_description,
-                        uom_description: s.uom_description
+                        uom_description: s.uom_description,
                       };
                     })
                     .FirstOrDefault();
 
-                  console.log("item", item)
+                  console.log("item", item);
                   let batches = new LINQ(inventory_stock_detail)
                     .Where(
-                      w =>
+                      (w) =>
                         w.hims_d_inventory_item_master_id == item_grp[i] &&
                         w.qtyhand > 0 &&
                         w.inventory_location_id == inputParam.from_location_id
                     )
-                    .Select(s => {
+                    .Select((s) => {
                       return {
                         hims_m_inventory_item_location_id:
                           s.hims_m_inventory_item_location_id,
@@ -742,7 +762,7 @@ export default {
                         mrp_price: s.mrp_price,
                         sales_uom: s.sales_uom,
                         vendor_batchno: s.vendor_batchno,
-                        quantity_transfer: 0
+                        quantity_transfer: 0,
                       };
                     })
                     .ToArray();
@@ -752,12 +772,12 @@ export default {
 
                 req.records = {
                   ...headerResult[0],
-                  ...{ stock_detail: outputArray }
+                  ...{ stock_detail: outputArray },
                 };
 
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -767,7 +787,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -810,14 +830,14 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -837,17 +857,18 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
-        .then(result => {
-          console.log("result", result)
+        .then((result) => {
+          console.log("result", result);
           if (
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
           ) {
             _mysql
               .executeQuery({
-                query: "select TH.hims_f_inventory_transfer_header_id, TH.transfer_number, \
+                query:
+                  "select TH.hims_f_inventory_transfer_header_id, TH.transfer_number, \
                 FPL.head_id, FPL.child_id, FPL.hospital_id, TPL.hospital_id as to_hospital_id, TPL.head_id as to_head_id, \
                 TPL.child_id as to_child_id, TB.ack_quantity, TB.quantity_transfer, TB.unit_cost, \
                 (TB.unit_cost * TB.ack_quantity) as ack_cost, (TB.unit_cost * TB.quantity_transfer) as transfered_cost, \
@@ -862,50 +883,54 @@ export default {
                 select hims_d_sub_department_id from hims_d_sub_department where department_type='I';\
                 select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [inputParam.hims_f_inventory_transfer_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result_data => {
-
-                const headerResult = result_data[0]
-                const sub_department_id = result_data[1].length > 0 ? result_data[1][0].hims_d_sub_department_id : null
+              .then((result_data) => {
+                const headerResult = result_data[0];
+                const sub_department_id =
+                  result_data[1].length > 0
+                    ? result_data[1][0].hims_d_sub_department_id
+                    : null;
                 const decimal_places = req.userIdentity.decimal_places;
-                console.log("headerResult", headerResult)
-                let transfered_cost = _.sumBy(headerResult, s =>
+                console.log("headerResult", headerResult);
+                let transfered_cost = _.sumBy(headerResult, (s) =>
                   parseFloat(s.transfered_cost)
                 );
 
-                let ack_cost = _.sumBy(headerResult, s =>
+                let ack_cost = _.sumBy(headerResult, (s) =>
                   parseFloat(s.ack_cost)
                 );
 
-                let non_reviced_transfer_cost = _.sumBy(headerResult, s =>
+                let non_reviced_transfer_cost = _.sumBy(headerResult, (s) =>
                   parseFloat(s.non_reviced_transfer_cost)
                 );
 
                 transfered_cost = utilities.decimalPoints(
                   transfered_cost,
                   decimal_places
-                )
+                );
 
-                ack_cost = utilities.decimalPoints(
-                  ack_cost,
-                  decimal_places
-                )
+                ack_cost = utilities.decimalPoints(ack_cost, decimal_places);
 
                 let strQuery = "";
 
-                if (result_data[2][0].cost_center_required === "Y" && result_data[2][0].cost_center_type === "P") {
+                if (
+                  result_data[2][0].cost_center_required === "Y" &&
+                  result_data[2][0].cost_center_type === "P"
+                ) {
                   strQuery = `select  hims_m_division_project_id, project_id from hims_m_division_project D \
                     inner join hims_d_project P on D.project_id=P.hims_d_project_id \
                     inner join hims_d_hospital H on D.division_id=H.hims_d_hospital_id where \
-                    division_id= ${req.userIdentity.hospital_id} limit 1;`
+                    division_id= ${req.userIdentity.hospital_id} limit 1;`;
                 }
 
                 _mysql
                   .executeQuery({
-                    query: "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
+                    query:
+                      "INSERT INTO finance_day_end_header (transaction_date, amount, voucher_type, document_id,\
                         document_number, from_screen, narration, entered_date, entered_by) \
-                        VALUES (?,?,?,?,?,?,?,?,?);" + strQuery,
+                        VALUES (?,?,?,?,?,?,?,?,?);" +
+                      strQuery,
                     values: [
                       new Date(),
                       transfered_cost,
@@ -915,17 +940,17 @@ export default {
                       inputParam.ScreenCode,
                       "Transfer Done",
                       new Date(),
-                      req.userIdentity.algaeh_d_app_user_id
+                      req.userIdentity.algaeh_d_app_user_id,
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(header_result => {
+                  .then((header_result) => {
                     let project_id = null;
-                    const day_end_header = header_result[0]
+                    const day_end_header = header_result[0];
                     if (header_result[1].length > 0) {
-                      project_id = header_result[1][0].project_id
+                      project_id = header_result[1][0].project_id;
                     }
-                    let insertSubDetail = []
+                    let insertSubDetail = [];
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
@@ -935,7 +960,7 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
                     ];
 
                     //From Location Entry
@@ -946,7 +971,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: transfered_cost,
-                      hospital_id: headerResult[0].hospital_id
+                      hospital_id: headerResult[0].hospital_id,
                     });
 
                     //Non Recived Entry
@@ -954,7 +979,7 @@ export default {
                       non_reviced_transfer_cost = utilities.decimalPoints(
                         non_reviced_transfer_cost,
                         decimal_places
-                      )
+                      );
 
                       insertSubDetail.push({
                         payment_date: new Date(),
@@ -963,7 +988,7 @@ export default {
                         debit_amount: non_reviced_transfer_cost,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
 
@@ -975,9 +1000,8 @@ export default {
                       debit_amount: ack_cost,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: headerResult[0].to_hospital_id
+                      hospital_id: headerResult[0].to_hospital_id,
                     });
-
 
                     // console.log("insertSubDetail", insertSubDetail)
                     _mysql
@@ -992,26 +1016,26 @@ export default {
                           year: year,
                           month: month,
                           project_id: project_id,
-                          sub_department_id: sub_department_id
+                          sub_department_id: sub_department_id,
                         },
-                        printQuery: false
+                        printQuery: false,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -1020,16 +1044,15 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
-
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
     }
-  }
+  },
 };

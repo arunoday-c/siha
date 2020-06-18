@@ -72,9 +72,12 @@ function Login(props) {
   let userRef = useRef(undefined);
   let passwordRef = useRef(undefined);
   const pinOneRef = useRef(undefined);
-  const { clearAll, setSelectedMenuItem, setUserPreferencesData } = useContext(
-    MainContext
-  );
+  const {
+    clearAll,
+    setSelectedMenuItem,
+    setUserPreferencesData,
+    socket,
+  } = useContext(MainContext);
   useEffect(() => {
     clearItem();
     clearAll();
@@ -296,6 +299,7 @@ function Login(props) {
       uri: "/apiAuth/logout",
       method: "GET",
       onSuccess: () => {
+        socket.disconnect();
         clearItem();
         clearAll();
       },

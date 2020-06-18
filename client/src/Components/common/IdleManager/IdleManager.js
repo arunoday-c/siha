@@ -48,8 +48,8 @@ export function IdleManager() {
         clearItem();
         if (socket.connected) {
           socket.emit("user_logout");
-          socket.disconnect();
         }
+        window.location.reload();
         history.push("/");
       })
       .catch((e) => {

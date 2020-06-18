@@ -1254,6 +1254,7 @@ class LoginUsers extends Component {
                           ),
                           others: {
                             disabled: true,
+                            minWidth: 250,
                           },
                         },
                         {
