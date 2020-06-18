@@ -29,7 +29,7 @@ import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
 import { MainContext } from "algaeh-react-components/context";
-import moment from "moment";
+
 class AddPatientForm extends Component {
   constructor(props) {
     super(props);
@@ -267,6 +267,10 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "full_name",
                           value: this.state.full_name,
+                          others: {
+                            disabled: this.state.existingPatient,
+                            tabIndex: "2",
+                          }
                         }}
                         events={{
                           onBlur: texthandle.bind(this, this),
@@ -411,6 +415,7 @@ class AddPatientForm extends Component {
                           onChange: hijriOnChange.bind(this, this),
                         }}
                       ></AlgaehHijriDatePicker>
+
                       <AlagehFormGroup
                         div={{
                           className: "col mandatory ageYear",
@@ -444,14 +449,14 @@ class AddPatientForm extends Component {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory  ageMonth",
+                          className: "col mandatory ageMonth",
                           others: {
                             style: { paddingLeft: 0, paddingRight: 0 },
                           },
                         }}
                         label={{
-                          fieldName: "AGEMM",
-                          forceLabel: "",
+                          // fieldName: "AGEMM",
+                          forceLabel: "*",
                           isImp: false,
                         }}
                         textBox={{
@@ -476,14 +481,14 @@ class AddPatientForm extends Component {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col mandatory   ageDay",
+                          className: "col mandatory ageDay",
                           others: {
                             style: { paddingLeft: 0 },
                           },
                         }}
                         label={{
-                          fieldName: "AGEDD",
-                          forceLabel: "",
+                          // fieldName: "AGEDD",
+                          forceLabel: "*",
                           isImp: false,
                         }}
                         textBox={{
@@ -505,6 +510,7 @@ class AddPatientForm extends Component {
                           },
                         }}
                       />
+
                       {/* <AlagehAutoComplete
                         div={{
                           className: "col-1 mandatory",
@@ -540,6 +546,7 @@ class AddPatientForm extends Component {
                           }
                         }}
                       /> */}
+
                       <AlagehFormGroup
                         div={{
                           className: "col-3 mandatory",

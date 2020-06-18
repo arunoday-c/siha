@@ -11,11 +11,13 @@
                         <th>Employee Name</th>
                         <th>Designation</th>
                         <th>Basic Hrs</th>
-                        <th>Basic Amount</th>
-                        <th>OT Hrs (ot / w_ot / h_ot)</th>
-                        <th>OT Amount (ot / w_ot / h_ot)</th>
+                        <th>Basic Amt.</th>
+                        {{!-- <th>OT Hrs (ot / w_ot / h_ot)</th>
+                        <th>OT Amt. (ot / w_ot / h_ot)</th> --}}
+                        <th>Total OT Hrs</th>
+                        <th>Total OT Amt.</th>
                         <th>Total Hrs</th>
-                        <th>Total Amount</th>
+                        <th>Total Amt.</th>
                         <th>Project Name</th>
 
                     </tr>
@@ -28,8 +30,10 @@
                         <td>{{designation}}</td>
                         <td>{{basic_hours}}</td>
                         <td style="text-align: right;">{{basic_cost}}</td>
-                        <td>{{ot_hours}} / {{wot_hours}} / {{hot_hours}}</td>
-                        <td style="text-align: right;">{{ot_cost}} / {{wot_cost}} / {{hot_cost}}</td>
+                        {{!-- <td>{{ot_hours}} / {{wot_hours}} / {{hot_hours}}</td>
+                        <td style="text-align: right;">{{ot_cost}} / {{wot_cost}} / {{hot_cost}}</td> --}}
+                        <td>{{total_ot_hours}}</td>
+                        <td>{{total_ot_cost}}</td>
                         <td>{{total_hours}}</td>
                         <td style="text-align: right;">{{cost}}</td>
                         <td>{{project_desc}}</td>

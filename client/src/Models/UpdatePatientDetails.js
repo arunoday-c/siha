@@ -1,5 +1,5 @@
 export default {
-  inputParam: function(param) {
+  inputParam: function (param) {
     var output;
     const CurrentDate = new Date();
     output = {
@@ -43,7 +43,9 @@ export default {
       forceRefresh: undefined,
       Rerender: false,
       saveEnable: true,
-      selectedLang: "en"
+      selectedLang: "en",
+      mrn_num_sep_cop_client: "N",
+      insurance_type: null
     };
     return output;
   }

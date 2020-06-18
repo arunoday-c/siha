@@ -346,7 +346,6 @@ const itemchangeText = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  // debugger;
   if ($this.state.order_quantity === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
@@ -395,6 +394,12 @@ const AddItems = ($this, context) => {
     };
 
     if ($this.state.po_from === "PHR") {
+      ItemInput["category_desc"] = document.getElementsByName(
+        "phar_item_category"
+      )[0].nextElementSibling.innerText;
+      ItemInput["group_description"] = document.getElementsByName(
+        "phar_item_group"
+      )[0].nextElementSibling.innerText;
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       const hasPharItemExists = pharmacy_stock_detail.find(
         (f) => f.phar_item_id === $this.state.phar_item_id
@@ -440,6 +445,12 @@ const AddItems = ($this, context) => {
         "pharmacy_stock_detail"
       );
     } else {
+      ItemInput["category_desc"] = document.getElementsByName(
+        "inv_item_category_id"
+      )[0].nextElementSibling.innerText;
+      ItemInput["group_description"] = document.getElementsByName(
+        "inv_item_group_id"
+      )[0].nextElementSibling.innerText;
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       const hasInvItemExists = inventory_stock_detail.find(
         (f) => f.inv_item_id === $this.state.inv_item_id

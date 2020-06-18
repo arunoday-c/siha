@@ -50,12 +50,12 @@ export default {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(resdata => {
+        .then((resdata) => {
           // _mysql.releaseConnection();
           // req.records = result;
 
@@ -67,7 +67,7 @@ export default {
             req.options.onSuccess(resdata);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (req.options == null) {
             _mysql.rollBackTransaction(() => {
               next(error);
@@ -97,15 +97,15 @@ export default {
         .executeQuery({
           query: `select * from hims_d_insurance_provider where record_status='A'\ ${qryStr} order by hims_d_insurance_provider_id desc`,
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -129,20 +129,20 @@ export default {
       }
 
       // left join finance_account_head P on I.head_id=P.finance_account_head_id\
-      //     left join finance_account_child C on I.child_id=C.finance_account_child_id \ 
+      //     left join finance_account_child C on I.child_id=C.finance_account_child_id \
       _mysql
         .executeQuery({
           query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -192,18 +192,18 @@ export default {
             inputparam.prefix,
             inputparam.effective_start_date,
             inputparam.effective_end_date,
-            inputparam.created_by
+            inputparam.created_by,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -254,18 +254,18 @@ export default {
             inputparam.effective_start_date,
             inputparam.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
-            inputparam.hims_d_insurance_provider_id
+            inputparam.hims_d_insurance_provider_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -274,7 +274,7 @@ export default {
     }
   },
   //created by:irfan
-  addSubInsuranceProvider: (req, res, next) => {
+  addSubInsuranceProvider_17_06_2020: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputparam = req.body;
@@ -287,7 +287,7 @@ export default {
         "card_format",
         "transaction_number",
         "effective_start_date",
-        "effective_end_date"
+        "effective_end_date",
       ];
 
       _mysql
@@ -300,21 +300,151 @@ export default {
             created_date: new Date(),
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           },
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } catch (e) {
+      next(e);
+    }
+  },
+  //created by:irfan
+  addSubInsuranceProvider: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
+            select finance_account_head_id from finance_account_head where account_code='1.2.3.1' limit 1;",
+          printQuery: true,
+        })
+        .then((result) => {
+          if (
+            result[0][0]["product_type"] == "HIMS_ERP" ||
+            result[0][0]["product_type"] == "FINANCE_ERP"
+          ) {
+            const head_id = result[1][0]["finance_account_head_id"];
+
+            _mysql
+              .executeQueryWithTransaction({
+                query:
+                  "INSERT INTO `finance_account_child` (child_name,ledger_code,head_id,created_from\
+                    ,created_date, created_by, updated_date, updated_by)  VALUE(?,?,?,?,?,?,?,?)",
+                values: [
+                  input[0].insurance_sub_name,
+                  input[0].insurance_sub_code,
+                  head_id,
+                  "S",
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                ],
+                printQuery: false,
+              })
+              .then((childRes) => {
+                const insurtColumns = [
+                  "insurance_sub_code",
+                  "insurance_sub_name",
+                  "arabic_sub_name",
+                  "insurance_provider_id",
+                  "card_format",
+                  "transaction_number",
+                  "effective_start_date",
+                  "effective_end_date",
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO hims_d_insurance_sub(??) VALUES ?",
+                    values: input,
+                    includeValues: insurtColumns,
+                    bulkInsertOrUpdate: true,
+                    extraValues: {
+                      created_date: new Date(),
+                      created_by: req.userIdentity.algaeh_d_app_user_id,
+                      updated_date: new Date(),
+                      updated_by: req.userIdentity.algaeh_d_app_user_id,
+
+                      head_id: head_id,
+                      child_id: childRes.insertId,
+                    },
+                    printQuery: false,
+                  })
+                  .then((sunIns) => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = sunIns;
+                      next();
+                    });
+                  })
+                  .catch((error) => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch((error) => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            const insurtColumns = [
+              "insurance_sub_code",
+              "insurance_sub_name",
+              "arabic_sub_name",
+              "insurance_provider_id",
+              "card_format",
+              "transaction_number",
+              "effective_start_date",
+              "effective_end_date",
+            ];
+
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_d_insurance_sub(??) VALUES ?",
+                values: input,
+                includeValues: insurtColumns,
+                bulkInsertOrUpdate: true,
+                extraValues: {
+                  created_date: new Date(),
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                },
+                printQuery: false,
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
+        })
+        .catch((error) => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
       next(e);
     }
   },
@@ -346,18 +476,18 @@ export default {
 
             inputparam.head_id,
             inputparam.child_id,
-            inputparam.hims_d_insurance_sub_id
+            inputparam.hims_d_insurance_sub_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -389,17 +519,17 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -484,18 +614,18 @@ export default {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -577,7 +707,7 @@ export default {
           optical_max: null,
           copay_diagnostic: null,
           diagnostic_min: null,
-          diagnostic_max: null
+          diagnostic_max: null,
         },
         req.body[0]
       );
@@ -594,12 +724,12 @@ export default {
             input.effective_start_date,
             input.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           if (result.insertId > 0) {
             // _mysql.commitTransaction(() => {
             //   _mysql.releaseConnection();
@@ -730,9 +860,9 @@ export default {
                   "," +
                   req.userIdentity.algaeh_d_app_user_id +
                   " from hims_d_hospital",
-                printQuery: false
+                printQuery: false,
               })
-              .then(priceResult => {
+              .then((priceResult) => {
                 //price from policy
                 if (input.price_from == "P") {
                   _mysql
@@ -750,16 +880,16 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id +
                         " from hims_d_services",
 
-                      printQuery: false
+                      printQuery: false,
                     })
-                    .then(policyresult => {
+                    .then((policyresult) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = policyresult;
                         next();
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       console.log("error:", error);
                       _mysql.rollBackTransaction(() => {
                         next(error);
@@ -779,16 +909,16 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id +
                         " from hims_d_services",
 
-                      printQuery: false
+                      printQuery: false,
                     })
-                    .then(result_service_Ins => {
+                    .then((result_service_Ins) => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
                         req.records = result_service_Ins;
                         next();
                       });
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
@@ -801,7 +931,7 @@ export default {
                   });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 console.log("error:", error);
                 _mysql.rollBackTransaction(() => {
                   next(error);
@@ -814,7 +944,7 @@ export default {
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("error:", error);
           _mysql.rollBackTransaction(() => {
             next(error);
@@ -838,18 +968,18 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_insurance_sub_id
+            req.body.hims_d_insurance_sub_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -882,15 +1012,15 @@ export default {
             qryStr,
           values: [val_inputs],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -924,14 +1054,14 @@ export default {
           corporate_discount_amt,net_amount from hims_d_services_insurance_network where record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -976,15 +1106,15 @@ export default {
           and net.record_status='A' and netoff.record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           // utilities.logger().log("result: ", result);
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1016,18 +1146,18 @@ export default {
             inputParam.covered,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_services_insurance_id
+            inputParam.hims_d_services_insurance_id,
           ],
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
 
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1056,12 +1186,12 @@ export default {
             inputparam.effective_end_date,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputparam.hims_d_insurance_network_id
+            inputparam.hims_d_insurance_network_id,
           ],
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql
             .executeQuery({
               query:
@@ -1131,24 +1261,24 @@ export default {
                 inputparam.diagnostic_max,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                inputparam.hims_d_insurance_network_office_id
+                inputparam.hims_d_insurance_network_office_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result2 => {
+            .then((result2) => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = result2;
                 next();
               });
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -1173,7 +1303,7 @@ export default {
             inputParam.pre_approval,
             inputParam.updated_by,
             new Date(),
-            inputParam.insurance_id
+            inputParam.insurance_id,
           ]
         );
       } else if (inputParam.update === "covered") {
@@ -1184,7 +1314,7 @@ export default {
             inputParam.covered,
             inputParam.updated_by,
             new Date(),
-            inputParam.insurance_id
+            inputParam.insurance_id,
           ]
         );
       } else if (inputParam.update === "corporate_discount") {
@@ -1199,7 +1329,7 @@ export default {
               inputParam.corporate_discount,
               inputParam.updated_by,
               new Date(),
-              inputParam.insurance_id
+              inputParam.insurance_id,
             ]
           );
         } else if (inputParam.discountType === "A") {
@@ -1213,7 +1343,7 @@ export default {
               inputParam.corporate_discount,
               inputParam.updated_by,
               new Date(),
-              inputParam.insurance_id
+              inputParam.insurance_id,
             ]
           );
         }
@@ -1222,14 +1352,14 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1249,16 +1379,16 @@ export default {
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.body.hims_d_insurance_network_office_id
+            req.body.hims_d_insurance_network_office_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1285,14 +1415,14 @@ export default {
         insurance_provider_name, arabic_provider_name from hims_d_insurance_provider where record_status='A' " +
             _stringData,
 
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1321,19 +1451,19 @@ export default {
             left join finance_account_child C on I.child_id=C.finance_account_child_id \
             where record_status='A' " +
             _stringData,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
     } catch (e) {
       next(e);
     }
-  }
+  },
 };

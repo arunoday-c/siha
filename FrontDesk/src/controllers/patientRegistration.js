@@ -6,7 +6,10 @@ const {
   getPatientInsurance,
   updatePatientData,
   getVisitServiceAmount,
-  getPatientAdvaceAndRefund
+  getPatientAdvaceAndRefund,
+  insertPatientData,
+  registerPatient,
+  releaseDB
 } = regModels;
 
 export default () => {
@@ -16,6 +19,18 @@ export default () => {
     "/getPatientInsurance",
     getPatientInsurance,
 
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/registerPatient",
+    registerPatient,
+    insertPatientData,
+    releaseDB,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

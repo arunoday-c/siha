@@ -3714,7 +3714,9 @@ function getOtManagement(options) {
 
               //ST--HOLIDAY OT
               let final_price =
-                ot_hour_price + ot_weekoff_price + ot_holiday_price;
+                parseFloat(ot_hour_price) +
+                parseFloat(ot_weekoff_price) +
+                parseFloat(ot_holiday_price);
 
               if (final_price > 0) {
                 final_price = utilities.decimalPoints(
@@ -3735,21 +3737,28 @@ function getOtManagement(options) {
           // final_earning_amount = _.sumBy(current_ot_amt_array, (s) => {
           //   return parseFloat(s.amount);
           // });
+
+          let final_normal_ot_cost = 0;
+          let final_wot_cost = 0;
+          let final_hot_cost = 0;
           current_ot_amt_array.forEach((item) => {
-            final_earning_amount +=
+            final_earning_amount =
               parseFloat(final_earning_amount) + parseFloat(item.amount);
-            normal_ot_cost +=
-              parseFloat(normal_ot_cost) + parseFloat(item.normal_ot_cost);
-            wot_cost += parseFloat(wot_cost) + parseFloat(item.wot_cost);
-            hot_cost += parseFloat(hot_cost) + parseFloat(item.hot_cost);
+            final_normal_ot_cost =
+              parseFloat(final_normal_ot_cost) +
+              parseFloat(item.normal_ot_cost);
+            final_wot_cost =
+              parseFloat(final_wot_cost) + parseFloat(item.wot_cost);
+            final_hot_cost =
+              parseFloat(final_hot_cost) + parseFloat(item.hot_cost);
           });
 
           resolve({
             current_ot_amt_array,
             final_earning_amount,
-            normal_ot_cost,
-            wot_cost,
-            hot_cost,
+            normal_ot_cost: final_normal_ot_cost,
+            wot_cost: final_wot_cost,
+            hot_cost: final_hot_cost,
           });
         }
       } else {
@@ -4750,7 +4759,6 @@ function UpdateProjectWisePayroll_backp_13_06_2020(options) {
 }
 //created by:irfan
 function UpdateProjectWisePayroll(options) {
-  console.log("UpdateProjectWisePayroll");
   return new Promise((resolve, reject) => {
     try {
       let _mysql = options._mysql;
@@ -4795,7 +4803,7 @@ function UpdateProjectWisePayroll(options) {
             inputParam.month,
             inputParam.project_employee_id,
           ],
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           // console.log("employee_basic_earned:", employee_basic_earned);
@@ -4816,17 +4824,17 @@ function UpdateProjectWisePayroll(options) {
             };
           });
 
-          console.log("pjc_hour_price:", pjc_hour_price);
+          // console.log("pjc_hour_price:", pjc_hour_price);
 
           if (result[0].length > 0) {
             result[0].forEach((project) => {
               let price_list = pjc_hour_price[project["employee_id"]];
 
-              let basic_cost,
-                ot_cost,
-                wot_cost,
-                hot_cost,
-                cost = 0;
+              let basic_cost = 0;
+              let ot_cost = 0;
+              let wot_cost = 0;
+              let hot_cost = 0;
+              let cost = 0;
 
               basic_cost =
                 parseFloat(project["basic_hours"]) *
@@ -4850,7 +4858,7 @@ function UpdateProjectWisePayroll(options) {
             _mysql
               .executeQuery({
                 query: strQry,
-                printQuery: true,
+                printQuery: false,
               })
               .then((project_payroll) => {
                 resolve();

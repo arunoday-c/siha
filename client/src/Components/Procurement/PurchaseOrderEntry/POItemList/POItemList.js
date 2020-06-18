@@ -35,6 +35,8 @@ class POItemList extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.category = undefined;
+    this.group = undefined;
   }
 
   UNSAFE_componentWillMount() {
@@ -427,149 +429,157 @@ class POItemList extends Component {
                               },
                             },
                             {
-                              fieldName:
-                                this.state.po_from === "PHR"
-                                  ? "phar_item_category"
-                                  : "inv_item_category_id",
+                              fieldName: "category_desc",
+                              // fieldName:
+                              //   this.state.po_from === "PHR"
+                              //     ? "phar_item_category"
+                              //     : "inv_item_category_id",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: (row) => {
-                                let display;
-
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                            (f) =>
-                                              f.hims_d_item_category_id ===
-                                              row.phar_item_category
-                                          ))
-                                  : (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_tem_category_id ===
-                                              row.inv_item_category_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
-                              },
                               editorTemplate: (row) => {
-                                let display;
-
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                            (f) =>
-                                              f.hims_d_item_category_id ===
-                                              row.phar_item_category
-                                          ))
-                                  : (display =
-                                      this.props.poitemcategory === undefined
-                                        ? []
-                                        : this.props.poitemcategory.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_tem_category_id ===
-                                              row.inv_item_category_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
+                                return row.category_desc;
                               },
+                              // displayTemplate: (row) => {
+                              //   let display;
+
+                              //   this.state.po_from === "PHR"
+                              //     ? (display =
+                              //         this.props.poitemcategory === undefined
+                              //           ? []
+                              //           : this.props.poitemcategory.filter(
+                              //               (f) =>
+                              //                 f.hims_d_item_category_id ===
+                              //                 row.phar_item_category
+                              //             ))
+                              //     : (display =
+                              //         this.props.poitemcategory === undefined
+                              //           ? []
+                              //           : this.props.poitemcategory.filter(
+                              //               (f) =>
+                              //                 f.hims_d_inventory_tem_category_id ===
+                              //                 row.inv_item_category_id
+                              //             ));
+
+                              //   return (
+                              //     <span>
+                              //       {display !== undefined &&
+                              //       display.length !== 0
+                              //         ? display[0].category_desc
+                              //         : ""}
+                              //     </span>
+                              //   );
+                              // },
+                              // editorTemplate: (row) => {
+                              //   let display;
+
+                              //   this.state.po_from === "PHR"
+                              //     ? (display =
+                              //         this.props.poitemcategory === undefined
+                              //           ? []
+                              //           : this.props.poitemcategory.filter(
+                              //               (f) =>
+                              //                 f.hims_d_item_category_id ===
+                              //                 row.phar_item_category
+                              //             ))
+                              //     : (display =
+                              //         this.props.poitemcategory === undefined
+                              //           ? []
+                              //           : this.props.poitemcategory.filter(
+                              //               (f) =>
+                              //                 f.hims_d_inventory_tem_category_id ===
+                              //                 row.inv_item_category_id
+                              //             ));
+
+                              //   return (
+                              //     <span>
+                              //       {display !== undefined &&
+                              //       display.length !== 0
+                              //         ? display[0].category_desc
+                              //         : ""}
+                              //     </span>
+                              //   );
+                              // },
                               others: {
                                 minWidth: 250,
                               },
                             },
                             {
-                              fieldName:
-                                this.state.po_from === "PHR"
-                                  ? "phar_item_group"
-                                  : "inv_item_group_id",
+                              fieldName: "group_description",
+                              // fieldName:
+                              //   this.state.po_from === "PHR"
+                              //     ? "phar_item_group"
+                              //     : "inv_item_group_id",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Group" }}
                                 />
                               ),
-                              displayTemplate: (row) => {
-                                let display;
-
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                            (f) =>
-                                              f.hims_d_item_group_id ===
-                                              row.phar_item_group
-                                          ))
-                                  : (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_item_group_id ===
-                                              row.inv_item_group_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
                               editorTemplate: (row) => {
-                                let display;
-
-                                this.state.po_from === "PHR"
-                                  ? (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                            (f) =>
-                                              f.hims_d_item_group_id ===
-                                              row.phar_item_group
-                                          ))
-                                  : (display =
-                                      this.props.poitemgroup === undefined
-                                        ? []
-                                        : this.props.poitemgroup.filter(
-                                            (f) =>
-                                              f.hims_d_inventory_item_group_id ===
-                                              row.inv_item_group_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
+                                return row.group_description;
                               },
+                              // displayTemplate: (row) => {
+                              //   let display;
+
+                              //   this.state.po_from === "PHR"
+                              //     ? (display =
+                              //         this.props.poitemgroup === undefined
+                              //           ? []
+                              //           : this.props.poitemgroup.filter(
+                              //               (f) =>
+                              //                 f.hims_d_item_group_id ===
+                              //                 row.phar_item_group
+                              //             ))
+                              //     : (display =
+                              //         this.props.poitemgroup === undefined
+                              //           ? []
+                              //           : this.props.poitemgroup.filter(
+                              //               (f) =>
+                              //                 f.hims_d_inventory_item_group_id ===
+                              //                 row.inv_item_group_id
+                              //             ));
+
+                              //   return (
+                              //     <span>
+                              //       {display !== undefined &&
+                              //       display.length !== 0
+                              //         ? display[0].group_description
+                              //         : ""}
+                              //     </span>
+                              //   );
+                              // },
+                              // editorTemplate: (row) => {
+                              //   let display;
+
+                              //   this.state.po_from === "PHR"
+                              //     ? (display =
+                              //         this.props.poitemgroup === undefined
+                              //           ? []
+                              //           : this.props.poitemgroup.filter(
+                              //               (f) =>
+                              //                 f.hims_d_item_group_id ===
+                              //                 row.phar_item_group
+                              //             ))
+                              //     : (display =
+                              //         this.props.poitemgroup === undefined
+                              //           ? []
+                              //           : this.props.poitemgroup.filter(
+                              //               (f) =>
+                              //                 f.hims_d_inventory_item_group_id ===
+                              //                 row.inv_item_group_id
+                              //             ));
+
+                              //   return (
+                              //     <span>
+                              //       {display !== undefined &&
+                              //       display.length !== 0
+                              //         ? display[0].group_description
+                              //         : ""}
+                              //     </span>
+                              //   );
+                              // },
                             },
 
                             {

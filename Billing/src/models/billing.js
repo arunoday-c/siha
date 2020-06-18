@@ -12,10 +12,13 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
+      console.log("consultation", req.body.consultation)
+      if (req.body.consultation == "N") {
+        next()
+        return;
+      }
       let inputParam = { ...req.body };
-
-      const utilities = new algaehUtilities();
-      utilities.logger().log("newReceiptData: ");
+      console.log("newReceiptData: ");
 
       _mysql
         .executeQuery({
@@ -103,6 +106,10 @@ export default {
     const utilities = new algaehUtilities();
     utilities.logger().log("addBillData: ", req.body);
     try {
+      if (req.body.consultation == "N") {
+        next()
+        return;
+      }
       let inputParam = { ...req.body };
       if (
         inputParam.billdetails == null ||
@@ -1075,8 +1082,13 @@ export default {
 
     const inputParam = req.body;
 
-    console.log("receiptdetails:", inputParam.receiptdetails);
-
+    if (req.body.consultation == "N") {
+      req.records = {
+        internal_error: false
+      };
+      next()
+      return;
+    }
     try {
       if (req.userIdentity.user_type == "C" && inputParam.shift_id > 0) {
         if (inputParam.receiptdetails.length > 0) {
@@ -3320,6 +3332,11 @@ export default {
 
       const _mysql = new algaehMysql(_options);
       // const utilities = new algaehUtilities();
+
+      if (req.body.consultation == "N") {
+        next()
+        return;
+      }
 
       _mysql
         .executeQuery({

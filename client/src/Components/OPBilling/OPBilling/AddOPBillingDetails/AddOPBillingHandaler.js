@@ -41,26 +41,20 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
-  if (e.value === undefined) {
-    $this.setState({
-      [e]: null,
-      visittypeselect: true
+  $this.setState({
+    service_name: e.service_name,
+    s_service: e.hims_d_services_id,
+    s_service_type: e.service_type_id,
+    visittypeselect: false
+  });
+  if (context !== null) {
+    context.updateState({
+      service_name: e.service_name,
+      s_service: e.hims_d_services_id,
+      s_service_type: e.service_type_id
     });
-    if (context !== null) {
-      context.updateState({ [e]: null });
-    }
-  } else {
-    $this.setState(
-      {
-        [e.name]: e.value,
-        visittypeselect: false
-      },
-      () => { }
-    );
-    if (context !== null) {
-      context.updateState({ [e.name]: e.value });
-    }
   }
+
 };
 
 const texthandle = ($this, context, ctrl, e) => {

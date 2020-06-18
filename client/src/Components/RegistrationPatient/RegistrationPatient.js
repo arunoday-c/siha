@@ -226,9 +226,10 @@ class RegistrationPatient extends Component {
         UpdatepatientDetail: !this.state.UpdatepatientDetail,
       },
       () => {
-        if (e === true) {
+        debugger
+        if (e.data === true) {
           AlgaehLoader({ show: true });
-          getCtrlCode(this, this.state.patient_code);
+          getCtrlCode(this, e.patient_code);
         }
       }
     );
@@ -874,7 +875,8 @@ class RegistrationPatient extends Component {
                 <ConsultationDetails PatRegIOputs={this.state} />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
-                <Billing PatRegIOputs={this.state} loader={true} />
+                {this.state.consultation === "Y" ? <Billing PatRegIOputs={this.state} loader={true} /> : null}
+                {/* <Billing PatRegIOputs={this.state} loader={true} /> */}
               </div>
             </div>
             <div className="hptl-phase1-footer">
