@@ -421,120 +421,152 @@ class ProjectPayroll extends Component {
                         {
                           fieldName: "basic_cost",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                            <AlgaehLabel label={{ forceLabel: "Basic Amt" }} />
                           ),
                           displayTemplate: (row) => {
                             return GetAmountFormart(row.basic_cost);
                           },
                           others: {
-                            maxWidth: 80,
+                            maxWidth: 120,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
                           },
                         },
-                        {
-                          fieldName: "ot_hours",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "OT Hrs" }} />
-                          ),
-                          others: {
-                            maxWidth: 80,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "ot_cost",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return GetAmountFormart(row.ot_cost);
-                          },
-                          others: {
-                            maxWidth: 80,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "total_hours",
+                        // {
+                        //   fieldName: "ot_hours",
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "OT Hrs" }} />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "ot_cost",
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return GetAmountFormart(row.ot_cost);
+                        //   },
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "total_hours",
 
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
-                          ),
-                          others: {
-                            maxWidth: 80,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Total Hrs" }} />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "wot_hours",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Weekoff OT Hrs" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "wot_cost",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Weekoff OT Amount" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return GetAmountFormart(row.wot_cost);
+                        //   },
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "hot_hours",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Holiday OT Hrs" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "hot_cost",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Holiday OT Amount" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return GetAmountFormart(row.hot_cost);
+                        //   },
+                        //   others: {
+                        //     maxWidth: 80,
+                        //     resizable: false,
+                        //     filterable: false,
+                        //     style: { textAlign: "center" },
+                        //   },
+                        // },
                         {
-                          fieldName: "wot_hours",
+                          fieldName: "total_ot_hours",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Weekoff OT Hrs" }}
+                              label={{ forceLabel: "Total OT Hr" }}
                             />
                           ),
                           others: {
-                            maxWidth: 80,
+                            maxWidth: 100,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
                           },
                         },
                         {
-                          fieldName: "wot_cost",
+                          fieldName: "total_ot_cost",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Weekoff OT Amount" }}
+                              label={{ forceLabel: "Total OT Amt." }}
                             />
                           ),
                           displayTemplate: (row) => {
-                            return GetAmountFormart(row.wot_cost);
+                            return GetAmountFormart(row.total_ot_cost);
                           },
                           others: {
-                            maxWidth: 80,
+                            maxWidth: 120,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
                           },
                         },
-                        {
-                          fieldName: "hot_hours",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Holiday OT Hrs" }}
-                            />
-                          ),
-                          others: {
-                            maxWidth: 80,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
-                        {
-                          fieldName: "hot_cost",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Holiday OT Amount" }}
-                            />
-                          ),
-                          displayTemplate: (row) => {
-                            return GetAmountFormart(row.hot_cost);
-                          },
-                          others: {
-                            maxWidth: 80,
-                            resizable: false,
-                            filterable: false,
-                            style: { textAlign: "center" },
-                          },
-                        },
+
                         // {
                         //   fieldName: "complete_hours",
                         {
@@ -546,7 +578,7 @@ class ProjectPayroll extends Component {
                             return GetAmountFormart(row.cost);
                           },
                           others: {
-                            maxWidth: 100,
+                            maxWidth: 120,
                             resizable: false,
                             filterable: false,
                             style: { textAlign: "center" },
