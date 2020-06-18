@@ -566,6 +566,18 @@ class ProjectPayroll extends Component {
                             style: { textAlign: "center" },
                           },
                         },
+                        {
+                          fieldName: "total_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Total Hr" }} />
+                          ),
+                          others: {
+                            maxWidth: 100,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
 
                         // {
                         //   fieldName: "complete_hours",
