@@ -323,11 +323,16 @@ const validateAge = ($this, e) => {
   }
 };
 export function hijriOnChange($this, e) {
+  debugger;
   const { gregorianDate } = e.target;
   if (gregorianDate === undefined || gregorianDate === "") {
     return;
   }
-  const gDate = parseInt(moment(gregorianDate).format("YYYYMMDD"));
+  // const gDate = parseInt(moment(gregorianDate, "").format("YYYYDDMM"));
+  const gDate = parseInt(
+    moment(gregorianDate, "DD-MM-YYYY").format("YYYYMMDD")
+  );
+
   const cDate = parseInt(moment().format("YYYYMMDD"));
   if (gDate > cDate) {
     swalMessage({
@@ -337,7 +342,7 @@ export function hijriOnChange($this, e) {
     return;
   }
 
-  let fromDate = moment(gregorianDate);
+  let fromDate = moment(gregorianDate, "DD-MM-YYYY");
   let toDate = new Date();
   let years = moment(toDate).diff(fromDate, "year");
   fromDate.add(years, "years");
@@ -345,7 +350,7 @@ export function hijriOnChange($this, e) {
   fromDate.add(months, "months");
   let days = moment(toDate).diff(fromDate, "days");
   $this.setState({
-    date_of_birth: gregorianDate,
+    date_of_birth: moment(gregorianDate, "DD-MM-YYYY"),
     age: years,
     AGEMM: months,
     AGEDD: days,
