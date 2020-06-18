@@ -13,24 +13,24 @@ function createSockets() {
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
     reconnectionAttempts: 5,
-  }
-  if(window.location.port){
-    _localaddress = _localaddress + `:${sockets.port}`
+  };
+  if (window.location.port) {
+    _localaddress = _localaddress + `:${sockets.port}`;
   } else {
-    options.path = sockets.path
+    options.path = sockets.path;
   }
-  options.transports = ['websocket']
+  options.transports = ["websocket"];
   return io.connect(_localaddress, options);
 }
 
 const socket = createSockets();
 
-socket.on("connect", () => {
+socket.once("connect", () => {
   console.log("connected");
 });
 
-socket.on("disconnect", () => {
-  socket.open();
+socket.once("disconnect", () => {
+  socket.removeAllListeners();
 });
 
 export default socket;

@@ -30,12 +30,13 @@ export default function Notification({ open, handlePanel }) {
   useEffect(() => {
     const check = Array.isArray(context.userMenu);
     const addToNotiList = (notobj) => {
-      setList((state) => {
+      setToday((state) => {
         state.push(notobj);
         return [...state];
       });
       if (!doNot) {
         window.audio_feedback.play();
+        debugger;
         notification.info({
           message: "Notification",
           description: notobj.message,
@@ -53,7 +54,7 @@ export default function Notification({ open, handlePanel }) {
           : [],
       });
 
-      socket.on("authenticated", (data) => {
+      socket.once("authenticated", (data) => {
         setAuthed(true);
         console.log(data, "after auth");
         socket.emit("getAll");
@@ -82,6 +83,7 @@ export default function Notification({ open, handlePanel }) {
         addToNotiList(msg);
       });
       socket.on("patient_added", (msg) => {
+        debugger;
         addToNotiList(msg);
       });
       socket.on("service_added", (services) => {
@@ -115,7 +117,6 @@ export default function Notification({ open, handlePanel }) {
         addToNotiList(text);
       });
       socket.on("removed", (removed) => {
-        console.log(removed);
         setList((state) => {
           const current = state.filter((item) => item._id !== removed._id);
           return current;

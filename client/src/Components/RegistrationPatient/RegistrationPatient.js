@@ -20,14 +20,14 @@ import AlgaehLabel from "../Wrapper/label.js";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import AdvanceRefundListModal from "../AdvanceRefundList/AdvanceRefundListModal";
 import {
   imageToByteArray,
   AlgaehValidation,
-  setGlobal
+  setGlobal,
 } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AlgaehReport from "../Wrapper/printReports";
@@ -47,7 +47,7 @@ import {
   ShowPackageUtilize,
   ClosePackageUtilize,
   UpdatePatientDetail,
-  showAdvanceRefundList
+  showAdvanceRefundList,
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
@@ -73,7 +73,7 @@ class RegistrationPatient extends Component {
       isPackUtOpen: false,
       UpdatepatientDetail: false,
       employee_id_required: "N",
-      hospital_id: ""
+      hospital_id: "",
     };
   }
   static contextType = MainContext;
@@ -86,7 +86,7 @@ class RegistrationPatient extends Component {
     IOputs.Cardchecked = userToken.default_pay_type === "CD" ? true : false;
     IOputs.default_pay_type = userToken.default_pay_type;
     IOputs.service_dis_percentage = userToken.service_dis_percentage;
-    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client
+    IOputs.mrn_num_sep_cop_client = userToken.mrn_num_sep_cop_client;
 
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
@@ -124,24 +124,24 @@ class RegistrationPatient extends Component {
       redux: {
         type: "PRIMARY_INSURANCE_DATA",
         mappingName: "primaryinsurance",
-        data: []
-      }
+        data: [],
+      },
     });
 
     this.props.getPatientPackage({
       redux: {
         type: "Package_GET_DATA",
         mappingName: "PatientPackageList",
-        data: []
-      }
+        data: [],
+      },
     });
 
     this.props.setSelectedInsurance({
       redux: {
         type: "SECONDARY_INSURANCE_DATA",
         mappingName: "secondaryinsurance",
-        data: []
-      }
+        data: [],
+      },
     });
 
     if (
@@ -158,7 +158,7 @@ class RegistrationPatient extends Component {
           vat_applicable: this.props.hospitaldetails[0].local_vat_applicable,
           nationality_id: this.props.hospitaldetails[0].default_nationality,
           country_id: this.props.hospitaldetails[0].default_country,
-          patient_type: this.props.hospitaldetails[0].default_patient_type
+          patient_type: this.props.hospitaldetails[0].default_patient_type,
         });
       }
     }
@@ -168,14 +168,14 @@ class RegistrationPatient extends Component {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: "Counter"
+        identifier: "Counter",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         this.setState({
-          counter_id: response.data.records.selectedValue
+          counter_id: response.data.records.selectedValue,
         });
-      }
+      },
     });
 
     this.props.getVisittypes({
@@ -184,15 +184,15 @@ class RegistrationPatient extends Component {
       method: "GET",
       redux: {
         type: "VISITTYPE_GET_DATA",
-        mappingName: "visittypes"
-      }
+        mappingName: "visittypes",
+      },
     });
   }
 
   CloseRefundScreen(e) {
     this.setState(
       {
-        RefundOpen: !this.state.RefundOpen
+        RefundOpen: !this.state.RefundOpen,
       },
       () => {
         AlgaehLoader({ show: true });
@@ -204,7 +204,7 @@ class RegistrationPatient extends Component {
   CloseAdvanceScreen(e) {
     this.setState(
       {
-        AdvanceOpen: !this.state.AdvanceOpen
+        AdvanceOpen: !this.state.AdvanceOpen,
       },
       () => {
         AlgaehLoader({ show: true });
@@ -215,7 +215,7 @@ class RegistrationPatient extends Component {
 
   CloseAdvanceRefundList(e) {
     this.setState({
-      AdvanceRefundOpen: !this.state.AdvanceRefundOpen
+      AdvanceRefundOpen: !this.state.AdvanceRefundOpen,
     });
   }
 
@@ -223,7 +223,7 @@ class RegistrationPatient extends Component {
     // AlgaehLoader({ show: true });
     this.setState(
       {
-        UpdatepatientDetail: !this.state.UpdatepatientDetail
+        UpdatepatientDetail: !this.state.UpdatepatientDetail,
       },
       () => {
         if (e === true) {
@@ -244,7 +244,7 @@ class RegistrationPatient extends Component {
     ) {
       swalMessage({
         title: "Please select receipt type.",
-        type: "error"
+        type: "error",
       });
     } else {
       if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
@@ -255,7 +255,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
 
@@ -267,7 +267,7 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
       if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
@@ -278,13 +278,13 @@ class RegistrationPatient extends Component {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
 
       this.setState(
         {
-          receiptdetails: obj
+          receiptdetails: obj,
         },
         () => {
           callback(this);
@@ -314,10 +314,10 @@ class RegistrationPatient extends Component {
         uri: "/userPreferences/get",
         data: {
           screenName: _screenName,
-          identifier: "Counter"
+          identifier: "Counter",
         },
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           counter_id = response.data.records.selectedValue;
 
           if (
@@ -344,19 +344,19 @@ class RegistrationPatient extends Component {
               redux: {
                 type: "PRIMARY_INSURANCE_DATA",
                 mappingName: "primaryinsurance",
-                data: []
-              }
+                data: [],
+              },
             });
 
             $this.props.setSelectedInsurance({
               redux: {
                 type: "SECONDARY_INSURANCE_DATA",
                 mappingName: "secondaryinsurance",
-                data: []
-              }
+                data: [],
+              },
             });
           });
-        }
+        },
       });
     }
 
@@ -364,14 +364,14 @@ class RegistrationPatient extends Component {
       this.props.visittypes !== undefined &&
       this.props.visittypes.length > 0
     ) {
-      const exit_consultation = _.find(this.props.visittypes, f => {
+      const exit_consultation = _.find(this.props.visittypes, (f) => {
         return f.consultation === "Y";
       });
       if (exit_consultation.hims_d_visit_type_id !== null) {
         this.setState({
           visit_type: exit_consultation.hims_d_visit_type_id,
-          consultation: "Y"
-        })
+          consultation: "Y",
+        });
         // this.state.visit_type = exit_consultation.hims_d_visit_type_id;
         // this.state.consultation = "Y";
       }
@@ -392,13 +392,13 @@ class RegistrationPatient extends Component {
             if (!err) {
               AlgaehLoader({ show: true });
               if (this.state.unbalanced_amount === 0) {
-                this.GenerateReciept($this => {
+                this.GenerateReciept(($this) => {
                   let patientdata = {};
 
                   if ($this.state.filePreview !== null) {
                     patientdata = {
                       ...$this.state,
-                      patient_Image: imageToByteArray($this.state.filePreview)
+                      patient_Image: imageToByteArray($this.state.filePreview),
                     };
                   } else {
                     patientdata = $this.state;
@@ -426,7 +426,7 @@ class RegistrationPatient extends Component {
                       module: "frontDesk",
                       data: patientdata,
                       method: "POST",
-                      onSuccess: response => {
+                      onSuccess: (response) => {
                         // AlgaehLoader({ show: false });
                         if (response.data.success) {
                           AlgaehLoader({ show: false });
@@ -499,7 +499,7 @@ class RegistrationPatient extends Component {
                             );
                           }
 
-                          Promise.all(_arrayImages).then(result => {
+                          Promise.all(_arrayImages).then((result) => {
                             AlgaehLoader({ show: false });
 
                             $this.setState(
@@ -526,7 +526,7 @@ class RegistrationPatient extends Component {
                                 popUpGenereted: true,
                                 advanceEnable: false,
                                 savedData: true,
-                                primary_policy_num: primary_policy_num
+                                primary_policy_num: primary_policy_num,
                               },
                               () => {
                                 if (
@@ -537,26 +537,30 @@ class RegistrationPatient extends Component {
                                 }
                               }
                             );
+                            this.context.socket.emit(
+                              "patient_checked",
+                              patientdata
+                            );
                             swalMessage({
                               title: "Done Successfully",
-                              type: "success"
+                              type: "success",
                             });
                           });
                         } else {
                           AlgaehLoader({ show: false });
                           swalMessage({
                             type: "error",
-                            title: response.data.records.message
+                            title: response.data.records.message,
                           });
                         }
                       },
-                      onFailure: error => {
+                      onFailure: (error) => {
                         AlgaehLoader({ show: false });
                         swalMessage({
                           title: error.message,
-                          type: "error"
+                          type: "error",
                         });
-                      }
+                      },
                     });
                   } else {
                     algaehApiCall({
@@ -564,7 +568,7 @@ class RegistrationPatient extends Component {
                       module: "frontDesk",
                       data: patientdata,
                       method: "POST",
-                      onSuccess: response => {
+                      onSuccess: (response) => {
                         // AlgaehLoader({ show: false });
                         if (response.data.success) {
                           AlgaehLoader({ show: false });
@@ -637,7 +641,7 @@ class RegistrationPatient extends Component {
                             );
                           }
 
-                          Promise.all(_arrayImages).then(result => {
+                          Promise.all(_arrayImages).then((result) => {
                             AlgaehLoader({ show: false });
 
                             $this.setState(
@@ -659,7 +663,7 @@ class RegistrationPatient extends Component {
                                 existingPatient: true,
                                 popUpGenereted: true,
                                 savedData: true,
-                                primary_policy_num: primary_policy_num
+                                primary_policy_num: primary_policy_num,
                               },
                               () => {
                                 if (
@@ -670,39 +674,43 @@ class RegistrationPatient extends Component {
                                 }
                               }
                             );
+                            this.context.socket.emit(
+                              "patient_checked",
+                              patientdata
+                            );
                             swalMessage({
                               title: "Done Successfully",
-                              type: "success"
+                              type: "success",
                             });
                           });
                         } else {
                           AlgaehLoader({ show: false });
                           swalMessage({
                             type: "error",
-                            title: response.data.records.message
+                            title: response.data.records.message,
                           });
                           this.setState({
-                            primary_policy_num: primary_policy_num
+                            primary_policy_num: primary_policy_num,
                           });
                         }
                       },
-                      onFailure: error => {
+                      onFailure: (error) => {
                         this.setState({
-                          primary_policy_num: primary_policy_num
+                          primary_policy_num: primary_policy_num,
                         });
                         AlgaehLoader({ show: false });
                         swalMessage({
                           title: error.message,
-                          type: "error"
+                          type: "error",
                         });
-                      }
+                      },
                     });
                   }
                 });
               } else {
                 swalMessage({
                   title: "Please receive the amount.",
-                  type: "error"
+                  type: "error",
                 });
                 this.setState({ primary_policy_num: primary_policy_num });
               }
@@ -712,9 +720,9 @@ class RegistrationPatient extends Component {
           },
           onCatch: () => {
             this.setState({ primary_policy_num: primary_policy_num });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -732,13 +740,13 @@ class RegistrationPatient extends Component {
             format: "",
             lineColor: "#0aa",
             width: 4,
-            height: 40
-          }
-        }
+            height: 40,
+          },
+        },
       },
       data: {
-        patient_code: this.state.patient_code
-      }
+        patient_code: this.state.patient_code,
+      },
     });
   }
 
@@ -764,16 +772,16 @@ class RegistrationPatient extends Component {
                 <AlgaehLabel
                   label={{
                     fieldName: "form_home",
-                    align: "ltr"
+                    align: "ltr",
                   }}
                 />
-              )
+              ),
             },
             {
               pageName: (
                 <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
+              ),
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -784,30 +792,30 @@ class RegistrationPatient extends Component {
             value: this.state.patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: ClearData.bind(this, this, "pat_code")
+              onChange: ClearData.bind(this, this, "pat_code"),
             },
             jsonFile: {
               fileName: "spotlightSearch",
               fieldName:
                 this.state.employee_id_required === "N"
                   ? "frontDesk.patients"
-                  : "frontDesk.emp_id_patients"
+                  : "frontDesk.emp_id_patients",
             },
-            searchName: "patients"
+            searchName: "patients",
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    fieldName: "registered_date"
+                    fieldName: "registered_date",
                   }}
                 />
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                      Options.dateFormat
-                    )
+                        Options.dateFormat
+                      )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -815,33 +823,33 @@ class RegistrationPatient extends Component {
           }
           editData={{
             events: {
-              onClick: UpdatePatientDetail.bind(this, this)
-            }
+              onClick: UpdatePatientDetail.bind(this, this),
+            },
           }}
           printArea={
             this.state.patient_code !== null &&
-              this.state.patient_code !== undefined &&
-              this.state.patient_code !== ""
+            this.state.patient_code !== undefined &&
+            this.state.patient_code !== ""
               ? {
-                menuitems: [
-                  {
-                    label: "ID Card",
-                    events: {
-                      onClick: () => {
-                        generateIdCard(this, this);
-                      }
-                    }
-                  },
-                  {
-                    label: "Advance/Refund Receipt",
-                    events: {
-                      onClick: () => {
-                        showAdvanceRefundList(this, this);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "ID Card",
+                      events: {
+                        onClick: () => {
+                          generateIdCard(this, this);
+                        },
+                      },
+                    },
+                    {
+                      label: "Advance/Refund Receipt",
+                      events: {
+                        onClick: () => {
+                          showAdvanceRefundList(this, this);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -851,9 +859,9 @@ class RegistrationPatient extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...obj });
-              }
+              },
             }}
           >
             <div className="row">
@@ -908,7 +916,7 @@ class RegistrationPatient extends Component {
                         <AlgaehLabel
                           label={{
                             fieldName: "btn_refund",
-                            returnText: true
+                            returnText: true,
                           }}
                         />
                       </button>
@@ -921,7 +929,7 @@ class RegistrationPatient extends Component {
                         <AlgaehLabel
                           label={{
                             fieldName: "btn_advance",
-                            returnText: true
+                            returnText: true,
                           }}
                         />
                       </button>
@@ -956,7 +964,7 @@ class RegistrationPatient extends Component {
                       <AlgaehLabel
                         label={{
                           fieldName: "refund_caption",
-                          align: "ltr"
+                          align: "ltr",
                         }}
                       />
                     }
@@ -969,7 +977,7 @@ class RegistrationPatient extends Component {
                       hims_f_patient_id: this.state.hims_d_patient_id,
                       transaction_type: "RF",
                       pay_type: "P",
-                      advance_amount: this.state.advance_amount
+                      advance_amount: this.state.advance_amount,
                     }}
                   />
 
@@ -981,7 +989,7 @@ class RegistrationPatient extends Component {
                       <AlgaehLabel
                         label={{
                           fieldName: "advance_caption",
-                          align: "ltr"
+                          align: "ltr",
                         }}
                       />
                     }
@@ -994,7 +1002,7 @@ class RegistrationPatient extends Component {
                       hims_f_patient_id: this.state.hims_d_patient_id,
                       transaction_type: "AD",
                       pay_type: "R",
-                      advance_amount: this.state.advance_amount
+                      advance_amount: this.state.advance_amount,
                     }}
                   />
 
@@ -1007,7 +1015,7 @@ class RegistrationPatient extends Component {
                         label={{
                           // fieldName: "advance_caption",
                           forceLabel: "Advance/Refund List",
-                          align: "ltr"
+                          align: "ltr",
                         }}
                       />
                     }
@@ -1017,7 +1025,7 @@ class RegistrationPatient extends Component {
                     inputsparameters={{
                       patient_code: this.state.patient_code,
                       full_name: this.state.full_name,
-                      hims_f_patient_id: this.state.hims_d_patient_id
+                      hims_f_patient_id: this.state.hims_d_patient_id,
                     }}
                   />
 
@@ -1037,7 +1045,7 @@ class RegistrationPatient extends Component {
             enterActive: "editFloatCntr animated slideInUp faster",
             enterDone: "editFloatCntr",
             exitActive: "editFloatCntr animated slideOutDown faster",
-            exitDone: "editFloatCntr"
+            exitDone: "editFloatCntr",
           }}
           unmountOnExit
           appear={false}
@@ -1050,7 +1058,7 @@ class RegistrationPatient extends Component {
               <div className="col-3">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Patient Code"
+                    forceLabel: "Patient Code",
                   }}
                 />
                 <h6>{this.state.patient_code}</h6>
@@ -1059,7 +1067,7 @@ class RegistrationPatient extends Component {
               <div className="col-3">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Bill Number"
+                    forceLabel: "Bill Number",
                   }}
                 />
                 <h6>{this.state.bill_number}</h6>
@@ -1068,7 +1076,7 @@ class RegistrationPatient extends Component {
               <div className="col-3">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Receipt Number"
+                    forceLabel: "Receipt Number",
                   }}
                 />
                 <h6>{this.state.receipt_number}</h6>
@@ -1122,7 +1130,7 @@ function mapStateToProps(state) {
     hospitaldetails: state.hospitaldetails,
     PatientPackageList: state.PatientPackageList,
     visittypes: state.visittypes,
-    frontproviders: state.frontproviders
+    frontproviders: state.frontproviders,
   };
 }
 
@@ -1137,7 +1145,7 @@ function mapDispatchToProps(dispatch) {
       getCountries: AlgaehActions,
       setSelectedInsurance: AlgaehActions,
       getHospitalDetails: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
     },
     dispatch
   );

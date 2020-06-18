@@ -18,7 +18,6 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-import sockets from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -94,7 +93,6 @@ class PersistentDrawer extends React.Component {
       Lab_active: false,// Lab_active,
       Rad_active: false// Rad_active
     };
-    this.sockets = sockets;
     const _userName = getCookie("userName");
     // const _keyResources = getCookie("keyResources");
     if (_userName === null || _userName === "") {
@@ -458,6 +456,7 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
+    debugger
     algaehApiCall({
       uri: "/apiAuth/logout",
       method: "GET",
@@ -467,9 +466,10 @@ class PersistentDrawer extends React.Component {
           title: message,
           type: "success"
         });
-        if (sockets.connected) {
-          sockets.emit("user_logout");
-          sockets.disconnect()
+        
+        if (this.context.socket.connected) {
+          this.context.socket.emit("user_logout");
+          this.context.socket.disconnect()
         }
         clearItem()
         this.props.history.push("/");

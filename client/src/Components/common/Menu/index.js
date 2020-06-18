@@ -20,6 +20,7 @@ function NavBars(props) {
     setUserToken,
     setSelectedMenuItem,
     userMenu,
+    socket,
   } = useContext(MainContext);
   const history = useHistory();
   const location = useLocation();
@@ -77,7 +78,11 @@ function NavBars(props) {
       uri: "/apiAuth/logout",
       method: "GET",
       onSuccess: () => {
+        if (socket.connected) {
+          socket.emit("user_logout");
+        }
         history.push("/");
+        window.location.reload();
       },
     });
   }

@@ -1,6 +1,6 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import process from 'process'
+import process from "process";
 import http from "http";
 import cors from "cors";
 import keys from "algaeh-keys";
@@ -36,10 +36,10 @@ db.once("open", function () {
   // exp.use(bodyParser())
 
   const app = http.createServer(exp);
-  const options = {}
-  if(process.env.NODE_ENV === 'production'){
-    options.path = '/'
-    options.transports = [ 'websocket' ]
+  const options = {};
+  if (process.env.NODE_ENV === "production") {
+    options.path = "/";
+    options.transports = ["websocket"];
   }
   const io = socketIO(app, options);
 
@@ -83,9 +83,10 @@ db.once("open", function () {
       socket.disconnect();
     });
 
-    socket.on("user_logout", function () {
-      console.log(socket.rooms);
-      socket.disconnect();
+    socket.once("user_logout", function () {
+      socket.client.user = "";
+      // socket.removeAllListeners();
+      // socket.disconnect();
     });
 
     socket.on("getAll", () => {
