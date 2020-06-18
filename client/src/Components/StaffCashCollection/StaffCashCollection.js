@@ -900,10 +900,6 @@ class StaffCashCollection extends Component {
                                 <span className="row">
                                   <AlagehFormGroup
                                     div={{ className: "col" }}
-                                    label={{
-                                      fieldName: "&nbsp;",
-                                      isImp: false,
-                                    }}
                                     textBox={{
                                       className: "txt-fld",
                                       name: "actual_cash",
@@ -928,10 +924,6 @@ class StaffCashCollection extends Component {
                                 <span className="row">
                                   <AlagehFormGroup
                                     div={{ className: "col" }}
-                                    label={{
-                                      fieldName: "&nbsp;",
-                                      isImp: false,
-                                    }}
                                     textBox={{
                                       className: "txt-fld",
                                       name: "actual_card",
@@ -956,10 +948,6 @@ class StaffCashCollection extends Component {
                                 <span className="row">
                                   <AlagehFormGroup
                                     div={{ className: "col" }}
-                                    label={{
-                                      fieldName: "asdasdf",
-                                      isImp: false,
-                                    }}
                                     textBox={{
                                       className: "txt-fld",
                                       name: "actual_cheque",
