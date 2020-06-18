@@ -328,7 +328,7 @@ class PurchaseOrderEntry extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-2" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Vendor Name" }}
                   selector={{
                     name: "vendor_id",
@@ -379,7 +379,7 @@ class PurchaseOrderEntry extends Component {
                 ) : null}
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "Payment Terms" }}
                   selector={{
                     name: "payment_terms",
