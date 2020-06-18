@@ -756,6 +756,11 @@ label {
   -moz-osx-font-smoothing: $moz-osx-font-smoothing;
   -webkit-font-smoothing: $webkit-font-smoothing;
 }
+.noLabel {
+  label {
+    display: none;
+  }
+}
 
 input[type="text"],
 input[type="number"],
