@@ -815,8 +815,8 @@ class RegistrationPatient extends Component {
                 <h6>
                   {this.state.registration_date
                     ? moment(this.state.registration_date).format(
-                        Options.dateFormat
-                      )
+                      Options.dateFormat
+                    )
                     : Options.dateFormat}
                 </h6>
               </div>
@@ -829,28 +829,28 @@ class RegistrationPatient extends Component {
           }}
           printArea={
             this.state.patient_code !== null &&
-            this.state.patient_code !== undefined &&
-            this.state.patient_code !== ""
+              this.state.patient_code !== undefined &&
+              this.state.patient_code !== ""
               ? {
-                  menuitems: [
-                    {
-                      label: "ID Card",
-                      events: {
-                        onClick: () => {
-                          generateIdCard(this, this);
-                        },
+                menuitems: [
+                  {
+                    label: "ID Card",
+                    events: {
+                      onClick: () => {
+                        generateIdCard(this, this);
                       },
                     },
-                    {
-                      label: "Advance/Refund Receipt",
-                      events: {
-                        onClick: () => {
-                          showAdvanceRefundList(this, this);
-                        },
+                  },
+                  {
+                    label: "Advance/Refund Receipt",
+                    events: {
+                      onClick: () => {
+                        showAdvanceRefundList(this, this);
                       },
                     },
-                  ],
-                }
+                  },
+                ],
+              }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -1041,82 +1041,84 @@ class RegistrationPatient extends Component {
             </div>
           </MyContext.Provider>
         </div>
-        <CSSTransition
-          in={this.state.popUpGenereted}
-          classNames={{
-            enterActive: "editFloatCntr animated slideInUp faster",
-            enterDone: "editFloatCntr",
-            exitActive: "editFloatCntr animated slideOutDown faster",
-            exitDone: "editFloatCntr",
-          }}
-          unmountOnExit
-          appear={false}
-          timeout={500}
-          mountOnEnter
-        >
-          <div className={"col-12"}>
-            {/* <h5>Edit Basic Details</h5> */}
-            <div className="row">
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Patient Code",
-                  }}
-                />
-                <h6>{this.state.patient_code}</h6>
-              </div>
+        {this.state.consultation === "Y" ?
+          <CSSTransition
+            in={this.state.popUpGenereted}
+            classNames={{
+              enterActive: "editFloatCntr animated slideInUp faster",
+              enterDone: "editFloatCntr",
+              exitActive: "editFloatCntr animated slideOutDown faster",
+              exitDone: "editFloatCntr",
+            }}
+            unmountOnExit
+            appear={false}
+            timeout={500}
+            mountOnEnter
+          >
+            <div className={"col-12"}>
+              {/* <h5>Edit Basic Details</h5> */}
+              <div className="row">
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Code",
+                    }}
+                  />
+                  <h6>{this.state.patient_code}</h6>
+                </div>
 
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Bill Number",
-                  }}
-                />
-                <h6>{this.state.bill_number}</h6>
-              </div>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bill Number",
+                    }}
+                  />
+                  <h6>{this.state.bill_number}</h6>
+                </div>
 
-              <div className="col-3">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Receipt Number",
-                  }}
-                />
-                <h6>{this.state.receipt_number}</h6>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Receipt Number",
+                    }}
+                  />
+                  <h6>{this.state.receipt_number}</h6>
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <div className="col">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={generateReceipt.bind(this, this)}
-                >
-                  Print Receipt
+              <div className="row">
+                <div className="col">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={generateReceipt.bind(this, this)}
+                  >
+                    Print Receipt
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={closePopup.bind(this, this)}
-                >
-                  Close
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={closePopup.bind(this, this)}
+                  >
+                    Close
                 </button>
-                <button
-                  className="btn btn-default"
-                  onClick={generateIdCard.bind(this, this)}
-                >
-                  Print Card
+                  <button
+                    className="btn btn-default"
+                    onClick={generateIdCard.bind(this, this)}
+                  >
+                    Print Card
                 </button>
 
-                {/* <button
+                  {/* <button
                 className="btn btn-default"
                 // onClick={closePopup.bind(this, this, "")}
               >
                 Print Barcode
               </button> */}
+                </div>
               </div>
             </div>
-          </div>
-        </CSSTransition>
+          </CSSTransition> : null}
+
       </div>
     );
   }
