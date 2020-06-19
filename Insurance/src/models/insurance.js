@@ -1457,7 +1457,7 @@ export default {
                         left join finance_account_child C on I.child_id=C.finance_account_child_id 
                         where record_status='A'${_stringData}; `;
           } else {
-            sqlQry = ` hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
+            sqlQry = ` select hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
             card_format,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
