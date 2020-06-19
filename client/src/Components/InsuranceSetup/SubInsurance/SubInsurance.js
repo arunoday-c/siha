@@ -7,11 +7,13 @@ import moment from "moment";
 
 import "./SubInsurance.scss";
 import "./../../../styles/site.scss";
+
 import {
   AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlagehAutoComplete,
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -24,7 +26,9 @@ import {
   updateSubInsurance,
   onchangegridcol,
   getSubInsuranceDetails,
-  dateValidate,loadAccounts
+  dateValidate,
+  loadAccounts,
+  getFinanceProviders,
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
@@ -42,21 +46,23 @@ class SubInsurance extends PureComponent {
       effective_start_date: null,
       effective_end_date: null,
       maxDate_end_date: null,
-      accounts:[]
+      accounts: [],
+      finance_providers: [],
       // sub_insurance: []
       // created_by: getCookie("UserID")
     };
     this.baseState = this.state;
+    this.getFinanceProviders = getFinanceProviders.bind(this);
   }
 
-  loadAccounts(){
-    loadAccounts({finance_account_head_id:"1"}).then(result=>{
-      if(result.length >0){
-        this.setState({accounts:result[0].children});
-      }else{
-        this.setState({accounts:[]});
+  loadAccounts() {
+    loadAccounts({ finance_account_head_id: "1" }).then((result) => {
+      if (result.length > 0) {
+        this.setState({ accounts: result[0].children });
+      } else {
+        this.setState({ accounts: [] });
       }
-    })
+    });
   }
 
   UNSAFE_componentWillMount() {
@@ -66,16 +72,17 @@ class SubInsurance extends PureComponent {
   }
 
   componentDidMount() {
-   // this.loadAccounts();
+    // this.loadAccounts();
     if (this.state.insurance_provider_id !== null) {
       getSubInsuranceDetails(this, this);
+      this.getFinanceProviders();
     }
   }
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
 
-  changeDateFormat = date => {
+  changeDateFormat = (date) => {
     if (date != null) {
       return moment(date).format(Options.dateFormat);
     }
@@ -85,7 +92,7 @@ class SubInsurance extends PureComponent {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div
               className="hptl-phase1-add-sub-insurance-form"
               data-validate="InsuranceProvider"
@@ -96,7 +103,7 @@ class SubInsurance extends PureComponent {
                   <div className="col-lg-12">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Insurar Name"
+                        forceLabel: "Insurar Name",
                       }}
                     />
                     <h6>
@@ -110,18 +117,18 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "insurance_sub_code",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.insurance_sub_code,
                       className: "txt-fld",
                       name: "insurance_sub_code",
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
 
@@ -129,7 +136,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "insurance_sub_name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.insurance_sub_name,
@@ -137,11 +144,11 @@ class SubInsurance extends PureComponent {
                       name: "insurance_sub_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
 
@@ -149,7 +156,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "arabic_provider_name",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.arabic_sub_name,
@@ -157,8 +164,8 @@ class SubInsurance extends PureComponent {
                       name: "arabic_sub_name",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
-                      }
+                        onChange: texthandle.bind(this, this),
+                      },
                     }}
                   />
 
@@ -166,7 +173,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "transaction_number",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.transaction_number,
@@ -174,11 +181,11 @@ class SubInsurance extends PureComponent {
                       name: "transaction_number",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
 
@@ -186,7 +193,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "card_format",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       value: this.state.card_format,
@@ -194,27 +201,27 @@ class SubInsurance extends PureComponent {
                       name: "card_format",
 
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "effective_start_date",
-                      isImp: true
+                      isImp: true,
                     }}
                     textBox={{
                       className: "txt-fld hidden",
-                      name: "effective_start_date"
+                      name: "effective_start_date",
                     }}
                     maxDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={
                       this.state.effective_start_date !== null
@@ -228,13 +235,13 @@ class SubInsurance extends PureComponent {
                     label={{ fieldName: "effective_end_date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
-                      name: "effective_end_date"
+                      name: "effective_end_date",
                     }}
                     minDate={new Date()}
                     maxDate={this.state.maxDate_end_date}
                     events={{
                       onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this)
+                      onBlur: dateValidate.bind(this, this),
                     }}
                     value={
                       this.state.effective_end_date !== null
@@ -260,11 +267,11 @@ class SubInsurance extends PureComponent {
                       name: "effective_start_date",
 
                       events: {
-                        onChange: datehandle.bind(this, this)
+                        onChange: datehandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
                   <AlagehFormGroup
@@ -275,11 +282,11 @@ class SubInsurance extends PureComponent {
                       name: "effective_end_date",
 
                       events: {
-                        onChange: datehandle.bind(this, this)
+                        onChange: datehandle.bind(this, this),
                       },
                       others: {
-                        "data-subdata": true
-                      }
+                        "data-subdata": true,
+                      },
                     }}
                   />
                 </div>
@@ -300,9 +307,9 @@ class SubInsurance extends PureComponent {
                           others: {
                             maxWidth: 200,
                             style: {
-                              textAlign: "center"
-                            }
-                          }
+                              textAlign: "center",
+                            },
+                          },
                         },
                         {
                           fieldName: "insurance_sub_name",
@@ -324,8 +331,8 @@ class SubInsurance extends PureComponent {
                                       this,
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
@@ -333,9 +340,9 @@ class SubInsurance extends PureComponent {
                           others: {
                             maxWidth: 200,
                             style: {
-                              textAlign: "center"
-                            }
-                          }
+                              textAlign: "center",
+                            },
+                          },
                         },
                         {
                           fieldName: "arabic_sub_name",
@@ -344,7 +351,7 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "arabic_provider_name" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -357,8 +364,8 @@ class SubInsurance extends PureComponent {
                                       this,
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
@@ -366,9 +373,9 @@ class SubInsurance extends PureComponent {
                           others: {
                             maxWidth: 200,
                             style: {
-                              textAlign: "center"
-                            }
-                          }
+                              textAlign: "center",
+                            },
+                          },
                         },
                         {
                           fieldName: "transaction_number",
@@ -377,7 +384,7 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "transaction_number" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -390,8 +397,8 @@ class SubInsurance extends PureComponent {
                                       this,
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
@@ -399,16 +406,16 @@ class SubInsurance extends PureComponent {
                           others: {
                             maxWidth: 200,
                             style: {
-                              textAlign: "center"
-                            }
-                          }
+                              textAlign: "center",
+                            },
+                          },
                         },
                         {
                           fieldName: "card_format",
                           label: (
                             <AlgaehLabel label={{ fieldName: "card_format" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -421,16 +428,16 @@ class SubInsurance extends PureComponent {
                                       this,
                                       this,
                                       row
-                                    )
-                                  }
+                                    ),
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "effective_start_date",
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {this.changeDateFormat(
@@ -444,11 +451,11 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "effective_start_date" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "effective_end_date",
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {this.changeDateFormat(row.effective_end_date)}
@@ -460,23 +467,66 @@ class SubInsurance extends PureComponent {
                               label={{ fieldName: "effective_end_date" }}
                             />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
-
+                        {
+                          fieldName: "child_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "G/L Account" }}
+                            />
+                          ),
+                          displayTemplate: (row) => {
+                            const [
+                              current,
+                            ] = this.state.finance_providers.filter(
+                              (item) =>
+                                item.finance_account_child_id ===
+                                  row.child_id && item.head_id === row.head_id
+                            );
+                            return current ? current.child_name : "";
+                          },
+                          editorTemplate: (row, rowId) => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  dataSource: {
+                                    data: this.state.finance_providers,
+                                    valueField: "finance_account_child_id",
+                                    textField: "child_name",
+                                  },
+                                  value: row.child_id,
+                                  onChange: ({ selected }) => {
+                                    row.child_id =
+                                      selected.finance_account_child_id;
+                                    row.head_id = selected.head_id;
+                                    row.update();
+                                  },
+                                }}
+                              />
+                            );
+                          },
+                          others: {
+                            maxWidth: 200,
+                            style: {
+                              textAlign: "center",
+                            },
+                          },
+                        },
                       ]}
                       keyId="insurance_sub_code"
                       dataSource={{
                         data:
                           this.state.sub_insurance === undefined
                             ? []
-                            : this.state.sub_insurance
+                            : this.state.sub_insurance,
                       }}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: row => {},
-                        onDone: updateSubInsurance.bind(this, this)
+                        onEdit: (row) => {},
+                        onDone: updateSubInsurance.bind(this, this),
                       }}
                     />
                   </div>
@@ -492,22 +542,19 @@ class SubInsurance extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    subinsuranceprovider: state.subinsuranceprovider
+    subinsuranceprovider: state.subinsuranceprovider,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSubInsuranceDetails: AlgaehActions
+      getSubInsuranceDetails: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SubInsurance)
+  connect(mapStateToProps, mapDispatchToProps)(SubInsurance)
 );

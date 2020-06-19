@@ -129,7 +129,7 @@ const showconfirmDialog = ($this, id) => {
           });
         }
       });
-    } 
+    }
   });
 };
 
@@ -160,6 +160,28 @@ const getSubInsuranceDetails = $this => {
     }
   });
 };
+
+function getFinanceProviders() {
+  algaehApiCall({
+    uri: "/insurance/getFinanceInsuranceProviders",
+    module: "insurance",
+    method: "GET",
+    onSuccess: response => {
+      if (response.data.success) {
+        this.setState({
+          finance_providers: response.data.records
+        })
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+}
+
 const updateSubInsurance = ($this, data) => {
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
@@ -224,9 +246,9 @@ const dateValidate = ($this, value, e) => {
   }
 };
 
-const loadAccounts = (input)=>{
-  return new Promise((resolve,reject)=>{
-    try{
+const loadAccounts = (input) => {
+  return new Promise((resolve, reject) => {
+    try {
       algaehApiCall({
         uri: "/finance/getAccountHeads",
         data: input,
@@ -237,10 +259,10 @@ const loadAccounts = (input)=>{
             resolve(response.data.result);
           }
         },
-        onCatch:(error)=>{
+        onCatch: (error) => {
           swalMessage({
-            type:"error",
-            title:error
+            type: "error",
+            title: error
           });
           reject(error);
         }
@@ -248,8 +270,8 @@ const loadAccounts = (input)=>{
     }
     catch (e) {
       swalMessage({
-        type:"error",
-        title:e
+        type: "error",
+        title: e
       });
       reject(e);
     }
@@ -266,5 +288,6 @@ export {
   onchangegridcol,
   getSubInsuranceDetails,
   dateValidate,
-  loadAccounts
+  loadAccounts,
+  getFinanceProviders
 };
