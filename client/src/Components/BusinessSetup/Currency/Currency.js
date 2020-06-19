@@ -10,7 +10,10 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import { AlgaehSecurityElement } from "algaeh-react-components";
+import {
+  AlgaehSecurityElement,
+  RawSecurityElement,
+} from "algaeh-react-components";
 
 class Currency extends Component {
   constructor(props) {
@@ -18,6 +21,7 @@ class Currency extends Component {
     this.state = {
       currency_code: "",
       currency_description: "",
+      gridReadOnly: true,
     };
     this.getCurrency();
   }
@@ -186,6 +190,15 @@ class Currency extends Component {
           },
         });
       },
+    });
+  }
+
+  componentDidMount() {
+    RawSecurityElement({ elementCode: "READ_ONLY_GRID" }).then((result) => {
+      console.log("result", result);
+      if (result === "hide") {
+        this.setState({ gridReadOnly: false });
+      }
     });
   }
 
@@ -642,7 +655,7 @@ class Currency extends Component {
                       data: this.state.currencies,
                     }}
                     filter={true}
-                    isEditable={true}
+                    isEditable={this.state.gridReadOnly}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onEdit: () => {},
