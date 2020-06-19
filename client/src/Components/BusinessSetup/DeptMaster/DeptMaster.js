@@ -18,6 +18,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class DeptMaster extends Component {
   constructor(props) {
@@ -598,13 +599,14 @@ class DeptMaster extends Component {
 
                 <div className="col align-middle">
                   <br />
-
-                  <button
-                    className="btn btn-primary"
-                    onClick={this.addSubDepartment.bind(this)}
-                  >
-                    Add to List
-                  </button>
+                  <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                    <button
+                      className="btn btn-primary"
+                      onClick={this.addSubDepartment.bind(this)}
+                    >
+                      Add to List
+                    </button>
+                  </AlgaehSecurityElement>
                 </div>
               </div>
               <div className="row">
