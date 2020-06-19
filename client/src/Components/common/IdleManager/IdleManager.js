@@ -175,7 +175,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 1} // mins to milliseco
+          timeout={1000 * 60 * 20} // mins to milliseco
         />
       </>
     );
