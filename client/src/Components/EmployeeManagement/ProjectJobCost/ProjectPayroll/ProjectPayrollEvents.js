@@ -124,6 +124,7 @@ export default function ProjectPayrollEvents() {
               total_worked_hours: data.total_worked_hours,
               total_cost: data.total_cost,
               noEmployees: data.no_employees,
+              no_projects: data.no_projects,
             });
             debugger;
           } else {

@@ -6,6 +6,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { AlgaehSecurityElement } from "algaeh-react-components";
+
 import moment from "moment";
 import isEqual from "lodash/isEqual";
 class ProjectAssign extends Component {
@@ -273,14 +275,15 @@ class ProjectAssign extends Component {
               <div className="col-lg-4"> &nbsp;</div>
 
               <div className="col-lg-8">
-                <button
-                  onClick={this.processAssignment.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  PROCESS
-                </button>
-
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  <button
+                    onClick={this.processAssignment.bind(this)}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    PROCESS
+                  </button>
+                </AlgaehSecurityElement>
                 <button
                   onClick={this.props.onClose}
                   type="button"

@@ -18,7 +18,12 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
 
-import { Checkbox, Upload, message } from "algaeh-react-components";
+import {
+  Checkbox,
+  Upload,
+  message,
+  AlgaehSecurityElement,
+} from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
 // /branchMaster/getBranchMaster
 import Organization from "./Organisation";
@@ -897,16 +902,18 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <div className="col-12">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      style={{ float: "right" }}
-                      onClick={this.addBranches.bind(this)}
-                    >
-                      {this.state.editBranch === true
-                        ? "Update"
-                        : "Add to List"}
-                    </button>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        style={{ float: "right" }}
+                        onClick={this.addBranches.bind(this)}
+                      >
+                        {this.state.editBranch === true
+                          ? "Update"
+                          : "Add to List"}
+                      </button>
+                    </AlgaehSecurityElement>
 
                     <button
                       type="button"

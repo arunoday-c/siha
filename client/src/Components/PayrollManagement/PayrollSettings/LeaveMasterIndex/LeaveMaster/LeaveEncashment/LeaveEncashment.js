@@ -5,9 +5,10 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../../Wrapper/algaehWrapper";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 function LeaveEncashment(props) {
   let myParent = props.parent;
 
@@ -25,14 +26,14 @@ function LeaveEncashment(props) {
               dataSource: {
                 textField: "earning_deduction_description",
                 valueField: "hims_d_earning_deduction_id",
-                data: myParent.state.earning_deductions
+                data: myParent.state.earning_deductions,
               },
-              onChange: value => myParent.dropDownHandler(value),
+              onChange: (value) => myParent.dropDownHandler(value),
               onClear: () => {
                 myParent.setState({
-                  earnings_id: null
+                  earnings_id: null,
                 });
-              }
+              },
             }}
           />
 
@@ -40,29 +41,31 @@ function LeaveEncashment(props) {
             div={{ className: "col-3 form-group" }}
             label={{
               forceLabel: "Value %",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "percent",
               value: myParent.state.percent,
               events: {
-                onChange: e => myParent.textHandler(e)
+                onChange: (e) => myParent.textHandler(e),
               },
               option: {
-                type: "number"
-              }
+                type: "number",
+              },
             }}
           />
-          <div className="col-2">
-            <button
-              onClick={myParent.addLeaveEncash.bind(myParent)}
-              className="btn btn-primary"
-              style={{ marginTop: 19 }}
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col-2">
+              <button
+                onClick={myParent.addLeaveEncash.bind(myParent)}
+                className="btn btn-primary"
+                style={{ marginTop: 19 }}
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
 
         <div className="row">
@@ -75,10 +78,10 @@ function LeaveEncashment(props) {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Encashment Type" }} />
                   ),
-                  displayTemplate: row => {
+                  displayTemplate: (row) => {
                     let x = Enumerable.from(myParent.state.earning_deductions)
                       .where(
-                        w => w.hims_d_earning_deduction_id === row.earnings_id
+                        (w) => w.hims_d_earning_deduction_id === row.earnings_id
                       )
                       .firstOrDefault();
 
@@ -90,7 +93,7 @@ function LeaveEncashment(props) {
                       </span>
                     );
                   },
-                  editorTemplate: row => {
+                  editorTemplate: (row) => {
                     return (
                       <AlagehAutoComplete
                         selector={{
@@ -100,21 +103,21 @@ function LeaveEncashment(props) {
                           dataSource: {
                             textField: "earning_deduction_description",
                             valueField: "hims_d_earning_deduction_id",
-                            data: myParent.state.earning_deductions
+                            data: myParent.state.earning_deductions,
                           },
                           onChange: myParent.changeGridEditors.bind(
                             myParent,
                             row
-                          )
+                          ),
                         }}
                       />
                     );
-                  }
+                  },
                 },
                 {
                   fieldName: "percent",
                   label: <AlgaehLabel label={{ forceLabel: "Value %" }} />,
-                  editorTemplate: row => {
+                  editorTemplate: (row) => {
                     return (
                       <AlagehFormGroup
                         textBox={{
@@ -125,27 +128,27 @@ function LeaveEncashment(props) {
                             onChange: myParent.changeGridEditors.bind(
                               myParent,
                               row
-                            )
+                            ),
                           },
                           others: {
-                            type: "number"
-                          }
+                            type: "number",
+                          },
                         }}
                       />
                     );
-                  }
-                }
+                  },
+                },
               ]}
               keyId="algaeh_d_module_id"
               dataSource={{
-                data: myParent.state.leaveEncash
+                data: myParent.state.leaveEncash,
               }}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
                 onDelete: myParent.deleteLeaveEncash.bind(myParent),
-                onDone: myParent.updateLeaveEncash.bind(myParent)
+                onDone: myParent.updateLeaveEncash.bind(myParent),
               }}
             />
           </div>

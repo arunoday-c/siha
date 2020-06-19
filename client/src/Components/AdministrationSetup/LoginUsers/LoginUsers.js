@@ -20,7 +20,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import _ from "lodash";
 import { MainContext } from "algaeh-react-components/context";
-import { Button, Input } from "algaeh-react-components";
+import { Button, Input, AlgaehSecurityElement } from "algaeh-react-components";
 class LoginUsers extends Component {
   _isMounted = false;
   constructor(props) {
@@ -1126,26 +1126,28 @@ class LoginUsers extends Component {
                             }}
                           />
                         </button>
-                        <button
-                          style={{ marginLeft: 15 }}
-                          onClick={this.addLoginUser.bind(this)}
-                          type="button"
-                          className="btn btn-primary"
-                        >
-                          {this.state.algaeh_d_app_user_id === null ? (
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "add_to_list",
-                              }}
-                            />
-                          ) : (
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Update",
-                              }}
-                            />
-                          )}
-                        </button>
+                        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                          <button
+                            style={{ marginLeft: 15 }}
+                            onClick={this.addLoginUser.bind(this)}
+                            type="button"
+                            className="btn btn-primary"
+                          >
+                            {this.state.algaeh_d_app_user_id === null ? (
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "add_to_list",
+                                }}
+                              />
+                            ) : (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Update",
+                                }}
+                              />
+                            )}
+                          </button>
+                        </AlgaehSecurityElement>
                       </div>
                     </>
                   ) : this.state.full_name !== "" ? (

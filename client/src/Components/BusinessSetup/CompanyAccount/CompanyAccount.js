@@ -8,12 +8,13 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class CompanyAccount extends Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class CompanyAccount extends Component {
       payer_cr_no: null,
       bank_id: null,
       bank_short_name: null,
-      account_number: null
+      account_number: null,
     };
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.getBankMaster();
@@ -43,7 +44,7 @@ class CompanyAccount extends Component {
       payer_cr_no: null,
       bank_id: null,
       bank_short_name: null,
-      account_number: null
+      account_number: null,
     });
   }
 
@@ -55,8 +56,8 @@ class CompanyAccount extends Component {
       method: "GET",
       redux: {
         type: "BANK_GET_DATA",
-        mappingName: "banks"
-      }
+        mappingName: "banks",
+      },
     });
   }
 
@@ -67,8 +68,8 @@ class CompanyAccount extends Component {
       method: "GET",
       redux: {
         type: "COMPANY_ACC_DATA",
-        mappingName: "companyaccount"
-      }
+        mappingName: "companyaccount",
+      },
     });
   }
 
@@ -77,7 +78,7 @@ class CompanyAccount extends Component {
     let value = e.value || e.target.value;
     this.setState({
       [name]: value,
-      bank_short_name: e.selected.bank_short_name
+      bank_short_name: e.selected.bank_short_name,
     });
   }
 
@@ -86,7 +87,7 @@ class CompanyAccount extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -112,27 +113,27 @@ class CompanyAccount extends Component {
             payer_cr_no: this.state.payer_cr_no,
             bank_id: this.state.bank_id,
             bank_short_name: this.state.bank_short_name,
-            account_number: this.state.account_number
+            account_number: this.state.account_number,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Company Account added Successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getCompanyAcct();
               this.clearState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -146,25 +147,25 @@ class CompanyAccount extends Component {
         payer_cr_no: data.payer_cr_no,
         bank_id: data.bank_id,
         bank_short_name: data.bank_short_name,
-        account_number: data.account_number
+        account_number: data.account_number,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getCompanyAcct();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -176,37 +177,37 @@ class CompanyAccount extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/companyAccount/deleteCompanyAccount",
           module: "masterSettings",
           data: {
-            hims_d_company_account_id: data.hims_d_company_account_id
+            hims_d_company_account_id: data.hims_d_company_account_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getCompanyAcct();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -220,7 +221,7 @@ class CompanyAccount extends Component {
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Select Employee Bank",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "bank_id",
@@ -229,21 +230,21 @@ class CompanyAccount extends Component {
               dataSource: {
                 textField: "bank_name",
                 valueField: "hims_d_bank_id",
-                data: this.props.banks
+                data: this.props.banks,
               },
               onChange: this.bankEventhandle.bind(this),
               onClear: () => {
                 this.setState({
-                  bank_id: null
+                  bank_id: null,
                 });
-              }
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Account No",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -251,15 +252,15 @@ class CompanyAccount extends Component {
               value: this.state.account_number,
               events: { onChange: this.texthandle.bind(this) },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Employer CR-No.",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -267,8 +268,8 @@ class CompanyAccount extends Component {
               value: this.state.employer_cr_no,
               events: { onChange: this.texthandle.bind(this) },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
 
@@ -276,7 +277,7 @@ class CompanyAccount extends Component {
             div={{ className: "col mandatory form-group" }}
             label={{
               forceLabel: "Payer CR-No.",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -284,19 +285,21 @@ class CompanyAccount extends Component {
               value: this.state.payer_cr_no,
               events: { onChange: this.texthandle.bind(this) },
               option: {
-                type: "text"
-              }
+                type: "text",
+              },
             }}
           />
-          <div className="col">
-            <button
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-              onClick={this.addCompanyAccount.bind(this)}
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col">
+              <button
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+                onClick={this.addCompanyAccount.bind(this)}
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-body">
@@ -315,12 +318,12 @@ class CompanyAccount extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Bank Name" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.banks === undefined
                               ? []
                               : this.props.banks.filter(
-                                  f => f.hims_d_bank_id === row.bank_id
+                                  (f) => f.hims_d_bank_id === row.bank_id
                                 );
 
                           return (
@@ -331,7 +334,7 @@ class CompanyAccount extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -342,31 +345,34 @@ class CompanyAccount extends Component {
                                 dataSource: {
                                   textField: "bank_name",
                                   valueField: "hims_d_bank_id",
-                                  data: this.props.banks
+                                  data: this.props.banks,
                                 },
                                 others: {
                                   errormessage: "Name - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "bank_short_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Short Name" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "account_number",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Account No." }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -378,17 +384,17 @@ class CompanyAccount extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Account Number - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "employer_cr_no",
@@ -397,7 +403,7 @@ class CompanyAccount extends Component {
                             label={{ forceLabel: "Employer CR-No." }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -409,24 +415,24 @@ class CompanyAccount extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Employeer Cr-No - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "payer_cr_no",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Payer CR-No." }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -438,24 +444,24 @@ class CompanyAccount extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Payer Cr-No - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId=""
                     dataSource={{
                       data:
                         this.props.companyaccount === undefined
                           ? []
-                          : this.props.companyaccount
+                          : this.props.companyaccount,
                     }}
                     filter={true}
                     isEditable={true}
@@ -463,7 +469,7 @@ class CompanyAccount extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteCompanyAccount.bind(this),
-                      onDone: this.updateCompanyAccount.bind(this)
+                      onDone: this.updateCompanyAccount.bind(this),
                     }}
                     others={{}}
                   />
@@ -480,7 +486,7 @@ class CompanyAccount extends Component {
 function mapStateToProps(state) {
   return {
     banks: state.banks,
-    companyaccount: state.companyaccount
+    companyaccount: state.companyaccount,
   };
 }
 
@@ -488,15 +494,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getBanks: AlgaehActions,
-      getCompanyAccount: AlgaehActions
+      getCompanyAccount: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(CompanyAccount)
+  connect(mapStateToProps, mapDispatchToProps)(CompanyAccount)
 );

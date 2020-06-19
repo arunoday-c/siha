@@ -6,6 +6,7 @@ import LeaveRules from "../LeaveMaster/LeaveRules/LeaveRules";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 import swal from "sweetalert2";
 
 class LeaveEdit extends Component {
@@ -719,16 +720,17 @@ class LeaveEdit extends Component {
               <div className="col-lg-4"> &nbsp;</div>
 
               <div className="col-lg-8">
-                {this.state.type === "E" ? (
-                  <button
-                    onClick={this.saveMaster.bind(this)}
-                    type="button"
-                    className="btn btn-primary"
-                  >
-                    UPDATE
-                  </button>
-                ) : null}
-
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  {this.state.type === "E" ? (
+                    <button
+                      onClick={this.saveMaster.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      UPDATE
+                    </button>
+                  ) : null}
+                </AlgaehSecurityElement>
                 <button
                   onClick={this.props.onClose}
                   type="button"

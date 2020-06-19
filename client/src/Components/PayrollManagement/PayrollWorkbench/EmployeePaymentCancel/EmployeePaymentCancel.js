@@ -7,7 +7,7 @@ import "./EmployeePaymentCancel.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {
@@ -15,7 +15,7 @@ import {
   getEmployeePayments,
   CancelPayment,
   Paymenttexthandle,
-  PaymentOnClear
+  PaymentOnClear,
 } from "./EmployeePaymentCancelEvent.js";
 import { MainContext } from "algaeh-react-components/context";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -26,7 +26,7 @@ class EmployeePaymentCancel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      PreviousPayments: []
+      PreviousPayments: [],
     };
   }
   UNSAFE_componentWillMount() {
@@ -38,7 +38,7 @@ class EmployeePaymentCancel extends Component {
     const userToken = this.context.userToken;
 
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
 
     if (
@@ -50,8 +50,8 @@ class EmployeePaymentCancel extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
     if (this.props.banks === undefined || this.props.banks.length === 0) {
@@ -62,8 +62,8 @@ class EmployeePaymentCancel extends Component {
         method: "GET",
         redux: {
           type: "BANK_GET_DATA",
-          mappingName: "banks"
-        }
+          mappingName: "banks",
+        },
       });
     }
 
@@ -79,7 +79,7 @@ class EmployeePaymentCancel extends Component {
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Select a Branch.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -88,21 +88,21 @@ class EmployeePaymentCancel extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  data: this.props.organizations,
                 },
                 onChange: branchHandelEvent.bind(this, this),
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    hospital_id: null,
                   });
-                }
+                },
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col-2 mandatory form-group" }}
               label={{
                 forceLabel: "Payment Type",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "sel_payment_type",
@@ -111,13 +111,13 @@ class EmployeePaymentCancel extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE
+                  data: GlobalVariables.EMPLOYEE_PAYMENT_TYPE,
                 },
                 onChange: Paymenttexthandle.bind(this, this),
                 others: {
-                  tabIndex: "2"
+                  tabIndex: "2",
                 },
-                onClear: PaymentOnClear.bind(this, this)
+                onClear: PaymentOnClear.bind(this, this),
               }}
             />{" "}
             <div className="col margin-bottom-15">
@@ -128,7 +128,7 @@ class EmployeePaymentCancel extends Component {
                 onClick={() => {
                   this.setState({
                     sel_payment_type: "",
-                    PreviousPayments: []
+                    PreviousPayments: [],
                   });
                 }}
               >
@@ -169,14 +169,14 @@ class EmployeePaymentCancel extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Action" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   <i
                                     style={{
                                       pointerEvents:
                                         row.cancel === "Y" ? "none" : "",
-                                      opacity: row.cancel === "Y" ? "0.1" : ""
+                                      opacity: row.cancel === "Y" ? "0.1" : "",
                                     }}
                                     className="fa fa-times"
                                     onClick={CancelPayment.bind(
@@ -191,26 +191,26 @@ class EmployeePaymentCancel extends Component {
                             others: {
                               maxWidth: 70,
                               resizable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "cancel",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Cancelled"
+                                  forceLabel: "Cancelled",
                                 }}
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.cancel === "N" ? (
                                 <span className="badge badge-warning">No</span>
                               ) : (
                                 <span className="badge badge-success">Yes</span>
                               );
-                            }
+                            },
                           },
                           // {
                           //   fieldName: "payment_type",
@@ -241,7 +241,7 @@ class EmployeePaymentCancel extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Payment No" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "employee_code",
@@ -249,7 +249,7 @@ class EmployeePaymentCancel extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Employee Code" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "full_name",
@@ -257,7 +257,7 @@ class EmployeePaymentCancel extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Employee Name" }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "payment_amount",
@@ -265,7 +265,7 @@ class EmployeePaymentCancel extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Payment Amount" }}
                               />
-                            )
+                            ),
                           },
 
                           {
@@ -275,7 +275,7 @@ class EmployeePaymentCancel extends Component {
                               <AlgaehLabel
                                 label={{ forceLabel: "Process Date" }}
                               />
-                            )
+                            ),
                           },
 
                           {
@@ -287,9 +287,9 @@ class EmployeePaymentCancel extends Component {
                               />
                             ),
 
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
-                                f => f.value === row.payment_mode
+                                (f) => f.value === row.payment_mode
                               );
 
                               return (
@@ -299,7 +299,7 @@ class EmployeePaymentCancel extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "bank_id",
@@ -308,12 +308,12 @@ class EmployeePaymentCancel extends Component {
                                 label={{ forceLabel: "Bank Details" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.banks === undefined
                                   ? []
                                   : this.props.banks.filter(
-                                      f => f.hims_d_bank_id === row.bank_id
+                                      (f) => f.hims_d_bank_id === row.bank_id
                                     );
 
                               return (
@@ -323,30 +323,30 @@ class EmployeePaymentCancel extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
+                            },
                           },
                           {
                             fieldName: "cheque_number",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Cheque/ Transaction No."
+                                  forceLabel: "Cheque/ Transaction No.",
                                 }}
                               />
-                            )
+                            ),
                           },
                           {
                             fieldName: "deduction_month",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Deduction Month"
+                                  forceLabel: "Deduction Month",
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display = GlobalVariables.MONTHS.filter(
-                                f => f.value === row.deduction_month
+                                (f) => f.value === row.deduction_month
                               );
 
                               return (
@@ -356,12 +356,12 @@ class EmployeePaymentCancel extends Component {
                                     : ""}
                                 </span>
                               );
-                            }
-                          }
+                            },
+                          },
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: this.state.PreviousPayments
+                          data: this.state.PreviousPayments,
                         }}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         filter={true}
@@ -381,7 +381,7 @@ class EmployeePaymentCancel extends Component {
 function mapStateToProps(state) {
   return {
     organizations: state.organizations,
-    banks: state.banks
+    banks: state.banks,
   };
 }
 
@@ -389,7 +389,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getOrganizations: AlgaehActions,
-      getBanks: AlgaehActions
+      getBanks: AlgaehActions,
     },
     dispatch
   );
