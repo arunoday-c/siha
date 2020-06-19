@@ -60,7 +60,7 @@ export function IdleManager() {
   }
 
   function onOk(e) {
-    e.preventDefault()
+    e.preventDefault();
     const { username, hospital_id } = context.userToken;
     const identity = window.localStorage.getItem("identity");
 
@@ -118,7 +118,6 @@ export function IdleManager() {
                   <hr></hr>
                   <form onSubmit={onOk}>
                     <div className="row">
-
                       <AlgaehFormGroup
                         div={{
                           className: "col-lg-7 col-sm-12 form-group mandatory",
@@ -146,7 +145,7 @@ export function IdleManager() {
                       >
                         <button className="btn btn-primary" onClick={onOk}>
                           Unlock
-                      </button>
+                        </button>
                         <span
                           style={{
                             marginTop: 15,
@@ -156,11 +155,11 @@ export function IdleManager() {
                           }}
                         >
                           {" "}
-                        or
-                      </span>
+                          or
+                        </span>
                         <button className="btn btn-other" onClick={onLogout}>
                           Logout
-                      </button>
+                        </button>
                       </div>
                     </div>
                   </form>
@@ -175,7 +174,7 @@ export function IdleManager() {
           element={document}
           onIdle={onIdle}
           debounce={250}
-          timeout={1000 * 60 * 1} // mins to milliseco
+          timeout={1000 * 60 * 15} // mins to milliseco
         />
       </>
     );
