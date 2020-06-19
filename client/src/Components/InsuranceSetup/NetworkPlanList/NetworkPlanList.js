@@ -96,8 +96,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                        f => f.hims_d_insurance_sub_id === row.insurance_sub_id
-                      );
+                      f => f.hims_d_insurance_sub_id === row.insurance_sub_id
+                    );
 
                 return (
                   <span>
@@ -114,8 +114,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.subinsuranceprovider === undefined
                     ? []
                     : this.props.subinsuranceprovider.filter(
-                        f => f.hims_d_insurance_sub_id === row.insurance_sub_id
-                      );
+                      f => f.hims_d_insurance_sub_id === row.insurance_sub_id
+                    );
 
                 return (
                   <span>
@@ -137,8 +137,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                        f => f.hims_d_hospital_id === row.hospital_id
-                      );
+                      f => f.hims_d_hospital_id === row.hospital_id
+                    );
 
                 return (
                   <span>
@@ -155,8 +155,8 @@ class NetworkPlanList extends PureComponent {
                   this.props.hospitaldetails === undefined
                     ? []
                     : this.props.hospitaldetails.filter(
-                        f => f.hims_d_hospital_id === row.hospital_id
-                      );
+                      f => f.hims_d_hospital_id === row.hospital_id
+                    );
 
                 return (
                   <span>
@@ -303,26 +303,26 @@ class NetworkPlanList extends PureComponent {
               }
             },
             ///Changes
-            {
-              fieldName: "deductible",
-              label: <AlgaehLabel label={{ fieldName: "deductible" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible,
-                      className: "txt-fld",
-                      name: "deductible",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible",
+            //   label: <AlgaehLabel label={{ fieldName: "deductible" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible,
+            //           className: "txt-fld",
+            //           name: "deductible",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "copay_consultation",
               label: (
@@ -365,26 +365,26 @@ class NetworkPlanList extends PureComponent {
             //     );
             //   }
             // },
-            {
-              fieldName: "deductible_lab",
-              label: <AlgaehLabel label={{ fieldName: "deductible_lab" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible_lab,
-                      className: "txt-fld",
-                      name: "deductible_lab",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible_lab",
+            //   label: <AlgaehLabel label={{ fieldName: "deductible_lab" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible_lab,
+            //           className: "txt-fld",
+            //           name: "deductible_lab",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "copay_percent",
               label: <AlgaehLabel label={{ fieldName: "copay_percent" }} />,
@@ -427,26 +427,26 @@ class NetworkPlanList extends PureComponent {
             //     );
             //   }
             // },
-            {
-              fieldName: "deductible_rad",
-              label: <AlgaehLabel label={{ fieldName: "deductible_rad" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible_rad,
-                      className: "txt-fld",
-                      name: "deductible_rad",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible_rad",
+            //   label: <AlgaehLabel label={{ fieldName: "deductible_rad" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible_rad,
+            //           className: "txt-fld",
+            //           name: "deductible_rad",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
 
             {
               fieldName: "copay_percent_rad",
@@ -488,26 +488,26 @@ class NetworkPlanList extends PureComponent {
             //     );
             //   }
             // },
-            {
-              fieldName: "deductible_trt",
-              label: <AlgaehLabel label={{ fieldName: "deductible_trt" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible_trt,
-                      className: "txt-fld",
-                      name: "deductible_trt",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible_trt",
+            //   label: <AlgaehLabel label={{ fieldName: "deductible_trt" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible_trt,
+            //           className: "txt-fld",
+            //           name: "deductible_trt",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "copay_percent_trt",
               label: <AlgaehLabel label={{ fieldName: "copay_percent_trt" }} />,
@@ -548,49 +548,49 @@ class NetworkPlanList extends PureComponent {
                 );
               }
             },
-            {
-              fieldName: "deductible_dental",
-              label: <AlgaehLabel label={{ fieldName: "deductible_dental" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible_dental,
-                      className: "txt-fld",
-                      name: "deductible_dental",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible_dental",
+            //   label: <AlgaehLabel label={{ fieldName: "deductible_dental" }} />,
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible_dental,
+            //           className: "txt-fld",
+            //           name: "deductible_dental",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
 
-            {
-              fieldName: "copay_percent_dental",
-              label: (
-                <AlgaehLabel label={{ fieldName: "copay_percent_dental" }} />
-              ),
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.copay_percent_dental,
-                      className: "txt-fld",
-                      name: "copay_percent_dental",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "copay_percent_dental",
+            //   label: (
+            //     <AlgaehLabel label={{ fieldName: "copay_percent_dental" }} />
+            //   ),
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.copay_percent_dental,
+            //           className: "txt-fld",
+            //           name: "copay_percent_dental",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             // {
             //   fieldName: "dental_max",
             //   label: <AlgaehLabel label={{ fieldName: "dental_max" }} />,
@@ -611,28 +611,28 @@ class NetworkPlanList extends PureComponent {
             //     );
             //   }
             // },
-            {
-              fieldName: "deductible_medicine",
-              label: (
-                <AlgaehLabel label={{ fieldName: "deductible_medicine" }} />
-              ),
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{}}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      value: row.deductible_medicine,
-                      className: "txt-fld",
-                      name: "deductible_medicine",
-                      events: {
-                        onChange: onchangegridnumber.bind(this, this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
+            // {
+            //   fieldName: "deductible_medicine",
+            //   label: (
+            //     <AlgaehLabel label={{ fieldName: "deductible_medicine" }} />
+            //   ),
+            //   editorTemplate: row => {
+            //     return (
+            //       <AlagehFormGroup
+            //         div={{}}
+            //         textBox={{
+            //           decimal: { allowNegative: false },
+            //           value: row.deductible_medicine,
+            //           className: "txt-fld",
+            //           name: "deductible_medicine",
+            //           events: {
+            //             onChange: onchangegridnumber.bind(this, this, row)
+            //           }
+            //         }}
+            //       />
+            //     );
+            //   }
+            // },
             {
               fieldName: "copay_medicine",
               label: <AlgaehLabel label={{ fieldName: "copay_medicine" }} />,
@@ -682,7 +682,7 @@ class NetworkPlanList extends PureComponent {
           paging={{ page: 0, rowsPerPage: 10 }}
           events={{
             onDelete: deleteNetWorkPlan.bind(this, this),
-            onEdit: row => {},
+            onEdit: row => { },
             onDone: UpdateNetworkPlan.bind(this, this)
           }}
           filter={true}

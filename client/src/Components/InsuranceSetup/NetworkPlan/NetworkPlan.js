@@ -333,7 +333,7 @@ class NetworkPlan extends PureComponent {
                   />
                 </div>
                 <div className="col-lg-12 networkPlanCntr">
-                  <div className="row">
+                  {/* <div className="row">
                     <div className="col-2">
                       <label style={{ marginTop: 26 }}>Deductible</label>
                     </div>
@@ -499,7 +499,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                  </div>
+                  </div> */}
                   <div className="row">
                     <div className="col-2">
                       <label>Co Pay</label>
@@ -514,11 +514,11 @@ class NetworkPlan extends PureComponent {
                     <AlagehFormGroup
                       //consultation
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Consultation" }}
                       textBox={{
                         value: this.state.copay_consultation,
                         className: "txt-fld",
                         name: "copay_consultation",
-
                         events: {
                           onChange: numberhandle.bind(this, this)
                         },
@@ -538,6 +538,7 @@ class NetworkPlan extends PureComponent {
                     <AlagehFormGroup
                       //Lab
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Lab" }}
                       textBox={{
                         value: this.state.copay_percent,
                         className: "txt-fld",
@@ -561,6 +562,7 @@ class NetworkPlan extends PureComponent {
                     <AlagehFormGroup
                       //Radiology
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Radiology" }}
                       textBox={{
                         value: this.state.copay_percent_rad,
                         className: "txt-fld",
@@ -586,6 +588,7 @@ class NetworkPlan extends PureComponent {
                     <AlagehFormGroup
                       //OPD Services
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Procedures" }}
                       textBox={{
                         value: this.state.copay_percent_trt,
                         className: "txt-fld",
@@ -607,9 +610,10 @@ class NetworkPlan extends PureComponent {
                       </select>
                     </div>
 
-                    <AlagehFormGroup
+                    {/* <AlagehFormGroup
                       //Dental
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Dental" }}
                       textBox={{
                         value: this.state.copay_percent_dental,
                         className: "txt-fld",
@@ -623,7 +627,7 @@ class NetworkPlan extends PureComponent {
                           type: "number"
                         }
                       }}
-                    />
+                    /> */}
                     <div className="col d-none">
                       <select>
                         <option>%</option>
@@ -634,6 +638,7 @@ class NetworkPlan extends PureComponent {
                     <AlagehFormGroup
                       //Medicine
                       div={{ className: "col" }}
+                      label={{ forceLabel: "Medicine" }}
                       textBox={{
                         value: this.state.copay_medicine,
                         className: "txt-fld",
@@ -648,7 +653,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                    <AlagehFormGroup
+                    {/* <AlagehFormGroup
                       //Optometry
                       div={{ className: "col" }}
                       textBox={{
@@ -660,7 +665,7 @@ class NetworkPlan extends PureComponent {
                           type: "number"
                         }
                       }}
-                    />
+                    /> */}
                   </div>
                   <div className="row">
                     <div className="col-2">
