@@ -2,8 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 // import { Row, Col } from "antd";
 import "./antTableCustomStyle.scss";
 
-import { AlgaehTable } from "algaeh-react-components";
-// import { Button } from "algaeh-react-components";
 import ReactToPrint from "react-to-print";
 import { newAlgaehApi } from "../../../hooks";
 
@@ -12,7 +10,7 @@ import { handleFile } from "../FinanceReportEvents";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import moment from "moment";
 import jwtDecode from "jwt-decode";
-import { AlgaehMessagePop } from "algaeh-react-components";
+import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
 
 export default function AgingReport({ style, result, layout, type, dates }) {
   const DIFF = {

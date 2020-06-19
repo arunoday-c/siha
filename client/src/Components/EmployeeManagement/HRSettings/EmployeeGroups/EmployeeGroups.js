@@ -13,6 +13,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class EmployeeGroups extends Component {
   constructor(props) {
@@ -323,16 +324,18 @@ class EmployeeGroups extends Component {
             </div>
           </div>
 
-          <div className="col form-group">
-            <button
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-              id="srch-sch"
-              onClick={this.addEmployeeGroups.bind(this)}
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col form-group">
+              <button
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+                id="srch-sch"
+                onClick={this.addEmployeeGroups.bind(this)}
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
 
         <div className="row">

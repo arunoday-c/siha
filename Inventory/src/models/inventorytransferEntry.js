@@ -666,15 +666,16 @@ export default {
                 D.to_qtyhand,D.quantity_required,D.quantity_authorized,D.item_uom,D.quantity_recieved,
                 D.quantity_outstanding,D.po_created_date,D.po_created,D.po_created_quantity,
                 D.po_outstanding_quantity,D.po_completed,LOC.hims_m_inventory_item_location_id,
-                LOC.inventory_location_id,LOC.item_location_status,LOC.batchno,LOC.expirydt,LOC.barcode,
-                LOC.qtyhand,LOC.qtypo,LOC.cost_uom,LOC.avgcost,LOC.last_purchase_cost,LOC.item_type,
+                LOC.inventory_location_id,LOC.item_location_status, COALESCE(LOC.batchno,(select batchno from  hims_m_inventory_item_location where item_id=D.item_id  limit 1)) as batchno
+                ,LOC.expirydt as expiry_date,COALESCE( LOC.barcode,(select barcode from  hims_m_inventory_item_location where item_id=D.item_id  limit 1)) as barcode,
+                COALESCE(LOC.qtyhand,D.to_qtyhand) as qtyhand,LOC.qtypo,LOC.cost_uom,LOC.avgcost,LOC.last_purchase_cost,LOC.item_type,
                 LOC.grn_id,LOC.grnno,LOC.sale_price,LOC.mrp_price,LOC.sales_uom,LOC.git_qty,LOC.vendor_batchno,
                  IM.hims_d_inventory_item_master_id, IM.item_description,
                  PU.uom_description from hims_f_inventory_material_detail D 
                 inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.item_uom 
-                 left join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id 
+                inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id 
                   left join hims_m_inventory_item_location LOC  on IM.hims_d_inventory_item_master_id=LOC.item_id 
-                  and  date(LOC.expirydt) > date(CURDATE()) and exp_date_required='Y' 
+                  and  date(LOC.expirydt) > date(CURDATE())  
                 where D.inventory_header_id=?
                 and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
                 // "select D.*,LOC.*, IM.hims_d_inventory_item_master_id, IM.item_description, PU.uom_description from hims_f_inventory_material_detail D \
@@ -688,92 +689,145 @@ export default {
               })
               .then((inventory_stock_detail) => {
                 _mysql.releaseConnection();
-
-                var item_grp = _(inventory_stock_detail)
-                  .groupBy("hims_d_inventory_item_master_id")
-                  .map(
-                    (row, hims_d_inventory_item_master_id) =>
-                      hims_d_inventory_item_master_id
-                  )
+                const grouppedData = _.chain(inventory_stock_detail)
+                  .groupBy((g) => g.hims_d_inventory_item_master_id)
+                  .map((detail, key) => {
+                    const {
+                      hims_f_inventory_material_detail_id,
+                      inventory_header_id,
+                      completed,
+                      item_category_id,
+                      item_group_id,
+                      hims_d_inventory_item_master_id,
+                      from_qtyhand,
+                      to_qtyhand,
+                      quantity_required,
+                      quantity_authorized,
+                      item_uom,
+                      quantity_recieved,
+                      quantity_outstanding,
+                      po_created_date,
+                      po_created,
+                      po_created_quantity,
+                      po_outstanding_quantity,
+                      po_completed,
+                      item_description,
+                      uom_description,
+                    } = detail[0];
+                    return {
+                      hims_f_inventory_material_detail_id,
+                      inventory_header_id,
+                      completed,
+                      item_category_id,
+                      item_group_id,
+                      hims_d_inventory_item_master_id,
+                      from_qtyhand,
+                      to_qtyhand,
+                      quantity_required,
+                      quantity_authorized,
+                      item_uom,
+                      quantity_recieved,
+                      quantity_outstanding,
+                      po_created_date,
+                      po_created,
+                      po_created_quantity,
+                      po_outstanding_quantity,
+                      po_completed,
+                      item_description,
+                      uom_description,
+                      batches: detail.filter((f) => f.qtyhand > 0),
+                    };
+                  })
                   .value();
-
-                console.log("item_grp", item_grp);
-                let outputArray = [];
-
-                for (let i = 0; i < item_grp.length; i++) {
-                  let item = new LINQ(inventory_stock_detail)
-                    .Where(
-                      (w) => w.hims_d_inventory_item_master_id == item_grp[i]
-                    )
-                    .Select((s) => {
-                      return {
-                        hims_f_inventory_material_detail_id:
-                          s.hims_f_inventory_material_detail_id,
-                        inventory_header_id: s.inventory_header_id,
-                        completed: s.completed,
-                        item_category_id: s.item_category_id,
-                        item_group_id: s.item_group_id,
-                        item_id: s.hims_d_inventory_item_master_id,
-                        from_qtyhand: s.from_qtyhand,
-                        to_qtyhand: s.to_qtyhand,
-                        quantity_required: s.quantity_required,
-                        quantity_authorized: s.quantity_authorized,
-                        item_uom: s.item_uom,
-                        quantity_recieved: s.quantity_recieved,
-                        quantity_outstanding: s.quantity_outstanding,
-                        po_created_date: s.po_created_date,
-                        po_created: s.po_created,
-                        po_created_quantity: s.po_created_quantity,
-                        po_outstanding_quantity: s.po_outstanding_quantity,
-                        po_completed: s.po_completed,
-                        item_description: s.item_description,
-                        uom_description: s.uom_description,
-                      };
-                    })
-                    .FirstOrDefault();
-
-                  console.log("item", item);
-                  let batches = new LINQ(inventory_stock_detail)
-                    .Where(
-                      (w) =>
-                        w.hims_d_inventory_item_master_id == item_grp[i] &&
-                        w.qtyhand > 0 &&
-                        w.inventory_location_id == inputParam.from_location_id
-                    )
-                    .Select((s) => {
-                      return {
-                        hims_m_inventory_item_location_id:
-                          s.hims_m_inventory_item_location_id,
-                        item_id: s.hims_d_inventory_item_master_id,
-                        inventory_location_id: s.inventory_location_id,
-                        item_location_status: s.item_location_status,
-                        batchno: s.batchno,
-                        expiry_date: s.expirydt,
-                        barcode: s.barcode,
-                        qtyhand: s.qtyhand,
-                        qtypo: s.qtypo,
-                        cost_uom: s.cost_uom,
-                        unit_cost: s.avgcost,
-                        last_purchase_cost: s.last_purchase_cost,
-                        item_type: s.item_type,
-                        grn_id: s.grn_id,
-                        grnno: s.grnno,
-                        sale_price: s.sale_price,
-                        mrp_price: s.mrp_price,
-                        sales_uom: s.sales_uom,
-                        vendor_batchno: s.vendor_batchno,
-                        quantity_transfer: 0,
-                      };
-                    })
-                    .ToArray();
-
-                  outputArray.push({ ...item, batches });
-                }
-
                 req.records = {
                   ...headerResult[0],
-                  ...{ stock_detail: outputArray },
+                  stock_detail: grouppedData,
                 };
+                // var item_grp = _(inventory_stock_detail)
+                //   .groupBy("hims_d_inventory_item_master_id")
+                //   .map(
+                //     (row, hims_d_inventory_item_master_id) =>
+                //       hims_d_inventory_item_master_id
+                //   )
+                //   .value();
+
+                // console.log("item_grp", item_grp);
+                // let outputArray = [];
+
+                // for (let i = 0; i < item_grp.length; i++) {
+                //   let item = new LINQ(inventory_stock_detail)
+                //     .Where(
+                //       (w) => w.hims_d_inventory_item_master_id == item_grp[i]
+                //     )
+                //     .Select((s) => {
+                //       return {
+                //         hims_f_inventory_material_detail_id:
+                //           s.hims_f_inventory_material_detail_id,
+                //         inventory_header_id: s.inventory_header_id,
+                //         completed: s.completed,
+                //         item_category_id: s.item_category_id,
+                //         item_group_id: s.item_group_id,
+                //         item_id: s.hims_d_inventory_item_master_id,
+                //         from_qtyhand: s.from_qtyhand,
+                //         to_qtyhand: s.to_qtyhand,
+                //         quantity_required: s.quantity_required,
+                //         quantity_authorized: s.quantity_authorized,
+                //         item_uom: s.item_uom,
+                //         quantity_recieved: s.quantity_recieved,
+                //         quantity_outstanding: s.quantity_outstanding,
+                //         po_created_date: s.po_created_date,
+                //         po_created: s.po_created,
+                //         po_created_quantity: s.po_created_quantity,
+                //         po_outstanding_quantity: s.po_outstanding_quantity,
+                //         po_completed: s.po_completed,
+                //         item_description: s.item_description,
+                //         uom_description: s.uom_description,
+                //       };
+                //     })
+                //     .FirstOrDefault();
+
+                //   console.log("item", item);
+                //   let batches = new LINQ(inventory_stock_detail)
+                //     .Where(
+                //       (w) =>
+                //         w.hims_d_inventory_item_master_id == item_grp[i] &&
+                //         w.qtyhand > 0 &&
+                //         w.inventory_location_id == inputParam.from_location_id
+                //     )
+                //     .Select((s) => {
+                //       return {
+                //         hims_m_inventory_item_location_id:
+                //           s.hims_m_inventory_item_location_id,
+                //         item_id: s.hims_d_inventory_item_master_id,
+                //         inventory_location_id: s.inventory_location_id,
+                //         item_location_status: s.item_location_status,
+                //         batchno: s.batchno,
+                //         expiry_date: s.expirydt,
+                //         barcode: s.barcode,
+                //         qtyhand: s.qtyhand,
+                //         qtypo: s.qtypo,
+                //         cost_uom: s.cost_uom,
+                //         unit_cost: s.avgcost,
+                //         last_purchase_cost: s.last_purchase_cost,
+                //         item_type: s.item_type,
+                //         grn_id: s.grn_id,
+                //         grnno: s.grnno,
+                //         sale_price: s.sale_price,
+                //         mrp_price: s.mrp_price,
+                //         sales_uom: s.sales_uom,
+                //         vendor_batchno: s.vendor_batchno,
+                //         quantity_transfer: 0,
+                //       };
+                //     })
+                //     .ToArray();
+
+                //   outputArray.push({ ...item, batches });
+                // }
+
+                // req.records = {
+                //   ...headerResult[0],
+                //   ...{ stock_detail: outputArray },
+                // };
 
                 next();
               })

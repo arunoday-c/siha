@@ -23,6 +23,7 @@ import swal from "sweetalert2";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -953,24 +954,27 @@ class ApplyLeave extends Component {
                       },
                     }}
                   />
-                  <div className="col-12" style={{ textAlign: "right" }}>
-                    <button
-                      onClick={this.clearState.bind(this)}
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginRight: 15 }}
-                    >
-                      Clear
-                    </button>
-                    <button
-                      onClick={this.applyLeave.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={this.state.Request_enable}
-                    >
-                      Request Leave
-                    </button>
-                  </div>
+
+                  <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={this.clearState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyLeave.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={this.state.Request_enable}
+                      >
+                        Request Leave
+                      </button>
+                    </div>
+                  </AlgaehSecurityElement>
                 </div>
               </div>
             </div>

@@ -4,9 +4,10 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 function LeaveDetails(props) {
   let myParent = props.parent;
@@ -18,7 +19,7 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Employee Type",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             name: "employee_type",
@@ -27,14 +28,14 @@ function LeaveDetails(props) {
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: GlobalVariables.EMP_TYPE
+              data: GlobalVariables.EMP_TYPE,
             },
-            onChange: value => myParent.dropDownHandler(value),
+            onChange: (value) => myParent.dropDownHandler(value),
             onClear: () => {
               myParent.setState({
-                employee_type: null
+                employee_type: null,
               });
-            }
+            },
           }}
         />
 
@@ -42,7 +43,7 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Gender",
-            isImp: true
+            isImp: true,
           }}
           selector={{
             name: "gender",
@@ -51,14 +52,14 @@ function LeaveDetails(props) {
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: GlobalVariables.LEAVE_GENDER
+              data: GlobalVariables.LEAVE_GENDER,
             },
-            onChange: value => myParent.dropDownHandler(value),
+            onChange: (value) => myParent.dropDownHandler(value),
             onClear: () => {
               myParent.setState({
-                gender: null
+                gender: null,
               });
-            }
+            },
           }}
         />
 
@@ -66,18 +67,18 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Days of Eligibility",
-            isImp: true
+            isImp: true,
           }}
           textBox={{
             className: "txt-fld",
             name: "eligible_days",
             value: myParent.state.eligible_days,
             events: {
-              onChange: e => myParent.textHandler(e)
+              onChange: (e) => myParent.textHandler(e),
             },
             others: {
-              type: "number"
-            }
+              type: "number",
+            },
           }}
         />
 
@@ -85,18 +86,18 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Maximum Limit",
-            isImp: true
+            isImp: true,
           }}
           textBox={{
             className: "txt-fld",
             name: "max_number_days",
             value: myParent.state.max_number_days,
             events: {
-              onChange: e => myParent.textHandler(e)
+              onChange: (e) => myParent.textHandler(e),
             },
             others: {
-              type: "number"
-            }
+              type: "number",
+            },
           }}
         />
 
@@ -108,7 +109,7 @@ function LeaveDetails(props) {
                 type="checkbox"
                 name="min_service_required"
                 checked={myParent.state.min_service_required}
-                onChange={e => myParent.changeChecks(e)}
+                onChange={(e) => myParent.changeChecks(e)}
               />
               <span>Yes</span>
             </label>
@@ -118,19 +119,19 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Service in Years",
-            isImp: myParent.state.min_service_required
+            isImp: myParent.state.min_service_required,
           }}
           textBox={{
             className: "txt-fld",
             name: "service_years",
             value: myParent.state.service_years,
             events: {
-              onChange: e => myParent.textHandler(e)
+              onChange: (e) => myParent.textHandler(e),
             },
             others: {
               type: "number",
-              disabled: !myParent.state.min_service_required
-            }
+              disabled: !myParent.state.min_service_required,
+            },
           }}
         />
 
@@ -142,7 +143,7 @@ function LeaveDetails(props) {
                 type="checkbox"
                 name="once_life_term"
                 checked={myParent.state.once_life_term}
-                onChange={e => myParent.changeChecks(e)}
+                onChange={(e) => myParent.changeChecks(e)}
               />
               <span>Yes</span>
             </label>
@@ -157,7 +158,7 @@ function LeaveDetails(props) {
                 type="checkbox"
                 name="allow_probation"
                 checked={myParent.state.allow_probation}
-                onChange={e => myParent.changeChecks(e)}
+                onChange={(e) => myParent.changeChecks(e)}
               />
               <span>Yes</span>
             </label>
@@ -168,30 +169,32 @@ function LeaveDetails(props) {
           div={{ className: "col-2" }}
           label={{
             forceLabel: "Mandatory Utlilize Days",
-            isImp: true
+            isImp: true,
           }}
           textBox={{
             className: "txt-fld",
             name: "mandatory_utilize_days",
             value: myParent.state.mandatory_utilize_days,
             events: {
-              onChange: e => myParent.textHandler(e)
+              onChange: (e) => myParent.textHandler(e),
             },
             others: {
-              type: "number"
-            }
+              type: "number",
+            },
           }}
         />
 
-        <div className="col-2">
-          <button
-            onClick={myParent.addLeaveDetails.bind(myParent)}
-            className="btn btn-primary"
-            style={{ marginTop: 19 }}
-          >
-            Add to List
-          </button>
-        </div>
+        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+          <div className="col-2">
+            <button
+              onClick={myParent.addLeaveDetails.bind(myParent)}
+              className="btn btn-primary"
+              style={{ marginTop: 19 }}
+            >
+              Add to List
+            </button>
+          </div>
+        </AlgaehSecurityElement>
       </div>
 
       <div className="row">
@@ -202,7 +205,7 @@ function LeaveDetails(props) {
               {
                 fieldName: "employee_type",
                 label: <AlgaehLabel label={{ forceLabel: "Employee Type" }} />,
-                displayTemplate: row => {
+                displayTemplate: (row) => {
                   return (
                     <span>
                       {row.employee_type === "PE"
@@ -219,7 +222,7 @@ function LeaveDetails(props) {
                     </span>
                   );
                 },
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehAutoComplete
                       selector={{
@@ -229,19 +232,22 @@ function LeaveDetails(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.EMP_TYPE
+                          data: GlobalVariables.EMP_TYPE,
                         },
-                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                        onChange: myParent.changeGridEditors.bind(
+                          myParent,
+                          row
+                        ),
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "gender",
 
                 label: <AlgaehLabel label={{ forceLabel: "Gender" }} />,
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehAutoComplete
                       selector={{
@@ -251,13 +257,16 @@ function LeaveDetails(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.LEAVE_GENDER
+                          data: GlobalVariables.LEAVE_GENDER,
                         },
-                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                        onChange: myParent.changeGridEditors.bind(
+                          myParent,
+                          row
+                        ),
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "eligible_days",
@@ -265,7 +274,7 @@ function LeaveDetails(props) {
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Days of Eligibility" }} />
                 ),
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehFormGroup
                       textBox={{
@@ -276,21 +285,21 @@ function LeaveDetails(props) {
                           onChange: myParent.changeGridEditors.bind(
                             myParent,
                             row
-                          )
+                          ),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "max_number_days",
 
                 label: <AlgaehLabel label={{ forceLabel: "Maximum Limit" }} />,
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehFormGroup
                       textBox={{
@@ -301,15 +310,15 @@ function LeaveDetails(props) {
                           onChange: myParent.changeGridEditors.bind(
                             myParent,
                             row
-                          )
+                          ),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "min_service_required",
@@ -318,7 +327,7 @@ function LeaveDetails(props) {
                     label={{ forceLabel: "Min. Service Required" }}
                   />
                 ),
-                displayTemplate: row => {
+                displayTemplate: (row) => {
                   return (
                     <span>
                       {row.min_service_required === "Y"
@@ -329,7 +338,7 @@ function LeaveDetails(props) {
                     </span>
                   );
                 },
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehAutoComplete
                       selector={{
@@ -339,27 +348,30 @@ function LeaveDetails(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
-                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                        onChange: myParent.changeGridEditors.bind(
+                          myParent,
+                          row
+                        ),
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "service_years",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Service in Years" }} />
                 ),
-                displayTemplate: row => {
+                displayTemplate: (row) => {
                   return (
                     <span>
                       {row.service_years ? row.service_years : "Not Applicable"}
                     </span>
                   );
                 },
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehFormGroup
                       textBox={{
@@ -370,22 +382,22 @@ function LeaveDetails(props) {
                           onChange: myParent.changeGridEditors.bind(
                             myParent,
                             row
-                          )
+                          ),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "once_life_term",
                 label: (
                   <AlgaehLabel label={{ forceLabel: "Once in Life Time" }} />
                 ),
-                displayTemplate: row => {
+                displayTemplate: (row) => {
                   return (
                     <span>
                       {row.once_life_term === "Y"
@@ -396,7 +408,7 @@ function LeaveDetails(props) {
                     </span>
                   );
                 },
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehAutoComplete
                       selector={{
@@ -406,13 +418,16 @@ function LeaveDetails(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
-                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                        onChange: myParent.changeGridEditors.bind(
+                          myParent,
+                          row
+                        ),
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "allow_probation",
@@ -421,7 +436,7 @@ function LeaveDetails(props) {
                     label={{ forceLabel: "Allow during Probation" }}
                   />
                 ),
-                displayTemplate: row => {
+                displayTemplate: (row) => {
                   return (
                     <span>
                       {row.allow_probation === "Y"
@@ -432,7 +447,7 @@ function LeaveDetails(props) {
                     </span>
                   );
                 },
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehAutoComplete
                       selector={{
@@ -442,13 +457,16 @@ function LeaveDetails(props) {
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: GlobalVariables.FORMAT_YESNO
+                          data: GlobalVariables.FORMAT_YESNO,
                         },
-                        onChange: myParent.changeGridEditors.bind(myParent, row)
+                        onChange: myParent.changeGridEditors.bind(
+                          myParent,
+                          row
+                        ),
                       }}
                     />
                   );
-                }
+                },
               },
               {
                 fieldName: "mandatory_utilize_days",
@@ -457,7 +475,7 @@ function LeaveDetails(props) {
                     label={{ forceLabel: "Mandatory Utlilize Days" }}
                   />
                 ),
-                editorTemplate: row => {
+                editorTemplate: (row) => {
                   return (
                     <AlagehFormGroup
                       textBox={{
@@ -468,27 +486,27 @@ function LeaveDetails(props) {
                           onChange: myParent.changeGridEditors.bind(
                             myParent,
                             row
-                          )
+                          ),
                         },
                         others: {
-                          type: "number"
-                        }
+                          type: "number",
+                        },
                       }}
                     />
                   );
-                }
-              }
+                },
+              },
             ]}
             keyId="hims_d_leave_detail_id"
             dataSource={{
-              data: myParent.state.leaveDetails
+              data: myParent.state.leaveDetails,
             }}
             isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
               onEdit: () => {},
               onDelete: myParent.deleteLeaveDetail.bind(myParent),
-              onDone: myParent.updateLeaveDetail.bind(myParent)
+              onDone: myParent.updateLeaveDetail.bind(myParent),
             }}
           />
         </div>

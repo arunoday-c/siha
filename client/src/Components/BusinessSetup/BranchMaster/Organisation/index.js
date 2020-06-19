@@ -249,76 +249,45 @@ export function Organization(props) {
                     </>
                   )}
                 </Upload>
+                <br></br>{" "}
+                <Upload
+                  name="org_image"
+                  listType="picture-card"
+                  showUploadList={false}
+                  onChange={onLogoHandleChange}
+                  data={{
+                    image_id: hims_d_organization_id,
+                    logo_type: "APP",
+                  }}
+                  action={logoUrl({ uri: "/Document/saveLogo" })}
+                  accept=".png"
+                  className="orgImageUpload"
+                >
+                  {app_logo ? (
+                    <img
+                      src={app_logo}
+                      alt="avatar"
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <>
+                      <LoadLogo
+                        key="app"
+                        input={{
+                          image_id: hims_d_organization_id,
+                          logo_type: "APP",
+                        }}
+                      />
+                      {uploadButton}
+                    </>
+                  )}
+                </Upload>
               </div>{" "}
               <div className="col-9">
                 {" "}
                 <div className="row">
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-4 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Business Reg. Name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "organization_name",
-                      type: "text",
-                      className: "txt-fld",
-                      placeholder: "Business Reg. Name",
-                      value: organization_name,
-                      onChange: onChangeHandler,
-                      disabled: disabledEdits,
-                    }}
-                  />
-                  {/* <div className="col-12">
-            {" "}
-            <div className="ui input">
-              <input
-                type="text"
-                disabled={disabledEdits}
-                name="organization_name"
-                defaultValue={organization_name}
-                onChange={onChangeHandler}
-              ></input>
-            </div>
-          </div> */}
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-4 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Business Reg.. No.",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "business_registration_number",
-                      type: "text",
-                      className: "txt-fld",
-                      placeholder: "Business Registration Number",
-                      value: business_registration_number,
-                      onChange: onChangeHandler,
-                    }}
-                  />
-                  <AlgaehFormGroup
-                    div={{
-                      className: "col-4 form-group mandatory",
-                    }}
-                    label={{
-                      forceLabel: "Tax No.",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      name: "tax_number",
-                      type: "text",
-                      className: "txt-fld",
-                      placeholder: "Tax Number",
-                      value: tax_number,
-                      onChange: onChangeHandler,
-                    }}
-                  />
                   <AlgaehAutoComplete
-                    div={{ className: "col-5 form-group mandatory" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{ forceLabel: "Product Type", isImp: true }}
                     selector={{
                       name: "product_type",
@@ -353,6 +322,72 @@ export function Organization(props) {
                       },
                       onChange: onChangeHandler,
                       onClear: onClearHandler,
+                    }}
+                  />{" "}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-6 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Business Reg. Name",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "organization_name",
+                      type: "text",
+                      className: "txt-fld",
+                      placeholder: "Business Reg. Name",
+                      value: organization_name,
+                      onChange: onChangeHandler,
+                      disabled: disabledEdits,
+                    }}
+                  />
+                </div>
+                <div className="row">
+                  {/* <div className="col-12">
+            {" "}
+            <div className="ui input">
+              <input
+                type="text"
+                disabled={disabledEdits}
+                name="organization_name"
+                defaultValue={organization_name}
+                onChange={onChangeHandler}
+              ></input>
+            </div>
+          </div> */}
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Business Reg.. No.",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "business_registration_number",
+                      type: "text",
+                      className: "txt-fld",
+                      placeholder: "Business Registration Number",
+                      value: business_registration_number,
+                      onChange: onChangeHandler,
+                    }}
+                  />
+                  <AlgaehFormGroup
+                    div={{
+                      className: "col-3 form-group mandatory",
+                    }}
+                    label={{
+                      forceLabel: "Tax No.",
+                      isImp: true,
+                    }}
+                    textBox={{
+                      name: "tax_number",
+                      type: "text",
+                      className: "txt-fld",
+                      placeholder: "Tax Number",
+                      value: tax_number,
+                      onChange: onChangeHandler,
                     }}
                   />
                   <AlgaehAutoComplete
@@ -411,50 +446,10 @@ export function Organization(props) {
 
                       onClear: onClearHandler,
                     }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-3">
-                <Upload
-                  name="org_image"
-                  listType="picture-card"
-                  showUploadList={false}
-                  onChange={onLogoHandleChange}
-                  data={{
-                    image_id: hims_d_organization_id,
-                    logo_type: "APP",
-                  }}
-                  action={logoUrl({ uri: "/Document/saveLogo" })}
-                  accept=".png"
-                  className="orgImageUpload"
-                >
-                  {app_logo ? (
-                    <img
-                      src={app_logo}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    <>
-                      <LoadLogo
-                        key="app"
-                        input={{
-                          image_id: hims_d_organization_id,
-                          logo_type: "APP",
-                        }}
-                      />
-                      {uploadButton}
-                    </>
-                  )}
-                </Upload>
-              </div>
-              <div className="col">
-                <div className="row">
+                  />{" "}
                   <AlgaehFormGroup
                     div={{
-                      className: "col-4 form-group mandatory",
+                      className: "col-5 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Email",
@@ -486,7 +481,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-4 form-group mandatory",
+                      className: "col-6 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Address Line 1",
@@ -502,7 +497,7 @@ export function Organization(props) {
                   />
                   <AlgaehFormGroup
                     div={{
-                      className: "col-4 form-group mandatory",
+                      className: "col-6 form-group mandatory",
                     }}
                     label={{
                       forceLabel: "Address Line 2",
@@ -515,9 +510,9 @@ export function Organization(props) {
                       value: address2,
                       onChange: onChangeHandler,
                     }}
-                  />
-                  <div className="col-4 globalSearchCntr">
-                    <AlgaehLabel label={{ forceLabel: "Organization Head" }} />
+                  />{" "}
+                  <div className="col-10 globalSearchCntr">
+                    <AlgaehLabel label={{ forceLabel: "Organisation Head" }} />
                     <h6 onClick={employeeSearch}>
                       {fullName ? fullName : full_name}
                       <i className="fas fa-search fa-lg"></i>

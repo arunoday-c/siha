@@ -632,35 +632,41 @@ let insertOrderedServices = (req, res, next) => {
                           });
                         });
                     } else {
-                      services = new LINQ(req.body.billdetails)
-                        .Select((s) => {
+                      if (req.body.billdetails.length > 0) {
+                        services = req.body.billdetails.map((s) => {
                           patient_id = s.patient_id;
                           doctor_id = s.doctor_id;
                           visit_id = s.visit_id;
                           return s.services_id;
-                        })
-                        .ToArray();
-
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
-                              where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
-                          values: [patient_id, doctor_id, visit_id, services],
-                          printQuery: true,
-                        })
-                        .then((ResultOfFetchOrderIds) => {
-                          req.records = {
-                            resultOrder,
-                            ResultOfFetchOrderIds: ResultOfFetchOrderIds,
-                          };
-                          next();
-                        })
-                        .catch((error) => {
-                          _mysql.rollBackTransaction(() => {
-                            next(error);
-                          });
                         });
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                              where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+                            values: [patient_id, doctor_id, visit_id, services],
+                            printQuery: true,
+                          })
+                          .then((ResultOfFetchOrderIds) => {
+                            req.records = {
+                              resultOrder,
+                              ResultOfFetchOrderIds: ResultOfFetchOrderIds,
+                            };
+                            next();
+                          })
+                          .catch((error) => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      } else {
+                        req.records = {
+                          resultOrder,
+                          ResultOfFetchOrderIds: [],
+                        };
+                        next();
+                      }
                     }
                   })
                   .catch((e) => {
@@ -2323,7 +2329,6 @@ function deleteOrderServices(options) {
             printQuery: true,
           })
           .then((result) => {
-            // console.log("result", result[0])
             let strQry = "";
             let order_ids = _.map(delete_order_services, (o) => {
               return o.hims_f_ordered_services_id;

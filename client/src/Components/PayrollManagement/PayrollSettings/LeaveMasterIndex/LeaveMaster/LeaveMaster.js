@@ -8,6 +8,7 @@ import LeaveRules from "./LeaveRules/LeaveRules";
 import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 import swal from "sweetalert2";
 
 class LeaveMaster extends Component {
@@ -42,13 +43,13 @@ class LeaveMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.leaveDetails.pop(row);
 
         this.setState({
-          leaveDetails: this.state.leaveDetails
+          leaveDetails: this.state.leaveDetails,
         });
       }
     });
@@ -62,13 +63,13 @@ class LeaveMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.leaveRules.pop(row);
 
         this.setState({
-          leaveRules: this.state.leaveRules
+          leaveRules: this.state.leaveRules,
         });
       }
     });
@@ -81,13 +82,13 @@ class LeaveMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         this.state.leaveEncash.pop(row);
 
         this.setState({
-          leaveEncash: this.state.leaveEncash
+          leaveEncash: this.state.leaveEncash,
         });
       }
     });
@@ -97,7 +98,7 @@ class LeaveMaster extends Component {
     if (this.state.leaveDetails.length === 0) {
       swalMessage({
         title: "Please Add at least one Leave Detail",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.calculation_type !== "NO" &&
@@ -105,7 +106,7 @@ class LeaveMaster extends Component {
     ) {
       swalMessage({
         title: "Please Add at least one Leave Rule",
-        type: "warning"
+        type: "warning",
       });
     } else if (
       this.state.leave_encash === true &&
@@ -113,7 +114,7 @@ class LeaveMaster extends Component {
     ) {
       swalMessage({
         title: "Please Add at least one Leave Encashment",
-        type: "warning"
+        type: "warning",
       });
     } else {
       let send_data = {
@@ -141,7 +142,7 @@ class LeaveMaster extends Component {
         leaveEncash: this.state.leaveEncash,
         leaveRules: this.state.leaveRules,
         leaveDetails: this.state.leaveDetails,
-        reset_leave: this.state.reset_leave
+        reset_leave: this.state.reset_leave,
       };
 
       algaehApiCall({
@@ -149,22 +150,22 @@ class LeaveMaster extends Component {
         method: "POST",
         module: "hrManagement",
         data: send_data,
-        onSuccess: res => {
+        onSuccess: (res) => {
           if (res.data.success) {
             swalMessage({
               title: "Leave Added Successfully",
-              type: "success"
+              type: "success",
             });
             this.clearTabState();
             document.getElementById("lmi-btn").click();
           }
         },
-        onFailure: err => {
+        onFailure: (err) => {
           swalMessage({
             title: err.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   }
@@ -183,11 +184,11 @@ class LeaveMaster extends Component {
           from_value: this.state.from_value,
           to_value: this.state.to_value,
           value_type: this.state.value_type,
-          total_days: this.state.total_days
+          total_days: this.state.total_days,
         });
 
         this.setState({
-          leaveRules: details
+          leaveRules: details,
         });
 
         this.setState({
@@ -196,9 +197,9 @@ class LeaveMaster extends Component {
           from_value: parseFloat(this.state.to_value) + 1,
           to_value: null,
           value_type: null,
-          total_days: null
+          total_days: null,
         });
-      }
+      },
     });
   }
 
@@ -218,11 +219,11 @@ class LeaveMaster extends Component {
           once_life_term: this.state.once_life_term ? "Y" : "N",
           allow_probation: this.state.allow_probation ? "Y" : "N",
           max_number_days: this.state.max_number_days,
-          mandatory_utilize_days: this.state.mandatory_utilize_days
+          mandatory_utilize_days: this.state.mandatory_utilize_days,
         });
 
         this.setState({
-          leaveDetails: details
+          leaveDetails: details,
         });
 
         this.setState({
@@ -234,9 +235,9 @@ class LeaveMaster extends Component {
           once_life_term: null,
           allow_probation: null,
           max_number_days: null,
-          mandatory_utilize_days: null
+          mandatory_utilize_days: null,
         });
-      }
+      },
     });
   }
 
@@ -249,18 +250,18 @@ class LeaveMaster extends Component {
 
         details.push({
           earnings_id: this.state.earnings_id,
-          percent: this.state.percent
+          percent: this.state.percent,
         });
 
         this.setState({
-          leaveEncash: details
+          leaveEncash: details,
         });
 
         this.setState({
           earnings_id: null,
-          percent: null
+          percent: null,
         });
-      }
+      },
     });
   }
 
@@ -303,9 +304,9 @@ class LeaveMaster extends Component {
           //   : null;
 
           this.setState({
-            pageDisplay: specified
+            pageDisplay: specified,
           });
-        }
+        },
       });
     } else {
       for (var i = 0; i < element.length; i++) {
@@ -313,7 +314,7 @@ class LeaveMaster extends Component {
       }
       e.currentTarget.classList.add("active");
       this.setState({
-        pageDisplay: specified
+        pageDisplay: specified,
       });
     }
   }
@@ -323,25 +324,25 @@ class LeaveMaster extends Component {
       uri: "/payrollsettings/getEarningDeduction",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            earning_deductions: res.data.records
+            earning_deductions: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   textHandler(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -349,19 +350,19 @@ class LeaveMaster extends Component {
     algaehApiCall({
       uri: "/masters/get/relegion",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            religions: res.data.records
+            religions: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -370,7 +371,7 @@ class LeaveMaster extends Component {
       case "religion_required":
         this.setState(
           {
-            [e.target.name]: e.target.checked
+            [e.target.name]: e.target.checked,
           },
           () => {
             if (
@@ -386,12 +387,12 @@ class LeaveMaster extends Component {
       case "leave_encash":
         this.setState(
           {
-            [e.target.name]: e.target.checked
+            [e.target.name]: e.target.checked,
           },
           () => {
             if (!this.state.leave_encash) {
               this.setState({
-                encashment_percentage: 0
+                encashment_percentage: 0,
               });
             }
             // !this.state.leave_encash
@@ -406,12 +407,12 @@ class LeaveMaster extends Component {
       case "leave_carry_forward":
         this.setState(
           {
-            [e.target.name]: e.target.checked
+            [e.target.name]: e.target.checked,
           },
           () => {
             if (!this.state.leave_carry_forward) {
               this.setState({
-                carry_forward_percentage: 0
+                carry_forward_percentage: 0,
               });
             }
             // !this.state.leave_carry_forward
@@ -425,7 +426,7 @@ class LeaveMaster extends Component {
 
       default:
         this.setState({
-          [e.target.name]: e.target.checked
+          [e.target.name]: e.target.checked,
         });
         break;
     }
@@ -433,11 +434,11 @@ class LeaveMaster extends Component {
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
-  clearTabState = tab => {
+  clearTabState = (tab) => {
     tab = tab ? tab : "";
     let clearObj = {};
     switch (tab) {
@@ -463,7 +464,7 @@ class LeaveMaster extends Component {
           holiday_reimbursement: "",
           exit_permit_required: "",
           proportionate_leave: "",
-          document_mandatory: ""
+          document_mandatory: "",
         };
         break;
 
@@ -478,7 +479,7 @@ class LeaveMaster extends Component {
           once_life_term: false,
           allow_probation: false,
           mandatory_utilize_days: "",
-          leaveDetails: []
+          leaveDetails: [],
         };
         break;
 
@@ -486,7 +487,7 @@ class LeaveMaster extends Component {
         clearObj = {
           earning_deductions: "",
           percent: "",
-          leaveEncash: []
+          leaveEncash: [],
         };
         break;
 
@@ -498,7 +499,7 @@ class LeaveMaster extends Component {
           from_value: 0,
           to_value: "",
           value_type: null,
-          total_days: ""
+          total_days: "",
         };
         break;
 
@@ -528,13 +529,13 @@ class LeaveMaster extends Component {
           holiday_reimbursement: "",
           exit_permit_required: "",
           proportionate_leave: "",
-          document_mandatory: ""
+          document_mandatory: "",
         };
         break;
     }
     this.setState(
       {
-        ...clearObj
+        ...clearObj,
       },
       console.log(clearObj)
     );
@@ -545,9 +546,9 @@ class LeaveMaster extends Component {
     this.props.onClose();
   };
 
-  updateLeaveDetail(data) { }
-  updateLeaveEncash(data) { }
-  updateLeaveRule(data) { }
+  updateLeaveDetail(data) {}
+  updateLeaveEncash(data) {}
+  updateLeaveRule(data) {}
 
   render() {
     return (
@@ -556,7 +557,7 @@ class LeaveMaster extends Component {
           openPopup={this.props.open}
           title="Leave Master"
           events={{
-            onClose: this.clearAndClose
+            onClose: this.clearAndClose,
           }}
         >
           <div className=" leaveMasterMainPage">
@@ -570,7 +571,7 @@ class LeaveMaster extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Leave"
+                        forceLabel: "Leave",
                       }}
                     />
                   }
@@ -584,7 +585,7 @@ class LeaveMaster extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Leave Details"
+                        forceLabel: "Leave Details",
                       }}
                     />
                   }
@@ -597,7 +598,7 @@ class LeaveMaster extends Component {
                   {
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Leave Encashment"
+                        forceLabel: "Leave Encashment",
                       }}
                     />
                   }
@@ -611,7 +612,7 @@ class LeaveMaster extends Component {
                     {
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Leave Rules"
+                          forceLabel: "Leave Rules",
                         }}
                       />
                     }
@@ -638,13 +639,15 @@ class LeaveMaster extends Component {
                   <div className="col-lg-4"> &nbsp;</div>
 
                   <div className="col-lg-8">
-                    <button
-                      onClick={this.saveLeaveMaster.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      SAVE
-                    </button>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <button
+                        onClick={this.saveLeaveMaster.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        SAVE
+                      </button>
+                    </AlgaehSecurityElement>
                     <button
                       onClick={() => this.clearTabState(this.state.pageDisplay)}
                       type="button"

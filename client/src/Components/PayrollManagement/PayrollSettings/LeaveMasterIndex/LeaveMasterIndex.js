@@ -5,7 +5,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import LeaveEdit from "./LeaveEdit/LeaveEdit";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -17,7 +17,7 @@ export default class LeaveMasterIndex extends Component {
       open: false,
       openEdit: false,
       leaves: [],
-      edit_window: null
+      edit_window: null,
     };
 
     this.getLeaveMaster();
@@ -25,7 +25,7 @@ export default class LeaveMasterIndex extends Component {
 
   editLeaveMaster() {
     this.setState({
-      open: true
+      open: true,
     });
   }
 
@@ -34,26 +34,26 @@ export default class LeaveMasterIndex extends Component {
       uri: "/selfService/getLeaveMaster",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            leaves: res.data.records
+            leaves: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   closeModal() {
     this.setState(
       {
-        open: false
+        open: false,
       },
       () => {
         this.getLeaveMaster();
@@ -65,7 +65,7 @@ export default class LeaveMasterIndex extends Component {
     this.setState(
       {
         openEdit: false,
-        hims_d_leave_id: null
+        hims_d_leave_id: null,
       },
       () => {
         this.getLeaveMaster();
@@ -77,7 +77,7 @@ export default class LeaveMasterIndex extends Component {
     this.setState({
       [e.name]: e.value,
       openEdit: true,
-      currLeave: data
+      currLeave: data,
     });
   }
 
@@ -87,7 +87,7 @@ export default class LeaveMasterIndex extends Component {
       openEdit: false,
       open: false,
       leave_edit: null,
-      currLeave: null
+      currLeave: null,
     });
   }
 
@@ -122,7 +122,7 @@ export default class LeaveMasterIndex extends Component {
                   className="btn btn-primary btn-circle active"
                   onClick={() => {
                     this.setState({
-                      open: true
+                      open: true,
                     });
                   }}
                 >
@@ -140,9 +140,10 @@ export default class LeaveMasterIndex extends Component {
                       {
                         fieldName: "actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
+                              div={{ className: "noLabel" }}
                               selector={{
                                 name: "leave_edit",
                                 className: "select-fld",
@@ -150,9 +151,12 @@ export default class LeaveMasterIndex extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.LEAVE_EDIT
+                                  data: GlobalVariables.LEAVE_EDIT,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
@@ -160,14 +164,14 @@ export default class LeaveMasterIndex extends Component {
                         others: {
                           maxWidth: 110,
                           resizable: false,
-                          filterable: false
-                        }
+                          filterable: false,
+                        },
                       },
                       {
                         fieldName: "leave_code",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                        )
+                        ),
                       },
                       {
                         fieldName: "leave_description",
@@ -175,7 +179,7 @@ export default class LeaveMasterIndex extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Leave Description" }}
                           />
-                        )
+                        ),
                       },
                       {
                         fieldName: "include_holiday",
@@ -184,17 +188,17 @@ export default class LeaveMasterIndex extends Component {
                             label={{ forceLabel: "Includes Holidays" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.include_holiday === "Y"
                                 ? "Yes"
                                 : row.include_holiday === "N"
-                                  ? "No"
-                                  : "Not Specified"}
+                                ? "No"
+                                : "Not Specified"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "include_weekoff",
@@ -203,54 +207,54 @@ export default class LeaveMasterIndex extends Component {
                             label={{ forceLabel: "Includes Weekoff" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.include_weekoff === "Y"
                                 ? "Yes"
                                 : row.include_weekoff === "N"
-                                  ? "No"
-                                  : "Not Specified"}
+                                ? "No"
+                                : "Not Specified"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.leave_type === "P"
                                 ? "Paid"
                                 : row.leave_type === "U"
-                                  ? "Unpaid"
-                                  : "Not Specified"}
+                                ? "Unpaid"
+                                : "Not Specified"}
                             </span>
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_mode",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Mode" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.leave_mode === "REG"
                                 ? "Regular"
                                 : row.leave_mode === "LOP"
-                                  ? "Loss of Pay"
-                                  : row.leave_mode === "COM"
-                                    ? "Comp Off"
-                                    : "Not Specified"}
+                                ? "Loss of Pay"
+                                : row.leave_mode === "COM"
+                                ? "Comp Off"
+                                : "Not Specified"}
                             </span>
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_leave_id"
                     dataSource={{ data: this.state.leaves }}

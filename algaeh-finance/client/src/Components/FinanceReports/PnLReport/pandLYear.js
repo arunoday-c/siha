@@ -3,9 +3,8 @@ import moment from "moment";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
 import { newAlgaehApi } from "../../../hooks";
-import { AlgaehMessagePop } from "algaeh-react-components";
 
-import { AlgaehTable } from "algaeh-react-components";
+import { AlgaehTable, AlgaehMessagePop } from "algaeh-react-components";
 function PLYear({ data, layout }) {
   const [incomeExpenceData, setincomeExpence] = useState([]);
   const [totals, setTotals] = useState({});

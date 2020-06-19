@@ -1252,13 +1252,41 @@ export default {
           left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
           left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
           left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id
-        where year=? and month=?   ${strData}  order by project_id ;`,
-          values: [input.year, input.month],
+          where year=? and month=?   ${strData}  order by project_id ;     
+          Select  concat(round((COALESCE(sum(worked_hours),0) + COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',   right(concat(00,sum(worked_minutes)%60),2)),0)),2))
+          as total_worked_hours,sum(cost) as total_cost  from hims_f_project_wise_payroll PWP 
+          inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
+          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
+          left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
+          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
+          left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id  
+           where year=? and month=?   ${strData} ;
+          select count( distinct employee_id) as no_employee , count(distinct project_id) as no_projects
+          from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id 
+          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  
+          left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  
+          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
+          left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id  
+          where year=? and month=?   ${strData} ;`,
+          values: [
+            input.year,
+            input.month,
+            input.year,
+            input.month,
+            input.year,
+            input.month,
+          ],
           printQuery: true,
         })
         .then((result) => {
           _mysql.releaseConnection();
-          req.records = result;
+          req.records = {
+            pjc_array: result[0],
+            total_cost: result[1][0]["total_cost"],
+            total_worked_hours: result[1][0]["total_worked_hours"],
+            no_employees: result[2][0]["no_employee"],
+            no_projects: result[2][0]["no_projects"],
+          };
           next();
         })
         .catch((e) => {
