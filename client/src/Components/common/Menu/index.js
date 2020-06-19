@@ -41,7 +41,7 @@ function NavBars(props) {
           return;
         }
         const details = tokenDecode(result);
-        debugger
+
         setUserToken(details);
       });
     }
@@ -105,19 +105,19 @@ function NavBars(props) {
             <i className="fas fa-angle-double-left  fa-lg" />
           </div>
         ) : (
-            <div className="sideMenuBars" onClick={showMenuClick}>
-              <i className="fas fa-bars fa-lg" />
-            </div>
-          )}
+          <div className="sideMenuBars" onClick={showMenuClick}>
+            <i className="fas fa-bars fa-lg" />
+          </div>
+        )}
 
         <div className="navbar-brand appLogoCntr">
           <span className="appCustomLogo">
             <img
               src={`http://${window.location.hostname}${
                 window.location.port ? ":3006" : "/docServer"
-                }/api/v1/Document/getLogo?image_id=${
+              }/api/v1/Document/getLogo?image_id=${
                 userToken.organization_id
-                }&logo_type=APP`}
+              }&logo_type=APP`}
               alt="client logo"
               onError={addDefaultSrc}
             />

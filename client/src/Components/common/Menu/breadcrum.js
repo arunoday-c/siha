@@ -8,20 +8,20 @@ export default memo(function ({
   selectedMenu,
   userMenu,
   userLanguage,
-  setSelectedMenuItem
+  setSelectedMenuItem,
 }) {
   if (selectedMenu === undefined) return null;
   const {
     module_name,
     screen_name,
     other_language,
-    s_other_language
+    s_other_language,
   } = selectedMenu;
 
   const menuDetails = userMenu === null ? [] : userMenu;
 
   const selMenuDetails = menuDetails.find(
-    f => f.module_code === selectedMenu.module_code
+    (f) => f.module_code === selectedMenu.module_code
   );
 
   // const {
@@ -35,7 +35,7 @@ export default memo(function ({
   const [pos, setPos] = useState(0);
   const history = useHistory();
   function onShow(e) {
-    setShow(value => {
+    setShow((value) => {
       return !value;
     });
     setPos(e.target.offsetLeft + 15);
@@ -48,8 +48,8 @@ export default memo(function ({
     setCookie("ScreenName", screenName);
     const extraParam =
       item.redirect_url !== undefined &&
-        item.redirect_url !== "" &&
-        item.redirect_url !== null
+      item.redirect_url !== "" &&
+      item.redirect_url !== null
         ? `/${item.redirect_url}`
         : "";
     history.push(`/${screenName}${extraParam}`);
@@ -66,7 +66,7 @@ export default memo(function ({
             className="fas fa-sort-down"
             style={{
               fontSize: "1.3rem",
-              marginTop: "5px"
+              marginTop: "5px",
             }}
           ></i>
         </li>
@@ -83,7 +83,7 @@ export default memo(function ({
                   onClick={() => {
                     onClickScreen(item, item.page_to_redirect, {
                       screen_name: item.screen_name,
-                      s_other_language: item.s_other_language
+                      s_other_language: item.s_other_language,
                     });
                   }}
                 >

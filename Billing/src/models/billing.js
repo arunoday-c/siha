@@ -12,9 +12,9 @@ export default {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
-      console.log("consultation", req.body.consultation)
+      console.log("consultation", req.body.consultation);
       if (req.body.consultation == "N") {
-        next()
+        next();
         return;
       }
       let inputParam = { ...req.body };
@@ -36,11 +36,11 @@ export default {
             new Date(),
             inputParam.counter_id,
             inputParam.shift_id,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerRcptResult => {
+        .then((headerRcptResult) => {
           // utilities.logger().log("headerRcptResult: ", headerRcptResult);
           if (
             headerRcptResult.insertId != null &&
@@ -51,7 +51,7 @@ export default {
               "card_check_number",
               "expiry_date",
               "pay_type",
-              "amount"
+              "amount",
             ];
 
             _mysql
@@ -64,12 +64,12 @@ export default {
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date()
+                  updated_date: new Date(),
                 },
                 bulkInsertOrUpdate: true,
-                printQuery: true
+                printQuery: true,
               })
-              .then(RcptDetailsRecords => {
+              .then((RcptDetailsRecords) => {
                 if (req.connection == null) {
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
@@ -80,14 +80,14 @@ export default {
                   next();
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -107,7 +107,7 @@ export default {
     utilities.logger().log("addBillData: ", req.body);
     try {
       if (req.body.consultation == "N") {
-        next()
+        next();
         return;
       }
       let inputParam = { ...req.body };
@@ -124,6 +124,7 @@ export default {
         _mysql.rollBackTransaction(() => {
           next(errorGen);
         });
+        return;
       }
 
       if (
@@ -140,6 +141,7 @@ export default {
         _mysql.rollBackTransaction(() => {
           next(errorGene);
         });
+        return;
       }
 
       // const utilities = new algaehUtilities();
@@ -196,11 +198,11 @@ export default {
             new Date(),
             inputParam.copay_amount,
             inputParam.deductable_amount,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           // utilities.logger().log("headerResult Bill: ", headerResult);
           req.body.hims_f_billing_header_id = headerResult.insertId;
           if (
@@ -213,9 +215,9 @@ export default {
                 query:
                   "SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
                 values: [inputParam.patient_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(result => {
+              .then((result) => {
                 let existingAdvance = result[0].advance_amount;
                 if (result.length != 0) {
                   inputParam.advance_amount =
@@ -230,18 +232,18 @@ export default {
                         inputParam.advance_amount,
                         inputParam.updated_by,
                         new Date(),
-                        inputParam.patient_id
+                        inputParam.patient_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 }
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -286,11 +288,11 @@ export default {
             "created_by",
             "created_date",
             "updated_by",
-            "updated_date"
+            "updated_date",
           ];
 
           let newDtls = new LINQ(inputParam.billdetails)
-            .Select(s => {
+            .Select((s) => {
               return {
                 hims_f_billing_header_id: headerResult.insertId,
                 service_type_id: s.service_type_id,
@@ -329,7 +331,7 @@ export default {
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
                 updated_date: new Date(),
                 ordered_services_id: s.ordered_services_id,
-                ordered_inventory_id: s.ordered_inventory_id
+                ordered_inventory_id: s.ordered_inventory_id,
               };
             })
             .ToArray();
@@ -342,9 +344,9 @@ export default {
               values: newDtls,
               includeValues: IncludeValues,
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(detailsRecords => {
+            .then((detailsRecords) => {
               // utilities.logger().log("detailsRecords Bill: ", detailsRecords);
               if (req.connection == null) {
                 // _mysql.commitTransaction(() => {
@@ -357,13 +359,13 @@ export default {
                 next();
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -394,84 +396,85 @@ export default {
               "Please select atleast one service"
             )
         );
+        return;
       }
       let sendingObject = {};
       utilities.logger().log("inputParam: ", inputParam);
 
       utilities.logger().log("hasCalculateall: ", hasCalculateall);
       if (hasCalculateall == true) {
-        sendingObject.sub_total_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.sub_total_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.gross_amount)
         );
 
-        sendingObject.net_total = new LINQ(inputParam).Sum(d =>
+        sendingObject.net_total = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.net_amout)
         );
         utilities.logger().log("net_total: ", sendingObject.net_total);
-        sendingObject.discount_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.discount_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.discount_amout)
         );
-        sendingObject.gross_total = new LINQ(inputParam).Sum(d =>
+        sendingObject.gross_total = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.patient_payable)
         );
 
         // Primary Insurance
-        sendingObject.copay_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.copay_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.copay_amount)
         );
-        sendingObject.deductable_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.deductable_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.deductable_amount)
         );
 
         // Secondary Insurance
-        sendingObject.sec_copay_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.sec_copay_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_copay_amount)
         );
-        sendingObject.sec_deductable_amount = new LINQ(inputParam).Sum(d =>
+        sendingObject.sec_deductable_amount = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_deductable_amount)
         );
 
         // Responsibilities
-        sendingObject.patient_res = new LINQ(inputParam).Sum(d =>
+        sendingObject.patient_res = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.patient_resp)
         );
-        sendingObject.company_res = new LINQ(inputParam).Sum(d =>
+        sendingObject.company_res = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.comapany_resp)
         );
-        sendingObject.sec_company_res = new LINQ(inputParam).Sum(d =>
+        sendingObject.sec_company_res = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_company_res)
         );
 
         // Tax Calculation
-        sendingObject.total_tax = new LINQ(inputParam).Sum(d =>
+        sendingObject.total_tax = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.total_tax)
         );
 
-        sendingObject.patient_tax = new LINQ(inputParam).Sum(d =>
+        sendingObject.patient_tax = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.patient_tax)
         );
 
-        sendingObject.s_patient_tax = new LINQ(inputParam).Sum(d =>
+        sendingObject.s_patient_tax = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.s_patient_tax)
         );
 
-        sendingObject.company_tax = new LINQ(inputParam).Sum(d =>
+        sendingObject.company_tax = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.company_tax)
         );
 
-        sendingObject.sec_company_tax = new LINQ(inputParam).Sum(d =>
+        sendingObject.sec_company_tax = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_company_tax)
         );
 
         // Payables
-        sendingObject.patient_payable = new LINQ(inputParam).Sum(d =>
+        sendingObject.patient_payable = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.patient_payable)
         );
 
-        sendingObject.company_payble = new LINQ(inputParam).Sum(d =>
+        sendingObject.company_payble = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.company_payble)
         );
-        sendingObject.sec_company_paybale = new LINQ(inputParam).Sum(d =>
+        sendingObject.sec_company_paybale = new LINQ(inputParam).Sum((d) =>
           parseFloat(d.sec_company_paybale)
         );
         // Sheet Level Discount Nullify
@@ -640,9 +643,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [Module_Name],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.body["receipt_number"] = generatedNumbers[Module_Name];
           _mysql
             .executeQuery({
@@ -661,15 +664,15 @@ export default {
                 inputParam.counter_id,
                 inputParam.shift_id,
                 inputParam.pay_type,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerRcptResult => {
+            .then((headerRcptResult) => {
               req.connection = {
                 connection: _mysql.connection,
                 isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
+                pool: _mysql.pool,
               };
               if (
                 headerRcptResult.insertId != null &&
@@ -682,7 +685,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by"
+                  "updated_by",
                 ];
 
                 _mysql
@@ -691,12 +694,12 @@ export default {
                     values: inputParam.receiptdetails,
                     includeValues: receptSample,
                     extraValues: {
-                      hims_f_receipt_header_id: headerRcptResult.insertId
+                      hims_f_receipt_header_id: headerRcptResult.insertId,
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(RcptDetailsRecords => {
+                  .then((RcptDetailsRecords) => {
                     _mysql
                       .executeQuery({
                         query:
@@ -714,11 +717,11 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.hospital_id,
-                          inputParam.hims_f_patient_id
+                          inputParam.hims_f_patient_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(Insert_Advance => {
+                      .then((Insert_Advance) => {
                         let existingAdvance =
                           Insert_Advance[1][0].advance_amount;
 
@@ -743,43 +746,43 @@ export default {
                               inputParam.advance_amount,
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              inputParam.hims_f_patient_id
+                              inputParam.hims_f_patient_id,
                             ],
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(update_advance => {
+                          .then((update_advance) => {
                             req.records = {
                               receipt_number: generatedNumbers[Module_Name],
-                              total_advance_amount: inputParam.advance_amount
+                              total_advance_amount: inputParam.advance_amount,
                             };
                             next();
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -801,7 +804,7 @@ export default {
         } catch (e) {
           reject(e);
         }
-      }).then(result => {
+      }).then((result) => {
         req.records = result;
         next();
       });
@@ -826,9 +829,9 @@ export default {
       ) {
         req.records = {
           internal_error: true,
-          message: "No receipt details"
+          message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => { });
+        _mysql.rollBackTransaction(() => {});
         next();
         return;
       } else if (
@@ -849,11 +852,11 @@ export default {
               req.userIdentity.hospital_id,
               req.userIdentity.algaeh_d_app_user_id,
               inputParam.shift_id,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
             ],
-            printQuery: true
+            printQuery: true,
           })
-          .then(reslt => {
+          .then((reslt) => {
             let checkShiftStatus = reslt[0];
             let shift_header = reslt[1];
             if (checkShiftStatus.length > 0) {
@@ -876,11 +879,11 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        req.userIdentity.hospital_id
+                        req.userIdentity.hospital_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(headerCashHandover => {
+                    .then((headerCashHandover) => {
                       let header_id = null;
                       if (headerCashHandover.insertId > 0) {
                         header_id = headerCashHandover.insertId;
@@ -910,11 +913,11 @@ export default {
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
                               req.userIdentity.algaeh_d_app_user_id,
-                              req.userIdentity.hospital_id
+                              req.userIdentity.hospital_id,
                             ],
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(CashHandoverDetails => {
+                          .then((CashHandoverDetails) => {
                             if (CashHandoverDetails.insertId > 0) {
                               hims_f_cash_handover_detail_id =
                                 CashHandoverDetails.insertId;
@@ -922,7 +925,7 @@ export default {
 
                             resolve(CashHandoverDetails);
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                               reject(error);
@@ -930,7 +933,7 @@ export default {
                           });
                       }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                         reject(error);
@@ -944,26 +947,26 @@ export default {
                   reject(e);
                 });
               }
-            }).then(result => {
+            }).then((result) => {
               let expected_cash = 0;
               let expected_card = 0;
               let expected_cheque = 0;
               let no_of_cheques = 0;
 
               expected_cash = new LINQ(inputParam.receiptdetails)
-                .Where(w => w.pay_type == "CA")
-                .Sum(s => parseFloat(s.amount));
+                .Where((w) => w.pay_type == "CA")
+                .Sum((s) => parseFloat(s.amount));
 
               expected_card = new LINQ(inputParam.receiptdetails)
-                .Where(w => w.pay_type == "CD")
-                .Sum(s => parseFloat(s.amount));
+                .Where((w) => w.pay_type == "CD")
+                .Sum((s) => parseFloat(s.amount));
 
               expected_cheque = new LINQ(inputParam.receiptdetails)
-                .Where(w => w.pay_type == "CH")
-                .Sum(s => parseFloat(s.amount));
+                .Where((w) => w.pay_type == "CH")
+                .Sum((s) => parseFloat(s.amount));
 
               no_of_cheques = new LINQ(inputParam.receiptdetails)
-                .Where(w => w.pay_type == "CH")
+                .Where((w) => w.pay_type == "CH")
                 .ToArray().length;
 
               _mysql
@@ -972,9 +975,9 @@ export default {
                     "select expected_cash,expected_card, expected_cheque, no_of_cheques from \
                   hims_f_cash_handover_detail where record_status='A' and hims_f_cash_handover_detail_id=?",
                   values: [hims_f_cash_handover_detail_id],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(selectCurrentCash => {
+                .then((selectCurrentCash) => {
                   expected_cash += parseFloat(
                     selectCurrentCash[0].expected_cash
                   );
@@ -1004,11 +1007,11 @@ export default {
                         req.userIdentity.algaeh_d_app_user_id,
                         hims_f_cash_handover_detail_id,
                         hims_f_cash_handover_detail_id,
-                        req.body.receipt_header_id
+                        req.body.receipt_header_id,
                       ],
-                      printQuery: true
+                      printQuery: true,
                     })
-                    .then(updateResult => {
+                    .then((updateResult) => {
                       if (req.connection == null) {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
@@ -1020,27 +1023,27 @@ export default {
                           req.records["internal_error"] = false;
                         } else {
                           req.records = {
-                            internal_error: false
+                            internal_error: false,
                           };
                         }
 
                         next();
                       }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(error => {
+                .catch((error) => {
                   _mysql.rollBackTransaction(() => {
                     next(error);
                   });
                 });
             });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -1051,14 +1054,14 @@ export default {
             _mysql.releaseConnection();
             req.records = {
               internal_error: true,
-              message: "Current user is not a Cahsier in"
+              message: "Current user is not a Cahsier in",
             };
             next();
           });
         } else {
           req.records = {
             internal_error: true,
-            message: "Current user is not a Cahsier"
+            message: "Current user is not a Cahsier",
           };
           _mysql.rollBackTransaction(() => {
             next();
@@ -1084,9 +1087,9 @@ export default {
 
     if (req.body.consultation == "N") {
       req.records = {
-        internal_error: false
+        internal_error: false,
       };
-      next()
+      next();
       return;
     }
     try {
@@ -1105,11 +1108,11 @@ export default {
               values: [
                 req.userIdentity.algaeh_d_app_user_id,
                 inputParam.shift_id,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               let collected_cash = 0;
               let expected_card = 0;
               let expected_cheque = 0;
@@ -1130,8 +1133,8 @@ export default {
               }
 
               collected_cash = new LINQ(inputParam.receiptdetails)
-                .Where(w => w.pay_type == "CA")
-                .Sum(s => parseFloat(s.amount));
+                .Where((w) => w.pay_type == "CA")
+                .Sum((s) => parseFloat(s.amount));
               console.log("collected_cash:", collected_cash);
               if (inputParam.pay_type == "P") {
                 switch (whichQuery) {
@@ -1149,11 +1152,11 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
-                          req.userIdentity.hospital_id
+                          req.userIdentity.hospital_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(headerRes => {
+                      .then((headerRes) => {
                         if (headerRes.insertId > 0) {
                           _mysql
                             .executeQuery({
@@ -1171,11 +1174,11 @@ export default {
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
-                                req.userIdentity.hospital_id
+                                req.userIdentity.hospital_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(handoverDetails => {
+                            .then((handoverDetails) => {
                               if (handoverDetails.insertId > 0) {
                                 _mysql
                                   .executeQuery({
@@ -1187,11 +1190,11 @@ export default {
                                     values: [
                                       handoverDetails.insertId,
                                       handoverDetails.insertId,
-                                      req.body.receipt_header_id
+                                      req.body.receipt_header_id,
                                     ],
-                                    printQuery: true
+                                    printQuery: true,
                                   })
-                                  .then(updateRecept => {
+                                  .then((updateRecept) => {
                                     if (
                                       req.connection == null ||
                                       req.adv_refnd == "Y"
@@ -1208,14 +1211,14 @@ export default {
                                         req.records["internal_error"] = false;
                                       } else {
                                         req.records = {
-                                          internal_error: false
+                                          internal_error: false,
                                         };
                                       }
 
                                       next();
                                     }
                                   })
-                                  .catch(error => {
+                                  .catch((error) => {
                                     _mysql.rollBackTransaction(() => {
                                       next(error);
                                     });
@@ -1223,14 +1226,14 @@ export default {
                               } else {
                                 req.records = {
                                   internal_error: true,
-                                  message: "detais error"
+                                  message: "detais error",
                                 };
                                 _mysql.rollBackTransaction(() => {
                                   next();
                                 });
                               }
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -1238,14 +1241,14 @@ export default {
                         } else {
                           req.records = {
                             internal_error: true,
-                            message: "Header error"
+                            message: "Header error",
                           };
                           _mysql.rollBackTransaction(() => {
                             next();
                           });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1270,11 +1273,11 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
-                          req.userIdentity.hospital_id
+                          req.userIdentity.hospital_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(handoverDetails => {
+                      .then((handoverDetails) => {
                         if (handoverDetails.insertId > 0) {
                           _mysql
                             .executeQuery({
@@ -1286,11 +1289,11 @@ export default {
                               values: [
                                 handoverDetails.insertId,
                                 handoverDetails.insertId,
-                                req.body.receipt_header_id
+                                req.body.receipt_header_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(updateRecept => {
+                            .then((updateRecept) => {
                               if (
                                 req.connection == null ||
                                 req.adv_refnd == "Y"
@@ -1307,14 +1310,14 @@ export default {
                                   req.records["internal_error"] = false;
                                 } else {
                                   req.records = {
-                                    internal_error: false
+                                    internal_error: false,
                                   };
                                 }
 
                                 next();
                               }
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -1322,14 +1325,14 @@ export default {
                         } else {
                           req.records = {
                             internal_error: true,
-                            message: "detais error"
+                            message: "detais error",
                           };
                           _mysql.rollBackTransaction(() => {
                             next();
                           });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1354,11 +1357,11 @@ export default {
                           result[0]["hims_f_cash_handover_detail_id"],
                           result[0]["hims_f_cash_handover_detail_id"],
                           result[0]["hims_f_cash_handover_detail_id"],
-                          req.body.receipt_header_id
+                          req.body.receipt_header_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(updateResult => {
+                      .then((updateResult) => {
                         if (req.connection == null || req.adv_refnd == "Y") {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
@@ -1372,14 +1375,14 @@ export default {
                             req.records["internal_error"] = false;
                           } else {
                             req.records = {
-                              internal_error: false
+                              internal_error: false,
                             };
                           }
 
                           next();
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1389,15 +1392,15 @@ export default {
               } else {
                 console.log("one :");
                 expected_card = new LINQ(inputParam.receiptdetails)
-                  .Where(w => w.pay_type == "CD")
-                  .Sum(s => parseFloat(s.amount));
+                  .Where((w) => w.pay_type == "CD")
+                  .Sum((s) => parseFloat(s.amount));
 
                 expected_cheque = new LINQ(inputParam.receiptdetails)
-                  .Where(w => w.pay_type == "CH")
-                  .Sum(s => parseFloat(s.amount));
+                  .Where((w) => w.pay_type == "CH")
+                  .Sum((s) => parseFloat(s.amount));
 
                 no_of_cheques = new LINQ(inputParam.receiptdetails)
-                  .Where(w => w.pay_type == "CH")
+                  .Where((w) => w.pay_type == "CH")
                   .ToArray().length;
 
                 console.log("whichQuery:", whichQuery);
@@ -1416,11 +1419,11 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
-                          req.userIdentity.hospital_id
+                          req.userIdentity.hospital_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(headerRes => {
+                      .then((headerRes) => {
                         console.log("two :");
                         if (headerRes.insertId > 0) {
                           _mysql
@@ -1444,11 +1447,11 @@ export default {
                                 req.userIdentity.algaeh_d_app_user_id,
                                 new Date(),
                                 req.userIdentity.algaeh_d_app_user_id,
-                                req.userIdentity.hospital_id
+                                req.userIdentity.hospital_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(handoverDetails => {
+                            .then((handoverDetails) => {
                               console.log("three :");
                               if (handoverDetails.insertId > 0) {
                                 _mysql
@@ -1461,11 +1464,11 @@ export default {
                                     values: [
                                       handoverDetails.insertId,
                                       handoverDetails.insertId,
-                                      req.body.receipt_header_id
+                                      req.body.receipt_header_id,
                                     ],
-                                    printQuery: true
+                                    printQuery: true,
                                   })
-                                  .then(updateRecept => {
+                                  .then((updateRecept) => {
                                     console.log("here :", "catt");
                                     if (
                                       req.connection == null ||
@@ -1485,14 +1488,14 @@ export default {
                                         req.records["internal_error"] = false;
                                       } else {
                                         req.records = {
-                                          internal_error: false
+                                          internal_error: false,
                                         };
                                       }
 
                                       next();
                                     }
                                   })
-                                  .catch(error => {
+                                  .catch((error) => {
                                     console.log("error1 :", error);
                                     _mysql.rollBackTransaction(() => {
                                       next(error);
@@ -1501,14 +1504,14 @@ export default {
                               } else {
                                 req.records = {
                                   internal_error: true,
-                                  message: "detais error"
+                                  message: "detais error",
                                 };
                                 _mysql.rollBackTransaction(() => {
                                   next();
                                 });
                               }
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -1516,14 +1519,14 @@ export default {
                         } else {
                           req.records = {
                             internal_error: true,
-                            message: "Header error"
+                            message: "Header error",
                           };
                           _mysql.rollBackTransaction(() => {
                             next();
                           });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1552,10 +1555,10 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
-                          req.userIdentity.hospital_id
-                        ]
+                          req.userIdentity.hospital_id,
+                        ],
                       })
-                      .then(handoverDetails => {
+                      .then((handoverDetails) => {
                         console.log("apple :");
                         if (handoverDetails.insertId > 0) {
                           _mysql
@@ -1568,11 +1571,11 @@ export default {
                               values: [
                                 handoverDetails.insertId,
                                 handoverDetails.insertId,
-                                req.body.receipt_header_id
+                                req.body.receipt_header_id,
                               ],
-                              printQuery: true
+                              printQuery: true,
                             })
-                            .then(updateRecept => {
+                            .then((updateRecept) => {
                               console.log("ball :");
                               if (
                                 req.connection == null ||
@@ -1591,14 +1594,14 @@ export default {
                                   req.records["internal_error"] = false;
                                 } else {
                                   req.records = {
-                                    internal_error: false
+                                    internal_error: false,
                                   };
                                 }
 
                                 next();
                               }
                             })
-                            .catch(error => {
+                            .catch((error) => {
                               _mysql.rollBackTransaction(() => {
                                 next(error);
                               });
@@ -1606,14 +1609,14 @@ export default {
                         } else {
                           req.records = {
                             internal_error: true,
-                            message: "detais error"
+                            message: "detais error",
                           };
                           _mysql.rollBackTransaction(() => {
                             next();
                           });
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1644,11 +1647,11 @@ export default {
                           result[0]["hims_f_cash_handover_detail_id"],
                           result[0]["hims_f_cash_handover_detail_id"],
                           result[0]["hims_f_cash_handover_detail_id"],
-                          req.body.receipt_header_id
+                          req.body.receipt_header_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(updateResult => {
+                      .then((updateResult) => {
                         console.log("last :");
                         if (req.connection == null || req.adv_refnd == "Y") {
                           console.log("BOOSSS :");
@@ -1664,14 +1667,14 @@ export default {
                             req.records["internal_error"] = false;
                           } else {
                             req.records = {
-                              internal_error: false
+                              internal_error: false,
                             };
                           }
 
                           next();
                         }
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
@@ -1682,7 +1685,7 @@ export default {
                 }
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -1690,7 +1693,7 @@ export default {
         } else {
           req.records = {
             internal_error: true,
-            message: "No receipt details"
+            message: "No receipt details",
           };
           _mysql.rollBackTransaction(() => {
             next();
@@ -1699,7 +1702,7 @@ export default {
       } else {
         req.records = {
           internal_error: true,
-          message: "Current user is not a Cahsier"
+          message: "Current user is not a Cahsier",
         };
         _mysql.rollBackTransaction(() => {
           next();
@@ -1738,14 +1741,14 @@ export default {
             FROM hims_d_package_header PH, hims_d_package_detail PD where PH.hims_d_package_header_id=PD.package_header_id and  \
             PH.package_service_id=?;",
           values: [inputParam.package_service_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(package_details => {
+        .then((package_details) => {
           _mysql.releaseConnection();
           req.records = package_details;
           next();
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -1785,9 +1788,9 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: [Module_Name],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           _mysql
             .executeQuery({
               query:
@@ -1804,11 +1807,11 @@ export default {
                 new Date(),
                 inputParam.shift_id,
                 inputParam.pay_type,
-                req.userIdentity.hospital_id
+                req.userIdentity.hospital_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(headerRcptResult => {
+            .then((headerRcptResult) => {
               if (
                 headerRcptResult.insertId != null &&
                 headerRcptResult.insertId != ""
@@ -1820,7 +1823,7 @@ export default {
                   "pay_type",
                   "amount",
                   "created_by",
-                  "updated_by"
+                  "updated_by",
                 ];
 
                 _mysql
@@ -1829,12 +1832,12 @@ export default {
                     values: inputParam.receiptdetails,
                     includeValues: receptSample,
                     extraValues: {
-                      hims_f_receipt_header_id: headerRcptResult.insertId
+                      hims_f_receipt_header_id: headerRcptResult.insertId,
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(RcptDetailsRecords => {
+                  .then((RcptDetailsRecords) => {
                     _mysql
                       .executeQuery({
                         query:
@@ -1853,11 +1856,11 @@ export default {
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
                           req.userIdentity.hospital_id,
-                          inputParam.package_id
+                          inputParam.package_id,
                         ],
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(Insert_Advance => {
+                      .then((Insert_Advance) => {
                         let existingAdvance =
                           Insert_Advance[1][0].advance_amount;
                         let balance_amount =
@@ -1898,46 +1901,46 @@ export default {
                             values: [
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              inputParam.package_id
+                              inputParam.package_id,
                             ],
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(update_advance => {
+                          .then((update_advance) => {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = {
                                 receipt_number: generatedNumbers[Module_Name],
-                                total_advance_amount: inputParam.advance_amount
+                                total_advance_amount: inputParam.advance_amount,
                               };
                               next();
                             });
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -1974,7 +1977,7 @@ export default {
             inputParam.package_details[i].available_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            inputParam.package_details[i].hims_f_package_detail_id
+            inputParam.package_details[i].hims_f_package_detail_id,
           ]
         );
       }
@@ -1983,9 +1986,9 @@ export default {
         .executeQuery({
           query: qry,
           forceWithTransactionConnection: req.connection == null ? true : false,
-          printQuery: true
+          printQuery: true,
         })
-        .then(results => {
+        .then((results) => {
           _mysql
             .executeQuery({
               query:
@@ -1993,9 +1996,9 @@ export default {
                   in(select package_header_id   FROM hims_f_package_detail  where package_header_id=?\
                   group by package_header_id having sum(available_qty)=0);",
               values: [inputParam.hims_f_package_header_id],
-              printQuery: true
+              printQuery: true,
             })
-            .then(pack_results => {
+            .then((pack_results) => {
               let strQuery = "";
               if (pack_results.length > 0) {
                 strQuery = ", `closed`='Y', closed_type='D' ";
@@ -2010,30 +2013,33 @@ export default {
                     inputParam.balance_amount,
                     inputParam.actual_utilize_amount,
                     inputParam.utilize_amount,
-                    inputParam.hims_f_package_header_id
+                    inputParam.hims_f_package_header_id,
                   ],
-                  printQuery: true
+                  printQuery: true,
                 })
-                .then(update_header => {
+                .then((update_header) => {
                   if (req.connection == null) {
                     utilities.logger().log("connection : ");
                     req.connection = {
                       connection: _mysql.connection,
                       isTransactionConnection: _mysql.isTransactionConnection,
-                      pool: _mysql.pool
+                      pool: _mysql.pool,
                     };
                   }
 
-                  const _services = _.filter(inputParam.package_details, f => {
-                    return (
-                      f.service_type_id == 2 ||
-                      f.service_type_id == 5 ||
-                      f.service_type_id == 11
-                    );
-                  });
+                  const _services = _.filter(
+                    inputParam.package_details,
+                    (f) => {
+                      return (
+                        f.service_type_id == 2 ||
+                        f.service_type_id == 5 ||
+                        f.service_type_id == 11
+                      );
+                    }
+                  );
                   const _inv_services = _.filter(
                     inputParam.package_details,
-                    f => {
+                    (f) => {
                       return f.service_type_id == 4;
                     }
                   );
@@ -2042,9 +2048,9 @@ export default {
                     _mysql: _mysql,
                     next: next,
                     inputParam: inputParam,
-                    req: req
+                    req: req,
                   })
-                    .then(Order_Services => {
+                    .then((Order_Services) => {
                       if (_inv_services.length > 0) {
                         let IncludeValues = [
                           "patient_id",
@@ -2056,7 +2062,7 @@ export default {
                           "quantity",
                           "inventory_item_id",
                           "inventory_location_id",
-                          "inventory_uom_id"
+                          "inventory_uom_id",
                         ];
 
                         _mysql
@@ -2095,46 +2101,45 @@ export default {
                               created_date: new Date(),
                               updated_by: req.userIdentity.algaeh_d_app_user_id,
                               updated_date: new Date(),
-                              hospital_id: req.userIdentity.hospital_id
+                              hospital_id: req.userIdentity.hospital_id,
                             },
                             bulkInsertOrUpdate: true,
-                            printQuery: true
+                            printQuery: true,
                           })
-                          .then(inv_order_detail => {
-
+                          .then((inv_order_detail) => {
                             req.records = inv_order_detail;
                             next();
                           })
-                          .catch(error => {
+                          .catch((error) => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
                             });
                           });
                       } else {
-                        req.records = {}
+                        req.records = {};
 
                         next();
                       }
                     })
-                    .catch(error => {
+                    .catch((error) => {
                       _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.rollBackTransaction(() => {
                 next(e);
               });
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -2156,31 +2161,31 @@ export default {
         const decimal_places = req.userIdentity.decimal_places;
         const outputArray = [];
 
-        const zeroBill = input.find(item => {
+        const zeroBill = input.find((item) => {
           return item.zeroBill == true;
         });
 
         if (zeroBill == undefined) {
-          const service_ids = input.map(val => {
+          const service_ids = input.map((val) => {
             return val.hims_d_services_id;
           });
 
-          const is_insurance = input.filter(item => {
+          const is_insurance = input.filter((item) => {
             return item.insured == "Y";
           });
 
           let strQuery = "";
 
           if (is_insurance.length > 0) {
-            const network_office_ids = is_insurance.map(item => {
+            const network_office_ids = is_insurance.map((item) => {
               return item.primary_network_office_id;
             });
 
-            const insurance_provider_ids = is_insurance.map(item => {
+            const insurance_provider_ids = is_insurance.map((item) => {
               return item.primary_insurance_provider_id;
             });
 
-            const network_ids = is_insurance.map(item => {
+            const network_ids = is_insurance.map((item) => {
               return item.primary_network_id;
             });
 
@@ -2211,9 +2216,9 @@ export default {
              vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
              where hims_d_services_id in (?);${strQuery}`,
               values: [service_ids],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result => {
+            .then((result) => {
               _mysql.releaseConnection();
 
               const allServices = strQuery == "" ? result : result[0];
@@ -2226,7 +2231,7 @@ export default {
                 let servicesDetails = input[i];
 
                 const records = allServices.find(
-                  f =>
+                  (f) =>
                     f.hims_d_services_id === servicesDetails.hims_d_services_id
                 );
 
@@ -2350,7 +2355,7 @@ export default {
                 let policydtls = {};
                 if (insured == "Y") {
                   let prices;
-                  const cur_policy = allPolicy.find(p => {
+                  const cur_policy = allPolicy.find((p) => {
                     return (
                       p.hims_d_insurance_network_office_id ==
                       input[i]["primary_network_office_id"]
@@ -2361,10 +2366,10 @@ export default {
                     cur_policy != undefined &&
                     cur_policy["price_from"] == "S"
                   ) {
-                    prices = allCompany_price.find(item => {
+                    prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                        input[i]["primary_insurance_provider_id"] &&
+                          input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2374,7 +2379,7 @@ export default {
                     cur_policy != undefined &&
                     cur_policy["price_from"] == "P"
                   ) {
-                    prices = allPolicy_price.find(item => {
+                    prices = allPolicy_price.find((item) => {
                       return (
                         item.network_id == input[i]["primary_network_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
@@ -2556,8 +2561,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                          parseFloat(deductable_percentage)) /
-                        100
+                            parseFloat(deductable_percentage)) /
+                          100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2710,8 +2715,8 @@ export default {
                       from_pos == "Y"
                         ? parseFloat(unit_cost)
                         : unit_cost != 0
-                          ? parseFloat(unit_cost)
-                          : parseFloat(records.standard_fee);
+                        ? parseFloat(unit_cost)
+                        : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
@@ -2803,7 +2808,7 @@ export default {
                     sec_company_tax: 0,
                     sec_company_paybale: 0,
                     sec_copay_percntage: 0,
-                    sec_copay_amount: 0
+                    sec_copay_amount: 0,
                   },
                   {
                     service_type_id: records.service_type_id,
@@ -2863,26 +2868,26 @@ export default {
                     pack_expiry_date: servicesDetails.expiry_date,
                     hims_f_ordered_services_id:
                       servicesDetails.hims_f_ordered_services_id,
-                    billed: billed
+                    billed: billed,
                   }
                 );
 
                 outputArray.push(out);
 
                 if (i == input.length - 1) {
-                  let total_approal_amount = _.maxBy(outputArray, f => {
+                  let total_approal_amount = _.maxBy(outputArray, (f) => {
                     return f.approval_amt;
                   });
                   // console.log("total_approal_amount: ", total_approal_amount)
                   req.records = {
                     billdetails: outputArray,
-                    approval_amt: total_approal_amount.approval_amt
+                    approval_amt: total_approal_amount.approval_amt,
                   };
                   next();
                 }
               }
             })
-            .catch(error => {
+            .catch((error) => {
               _mysql.releaseConnection();
               next(error);
             });
@@ -2920,8 +2925,8 @@ export default {
               sec_company_tax: 0,
               sec_company_paybale: 0,
               sec_copay_percntage: 0,
-              sec_copay_amount: 0
-            }
+              sec_copay_amount: 0,
+            },
           ];
 
           req.records = { billdetails: out };
@@ -2931,7 +2936,7 @@ export default {
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please provide valid Input"
+          message: "Please provide valid Input",
         };
 
         next();
@@ -2959,15 +2964,15 @@ export default {
               "SELECT hims_d_employee_id as employee_id, sub_department_id, services_id from hims_d_employee \
             Where record_status='A' " +
               strQuery,
-            printQuery: true
+            printQuery: true,
           })
-          .then(result => {
+          .then((result) => {
             _mysql.releaseConnection();
             req.records = result;
             next();
             resolve(result);
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
             reject(e);
           });
@@ -2975,7 +2980,7 @@ export default {
         reject(e);
         next(e);
       }
-    }).catch(e => {
+    }).catch((e) => {
       _mysql.releaseConnection();
       next(e);
     });
@@ -2989,14 +2994,14 @@ export default {
           query:
             "update hims_f_package_header set closed='Y', closed_type='C', closed_remarks=? where hims_f_package_header_id=? ",
           values: [req.body.closed_remarks, req.body.hims_f_package_header_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -3019,14 +3024,14 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
           and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true
+          printQuery: true,
         })
-        .then(product_type => {
+        .then((product_type) => {
           if (product_type.length == 1) {
             const inputParam = req.body;
             const servicesIds = ["0"];
             if (inputParam.billdetails && inputParam.billdetails.length > 0) {
-              inputParam.billdetails.forEach(item => {
+              inputParam.billdetails.forEach((item) => {
                 servicesIds.push(item.services_id);
               });
             }
@@ -3039,26 +3044,26 @@ export default {
             SELECT hims_d_services_id,service_name,head_id,child_id,\
             insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);",
                 values: [servicesIds],
-                printQuery: true
+                printQuery: true,
               })
-              .then(Result => {
+              .then((Result) => {
                 const controls = Result[0];
                 const serviceData = Result[1];
 
-                const OP_DEP = controls.find(f => {
+                const OP_DEP = controls.find((f) => {
                   return f.account == "OP_DEP";
                 });
 
-                const CIH_OP = controls.find(f => {
+                const CIH_OP = controls.find((f) => {
                   return f.account == "CIH_OP";
                 });
-                const OUTPUT_TAX = controls.find(f => {
+                const OUTPUT_TAX = controls.find((f) => {
                   return f.account == "OUTPUT_TAX";
                 });
-                const OP_REC = controls.find(f => {
+                const OP_REC = controls.find((f) => {
                   return f.account == "OP_REC";
                 });
-                const CARD_SETTL = controls.find(f => {
+                const CARD_SETTL = controls.find((f) => {
                   return f.account == "CARD_SETTL";
                 });
 
@@ -3083,10 +3088,10 @@ export default {
                     debit_amount: 0,
                     payment_type: "CR",
                     credit_amount: inputParam.total_amount,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
 
-                  inputParam.receiptdetails.forEach(m => {
+                  inputParam.receiptdetails.forEach((m) => {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
@@ -3097,7 +3102,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
@@ -3108,7 +3113,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                   });
@@ -3127,7 +3132,7 @@ export default {
                     debit_amount: inputParam.total_amount,
                     payment_type: "DR",
                     credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
 
                   // DECREASE CASH IN HAND
@@ -3138,7 +3143,7 @@ export default {
                     debit_amount: 0,
                     payment_type: "CR",
                     credit_amount: amount,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
                 } else {
                   voucher_type = "sales";
@@ -3147,13 +3152,13 @@ export default {
                   narration = "Patient:" + inputParam.patient_code;
 
                   //BOOKING INCOME AND TAX
-                  serviceData.forEach(curService => {
+                  serviceData.forEach((curService) => {
                     narration =
                       narration +
                       ", Booking Income for " +
                       curService.service_name;
 
-                    const bill = inputParam.billdetails.find(f => {
+                    const bill = inputParam.billdetails.find((f) => {
                       if (f.services_id == curService.hims_d_services_id)
                         return f;
                     });
@@ -3165,7 +3170,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: bill.patient_resp,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
 
                     EntriesArray.push({
@@ -3175,7 +3180,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: bill.patient_tax,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   });
 
@@ -3192,7 +3197,7 @@ export default {
                       debit_amount: inputParam.advance_adjust,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   }
                   //PROVING OP SERVICE ON CREDIT
@@ -3209,12 +3214,12 @@ export default {
                       debit_amount: inputParam.credit_amount,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   }
 
                   //INCREASING CASH IN CAND AND BANK
-                  inputParam.receiptdetails.forEach(m => {
+                  inputParam.receiptdetails.forEach((m) => {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
@@ -3225,7 +3230,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
@@ -3236,7 +3241,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                   });
@@ -3257,11 +3262,11 @@ export default {
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(headerDayEnd => {
+                  .then((headerDayEnd) => {
                     const month = moment().format("M");
                     const year = moment().format("YYYY");
                     const IncludeValuess = [
@@ -3271,7 +3276,7 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
                     ];
 
                     _mysql
@@ -3284,27 +3289,27 @@ export default {
                         extraValues: {
                           year: year,
                           month: month,
-                          day_end_header_id: headerDayEnd.insertId
+                          day_end_header_id: headerDayEnd.insertId,
                         },
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         console.log("FOUR");
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -3313,7 +3318,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -3334,7 +3339,7 @@ export default {
       // const utilities = new algaehUtilities();
 
       if (req.body.consultation == "N") {
-        next()
+        next();
         return;
       }
 
@@ -3343,14 +3348,14 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
           and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true
+          printQuery: true,
         })
-        .then(product_type => {
+        .then((product_type) => {
           if (product_type.length == 1) {
             const inputParam = req.body;
             const servicesIds = ["0"];
             if (inputParam.billdetails && inputParam.billdetails.length > 0) {
-              inputParam.billdetails.forEach(item => {
+              inputParam.billdetails.forEach((item) => {
                 servicesIds.push(item.services_id);
               });
             }
@@ -3364,26 +3369,26 @@ export default {
             insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
             select cost_center_type, cost_center_required from finance_options limit 1;",
                 values: [servicesIds],
-                printQuery: true
+                printQuery: true,
               })
-              .then(Result => {
+              .then((Result) => {
                 const controls = Result[0];
                 const serviceData = Result[1];
 
-                const OP_DEP = controls.find(f => {
+                const OP_DEP = controls.find((f) => {
                   return f.account == "OP_DEP";
                 });
 
-                const CIH_OP = controls.find(f => {
+                const CIH_OP = controls.find((f) => {
                   return f.account == "CIH_OP";
                 });
-                const OUTPUT_TAX = controls.find(f => {
+                const OUTPUT_TAX = controls.find((f) => {
                   return f.account == "OUTPUT_TAX";
                 });
-                const OP_REC = controls.find(f => {
+                const OP_REC = controls.find((f) => {
                   return f.account == "OP_REC";
                 });
-                const CARD_SETTL = controls.find(f => {
+                const CARD_SETTL = controls.find((f) => {
                   return f.account == "CARD_SETTL";
                 });
 
@@ -3408,10 +3413,10 @@ export default {
                     debit_amount: 0,
                     payment_type: "CR",
                     credit_amount: inputParam.total_amount,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
 
-                  inputParam.receiptdetails.forEach(m => {
+                  inputParam.receiptdetails.forEach((m) => {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
@@ -3422,7 +3427,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
@@ -3433,7 +3438,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                   });
@@ -3452,7 +3457,7 @@ export default {
                     debit_amount: inputParam.total_amount,
                     payment_type: "DR",
                     credit_amount: 0,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
 
                   // DECREASE CASH IN HAND
@@ -3463,7 +3468,7 @@ export default {
                     debit_amount: 0,
                     payment_type: "CR",
                     credit_amount: amount,
-                    hospital_id: req.userIdentity.hospital_id
+                    hospital_id: req.userIdentity.hospital_id,
                   });
                 } else {
                   voucher_type = "sales";
@@ -3472,13 +3477,13 @@ export default {
                   narration = "Patient:" + inputParam.patient_code;
 
                   //BOOKING INCOME AND TAX
-                  serviceData.forEach(curService => {
+                  serviceData.forEach((curService) => {
                     narration =
                       narration +
                       ", Booking Income for " +
                       curService.service_name;
 
-                    const bill = inputParam.billdetails.find(f => {
+                    const bill = inputParam.billdetails.find((f) => {
                       if (f.services_id == curService.hims_d_services_id)
                         return f;
                     });
@@ -3490,7 +3495,7 @@ export default {
                       debit_amount: 0,
                       payment_type: "CR",
                       credit_amount: bill.patient_resp,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
 
                     if (parseFloat(bill.patient_tax) > 0) {
@@ -3501,7 +3506,7 @@ export default {
                         debit_amount: 0,
                         payment_type: "CR",
                         credit_amount: bill.patient_tax,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                   });
@@ -3519,7 +3524,7 @@ export default {
                       debit_amount: inputParam.advance_adjust,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   }
                   //PROVING OP SERVICE ON CREDIT
@@ -3536,12 +3541,12 @@ export default {
                       debit_amount: inputParam.credit_amount,
                       payment_type: "DR",
                       credit_amount: 0,
-                      hospital_id: req.userIdentity.hospital_id
+                      hospital_id: req.userIdentity.hospital_id,
                     });
                   }
 
                   //INCREASING CASH IN CAND AND BANK
-                  inputParam.receiptdetails.forEach(m => {
+                  inputParam.receiptdetails.forEach((m) => {
                     if (m.pay_type == "CD") {
                       narration = narration + ",Received By CARD:" + m.amount;
 
@@ -3552,7 +3557,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     } else {
                       narration = narration + ",Received By CASH:" + m.amount;
@@ -3563,7 +3568,7 @@ export default {
                         debit_amount: m.amount,
                         payment_type: "DR",
                         credit_amount: 0,
-                        hospital_id: req.userIdentity.hospital_id
+                        hospital_id: req.userIdentity.hospital_id,
                       });
                     }
                   });
@@ -3596,11 +3601,11 @@ export default {
                       inputParam.ScreenCode,
                       narration,
                       req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
+                      new Date(),
                     ],
-                    printQuery: true
+                    printQuery: true,
                   })
-                  .then(header_result => {
+                  .then((header_result) => {
                     let project_id = null;
 
                     let headerDayEnd = "";
@@ -3623,7 +3628,7 @@ export default {
                       "debit_amount",
                       "payment_type",
                       "credit_amount",
-                      "hospital_id"
+                      "hospital_id",
                     ];
 
                     _mysql
@@ -3638,27 +3643,27 @@ export default {
                           month: month,
                           day_end_header_id: headerDayEnd.insertId,
                           project_id: project_id,
-                          sub_department_id: req.body.sub_department_id
+                          sub_department_id: req.body.sub_department_id,
                         },
-                        printQuery: true
+                        printQuery: true,
                       })
-                      .then(subResult => {
+                      .then((subResult) => {
                         console.log("FOUR");
                         next();
                       })
-                      .catch(error => {
+                      .catch((error) => {
                         _mysql.rollBackTransaction(() => {
                           next(error);
                         });
                       });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -3667,7 +3672,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.rollBackTransaction(() => {
             next(error);
           });
@@ -3677,7 +3682,7 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };
 
 //Not in Use
@@ -3692,7 +3697,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
     if (Array.isArray(req.body)) {
       let len = req.body.length;
       // service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
-      service_ids = req.body.map(val => {
+      service_ids = req.body.map((val) => {
         return val.hims_d_services_id;
       });
 
@@ -3707,9 +3712,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id` IN (?) AND record_status='A'",
         values: [service_ids],
 
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
 
         let outputArray = [];
@@ -3719,7 +3724,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           // let records = result[m];
           let records = _.find(
             result,
-            f => f.hims_d_services_id === servicesDetails.hims_d_services_id
+            (f) => f.hims_d_services_id === servicesDetails.hims_d_services_id
           );
           const utilities = new algaehUtilities();
           utilities.logger().log("result: ", records.hims_d_services_id);
@@ -3880,7 +3885,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               sec_company_tax: 0,
               sec_company_paybale: 0,
               sec_copay_percntage: 0,
-              sec_copay_amount: 0
+              sec_copay_amount: 0,
             };
             outputArray.push(out);
             _mysql.releaseConnection();
@@ -3919,7 +3924,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               reject(e);
             }
           })
-            .then(policydtls => {
+            .then((policydtls) => {
               utilities.logger().log("policydtls: ", policydtls);
 
               utilities.logger().log("covered: ", policydtls.covered);
@@ -4154,8 +4159,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     from_pos == "Y"
                       ? unit_cost
                       : unit_cost != 0
-                        ? unit_cost
-                        : records.standard_fee;
+                      ? unit_cost
+                      : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {
@@ -4184,7 +4189,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 patient_payable = patient_resp + patient_tax.toFixed(2);
               }
             })
-            .then(secpolicydtls => {
+            .then((secpolicydtls) => {
               if (secpolicydtls != null) {
                 debugFunction("secpolicydtls");
                 //secondary Insurance
@@ -4363,7 +4368,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   sec_company_tax: 0,
                   sec_company_paybale: 0,
                   sec_copay_percntage: 0,
-                  sec_copay_amount: 0
+                  sec_copay_amount: 0,
                 },
                 {
                   service_type_id: records.service_type_id,
@@ -4417,7 +4422,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   package_visit_type: servicesDetails.package_visit_type,
                   package_type: servicesDetails.package_type,
                   actual_amount: servicesDetails.actual_amount,
-                  pack_expiry_date: servicesDetails.expiry_date
+                  pack_expiry_date: servicesDetails.expiry_date,
                 }
               );
 
@@ -4429,7 +4434,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 return resolve({ billdetails: outputArray });
               }
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(
                 utilities.httpStatus().generateError(httpStatus.badRequest, e)
@@ -4437,7 +4442,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -4459,9 +4464,9 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
           copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, deductible_trt, \
           deductible_medicine from hims_d_insurance_network_office where hims_d_insurance_network_office_id=?",
         values: [input.hims_d_insurance_network_office_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(resultOffic => {
+      .then((resultOffic) => {
         if (resultOffic != null && resultOffic[0].price_from == "S") {
           _mysql
             .executeQuery({
@@ -4473,17 +4478,17 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               values: [
                 input.insurance_id,
                 input.service_type_id,
-                input.services_id
+                input.services_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result_s => {
+            .then((result_s) => {
               utilities.logger().log("result_s: ", result_s);
               utilities.logger().log("resultOffic: ", resultOffic);
               let result = { ...result_s[0], ...resultOffic[0] };
               return resolve(result);
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
@@ -4501,21 +4506,21 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               values: [
                 input.network_id,
                 input.services_id,
-                input.service_type_id
+                input.service_type_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(result_p => {
+            .then((result_p) => {
               let result = { ...result_p, ...resultOffic };
               return resolve(result);
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -4538,7 +4543,7 @@ function insertOrderServices(options) {
           "doctor_id",
           "service_type_id",
           "services_id",
-          "trans_package_detail_id"
+          "trans_package_detail_id",
         ];
 
         _mysql
@@ -4577,25 +4582,23 @@ function insertOrderServices(options) {
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
               updated_date: new Date(),
-              hospital_id: req.userIdentity.hospital_id
+              hospital_id: req.userIdentity.hospital_id,
             },
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(order_detail => {
-
+          .then((order_detail) => {
             let patient_id;
             let doctor_id;
             let visit_id;
             let services = new LINQ(inputParam.package_details)
-              .Select(s => {
+              .Select((s) => {
                 patient_id = s.patient_id;
                 doctor_id = s.doctor_id;
                 visit_id = s.visit_id;
                 return s.services_id;
               })
               .ToArray();
-
 
             let servicesForPreAproval = [];
 
@@ -4610,20 +4613,20 @@ function insertOrderServices(options) {
                   "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
                    where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
                 values: servicesForPreAproval,
-                printQuery: true
+                printQuery: true,
               })
-              .then(ordered_services => {
+              .then((ordered_services) => {
                 req.body.billdetails = ordered_services;
                 resolve();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                   reject(error);
                 });
               });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               options.next(error);
               reject(error);
@@ -4636,7 +4639,7 @@ function insertOrderServices(options) {
     } catch (e) {
       reject(e);
     }
-  }).catch(e => {
+  }).catch((e) => {
     options.next(e);
   });
 }

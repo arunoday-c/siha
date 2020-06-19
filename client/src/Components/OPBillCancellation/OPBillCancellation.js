@@ -18,13 +18,13 @@ import {
   getCashiersAndShiftMAP,
   getBillDetails,
   getCtrlCode,
-  generateReceipt
+  generateReceipt,
 } from "./OPBillCancellationEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
   swalMessage,
   algaehApiCall,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
@@ -47,7 +47,7 @@ class OPBillCancellation extends Component {
       cheque_date: null,
       cheque_amount: 0,
       advance: 0,
-      cancel_remarks: null
+      cancel_remarks: null,
     };
   }
 
@@ -59,7 +59,7 @@ class OPBillCancellation extends Component {
   componentDidMount() {
     let prevLang = getCookie("Language");
     this.setState({
-      selectedLang: prevLang
+      selectedLang: prevLang,
     });
 
     if (
@@ -72,8 +72,8 @@ class OPBillCancellation extends Component {
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
-          mappingName: "patienttype"
-        }
+          mappingName: "patienttype",
+        },
       });
     }
 
@@ -82,14 +82,14 @@ class OPBillCancellation extends Component {
       uri: "/userPreferences/get",
       data: {
         screenName: _screenName,
-        identifier: "Counter"
+        identifier: "Counter",
       },
       method: "GET",
-      onSuccess: response => {
+      onSuccess: (response) => {
         this.setState({
-          counter_id: response.data.records.selectedValue
+          counter_id: response.data.records.selectedValue,
         });
-      }
+      },
     });
     getCashiersAndShiftMAP(this, this);
   }
@@ -117,7 +117,7 @@ class OPBillCancellation extends Component {
     ) {
       swalMessage({
         title: "Please select receipt type.",
-        type: "error"
+        type: "error",
       });
     } else {
       if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
@@ -128,7 +128,7 @@ class OPBillCancellation extends Component {
           pay_type: this.state.pay_cash,
           amount: this.state.cash_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
 
@@ -140,7 +140,7 @@ class OPBillCancellation extends Component {
           pay_type: this.state.pay_card,
           amount: this.state.card_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
       if (this.state.cheque_amount > 0 || this.state.Checkchecked === true) {
@@ -151,13 +151,13 @@ class OPBillCancellation extends Component {
           pay_type: this.state.pay_cheque,
           amount: this.state.cheque_amount,
           updated_date: null,
-          card_type: null
+          card_type: null,
         });
       }
 
       this.setState(
         {
-          receiptdetails: obj
+          receiptdetails: obj,
         },
         () => {
           callback(this);
@@ -169,19 +169,20 @@ class OPBillCancellation extends Component {
   CancelOPBill(e) {
     const err = Validations(this);
     if (!err) {
-      this.GenerateReciept($this => {
+      this.GenerateReciept(($this) => {
         let Inputobj = $this.state;
 
         Inputobj.patient_payable = $this.state.patient_payable_h;
         Inputobj.pay_type = "P";
-        Inputobj.ScreenCode = getCookie("ScreenCode")
+        Inputobj.ScreenCode = getCookie("ScreenCode");
         AlgaehLoader({ show: true });
+        debugger;
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
           module: "billing",
           data: Inputobj,
           method: "POST",
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
 
             if (response.data.success) {
@@ -190,26 +191,26 @@ class OPBillCancellation extends Component {
                 receipt_number: response.data.records.receipt_number,
                 hims_f_bill_cancel_header_id:
                   response.data.records.hims_f_bill_cancel_header_id,
-                saveEnable: true
+                saveEnable: true,
               });
               swalMessage({
                 title: "Done Successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message || error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       });
     }
@@ -230,11 +231,11 @@ class OPBillCancellation extends Component {
             {
               pageName: (
                 <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
+              ),
             },
             {
-              pageName: <AlgaehLabel label={{ fieldName: "bill_number" }} />
-            }
+              pageName: <AlgaehLabel label={{ fieldName: "bill_number" }} />,
+            },
           ]}
           soptlightSearch={{
             label: (
@@ -244,21 +245,21 @@ class OPBillCancellation extends Component {
             ),
             value: this.state.bill_cancel_number,
             events: {
-              onChange: getCtrlCode.bind(this, this)
+              onChange: getCtrlCode.bind(this, this),
             },
             selectValue: "bill_cancel_number",
             searchName: "cancelbills",
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "cancelbills.opBillCancel"
-            }
+              fieldName: "cancelbills.opBillCancel",
+            },
           }}
           userArea={
             <div className="row">
               <div className="col">
                 <AlgaehLabel
                   label={{
-                    fieldName: "bill_cancel_date"
+                    fieldName: "bill_cancel_date",
                   }}
                 />
                 <h6>
@@ -272,17 +273,17 @@ class OPBillCancellation extends Component {
           printArea={
             this.state.bill_cancel_number !== null
               ? {
-                menuitems: [
-                  {
-                    label: "Print Receipt",
-                    events: {
-                      onClick: () => {
-                        generateReceipt(this, this);
-                      }
-                    }
-                  }
-                ]
-              }
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generateReceipt(this, this);
+                        },
+                      },
+                    },
+                  ],
+                }
               : ""
           }
           selectedLang={this.state.selectedLang}
@@ -291,15 +292,15 @@ class OPBillCancellation extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj) => {
                 this.setState({ ...this.state, ...obj }, () => {
-                  Object.keys(obj).map(key => {
+                  Object.keys(obj).map((key) => {
                     if (key === "bill_number") {
                       getBillDetails(this, this);
                     }
                   });
                 });
-              }
+              },
             }}
           >
             <PatientVisitDetails BillingIOputs={this.state} />
@@ -341,7 +342,7 @@ class OPBillCancellation extends Component {
 function mapStateToProps(state) {
   return {
     existinsurance: state.existinsurance,
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
   };
 }
 
@@ -349,15 +350,12 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientType: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
     },
     dispatch
   );
 }
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OPBillCancellation)
+  connect(mapStateToProps, mapDispatchToProps)(OPBillCancellation)
 );
