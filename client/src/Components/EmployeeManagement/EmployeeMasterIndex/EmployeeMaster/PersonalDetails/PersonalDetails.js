@@ -892,7 +892,9 @@ class PersonalDetails extends Component {
                               onChange={isDoctorChange.bind(this, this)}
                             />
                             <span>
-                              <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                              <AlgaehLabel
+                                label={{ forceLabel: "Healthcare Provider" }}
+                              />
                             </span>
                           </label>
                         </div>
