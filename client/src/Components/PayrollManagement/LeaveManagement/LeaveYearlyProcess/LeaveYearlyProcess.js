@@ -9,7 +9,7 @@ import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -18,6 +18,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LeaveYearlyProcess extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class LeaveYearlyProcess extends Component {
       open: false,
       employee_name: null,
       hims_d_employee_id: null,
-      employee_group_id: null
+      employee_group_id: null,
     };
     this.getLeaveMaster();
   }
@@ -39,7 +40,7 @@ class LeaveYearlyProcess extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     this.getLeaveData();
     if (
@@ -51,8 +52,8 @@ class LeaveYearlyProcess extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
     if (
@@ -66,8 +67,8 @@ class LeaveYearlyProcess extends Component {
         data: { record_status: "A" },
         redux: {
           type: "EMP_GROUP_GET",
-          mappingName: "emp_groups"
-        }
+          mappingName: "emp_groups",
+        },
       });
     }
   }
@@ -75,12 +76,12 @@ class LeaveYearlyProcess extends Component {
   getLeaveData() {
     this.setState(
       {
-        loading: true
+        loading: true,
       },
       () => {
         let inputObj = {
           year: this.state.year,
-          hospital_id: this.state.hospital_id
+          hospital_id: this.state.hospital_id,
         };
         if (this.state.employee_group_id !== null) {
           inputObj.employee_group_id = this.state.employee_group_id;
@@ -94,23 +95,23 @@ class LeaveYearlyProcess extends Component {
           method: "GET",
           module: "hrManagement",
           data: inputObj,
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.setState({
                 leave_data: res.data.records,
-                loading: false
+                loading: false,
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
             this.setState({
-              loading: false
+              loading: false,
             });
-          }
+          },
         });
       }
     );
@@ -119,12 +120,12 @@ class LeaveYearlyProcess extends Component {
   processYearlyLeave() {
     this.setState(
       {
-        loading: true
+        loading: true,
       },
       () => {
         let inputObj = {
           year: this.state.year,
-          hospital_id: this.state.hospital_id
+          hospital_id: this.state.hospital_id,
         };
         if (this.state.employee_group_id !== null) {
           inputObj.employee_group_id = this.state.employee_group_id;
@@ -142,35 +143,35 @@ class LeaveYearlyProcess extends Component {
           method: "GET",
           module: "hrManagement",
           data: inputObj,
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Leaves processed successfully",
-                type: "success"
+                type: "success",
               });
               this.getLeaveData();
               this.setState({
-                loading: false
+                loading: false,
               });
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
-                type: "warning"
+                type: "warning",
               });
               this.setState({
-                loading: false
+                loading: false,
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
             this.setState({
-              loading: false
+              loading: false,
             });
-          }
+          },
         });
       }
     );
@@ -184,7 +185,7 @@ class LeaveYearlyProcess extends Component {
         employee_name: null,
         year: moment().year(),
         leave_id: null,
-        employee_group_id: null
+        employee_group_id: null,
       },
       () => {
         this.getLeaveData();
@@ -197,26 +198,26 @@ class LeaveYearlyProcess extends Component {
       uri: "/selfService/getLeaveMaster",
       method: "GET",
       module: "hrManagement",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            leaves: res.data.records
+            leaves: res.data.records,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.Employee_details.employee
+        columns: spotlightSearch.Employee_details.employee,
       },
       searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
@@ -224,23 +225,23 @@ class LeaveYearlyProcess extends Component {
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
-      onRowSelect: row => {
+      onRowSelect: (row) => {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
           },
           () => {
             this.getLeaveData();
           }
         );
-      }
+      },
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -250,7 +251,7 @@ class LeaveYearlyProcess extends Component {
         if (e.target.value.length >= 4) {
           this.setState(
             {
-              [e.target.name]: e.target.value
+              [e.target.name]: e.target.value,
             },
             () => {
               this.getLeaveData();
@@ -258,7 +259,7 @@ class LeaveYearlyProcess extends Component {
           );
         } else {
           this.setState({
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
           });
         }
 
@@ -270,7 +271,7 @@ class LeaveYearlyProcess extends Component {
 
   closePopup() {
     this.setState({
-      open: false
+      open: false,
     });
   }
 
@@ -291,7 +292,7 @@ class LeaveYearlyProcess extends Component {
               div={{ className: "col-1 form-group mandatory" }}
               label={{
                 forceLabel: "Year",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "year",
@@ -300,21 +301,21 @@ class LeaveYearlyProcess extends Component {
                 dataSource: {
                   textField: "name",
                   valueField: "value",
-                  data: allYears
+                  data: allYears,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    year: null
+                    year: null,
                   });
-                }
+                },
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col-2  form-group mandatory" }}
               label={{
                 forceLabel: "Branch.",
-                isImp: true
+                isImp: true,
               }}
               selector={{
                 name: "hospital_id",
@@ -323,23 +324,23 @@ class LeaveYearlyProcess extends Component {
                 dataSource: {
                   textField: "hospital_name",
                   valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
+                  data: this.props.organizations,
                 },
                 //onChange: texthandler.bind(this, this),
                 onChange: this.dropDownHandler.bind(this),
 
                 onClear: () => {
                   this.setState({
-                    hospital_id: null
+                    hospital_id: null,
                   });
-                }
+                },
               }}
             />
             <AlagehAutoComplete
               div={{ className: "col-2" }}
               label={{
                 forceLabel: "Employee Group",
-                isImp: false
+                isImp: false,
               }}
               selector={{
                 name: "employee_group_id",
@@ -348,14 +349,14 @@ class LeaveYearlyProcess extends Component {
                 dataSource: {
                   textField: "group_description",
                   valueField: "hims_d_employee_group_id",
-                  data: this.props.emp_groups
+                  data: this.props.emp_groups,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    employee_group_id: null
+                    employee_group_id: null,
                   });
-                }
+                },
               }}
             />
             <div className="col globalSearchCntr">
@@ -391,7 +392,7 @@ class LeaveYearlyProcess extends Component {
               div={{ className: "col-2 form-group " }}
               label={{
                 forceLabel: "Select a Leave Type",
-                isImp: false
+                isImp: false,
               }}
               selector={{
                 name: "leave_id",
@@ -400,29 +401,32 @@ class LeaveYearlyProcess extends Component {
                 dataSource: {
                   textField: "leave_description",
                   valueField: "hims_d_leave_id",
-                  data: this.state.leaves
+                  data: this.state.leaves,
                 },
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    leave_id: null
+                    leave_id: null,
                   });
-                }
+                },
               }}
             />
-            <div className="col form-group">
-              <button
-                onClick={this.processYearlyLeave.bind(this)}
-                style={{ marginTop: 19 }}
-                className="btn btn-primary"
-              >
-                {!this.state.loading ? (
-                  "PROCESS"
-                ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
-              </button>
-            </div>
+
+            <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+              <div className="col form-group">
+                <button
+                  onClick={this.processYearlyLeave.bind(this)}
+                  style={{ marginTop: 19 }}
+                  className="btn btn-primary"
+                >
+                  {!this.state.loading ? (
+                    "PROCESS"
+                  ) : (
+                    <i className="fas fa-spinner fa-spin" />
+                  )}
+                </button>
+              </div>{" "}
+            </AlgaehSecurityElement>
           </div>
         </div>
 
@@ -445,7 +449,7 @@ class LeaveYearlyProcess extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Details" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <i
                               className="fas fa-eye"
@@ -453,7 +457,7 @@ class LeaveYearlyProcess extends Component {
                                 this.setState({
                                   open: true,
                                   send_Emp_id: row.employee_id,
-                                  send_year: row.year
+                                  send_year: row.year,
                                 });
                               }}
                             />
@@ -462,15 +466,15 @@ class LeaveYearlyProcess extends Component {
                         others: {
                           maxWidth: 55,
                           filterable: false,
-                          fixed: "left"
-                        }
+                          fixed: "left",
+                        },
                       },
                       {
                         fieldName: "year",
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
                         others: {
-                          maxWidth: 70
-                        }
+                          maxWidth: 70,
+                        },
                       },
                       {
                         fieldName: "employee_code",
@@ -478,8 +482,8 @@ class LeaveYearlyProcess extends Component {
                           <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
                         ),
                         others: {
-                          maxWidth: 120
-                        }
+                          maxWidth: 120,
+                        },
                       },
                       {
                         fieldName: "employee_name",
@@ -489,8 +493,8 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          style: { textAlign: "left" }
-                        }
+                          style: { textAlign: "left" },
+                        },
                       },
                       {
                         fieldName: "group_description",
@@ -500,8 +504,8 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 150
-                        }
+                          maxWidth: 150,
+                        },
                       },
                       {
                         fieldName: "department_name",
@@ -511,8 +515,8 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 150
-                        }
+                          maxWidth: 150,
+                        },
                       },
                       {
                         fieldName: "sub_department_name",
@@ -522,9 +526,9 @@ class LeaveYearlyProcess extends Component {
                           />
                         ),
                         others: {
-                          maxWidth: 150
-                        }
-                      }
+                          maxWidth: 150,
+                        },
+                      },
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
                     dataSource={{ data: this.state.leave_data }}
@@ -548,7 +552,7 @@ class LeaveYearlyProcess extends Component {
 function mapStateToProps(state) {
   return {
     organizations: state.organizations,
-    emp_groups: state.emp_groups
+    emp_groups: state.emp_groups,
   };
 }
 
@@ -556,7 +560,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getOrganizations: AlgaehActions,
-      getEmpGroups: AlgaehActions
+      getEmpGroups: AlgaehActions,
     },
     dispatch
   );

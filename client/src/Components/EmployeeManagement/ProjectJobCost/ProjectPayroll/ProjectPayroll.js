@@ -30,6 +30,7 @@ class ProjectPayroll extends Component {
 
       project_wise_payroll: [],
       noEmployees: 0,
+      no_projects: 0,
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
@@ -67,6 +68,7 @@ class ProjectPayroll extends Component {
 
       project_wise_payroll: [],
       noEmployees: 0,
+      no_projects: 0,
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
@@ -634,10 +636,21 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: this.state.lbl_total,
+                        forceLabel: "Total Employee",
+                        // forceLabel: this.state.lbl_total,
                       }}
                     />
                     <h6>{this.state.noEmployees} Nos</h6>
+                  </div>
+
+                  <div className="col-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Projects",
+                        // forceLabel: this.state.lbl_total,
+                      }}
+                    />
+                    <h6>{this.state.no_projects} Nos</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel

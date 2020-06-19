@@ -15,7 +15,10 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { AlgaehTreeSearch } from "algaeh-react-components";
+import {
+  AlgaehTreeSearch,
+  AlgaehSecurityElement,
+} from "algaeh-react-components";
 import {
   onEditHandler,
   dropDownHandler,
@@ -907,13 +910,15 @@ class EarningsDeductions extends Component {
                     >
                       Cancel
                     </button>
-                    <button
-                      className="btn btn-primary"
-                      id="srch-sch"
-                      onClick={addEarningsDeductions.bind(this, this)}
-                    >
-                      {this.state.on_edit === true ? "Update" : "Add to List"}
-                    </button>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <button
+                        className="btn btn-primary"
+                        id="srch-sch"
+                        onClick={addEarningsDeductions.bind(this, this)}
+                      >
+                        {this.state.on_edit === true ? "Update" : "Add to List"}
+                      </button>{" "}
+                    </AlgaehSecurityElement>
                   </div>
                 </div>
               </div>

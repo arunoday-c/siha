@@ -59,7 +59,8 @@ export function IdleManager() {
       });
   }
 
-  function onOk() {
+  function onOk(e) {
+    e.preventDefault()
     const { username, hospital_id } = context.userToken;
     const identity = window.localStorage.getItem("identity");
 
@@ -115,51 +116,54 @@ export function IdleManager() {
                 </div>
                 <div className="col-lg-4 col-sm-12 " style={{ margin: "auto" }}>
                   <hr></hr>
-                  <div className="row">
-                    <AlgaehFormGroup
-                      div={{
-                        className: "col-lg-7 col-sm-12 form-group mandatory",
-                      }}
-                      label={{
-                        forceLabel: "Password",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        name: "password",
-                        type: "password",
-                        className: "txt-fld",
-                        placeholder: "Enter Password to Unlock",
-                        value: password,
-                        onChange: (e) => setPassword(e.target.value),
-                      }}
-                    />
-                    <div
-                      className="col-lg-5 col-sm-12"
-                      style={{
-                        padding: 0,
-                        paddingTop: 21,
-                        textAlign: "center",
-                      }}
-                    >
-                      <button className="btn btn-primary" onClick={onOk}>
-                        Unlock
-                      </button>
-                      <span
+                  <form onSubmit={onOk}>
+                    <div className="row">
+
+                      <AlgaehFormGroup
+                        div={{
+                          className: "col-lg-7 col-sm-12 form-group mandatory",
+                        }}
+                        label={{
+                          forceLabel: "Password",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          name: "password",
+                          type: "password",
+                          className: "txt-fld",
+                          placeholder: "Enter Password to Unlock",
+                          value: password,
+                          onChange: (e) => setPassword(e.target.value),
+                        }}
+                      />
+                      <div
+                        className="col-lg-5 col-sm-12"
                         style={{
-                          marginTop: 15,
-                          marginRight: 15,
-                          marginBottom: 15,
-                          marginLeft: 10,
+                          padding: 0,
+                          paddingTop: 21,
+                          textAlign: "center",
                         }}
                       >
-                        {" "}
+                        <button className="btn btn-primary" onClick={onOk}>
+                          Unlock
+                      </button>
+                        <span
+                          style={{
+                            marginTop: 15,
+                            marginRight: 15,
+                            marginBottom: 15,
+                            marginLeft: 10,
+                          }}
+                        >
+                          {" "}
                         or
                       </span>
-                      <button className="btn btn-other" onClick={onLogout}>
-                        Logout
+                        <button className="btn btn-other" onClick={onLogout}>
+                          Logout
                       </button>
+                      </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
               </div>
             </AlgaehModal>

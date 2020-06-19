@@ -9,6 +9,7 @@ import {
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 function LeaveRules(props) {
   let myParent = props.parent;
   return (
@@ -64,15 +65,17 @@ function LeaveRules(props) {
                 }}
               />
 
-              <div className="col-2">
-                <button
-                  onClick={myParent.addLeaveRules.bind(myParent)}
-                  className="btn btn-primary"
-                  style={{ marginTop: 19 }}
-                >
-                  Add to List
-                </button>
-              </div>
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                <div className="col-2">
+                  <button
+                    onClick={myParent.addLeaveRules.bind(myParent)}
+                    className="btn btn-primary"
+                    style={{ marginTop: 19 }}
+                  >
+                    Add to List
+                  </button>
+                </div>
+              </AlgaehSecurityElement>
             </div>
 
             <div className="row">

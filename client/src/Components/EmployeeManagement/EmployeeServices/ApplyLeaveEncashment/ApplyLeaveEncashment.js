@@ -20,6 +20,7 @@ import { GetAmountFormart, getYears } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Options from "../../../../Options.json";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ApplyLeaveEncashment extends Component {
   constructor(props) {
@@ -538,24 +539,26 @@ class ApplyLeaveEncashment extends Component {
                     <h6>{GetAmountFormart(this.state.total_amount)}</h6>
                   </div>
 
-                  <div className="col-12" style={{ textAlign: "right" }}>
-                    <button
-                      onClick={this.clearState.bind(this)}
-                      type="button"
-                      className="btn btn-default"
-                      style={{ marginRight: 15 }}
-                    >
-                      Clear
-                    </button>
-                    <button
-                      onClick={this.applyLeave.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={this.state.Request_enable}
-                    >
-                      Request Encashment
-                    </button>
-                  </div>
+                  <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                    <div className="col-12" style={{ textAlign: "right" }}>
+                      <button
+                        onClick={this.clearState.bind(this)}
+                        type="button"
+                        className="btn btn-default"
+                        style={{ marginRight: 15 }}
+                      >
+                        Clear
+                      </button>
+                      <button
+                        onClick={this.applyLeave.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={this.state.Request_enable}
+                      >
+                        Request Encashment
+                      </button>
+                    </div>
+                  </AlgaehSecurityElement>
                 </div>
               </div>
             </div>

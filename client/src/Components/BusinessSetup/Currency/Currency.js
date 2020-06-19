@@ -4,19 +4,20 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class Currency extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currency_code: "",
-      currency_description: ""
+      currency_description: "",
     };
     this.getCurrency();
   }
@@ -27,17 +28,17 @@ class Currency extends Component {
       module: "masterSettings",
       method: "GET",
       data: {},
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           this.setState({ currencies: response.data.records });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -49,32 +50,32 @@ class Currency extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/currency/deleteCurrencyMaster",
           module: "masterSettings",
           data: {
-            hims_d_currency_id: data.hims_d_currency_id
+            hims_d_currency_id: data.hims_d_currency_id,
           },
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getCurrency();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -94,24 +95,24 @@ class Currency extends Component {
         decimal_separator: data.decimal_separator,
         negative_separator: data.negative_separator,
         currency_symbol: data.currency_symbol,
-        hims_d_currency_id: data.hims_d_currency_id
+        hims_d_currency_id: data.hims_d_currency_id,
       },
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
           this.getCurrency();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -124,19 +125,19 @@ class Currency extends Component {
       symbol_position: "",
       thousand_separator: "",
       decimal_separator: "",
-      negative_separator: ""
+      negative_separator: "",
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   dropDownHandle(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
@@ -164,27 +165,27 @@ class Currency extends Component {
             symbol_position: this.state.symbol_position,
             thousand_separator: this.state.thousand_separator,
             decimal_separator: this.state.decimal_separator,
-            negative_separator: this.state.negative_separator
+            negative_separator: this.state.negative_separator,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "currency added Successfully",
-                type: "success"
+                type: "success",
               });
 
               this.getCurrency();
               this.resetSaveState();
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -196,45 +197,45 @@ class Currency extends Component {
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "currency_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "currency_code",
               value: this.state.currency_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 mandatory" }}
             label={{
               forceLabel: "Currency Desc.",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "currency_description",
               value: this.state.currency_description,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "symbol",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "currency_symbol",
               value: this.state.currency_symbol,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -242,7 +243,7 @@ class Currency extends Component {
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "decimal_places",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "decimal_places",
@@ -251,16 +252,16 @@ class Currency extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.DECIMAL_PLACES
+                data: GlobalVariables.DECIMAL_PLACES,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "symbol_position",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "symbol_position",
@@ -269,16 +270,16 @@ class Currency extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.SYMBOL_POSITION
+                data: GlobalVariables.SYMBOL_POSITION,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "thousand_separator",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "thousand_separator",
@@ -287,16 +288,16 @@ class Currency extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.THOUSAND_SEPARATOR
+                data: GlobalVariables.THOUSAND_SEPARATOR,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
               fieldName: "decimal_separator",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "decimal_separator",
@@ -305,16 +306,16 @@ class Currency extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.DECIMAL_SEPARATOR
+                data: GlobalVariables.DECIMAL_SEPARATOR,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
               fieldName: "negative_separator",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "negative_separator",
@@ -323,21 +324,23 @@ class Currency extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.NEGATIVE_SEPARATOR
+                data: GlobalVariables.NEGATIVE_SEPARATOR,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
 
-          <div className="col">
-            <button
-              onClick={this.addCurrencyCodes.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col">
+              <button
+                onClick={this.addCurrencyCodes.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-body">
@@ -353,7 +356,7 @@ class Currency extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "currency_code" }} />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "currency_description",
@@ -362,7 +365,7 @@ class Currency extends Component {
                             label={{ fieldName: "currency_description" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                         // editorTemplate: row => {
                         //   return (
                         //     <AlagehFormGroup
@@ -386,7 +389,7 @@ class Currency extends Component {
                       {
                         fieldName: "currency_symbol",
                         label: <AlgaehLabel label={{ fieldName: "symbol" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -398,16 +401,16 @@ class Currency extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Symbol - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "decimal_places",
@@ -416,10 +419,10 @@ class Currency extends Component {
                             label={{ fieldName: "decimal_places" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{row.decimal_places}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -430,18 +433,21 @@ class Currency extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.DECIMAL_PLACES
+                                  data: GlobalVariables.DECIMAL_PLACES,
                                 },
                                 others: {
                                   errormessage:
                                     "Decimal Places - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "symbol_position",
@@ -450,22 +456,22 @@ class Currency extends Component {
                             label={{ fieldName: "symbol_position" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.symbol_position === "BWS"
                                 ? "Before without space"
                                 : row.symbol_position === "BS"
-                                  ? "Before space"
-                                  : row.symbol_position === "AWS"
-                                    ? "After without space"
-                                    : row.symbol_position === "AS"
-                                      ? "After space"
-                                      : null}
+                                ? "Before space"
+                                : row.symbol_position === "AWS"
+                                ? "After without space"
+                                : row.symbol_position === "AS"
+                                ? "After space"
+                                : null}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -476,18 +482,21 @@ class Currency extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.SYMBOL_POSITION
+                                  data: GlobalVariables.SYMBOL_POSITION,
                                 },
                                 others: {
                                   errormessage:
                                     "Symbol Position - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "thousand_separator",
@@ -497,20 +506,20 @@ class Currency extends Component {
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.thousand_separator === " "
                                 ? "Space"
                                 : row.thousand_separator === "."
-                                  ? "Period"
-                                  : row.thousand_separator === ","
-                                    ? "Comma"
-                                    : null}
+                                ? "Period"
+                                : row.thousand_separator === ","
+                                ? "Comma"
+                                : null}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -521,18 +530,21 @@ class Currency extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.THOUSAND_SEPARATOR
+                                  data: GlobalVariables.THOUSAND_SEPARATOR,
                                 },
                                 others: {
                                   errormessage:
                                     "Thousand Separator - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "decimal_separator",
@@ -541,18 +553,18 @@ class Currency extends Component {
                             label={{ fieldName: "decimal_separator" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.decimal_separator === "."
                                 ? "Period"
                                 : row.decimal_separator === ","
-                                  ? "Comma"
-                                  : null}
+                                ? "Comma"
+                                : null}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -563,18 +575,21 @@ class Currency extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.DECIMAL_SEPARATOR
+                                  data: GlobalVariables.DECIMAL_SEPARATOR,
                                 },
                                 others: {
                                   errormessage:
                                     "Decimal Separator - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "negative_separator",
@@ -583,18 +598,18 @@ class Currency extends Component {
                             label={{ fieldName: "negative_separator" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.negative_separator === "TR"
                                 ? "Trailing"
                                 : row.negative_separator === "LD"
-                                  ? "Leading"
-                                  : null}
+                                ? "Leading"
+                                : null}
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col" }}
@@ -605,31 +620,34 @@ class Currency extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.NEGATIVE_SEPARATOR
+                                  data: GlobalVariables.NEGATIVE_SEPARATOR,
                                 },
                                 others: {
                                   errormessage:
                                     "Negative Separator - cannot be blank",
-                                  required: true
+                                  required: true,
                                 },
-                                onChange: this.changeGridEditors.bind(this, row)
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_counter_id"
                     dataSource={{
-                      data: this.state.currencies
+                      data: this.state.currencies,
                     }}
                     filter={true}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
-                      onEdit: () => { },
+                      onEdit: () => {},
                       onDelete: this.deleteCurrency.bind(this),
-                      onDone: this.updateCurrency.bind(this)
+                      onDone: this.updateCurrency.bind(this),
                     }}
                   />
                 </div>

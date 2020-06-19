@@ -13,6 +13,8 @@ import {
 } from "./employeeProjectRoster.event";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
+import { AlgaehSecurityElement } from "algaeh-react-components";
+
 export default function EmpProjectRoster(props) {
   const { getProjectRosterState, setProjectRosterState } = useContext(
     ProjectRosterContext
@@ -215,36 +217,37 @@ export default function EmpProjectRoster(props) {
           </div>
         </div>
       </div>{" "}
-      <div className="hptl-phase1-footer">
-        <div className="row">
-          <div className="col-lg-12">
-            <button
-              className="btn btn-primary"
-              disabled={!showAssaign}
-              onClick={(e) => {
-                setIsEditing(undefined);
-                setShowPopup(true);
+      <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                className="btn btn-primary"
+                disabled={!showAssaign}
+                onClick={(e) => {
+                  setIsEditing(undefined);
+                  setShowPopup(true);
 
-                // if (projects.length === 0) {
-                setLoadingProjects(true);
-                getProjects(inputs.hospital_id)
-                  .then((result) => {
-                    setLoadingProjects(false);
-                    setProjects(result);
-                  })
-                  .catch((error) => {
-                    setProjects([]);
-                    setLoadingProjects(false);
-                  });
-                // }
-              }}
-            >
-              Assign New Project
-            </button>
-            {/* <button type="button" className="btn btn-default">
+                  // if (projects.length === 0) {
+                  setLoadingProjects(true);
+                  getProjects(inputs.hospital_id)
+                    .then((result) => {
+                      setLoadingProjects(false);
+                      setProjects(result);
+                    })
+                    .catch((error) => {
+                      setProjects([]);
+                      setLoadingProjects(false);
+                    });
+                  // }
+                }}
+              >
+                Assign New Project
+              </button>
+              {/* <button type="button" className="btn btn-default">
               Download as Excel
             </button> */}
-            {/* <button
+              {/* <button
               type="button"
               className="btn btn-default"
               onClick={() => {
@@ -263,7 +266,7 @@ export default function EmpProjectRoster(props) {
             >
               Download as PDF
             </button> */}
-            {/* <ReactPrint
+              {/* <ReactPrint
               trigger={() => (
                 <button type="button" className="btn btn-default">
                   Download as PDF
@@ -282,9 +285,10 @@ export default function EmpProjectRoster(props) {
               removeAfterPrint={true}
               pageStyle="ProjectJobCost printing"
             /> */}
+            </div>
           </div>
         </div>
-      </div>
+      </AlgaehSecurityElement>
     </div>
   );
 }
