@@ -114,42 +114,42 @@ export default {
     }
   },
   //created by:irfan
-  getSubInsurance: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let input = req.query;
+  // getSubInsurance: (req, res, next) => {
+  //   const _mysql = new algaehMysql();
+  //   try {
+  //     let input = req.query;
 
-      let qryStr = "";
-      if (input.insurance_provider_id > 0) {
-        qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
-      }
+  //     let qryStr = "";
+  //     if (input.insurance_provider_id > 0) {
+  //       qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
+  //     }
 
-      if (input.insurance_provider_id != null) {
-        qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
-      }
+  //     if (input.insurance_provider_id != null) {
+  //       qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
+  //     }
 
-      // left join finance_account_head P on I.head_id=P.finance_account_head_id\
-      //     left join finance_account_child C on I.child_id=C.finance_account_child_id \
-      _mysql
-        .executeQuery({
-          query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
+  //     // left join finance_account_head P on I.head_id=P.finance_account_head_id\
+  //     //     left join finance_account_child C on I.child_id=C.finance_account_child_id \
+  //     _mysql
+  //       .executeQuery({
+  //         query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
 
-          printQuery: true,
-        })
-        .then((result) => {
-          _mysql.releaseConnection();
-          req.records = result;
+  //         printQuery: false,
+  //       })
+  //       .then((result) => {
+  //         _mysql.releaseConnection();
+  //         req.records = result;
 
-          next();
-        })
-        .catch((error) => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      next(e);
-    }
-  },
+  //         next();
+  //       })
+  //       .catch((error) => {
+  //         _mysql.releaseConnection();
+  //         next(error);
+  //       });
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // },
   //created by:irfan
   addInsuranceProvider: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -328,7 +328,7 @@ export default {
           query:
             "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;\
             select finance_account_head_id from finance_account_head where account_code='1.2.3.1' limit 1;",
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           if (
@@ -1012,7 +1012,7 @@ export default {
             qryStr,
           values: [val_inputs],
 
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1054,7 +1054,7 @@ export default {
           corporate_discount_amt,net_amount from hims_d_services_insurance_network where record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1106,7 +1106,7 @@ export default {
           and net.record_status='A' and netoff.record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           // utilities.logger().log("result: ", result);
@@ -1189,7 +1189,7 @@ export default {
             inputparam.hims_d_insurance_network_id,
           ],
 
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           _mysql
@@ -1263,7 +1263,7 @@ export default {
                 req.userIdentity.algaeh_d_app_user_id,
                 inputparam.hims_d_insurance_network_office_id,
               ],
-              printQuery: true,
+              printQuery: false,
             })
             .then((result2) => {
               _mysql.commitTransaction(() => {
@@ -1352,7 +1352,7 @@ export default {
       _mysql
         .executeQuery({
           query: strQuery,
-          printQuery: true,
+          printQuery: false,
         })
         .then((result) => {
           _mysql.releaseConnection();
@@ -1431,7 +1431,7 @@ export default {
     }
   },
   //created by irfan
-  getSubInsuraces: (req, res, next) => {
+  getSubInsurance: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let _stringData = "";
@@ -1446,25 +1446,25 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
              and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true,
+          printQuery: false,
         })
         .then((product_type) => {
           let sqlQry;
           if (product_type.length == 1) {
-            sqlQry = `SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,
-                        insurance_provider_id  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,head_id
+            sqlQry = `SELECT hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
+            card_format,transaction_number,effective_start_date,effective_end_date  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,I.head_id
                         from hims_d_insurance_sub  I      
                         left join finance_account_child C on I.child_id=C.finance_account_child_id 
                         where record_status='A'${_stringData}; `;
           } else {
-            sqlQry = ` SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name, 
-                       insurance_provider_id  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+            sqlQry = ` hims_d_insurance_sub_id,insurance_sub_code,insurance_sub_name,arabic_sub_name,insurance_provider_id,
+            card_format,transaction_number,effective_start_date,effective_end_date  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
           }
 
           _mysql
             .executeQuery({
               query: sqlQry,
-              printQuery: true,
+              printQuery: false,
             })
             .then((result) => {
               _mysql.releaseConnection();
@@ -1494,7 +1494,7 @@ export default {
           query:
             "select product_type from  hims_d_organization where hims_d_organization_id=1\
                and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
-          printQuery: true,
+          printQuery: false,
         })
         .then((product_type) => {
           if (product_type.length == 1) {
@@ -1505,7 +1505,7 @@ export default {
                 select  finance_account_head_id from finance_account_head where  account_code ='1.2.3.1'
                 union select H.finance_account_head_id from finance_account_head 
                 H inner join cte on H.parent_acc_id = cte.finance_account_head_id  )select * from cte);`,
-                printQuery: true,
+                printQuery: false,
               })
               .then((result) => {
                 _mysql.releaseConnection();
