@@ -13,13 +13,16 @@ export default function pharmacy(io) {
           query: `select count(*) from hims_d_pharmacy_notification_expiry;`,
         });
         _mysql.releaseConnection();
-        const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.`;
-        const create = await createNotification({
-          message: msg,
-          module: "phcy",
-          title: "Pharmacy",
-        });
-        io.sockets.to("phcy").emit("/pharmacy/expired", create);
+        if (result[0]["count(*)"]) {
+
+          const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.`;
+          const create = await createNotification({
+            message: msg,
+            module: "phcy",
+            title: "Pharmacy",
+          });
+          io.sockets.to("phcy").emit("/pharmacy/expired", create);
+        }
       } catch (error) {
         console.log(error);
       }
