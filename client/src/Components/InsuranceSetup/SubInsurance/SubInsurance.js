@@ -173,7 +173,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "transaction_number",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       value: this.state.transaction_number,
@@ -193,7 +193,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "card_format",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       value: this.state.card_format,
@@ -482,7 +482,7 @@ class SubInsurance extends PureComponent {
                             ] = this.state.finance_providers.filter(
                               (item) =>
                                 item.finance_account_child_id ===
-                                  row.finance_account_child_id &&
+                                row.finance_account_child_id &&
                                 item.head_id === row.head_id
                             );
                             return current ? current.child_name : "";
@@ -530,7 +530,7 @@ class SubInsurance extends PureComponent {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: (row) => {},
+                        onEdit: (row) => { },
                         onDone: updateSubInsurance.bind(this, this),
                       }}
                     />
