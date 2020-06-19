@@ -1452,7 +1452,8 @@ export default {
           let sqlQry;
           if (product_type.length == 1) {
             sqlQry = `SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,
-                        insurance_provider_id  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name from hims_d_insurance_sub  I      
+                        insurance_provider_id  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,head_id
+                        from hims_d_insurance_sub  I      
                         left join finance_account_child C on I.child_id=C.finance_account_child_id 
                         where record_status='A'${_stringData}; `;
           } else {
