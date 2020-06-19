@@ -1436,7 +1436,7 @@ export default {
     try {
       let _stringData = "";
 
-      if (req.query.insurance_provider_id != null) {
+      if (req.query.insurance_provider_id > 0) {
         _stringData =
           " and insurance_provider_id=" + req.query.insurance_provider_id;
       }
@@ -1444,19 +1444,83 @@ export default {
       _mysql
         .executeQuery({
           query:
-            " SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,\
-            P.account_name as insurance_head_account,C.child_name as insurance_child_account ,\
-            insurance_provider_id  from hims_d_insurance_sub  I \
-            left join finance_account_head P on I.head_id=P.finance_account_head_id\
-            left join finance_account_child C on I.child_id=C.finance_account_child_id \
-            where record_status='A' " +
-            _stringData,
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+             and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
           printQuery: true,
         })
-        .then((result) => {
+        .then((product_type) => {
+          let sqlQry;
+          if (product_type.length == 1) {
+            sqlQry = `SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name,
+                        insurance_provider_id  ,finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,head_id
+                        from hims_d_insurance_sub  I      
+                        left join finance_account_child C on I.child_id=C.finance_account_child_id 
+                        where record_status='A'${_stringData}; `;
+          } else {
+            sqlQry = ` SELECT hims_d_insurance_sub_id, insurance_sub_code, insurance_sub_name, arabic_sub_name, 
+                       insurance_provider_id  from hims_d_insurance_sub where record_status='A' ${_stringData};`;
+          }
+
+          _mysql
+            .executeQuery({
+              query: sqlQry,
+              printQuery: true,
+            })
+            .then((result) => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch((error) => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+        })
+        .catch((error) => {
           _mysql.releaseConnection();
-          req.records = result;
-          next();
+          next(error);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  //created by irfan
+  getFinanceInsuranceProviders: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select product_type from  hims_d_organization where hims_d_organization_id=1\
+               and (product_type='HIMS_ERP' or product_type='FINANCE_ERP') limit 1; ",
+          printQuery: true,
+        })
+        .then((product_type) => {
+          if (product_type.length == 1) {
+            _mysql
+              .executeQuery({
+                query: `select finance_account_child_id,concat('(',ledger_code,') ',child_name) as child_name ,head_id from
+                finance_account_child  where head_id in ( with recursive cte  as (          
+                select  finance_account_head_id from finance_account_head where  account_code ='1.2.3.1'
+                union select H.finance_account_head_id from finance_account_head 
+                H inner join cte on H.parent_acc_id = cte.finance_account_head_id  )select * from cte);`,
+                printQuery: true,
+              })
+              .then((result) => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch((error) => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = [];
+            next();
+          }
         })
         .catch((error) => {
           _mysql.releaseConnection();
