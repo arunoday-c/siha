@@ -9,7 +9,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -20,9 +20,11 @@ import {
   updatePosDetail,
   onchangegridcol,
   UomchangeTexts,
-  EditGrid
+  EditGrid,
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class RequisitionItems extends Component {
   constructor(props) {
@@ -46,8 +48,8 @@ class RequisitionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory"
-        }
+          mappingName: "inventoryitemcategory",
+        },
       });
     }
 
@@ -61,8 +63,8 @@ class RequisitionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "inventoryitemgroup"
-        }
+          mappingName: "inventoryitemgroup",
+        },
       });
     }
 
@@ -76,8 +78,8 @@ class RequisitionItems extends Component {
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
-        }
+          mappingName: "inventoryitemuom",
+        },
       });
     }
   }
@@ -91,14 +93,43 @@ class RequisitionItems extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hptl-phase1-requisition-item-form">
               <div className="row">
                 <div className="col-3">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-body">
                       <div className="row">
-                        <AlagehAutoComplete
+                        <AlgaehAutoSearch
+                          div={{ className: "col-12 form-group mandatory" }}
+                          label={{ forceLabel: "Item Name", isImp: true }}
+                          title="Search Items"
+                          id="item_id_search"
+                          template={(result) => {
+                            return (
+                              <section className="resultSecStyles">
+                                <div className="row">
+                                  <div className="col-12">
+                                    <h4 className="title">
+                                      {result.item_description}
+                                    </h4>
+                                    <small>{result.uom_description}</small>
+                                  </div>
+                                </div>
+                              </section>
+                            );
+                          }}
+                          name={"hims_d_inventory_item_master_id"}
+                          columns={spotlightSearch.Items.Invitemmaster}
+                          displayField="item_description"
+                          value={this.state.item_description}
+                          searchName={"InventryForMaterialRequsition"}
+                          onClick={itemchangeText.bind(this, this, context)}
+                          others={{
+                            disabled: this.state.ItemDisable,
+                          }}
+                        />
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-12 form-group mandatory" }}
                           label={{ forceLabel: "Item Name" }}
                           selector={{
@@ -115,11 +146,11 @@ class RequisitionItems extends Component {
                             },
                             onChange: itemchangeText.bind(this, this, context)
                           }}
-                        />
+                        /> */}
                         <div className="col-6">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "From Loc. In Hand"
+                              forceLabel: "From Loc. In Hand",
                             }}
                           />
                           <h6>
@@ -131,7 +162,7 @@ class RequisitionItems extends Component {
                         <div className="col-6">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "To Loc. In Hand"
+                              forceLabel: "To Loc. In Hand",
                             }}
                           />
                           <h6>
@@ -150,13 +181,13 @@ class RequisitionItems extends Component {
                             dataSource: {
                               textField: "uom_description",
                               valueField: "uom_id",
-                              data: this.state.ItemUOM
+                              data: this.state.ItemUOM,
                             },
                             others: {
-                              disabled: true
+                              disabled: true,
                             },
 
-                            onChange: UomchangeTexts.bind(this, this)
+                            onChange: UomchangeTexts.bind(this, this),
                           }}
                         />
 
@@ -170,12 +201,12 @@ class RequisitionItems extends Component {
                             dataSource: {
                               textField: "category_desc",
                               valueField: "hims_d_inventory_tem_category_id",
-                              data: this.props.inventoryitemcategory
+                              data: this.props.inventoryitemcategory,
                             },
                             others: {
-                              disabled: true
+                              disabled: true,
                             },
-                            onChange: null
+                            onChange: null,
                           }}
                         />
                         <AlagehAutoComplete
@@ -188,12 +219,12 @@ class RequisitionItems extends Component {
                             dataSource: {
                               textField: "group_description",
                               valueField: "hims_d_inventory_item_group_id",
-                              data: this.props.inventoryitemgroup
+                              data: this.props.inventoryitemgroup,
                             },
                             others: {
-                              disabled: true
+                              disabled: true,
                             },
-                            onChange: null
+                            onChange: null,
                           }}
                         />
 
@@ -201,7 +232,7 @@ class RequisitionItems extends Component {
                           <div className="col-3">
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Last 3 Month Consumption"
+                                forceLabel: "Last 3 Month Consumption",
                                 //forceLabel: "Consumption Done In " + month_name
                               }}
                             />
@@ -215,12 +246,12 @@ class RequisitionItems extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-6" }}
                           label={{
-                            forceLabel: "Quantity Required"
+                            forceLabel: "Quantity Required",
                           }}
                           textBox={{
                             number: {
                               allowNegative: false,
-                              thousandSeparator: ","
+                              thousandSeparator: ",",
                             },
                             dontAllowKeys: ["-", "e", "."],
                             className: "txt-fld",
@@ -231,11 +262,11 @@ class RequisitionItems extends Component {
                                 this,
                                 this,
                                 context
-                              )
+                              ),
                             },
                             others: {
-                              disabled: this.state.ItemDisable
-                            }
+                              disabled: this.state.ItemDisable,
+                            },
                           }}
                         />
                       </div>
@@ -265,7 +296,7 @@ class RequisitionItems extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "action" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     <i
@@ -279,7 +310,7 @@ class RequisitionItems extends Component {
                                         opacity:
                                           this.state.cannotDelete === true
                                             ? "0.1"
-                                            : ""
+                                            : "",
                                       }}
                                       onClick={deleteRequisitionDetail.bind(
                                         this,
@@ -295,8 +326,8 @@ class RequisitionItems extends Component {
                                 show:
                                   this.state.requisition_auth === true
                                     ? false
-                                    : true
-                              }
+                                    : true,
+                              },
                             },
                             {
                               fieldName: "item_id",
@@ -305,26 +336,26 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemlist === undefined
                                     ? []
                                     : this.props.inventoryitemlist.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_master_id ===
-                                        row.item_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_master_id ===
+                                          row.item_id
+                                      );
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
                                   </span>
                                 );
                               },
-                              others: { minWidth: 150 }
+                              others: { minWidth: 150 },
                             },
 
                             {
@@ -334,15 +365,15 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemcategory === undefined
                                     ? []
                                     : this.props.inventoryitemcategory.filter(
-                                      f =>
-                                        f.hims_d_inventory_tem_category_id ===
-                                        row.item_category_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_tem_category_id ===
+                                          row.item_category_id
+                                      );
 
                                 return (
                                   <span>
@@ -352,7 +383,7 @@ class RequisitionItems extends Component {
                                   </span>
                                 );
                               },
-                              others: { minWidth: 250 }
+                              others: { minWidth: 250 },
                             },
 
                             {
@@ -362,15 +393,15 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Item Category" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemgroup === undefined
                                     ? []
                                     : this.props.inventoryitemgroup.filter(
-                                      f =>
-                                        f.hims_d_inventory_item_group_id ===
-                                        row.item_group_id
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_item_group_id ===
+                                          row.item_group_id
+                                      );
 
                                 return (
                                   <span>
@@ -380,7 +411,7 @@ class RequisitionItems extends Component {
                                   </span>
                                 );
                               },
-                              others: { minWidth: 150 }
+                              others: { minWidth: 150 },
                             },
 
                             {
@@ -388,15 +419,15 @@ class RequisitionItems extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display =
                                   this.props.inventoryitemuom === undefined
                                     ? []
                                     : this.props.inventoryitemuom.filter(
-                                      f =>
-                                        f.hims_d_inventory_uom_id ===
-                                        row.item_uom
-                                    );
+                                        (f) =>
+                                          f.hims_d_inventory_uom_id ===
+                                          row.item_uom
+                                      );
 
                                 return (
                                   <span>
@@ -405,7 +436,7 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -415,7 +446,7 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "To Qty in Hand" }}
                                 />
                               ),
-                              disabled: true
+                              disabled: true,
                             },
                             {
                               fieldName: "from_qtyhand",
@@ -424,7 +455,7 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "From Qty in Hand" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.from_qtyhand === null
@@ -432,7 +463,7 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.from_qtyhand)}
                                   </span>
                                 );
-                              }
+                              },
                             },
 
                             {
@@ -442,7 +473,7 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Quantity Required" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.quantity_required === null
@@ -450,19 +481,21 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.quantity_required)}
                                   </span>
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "quantity_authorized",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Quantity Authorized"
+                                    forceLabel: "Quantity Authorized",
                                   }}
                                 />
                               ),
-                              displayTemplate: row => {
-                                return this.state.authorizeEnable ? parseFloat(row.quantity_authorized) : (
+                              displayTemplate: (row) => {
+                                return this.state.authorizeEnable ? (
+                                  parseFloat(row.quantity_authorized)
+                                ) : (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -480,12 +513,12 @@ class RequisitionItems extends Component {
                                           this,
                                           context,
                                           row
-                                        )
-                                      }
+                                        ),
+                                      },
                                     }}
                                   />
                                 );
-                              }
+                              },
                             },
                             {
                               fieldName: "quantity_outstanding",
@@ -494,7 +527,7 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Quantity OutStanding" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 return (
                                   <span>
                                     {row.quantity_outstanding === null
@@ -502,12 +535,12 @@ class RequisitionItems extends Component {
                                       : parseFloat(row.quantity_outstanding)}
                                   </span>
                                 );
-                              }
-                            }
+                              },
+                            },
                           ]}
                           keyId="service_type_id"
                           dataSource={{
-                            data: this.state.inventory_stock_detail
+                            data: this.state.inventory_stock_detail,
                           }}
                           isEditable={false}
                           byForceEvents={true}
@@ -521,7 +554,7 @@ class RequisitionItems extends Component {
                             ),
                             onEdit: EditGrid.bind(this, this, context),
                             onCancel: EditGrid.bind(this, this, context),
-                            onDone: updatePosDetail.bind(this, this, context)
+                            onDone: updatePosDetail.bind(this, this, context),
                           }}
                         />
                       </div>
@@ -543,7 +576,7 @@ function mapStateToProps(state) {
     inventoryitemdetaillist: state.inventoryitemdetaillist,
     inventoryitemcategory: state.inventoryitemcategory,
     inventoryitemuom: state.inventoryitemuom,
-    inventoryitemgroup: state.inventoryitemgroup
+    inventoryitemgroup: state.inventoryitemgroup,
   };
 }
 
@@ -553,7 +586,7 @@ function mapDispatchToProps(dispatch) {
       getSelectedItemDetais: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
