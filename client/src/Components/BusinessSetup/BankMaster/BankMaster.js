@@ -16,6 +16,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class BankMaster extends Component {
   constructor(props) {
@@ -381,15 +382,17 @@ class BankMaster extends Component {
                   }}
                 />
 
-                <div className="col">
-                  <button
-                    style={{ marginTop: 19 }}
-                    className="btn btn-primary"
-                    onClick={this.addBank.bind(this)}
-                  >
-                    Add to List
-                  </button>
-                </div>
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  <div className="col">
+                    <button
+                      style={{ marginTop: 19 }}
+                      className="btn btn-primary"
+                      onClick={this.addBank.bind(this)}
+                    >
+                      Add to List
+                    </button>
+                  </div>
+                </AlgaehSecurityElement>
               </div>
             </div>
           </div>

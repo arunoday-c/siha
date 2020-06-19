@@ -596,18 +596,18 @@ class DeptMaster extends Component {
                   }}
                   value={this.state.effective_start_date}
                 />
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  <div className="col align-middle">
+                    <br />
 
-                <div className="col align-middle">
-                  <br />
-                  <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
                     <button
                       className="btn btn-primary"
                       onClick={this.addSubDepartment.bind(this)}
                     >
                       Add to List
                     </button>
-                  </AlgaehSecurityElement>
-                </div>
+                  </div>
+                </AlgaehSecurityElement>
               </div>
               <div className="row">
                 <div
