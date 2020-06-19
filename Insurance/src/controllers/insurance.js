@@ -22,7 +22,7 @@ const {
   updatePriceListBulk,
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
-  getSubInsuraces,
+
   getFinanceInsuranceProviders,
 } = insuranceModels;
 
@@ -206,14 +206,6 @@ export default () => {
     }
   );
   api.get("/getInsuranceProviders", getInsuranceProviders, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: result,
-    });
-    next();
-  });
-  api.get("/getSubInsuraces", getSubInsuraces, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
