@@ -48,6 +48,7 @@ class EarningsDeductions extends Component {
     this.state = {
       earning_deductions: [],
       shortage_deduction_applicable: false,
+      min_limit_applicable: false,
       limit_applicable: false,
       process_limit_required: false,
       calculation_type: "F",
@@ -563,7 +564,41 @@ class EarningsDeductions extends Component {
                     />
                   </div>
                   <div className="col-4">
-                    <label>Limit Applicable</label>
+                    <label>Min Limit Applicable</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="min_limit_applicable"
+                          checked={this.state.min_limit_applicable}
+                          onChange={changeChecks.bind(this, this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                    <AlagehFormGroup
+                      label={{
+                        forceLabel: "Min. Limit Amount",
+                        isImp: this.state.min_limit_applicable,
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "min_limit_amount",
+                        value: this.state.min_limit_amount,
+                        events: {
+                          onChange: changeTexts.bind(this, this),
+                        },
+                        others: {
+                          placeholder: "Min. Limit Amount",
+                          type: "number",
+                          disabled: !this.state.min_limit_applicable,
+                        },
+                      }}
+                    />
+                  </div>
+                  <div className="col-4">
+                    <label>Max Limit Applicable</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
@@ -578,7 +613,7 @@ class EarningsDeductions extends Component {
                     </div>
                     <AlagehFormGroup
                       label={{
-                        forceLabel: "Limit Amount",
+                        forceLabel: "Max. Limit Amount",
                         isImp: this.state.limit_applicable,
                       }}
                       textBox={{
@@ -1391,11 +1426,86 @@ class EarningsDeductions extends Component {
                           );
                         },
                       },
+
+                      {
+                        fieldName: "min_limit_applicable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Min. Limit Applicable" }}
+                          />
+                        ),
+                        displayTemplate: (row) => {
+                          return (
+                            <span>
+                              {row.min_limit_applicable === "Y" ? "Yes" : "No"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "min_limit_applicable",
+                                className: "select-fld",
+                                value: row.min_limit_applicable,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO,
+                                },
+                                others: {
+                                  errormessage:
+                                    "Min. Limit Applicable cannot be blank",
+                                  required: true,
+                                },
+                                onChange: changeGridEditors.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
+                              }}
+                            />
+                          );
+                        },
+                      },
+                      {
+                        fieldName: "min_limit_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Limit Amount" }} />
+                        ),
+                        editorTemplate: (row) => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "min_limit_amount",
+                                value: row.min_limit_amount,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                },
+                                others: {
+                                  errormessage:
+                                    "Min. Limit Amount - cannot be blank",
+                                  required:
+                                    row.min_limit_applicable === "Y"
+                                      ? true
+                                      : false,
+                                },
+                              }}
+                            />
+                          );
+                        },
+                      },
                       {
                         fieldName: "limit_applicable",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Limit Applicable" }}
+                            label={{ forceLabel: "Max. Limit Applicable" }}
                           />
                         ),
                         displayTemplate: (row) => {
@@ -1420,7 +1530,7 @@ class EarningsDeductions extends Component {
                                 },
                                 others: {
                                   errormessage:
-                                    "Limit Applicable cannot be blank",
+                                    "Max. Limit Applicable cannot be blank",
                                   required: true,
                                 },
                                 onChange: changeGridEditors.bind(
@@ -1434,7 +1544,7 @@ class EarningsDeductions extends Component {
                         },
                       },
                       {
-                        fieldName: "limit_amount",
+                        fieldName: "Max. limit_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Limit Amount" }} />
                         ),
@@ -1454,7 +1564,7 @@ class EarningsDeductions extends Component {
                                 },
                                 others: {
                                   errormessage:
-                                    "Limit Amount - cannot be blank",
+                                    "Max. Limit Amount - cannot be blank",
                                   required:
                                     row.limit_applicable === "Y" ? true : false,
                                 },
