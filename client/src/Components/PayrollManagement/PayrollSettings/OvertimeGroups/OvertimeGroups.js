@@ -4,20 +4,21 @@ import {
   AlagehFormGroup,
   // AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 // import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class OvertimeGroups extends Component {
   constructor(props) {
     super(props);
     this.state = {
       overtime_groups: [],
-      payment_type: "RT"
+      payment_type: "RT",
     };
     this.getOvertimeGroups();
   }
@@ -32,13 +33,13 @@ class OvertimeGroups extends Component {
           holiday_hour: null,
           working_day_rate: null,
           weekoff_day_rate: null,
-          holiday_rate: null
+          holiday_rate: null,
         });
         break;
 
       default:
         this.setState({
-          [e.target.name]: e.target.value
+          [e.target.name]: e.target.value,
         });
     }
   }
@@ -48,27 +49,27 @@ class OvertimeGroups extends Component {
       uri: "/hrsettings/getOvertimeGroups",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           let pc = Enumerable.from(res.data.records)
-            .where(w => w.payment_type === "PC")
+            .where((w) => w.payment_type === "PC")
             .toArray();
           let rt = Enumerable.from(res.data.records)
-            .where(w => w.payment_type === "RT")
+            .where((w) => w.payment_type === "RT")
             .toArray();
 
           this.setState({
             percentage_otgroup: pc,
-            rate_otgroup: rt
+            rate_otgroup: rt,
           });
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -83,8 +84,8 @@ class OvertimeGroups extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/hrsettings/updateOvertimeGroups",
@@ -101,30 +102,30 @@ class OvertimeGroups extends Component {
             weekoff_day_rate: data.weekoff_day_rate,
             holiday_rate: data.holiday_rate,
             payment_type: data.payment_type,
-            record_status: "I"
+            record_status: "I",
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getOvertimeGroups();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -146,24 +147,24 @@ class OvertimeGroups extends Component {
         weekoff_day_rate: data.weekoff_day_rate,
         holiday_rate: data.holiday_rate,
         payment_type: data.payment_type,
-        record_status: "A"
+        record_status: "A",
       },
       method: "PUT",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record Updated Successfully",
-            type: "success"
+            type: "success",
           });
           this.getOvertimeGroups();
         }
       },
-      onFailure: err => {
+      onFailure: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -184,7 +185,7 @@ class OvertimeGroups extends Component {
       working_day_rate: null,
       weekoff_day_rate: null,
       holiday_rate: null,
-      payment_type: null
+      payment_type: null,
     });
   }
 
@@ -202,7 +203,7 @@ class OvertimeGroups extends Component {
           working_day_rate: this.state.working_day_rate,
           weekoff_day_rate: this.state.weekoff_day_rate,
           holiday_rate: this.state.holiday_rate,
-          payment_type: this.state.payment_type
+          payment_type: this.state.payment_type,
         };
 
         algaehApiCall({
@@ -210,29 +211,29 @@ class OvertimeGroups extends Component {
           module: "hrManagement",
           method: "POST",
           data: data,
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
               this.clearState();
               this.getOvertimeGroups();
             } else {
               swalMessage({
                 title: res.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -256,30 +257,30 @@ class OvertimeGroups extends Component {
                           div={{ className: "col-4" }}
                           label={{
                             forceLabel: "Group Code",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "overtime_group_code",
                             value: this.state.overtime_group_code,
                             events: {
-                              onChange: this.changeTexts.bind(this)
-                            }
+                              onChange: this.changeTexts.bind(this),
+                            },
                           }}
                         />
                         <AlagehFormGroup
                           div={{ className: "col-8" }}
                           label={{
                             forceLabel: "Group Description",
-                            isImp: true
+                            isImp: true,
                           }}
                           textBox={{
                             className: "txt-fld",
                             name: "overtime_group_description",
                             value: this.state.overtime_group_description,
                             events: {
-                              onChange: this.changeTexts.bind(this)
-                            }
+                              onChange: this.changeTexts.bind(this),
+                            },
                           }}
                         />
                       </div>
@@ -324,7 +325,7 @@ class OvertimeGroups extends Component {
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Working Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 allowNegative: false,
@@ -332,53 +333,53 @@ class OvertimeGroups extends Component {
                                 name: "working_day_hour",
                                 value: this.state.working_day_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Week-off Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "weekoff_day_hour",
                                 value: this.state.weekoff_day_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Holiday Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "holiday_hour",
                                 value: this.state.holiday_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                           </React.Fragment>
@@ -388,7 +389,7 @@ class OvertimeGroups extends Component {
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Working Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 allowNegative: false,
@@ -396,60 +397,60 @@ class OvertimeGroups extends Component {
                                 name: "working_day_hour",
                                 value: this.state.working_day_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Week-off Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "weekoff_day_hour",
                                 value: this.state.weekoff_day_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Holiday Hour",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "holiday_hour",
                                 value: this.state.holiday_hour,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Working Rate",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 allowNegative: false,
@@ -457,71 +458,74 @@ class OvertimeGroups extends Component {
                                 name: "working_day_rate",
                                 value: this.state.working_day_rate,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Week-off Rate",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "weekoff_day_rate",
                                 value: this.state.weekoff_day_rate,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
                                 forceLabel: "Holiday Rate",
-                                isImp: true
+                                isImp: true,
                               }}
                               textBox={{
                                 className: "txt-fld",
                                 name: "holiday_rate",
                                 value: this.state.holiday_rate,
                                 events: {
-                                  onChange: this.changeTexts.bind(this)
+                                  onChange: this.changeTexts.bind(this),
                                 },
                                 others: {
                                   type: "number",
                                   checkvalidation: "$value <= 0",
-                                  errormessage: "Please Select a proper value"
-                                }
+                                  errormessage: "Please Select a proper value",
+                                },
                               }}
                             />
                           </React.Fragment>
                         ) : null}
                       </div>
                     </div>
-                    <div className="col-12">
-                      <button
-                        style={{
-                          float: "right",
-                          marginRight: -15
-                        }}
-                        onClick={this.addOvertimeGroups.bind(this)}
-                        className="btn btn-primary"
-                      >
-                        Add to List
-                      </button>
-                    </div>
+
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <div className="col-12">
+                        <button
+                          style={{
+                            float: "right",
+                            marginRight: -15,
+                          }}
+                          onClick={this.addOvertimeGroups.bind(this)}
+                          className="btn btn-primary"
+                        >
+                          Add to List
+                        </button>
+                      </div>
+                    </AlgaehSecurityElement>
                   </div>
                 </div>
               </div>
@@ -542,16 +546,16 @@ class OvertimeGroups extends Component {
                       {
                         fieldName: "overtime_group_code",
                         label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return <span>{row.overtime_group_code}</span>;
-                        }
+                        },
                       },
                       {
                         fieldName: "overtime_group_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -563,23 +567,23 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "payment_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.payment_type === "PC"
@@ -590,7 +594,7 @@ class OvertimeGroups extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {row.payment_type === "PC"
@@ -618,7 +622,7 @@ class OvertimeGroups extends Component {
                             //   }}
                             // />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "working_day_hour",
@@ -627,10 +631,10 @@ class OvertimeGroups extends Component {
                             label={{ forceLabel: "Working Day Hour" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span> {row.working_day_hour}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -642,16 +646,16 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "weekoff_day_hour",
@@ -660,10 +664,10 @@ class OvertimeGroups extends Component {
                             label={{ forceLabel: "Week Off Day Hour" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{row.weekoff_day_hour}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -675,26 +679,26 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "holiday_hour",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Hour" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span> {row.holiday_hour}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -706,16 +710,16 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "working_day_rate",
@@ -724,10 +728,10 @@ class OvertimeGroups extends Component {
                             label={{ forceLabel: "Working Day Rate" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{row.working_day_rate}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -739,16 +743,16 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "weekoff_day_rate",
@@ -757,10 +761,10 @@ class OvertimeGroups extends Component {
                             label={{ forceLabel: "Week Off Rate" }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span>{row.weekoff_day_rate}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -772,26 +776,26 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "holiday_rate",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Rate" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return <span> {row.holiday_rate}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -803,21 +807,21 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_employee_group_id"
                     dataSource={{
-                      data: this.state.rate_otgroup
+                      data: this.state.rate_otgroup,
                     }}
                     isEditable={true}
                     filter={true}
@@ -825,7 +829,7 @@ class OvertimeGroups extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteOvertimeGroup.bind(this),
-                      onDone: this.updateOvertimeGroups.bind(this)
+                      onDone: this.updateOvertimeGroups.bind(this),
                     }}
                   />
                 </div>
@@ -845,7 +849,7 @@ class OvertimeGroups extends Component {
                     columns={[
                       {
                         fieldName: "overtime_group_code",
-                        label: <AlgaehLabel label={{ forceLabel: "Code" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
                         // others: {
                         //   filterable: true
                         // }
@@ -855,7 +859,7 @@ class OvertimeGroups extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -867,23 +871,23 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "payment_type",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Payment Type" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.payment_type === "PC"
@@ -894,7 +898,7 @@ class OvertimeGroups extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <span>
                               {row.payment_type === "PC"
@@ -922,21 +926,21 @@ class OvertimeGroups extends Component {
                             //   }}
                             // />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "working_day_rate",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Working Day" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return row.payment_type === "RT" ? (
                             <span>{row.working_day_rate}</span>
                           ) : (
                             <span> {row.working_day_hour}</span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.payment_type === "RT" ? (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -948,12 +952,12 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           ) : (
@@ -967,23 +971,23 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "weekoff_day_rate",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Week Off" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.payment_type === "RT"
@@ -992,7 +996,7 @@ class OvertimeGroups extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.payment_type === "RT" ? (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1004,12 +1008,12 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           ) : (
@@ -1023,23 +1027,23 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "holiday_rate",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {" "}
@@ -1049,7 +1053,7 @@ class OvertimeGroups extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.payment_type === "RT" ? (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -1061,12 +1065,12 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           ) : (
@@ -1080,21 +1084,21 @@ class OvertimeGroups extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Field - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="hims_d_employee_group_id"
                     dataSource={{
-                      data: this.state.percentage_otgroup
+                      data: this.state.percentage_otgroup,
                     }}
                     isEditable={true}
                     filter={true}
@@ -1102,7 +1106,7 @@ class OvertimeGroups extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteOvertimeGroup.bind(this),
-                      onDone: this.updateOvertimeGroups.bind(this)
+                      onDone: this.updateOvertimeGroups.bind(this),
                     }}
                   />
                 </div>

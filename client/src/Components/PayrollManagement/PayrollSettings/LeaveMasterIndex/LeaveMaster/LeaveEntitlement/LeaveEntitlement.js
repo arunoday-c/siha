@@ -6,6 +6,7 @@ import {
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 function LeaveEntitlement(props) {
   let myParent = props.parent;
 
