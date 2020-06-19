@@ -7,7 +7,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./OpeningBalance.scss";
 import {
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
   // AlgaehDataGrid,
   // AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
@@ -25,6 +25,7 @@ import EmployeeLoanOpenBal from "./EmployeeLoanOpenBal";
 import EmployeeGratuityOpenBal from "./EmployeeGratuityOpenBal";
 import EmployeeLeaveSalaryOpenBal from "./EmployeeLeaveSalaryOpenBal";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 const all_functions = OpeningBalanceEvent();
 
@@ -51,7 +52,7 @@ class OpeningBalance extends Component {
       loan_dynamic_date: [],
       gratuity_dynamic_date: [],
       leave_salary_columns: [],
-      props_enable: false
+      props_enable: false,
     };
     all_functions.getLeaveMaster(this);
   }
@@ -60,7 +61,7 @@ class OpeningBalance extends Component {
   componentDidMount() {
     const userToken = this.context.userToken;
     this.setState({
-      hospital_id: userToken.hims_d_hospital_id
+      hospital_id: userToken.hims_d_hospital_id,
     });
     if (
       this.props.organizations === undefined ||
@@ -71,8 +72,8 @@ class OpeningBalance extends Component {
         method: "GET",
         redux: {
           type: "ORGS_GET_DATA",
-          mappingName: "organizations"
-        }
+          mappingName: "organizations",
+        },
       });
     }
     if (
@@ -86,8 +87,8 @@ class OpeningBalance extends Component {
         data: { record_status: "A" },
         redux: {
           type: "EMP_GROUP_GET",
-          mappingName: "emp_groups"
-        }
+          mappingName: "emp_groups",
+        },
       });
     }
   }
@@ -105,7 +106,7 @@ class OpeningBalance extends Component {
       leave_id: null,
       year: moment().year(),
       leave_balance: [],
-      error_upload: null
+      error_upload: null,
     });
   }
 
@@ -134,13 +135,13 @@ class OpeningBalance extends Component {
 
   CloseModal(e) {
     this.setState({
-      openModal: !this.state.openModal
+      openModal: !this.state.openModal,
     });
   }
   showModal(HeaderCaption) {
     this.setState({
       openModal: !this.state.openModal,
-      HeaderCaption: HeaderCaption
+      HeaderCaption: HeaderCaption,
     });
   }
 
@@ -205,7 +206,7 @@ class OpeningBalance extends Component {
             div={{ className: "col-1 mandatory" }}
             label={{
               forceLabel: "Year.",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "year",
@@ -214,22 +215,22 @@ class OpeningBalance extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: allYears
+                data: allYears,
               },
               onChange: this.texthandle.bind(this),
 
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
               forceLabel: "Branch",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "hospital_id",
@@ -238,21 +239,21 @@ class OpeningBalance extends Component {
               dataSource: {
                 textField: "hospital_name",
                 valueField: "hims_d_hospital_id",
-                data: this.props.organizations
+                data: this.props.organizations,
               },
               onChange: this.texthandle.bind(this),
               onClear: () => {
                 this.setState({
-                  hospital_id: null
+                  hospital_id: null,
                 });
-              }
+              },
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
             label={{
               forceLabel: "Employee Group",
-              isImp: false
+              isImp: false,
             }}
             selector={{
               name: "employee_group_id",
@@ -261,14 +262,14 @@ class OpeningBalance extends Component {
               dataSource: {
                 textField: "group_description",
                 valueField: "hims_d_employee_group_id",
-                data: this.props.emp_groups
+                data: this.props.emp_groups,
               },
               onChange: this.texthandle.bind(this),
               onClear: () => {
                 this.setState({
-                  employee_group_id: null
+                  employee_group_id: null,
                 });
-              }
+              },
             }}
           />
           <div className="col globalSearchCntr">
@@ -305,21 +306,23 @@ class OpeningBalance extends Component {
               <i className="fas fa-file-download"></i> Download
             </button>
 
-            <div className="uploadManualDiv   btn-with-icon">
-              <input
-                className="inputfile"
-                type="file"
-                name="manualTimeSheet"
-                ref={fileInput}
-                onChange={e => {
-                  if (e.target.files.length > 0)
-                    this.UploadTimesheet(e.target.files);
-                }}
-              />
-              <label onClick={() => fileInput.current.click()}>
-                <i className="fas fa-file-upload"></i> Upload
-              </label>
-            </div>
+            <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+              <div className="uploadManualDiv   btn-with-icon">
+                <input
+                  className="inputfile"
+                  type="file"
+                  name="manualTimeSheet"
+                  ref={fileInput}
+                  onChange={(e) => {
+                    if (e.target.files.length > 0)
+                      this.UploadTimesheet(e.target.files);
+                  }}
+                />
+                <label onClick={() => fileInput.current.click()}>
+                  <i className="fas fa-file-upload"></i> Upload
+                </label>
+              </div>
+            </AlgaehSecurityElement>
           </div>
         </div>
         <div className="row">
@@ -389,7 +392,7 @@ class OpeningBalance extends Component {
 function mapStateToProps(state) {
   return {
     organizations: state.organizations,
-    emp_groups: state.emp_groups
+    emp_groups: state.emp_groups,
   };
 }
 
@@ -397,7 +400,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getOrganizations: AlgaehActions,
-      getEmpGroups: AlgaehActions
+      getEmpGroups: AlgaehActions,
     },
     dispatch
   );

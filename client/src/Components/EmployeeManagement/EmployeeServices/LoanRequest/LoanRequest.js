@@ -22,6 +22,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
+
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
@@ -1167,24 +1169,26 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <div className="col-12" style={{ textAlign: "right" }}>
-                      <button
-                        onClick={this.clearState.bind(this)}
-                        type="button"
-                        className="btn btn-default"
-                        style={{ marginRight: 15 }}
-                      >
-                        Clear
-                      </button>
-                      <button
-                        onClick={this.applyLoan.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
-                      >
-                        Request Loan
-                      </button>
-                    </div>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <div className="col-12" style={{ textAlign: "right" }}>
+                        <button
+                          onClick={this.clearState.bind(this)}
+                          type="button"
+                          className="btn btn-default"
+                          style={{ marginRight: 15 }}
+                        >
+                          Clear
+                        </button>
+                        <button
+                          onClick={this.applyLoan.bind(this)}
+                          type="button"
+                          className="btn btn-primary"
+                          //disabled={this.state.Request_enable}
+                        >
+                          Request Loan
+                        </button>
+                      </div>
+                    </AlgaehSecurityElement>
                   </div>
                 ) : this.state.request_type === "AD" ? (
                   <div className="row">
@@ -1268,24 +1272,26 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <div className="col-12" style={{ textAlign: "right" }}>
-                      <button
-                        onClick={this.clearAdvanceState.bind(this)}
-                        type="button"
-                        className="btn btn-default"
-                        style={{ marginRight: 15 }}
-                      >
-                        Clear
-                      </button>
-                      <button
-                        onClick={this.applyAdvance.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                        //disabled={this.state.Request_enable}
-                      >
-                        Request Advance
-                      </button>
-                    </div>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <div className="col-12" style={{ textAlign: "right" }}>
+                        <button
+                          onClick={this.clearAdvanceState.bind(this)}
+                          type="button"
+                          className="btn btn-default"
+                          style={{ marginRight: 15 }}
+                        >
+                          Clear
+                        </button>
+                        <button
+                          onClick={this.applyAdvance.bind(this)}
+                          type="button"
+                          className="btn btn-primary"
+                          //disabled={this.state.Request_enable}
+                        >
+                          Request Advance
+                        </button>
+                      </div>
+                    </AlgaehSecurityElement>
 
                     {/* <div className="col-12 margin-bottom-15">
                       <button
