@@ -40,12 +40,11 @@
                         <th>Sl No.</th>
                         <th>Batch No.</th>
                         <th>Quantity</th>
-                        <th>Unit Cost</th>
-                        <th>Sales Price</th>
-                        <th>Discount %</th>
+                        <th>Price</th>
+                        {{!-- <th>Discount %</th>
                         <th>Discount Amt.</th>
-                        <th>Net Ext. Cost</th>
-                        <th>Tax Amt.</th>
+                        <th>Net Ext. Cost</th> --}}
+                        {{!-- <th>Tax Amt.</th> --}}
                         <th>Total Amt.</th>
                     </tr>
                 </thead>
@@ -64,13 +63,12 @@
                         <td>{{inc @index}}</td>
                         <td>{{batchno}}</td>
                         <td class="numberFld">{{dispatch_quantity}}</td>
-                        <td class="numberFld">{{unit_cost}}</td>
                         <td class="numberFld">{{sales_price}}</td>
-                        <td class="numberFld">{{discount_percentage}}</td>
+                        {{!-- <td class="numberFld">{{discount_percentage}}</td>
                         <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td>
-                        <td class="numberFld">{{tax_amount}}</td>
-                        <td class="numberFld">{{total_amount}}</td>
+                        <td class="numberFld">{{net_extended_cost}}</td> --}}
+                        {{!-- <td class="numberFld">{{tax_amount}}</td> --}}
+                        <td class="numberFld">{{b_total_amount}}</td>
                     </tr>
                     {{/each }}
 

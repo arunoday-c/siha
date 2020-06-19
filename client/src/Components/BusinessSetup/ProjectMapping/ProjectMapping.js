@@ -15,6 +15,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import ProjectMappingEvents from "./ProjectMappingEvents";
 import moment from "moment";
 import Options from "../../../Options.json";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ProjectMapping extends Component {
   constructor(props) {
@@ -124,15 +125,17 @@ class ProjectMapping extends Component {
             }}
           />
 
-          <div className="col form-group">
-            <button
-              onClick={this.addDivisionProject.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-            >
-              <span>Add</span>
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col form-group">
+              <button
+                onClick={this.addDivisionProject.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+              >
+                <span>Add to list</span>
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
         <div className="row">
           <div className="col-12">

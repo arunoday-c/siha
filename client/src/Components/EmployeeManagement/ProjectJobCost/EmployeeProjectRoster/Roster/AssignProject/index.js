@@ -8,6 +8,7 @@ import {
 } from "../../../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../../../Wrapper/algaehButton";
 import { ProjectRosterContext } from "../index";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 import "../../project_assign.scss";
 import {
@@ -406,51 +407,53 @@ export default function (props) {
             <div className="col-lg-4"> &nbsp;</div>
 
             <div className="col-lg-8">
-              <ButtonType
-                classname="btn-primary"
-                loading={loadingProcess}
-                onClick={() => {
-                  setLoadingProcess(true);
-                  let from_dt =
-                    from_date === "" && isEditing !== undefined
-                      ? isEditing.attendance_date
-                      : from_date === "" && isEditing === undefined
-                      ? fromDate
-                      : from_date;
-                  let to_dt =
-                    to_date === "" && isEditing !== undefined
-                      ? isEditing.attendance_date
-                      : to_date === "" && isEditing === undefined
-                      ? toDate
-                      : to_date;
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                <ButtonType
+                  classname="btn-primary"
+                  loading={loadingProcess}
+                  onClick={() => {
+                    setLoadingProcess(true);
+                    let from_dt =
+                      from_date === "" && isEditing !== undefined
+                        ? isEditing.attendance_date
+                        : from_date === "" && isEditing === undefined
+                        ? fromDate
+                        : from_date;
+                    let to_dt =
+                      to_date === "" && isEditing !== undefined
+                        ? isEditing.attendance_date
+                        : to_date === "" && isEditing === undefined
+                        ? toDate
+                        : to_date;
 
-                  processAsssignProject({
-                    selectedProjectID,
-                    selectedEmployees,
-                    from_date: from_dt,
-                    to_date: to_dt,
-                    selectHospitalId,
-                    isEditing,
-                  })
-                    .then(() => {
-                      setLoadingProcess(false);
-                      setSelectedProjectID("");
-                      setHospitalId("");
-                      setSelectedEmployees([]);
-                      setCheckAllEmployees(false);
-                      setFromDate("");
-                      setToDate("");
-                      onClose();
+                    processAsssignProject({
+                      selectedProjectID,
+                      selectedEmployees,
+                      from_date: from_dt,
+                      to_date: to_dt,
+                      selectHospitalId,
+                      isEditing,
                     })
-                    .catch((error) => {
-                      setLoadingProcess(false);
-                    });
-                }}
-                label={{
-                  forceLabel: "PROCESS",
-                  returnText: true,
-                }}
-              />
+                      .then(() => {
+                        setLoadingProcess(false);
+                        setSelectedProjectID("");
+                        setHospitalId("");
+                        setSelectedEmployees([]);
+                        setCheckAllEmployees(false);
+                        setFromDate("");
+                        setToDate("");
+                        onClose();
+                      })
+                      .catch((error) => {
+                        setLoadingProcess(false);
+                      });
+                  }}
+                  label={{
+                    forceLabel: "PROCESS",
+                    returnText: true,
+                  }}
+                />
+              </AlgaehSecurityElement>
 
               <button
                 onClick={() => {

@@ -10,6 +10,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { GROUP_TYPE } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 class Groups extends Component {
   constructor(props) {
     super(props);
@@ -252,17 +253,18 @@ class Groups extends Component {
               onChange: this.dropDownHandler.bind(this),
             }}
           />
-
-          <div className="col">
-            <button
-              type="submit"
-              style={{ marginTop: 19 }}
-              onClick={this.addGroups.bind(this)}
-              className="btn btn-primary"
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col">
+              <button
+                type="submit"
+                style={{ marginTop: 19 }}
+                onClick={this.addGroups.bind(this)}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
 
         <div className="row">

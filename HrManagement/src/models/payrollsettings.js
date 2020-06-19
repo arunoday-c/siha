@@ -25,20 +25,20 @@ export default {
         query:
           "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
           short_desc,component_category,calculation_method,component_frequency,calculation_type,\
-          component_type,shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+          component_type,shortage_deduction_applicable,overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,head_id,child_id from hims_d_earning_deduction\
           where record_status='A' " +
           _stringData,
         values: intValue,
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -52,14 +52,14 @@ export default {
           "select hims_d_loan_id,loan_code, loan_description, loan_account, loan_limit_type, \
           loan_maximum_amount,loan_status from hims_d_loan where record_status='A' \
           order by hims_d_loan_id desc",
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -84,15 +84,15 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
       })
-      .then(inserted_loan => {
+      .then((inserted_loan) => {
         _mysql.releaseConnection();
         req.records = inserted_loan;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -106,9 +106,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;"
+            "select product_type from hims_d_organization where hims_d_organization_id=1 limit 1;",
         })
-        .then(result => {
+        .then((result) => {
           if (
             result[0]["product_type"] == "HIMS_ERP" ||
             result[0]["product_type"] == "FINANCE_ERP"
@@ -127,11 +127,11 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
                 ],
-                printQuery: false
+                printQuery: false,
               })
-              .then(childRes => {
+              .then((childRes) => {
                 _mysql
                   .executeQuery({
                     query:
@@ -149,23 +149,23 @@ export default {
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id,
                       head_id,
-                      childRes.insertId
-                    ]
+                      childRes.insertId,
+                    ],
                   })
-                  .then(inserted_loan => {
+                  .then((inserted_loan) => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = inserted_loan;
                       next();
                     });
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
                   });
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.rollBackTransaction(() => {
                   next(error);
                 });
@@ -186,21 +186,21 @@ export default {
                   new Date(),
                   req.userIdentity.algaeh_d_app_user_id,
                   new Date(),
-                  req.userIdentity.algaeh_d_app_user_id
-                ]
+                  req.userIdentity.algaeh_d_app_user_id,
+                ],
               })
-              .then(inserted_loan => {
+              .then((inserted_loan) => {
                 _mysql.releaseConnection();
                 req.records = inserted_loan;
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 _mysql.releaseConnection();
                 next(e);
               });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -229,15 +229,15 @@ export default {
           input.record_status,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_loan_id
-        ]
+          input.hims_d_loan_id,
+        ],
       })
-      .then(update_loan => {
+      .then((update_loan) => {
         _mysql.releaseConnection();
         req.records = update_loan;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -249,17 +249,13 @@ export default {
     const year =
       input.year > 0
         ? input.year
-        : moment()
-          .startOf("year")
-          .format("YYYY-MM-DD");
+        : moment().startOf("year").format("YYYY-MM-DD");
 
     const start_of_year = moment(year, "YYYY")
       .startOf("year")
       .format("YYYY-MM-DD");
 
-    const end_of_year = moment(year, "YYYY")
-      .endOf("year")
-      .format("YYYY-MM-DD");
+    const end_of_year = moment(year, "YYYY").endOf("year").format("YYYY-MM-DD");
 
     let _stringData = " ";
     if (input.type == "W") {
@@ -283,16 +279,16 @@ export default {
           input.hospital_id,
           input.hospital_id,
           start_of_year,
-          end_of_year
+          end_of_year,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = { weekoffs: result[0], days: result[1] };
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -313,15 +309,15 @@ export default {
             holiday_type from  hims_d_holiday  where \
             record_status='A' and date(holiday_date) = date(?) and hospital_id=?",
         values: [input.holiday_date, input.hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(holiday_details => {
+      .then((holiday_details) => {
         if (holiday_details.length > 0) {
           _mysql.releaseConnection();
           req.records = {
             message:
               "holiday is already defind for this :" +
-              moment(input.holiday_date).format("DD/MM/YYYY")
+              moment(input.holiday_date).format("DD/MM/YYYY"),
           };
           req.flag = 1;
           next();
@@ -344,21 +340,21 @@ export default {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
               ],
-              printQuery: true
+              printQuery: true,
             })
-            .then(insert_holiday => {
+            .then((insert_holiday) => {
               _mysql.releaseConnection();
               req.records = insert_holiday;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -386,7 +382,7 @@ export default {
       req.body.wednesday,
       req.body.thursday,
       req.body.friday,
-      req.body.saturday
+      req.body.saturday,
     ];
 
     for (let d = 0; d < 7; d++) {
@@ -411,14 +407,14 @@ export default {
           from  hims_d_holiday  where record_status='A' and date(holiday_date) \
           between date(?) and date(?) and hospital_id=? and weekoff='Y';",
         values: [start_of_year, end_of_year, input.hospital_id],
-        printQuery: true
+        printQuery: true,
       })
-      .then(weekOff_details => {
+      .then((weekOff_details) => {
         if (weekOff_details.length > 0) {
           _mysql.releaseConnection();
 
           req.records = {
-            message: "week off is already defind for the year: " + input.year
+            message: "week off is already defind for the year: " + input.year,
           };
           req.flag = 1;
           next();
@@ -440,30 +436,30 @@ export default {
                 created_date: new Date(),
                 updated_date: new Date(),
                 created_by: req.userIdentity.algaeh_d_app_user_id,
-                updated_by: req.userIdentity.algaeh_d_app_user_id
+                updated_by: req.userIdentity.algaeh_d_app_user_id,
               },
               bulkInsertOrUpdate: true,
-              printQuery: true
+              printQuery: true,
             })
-            .then(insert_weekOff => {
+            .then((insert_weekOff) => {
               _mysql.releaseConnection();
               req.records = insert_weekOff;
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         } else {
           _mysql.releaseConnection();
           req.records = {
             weekOff_exist: true,
-            message: "please select week off days"
+            message: "please select week off days",
           };
           next();
           return;
         }
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -479,14 +475,14 @@ export default {
         .executeQuery({
           query: "DELETE FROM hims_d_holiday WHERE hims_d_holiday_id = ?;",
           values: [req.body.hims_d_holiday_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } else {
@@ -499,26 +495,31 @@ export default {
   getEarningDeduction: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    let _stringData = req.query.miscellaneous_component != null ? ` and miscellaneous_component= '${req.query.miscellaneous_component}'` : ""
-    console.log("_stringData", _stringData)
+    let _stringData =
+      req.query.miscellaneous_component != null
+        ? ` and miscellaneous_component= '${req.query.miscellaneous_component}'`
+        : "";
+    console.log("_stringData", _stringData);
 
     _mysql
       .executeQuery({
         query:
           "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
           short_desc,component_category,calculation_method,component_frequency,calculation_type, specific_nationality, nationality_id,\
-          component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
+          component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id, \
-          direct_head_id, direct_child_id from hims_d_earning_deduction where record_status='A'" + _stringData + " order by hims_d_earning_deduction_id desc",
-        printQuery: true
+          direct_head_id, direct_child_id from hims_d_earning_deduction where record_status='A'" +
+          _stringData +
+          " order by hims_d_earning_deduction_id desc",
+        printQuery: true,
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -532,12 +533,12 @@ export default {
         query:
           "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
             component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
-            shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+            shortage_deduction_applicable,overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
             process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
             round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, \
             annual_salary_comp, head_id, child_id, li_head_id, li_child_id, direct_head_id, direct_child_id, \
             created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -551,6 +552,8 @@ export default {
           input.component_type,
           input.shortage_deduction_applicable,
           input.overtime_applicable,
+          input.min_limit_applicable,
+          input.min_limit_amount,
           input.limit_applicable,
           input.limit_amount,
           input.process_limit_required,
@@ -573,15 +576,15 @@ export default {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
+          req.userIdentity.algaeh_d_app_user_id,
+        ],
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         req.records = result;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -595,7 +598,7 @@ export default {
         query:
           "update hims_d_earning_deduction set  earning_deduction_code=?,earning_deduction_description=?,short_desc=?,\
           component_category=?,calculation_method=?,miscellaneous_component=?,component_frequency=?,calculation_type=?,\
-          component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
+          component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,min_limit_applicable=?,min_limit_amount=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
           allow_round_off=?,round_off_type=?,formula=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
           print_report=?,print_order_by=?,annual_salary_comp=?, \
@@ -613,6 +616,8 @@ export default {
           input.component_type,
           input.shortage_deduction_applicable,
           input.overtime_applicable,
+          input.min_limit_applicable,
+          input.min_limit_amount,
           input.limit_applicable,
           input.limit_amount,
           input.process_limit_required,
@@ -636,19 +641,19 @@ export default {
           input.record_status,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_earning_deduction_id
+          input.hims_d_earning_deduction_id,
         ],
-        printQuery: true
+        printQuery: true,
       })
-      .then(update_loan => {
+      .then((update_loan) => {
         _mysql.releaseConnection();
         req.records = update_loan;
         next();
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
-  }
+  },
 };
 
 function getDaysArray(start, end, days) {

@@ -4,17 +4,18 @@ import {
   AlgaehDataGrid,
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   swalMessage,
-  cancelRequest
+  cancelRequest,
 } from "../../../utils/algaehApiCall";
 import { ROLE_TYPE, FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 
+import { AlgaehSecurityElement } from "algaeh-react-components";
 class Roles extends Component {
   _isMounted = false;
   constructor(props) {
@@ -22,7 +23,7 @@ class Roles extends Component {
 
     this.state = {
       groups: [],
-      roles: []
+      roles: [],
     };
   }
 
@@ -35,17 +36,17 @@ class Roles extends Component {
       data: {
         fields: "role_code",
         tableName: "algaeh_d_app_roles",
-        keyFieldName: "app_d_app_roles_id"
+        keyFieldName: "app_d_app_roles_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true && this._isMounted === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-            role_code_placeHolder: placeHolder.role_code
+            role_code_placeHolder: placeHolder.role_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -67,7 +68,7 @@ class Roles extends Component {
       role_type: null,
       loan_authorize_privilege: null,
       leave_authorize_privilege: null,
-      edit_monthly_attendance: null
+      edit_monthly_attendance: null,
     });
   }
   dropDownHandle(data) {
@@ -85,22 +86,22 @@ class Roles extends Component {
         loan_authorize_privilege: data.loan_authorize_privilege,
         leave_authorize_privilege: data.leave_authorize_privilege,
         edit_monthly_attendance: data.edit_monthly_attendance,
-        app_d_app_roles_id: data.app_d_app_roles_id
+        app_d_app_roles_id: data.app_d_app_roles_id,
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -112,30 +113,30 @@ class Roles extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/algaehMasters/deleteAlgaehRoleMAster",
           method: "DELETE",
           data: {
-            app_d_app_roles_id: data.app_d_app_roles_id
+            app_d_app_roles_id: data.app_d_app_roles_id,
           },
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record updated successfully",
-                type: "success"
+                type: "success",
               });
             }
             this.getRoles();
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -153,29 +154,29 @@ class Roles extends Component {
         role_type: this.state.role_type,
         loan_authorize_privilege: this.state.loan_authorize_privilege,
         leave_authorize_privilege: this.state.leave_authorize_privilege,
-        edit_monthly_attendance: this.state.edit_monthly_attendance
+        edit_monthly_attendance: this.state.edit_monthly_attendance,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           swalMessage({
             title: "Record added successfully",
-            type: "success"
+            type: "success",
           });
         } else {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "error",
           });
         }
         this.getRoles();
         this.clearState();
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -185,19 +186,19 @@ class Roles extends Component {
       uri: "/algaehappuser/selectAppGroup",
       method: "GET",
       cancelRequestId: "selectAppGroup",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success === true && this._isMounted === true) {
           this.setState({
-            groups: res.data.records
+            groups: res.data.records,
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getRoles() {
@@ -206,19 +207,19 @@ class Roles extends Component {
       uri: "/algaehappuser/selectRoles",
       method: "GET",
       cancelRequestId: "selectRoles",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success === true && this._isMounted === true) {
           this.setState({
-            roles: res.data.records
+            roles: res.data.records,
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
   getAuthPrivilege() {
@@ -227,20 +228,20 @@ class Roles extends Component {
       uri: "/algaehMasters/getHrmsAuthLevels",
       method: "GET",
       cancelRequestId: "getHrmsAuthLevels",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success === true && this._isMounted === true) {
           this.setState({
             leave_levels: res.data.records.leave_levels,
-            loan_levels: res.data.records.loan_levels
+            loan_levels: res.data.records.loan_levels,
           });
         }
       },
-      onError: err => {
+      onError: (err) => {
         swalMessage({
           title: err.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -272,7 +273,7 @@ class Roles extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Role Type",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "role_type",
@@ -281,17 +282,17 @@ class Roles extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: ROLE_TYPE
+                data: ROLE_TYPE,
               },
 
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Select User Group",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "app_group_id",
@@ -300,43 +301,43 @@ class Roles extends Component {
               dataSource: {
                 textField: "app_group_name",
                 valueField: "algaeh_d_app_group_id",
-                data: this.state.groups
+                data: this.state.groups,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />{" "}
           <AlagehFormGroup
             div={{ className: "col-1 mandatory form-group" }}
             label={{
               forceLabel: "Role Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "role_code",
               value: this.state.role_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 tabIndex: "1",
-                placeholder: this.state.role_code_placeHolder
-              }
+                placeholder: this.state.role_code_placeHolder,
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Role Name",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "role_name",
               value: this.state.role_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           {/* <AlagehFormGroup
@@ -358,7 +359,7 @@ class Roles extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Authorize Loan",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "loan_authorize_privilege",
@@ -367,16 +368,16 @@ class Roles extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: this.state.loan_levels
+                data: this.state.loan_levels,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Authorize Leave",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "leave_authorize_privilege",
@@ -385,16 +386,16 @@ class Roles extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: this.state.leave_levels
+                data: this.state.leave_levels,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Edit Monthly Attendance",
-              isImp: true
+              isImp: true,
             }}
             selector={{
               name: "edit_monthly_attendance",
@@ -403,21 +404,23 @@ class Roles extends Component {
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: FORMAT_YESNO
+                data: FORMAT_YESNO,
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
             }}
           />
-          <div className="col">
-            <button
-              type="submit"
-              style={{ marginTop: 19 }}
-              onClick={this.addRoles.bind(this)}
-              className="btn btn-primary"
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col">
+              <button
+                type="submit"
+                style={{ marginTop: 19 }}
+                onClick={this.addRoles.bind(this)}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
+            </div>{" "}
+          </AlgaehSecurityElement>
         </div>
 
         <div className="row">
@@ -440,13 +443,13 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Role Type"
+                              forceLabel: "Role Type",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(ROLE_TYPE)
-                            .where(w => w.value === row.role_type)
+                            .where((w) => w.value === row.role_type)
                             .firstOrDefault();
                           return (
                             <span>
@@ -454,7 +457,7 @@ class Roles extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col mandatory form-group" }}
@@ -465,7 +468,7 @@ class Roles extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: ROLE_TYPE
+                                  data: ROLE_TYPE,
                                 },
 
                                 onChange: this.changeGridEditors.bind(
@@ -475,12 +478,12 @@ class Roles extends Component {
 
                                 others: {
                                   errormessage: "Role type- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "app_group_name",
@@ -488,11 +491,11 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Group Name"
+                              forceLabel: "Group Name",
                             }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "role_code",
@@ -500,11 +503,11 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Role Code"
+                              forceLabel: "Role Code",
                             }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
                       },
                       {
                         fieldName: "role_name",
@@ -512,11 +515,11 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Role Name"
+                              forceLabel: "Role Name",
                             }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col mandatory form-group" }}
@@ -528,16 +531,16 @@ class Roles extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Role Name- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       // {
                       //   fieldName: "role_discreption",
@@ -580,19 +583,19 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Authorize Loan"
+                              forceLabel: "Authorize Loan",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(this.state.loan_levels)
                             .where(
-                              w => w.value === row.loan_authorize_privilege
+                              (w) => w.value === row.loan_authorize_privilege
                             )
                             .firstOrDefault();
                           return <span>{x !== undefined ? x.name : "--"}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col mandatory form-group" }}
@@ -603,7 +606,7 @@ class Roles extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: this.state.loan_levels
+                                  data: this.state.loan_levels,
                                 },
 
                                 onChange: this.changeGridEditors.bind(
@@ -614,12 +617,12 @@ class Roles extends Component {
                                 others: {
                                   errormessage:
                                     "LOAN PRIVILEGE- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "leave_authorize_privilege",
@@ -627,19 +630,19 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Authorize Leave"
+                              forceLabel: "Authorize Leave",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let x = Enumerable.from(this.state.leave_levels)
                             .where(
-                              w => w.value === row.leave_authorize_privilege
+                              (w) => w.value === row.leave_authorize_privilege
                             )
                             .firstOrDefault();
                           return <span>{x !== undefined ? x.name : "--"}</span>;
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col mandatory form-group" }}
@@ -650,7 +653,7 @@ class Roles extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: this.state.leave_levels
+                                  data: this.state.leave_levels,
                                 },
 
                                 onChange: this.changeGridEditors.bind(
@@ -661,12 +664,12 @@ class Roles extends Component {
                                 others: {
                                   errormessage:
                                     "LEAVE PRIVILEGE- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "edit_monthly_attendance",
@@ -674,11 +677,11 @@ class Roles extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Edit Monthly Attendance "
+                              forceLabel: "Edit Monthly Attendance ",
                             }}
                           />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {row.edit_monthly_attendance === "Y" ? (
@@ -689,7 +692,7 @@ class Roles extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehAutoComplete
                               div={{ className: "col mandatory form-group" }}
@@ -700,7 +703,7 @@ class Roles extends Component {
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: FORMAT_YESNO
+                                  data: FORMAT_YESNO,
                                 },
 
                                 onChange: this.changeGridEditors.bind(
@@ -711,17 +714,17 @@ class Roles extends Component {
                                 others: {
                                   errormessage:
                                     "LEAVE PRIVILEGE- cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
-                      }
+                        },
+                      },
                     ]}
                     keyId="app_d_app_roles_id"
                     dataSource={{
-                      data: this.state.roles
+                      data: this.state.roles,
                     }}
                     filter={true}
                     isEditable={true}
@@ -729,7 +732,7 @@ class Roles extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteRoles.bind(this),
-                      onDone: this.updateRoles.bind(this)
+                      onDone: this.updateRoles.bind(this),
                     }}
                   />
                 </div>

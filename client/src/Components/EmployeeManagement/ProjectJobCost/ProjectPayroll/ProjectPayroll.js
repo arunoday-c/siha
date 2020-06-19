@@ -30,6 +30,7 @@ class ProjectPayroll extends Component {
 
       project_wise_payroll: [],
       noEmployees: 0,
+      no_projects: 0,
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
@@ -67,6 +68,7 @@ class ProjectPayroll extends Component {
 
       project_wise_payroll: [],
       noEmployees: 0,
+      no_projects: 0,
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
@@ -566,6 +568,18 @@ class ProjectPayroll extends Component {
                             style: { textAlign: "center" },
                           },
                         },
+                        {
+                          fieldName: "total_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Total Hr" }} />
+                          ),
+                          others: {
+                            maxWidth: 100,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" },
+                          },
+                        },
 
                         // {
                         //   fieldName: "complete_hours",
@@ -622,10 +636,21 @@ class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: this.state.lbl_total,
+                        forceLabel: "Total Employee",
+                        // forceLabel: this.state.lbl_total,
                       }}
                     />
                     <h6>{this.state.noEmployees} Nos</h6>
+                  </div>
+
+                  <div className="col-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total Projects",
+                        // forceLabel: this.state.lbl_total,
+                      }}
+                    />
+                    <h6>{this.state.no_projects} Nos</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel
@@ -633,7 +658,7 @@ class ProjectPayroll extends Component {
                         forceLabel: "Total Worked Hr",
                       }}
                     />
-                    <h6>{this.state.total_worked_hours.toFixed(2)} Hr</h6>
+                    <h6>{this.state.total_worked_hours} Hr</h6>
                   </div>
                   <div className="col-2">
                     <AlgaehLabel

@@ -21,6 +21,8 @@ import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
+
 class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
@@ -542,21 +544,23 @@ class EmployeeMaster extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-12">
-                    <button
-                      onClick={InsertUpdateEmployee.bind(this, this)}
-                      type="button"
-                      className="btn btn-primary"
-                      disabled={
-                        this.props.employee_status === "I" ? true : false
-                      }
-                    >
-                      {this.state.personalDetails.hims_d_employee_id ===
-                      null ? (
-                        <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                      ) : (
-                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                      )}
-                    </button>
+                    <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                      <button
+                        onClick={InsertUpdateEmployee.bind(this, this)}
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={
+                          this.props.employee_status === "I" ? true : false
+                        }
+                      >
+                        {this.state.personalDetails.hims_d_employee_id ===
+                        null ? (
+                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                        ) : (
+                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                        )}
+                      </button>
+                    </AlgaehSecurityElement>
                     <button
                       onClick={(e) => {
                         this.onClose(e);

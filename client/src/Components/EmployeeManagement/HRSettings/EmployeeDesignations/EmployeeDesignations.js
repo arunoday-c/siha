@@ -3,18 +3,19 @@ import "./emp_dsgntn.scss";
 import {
   AlgaehDataGrid,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class EmployeeDesignations extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      employee_designations: []
+      employee_designations: [],
     };
     this.getDesignations();
   }
@@ -24,15 +25,15 @@ class EmployeeDesignations extends Component {
       uri: "/hrsettings/getDesignations",
       module: "hrManagement",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            employee_designations: res.data.records
+            employee_designations: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
@@ -44,8 +45,8 @@ class EmployeeDesignations extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/hrsettings/updateDesignation",
@@ -54,30 +55,30 @@ class EmployeeDesignations extends Component {
             hims_d_designation_id: data.hims_d_designation_id,
             designation_code: data.designation_code,
             designation: data.designation,
-            record_status: "I"
+            record_status: "I",
           },
           method: "PUT",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.getDesignations();
             } else if (!response.data.success) {
               swalMessage({
                 title: response.data.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -92,24 +93,24 @@ class EmployeeDesignations extends Component {
         hims_d_designation_id: data.hims_d_designation_id,
         designation_code: data.designation_code,
         designation: data.designation,
-        record_status: "A"
+        record_status: "A",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully",
-            type: "success"
+            type: "success",
           });
 
           this.getDesignations();
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -123,39 +124,39 @@ class EmployeeDesignations extends Component {
           method: "POST",
           data: {
             designation_code: this.state.designation_code,
-            designation: this.state.designation
+            designation: this.state.designation,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearState();
               this.getDesignations();
               swalMessage({
                 title: "Record Added Successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
   clearState() {
     this.setState({
       designation_code: "",
-      designation: ""
+      designation: "",
     });
   }
 
@@ -174,22 +175,22 @@ class EmployeeDesignations extends Component {
             div={{ className: "col-2 mandatory form-group" }}
             label={{
               forceLabel: "Code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "designation_code",
               value: this.state.designation_code,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
           <AlagehFormGroup
             div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Designation Description",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
@@ -197,21 +198,23 @@ class EmployeeDesignations extends Component {
               name: "designation",
               value: this.state.designation,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
-          <div className="col form-group">
-            <button
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-              id="srch-sch"
-              onClick={this.addDesignations.bind(this)}
-            >
-              Add to List
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col form-group">
+              <button
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+                id="srch-sch"
+                onClick={this.addDesignations.bind(this)}
+              >
+                Add to List
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
         <div className="row">
           <div className="col-12">
@@ -234,7 +237,7 @@ class EmployeeDesignations extends Component {
                             label={{ forceLabel: "Designation Code" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -246,24 +249,24 @@ class EmployeeDesignations extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage:
                                     "Designation Code - cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "designation",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Designation" }} />
                         ),
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return (
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -275,35 +278,35 @@ class EmployeeDesignations extends Component {
                                   onChange: this.changeGridEditors.bind(
                                     this,
                                     row
-                                  )
+                                  ),
                                 },
                                 others: {
                                   errormessage: "Designation cannot be blank",
-                                  required: true
-                                }
+                                  required: true,
+                                },
                               }}
                             />
                           );
-                        }
+                        },
                       },
                       {
                         fieldName: "created_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Created Date" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           return (
                             <span>
                               {moment(row.created_date).format("DD-MM-YYYY")}
                             </span>
                           );
                         },
-                        disabled: true
-                      }
+                        disabled: true,
+                      },
                     ]}
                     keyId="hims_d_designation_id"
                     dataSource={{
-                      data: this.state.employee_designations
+                      data: this.state.employee_designations,
                     }}
                     isEditable={true}
                     filter={true}
@@ -311,7 +314,7 @@ class EmployeeDesignations extends Component {
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteDesignation.bind(this),
-                      onDone: this.updateDesignation.bind(this)
+                      onDone: this.updateDesignation.bind(this),
                     }}
                   />
                 </div>

@@ -6,6 +6,7 @@ import {
   AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../Wrapper/algaehButton";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default function EditAttendencePerDay(props) {
@@ -157,18 +158,20 @@ export default function EditAttendencePerDay(props) {
             <div className="col-lg-4"> &nbsp;</div>
 
             <div className="col-lg-8">
-              <ButtonType
-                classname="btn-primary"
-                loading={loadingProcess}
-                onClick={() => {
-                  setLoadingProcess(true);
-                  SaveAttendanceAndProject({ workingHours, projectId });
-                }}
-                label={{
-                  forceLabel: "SAVE",
-                  returnText: true,
-                }}
-              />
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                <ButtonType
+                  classname="btn-primary"
+                  loading={loadingProcess}
+                  onClick={() => {
+                    setLoadingProcess(true);
+                    SaveAttendanceAndProject({ workingHours, projectId });
+                  }}
+                  label={{
+                    forceLabel: "SAVE",
+                    returnText: true,
+                  }}
+                />{" "}
+              </AlgaehSecurityElement>
 
               <button
                 onClick={() => {

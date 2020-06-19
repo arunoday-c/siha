@@ -12,6 +12,7 @@ import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 // import { parse } from "url";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class EOSGratuity extends Component {
   constructor(props) {
@@ -632,16 +633,18 @@ class EOSGratuity extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={this.saveEos.bind(this)}
-                disabled={this.state.saveDisabled}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Send for payment", returnText: true }}
-                />
-              </button>
+              <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.saveEos.bind(this)}
+                  disabled={this.state.saveDisabled}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Send for payment", returnText: true }}
+                  />
+                </button>
+              </AlgaehSecurityElement>
 
               {/* <button
                 type="button"

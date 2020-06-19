@@ -9,6 +9,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import isEqual from "lodash/isEqual";
 import ButtonType from "../../../Wrapper/algaehButton";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class ProjectEmpAssign extends Component {
   constructor(props) {
@@ -383,15 +384,17 @@ class ProjectEmpAssign extends Component {
               <div className="col-lg-4"> &nbsp;</div>
 
               <div className="col-lg-8">
-                <ButtonType
-                  classname="btn-primary"
-                  loading={this.state.loading_Process}
-                  onClick={this.processAssignment.bind(this)}
-                  label={{
-                    forceLabel: "PROCESS",
-                    returnText: true,
-                  }}
-                />
+                <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                  <ButtonType
+                    classname="btn-primary"
+                    loading={this.state.loading_Process}
+                    onClick={this.processAssignment.bind(this)}
+                    label={{
+                      forceLabel: "PROCESS",
+                      returnText: true,
+                    }}
+                  />
+                </AlgaehSecurityElement>
 
                 <button
                   onClick={this.props.onClose}

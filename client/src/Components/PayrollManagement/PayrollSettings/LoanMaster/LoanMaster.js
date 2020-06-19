@@ -11,6 +11,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class LoanMaster extends Component {
   constructor(props) {
@@ -345,16 +346,17 @@ class LoanMaster extends Component {
                 }}
               />
             </div> : null} */}
-
-          <div className="col-2 form-group">
-            <button
-              onClick={this.addLoanMaster.bind(this)}
-              style={{ marginTop: 19 }}
-              className="btn btn-primary"
-            >
-              ADD TO LIST
-            </button>
-          </div>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="col-2 form-group">
+              <button
+                onClick={this.addLoanMaster.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+              >
+                ADD TO LIST
+              </button>
+            </div>
+          </AlgaehSecurityElement>
         </div>
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">

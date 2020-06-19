@@ -31,7 +31,7 @@ export default function Notification({ open, handlePanel }) {
     const check = Array.isArray(context.userMenu);
     const addToNotiList = (notobj) => {
       setToday((state) => {
-        state.push(notobj);
+        state.unshift(notobj);
         return [...state];
       });
       if (!doNot) {
@@ -179,11 +179,11 @@ export default function Notification({ open, handlePanel }) {
             )}
           />
         ) : (
-          <Empty
-            image={emptyImage}
-            description={"Nothing for you now, Come back later"}
-          />
-        )}
+            <Empty
+              image={emptyImage}
+              description={"Nothing for you now, Come back later"}
+            />
+          )}
       </>
     );
   }

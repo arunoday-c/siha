@@ -5,13 +5,14 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehFormGroup
+  AlagehFormGroup,
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import swal from "sweetalert2";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 export default class HolidayMaster extends Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export default class HolidayMaster extends Component {
       sunday: false,
       disableButton: false,
       year: moment().format("YYYY"),
-      hospital_id: null
+      hospital_id: null,
     };
   }
   static contextType = MainContext;
@@ -40,7 +41,7 @@ export default class HolidayMaster extends Component {
     this.getHospitals();
     this.setState(
       {
-        hospital_id: userToken.hims_d_hospital_id
+        hospital_id: userToken.hims_d_hospital_id,
       },
       () => {
         this.getHolidayMaster(this.state.hospital_id);
@@ -52,35 +53,35 @@ export default class HolidayMaster extends Component {
     algaehApiCall({
       uri: "/organization/getOrganizationByUser",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            hospitals: res.data.records
+            hospitals: res.data.records,
           });
         }
-      }
+      },
     });
   }
   getReligionsMaster() {
     algaehApiCall({
       uri: "/masters/get/relegion",
       method: "GET",
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           this.setState({
-            religions: res.data.records
+            religions: res.data.records,
           });
         }
       },
 
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   hospitalHandler(value) {
     this.setState(
       {
-        [value.name]: value.value
+        [value.name]: value.value,
       },
       () => this.getHolidayMaster(value.value)
     );
@@ -95,7 +96,7 @@ export default class HolidayMaster extends Component {
         thursday: false,
         friday: false,
         saturday: false,
-        sunday: false
+        sunday: false,
       },
       cb
     );
@@ -106,7 +107,7 @@ export default class HolidayMaster extends Component {
       date: null,
       holiday_type: false,
       religion_id: null,
-      holiday_description: null
+      holiday_description: null,
     });
   }
 
@@ -121,8 +122,8 @@ export default class HolidayMaster extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         algaehApiCall({
           // uri: "/holiday/deleteHoliday",
@@ -130,23 +131,23 @@ export default class HolidayMaster extends Component {
           module: "hrManagement",
           method: "DELETE",
           data: {
-            hims_d_holiday_id: data.hims_d_holiday_id
+            hims_d_holiday_id: data.hims_d_holiday_id,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               swalMessage({
                 title: "Record Deleted Successfully",
-                type: "success"
+                type: "success",
               });
               this.getHolidayMaster(this.state.hospital_id);
             }
           },
-          onFailure: err => {
+          onFailure: (err) => {
             swalMessage({
               title: err.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -159,34 +160,34 @@ export default class HolidayMaster extends Component {
       method: "GET",
       data: {
         hospital_id: id,
-        year: this.state.year
+        year: this.state.year,
       },
-      onSuccess: res => {
+      onSuccess: (res) => {
         if (res.data.success) {
           const { weekoffs, days } = res.data.records;
-          const holidays = weekoffs.filter(day => day.weekoff === "N");
-          const weekoffList = weekoffs.filter(day => day.weekoff === "Y");
-          const reqdays = days.map(item => item.day.toLowerCase());
+          const holidays = weekoffs.filter((day) => day.weekoff === "N");
+          const weekoffList = weekoffs.filter((day) => day.weekoff === "Y");
+          const reqdays = days.map((item) => item.day.toLowerCase());
           this.setState(
             {
               holidays,
               weekoffs: weekoffList,
-              hospital_id: weekoffs.length !== 0 ? weekoffs[0].hospital_id : id
+              hospital_id: weekoffs.length !== 0 ? weekoffs[0].hospital_id : id,
             },
             () => {
               if (reqdays.length) {
                 this.clearWeekoffState(() => {
-                  reqdays.forEach(day =>
+                  reqdays.forEach((day) =>
                     this.setState({
                       [day]: true,
-                      disableButton: true
+                      disableButton: true,
                     })
                   );
                 });
               } else {
                 this.setState(
                   {
-                    disableButton: false
+                    disableButton: false,
                   },
                   () => this.clearWeekoffState()
                 );
@@ -195,25 +196,25 @@ export default class HolidayMaster extends Component {
           );
         }
       },
-      onFailure: err => {}
+      onFailure: (err) => {},
     });
   }
 
   dropDownHandler(value) {
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
     });
   }
 
   changeChecks(e) {
     this.setState({
-      [e.target.name]: e.target.checked
+      [e.target.name]: e.target.checked,
     });
   }
 
   changeTexts(e) {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   }
 
@@ -221,7 +222,7 @@ export default class HolidayMaster extends Component {
     const { name, value } = e.target;
     this.setState(
       {
-        [name]: value < moment().year() ? moment().format("YYYY") : value
+        [name]: value < moment().year() ? moment().format("YYYY") : value,
       },
       () => this.getHolidayMaster(this.state.hospital_id)
     );
@@ -248,26 +249,26 @@ export default class HolidayMaster extends Component {
             holiday_date: this.state.date,
             holiday_type: this.state.holiday_type ? "RS" : "RE",
             religion_id: this.state.religion_id,
-            holiday_description: this.state.holiday_description
+            holiday_description: this.state.holiday_description,
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearHolidayState();
               swalMessage({
                 title: "Record added successfully",
-                type: "success"
+                type: "success",
               });
               this.getHolidayMaster(this.state.hospital_id);
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.result.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
   }
 
@@ -290,26 +291,26 @@ export default class HolidayMaster extends Component {
             wednesday: this.state.wednesday ? "Y" : "N",
             thursday: this.state.thursday ? "Y" : "N",
             friday: this.state.friday ? "Y" : "N",
-            saturday: this.state.saturday ? "Y" : "N"
+            saturday: this.state.saturday ? "Y" : "N",
           },
-          onSuccess: res => {
+          onSuccess: (res) => {
             if (res.data.success) {
               this.clearWeekoffState();
               swalMessage({
                 title: "Records added successfully",
-                type: "success"
+                type: "success",
               });
               this.getHolidayMaster(this.state.hospital_id);
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.result.message,
-                type: "warning"
+                type: "warning",
               });
             }
           },
-          onFailure: err => {}
+          onFailure: (err) => {},
         });
-      }
+      },
     });
   }
 
@@ -334,19 +335,19 @@ export default class HolidayMaster extends Component {
                             div={{ className: "col mandatory" }}
                             label={{
                               forceLabel: "Year",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "year",
                               value: this.state.year,
                               events: {
-                                onChange: this.changeYear.bind(this)
+                                onChange: this.changeYear.bind(this),
                               },
                               others: {
                                 type: "number",
-                                min: moment().year()
-                              }
+                                min: moment().year(),
+                              },
                             }}
                           />
 
@@ -354,7 +355,7 @@ export default class HolidayMaster extends Component {
                             div={{ className: "col mandatory" }}
                             label={{
                               forceLabel: "Filter by Branch",
-                              isImp: true
+                              isImp: true,
                             }}
                             selector={{
                               name: "hospital_id",
@@ -363,14 +364,14 @@ export default class HolidayMaster extends Component {
                               dataSource: {
                                 textField: "hospital_name",
                                 valueField: "hims_d_hospital_id",
-                                data: this.state.hospitals
+                                data: this.state.hospitals,
                               },
                               onChange: this.hospitalHandler.bind(this),
                               onClear: () =>
                                 this.setState({
                                   hospital_id: null,
-                                  disableButton: true
-                                })
+                                  disableButton: true,
+                                }),
                             }}
                           />
                         </div>
@@ -458,18 +459,21 @@ export default class HolidayMaster extends Component {
                             </div>
                           </div>
                           <div className="col-12">
-                            <button
-                              onClick={this.addWeekoffs.bind(this)}
-                              className="btn btn-primary"
-                              disabled={this.state.disableButton}
-                              style={{
-                                float: "right",
-                                marginTop: 10,
-                                marginBottom: 10
-                              }}
-                            >
-                              Apply
-                            </button>
+                            {" "}
+                            <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                              <button
+                                onClick={this.addWeekoffs.bind(this)}
+                                className="btn btn-primary"
+                                disabled={this.state.disableButton}
+                                style={{
+                                  float: "right",
+                                  marginTop: 10,
+                                  marginBottom: 10,
+                                }}
+                              >
+                                Apply
+                              </button>{" "}
+                            </AlgaehSecurityElement>
                           </div>
                         </div>
                       </div>
@@ -488,18 +492,18 @@ export default class HolidayMaster extends Component {
                             div={{ className: "col-12" }}
                             label={{
                               forceLabel: "Select a Date",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "date"
+                              name: "date",
                             }}
                             events={{
-                              onChange: selectedDate => {
+                              onChange: (selectedDate) => {
                                 this.setState({
-                                  date: selectedDate
+                                  date: selectedDate,
                                 });
-                              }
+                              },
                             }}
                             value={this.state.date}
                           />
@@ -521,11 +525,11 @@ export default class HolidayMaster extends Component {
                           <AlagehAutoComplete
                             div={{
                               className:
-                                "col-6 ApplicableSelect  margin-top-15 margin-bottom-15"
+                                "col-6 ApplicableSelect  margin-top-15 margin-bottom-15",
                             }}
                             label={{
                               forceLabel: "Applicable for",
-                              isImp: this.state.holiday_type
+                              isImp: this.state.holiday_type,
                             }}
                             selector={{
                               name: "religion_id",
@@ -534,42 +538,44 @@ export default class HolidayMaster extends Component {
                               dataSource: {
                                 textField: "religion_name",
                                 valueField: "hims_d_religion_id",
-                                data: this.state.religions
+                                data: this.state.religions,
                               },
                               onChange: this.dropDownHandler.bind(this),
                               others: {
-                                disabled: !this.state.holiday_type
-                              }
+                                disabled: !this.state.holiday_type,
+                              },
                             }}
                           />
                           <AlagehFormGroup
                             div={{ className: "col-12" }}
                             label={{
                               forceLabel: "Holiday Description",
-                              isImp: true
+                              isImp: true,
                             }}
                             textBox={{
                               className: "txt-fld",
                               name: "holiday_description",
                               value: this.state.holiday_description,
                               events: {
-                                onChange: this.changeTexts.bind(this)
-                              }
+                                onChange: this.changeTexts.bind(this),
+                              },
                             }}
                           />
-                          <div className="col-12">
-                            <button
-                              style={{
-                                float: "right",
-                                marginTop: 10,
-                                marginBottom: 10
-                              }}
-                              onClick={this.addHoliday.bind(this)}
-                              className="btn btn-primary"
-                            >
-                              Add
-                            </button>
-                          </div>
+                          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                            <div className="col-12">
+                              <button
+                                style={{
+                                  float: "right",
+                                  marginTop: 10,
+                                  marginBottom: 10,
+                                }}
+                                onClick={this.addHoliday.bind(this)}
+                                className="btn btn-primary"
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </AlgaehSecurityElement>
                         </div>
                       </div>
                     </div>
@@ -624,13 +630,13 @@ export default class HolidayMaster extends Component {
                               label={{ forceLabel: "Holiday Date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.holiday_date).format("DD-MM-YYYY")}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "holiday_description",
@@ -638,7 +644,7 @@ export default class HolidayMaster extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Holyday Description" }}
                             />
-                          )
+                          ),
                         },
                         // {
                         //   fieldName: "holiday",
@@ -666,7 +672,7 @@ export default class HolidayMaster extends Component {
                               label={{ forceLabel: "Holiday Type" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.holiday_type === "RE"
@@ -676,7 +682,7 @@ export default class HolidayMaster extends Component {
                                   : "------"}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "religion_name",
@@ -685,7 +691,7 @@ export default class HolidayMaster extends Component {
                               label={{ forceLabel: "Applicable For" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {row.religion_name !== null
@@ -693,12 +699,12 @@ export default class HolidayMaster extends Component {
                                   : "ALL"}
                               </span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_holiday_id"
                       dataSource={{
-                        data: this.state.holidays
+                        data: this.state.holidays,
                       }}
                       isEditable={false}
                       filter={true}
@@ -719,29 +725,29 @@ export default class HolidayMaster extends Component {
                               label={{ forceLabel: "Weekoff Date" }}
                             />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.holiday_date).format("DD-MM-YYYY")}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "holiday_description",
                           label: <AlgaehLabel label={{ forceLabel: "Day" }} />,
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>
                                 {moment(row.holiday_date).format("dddd")}
                               </span>
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="hims_d_holiday_id"
                       dataSource={{
-                        data: this.state.weekoffs
+                        data: this.state.weekoffs,
                       }}
                       isEditable={false}
                       filter={true}

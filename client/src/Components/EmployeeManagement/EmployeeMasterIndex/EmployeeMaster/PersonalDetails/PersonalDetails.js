@@ -23,7 +23,7 @@ import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
-import { AlgaehFormGroup } from "algaeh-react-components";
+import { AlgaehFormGroup, RawSecurityElement } from "algaeh-react-components";
 // import Enumerable from "linq";
 
 class PersonalDetails extends Component {
@@ -35,6 +35,7 @@ class PersonalDetails extends Component {
       samechecked: "N",
       selectedLang: getCookie("Language"),
       HIMS_Active: false,
+      FldEditable: true,
     };
   }
 
@@ -136,6 +137,12 @@ class PersonalDetails extends Component {
         },
       });
     }
+
+    RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
+      if (result === "hide") {
+        this.setState({ FldEditable: false });
+      }
+    });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -193,7 +200,7 @@ class PersonalDetails extends Component {
                           disabled:
                             this.state.hims_d_employee_id === null
                               ? false
-                              : true,
+                              : this.state.FldEditable,
                         },
                       }}
                     />
@@ -892,7 +899,9 @@ class PersonalDetails extends Component {
                               onChange={isDoctorChange.bind(this, this)}
                             />
                             <span>
-                              <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                              <AlgaehLabel
+                                label={{ forceLabel: "Healthcare Provider" }}
+                              />
                             </span>
                           </label>
                         </div>
