@@ -21,6 +21,7 @@ import {
 import swal from "sweetalert2";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { MainContext } from "algaeh-react-components/context";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 class FinalSettlement extends Component {
   constructor(props) {
@@ -472,7 +473,11 @@ class FinalSettlement extends Component {
       onSuccess: (res) => {
         if (res.data.success) {
           let earnings = Enumerable.from(res.data.records)
-            .where((w) => w.component_category === "E" && w.miscellaneous_component === "Y")
+            .where(
+              (w) =>
+                w.component_category === "E" &&
+                w.miscellaneous_component === "Y"
+            )
             .toArray();
           let deductions = Enumerable.from(res.data.records)
             .where((w) => w.component_category === "D")
@@ -691,7 +696,7 @@ class FinalSettlement extends Component {
                   <div className="portlet-body">
                     <div className="row" data-validate="fsErnDiv">
                       {this.state.isEnable ? (
-                        <React.Fragment>
+                        <>
                           <AlagehAutoComplete
                             div={{ className: "col form-group" }}
                             label={{
@@ -730,17 +735,19 @@ class FinalSettlement extends Component {
                             }}
                           />
 
-                          <div className="col-2" style={{ paddingLeft: 0 }}>
-                            <button
-                              onClick={this.addEarning.bind(this)}
-                              className="btn btn-primary"
-                              style={{ marginTop: 19 }}
-                              disabled={this.state.disableSave}
-                            >
-                              Add
-                            </button>
-                          </div>
-                        </React.Fragment>
+                          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                            <div className="col-2" style={{ paddingLeft: 0 }}>
+                              <button
+                                onClick={this.addEarning.bind(this)}
+                                className="btn btn-primary"
+                                style={{ marginTop: 19 }}
+                                disabled={this.state.disableSave}
+                              >
+                                Add
+                              </button>
+                            </div>{" "}
+                          </AlgaehSecurityElement>
+                        </>
                       ) : null}
 
                       <div className="col-lg-12" id="Salary_Earning_Cntr">
@@ -814,7 +821,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
+                            onEdit: () => {},
                             onDelete: this.deleteEarnings.bind(this),
                             onDone: this.updateEarnings.bind(this),
                           }}
@@ -883,17 +890,18 @@ class FinalSettlement extends Component {
                               },
                             }}
                           />
-
-                          <div className="col-2" style={{ paddingLeft: 0 }}>
-                            <button
-                              onClick={this.addDeduction.bind(this)}
-                              className="btn btn-primary"
-                              style={{ marginTop: 19 }}
-                              disabled={this.state.disableSave}
-                            >
-                              Add
-                            </button>
-                          </div>
+                          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+                            <div className="col-2" style={{ paddingLeft: 0 }}>
+                              <button
+                                onClick={this.addDeduction.bind(this)}
+                                className="btn btn-primary"
+                                style={{ marginTop: 19 }}
+                                disabled={this.state.disableSave}
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </AlgaehSecurityElement>
                         </React.Fragment>
                       ) : null}
 
@@ -969,7 +977,7 @@ class FinalSettlement extends Component {
                           isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
+                            onEdit: () => {},
                             onDelete: this.deleteDeductions.bind(this),
                             onDone: this.updateDeductions.bind(this),
                           }}
@@ -1041,9 +1049,9 @@ class FinalSettlement extends Component {
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
-                            onEdit: () => { },
-                            onDelete: () => { },
-                            onDone: () => { },
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {},
                           }}
                         />
                       </div>
@@ -1172,46 +1180,48 @@ class FinalSettlement extends Component {
             </div>
           </div>
         </div>
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={this.saveFinalSettlement.bind(this)}
-                disabled={this.state.disableSave}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Send for Payment", returnText: true }}
-                />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.clearState.bind(this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button>
-              {this.state.net_amount != null ? (
+        <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
                 <button
                   type="button"
-                  className="btn btn-other"
-                  // onClick={this.clearState.bind(this)}
-                  onClick={this.generateFinalSettlementSlip.bind(this)}
+                  className="btn btn-primary"
+                  onClick={this.saveFinalSettlement.bind(this)}
+                  disabled={this.state.disableSave}
                 >
                   <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Settlement Slip",
-                      returnText: true,
-                    }}
+                    label={{ forceLabel: "Send for Payment", returnText: true }}
                   />
                 </button>
-              ) : null}
 
-              {/* <button type="button" className="btn btn-other">
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.clearState.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                {this.state.net_amount != null ? (
+                  <button
+                    type="button"
+                    className="btn btn-other"
+                    // onClick={this.clearState.bind(this)}
+                    onClick={this.generateFinalSettlementSlip.bind(this)}
+                  >
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Generate Settlement Slip",
+                        returnText: true,
+                      }}
+                    />
+                  </button>
+                ) : null}
+
+                {/* <button type="button" className="btn btn-other">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Print",
@@ -1219,9 +1229,10 @@ class FinalSettlement extends Component {
                   }}
                 />
               </button> */}
+              </div>
             </div>
           </div>
-        </div>
+        </AlgaehSecurityElement>
       </div>
     );
   }
