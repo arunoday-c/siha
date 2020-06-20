@@ -55,7 +55,7 @@ export default {
                    and IC.hims_d_inventory_tem_category_id = PD.inv_item_category_id and \
                    IG.hims_d_inventory_item_group_id =PD.inv_item_group_id \
                    and procurement_header_id=?" +
-                  strCondition,
+                strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             } else if (headerResult[0].po_from == "PHR") {
@@ -75,7 +75,7 @@ export default {
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
                 and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and \
                 IC.hims_d_item_category_id = PD.phar_item_category and IG.hims_d_item_group_id = PD.phar_item_group and procurement_header_id=?" +
-                  strCondition,
+                strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             }
@@ -565,10 +565,13 @@ export default {
 
       let strQuery =
         "SELECT PO.*,V.vendor_name,E.full_name, case \
-when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
-when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
-when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
-when is_completed='Y'  then 'Delivery Completed' end status from  hims_f_procurement_po_header PO inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id inner join hims_d_employee E on PO.created_by = E.hims_d_employee_id \
+          when  is_posted = 'Y' and authorize1 = 'N' then 'Autorization 1 Pending'\
+          when authorize1 = 'Y' and authorize2 = 'N'  then 'Final Autorization Pending'\
+          when authorize1 = 'Y' and authorize2 = 'Y' and is_completed='N'  then 'Delivery Pending'\
+          when is_completed='Y'  then 'Delivery Completed' end status from  hims_f_procurement_po_header PO \
+          inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
+          inner join algaeh_d_app_user US on PO.created_by = US.algaeh_d_app_user_id \
+          inner join hims_d_employee E on US.employee_id = E.hims_d_employee_id \
           where cancelled='N' ";
 
       if (req.query.from_date != null) {
