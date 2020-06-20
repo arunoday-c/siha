@@ -1054,14 +1054,18 @@ class DataGrid extends Component {
 
 export default function Grid(props) {
   const context = useContext(MainContext);
-  const [perm] = context.selectElement.filter(
-    (item) => item.screen_element_code === "READ_ONLY_GRID"
-  );
-  let editable = props.isEditable || false;
-  if (perm && perm.ele_view_previlage === "H") {
-    editable = false;
+  if (context) {
+    const [perm] = context.selectElement.filter(
+      (item) => item.screen_element_code === "READ_ONLY_GRID"
+    );
+    let editable = props.isEditable || false;
+    if (perm && perm.ele_view_previlage === "H") {
+      editable = false;
+    }
+    return <DataGrid {...props} isEditable={editable} />;
+  } else {
+    return <DataGrid {...props} />;
   }
-  return <DataGrid {...props} isEditable={editable} />;
 }
 
 // export default DataGrid;
