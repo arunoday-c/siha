@@ -63,7 +63,13 @@ class PayRollDetails extends Component {
       contribut_limit_amount: null,
       deduct_limit_applicable: null,
       deduct_limit_amount: null,
-      basic_earning_component: null
+      basic_earning_component: null,
+      deduct_min_limit_applicable: null,
+      deduct_min_limit_amount: null,
+      earn_min_limit_applicable: null,
+      earn_min_limit_amount: null,
+      contribut_min_limit_applicable: null,
+      contribut_min_limit_amount: null
     };
     getOptions(this)
   }

@@ -509,7 +509,7 @@ export default {
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,min_limit_applicable,min_limit_amount,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
           round_off_amount,formula, print_report, print_order_by, annual_salary_comp,head_id,child_id,li_head_id,li_child_id, \
-          direct_head_id, direct_child_id from hims_d_earning_deduction where record_status='A'" +
+          direct_head_id, direct_child_id, min_limit_applicable, min_limit_amount from hims_d_earning_deduction where record_status='A'" +
           _stringData +
           " order by hims_d_earning_deduction_id desc",
         printQuery: true,

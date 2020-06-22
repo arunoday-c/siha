@@ -1,12 +1,12 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       // resolve(options.result[0]);
 
       // const utilities = new algaehUtilities();
 
-      // utilities.logger().log("outpoy: ", options.result);
+      // console.log("outpoy: ", options.result);
       const decimal_places = options.args.crypto.decimal_places;
       if (options.result.length > 0) {
         options.result.map(item => {
@@ -49,6 +49,8 @@ const executePDF = function executePDFMethod(options) {
           sub_department_name: options.result[0]["sub_department_name"],
           employee_code: options.result[0]["employee_code"],
           full_name: options.result[0]["full_name"],
+          approved_by: options.result[0]["approved_by"],
+          approved_yn: options.result[0]["approved_yn"],
           detailList: options.result
         });
       } else {

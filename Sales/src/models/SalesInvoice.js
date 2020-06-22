@@ -706,9 +706,11 @@ function updateSalesOrder(options) {
                 );
                 if (input.is_completed === "Y") {
                     strQuery += mysql.format(
-                        "UPDATE hims_f_sales_order set closed = 'Y', closed_date=?, closed_by=? \
-                            where hims_f_sales_order_id=?;",
+                        "UPDATE hims_f_sales_order set invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=?, \
+                            closed = 'Y', closed_date=?, closed_by=? where hims_f_sales_order_id=?;",
                         [
+                            new Date(),
+                            req.userIdentity.algaeh_d_app_user_id,
                             new Date(),
                             req.userIdentity.algaeh_d_app_user_id,
                             input.sales_order_id,
@@ -718,9 +720,11 @@ function updateSalesOrder(options) {
                 }
             } else {
                 strQuery += mysql.format(
-                    "UPDATE hims_f_sales_order set closed = 'Y', closed_date=?, closed_by=? \
-                        where hims_f_sales_order_id=?;",
+                    "UPDATE hims_f_sales_order set invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=?, \
+                        closed = 'Y', closed_date=?, closed_by=? where hims_f_sales_order_id=?;",
                     [
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         input.sales_order_id

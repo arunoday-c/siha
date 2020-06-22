@@ -922,8 +922,7 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS VH.*, CASE VH.quotation_for \
           WHEN 'INV' then 'Inventory' else 'Pharmacy' end as quotation_for, RQ.quotation_number from \
           hims_f_procurement_vendor_quotation_header VH, hims_f_procurement_req_quotation_header RQ \
-          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id and VH.hospital_id=" +
-          hospitalId,
+          where VH.req_quotation_header_id = RQ.hims_f_procurement_req_quotation_header_id ",
         orderBy: "hims_f_procurement_vendor_quotation_header_id desc",
       },
       {
@@ -931,8 +930,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  SQ.*,  CASE SQ.sales_quotation_mode WHEN 'I' then 'Items' else 'Services' \
           end as sales_quotation_mode, C.customer_name from hims_f_sales_quotation SQ, hims_d_customer C \
-          where SQ.customer_id = C.hims_d_customer_id and SQ.hospital_id=" +
-          hospitalId,
+          where SQ.customer_id = C.hims_d_customer_id ",
         orderBy: "hims_f_sales_quotation_id desc",
       },
       {
@@ -975,8 +973,7 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
           inner join  hims_f_sales_invoice_header SO on IH.sales_invoice_header_id = SO.hims_f_sales_invoice_header_id  \
           inner join hims_d_project P on P.hims_d_project_id = IH.project_id \
-          where IH.hospital_id=" +
-          hospitalId,
+          where 1=1" ,
         orderBy: "hims_f_sales_return_header_id desc",
       },
       {
@@ -984,8 +981,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS contract_number, contract_date, start_date, end_date, \
           contract_code, quotation_ref_numb, C.customer_name from  hims_f_contract_management CM \
-          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where hospital_id=" +
-          hospitalId,
+          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where 1=1 " ,
         orderBy: "hims_f_contract_management_id desc",
       },
       {
