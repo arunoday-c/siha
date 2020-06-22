@@ -465,6 +465,135 @@ export default function ProjectPayroll({
           },
         ],
       },
+      {
+        subitem: "Project Allocation Report",
+        //template_name: "ProjectPayroll/projectWisePayroll",
+        // reportQuery: "projectWisePayroll",
+        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        // module: "hrManagement",
+        reportName: "projectAllocationReport",
+        requireIframe: true,
+        pageSize: "A4",
+        componentCode: "RPT_PRO_DES",
+        pageOrentation: "portrait",
+        reportParameters: [
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears,
+            },
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS,
+            },
+            others: {
+              sort: "off",
+            },
+          },
+          {
+            className: "col-2 form-group mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganizationByUser",
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined,
+            },
+          },
+
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "designation_id",
+            initialLoad: true,
+            isImp: false,
+            label: "designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined,
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id",
+            },
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement",
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id",
+            },
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Employee Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE,
+            },
+          },
+        ],
+      },
     ],
   };
 }
