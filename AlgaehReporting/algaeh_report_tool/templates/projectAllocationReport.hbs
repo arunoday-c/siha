@@ -30,19 +30,17 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg0">Designation: {{designation}}
-                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span><span
-                                class="textFloatRight">No Projects: <b>{{no_projects}}</b></span>
+                        <td colspan="2" class="tableSubHdg0">Designation: {{designation}}
+                        </td>
+                        <td colspan="3" class="tableSubHdg0">
+                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
                         </td>
                     </tr>
                     {{#each projects}}
-                    {{!-- <tr>
+                    <tr>
                         <td colspan="5" class="tableSubHdg">Projects: {{project_name}}
-                            <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
-                                class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
-                                class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
                         </td>
-                    </tr> --}}
+                    </tr>
 
                     {{#each dept_Array}}
                     {{!-- <tr>
@@ -99,7 +97,7 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td>{{inc index}}</td>
+                        <td>{{inc @index}}</td>
                         <td>{{project_desc}}</td>
                         <td>{{full_name}}</td>
                         <td>{{designation}}</td>
