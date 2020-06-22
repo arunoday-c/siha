@@ -7,6 +7,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { ANNUAL_LEAVE_CAL } from "../../../../utils/GlobalVariables.json";
+import { AlgaehSecurityElement } from "algaeh-react-components";
 
 export default class LeaveSalarySetup extends Component {
   constructor(props) {
@@ -362,22 +363,23 @@ export default class LeaveSalarySetup extends Component {
               </div>
             </div>
           </div>
-
-          <div className="hptl-phase1-footer">
-            <div className="row">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.saveOptions.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
-                  />
-                </button>
+          <AlgaehSecurityElement elementCode="READ_ONLY_ACCESS">
+            <div className="hptl-phase1-footer">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.saveOptions.bind(this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </AlgaehSecurityElement>
         </div>
       </div>
     );
