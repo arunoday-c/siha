@@ -318,7 +318,7 @@ class OPBillCancellation extends Component {
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel
-                  label={{ fieldName: "btn_cancel", returnText: true }}
+                  label={{ forceLabel: "Cancel Bill", returnText: true }}
                 />
               </button>
 

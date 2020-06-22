@@ -357,7 +357,7 @@ class AddOPBillingForm extends Component {
     let details = this.state.billdetails;
     if (details.length === 1) {
       swalMessage({
-        title: "Last service con't delete.",
+        title: "Min. 1 Service requiried in bill.",
         type: "warning",
       });
       return;
