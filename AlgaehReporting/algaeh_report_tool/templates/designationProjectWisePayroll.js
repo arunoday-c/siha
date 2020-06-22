@@ -98,7 +98,7 @@ const executePDF = function executePDFMethod(options) {
                 no_hours: project_hours + "." + project_mins,
                 no_employees: project.length,
                 project_name: project[0]["project_desc"],
-                project_employees: desig_wise_project_Array,
+                desig_wise_employees: desig_wise_project_Array,
               });
             });
             // console.log("outputArra:", outputArray[0]);
