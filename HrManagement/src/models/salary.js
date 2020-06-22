@@ -227,7 +227,8 @@ export default {
               loan_application_date, approved_amount\
               from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'A';\
-            select hims_d_hrms_options_id,basic_earning_component,standard_working_hours,standard_break_hours,salary_calendar,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
+            select hims_d_hrms_options_id,basic_earning_component,standard_working_hours,standard_break_hours,salary_calendar,\
+            attendance_type,salary_calendar_fixed_days, ot_calculation from hims_d_hrms_options;\
             select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
             select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
               OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
@@ -785,9 +786,10 @@ export default {
                                     inputParam: req.query,
                                     decimal_places:
                                       req.userIdentity.decimal_places,
-
                                     pjc_hour_price: pjc_hour_price,
                                     employee_basic_earned: employee_basic_earned,
+                                    attendance_type:
+                                      Salaryresults[8][0].attendance_type,
                                   })
                                     .then((Employee_Leave_Salary) => {
                                       if (req.connection == null) {
@@ -4761,26 +4763,27 @@ function UpdateProjectWisePayroll_backp_13_06_2020(options) {
 function UpdateProjectWisePayroll(options) {
   return new Promise((resolve, reject) => {
     try {
-      let _mysql = options._mysql;
-
-      const decimal_places = options.decimal_places;
+      // const utilities = new algaehUtilities();
       const inputParam = options.inputParam;
-      let strQry = "";
-
-      const utilities = new algaehUtilities();
 
       if (inputParam.project_employee_id.length === 0) {
         resolve();
         return;
       }
 
-      let pjc_hour_price = options.pjc_hour_price;
+      if (options.attendance_type == "DMP") {
+        let _mysql = options._mysql;
 
-      let employee_basic_earned = options.employee_basic_earned;
+        // const decimal_places = options.decimal_places;
 
-      _mysql
-        .executeQuery({
-          query: `Select hims_f_project_wise_payroll_id,employee_id, month, year,
+        let strQry = "";
+
+        let pjc_hour_price = options.pjc_hour_price;
+        let employee_basic_earned = options.employee_basic_earned;
+
+        _mysql
+          .executeQuery({
+            query: `Select hims_f_project_wise_payroll_id,employee_id, month, year,
             coalesce(basic_hours+floor(basic_minutes/60)  +round((basic_minutes%60)/60,2),0) as basic_hours,
             coalesce(ot_hours+floor(ot_minutes/60)  +round((ot_minutes%60)/60,2),0) as ot_hours,
             coalesce(wot_hours+floor(wot_minutes/60)  +round((wot_minutes%60)/60,2),0) as wot_hours,
@@ -4795,86 +4798,90 @@ function UpdateProjectWisePayroll(options) {
             coalesce(sum(worked_hours)+floor(sum(worked_minutes)/60) +round((sum(worked_minutes)%60)/60,2),0) as worked_hours
             from hims_f_project_wise_payroll where year=? and month=? and  employee_id in (?) group by employee_id;
              ;`,
-          values: [
-            inputParam.year,
-            inputParam.month,
-            inputParam.project_employee_id,
-            inputParam.year,
-            inputParam.month,
-            inputParam.project_employee_id,
-          ],
-          printQuery: false,
-        })
-        .then((result) => {
-          // console.log("employee_basic_earned:", employee_basic_earned);
-          inputParam.project_employee_id.forEach((employee_id) => {
-            let worked_hr = result[1].find((f) => {
-              return f.employee_id == employee_id;
-            });
-
-            let total_basic_hours = worked_hr["basic_hours"];
-            let basic_salary = employee_basic_earned[employee_id]["amount"];
-
-            let basic_cost =
-              parseFloat(basic_salary) / parseFloat(total_basic_hours);
-
-            pjc_hour_price[employee_id] = {
-              ...pjc_hour_price[employee_id],
-              basic_cost,
-            };
-          });
-
-          // console.log("pjc_hour_price:", pjc_hour_price);
-
-          if (result[0].length > 0) {
-            result[0].forEach((project) => {
-              let price_list = pjc_hour_price[project["employee_id"]];
-
-              let basic_cost = 0;
-              let ot_cost = 0;
-              let wot_cost = 0;
-              let hot_cost = 0;
-              let cost = 0;
-
-              basic_cost =
-                parseFloat(project["basic_hours"]) *
-                parseFloat(price_list["basic_cost"]);
-              ot_cost =
-                parseFloat(project["ot_hours"]) *
-                parseFloat(price_list["normal_ot_cost"]);
-              wot_cost =
-                parseFloat(project["wot_hours"]) *
-                parseFloat(price_list["wot_cost"]);
-              hot_cost =
-                parseFloat(project["hot_hours"]) *
-                parseFloat(price_list["hot_cost"]);
-
-              cost = basic_cost + ot_cost + wot_cost + hot_cost;
-
-              strQry += ` UPDATE hims_f_project_wise_payroll set basic_cost=${basic_cost}, ot_cost=${ot_cost},
-              wot_cost=${wot_cost}, hot_cost=${hot_cost},cost=${cost} where hims_f_project_wise_payroll_id=${project.hims_f_project_wise_payroll_id}; `;
-            });
-
-            _mysql
-              .executeQuery({
-                query: strQry,
-                printQuery: false,
-              })
-              .then((project_payroll) => {
-                resolve();
-              })
-              .catch((e) => {
-                reject(e);
+            values: [
+              inputParam.year,
+              inputParam.month,
+              inputParam.project_employee_id,
+              inputParam.year,
+              inputParam.month,
+              inputParam.project_employee_id,
+            ],
+            printQuery: true,
+          })
+          .then((result) => {
+            // console.log("employee_basic_earned:", employee_basic_earned);
+            inputParam.project_employee_id.forEach((employee_id) => {
+              let worked_hr = result[1].find((f) => {
+                return f.employee_id == employee_id;
               });
-          } else {
-            resolve();
-          }
-          //----------------------------
-        })
-        .catch((e) => {
-          console.log("ERR90:", e);
-          reject(e);
-        });
+
+              let total_basic_hours = worked_hr["basic_hours"];
+              let basic_salary = employee_basic_earned[employee_id]["amount"];
+
+              let basic_cost =
+                parseFloat(basic_salary) / parseFloat(total_basic_hours);
+
+              pjc_hour_price[employee_id] = {
+                ...pjc_hour_price[employee_id],
+                basic_cost,
+              };
+            });
+
+            // console.log("pjc_hour_price:", pjc_hour_price);
+
+            if (result[0].length > 0) {
+              result[0].forEach((project) => {
+                let price_list = pjc_hour_price[project["employee_id"]];
+
+                let basic_cost = 0;
+                let ot_cost = 0;
+                let wot_cost = 0;
+                let hot_cost = 0;
+                let cost = 0;
+
+                basic_cost =
+                  parseFloat(project["basic_hours"]) *
+                  parseFloat(price_list["basic_cost"]);
+                ot_cost =
+                  parseFloat(project["ot_hours"]) *
+                  parseFloat(price_list["normal_ot_cost"]);
+                wot_cost =
+                  parseFloat(project["wot_hours"]) *
+                  parseFloat(price_list["wot_cost"]);
+                hot_cost =
+                  parseFloat(project["hot_hours"]) *
+                  parseFloat(price_list["hot_cost"]);
+
+                cost = basic_cost + ot_cost + wot_cost + hot_cost;
+
+                strQry += ` UPDATE hims_f_project_wise_payroll set basic_cost=${basic_cost}, ot_cost=${ot_cost},
+              wot_cost=${wot_cost}, hot_cost=${hot_cost},cost=${cost} where hims_f_project_wise_payroll_id=${project.hims_f_project_wise_payroll_id}; `;
+              });
+
+              _mysql
+                .executeQuery({
+                  query: strQry,
+                  printQuery: false,
+                })
+                .then((project_payroll) => {
+                  resolve();
+                })
+                .catch((e) => {
+                  reject(e);
+                });
+            } else {
+              resolve();
+            }
+            //----------------------------
+          })
+          .catch((e) => {
+            console.log("ERR90:", e);
+            reject(e);
+          });
+      } else {
+        resolve();
+        return;
+      }
     } catch (e) {
       reject(e);
     }
