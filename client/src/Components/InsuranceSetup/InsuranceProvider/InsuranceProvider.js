@@ -198,24 +198,24 @@ class InsuranceProvider extends PureComponent {
                   />
 
                   {this.state.mrn_num_sep_cop_client === "Y" &&
-                  this.state.insurance_type === "C" ? (
-                    <AlagehFormGroup
-                      div={{ className: "col-1 form-group mandatory" }}
-                      label={{
-                        fieldName: "prefix",
-                        isImp: true,
-                      }}
-                      textBox={{
-                        value: this.state.prefix,
-                        className: "txt-fld arabicInput",
-                        name: "prefix",
+                    this.state.insurance_type === "C" ? (
+                      <AlagehFormGroup
+                        div={{ className: "col-1 form-group mandatory" }}
+                        label={{
+                          fieldName: "prefix",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          value: this.state.prefix,
+                          className: "txt-fld arabicInput",
+                          name: "prefix",
 
-                        events: {
-                          onChange: texthandle.bind(this, this, context),
-                        },
-                      }}
-                    />
-                  ) : null}
+                          events: {
+                            onChange: texthandle.bind(this, this, context),
+                          },
+                        }}
+                      />
+                    ) : null}
                 </div>
 
                 <div className="row">
@@ -286,10 +286,10 @@ class InsuranceProvider extends PureComponent {
                 </div>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       fieldName: "credit_period",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       number: { allowNegative: false },
@@ -303,7 +303,7 @@ class InsuranceProvider extends PureComponent {
                       },
                     }}
                   />
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-3 form-group mandatory" }}
                     label={{
                       fieldName: "package_claim",
@@ -323,13 +323,13 @@ class InsuranceProvider extends PureComponent {
                       },
                       onChange: texthandle.bind(this, this, context),
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3 form-group mandatory" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       fieldName: "payment_type",
-                      isImp: true,
+                      isImp: false,
                     }}
                     selector={{
                       name: "payment_type",

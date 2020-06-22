@@ -12,7 +12,7 @@ const CollectSample = ($this, context, row) => {
     status: "N",
     hims_d_hospital_id: $this.state.hospital_id,
     service_id: row.service_id,
-    service_code: row.service_code
+    service_code: row.service_code,
   };
 
   algaehApiCall({
@@ -20,7 +20,7 @@ const CollectSample = ($this, context, row) => {
     module: "laboratory",
     data: inputobj,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         let test_details = $this.state.test_details;
         for (let i = 0; i < test_details.length; i++) {
@@ -37,7 +37,7 @@ const CollectSample = ($this, context, row) => {
         $this.setState({ test_details: test_details }, () => {
           swalMessage({
             title: "Collected Successfully",
-            type: "success"
+            type: "success",
           });
         });
 
@@ -46,12 +46,12 @@ const CollectSample = ($this, context, row) => {
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.response.data.message || error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -61,7 +61,7 @@ const printBarcode = ($this, row, e) => {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -69,33 +69,24 @@ const printBarcode = ($this, row, e) => {
         others: {
           width: "50mm",
           height: "20mm",
-          showHeaderFooter: false
+          showHeaderFooter: false,
         },
         reportName: "specimenBarcode",
         reportParams: [
           {
             name: "hims_f_lab_order_id",
-            value: row.hims_f_lab_order_id
-          }
+            value: row.hims_f_lab_order_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
-      // const url = URL.createObjectURL(res.data);
-      // let myWindow = window.open(
-      //   "{{ product.metafields.google.custom_label_0 }}",
-      //   "_blank"
-      // );
-
-      // myWindow.document.write(
-      //   "<iframe src= '" + url + "' width='100%' height='100%' />"
-      // );
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Specimen Barcode`;
       window.open(origin);
-      // window.document.title = "Specimen Barcode";
-    }
+      window.document.title = "Specimen Barcode";
+    },
   });
 };
 
@@ -119,7 +110,7 @@ const printBarcode = ($this, row, e) => {
 //   });
 // };
 
-const dateFormater = value => {
+const dateFormater = (value) => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }

@@ -160,11 +160,11 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO hims_d_insurance_provider(`insurance_provider_code`,`insurance_provider_name`,`arabic_provider_name`,\
-          `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`package_claim`,`hospital_id`, `payer_id`,\
+          `deductible_proc`,`deductible_lab`,`co_payment`,`insurance_type`,`hospital_id`, `payer_id`,\
           `credit_period`,`insurance_limit`,`payment_type`,`insurance_remarks`,`cpt_mandate`,`child_id`,`currency`,\
           `preapp_valid_days`,`claim_submit_days`,`lab_result_check`,`resubmit_all`,`company_service_price_type`,`ins_rej_per`,\
           `prefix`,`effective_start_date`, `effective_end_date`,`created_by`)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputparam.insurance_provider_code,
             inputparam.insurance_provider_name,
@@ -173,7 +173,6 @@ export default {
             inputparam.deductible_lab,
             inputparam.co_payment,
             inputparam.insurance_type,
-            inputparam.package_claim,
             inputparam.hospital_id,
             inputparam.payer_id,
             inputparam.credit_period,

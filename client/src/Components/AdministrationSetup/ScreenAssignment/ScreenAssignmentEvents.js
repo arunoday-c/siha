@@ -332,7 +332,7 @@ export function ScreenAssignmentEvents() {
       const unCheckExist = _sList.map((item) => {
         return item.find((f) => f.checked === false);
       });
-      debugger;
+
       $this.setState({
         ScreenList: newModule,
         checkAll: unCheckExist.checked !== undefined ? false : true,
@@ -547,7 +547,7 @@ function getScreenElementsRoles($this, role_id) {
     onSuccess: (response) => {
       if (response.data.success) {
         const { records } = response.data;
-        debugger;
+
         $this.setState({
           assignedScreenElements: records,
         });
@@ -588,6 +588,7 @@ export function assignLandingPage() {
 
 export function updateScreenElementRoles() {
   this.setState({ loading_update_element: true }, () => {
+    console.log("datata", this.state.assignedScreenElements);
     algaehApiCall({
       uri: "/algaehMasters/updateScreenElementRoles",
       method: "POST",
@@ -596,6 +597,7 @@ export function updateScreenElementRoles() {
         assignedScreenElements: this.state.assignedScreenElements,
       },
       onSuccess: (response) => {
+        getScreenElementsRoles(this, this.state.role_id);
         const { success, message } = response.data;
         this.setState({
           loading_update_element: false,

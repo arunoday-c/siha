@@ -16,19 +16,19 @@ export default {
         .generateRunningNumber({
           user_id: req.userIdentity.algaeh_d_app_user_id,
           numgen_codes: ["PAT_BILL", "RECEIPT"],
-          table_name: "hims_f_app_numgen"
+          table_name: "hims_f_app_numgen",
         })
-        .then(generatedNumbers => {
+        .then((generatedNumbers) => {
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           req.body.bill_number = generatedNumbers.PAT_BILL;
           req.body.receipt_number = generatedNumbers.RECEIPT;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.rollBackTransaction(() => {
             next(e);
           });
@@ -48,13 +48,13 @@ export default {
       utilities.logger().log("updateOrderedServicesBilled: ");
 
       let OrderServices = new LINQ(req.body.billdetails)
-        .Where(w => w.ordered_inventory_id != null)
-        .Select(s => {
+        .Where((w) => w.ordered_inventory_id != null)
+        .Select((s) => {
           return {
             hims_f_ordered_inventory_id: s.ordered_inventory_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -75,7 +75,7 @@ export default {
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
-              OrderServices[i].hims_f_ordered_inventory_id
+              OrderServices[i].hims_f_ordered_inventory_id,
             ]
           );
         }
@@ -83,9 +83,9 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(updateOrder => {
+          .then((updateOrder) => {
             if (req.connection == null) {
               req.records = updateOrder;
               next();
@@ -93,7 +93,7 @@ export default {
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -119,25 +119,25 @@ export default {
       utilities.logger().log("OrderServices: ", req.body.billdetails);
 
       let OrderServices = new LINQ(req.body.billdetails)
-        .Where(w => w.hims_f_ordered_services_id != null)
-        .Select(s => {
+        .Where((w) => w.hims_f_ordered_services_id != null)
+        .Select((s) => {
           return {
             hims_f_ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
 
       let dentalTreatment = new LINQ(req.body.billdetails)
-        .Where(w => w.d_treatment_id != null)
-        .Select(s => {
+        .Where((w) => w.d_treatment_id != null)
+        .Select((s) => {
           return {
             hims_f_dental_treatment_id: s.d_treatment_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -158,7 +158,7 @@ export default {
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
-              OrderServices[i].hims_f_ordered_services_id
+              OrderServices[i].hims_f_ordered_services_id,
             ]
           );
         }
@@ -171,7 +171,7 @@ export default {
                 dentalTreatment[i].billed,
                 moment().format("YYYY-MM-DD HH:mm"),
                 dentalTreatment[i].updated_by,
-                dentalTreatment[i].hims_f_dental_treatment_id
+                dentalTreatment[i].hims_f_dental_treatment_id,
               ]
             );
           }
@@ -182,9 +182,9 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(updateOrder => {
+          .then((updateOrder) => {
             if (req.connection == null) {
               req.records = updateOrder;
               next();
@@ -192,7 +192,7 @@ export default {
               next();
             }
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -216,13 +216,13 @@ export default {
       utilities.logger().log("updateOrderedPackageBilled: ");
 
       let OrderServices = new LINQ(req.body.billdetails)
-        .Where(w => w.ordered_package_id != null)
-        .Select(s => {
+        .Where((w) => w.ordered_package_id != null)
+        .Select((s) => {
           return {
             hims_f_package_header_id: s.ordered_package_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -237,7 +237,7 @@ export default {
               OrderServices[i].billed,
               moment().format("YYYY-MM-DD HH:mm"),
               OrderServices[i].updated_by,
-              OrderServices[i].hims_f_package_header_id
+              OrderServices[i].hims_f_package_header_id,
             ]
           );
         }
@@ -247,9 +247,9 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(updateOrder => {
+          .then((updateOrder) => {
             if (req.connection == null) {
               req.records = updateOrder;
               next();
@@ -286,7 +286,7 @@ export default {
             //     next(error);
             //   });
           })
-          .catch(error => {
+          .catch((error) => {
             _mysql.rollBackTransaction(() => {
               next(error);
             });
@@ -319,14 +319,14 @@ export default {
             req.query.bill_number +
             "'",
 
-          printQuery: true
+          printQuery: true,
         })
-        .then(headerResult => {
+        .then((headerResult) => {
           utilities.logger().log("headerResult: ", headerResult);
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
+            pool: _mysql.pool,
           };
           if (headerResult.length != 0) {
             _mysql
@@ -334,21 +334,21 @@ export default {
                 query:
                   "select * from hims_f_billing_details, hims_d_services where \
                   hims_f_billing_details.services_id = hims_d_services.hims_d_services_id and \
-                  hims_f_billing_header_id=? and hims_f_billing_details.record_status='A'",
+                  hims_f_billing_header_id=? and hims_f_billing_details.record_status='A' and hims_f_billing_details.cancel_yes_no='N'",
                 values: [headerResult[0].hims_f_billing_header_id],
-                printQuery: true
+                printQuery: true,
               })
-              .then(billdetails => {
+              .then((billdetails) => {
                 req.records = {
                   ...headerResult[0],
                   ...{ billdetails },
                   ...{
-                    hims_f_receipt_header_id: headerResult[0].receipt_header_id
-                  }
+                    hims_f_receipt_header_id: headerResult[0].receipt_header_id,
+                  },
                 };
                 next();
               })
-              .catch(error => {
+              .catch((error) => {
                 _mysql.releaseConnection();
                 next(error);
               });
@@ -358,7 +358,7 @@ export default {
             next();
           }
         })
-        .catch(error => {
+        .catch((error) => {
           _mysql.releaseConnection();
           next(error);
         });
@@ -396,14 +396,14 @@ export default {
           WHERE S.record_status='A' AND S.billed='N' AND P.hims_d_patient_id=S.patient_id" +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           req.records = result;
           next();
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
@@ -426,8 +426,8 @@ export default {
       const physothServices = [
         ...new Set(
           new LINQ(Services)
-            .Where(w => w.physiotherapy_service == "Y")
-            .Select(s => {
+            .Where((w) => w.physiotherapy_service == "Y")
+            .Select((s) => {
               return {
                 ordered_services_id: s.hims_f_ordered_services_id || null,
                 patient_id: req.body.patient_id,
@@ -435,11 +435,11 @@ export default {
                 visit_id: req.body.visit_id,
                 billed: req.body.billed,
                 ordered_date: s.created_date,
-                hospital_id: req.userIdentity.hospital_id
+                hospital_id: req.userIdentity.hospital_id,
               };
             })
             .ToArray()
-        )
+        ),
       ];
 
       const IncludeValues = [
@@ -449,7 +449,7 @@ export default {
         "referred_doctor_id",
         "billed",
         "ordered_date",
-        "hospital_id"
+        "hospital_id",
       ];
 
       if (physothServices.length > 0) {
@@ -459,12 +459,12 @@ export default {
             values: physothServices,
             includeValues: IncludeValues,
             bulkInsertOrUpdate: true,
-            printQuery: true
+            printQuery: true,
           })
-          .then(insert_physiotherapy => {
+          .then((insert_physiotherapy) => {
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -487,16 +487,16 @@ export default {
     try {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
-          w =>
+          (w) =>
             w.hims_f_ordered_services_id != null &&
             w.physiotherapy_service == "Y"
         )
-        .Select(s => {
+        .Select((s) => {
           return {
             ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
           };
         })
         .ToArray();
@@ -516,13 +516,13 @@ export default {
         _mysql
           .executeQuery({
             query: qry,
-            printQuery: true
+            printQuery: true,
           })
-          .then(rad_result => {
+          .then((rad_result) => {
             req.records = { PHYSIOTHERAPY: false };
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -536,5 +536,5 @@ export default {
         next(e);
       });
     }
-  }
+  },
 };

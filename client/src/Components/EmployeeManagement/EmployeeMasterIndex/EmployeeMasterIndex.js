@@ -495,6 +495,19 @@ class EmployeeMasterIndex extends Component {
                       },
                     },
                     {
+                      fieldName: "arabic_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Employee Arabic Name" }}
+                        />
+                      ),
+                      others: {
+                        // minWidth: 200,
+                        resizable: false,
+                        style: { textAlign: "center" },
+                      },
+                    },
+                    {
                       fieldName: "sex",
                       label: <AlgaehLabel label={{ forceLabel: "gender" }} />,
                       others: {

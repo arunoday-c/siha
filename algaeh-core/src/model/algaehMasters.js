@@ -3676,7 +3676,7 @@ const updateScreenElementRoles = (req, res, next) => {
             if (checked === false) {
               accessItem += _mysql.mysqlQueryFormat(
                 `insert ignore into screen_element_scren_module_mapping 
-                    (algaeh_d_app_scrn_elements_id,role_Id,view_type) values
+                    (algaeh_d_app_scrn_elements_id,role_id,view_type) values
                     (?,?,?);`,
                 [algaeh_d_app_scrn_elements_id, role_id, "H"]
               );
@@ -3692,12 +3692,14 @@ const updateScreenElementRoles = (req, res, next) => {
                 extraProps += text;
               }
             }
-            accessItem += _mysql.mysqlQueryFormat(
-              `insert ignore into screen_element_scren_module_mapping 
-                     (algaeh_d_app_scrn_elements_id,role_Id,extra_props) values
-                     (?,?,?);`,
-              [algaeh_d_app_scrn_elements_id, role_id, extraProps]
-            );
+            if (extraProps !== "") {
+              accessItem += _mysql.mysqlQueryFormat(
+                `insert ignore into screen_element_scren_module_mapping 
+                       (algaeh_d_app_scrn_elements_id,role_id,extra_props) values
+                       (?,?,?);`,
+                [algaeh_d_app_scrn_elements_id, role_id, extraProps]
+              );
+            }
           }
         }
       }

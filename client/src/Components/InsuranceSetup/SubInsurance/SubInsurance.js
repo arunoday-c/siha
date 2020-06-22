@@ -173,7 +173,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "transaction_number",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       value: this.state.transaction_number,
@@ -193,7 +193,7 @@ class SubInsurance extends PureComponent {
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "card_format",
-                      isImp: true,
+                      isImp: false,
                     }}
                     textBox={{
                       value: this.state.card_format,
@@ -470,7 +470,7 @@ class SubInsurance extends PureComponent {
                           disabled: true,
                         },
                         {
-                          fieldName: "child_id",
+                          fieldName: "finance_account_child_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "G/L Account" }}
@@ -482,29 +482,34 @@ class SubInsurance extends PureComponent {
                             ] = this.state.finance_providers.filter(
                               (item) =>
                                 item.finance_account_child_id ===
-                                  row.child_id && item.head_id === row.head_id
+                                row.finance_account_child_id &&
+                                item.head_id === row.head_id
                             );
                             return current ? current.child_name : "";
                           },
                           editorTemplate: (row, rowId) => {
-                            return (
-                              <AlagehAutoComplete
-                                selector={{
-                                  dataSource: {
-                                    data: this.state.finance_providers,
-                                    valueField: "finance_account_child_id",
-                                    textField: "child_name",
-                                  },
-                                  value: row.child_id,
-                                  onChange: ({ selected }) => {
-                                    row.child_id =
-                                      selected.finance_account_child_id;
-                                    row.head_id = selected.head_id;
-                                    row.update();
-                                  },
-                                }}
-                              />
-                            );
+                            if (row.finance_account_child_id) {
+                              return (
+                                <AlagehAutoComplete
+                                  selector={{
+                                    dataSource: {
+                                      data: this.state.finance_providers,
+                                      valueField: "finance_account_child_id",
+                                      textField: "child_name",
+                                    },
+                                    value: row.finance_account_child_id,
+                                    onChange: ({ selected }) => {
+                                      row.child_id =
+                                        selected.finance_account_child_id;
+                                      row.head_id = selected.head_id;
+                                      row.update();
+                                    },
+                                  }}
+                                />
+                              );
+                            } else {
+                              return null;
+                            }
                           },
                           others: {
                             maxWidth: 200,
@@ -525,7 +530,7 @@ class SubInsurance extends PureComponent {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: (row) => {},
+                        onEdit: (row) => { },
                         onDone: updateSubInsurance.bind(this, this),
                       }}
                     />

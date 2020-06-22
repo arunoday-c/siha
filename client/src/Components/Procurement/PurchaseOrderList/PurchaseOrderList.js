@@ -34,6 +34,7 @@ class PurchaseOrderList extends Component {
     super(props);
     let month = moment().format("MM");
     let year = moment().format("YYYY");
+    let status = "1"
     this.state = {
       to_date: new Date(),
       from_date: moment("01" + month + year, "DDMMYYYY")._d,
@@ -46,6 +47,14 @@ class PurchaseOrderList extends Component {
       status: "1",
     };
 
+    RawSecurityComponent({ componentCode: "PUR_AUT_AUTH2" }).then(
+      (result) => {
+        if (result === "show") {
+          status = "2"
+        }
+      }
+    );
+
     RawSecurityComponent({ componentCode: "PUR_AUTH_INVENTORY" }).then(
       (result) => {
         if (result === "show") {
@@ -53,6 +62,7 @@ class PurchaseOrderList extends Component {
             {
               po_from: "INV",
               poSelected: false,
+              status: status
             },
             () => {
               getData(this);
@@ -70,6 +80,7 @@ class PurchaseOrderList extends Component {
             {
               po_from: "PHR",
               poSelected: false,
+              status: status
             },
             () => {
               getData(this);
@@ -79,6 +90,8 @@ class PurchaseOrderList extends Component {
         }
       }
     );
+
+
   }
 
   render() {
@@ -348,21 +361,21 @@ class PurchaseOrderList extends Component {
 
                           this.state.po_from === "PHR"
                             ? (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_pharmacy_location_id ===
-                                        row.pharmcy_location_id
-                                    ))
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_pharmacy_location_id ===
+                                    row.pharmcy_location_id
+                                ))
                             : (display =
-                                this.props.polocations === undefined
-                                  ? []
-                                  : this.props.polocations.filter(
-                                      (f) =>
-                                        f.hims_d_inventory_location_id ===
-                                        row.inventory_location_id
-                                    ));
+                              this.props.polocations === undefined
+                                ? []
+                                : this.props.polocations.filter(
+                                  (f) =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                ));
 
                           return (
                             <span>

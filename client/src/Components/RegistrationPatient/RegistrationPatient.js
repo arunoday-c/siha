@@ -875,8 +875,8 @@ class RegistrationPatient extends Component {
                 <ConsultationDetails PatRegIOputs={this.state} />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
-                {this.state.consultation === "Y" ? <Billing PatRegIOputs={this.state} loader={true} /> : null}
-                {/* <Billing PatRegIOputs={this.state} loader={true} /> */}
+                {/* {this.state.consultation === "Y" ? <Billing PatRegIOputs={this.state} loader={true} /> : null} */}
+                <Billing PatRegIOputs={this.state} loader={true} />
               </div>
             </div>
             <div className="hptl-phase1-footer">

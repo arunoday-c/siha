@@ -23,7 +23,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
-
+import swal from "sweetalert2";
 class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
@@ -352,8 +352,71 @@ class AddOPBillingForm extends Component {
       }
     }
   }
-  deleteSingleBill(context, e, row) {
-    debugger;
+  deleteSingleBill(context, row, e) {
+    e.persist();
+    let details = this.state.billdetails;
+    if (details.length === 1) {
+      swalMessage({
+        title: "Last service con't delete.",
+        type: "warning",
+      });
+      return;
+    }
+    e.target.classList.remove("fa-trash-alt");
+    e.target.classList.add("fa-spinner");
+    swal({
+      title: `Do you want to exclude '${row.service_desc}' of amount ${row.net_amout} from cancelation?`,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No",
+    })
+      .then(({ value }) => {
+        if (value) {
+          const index = details.indexOf(row);
+          details.splice(index, 1);
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            module: "billing",
+            method: "POST",
+            data: { billdetails: details },
+            onSuccess: (response) => {
+              e.target.classList.remove("fa-spinner");
+              e.target.classList.add("fa-trash-alt");
+              if (response.data.success) {
+                response.data.records.patient_payable_h =
+                  response.data.records.patient_payable ||
+                  this.state.patient_payable;
+                context.updateState({
+                  ...response.data.records,
+                  billdetails: details,
+                });
+              }
+            },
+            onCatch: (error) => {
+              e.target.classList.remove("fa-spinner");
+              e.target.classList.add("fa-trash-alt");
+              swalMessage({
+                title: error.message,
+                type: "error",
+              });
+            },
+          });
+        } else {
+          e.target.classList.remove("fa-spinner");
+          e.target.classList.add("fa-trash-alt");
+        }
+      })
+      .catch((error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      });
+
+    //this.setState({ billdetails: details });
   }
   render() {
     return (

@@ -97,7 +97,7 @@ const DeptselectedHandeler = ($this, context, e) => {
                 sub_total_amount: null,
                 total_amount: null,
                 total_tax: null,
-                unbalanced_amount: null
+                unbalanced_amount: 0
               });
             }
           }
@@ -153,7 +153,7 @@ export const clearBillDetails = (context, ...args) => {
     sub_total_amount: null,
     total_amount: null,
     total_tax: null,
-    unbalanced_amount: null
+    unbalanced_amount: 0
   };
 
   args.forEach(arg => {
@@ -194,13 +194,15 @@ const selectedHandeler = ($this, context, e) => {
                 [e.name]: e.value,
                 visittypeselect: false,
                 consultation: e.selected.consultation,
-                primary_policy_num: primary_policy_num
+                primary_policy_num: primary_policy_num,
+                unbalanced_amount: 0
               },
               () => {
                 if (context !== null) {
                   context.updateState({
                     ...$this.state,
-                    primary_policy_num: primary_policy_num
+                    primary_policy_num: primary_policy_num,
+                    unbalanced_amount: 0
                   });
                 }
 
@@ -225,7 +227,8 @@ const selectedHandeler = ($this, context, e) => {
             context.updateState({
               ...$this.state,
               [e.name]: null,
-              primary_policy_num: primary_policy_num
+              primary_policy_num: primary_policy_num,
+              unbalanced_amount: 0
             });
           }
         }

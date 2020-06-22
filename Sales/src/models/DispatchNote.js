@@ -249,15 +249,15 @@ export function addDispatchNote(req, res, next) {
 
                     let period = month;
 
-                    let strQuery = mysql.format(
-                        "UPDATE hims_f_sales_order SET invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=? \
-                        where  hims_f_sales_order_id = ?;",
-                        [
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            input.sales_order_id
-                        ]
-                    );
+                    // let strQuery = mysql.format(
+                    //     "UPDATE hims_f_sales_order SET invoice_generated='Y', invoice_gen_date=?, invoice_gen_by=? \
+                    //     where  hims_f_sales_order_id = ?;",
+                    //     [
+                    //         new Date(),
+                    //         req.userIdentity.algaeh_d_app_user_id,
+                    //         input.sales_order_id
+                    //     ]
+                    // );
 
                     _mysql
                         .executeQuery({
@@ -266,7 +266,7 @@ export function addDispatchNote(req, res, next) {
                                     sales_order_id, location_id, customer_id, project_id, \
                                     sub_total, discount_amount, net_total, total_tax, net_payable, narration, \
                                     created_by, created_date, updated_by, updated_date, hospital_id ) \
-                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);" + strQuery,
+                                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                             values: [
                                 dispatch_note_number,
                                 new Date(),
