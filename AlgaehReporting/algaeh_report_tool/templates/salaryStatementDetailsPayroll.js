@@ -137,7 +137,7 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 						select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
 						select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
 						where year=? and month=?;\
-						select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,Ed.nationality_id from \
+						select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,ED.nationality_id from \
 						hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
 						SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
 						where salary_header_id in ( " +
