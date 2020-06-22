@@ -87,6 +87,7 @@ class HRSettings extends Component {
                 />
               ),
               children: <CreateTemplates />,
+              componentCode: "HR_SET_CER_MTR",
             },
             {
               title: (
@@ -97,7 +98,8 @@ class HRSettings extends Component {
                 />
               ),
               children: <AgencyMaster />,
-            }
+              componentCode: "HR_SET_AGS_MTR",
+            },
           ]}
           renderClass="hrSettingsSection"
         />
