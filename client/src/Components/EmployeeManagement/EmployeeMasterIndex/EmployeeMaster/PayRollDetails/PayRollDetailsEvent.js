@@ -15,10 +15,10 @@ const earntexthandle = ($this, e) => {
     if (e.selected.nationality_id !== $this.state.nationality) {
       swalMessage({
         title: "This employee is not entitle for this component.",
-        type: "warning"
+        type: "warning",
       });
       $this.setState({
-        [name]: null
+        [name]: null,
       });
       return;
     }
@@ -38,7 +38,7 @@ const earntexthandle = ($this, e) => {
     earn_min_limit_applicable: $this.state.min_limit_applicable,
     earn_min_limit_amount: $this.state.min_limit_amount,
     earn_short_desc: e.selected.short_desc,
-    earn_formula: formula
+    earn_formula: formula,
   });
 };
 
@@ -52,10 +52,10 @@ const deducttexthandle = ($this, e) => {
     if (e.selected.nationality_id !== $this.state.nationality) {
       swalMessage({
         title: "This employee is not entitle for this component.",
-        type: "warning"
+        type: "warning",
       });
       $this.setState({
-        [name]: null
+        [name]: null,
       });
       return;
     }
@@ -74,7 +74,7 @@ const deducttexthandle = ($this, e) => {
     deduct_limit_applicable: e.selected.limit_applicable,
     deduct_limit_amount: e.selected.limit_amount,
     deduct_min_limit_applicable: e.selected.min_limit_applicable,
-    deduct_min_limit_amount: e.selected.min_limit_amount
+    deduct_min_limit_amount: e.selected.min_limit_amount,
   });
 };
 
@@ -88,10 +88,10 @@ const contributtexthandle = ($this, e) => {
     if (e.selected.nationality_id !== $this.state.nationality) {
       swalMessage({
         title: "This employee is not entitle for this component.",
-        type: "warning"
+        type: "warning",
       });
       $this.setState({
-        [name]: null
+        [name]: null,
       });
       return;
     }
@@ -116,7 +116,7 @@ const contributtexthandle = ($this, e) => {
 
 const numberSet = ($this, e) => {
   $this.setState({
-    [e.target.name]: e.target.value
+    [e.target.name]: e.target.value,
   });
 };
 
@@ -132,7 +132,7 @@ const AddEarnComponent = ($this, e) => {
         swalMessage({
           title:
             "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -140,46 +140,48 @@ const AddEarnComponent = ($this, e) => {
       let insertearnComp = $this.state.insertearnComp;
 
       const _earnComponent = Enumerable.from(earningComponents)
-        .where(w => w.earnings_id === $this.state.earning_id)
+        .where((w) => w.earnings_id === $this.state.earning_id)
         .any();
       if (_earnComponent) {
         swalMessage({
           title: "Selected component already exists.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
 
       let formulaCal = $this.state.earn_formula;
       if ($this.state.earn_calculation_method === "FO") {
-
         const expression = new RegExp("Gross Salary", "g");
         formulaCal = formulaCal.replace(expression, "GrossSalary");
 
         let earn_comp = extend([], earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
 
         var notExists = [];
         const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x.map(function (item) {
-          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
-          if (rtn === undefined) {
-            return item;
-          } else {
-            return null;
-          }
-        }).filter(f => f !== null);
+        notExists = x
+          .map(function (item) {
+            const rtn = earn_comp.find(
+              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+            );
+            if (rtn === undefined) {
+              return item;
+            } else {
+              return null;
+            }
+          })
+          .filter((f) => f !== null);
 
         if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
       }
-
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -191,8 +193,10 @@ const AddEarnComponent = ($this, e) => {
         short_desc: $this.state.earn_short_desc,
         limit_applicable: $this.state.earn_limit_applicable,
         limit_amount: $this.state.earn_limit_amount,
-        min_limit_applicable: e.selected.earn_min_limit_applicable,
-        min_limit_amount: e.selected.earn_min_limit_amount,
+        // min_limit_applicable: e.selected.earn_min_limit_applicable,
+        // min_limit_amount: e.selected.earn_min_limit_amount,
+        min_limit_applicable: $this.state.earn_min_limit_applicable,
+        min_limit_amount: $this.state.earn_min_limit_amount,
       });
 
       insertearnComp.push({
@@ -203,7 +207,7 @@ const AddEarnComponent = ($this, e) => {
         calculation_method: $this.state.earn_calculation_method,
         calculation_type: $this.state.earn_calculation_type,
         formula: $this.state.earn_formula,
-        short_desc: $this.state.earn_short_desc
+        short_desc: $this.state.earn_short_desc,
       });
 
       $this.setState(
@@ -211,7 +215,7 @@ const AddEarnComponent = ($this, e) => {
           earningComponents: earningComponents,
           insertearnComp: insertearnComp,
           earning_id: null,
-          earn_amount: null
+          earn_amount: null,
         },
         () => {
           CalculateBasedonFormula($this);
@@ -219,9 +223,9 @@ const AddEarnComponent = ($this, e) => {
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         earningComponents: earningComponents,
-        insertearnComp: insertearnComp
+        insertearnComp: insertearnComp,
       });
-    }
+    },
   });
 };
 
@@ -237,21 +241,22 @@ const AddDeductionComponent = ($this, e) => {
         swalMessage({
           title:
             "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
 
-
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
+        (f) =>
+          parseInt(f.earnings_id) ===
+          parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
         swalMessage({
           title: "Please select Basic Salary in earnings.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -264,22 +269,26 @@ const AddDeductionComponent = ($this, e) => {
         formulaCal = formulaCal.replace(expression, "GrossSalary");
 
         let earn_comp = extend([], $this.state.earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
         const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x.map(function (item) {
-          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
-          if (rtn === undefined) {
-            return item;
-          } else {
-            return null;
-          }
-        }).filter(f => f !== null);
+        notExists = x
+          .map(function (item) {
+            const rtn = earn_comp.find(
+              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+            );
+            if (rtn === undefined) {
+              return item;
+            } else {
+              return null;
+            }
+          })
+          .filter((f) => f !== null);
 
         if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -289,12 +298,12 @@ const AddDeductionComponent = ($this, e) => {
       let insertDeductionComp = $this.state.insertDeductionComp;
 
       const _dedComponent = Enumerable.from(deductioncomponents)
-        .where(w => w.deductions_id === $this.state.deducation_id)
+        .where((w) => w.deductions_id === $this.state.deducation_id)
         .any();
       if (_dedComponent) {
         swalMessage({
           title: "Selected component already exists.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -311,7 +320,7 @@ const AddDeductionComponent = ($this, e) => {
         limit_applicable: $this.state.deduct_limit_applicable,
         limit_amount: $this.state.deduct_limit_amount,
         min_limit_applicable: $this.state.deduct_min_limit_applicable,
-        min_limit_amount: $this.state.deduct_min_limit_amount
+        min_limit_amount: $this.state.deduct_min_limit_amount,
       });
 
       insertDeductionComp.push({
@@ -322,7 +331,7 @@ const AddDeductionComponent = ($this, e) => {
         calculation_method: $this.state.deduct_calculation_method,
         calculation_type: $this.state.deduct_calculation_type,
         formula: $this.state.deduct_formula,
-        short_desc: $this.state.deduct_short_desc
+        short_desc: $this.state.deduct_short_desc,
       });
 
       $this.setState(
@@ -330,7 +339,7 @@ const AddDeductionComponent = ($this, e) => {
           deductioncomponents: deductioncomponents,
           insertDeductionComp: insertDeductionComp,
           deducation_id: null,
-          dedection_amount: null
+          dedection_amount: null,
         },
         () => {
           CalculateBasedonFormula($this);
@@ -338,9 +347,9 @@ const AddDeductionComponent = ($this, e) => {
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         deductioncomponents: deductioncomponents,
-        insertDeductionComp: insertDeductionComp
+        insertDeductionComp: insertDeductionComp,
       });
-    }
+    },
   });
 };
 
@@ -356,49 +365,54 @@ const AddContributionComponent = ($this, e) => {
         swalMessage({
           title:
             "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
 
       let basic_exists = _.find(
         $this.state.earningComponents,
-        f => parseInt(f.earnings_id) === parseInt($this.state.basic_earning_component)
+        (f) =>
+          parseInt(f.earnings_id) ===
+          parseInt($this.state.basic_earning_component)
       );
 
       if (basic_exists === undefined) {
         swalMessage({
           title: "Please select Basic Salary in earnings.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
 
       let formulaCal = $this.state.contribut_formula;
       if ($this.state.contribut_calculation_method === "FO") {
-
         const expression = new RegExp("Gross Salary", "g");
         formulaCal = formulaCal.replace(expression, "GrossSalary");
 
         let earn_comp = extend([], $this.state.earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }])
+        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
 
         var notExists = [];
         const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x.map(function (item) {
-          const rtn = earn_comp.find(f => String(f.short_desc).toLowerCase() === item.toLowerCase());
-          if (rtn === undefined) {
-            return item;
-          } else {
-            return null;
-          }
-        }).filter(f => f !== null);
+        notExists = x
+          .map(function (item) {
+            const rtn = earn_comp.find(
+              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+            );
+            if (rtn === undefined) {
+              return item;
+            } else {
+              return null;
+            }
+          })
+          .filter((f) => f !== null);
 
         if (notExists.length > 0) {
           swalMessage({
             title:
               "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning"
+            type: "warning",
           });
           return;
         }
@@ -408,12 +422,12 @@ const AddContributionComponent = ($this, e) => {
       let insertContributeComp = $this.state.insertContributeComp;
 
       const _contComponent = Enumerable.from(contributioncomponents)
-        .where(w => w.contributions_id === $this.state.contribution_id)
+        .where((w) => w.contributions_id === $this.state.contribution_id)
         .any();
       if (_contComponent) {
         swalMessage({
           title: "Selected component already exists.",
-          type: "warning"
+          type: "warning",
         });
         return;
       }
@@ -430,7 +444,7 @@ const AddContributionComponent = ($this, e) => {
         limit_applicable: $this.state.contribut_limit_applicable,
         limit_amount: $this.state.contribut_limit_amount,
         min_limit_applicable: $this.state.contribut_min_limit_applicable,
-        min_limit_amount: $this.state.contribut_min_limit_amount
+        min_limit_amount: $this.state.contribut_min_limit_amount,
       });
 
       insertContributeComp.push({
@@ -441,7 +455,7 @@ const AddContributionComponent = ($this, e) => {
         calculation_method: $this.state.contribut_calculation_method,
         calculation_type: $this.state.contribut_calculation_type,
         formula: $this.state.contribut_formula,
-        short_desc: $this.state.contribut_short_desc
+        short_desc: $this.state.contribut_short_desc,
       });
 
       $this.setState(
@@ -449,7 +463,7 @@ const AddContributionComponent = ($this, e) => {
           contributioncomponents: contributioncomponents,
           insertContributeComp: insertContributeComp,
           contribution_id: null,
-          contribution_amount: null
+          contribution_amount: null,
         },
         () => {
           CalculateBasedonFormula($this);
@@ -458,9 +472,9 @@ const AddContributionComponent = ($this, e) => {
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         contributioncomponents: contributioncomponents,
-        insertContributeComp: insertContributeComp
+        insertContributeComp: insertContributeComp,
       });
-    }
+    },
   });
 };
 
@@ -471,20 +485,20 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
-const calculationTotals = ($this, From) => {
-  let gross_salary = Enumerable.from($this.state.earningComponents).sum(w =>
+const calculationTotals = ($this, From, callBack) => {
+  let gross_salary = Enumerable.from($this.state.earningComponents).sum((w) =>
     parseFloat(w.amount)
   );
-  let total_earnings = Enumerable.from($this.state.earningComponents).sum(w =>
+  let total_earnings = Enumerable.from($this.state.earningComponents).sum((w) =>
     parseFloat(w.amount)
   );
 
-  let total_deductions = Enumerable.from($this.state.deductioncomponents).sum(
-    w => parseFloat(w.amount)
-  );
+  let total_deductions = Enumerable.from(
+    $this.state.deductioncomponents
+  ).sum((w) => parseFloat(w.amount));
   let total_contributions = Enumerable.from(
     $this.state.contributioncomponents
-  ).sum(w => parseFloat(w.amount));
+  ).sum((w) => parseFloat(w.amount));
 
   $this.setState(
     {
@@ -494,10 +508,10 @@ const calculationTotals = ($this, From) => {
       total_deductions: total_deductions,
       total_contributions: total_contributions,
       net_salary: total_earnings - total_deductions,
-      cost_to_company: total_earnings + total_contributions
+      cost_to_company: total_earnings + total_contributions,
     },
     () => {
-      CalculateBasedonFormula($this, "after");
+      CalculateBasedonFormula($this, "after", callBack);
     }
   );
 
@@ -508,11 +522,12 @@ const calculationTotals = ($this, From) => {
     total_deductions: total_deductions,
     total_contributions: total_contributions,
     net_salary: total_earnings - total_deductions,
-    cost_to_company: total_earnings + total_contributions
+    cost_to_company: total_earnings + total_contributions,
   });
 };
 
 const deleteEarningComponent = ($this, row) => {
+  const prevState = { ...$this.state };
   swal({
     title: "Are you sure you want to delete Earning Component?",
     type: "warning",
@@ -520,8 +535,8 @@ const deleteEarningComponent = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
@@ -529,31 +544,48 @@ const deleteEarningComponent = ($this, row) => {
 
       if (row.hims_d_employee_earnings_id !== undefined) {
         deleteearnComp.push(row);
-        earningComponents.splice(row.rowIdx, 1);
+        earningComponents = earningComponents.filter(
+          (f) => f.rowIdx !== row.rowIdx
+        );
+        //earningComponents.splice(row.rowIdx, 1);
       } else {
-        for (let x = 0; x < insertearnComp.length; x++) {
-          if (insertearnComp[x].earnings_id === row.earnings_id) {
-            insertearnComp.splice(x, 1);
-          }
-        }
-
-        earningComponents.splice(row.rowIdx, 1);
+        insertearnComp = insertearnComp.filter(
+          (f) => f.earnings_id !== row.earnings_id
+        );
+        earningComponents = earningComponents.filter(
+          (f) => f.rowIdx !== row.rowIdx
+        );
+        // for (let x = 0; x < insertearnComp.length; x++) {
+        //   if (insertearnComp[x].earnings_id === row.earnings_id) {
+        //     insertearnComp.splice(x, 1);
+        //   }
+        // }
+        //  earningComponents.splice(row.rowIdx, 1);
       }
+
       $this.setState(
         {
           earningComponents: earningComponents,
           deleteearnComp: deleteearnComp,
-          insertearnComp: insertearnComp
+          insertearnComp: insertearnComp,
         },
         () => {
-          calculationTotals($this, "");
+          calculationTotals($this, "", (successs) => {
+            if (successs === true) {
+              $this.props.EmpMasterIOputs.updateEmployeeTabs({
+                earningComponents: earningComponents,
+                deleteearnComp: deleteearnComp,
+                insertearnComp: insertearnComp,
+              });
+            } else {
+              $this.props.EmpMasterIOputs.updateEmployeeTabs({
+                deleteearnComp: [],
+              });
+              $this.setState({ ...prevState });
+            }
+          });
         }
       );
-      $this.props.EmpMasterIOputs.updateEmployeeTabs({
-        earningComponents: earningComponents,
-        deleteearnComp: deleteearnComp,
-        insertearnComp: insertearnComp
-      });
     }
   });
 };
@@ -571,7 +603,7 @@ const updateEarningComponent = ($this, row) => {
       earnings_id: row.earnings_id,
       amount: row.amount,
       allocate: row.allocate,
-      record_status: "A"
+      record_status: "A",
     };
     updateearnComp.push(Updateobj);
     earningComponents[row.rowIdx] = Updateobj;
@@ -580,7 +612,7 @@ const updateEarningComponent = ($this, row) => {
       employee_id: $this.state.hims_d_employee_id,
       earnings_id: row.earnings_id,
       amount: row.amount,
-      allocate: row.allocate
+      allocate: row.allocate,
     };
     for (let x = 0; x < insertearnComp.length; x++) {
       if (insertearnComp[x].earnings_id === row.earnings_id) {
@@ -594,7 +626,7 @@ const updateEarningComponent = ($this, row) => {
     {
       earningComponents: earningComponents,
       updateearnComp: updateearnComp,
-      insertearnComp: insertearnComp
+      insertearnComp: insertearnComp,
     },
     () => {
       calculationTotals($this, "");
@@ -603,7 +635,7 @@ const updateEarningComponent = ($this, row) => {
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     earningComponents: earningComponents,
     updateearnComp: updateearnComp,
-    insertearnComp: insertearnComp
+    insertearnComp: insertearnComp,
   });
 };
 
@@ -615,8 +647,8 @@ const deleteDeductionComponent = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let insertDeductionComp = $this.state.insertDeductionComp;
       let deductioncomponents = $this.state.deductioncomponents;
@@ -638,7 +670,7 @@ const deleteDeductionComponent = ($this, row) => {
         {
           deductioncomponents: deductioncomponents,
           deleteDeductionComp: deleteDeductionComp,
-          insertDeductionComp: insertDeductionComp
+          insertDeductionComp: insertDeductionComp,
         },
         () => {
           calculationTotals($this, "");
@@ -647,7 +679,7 @@ const deleteDeductionComponent = ($this, row) => {
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         deductioncomponents: deductioncomponents,
         deleteDeductionComp: deleteDeductionComp,
-        insertDeductionComp: insertDeductionComp
+        insertDeductionComp: insertDeductionComp,
       });
     }
   });
@@ -665,7 +697,7 @@ const updateDeductionComponent = ($this, row) => {
       deductions_id: row.deductions_id,
       amount: row.amount,
       allocate: row.allocate,
-      record_status: "A"
+      record_status: "A",
     };
     updateDeductionComp.push(Updateobj);
     deductioncomponents[row.rowIdx] = Updateobj;
@@ -674,7 +706,7 @@ const updateDeductionComponent = ($this, row) => {
       employee_id: $this.state.hims_d_employee_id,
       deductions_id: row.deductions_id,
       amount: row.amount,
-      allocate: row.allocate
+      allocate: row.allocate,
     };
     for (let x = 0; x < insertDeductionComp.length; x++) {
       if (insertDeductionComp[x].deductions_id === row.deductions_id) {
@@ -688,7 +720,7 @@ const updateDeductionComponent = ($this, row) => {
     {
       deductioncomponents: deductioncomponents,
       updateDeductionComp: updateDeductionComp,
-      insertDeductionComp: insertDeductionComp
+      insertDeductionComp: insertDeductionComp,
     },
     () => {
       calculationTotals($this, "");
@@ -697,7 +729,7 @@ const updateDeductionComponent = ($this, row) => {
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     deductioncomponents: deductioncomponents,
     updateDeductionComp: updateDeductionComp,
-    insertDeductionComp: insertDeductionComp
+    insertDeductionComp: insertDeductionComp,
   });
 };
 
@@ -709,8 +741,8 @@ const deleteContibuteComponent = ($this, row) => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
+    cancelButtonText: "No",
+  }).then((willDelete) => {
     if (willDelete.value) {
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
@@ -732,7 +764,7 @@ const deleteContibuteComponent = ($this, row) => {
         {
           contributioncomponents: contributioncomponents,
           deleteContributeComp: deleteContributeComp,
-          insertContributeComp: insertContributeComp
+          insertContributeComp: insertContributeComp,
         },
         () => {
           calculationTotals($this, "");
@@ -741,7 +773,7 @@ const deleteContibuteComponent = ($this, row) => {
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         contributioncomponents: contributioncomponents,
         deleteContributeComp: deleteContributeComp,
-        insertContributeComp: insertContributeComp
+        insertContributeComp: insertContributeComp,
       });
     }
   });
@@ -759,7 +791,7 @@ const updateContibuteComponent = ($this, row) => {
       contributions_id: row.contributions_id,
       amount: row.amount,
       allocate: row.allocate,
-      record_status: "A"
+      record_status: "A",
     };
     updateContributeComp.push(Updateobj);
     contributioncomponents[row.rowIdx] = Updateobj;
@@ -768,7 +800,7 @@ const updateContibuteComponent = ($this, row) => {
       employee_id: $this.state.hims_d_employee_id,
       contributions_id: row.contributions_id,
       amount: row.amount,
-      allocate: row.allocate
+      allocate: row.allocate,
     };
     for (let x = 0; x < insertContributeComp.length; x++) {
       if (insertContributeComp[x].contributions_id === row.contributions_id) {
@@ -782,7 +814,7 @@ const updateContibuteComponent = ($this, row) => {
     {
       contributioncomponents: contributioncomponents,
       updateContributeComp: updateContributeComp,
-      insertContributeComp: insertContributeComp
+      insertContributeComp: insertContributeComp,
     },
     () => {
       calculationTotals($this, "");
@@ -791,124 +823,124 @@ const updateContibuteComponent = ($this, row) => {
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     contributioncomponents: contributioncomponents,
     updateContributeComp: updateContributeComp,
-    insertContributeComp: insertContributeComp
+    insertContributeComp: insertContributeComp,
   });
 };
 
-const getEmpEarningComponents = $this => {
+const getEmpEarningComponents = ($this) => {
   algaehApiCall({
     uri: "/employee/getEmpEarningComponents",
     module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
           $this.setState({
-            earningComponents: data
+            earningComponents: data,
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            earningComponents: data
+            earningComponents: data,
           });
         } else {
           $this.setState({
-            earningComponents: []
+            earningComponents: [],
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            earningComponents: []
+            earningComponents: [],
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const getEmpDeductionComponents = $this => {
+const getEmpDeductionComponents = ($this) => {
   algaehApiCall({
     uri: "/employee/getEmpDeductionComponents",
     module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
           $this.setState({
-            deductioncomponents: data
+            deductioncomponents: data,
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            deductioncomponents: data
+            deductioncomponents: data,
           });
         } else {
           $this.setState({
-            deductioncomponents: []
+            deductioncomponents: [],
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            deductioncomponents: []
+            deductioncomponents: [],
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
-const getEmpContibuteComponents = $this => {
+const getEmpContibuteComponents = ($this) => {
   algaehApiCall({
     uri: "/employee/getEmpContibuteComponents",
     module: "hrManagement",
     method: "GET",
     data: {
       employee_id: $this.state.hims_d_employee_id,
-      nationality_id: $this.state.nationality_id
+      nationality_id: $this.state.nationality_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
           $this.setState({
-            contributioncomponents: data
+            contributioncomponents: data,
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            contributioncomponents: data
+            contributioncomponents: data,
           });
         } else {
           $this.setState({
-            contributioncomponents: []
+            contributioncomponents: [],
           });
 
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            contributioncomponents: []
+            contributioncomponents: [],
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const CalculateBasedonFormula = ($this, from) => {
+const CalculateBasedonFormula = ($this, from, callBack) => {
   let earningComponents = $this.state.earningComponents;
   let deductioncomponents = $this.state.deductioncomponents;
   let contributioncomponents = $this.state.contributioncomponents;
@@ -921,14 +953,14 @@ const CalculateBasedonFormula = ($this, from) => {
   let updateContributeComp = $this.state.updateContributeComp;
 
   const earn_comp = Enumerable.from(earningComponents)
-    .where(w => w.calculation_method === "FO")
+    .where((w) => w.calculation_method === "FO")
     .toArray();
 
   const deduct_comp = Enumerable.from(deductioncomponents)
-    .where(w => w.calculation_method === "FO")
+    .where((w) => w.calculation_method === "FO")
     .toArray();
   const contribute_comp = Enumerable.from(contributioncomponents)
-    .where(w => w.calculation_method === "FO")
+    .where((w) => w.calculation_method === "FO")
     .toArray();
 
   // let $this = this;
@@ -940,7 +972,7 @@ const CalculateBasedonFormula = ($this, from) => {
       // let strFormula = earn_comp[x].formula;
       const _index = earningComponents.indexOf(earn_comp[x]);
 
-      earningComponents.map(menu => {
+      earningComponents.map((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           let earn_short_desc = menu.short_desc;
           const expression = new RegExp(earn_short_desc, "g");
@@ -955,9 +987,15 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = eval(formulaCal);
       // limit_applicable: e.selected.contribut_limit_applicable,
       //   limit_amount: e.selected.contribut_limit_amount
-      if (earn_comp[x].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(earn_comp[x].limit_amount)) {
+      if (
+        earn_comp[x].limit_applicable === "Y" &&
+        parseFloat(formulaCal) > parseFloat(earn_comp[x].limit_amount)
+      ) {
         earn_comp[x].amount = earn_comp[x].limit_amount;
-      } else if (earn_comp[x].min_limit_applicable === "Y" && parseFloat(formulaCal) < parseFloat(earn_comp[x].min_limit_amount)) {
+      } else if (
+        earn_comp[x].min_limit_applicable === "Y" &&
+        parseFloat(formulaCal) < parseFloat(earn_comp[x].min_limit_amount)
+      ) {
         earn_comp[x].amount = earn_comp[x].min_limit_amount;
       } else {
         earn_comp[x].amount = formulaCal;
@@ -980,7 +1018,7 @@ const CalculateBasedonFormula = ($this, from) => {
 
       const _index = deductioncomponents.indexOf(deduct_comp[y]);
 
-      earningComponents.map(menu => {
+      earningComponents.map((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           let ded_short_desc = menu.short_desc;
           const expression = new RegExp(ded_short_desc, "g");
@@ -993,12 +1031,34 @@ const CalculateBasedonFormula = ($this, from) => {
       const perexpression = new RegExp("%", "g");
       formulaCal = formulaCal.replace(perexpression, "/100");
 
-      // formulaCal = `${formulaCal}`;
+      const dependentCompoennt = /([a-zA-Z])/.test(formulaCal);
+      // const checkAnyCharacter = formulaCal.match(/[a-zA-Z]+/g);
+      // checkAnyCharacter.forEach((element) => {
+      //   formulaCal = formulaCal.replace(element, "0");
+      // });
+      // debugger;
+      if (dependentCompoennt === true) {
+        swalMessage({
+          title: "Component is dependent on formula con't delete",
+          type: "warning",
+        });
+        if (typeof callBack === "function") {
+          callBack(false);
+        }
+        return;
+      }
+
       formulaCal = eval(formulaCal);
 
-      if (deduct_comp[y].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(deduct_comp[y].limit_amount)) {
+      if (
+        deduct_comp[y].limit_applicable === "Y" &&
+        parseFloat(formulaCal) > parseFloat(deduct_comp[y].limit_amount)
+      ) {
         deduct_comp[y].amount = deduct_comp[y].limit_amount;
-      } else if (deduct_comp[y].min_limit_applicable === "Y" && parseFloat(formulaCal) < parseFloat(deduct_comp[y].min_limit_amount)) {
+      } else if (
+        deduct_comp[y].min_limit_applicable === "Y" &&
+        parseFloat(formulaCal) < parseFloat(deduct_comp[y].min_limit_amount)
+      ) {
         deduct_comp[y].amount = deduct_comp[y].min_limit_amount;
       } else {
         deduct_comp[y].amount = formulaCal;
@@ -1018,6 +1078,9 @@ const CalculateBasedonFormula = ($this, from) => {
         }
       }
     }
+    if (typeof callBack === "function") {
+      callBack(true);
+    }
   }
 
   if (contribute_comp.length > 0) {
@@ -1027,7 +1090,7 @@ const CalculateBasedonFormula = ($this, from) => {
       // let strFormula = contribute_comp[z].formula;
       const _index = contributioncomponents.indexOf(contribute_comp[z]);
 
-      earningComponents.map(menu => {
+      earningComponents.map((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
           const expression = new RegExp(menu.short_desc, "g");
           formulaCal = formulaCal.replace(expression, menu.amount);
@@ -1039,9 +1102,15 @@ const CalculateBasedonFormula = ($this, from) => {
       formulaCal = formulaCal.replace(perexpression, "/100");
       formulaCal = eval(formulaCal);
 
-      if (contribute_comp[z].limit_applicable === "Y" && parseFloat(formulaCal) > parseFloat(contribute_comp[z].limit_amount)) {
+      if (
+        contribute_comp[z].limit_applicable === "Y" &&
+        parseFloat(formulaCal) > parseFloat(contribute_comp[z].limit_amount)
+      ) {
         contribute_comp[z].amount = contribute_comp[z].limit_amount;
-      } else if (contribute_comp[z].min_limit_applicable === "Y" && parseFloat(formulaCal) < parseFloat(contribute_comp[z].min_limit_amount)) {
+      } else if (
+        contribute_comp[z].min_limit_applicable === "Y" &&
+        parseFloat(formulaCal) < parseFloat(contribute_comp[z].min_limit_amount)
+      ) {
         contribute_comp[z].amount = contribute_comp[z].min_limit_amount;
       } else {
         contribute_comp[z].amount = formulaCal;
@@ -1074,7 +1143,7 @@ const CalculateBasedonFormula = ($this, from) => {
       updateDeductionComp: updateDeductionComp,
       insertDeductionComp: insertDeductionComp,
       insertContributeComp: insertContributeComp,
-      updateContributeComp: updateContributeComp
+      updateContributeComp: updateContributeComp,
     },
     () => {
       if (from !== "after") {
@@ -1084,22 +1153,24 @@ const CalculateBasedonFormula = ($this, from) => {
   );
 };
 
-const getOptions = $this => {
+const getOptions = ($this) => {
   algaehApiCall({
     uri: "/payrollOptions/getHrmsOptions",
     method: "GET",
     module: "hrManagement",
-    onSuccess: res => {
+    onSuccess: (res) => {
       if (res.data.success) {
-        $this.setState({ basic_earning_component: res.data.result[0].basic_earning_component });
+        $this.setState({
+          basic_earning_component: res.data.result[0].basic_earning_component,
+        });
       }
     },
-    onFailure: err => {
+    onFailure: (err) => {
       swalMessage({
         title: err.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -1122,5 +1193,5 @@ export {
   getEmpDeductionComponents,
   getEmpContibuteComponents,
   CalculateBasedonFormula,
-  getOptions
+  getOptions,
 };

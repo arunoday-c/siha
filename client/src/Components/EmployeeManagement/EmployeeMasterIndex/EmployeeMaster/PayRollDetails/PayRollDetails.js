@@ -5,14 +5,12 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 // import GlobalVariables from "../../../../../utils/GlobalVariables";
 import { GetAmountFormart } from "../../../../../utils/GlobalFunctions";
-
 import "./PayRollDetails.scss";
-
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
 } from "../../../../Wrapper/algaehWrapper";
 
 import {
@@ -33,7 +31,7 @@ import {
   getEmpEarningComponents,
   getEmpDeductionComponents,
   getEmpContibuteComponents,
-  getOptions
+  getOptions,
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 
@@ -69,9 +67,9 @@ class PayRollDetails extends Component {
       earn_min_limit_applicable: null,
       earn_min_limit_amount: null,
       contribut_min_limit_applicable: null,
-      contribut_min_limit_amount: null
+      contribut_min_limit_amount: null,
     };
-    getOptions(this)
+    getOptions(this);
   }
 
   componentDidMount() {
@@ -98,22 +96,20 @@ class PayRollDetails extends Component {
       data: { miscellaneous_component: "N" },
       redux: {
         type: "PAYROLL_COMPONENT_DATA",
-        mappingName: "payrollcomponents"
-      }
+        mappingName: "payrollcomponents",
+      },
     });
-
   }
 
   render() {
-
     const earnings = Enumerable.from(this.props.payrollcomponents)
-      .where(w => w.component_category === "E")
+      .where((w) => w.component_category === "E")
       .toArray();
     const deducation = Enumerable.from(this.props.payrollcomponents)
-      .where(w => w.component_category === "D")
+      .where((w) => w.component_category === "D")
       .toArray();
     const contribution = Enumerable.from(this.props.payrollcomponents)
-      .where(w => w.component_category === "C")
+      .where((w) => w.component_category === "C")
       .toArray();
     return (
       <React.Fragment>
@@ -124,7 +120,7 @@ class PayRollDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Gross Salary"
+                      forceLabel: "Gross Salary",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.gross_salary)}</h6>
@@ -132,7 +128,7 @@ class PayRollDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Earning"
+                      forceLabel: "Total Earning",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.total_earnings)}</h6>
@@ -140,7 +136,7 @@ class PayRollDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Deduction"
+                      forceLabel: "Total Deduction",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.total_deductions)}</h6>
@@ -148,7 +144,7 @@ class PayRollDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Total Emp. Contribution"
+                      forceLabel: "Total Emp. Contribution",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.total_contributions)}</h6>
@@ -156,7 +152,7 @@ class PayRollDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Net Salary"
+                      forceLabel: "Net Salary",
                     }}
                   />
                   <h6>{GetAmountFormart(this.state.net_salary)}</h6>
@@ -165,12 +161,12 @@ class PayRollDetails extends Component {
                   className="col"
                   style={{
                     border: "1px dashed #d3d3d3",
-                    background: "rgb(194, 255, 249)"
+                    background: "rgb(194, 255, 249)",
                   }}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Cost to Company"
+                      forceLabel: "Cost to Company",
                     }}
                   />
                   <h6 style={{ fontWeight: "bold" }}>
@@ -180,7 +176,7 @@ class PayRollDetails extends Component {
               </div>
               <hr
                 style={{
-                  marginTop: 0
+                  marginTop: 0,
                 }}
               ></hr>
             </div>
@@ -213,7 +209,7 @@ class PayRollDetails extends Component {
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Earnings Type",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "earning_id",
@@ -222,9 +218,9 @@ class PayRollDetails extends Component {
                     dataSource: {
                       textField: "earning_deduction_description",
                       valueField: "hims_d_earning_deduction_id",
-                      data: earnings
+                      data: earnings,
                     },
-                    onChange: earntexthandle.bind(this, this)
+                    onChange: earntexthandle.bind(this, this),
                   }}
                 />
 
@@ -233,7 +229,9 @@ class PayRollDetails extends Component {
                   label={{
                     forceLabel: "Amount",
                     isImp:
-                      this.state.earn_calculation_method === "FO" ? false : true
+                      this.state.earn_calculation_method === "FO"
+                        ? false
+                        : true,
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -241,17 +239,17 @@ class PayRollDetails extends Component {
                     value: this.state.earn_amount,
                     decimal: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     events: {
-                      onChange: numberSet.bind(this, this)
+                      onChange: numberSet.bind(this, this),
                     },
                     others: {
                       disabled:
                         this.state.earn_calculation_method === "FO"
                           ? true
-                          : false
-                    }
+                          : false,
+                    },
                   }}
                 />
 
@@ -275,15 +273,15 @@ class PayRollDetails extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Earnings" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.earnings_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
 
                           return (
                             <span>
@@ -293,15 +291,15 @@ class PayRollDetails extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.earnings_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.earnings_id
+                                );
 
                           return (
                             <span>
@@ -314,47 +312,47 @@ class PayRollDetails extends Component {
                         others: {
                           style: {
                             //textAlign: "left"
-                          }
-                        }
+                          },
+                        },
                       },
                       {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                    thousandSeparator: ","
-                                  },
-                                  value: row.amount,
-                                  className: "txt-fld",
-                                  name: "amount",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    placeholder: "0.00"
-                                  }
-                                }}
-                              />
-                            );
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ",",
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  ),
+                                },
+                                others: {
+                                  placeholder: "0.00",
+                                },
+                              }}
+                            />
+                          );
                         },
                         others: {
                           maxWidth: 90,
                           style: {
-                            textAlign: "right"
-                          }
-                        }
-                      }
+                            textAlign: "right",
+                          },
+                        },
+                      },
                       // ,{
                       //   fieldName: "allocate",
                       //   label: (
@@ -393,8 +391,8 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteEarningComponent.bind(this, this),
-                      onEdit: row => { },
-                      onDone: updateEarningComponent.bind(this, this)
+                      onEdit: (row) => {},
+                      onDone: updateEarningComponent.bind(this, this),
                     }}
                   />
                 </div>
@@ -412,7 +410,7 @@ class PayRollDetails extends Component {
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Deduction Type",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "deducation_id",
@@ -421,9 +419,9 @@ class PayRollDetails extends Component {
                     dataSource: {
                       textField: "earning_deduction_description",
                       valueField: "hims_d_earning_deduction_id",
-                      data: deducation
+                      data: deducation,
                     },
-                    onChange: deducttexthandle.bind(this, this)
+                    onChange: deducttexthandle.bind(this, this),
                   }}
                 />
 
@@ -434,29 +432,29 @@ class PayRollDetails extends Component {
                     isImp:
                       this.state.deduct_calculation_method === "FO"
                         ? false
-                        : true
+                        : true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     decimal: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     name: "dedection_amount",
                     value: this.state.dedection_amount,
                     number: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     events: {
-                      onChange: numberSet.bind(this, this)
+                      onChange: numberSet.bind(this, this),
                     },
                     others: {
                       disabled:
                         this.state.deduct_calculation_method === "FO"
                           ? true
-                          : false
-                    }
+                          : false,
+                    },
                   }}
                 />
                 <div className="col-2" style={{ paddingTop: "19px" }}>
@@ -479,15 +477,15 @@ class PayRollDetails extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Deductions" }} />
                         ),
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.deductions_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
 
                           return (
                             <span>
@@ -497,15 +495,15 @@ class PayRollDetails extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.deductions_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.deductions_id
+                                );
 
                           return (
                             <span>
@@ -518,44 +516,44 @@ class PayRollDetails extends Component {
                         others: {
                           style: {
                             //textAlign: "left"
-                          }
-                        }
+                          },
+                        },
                       },
                       {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                    thousandSeparator: ","
-                                  },
-                                  value: row.amount,
-                                  className: "txt-fld",
-                                  name: "amount",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }
-                                }}
-                              />
-                            );
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ",",
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  ),
+                                },
+                              }}
+                            />
+                          );
                         },
                         others: {
                           maxWidth: 90,
                           style: {
-                            textAlign: "right"
-                          }
-                        }
-                      }
+                            textAlign: "right",
+                          },
+                        },
+                      },
                     ]}
                     keyId=""
                     dataSource={{ data: this.state.deductioncomponents }}
@@ -563,8 +561,8 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteDeductionComponent.bind(this, this),
-                      onEdit: row => { },
-                      onDone: updateDeductionComponent.bind(this, this)
+                      onEdit: (row) => {},
+                      onDone: updateDeductionComponent.bind(this, this),
                     }}
                   />
                 </div>
@@ -582,7 +580,7 @@ class PayRollDetails extends Component {
                   div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Contribution Type",
-                    isImp: true
+                    isImp: true,
                   }}
                   selector={{
                     name: "contribution_id",
@@ -591,9 +589,9 @@ class PayRollDetails extends Component {
                     dataSource: {
                       textField: "earning_deduction_description",
                       valueField: "hims_d_earning_deduction_id",
-                      data: contribution
+                      data: contribution,
                     },
-                    onChange: contributtexthandle.bind(this, this)
+                    onChange: contributtexthandle.bind(this, this),
                   }}
                 />
 
@@ -604,29 +602,29 @@ class PayRollDetails extends Component {
                     isImp:
                       this.state.contribut_calculation_method === "FO"
                         ? false
-                        : true
+                        : true,
                   }}
                   textBox={{
                     className: "txt-fld",
                     name: "contribution_amount",
                     decimal: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     value: this.state.contribution_amount,
                     number: {
                       allowNegative: false,
-                      thousandSeparator: ","
+                      thousandSeparator: ",",
                     },
                     events: {
-                      onChange: numberSet.bind(this, this)
+                      onChange: numberSet.bind(this, this),
                     },
                     others: {
                       disabled:
                         this.state.contribut_calculation_method === "FO"
                           ? true
-                          : false
-                    }
+                          : false,
+                    },
                   }}
                 />
                 <div className="col-2" style={{ paddingTop: "19px" }}>
@@ -652,15 +650,15 @@ class PayRollDetails extends Component {
                           />
                         ),
 
-                        displayTemplate: row => {
+                        displayTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.contributions_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
 
                           return (
                             <span>
@@ -670,15 +668,15 @@ class PayRollDetails extends Component {
                             </span>
                           );
                         },
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           let display =
                             this.props.payrollcomponents === undefined
                               ? []
                               : this.props.payrollcomponents.filter(
-                                f =>
-                                  f.hims_d_earning_deduction_id ===
-                                  row.contributions_id
-                              );
+                                  (f) =>
+                                    f.hims_d_earning_deduction_id ===
+                                    row.contributions_id
+                                );
 
                           return (
                             <span>
@@ -691,44 +689,44 @@ class PayRollDetails extends Component {
                         others: {
                           style: {
                             //textAlign: "left"
-                          }
-                        }
+                          },
+                        },
                       },
                       {
                         fieldName: "amount",
                         label: <AlgaehLabel label={{ forceLabel: "Amount" }} />,
-                        editorTemplate: row => {
+                        editorTemplate: (row) => {
                           return row.calculation_method === "FO" ? (
                             row.amount
                           ) : (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  number: {
-                                    allowNegative: false,
-                                    thousandSeparator: ","
-                                  },
-                                  value: row.amount,
-                                  className: "txt-fld",
-                                  name: "amount",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }
-                                }}
-                              />
-                            );
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ",",
+                                },
+                                value: row.amount,
+                                className: "txt-fld",
+                                name: "amount",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  ),
+                                },
+                              }}
+                            />
+                          );
                         },
                         others: {
                           maxWidth: 90,
                           style: {
-                            textAlign: "right"
-                          }
-                        }
-                      }
+                            textAlign: "right",
+                          },
+                        },
+                      },
                     ]}
                     keyId=""
                     dataSource={{ data: this.state.contributioncomponents }}
@@ -736,8 +734,8 @@ class PayRollDetails extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: deleteContibuteComponent.bind(this, this),
-                      onEdit: row => { },
-                      onDone: updateContibuteComponent.bind(this, this)
+                      onEdit: (row) => {},
+                      onDone: updateContibuteComponent.bind(this, this),
                     }}
                   />
                 </div>
@@ -752,14 +750,14 @@ class PayRollDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    payrollcomponents: state.payrollcomponents
+    payrollcomponents: state.payrollcomponents,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getEarningDeduction: AlgaehActions
+      getEarningDeduction: AlgaehActions,
     },
     dispatch
   );
