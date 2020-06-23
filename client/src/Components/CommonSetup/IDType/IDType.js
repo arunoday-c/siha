@@ -469,30 +469,12 @@ class IDType extends Component {
                           },
                           editorTemplate: (row) => {
                             return (
-                              // <AlagehAutoComplete
-                              //   div={{
-                              //     className:
-                              //       "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
-                              //   }}
-                              //   label={{
-                              //     forceLabel: "Nationality",
-                              //     isImp: true,
-                              //   }}
-                              //   selector={{
-                              //     name: "nationality",
-                              //     className: "select-fld",
-                              //     changeGridEditors// value: this.state.nationality,
-                              //     dataSource: {
-                              //       textField: "nationality",
-                              //       valueField: "",
-                              //       data: [],
-                              //     },
-                              //     // onChange: texthandle.bind(this, this),
-                              //   }}
-                              // />
                               <AlagehAutoComplete
                                 div={{
-                                  className: "col",
+                                  className: "col noLabel",
+                                }}
+                                label={{
+                                  forceLabel: "",
                                 }}
                                 selector={{
                                   name: "hims_d_nationality_id",
@@ -512,63 +494,63 @@ class IDType extends Component {
                             );
                           },
                         },
-                        {
-                          fieldName: "created_by",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "created_by" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.userdrtails === undefined
-                                ? []
-                                : this.props.userdrtails.filter(
-                                    (f) =>
-                                      f.algaeh_d_app_user_id === row.created_by
-                                  );
+                        // {
+                        //   fieldName: "created_by",
+                        //   label: (
+                        //     <AlgaehLabel label={{ fieldName: "created_by" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     let display =
+                        //       this.props.userdrtails === undefined
+                        //         ? []
+                        //         : this.props.userdrtails.filter(
+                        //             (f) =>
+                        //               f.algaeh_d_app_user_id === row.created_by
+                        //           );
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].username
-                                  : ""}
-                              </span>
-                            );
-                          },
-                          editorTemplate: (row) => {
-                            let display =
-                              this.props.userdrtails === undefined
-                                ? []
-                                : this.props.userdrtails.filter(
-                                    (f) =>
-                                      f.algaeh_d_app_user_id === row.created_by
-                                  );
+                        //     return (
+                        //       <span>
+                        //         {display !== null && display.length !== 0
+                        //           ? display[0].username
+                        //           : ""}
+                        //       </span>
+                        //     );
+                        //   },
+                        //   editorTemplate: (row) => {
+                        //     let display =
+                        //       this.props.userdrtails === undefined
+                        //         ? []
+                        //         : this.props.userdrtails.filter(
+                        //             (f) =>
+                        //               f.algaeh_d_app_user_id === row.created_by
+                        //           );
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].username
-                                  : ""}
-                              </span>
-                            );
-                          },
-                        },
-                        {
-                          fieldName: "created_date",
+                        //     return (
+                        //       <span>
+                        //         {display !== null && display.length !== 0
+                        //           ? display[0].username
+                        //           : ""}
+                        //       </span>
+                        //     );
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "created_date",
 
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Added Date" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <span>{this.dateFormater(row.created_date)}</span>
-                            );
-                          },
-                          editorTemplate: (row) => {
-                            return (
-                              <span>{this.dateFormater(row.created_date)}</span>
-                            );
-                          },
-                        },
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Added Date" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return (
+                        //       <span>{this.dateFormater(row.created_date)}</span>
+                        //     );
+                        //   },
+                        //   editorTemplate: (row) => {
+                        //     return (
+                        //       <span>{this.dateFormater(row.created_date)}</span>
+                        //     );
+                        //   },
+                        // },
                         {
                           fieldName: "identity_status",
                           label: (
@@ -582,7 +564,12 @@ class IDType extends Component {
                           editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
-                                div={{}}
+                                div={{
+                                  className: "col noLabel",
+                                }}
+                                label={{
+                                  forceLabel: "",
+                                }}
                                 selector={{
                                   name: "identity_status",
                                   className: "select-fld",
