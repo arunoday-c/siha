@@ -26,13 +26,15 @@
                         <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
-                        <th>Total Earnings</th>
+                        <th>Total Misc. Earnings</th>
+                        <th>Net Earnings</th>
                         {{#hasElement deduction_component}}
                         {{#each deduction_component}}
                         <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
-                        <th>Total Deduction </th>
+                        <th>Total Misc. Deduction</th>
+                        <th>Net Deduction </th>
                         <th>Loan EMI</th>
                         <th>Net Salary</th>
                         {{#hasElement contributions_component}}
@@ -59,8 +61,10 @@
                     <tr class="numberFld numberFldTotalBottom">
                         <td class="numberFld" colspan="7"></td>
                         <td colspan={{span_earning}}></td>
+                        <td class="numberFld">{{sum_misl_earn}}</td>
                         <td class="numberFld">{{sum_earnings}}</td>
                         <td colspan={{span_deduction}}></td>
+                        <td class="numberFld">{{sum_misl_deduct}}</td>
                         <td class="numberFld">{{sum_deductions}}</td>
                         <td class="numberFld"></td>
                         <td class="numberFld">{{sum_net_salary}}</td>
@@ -73,7 +77,7 @@
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
-                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
+                        <td><span class="textTruncate" style="width: 80px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         {{!-- <td>{{sub_department_name}}</td> --}}
                         {{!-- <td>{{total_days}}</td> --}}
@@ -91,10 +95,8 @@
                         <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
+                        <td class="numberFld">{{emp_misl_earn}} </td>
                         <td class="numberFld numberFldTotal">{{total_earnings}}</td>
-
-
-
 
                         {{#hasElement ../deduction_component}}
                         {{#hasElement employee_deduction}}
@@ -106,6 +108,8 @@
                         <td class="numberFld">NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
+
+                        <td class="numberFld">{{emp_misl_dedc}} </td>
                         <td class="numberFld numberFldTotal">{{total_deductions}}</td>
                         <td class="numberFld">{{loan_due_amount}} </td>
                         <td class="numberFld numberFldTotal">{{net_salary}}</td>
