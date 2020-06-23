@@ -1,14 +1,15 @@
 import moment from "moment";
 
 const texthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -24,13 +25,13 @@ const countryStatehandle = ($this, e) => {
         [name]: value,
         present_state_id: null,
         present_city_id: null,
-        countrystates: e.selected.states
+        countrystates: e.selected.states,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         present_state_id: null,
         present_city_id: null,
-        countrystates: e.selected.states
+        countrystates: e.selected.states,
       });
     } else if (e.name === "present_state_id") {
       name = e.name;
@@ -38,12 +39,12 @@ const countryStatehandle = ($this, e) => {
       $this.setState({
         [name]: value,
         present_city_id: null,
-        present_cities: e.selected.cities
+        present_cities: e.selected.cities,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         present_city_id: null,
-        present_cities: e.selected.cities
+        present_cities: e.selected.cities,
       });
     }
 
@@ -54,13 +55,13 @@ const countryStatehandle = ($this, e) => {
         [name]: value,
         permanent_state_id: null,
         permanent_city_id: null,
-        precountrystates: e.selected.states
+        precountrystates: e.selected.states,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         permanent_state_id: null,
         permanent_city_id: null,
-        precountrystates: e.selected.states
+        precountrystates: e.selected.states,
       });
     } else if (e.name === "permanent_state_id") {
       name = e.name;
@@ -68,21 +69,21 @@ const countryStatehandle = ($this, e) => {
       $this.setState({
         [name]: value,
         permanent_city_id: null,
-        precities: e.selected.cities
+        precities: e.selected.cities,
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         [name]: value,
         permanent_city_id: null,
-        precities: e.selected.cities
+        precities: e.selected.cities,
       });
     }
   } else {
     $this.setState({
-      [name]: value
+      [name]: value,
     });
 
     $this.props.EmpMasterIOputs.updateEmployeeTabs({
-      [name]: value
+      [name]: value,
     });
   }
 };
@@ -90,10 +91,10 @@ const countryStatehandle = ($this, e) => {
 const datehandle = ($this, ctrl, e) => {
   let selected_date = moment(ctrl, "YYYY-MM-DD", true).isValid();
   $this.setState({
-    [e]: selected_date === true ? ctrl : null
+    [e]: selected_date === true ? ctrl : null,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e]: selected_date === true ? ctrl : null
+    [e]: selected_date === true ? ctrl : null,
   });
 };
 
@@ -166,14 +167,14 @@ const sameAsPresent = ($this, e) => {
     permanent_address: permanent_address,
     permanent_country_id: permanent_country_id,
     permanent_state_id: permanent_state_id,
-    permanent_city_id: permanent_city_id
+    permanent_city_id: permanent_city_id,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: _value,
     permanent_address: permanent_address,
     permanent_country_id: permanent_country_id,
     permanent_state_id: permanent_state_id,
-    permanent_city_id: permanent_city_id
+    permanent_city_id: permanent_city_id,
   });
 };
 
@@ -182,11 +183,11 @@ const isDoctorChange = ($this, e) => {
   let _value = e.target.checked ? "Y" : "N";
   $this.setState({
     [name]: _value,
-    license_number: null
+    license_number: null,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: _value,
-    license_number: null
+    license_number: null,
   });
 };
 
@@ -198,5 +199,5 @@ export {
   countryStatehandle,
   datehandle,
   isDoctorChange,
-  sameAsPresent
+  sameAsPresent,
 };
