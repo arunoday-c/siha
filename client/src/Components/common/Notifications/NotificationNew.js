@@ -36,7 +36,6 @@ export default function Notification({ open, handlePanel }) {
       });
       if (!doNot) {
         window.audio_feedback.play();
-        debugger;
         notification.info({
           message: "Notification",
           description: notobj.message,
@@ -79,11 +78,14 @@ export default function Notification({ open, handlePanel }) {
         setLoading(false);
       });
 
+      socket.on("notification", (msg) => {
+        addToNotiList(msg);
+      });
+
       socket.on("refresh_appointment", (msg) => {
         addToNotiList(msg);
       });
       socket.on("patient_added", (msg) => {
-        debugger;
         addToNotiList(msg);
       });
       socket.on("service_added", (services) => {
@@ -94,28 +96,6 @@ export default function Notification({ open, handlePanel }) {
         addToNotiList(`The following services are ordered: ${serStr}`);
       });
 
-      socket.on("/success", (text) => {
-        addToNotiList(text);
-      });
-
-      socket.on("/leave/requested", (text) => {
-        addToNotiList(text);
-      });
-
-      socket.on("/leave/status", (text) => {
-        addToNotiList(text);
-      });
-
-      socket.on("/loan/requested", (text) => {
-        addToNotiList(text);
-      });
-
-      socket.on("/loan/status", (text) => {
-        addToNotiList(text);
-      });
-      socket.on("/pharmacy/expired", (text) => {
-        addToNotiList(text);
-      });
       socket.on("removed", (removed) => {
         setList((state) => {
           const current = state.filter((item) => item._id !== removed._id);
@@ -179,11 +159,11 @@ export default function Notification({ open, handlePanel }) {
             )}
           />
         ) : (
-            <Empty
-              image={emptyImage}
-              description={"Nothing for you now, Come back later"}
-            />
-          )}
+          <Empty
+            image={emptyImage}
+            description={"Nothing for you now, Come back later"}
+          />
+        )}
       </>
     );
   }

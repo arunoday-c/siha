@@ -14,14 +14,13 @@ export default function pharmacy(io) {
         });
         _mysql.releaseConnection();
         if (result[0]["count(*)"]) {
-
           const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.`;
           const create = await createNotification({
             message: msg,
             module: "phcy",
             title: "Pharmacy",
           });
-          io.sockets.to("phcy").emit("/pharmacy/expired", create);
+          io.sockets.to("phcy").emit("notification", create);
         }
       } catch (error) {
         console.log(error);

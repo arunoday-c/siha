@@ -8,7 +8,11 @@ import {
   Input,
 } from "algaeh-react-components";
 import { MainContext } from "algaeh-react-components/context";
-import { setItem, clearItem } from "algaeh-react-components/storage";
+import {
+  setItem,
+  clearItem,
+  removeItem,
+} from "algaeh-react-components/storage";
 import Swal from "sweetalert2";
 // import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
@@ -81,6 +85,7 @@ function Login(props) {
   useEffect(() => {
     clearItem();
     clearAll();
+    removeItem("locked");
     window.localStorage.clear();
     let cookies = document.cookie.split(";");
     for (let i = 0; i < cookies.length; i++) {
