@@ -473,7 +473,7 @@ export default {
                       _pdfTemplating[
                         "footerTemplate"
                       ] = `<style> .pdffooter { font-size: 8px;
-                        font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                        font-family: Arial, Helvetica, sans-serif; font-weight: bold; width:96%; text-align: center; color: grey; padding-left: 10px; }
                       .showreportname{float:left;padding-left:5px;font-size: 08px;}
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
@@ -483,7 +483,7 @@ export default {
                       } on ${moment().format("DD-MM-YYYY")})</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
-                      <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                      <span class="showcompay">Powered by Algaeh Techonologies</span>
                     </div>`;
 
                       _pdfTemplating["margin"] = {

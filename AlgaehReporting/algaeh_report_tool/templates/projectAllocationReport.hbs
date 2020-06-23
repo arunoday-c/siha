@@ -18,11 +18,11 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
-                        <th>Employee Code</th>
+                        <th width="30">Sl No.</th>
+                        <th width="80">Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Designation</th>
-                        <th>Project Name</th>
+                        <th width="200">Designation</th>
+                        <th width="200">Project Name</th>
 
                     </tr>
                 </thead>
@@ -30,22 +30,21 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg">Projects: {{project_name}}
-                            <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
-                                class="textFloatRight">No Hours:
-                                <b>{{no_hours}}</b></span><span class="textFloatRight">Total No Employees:
-                                <b>{{no_employees}}</b></span>
+                        <td colspan="4" class="tableSubHdg0">Projects: {{project_name}}</td>
+                        <td colspan="1" class="tableSubHdg0 numberFld">Total:{{no_employees}}</span>
                         </td>
                     </tr>
                     {{#each desig_wise_employees}}
+
+
+
                     <tr>
-                        <td colspan="5" class="tableSubHdg0">Designation: {{designation}}
-                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span >
-                            {{!-- <span
-                                class="textFloatRight">No
-                                Projects: <b>{{no_projects}}</b></span> --}}
+                        <td colspan="4" class="tableSubHdg">Designation: {{designation}}</td>
+                        <td colspan="1" class="tableSubHdg numberFld">Total:{{no_employees}}</span>
                         </td>
                     </tr>
+
+
 
                     {{#each employees}}
                     <tr>
