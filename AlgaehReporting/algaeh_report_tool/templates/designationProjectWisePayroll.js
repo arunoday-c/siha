@@ -1,7 +1,7 @@
 // const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     try {
       const _ = options.loadash;
 
@@ -10,7 +10,7 @@ const executePDF = function executePDFMethod(options) {
       let input = {};
       let params = options.args.reportParams;
       const decimal_places = options.args.crypto.decimal_places;
-      params.forEach(para => {
+      params.forEach((para) => {
         input[para["name"]] = para["value"];
       });
 
@@ -50,95 +50,154 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
           where PWP.hospital_id=?    ${strData} ;`,
           values: [input.year, input.month, input.hospital_id],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           if (result.length > 0) {
             const outputArray = [];
 
-            const designationWise = _.chain(result)
-              .groupBy(g => g.hims_d_designation_id)
-              .map(m => m)
+            const projectWise = _.chain(result)
+              .groupBy((g) => g.project_id)
+              .map((m) => m)
               .value();
 
-            designationWise.forEach(desig => {
-              const projectsArray = [];
-
-              const projectWise = _.chain(desig)
-                .groupBy(g => g.project_id)
-                .map(m => m)
+            projectWise.forEach((project) => {
+              const desig_wise_project_Array = [];
+              const designationWise = _.chain(project)
+                .groupBy((g) => g.hims_d_designation_id)
+                .map((m) => m)
                 .value();
-              projectWise.forEach(project => {
-                let total_proj_cost = _.sumBy(project, s =>
-                  parseFloat(s.project_cost)
-                ).toFixed(decimal_places);
 
-                let project_hours = _.sumBy(project, s =>
-                  parseFloat(s.worked_hours)
-                );
-                project_hours += parseInt(
-                  parseInt(
-                    _.sumBy(project, s => parseFloat(s.worked_minutes))
-                  ) / parseInt(60)
-                );
+              let total_proj_cost = _.sumBy(project, (s) =>
+                parseFloat(s.project_cost)
+              ).toFixed(decimal_places);
 
-                let project_mins =
-                  parseInt(
-                    _.sumBy(project, s => parseFloat(s.worked_minutes))
-                  ) % parseInt(60);
+              let project_hours = _.sumBy(project, (s) =>
+                parseFloat(s.worked_hours)
+              );
+              project_hours += parseInt(
+                parseInt(
+                  _.sumBy(project, (s) => parseFloat(s.worked_minutes))
+                ) / parseInt(60)
+              );
 
-                const dept_Array = [];
-                const departmentWise = _.chain(project)
-                  .groupBy(g => g.hims_d_department_id)
-                  .map(m => m)
-                  .value();
+              let project_mins =
+                parseInt(
+                  _.sumBy(project, (s) => parseFloat(s.worked_minutes))
+                ) % parseInt(60);
 
-                departmentWise.forEach(department => {
-                  const sub_dept = _.chain(department)
-                    .groupBy(g => g.hims_d_sub_department_id)
-                    .map(sub => {
-                      return {
-                        sub_department_name: sub[0].sub_department_name,
-                        sub_no_employee: sub.length,
-                        employees: sub
-                      };
-                    })
-                    .value();
-
-                  dept_Array.push({
-                    department_name: department[0]["department_name"],
-                    dep_no_employee: department.length,
-                    sub_dept: sub_dept
-                  });
-                });
-                projectsArray.push({
-                  project_cost: total_proj_cost,
-                  no_hours: project_hours + "." + project_mins,
-                  no_employees: project.length,
-                  project_name: project[0]["project_desc"],
-                  dept_Array: dept_Array
+              designationWise.forEach((desg_project) => {
+                desig_wise_project_Array.push({
+                  no_employees: desg_project.length,
+                  designation: desg_project[0]["designation"],
+                  employees: desg_project,
                 });
               });
-
               outputArray.push({
-                designation: desig[0]["designation"],
-                projects: projectsArray,
-                no_projects: projectWise.length,
-                no_employees: desig.length
+                project_cost: total_proj_cost,
+                no_hours: project_hours + "." + project_mins,
+                no_employees: project.length,
+                project_name: project[0]["project_desc"],
+                desig_wise_employees: desig_wise_project_Array,
               });
             });
+            // console.log("outputArra:", outputArray[0]);
 
-            // utilities.logger().log("outputArray:", outputArray);
             resolve({
-              result: outputArray
+              result: outputArray,
             });
           } else {
             resolve({
-              result: result
+              result: result,
             });
           }
+
+          // if (result.length > 0) {
+          //   const outputArray = [];
+
+          //   const designationWise = _.chain(result)
+          //     .groupBy(g => g.hims_d_designation_id)
+          //     .map(m => m)
+          //     .value();
+
+          //   designationWise.forEach(desig => {
+          //     const projectsArray = [];
+
+          //     const projectWise = _.chain(desig)
+          //       .groupBy(g => g.project_id)
+          //       .map(m => m)
+          //       .value();
+          //     projectWise.forEach(project => {
+          //       let total_proj_cost = _.sumBy(project, s =>
+          //         parseFloat(s.project_cost)
+          //       ).toFixed(decimal_places);
+
+          //       let project_hours = _.sumBy(project, s =>
+          //         parseFloat(s.worked_hours)
+          //       );
+          //       project_hours += parseInt(
+          //         parseInt(
+          //           _.sumBy(project, s => parseFloat(s.worked_minutes))
+          //         ) / parseInt(60)
+          //       );
+
+          //       let project_mins =
+          //         parseInt(
+          //           _.sumBy(project, s => parseFloat(s.worked_minutes))
+          //         ) % parseInt(60);
+
+          //       const dept_Array = [];
+          //       const departmentWise = _.chain(project)
+          //         .groupBy(g => g.hims_d_department_id)
+          //         .map(m => m)
+          //         .value();
+
+          //       departmentWise.forEach(department => {
+          //         const sub_dept = _.chain(department)
+          //           .groupBy(g => g.hims_d_sub_department_id)
+          //           .map(sub => {
+          //             return {
+          //               sub_department_name: sub[0].sub_department_name,
+          //               sub_no_employee: sub.length,
+          //               employees: sub
+          //             };
+          //           })
+          //           .value();
+
+          //         dept_Array.push({
+          //           department_name: department[0]["department_name"],
+          //           dep_no_employee: department.length,
+          //           sub_dept: sub_dept
+          //         });
+          //       });
+          //       projectsArray.push({
+          //         project_cost: total_proj_cost,
+          //         no_hours: project_hours + "." + project_mins,
+          //         no_employees: project.length,
+          //         project_name: project[0]["project_desc"],
+          //         dept_Array: dept_Array
+          //       });
+          //     });
+
+          //     outputArray.push({
+          //       designation: desig[0]["designation"],
+          //       projects: projectsArray,
+          //       no_projects: projectWise.length,
+          //       no_employees: desig.length
+          //     });
+          //   });
+
+          //   // utilities.logger().log("outputArray:", outputArray);
+          //   resolve({
+          //     result: outputArray
+          //   });
+          // } else {
+          //   resolve({
+          //     result: result
+          //   });
+          // }
         })
-        .catch(error => {
+        .catch((error) => {
           options.mysql.releaseConnection();
         });
     } catch (e) {
