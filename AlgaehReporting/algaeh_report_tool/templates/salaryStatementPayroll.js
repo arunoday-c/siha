@@ -112,7 +112,13 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 
             sum_net_salary = _.sumBy(salary, (s) => parseFloat(s.net_salary));
 
-            const salary_header_ids = salary.map((s) => s.hims_f_salary_id);
+            const salary_header_ids = [];
+            const employee_ids = [];
+            salary.forEach((s) => {
+              salary_header_ids.push(s.hims_f_salary_id);
+
+              employee_ids.push(s.employee_id);
+            });
 
             //--------first part------
 
@@ -133,13 +139,29 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
 						select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
 						select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
 						where year=? and month=?;\
-						select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,Ed.nationality_id from \
+						select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,ED.nationality_id from \
 						hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
 						SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
 						where salary_header_id in ( " +
                   salary_header_ids +
-                  ");",
-                values: [input.year, input.month, input.year, input.month],
+                  ");   select employee_id,sum(amount) as amount  from hims_f_miscellaneous_earning_deduction\
+                  where year=? and  month=?  and  category='E' and employee_id in(?)\
+                  group by  employee_id WITH ROLLUP; \
+                   select  employee_id,sum(amount) as amount  from hims_f_miscellaneous_earning_deduction\
+                  where year=? and  month=?  and  category='D' and employee_id in(?)\
+                  group by  employee_id WITH ROLLUP; ",
+                values: [
+                  input.year,
+                  input.month,
+                  input.year,
+                  input.month,
+                  input.year,
+                  input.month,
+                  employee_ids,
+                  input.year,
+                  input.month,
+                  employee_ids,
+                ],
                 printQuery: false,
               })
               .then((results) => {
@@ -174,6 +196,8 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                 let sum_leave_salary = 0;
                 let sum_airfare_amount = 0;
 
+                let sum_misle_earnings = results[6].pop();
+                let sum_misle_deductions = results[7].pop();
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -337,6 +361,14 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                         airfare_amount: 0,
                       };
 
+                  let emp_misl_earn = results[6].find((f) => {
+                    return f.employee_id == salary[i]["employee_id"];
+                  });
+
+                  let emp_misl_dedc = results[7].find((f) => {
+                    return f.employee_id == salary[i]["employee_id"];
+                  });
+
                   //  utilities.logger().log("salary[i]: ", salary[i]);
 
                   //console.log("outputArray: ", outputArray);
@@ -352,6 +384,8 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                       decimal_places
                     ),
                     complete_ot: complete_ot,
+                    emp_misl_earn: emp_misl_earn ? emp_misl_earn["amount"] : 0,
+                    emp_misl_dedc: emp_misl_dedc ? emp_misl_dedc["amount"] : 0,
                   });
                 }
                 // console.log("outputArray: ", outputArray);
@@ -374,6 +408,12 @@ case when S.salary_processed='Y' then 'Finalized' else 'Not Finalized' end as pr
                   span_earning: earning_component.length,
                   span_deduction: deduction_component.length,
                   span_contribution: contributions_component.length,
+                  sum_misl_earn: sum_misle_earnings
+                    ? sum_misle_earnings["amount"]
+                    : 0,
+                  sum_misl_deduct: sum_misle_deductions
+                    ? sum_misle_deductions["amount"]
+                    : 0,
                 };
                 utilities.logger().log("outputArray: ", outputArray);
                 resolve(result);

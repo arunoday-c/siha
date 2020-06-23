@@ -17,6 +17,7 @@ import { deleteNotification } from "./utils";
 import appsock from "./appointmentSocket";
 import labsock from "./labSocket";
 import selfServiceSocket from "./selfServiceSocket";
+import purchase from "./purchase";
 import pharmacy from "./pharmacy";
 const _port = process.env.PORT;
 const exp = express();
@@ -129,6 +130,7 @@ db.once("open", function () {
     appsock(socket);
     labsock(socket);
     selfServiceSocket(socket);
+    purchase(socket);
     socket.on("disconnect", () => {
       console.log("Client disconnected");
     });
