@@ -18,20 +18,20 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th width="30">Sl No.</th>
-                        <th width="80">Employee Code</th>
-                        <th>Employee Name</th>
-                        <th width="200">Designation</th>
-                        <th width="200">Project Name</th>
+                        {{!-- <th width="30">Sl No.</th>
+                        <th width="80">Employee Code</th> --}}
+                        {{!-- <th>Employee Name</th> --}}
+                        <th>Designation</th>
+                        <th>Total</th>
 
                     </tr>
                 </thead>
                 <tbody>
                     {{#hasElement result}}
                     {{#each result}}
-                    <tr>
-                        <td colspan="4" class="tableSubHdg0">Projects: {{project_name}}</td>
-                        <td colspan="1" class="tableSubHdg0 numberFld">Total:{{no_employees}}</span>
+                    <tr class="tableSubHdg0">
+                        <td class="txtFld">{{project_name}}</td>
+                        <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
                     {{#each desig_wise_employees}}
@@ -39,14 +39,14 @@
 
 
                     <tr>
-                        <td colspan="4" class="tableSubHdg">Designation: {{designation}}</td>
-                        <td colspan="1" class="tableSubHdg numberFld">Total:{{no_employees}}</span>
+                        <td class="txtFld">{{designation}}</td>
+                        <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
 
 
 
-                    {{#each employees}}
+                    {{!-- {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
@@ -54,7 +54,7 @@
                         <td>{{designation}}</td>
                         <td>{{project_desc}}</td>
                     </tr>
-                    {{/each }}
+                    {{/each }} --}}
                     {{/each }}
                     {{/each }}
                     {{else}}

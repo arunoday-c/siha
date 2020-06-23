@@ -1,12 +1,21 @@
 import moment from "moment";
 
 const texthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let obj = {};
+  if (name === "nationality") {
+    const primaryId = $this.props.idtypes.find(
+      (f) => f.hims_d_nationality_id === parseInt(value)
+    );
+    if (primaryId !== undefined) {
+      obj["identity_type_id"] = primaryId.hims_d_identity_document_id;
+    }
+  }
 
   $this.setState({
     [name]: value,
+    ...obj,
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value,
