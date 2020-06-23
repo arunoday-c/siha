@@ -18,7 +18,8 @@ const executePDF = function executePDFMethod(options) {
                     from  hims_f_sales_invoice_header H inner join  hims_f_sales_invoice_detail D
                     on H.hims_f_sales_invoice_header_id=D.sales_invoice_header_id
                     where H.invoice_number=?;
-                    select  IH.*, ID.*, H.*, L.location_description  ,C.customer_name ,SO.sales_order_number,
+                    select  IH.*, ID.*, H.*, L.location_description  ,C.customer_name, C.arabic_customer_name,\
+                    C.vat_number,C.address, SO.sales_order_number,SO.customer_po_no,
                     SO.sales_order_date from hims_f_sales_invoice_header IH inner join  hims_f_sales_invoice_detail ID
                     on IH.hims_f_sales_invoice_header_id=ID.sales_invoice_header_id  
                     inner join hims_f_sales_dispatch_note_header H  on ID.dispatch_note_header_id=H.hims_f_dispatch_note_header_id 
@@ -104,7 +105,11 @@ const executePDF = function executePDFMethod(options) {
                         sales_order_date: outputArray[0].sales_order_date,
                         location_description: outputArray[0].location_description,
                         customer_name: outputArray[0].customer_name,
+                        vat_number: outputArray[0].vat_number,
+                        arabic_customer_name: outputArray[0].arabic_customer_name,
                         sales_order_number: outputArray[0].sales_order_number,
+                        customer_po_no: outputArray[0].customer_po_no,
+                        address: outputArray[0].address,
                         details: outputArray
                     });
                 })
