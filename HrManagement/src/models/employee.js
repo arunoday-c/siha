@@ -1049,7 +1049,8 @@ export default {
           .executeQuery({
             query:
               "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,ED.short_desc,amount,ED.formula,allocate,\
-                ED.calculation_method from hims_d_employee_deductions EMD \
+                ED.calculation_method,ED.min_limit_applicable,ED.min_limit_amount,ED.limit_applicable,ED.limit_amount \
+                from hims_d_employee_deductions EMD \
                 inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EMD.deductions_id \
                 where employee_id = ?;",
             values: [input.employee_id],
