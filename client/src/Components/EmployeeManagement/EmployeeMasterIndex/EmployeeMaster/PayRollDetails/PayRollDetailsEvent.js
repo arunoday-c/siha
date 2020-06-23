@@ -1083,6 +1083,8 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
     }
   }
 
+  debugger
+
   if (contribute_comp.length > 0) {
     for (let z = 0; z < contribute_comp.length; z++) {
       let formulaCal = contribute_comp[z].formula;

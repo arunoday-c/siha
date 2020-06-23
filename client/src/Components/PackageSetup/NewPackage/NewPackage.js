@@ -262,9 +262,9 @@ class NewPackage extends PureComponent {
                           events: {
                             onChange: this.eventHandaler.bind(this)
                           },
-                          others: {
-                            disabled: this.state.approvedPack
-                          }
+                          // others: {
+                          //   disabled: this.state.approvedPack
+                          // }
                         }}
                       />
 

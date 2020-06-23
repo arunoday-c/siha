@@ -37,7 +37,7 @@ inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id;`,
     )
   );
   empIds.forEach((id, index) => {
-    socket.to(`${id}`).emit("/leave/status", save[index]);
+    socket.to(`${id}`).emit("notification", save[index]);
   });
 }
 
@@ -64,7 +64,7 @@ async function getAuthLoanEmps(level) {
     )
   );
   empIds.forEach((id, index) => {
-    socket.to(`${id}`).emit("/leave/status", save[index]);
+    socket.to(`${id}`).emit("notification", save[index]);
   });
 }
 
@@ -79,7 +79,7 @@ function selfSocket(socket) {
       title: "HR Management",
     })
       .then((doc) => {
-        socket.to(`${reporting_to_id}`).emit("/leave/requested", doc);
+        socket.to(`${reporting_to_id}`).emit("notification", doc);
       })
       .catch(() => console.log(err));
   });
@@ -92,7 +92,7 @@ function selfSocket(socket) {
         message: msg,
         title: "HR Management",
       });
-      socket.to(`${emp_id}`).emit("/leave/status", doc);
+      socket.to(`${emp_id}`).emit("notification", doc);
       if (level < 3) {
         await getAuthLeaveEmps(level + 1);
       }
@@ -108,7 +108,7 @@ function selfSocket(socket) {
       user_id: emp_id,
       title: "HR Management",
     }).then((doc) => {
-      socket.to(`${emp_id}`).emit("/leave/status", doc);
+      socket.to(`${emp_id}`).emit("notification", doc);
     });
   });
 
@@ -121,7 +121,7 @@ function selfSocket(socket) {
       user_id: reporting_to_id,
       title: "HR Management",
     }).then((doc) => {
-      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
+      socket.to(`${reporting_to_id}`).emit("notification", doc);
     });
   });
 
@@ -133,7 +133,7 @@ function selfSocket(socket) {
         user_id: emp_id,
         title: "HR Management",
       });
-      socket.to(`${emp_id}`).emit("/loan/status", doc);
+      socket.to(`${emp_id}`).emit("notification", doc);
       if (level < 3) {
         await getAuthLoanEmps(level + 1);
       }
@@ -149,7 +149,7 @@ function selfSocket(socket) {
       user_id: emp_id,
       title: "HR Management",
     }).then((doc) => {
-      socket.to(`${emp_id}`).emit("/loan/status", doc);
+      socket.to(`${emp_id}`).emit("notification", doc);
     });
   });
 
@@ -161,7 +161,7 @@ function selfSocket(socket) {
       user_id: reporting_to_id,
       title: "HR Management",
     }).then((doc) => {
-      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
+      socket.to(`${reporting_to_id}`).emit("notification", doc);
     });
   });
 
@@ -173,7 +173,7 @@ function selfSocket(socket) {
       user_id: reporting_to_id,
       title: "HR Management",
     }).then((doc) => {
-      socket.to(`${reporting_to_id}`).emit("/loan/requested", doc);
+      socket.to(`${reporting_to_id}`).emit("notification", doc);
     });
   });
 }

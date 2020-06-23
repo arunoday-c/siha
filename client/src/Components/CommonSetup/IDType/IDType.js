@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -26,7 +26,7 @@ class IDType extends Component {
       identity_document_code: "",
       identity_document_name: "",
       arabic_identity_document_name: "",
-      currentRowID: ""
+      currentRowID: "",
     };
 
     this.baseState = this.state;
@@ -40,18 +40,18 @@ class IDType extends Component {
       data: {
         fields: "identity_document_code",
         tableName: "hims_d_identity_document",
-        keyFieldName: "hims_d_identity_document_id"
+        keyFieldName: "hims_d_identity_document_id",
       },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success === true) {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
             identity_document_code_placeHolder:
-              placeHolder.identity_document_code
+              placeHolder.identity_document_code,
           });
         }
-      }
+      },
     });
   }
 
@@ -77,7 +77,7 @@ class IDType extends Component {
           uri: "/identity/add",
           module: "masterSettings",
           data: this.state,
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success === true) {
               // this.props.getIDTypes();
 
@@ -87,25 +87,25 @@ class IDType extends Component {
                 method: "GET",
                 redux: {
                   type: "IDTYPE_GET_DATA",
-                  mappingName: "idtypes"
-                }
+                  mappingName: "idtypes",
+                },
               });
 
               this.resetState();
               swalMessage({
                 title: "ID Type added successfully",
-                type: "success"
+                type: "success",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
-      }
+      },
     });
   }
 
@@ -117,8 +117,8 @@ class IDType extends Component {
       confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
+      cancelButtonText: "No",
+    }).then((willDelete) => {
       if (willDelete.value) {
         let data = { hims_d_identity_document_id: id };
         algaehApiCall({
@@ -126,11 +126,11 @@ class IDType extends Component {
           module: "masterSettings",
           data: data,
           method: "DELETE",
-          onSuccess: response => {
+          onSuccess: (response) => {
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
-                type: "success"
+                type: "success",
               });
 
               this.props.getIDTypes({
@@ -139,17 +139,17 @@ class IDType extends Component {
                 method: "GET",
                 redux: {
                   type: "IDTYPE_GET_DATA",
-                  mappingName: "idtypes"
-                }
+                  mappingName: "idtypes",
+                },
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             swalMessage({
               title: error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       }
     });
@@ -174,8 +174,8 @@ class IDType extends Component {
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
-          mappingName: "idtypes"
-        }
+          mappingName: "idtypes",
+        },
       });
     }
   }
@@ -186,11 +186,11 @@ class IDType extends Component {
       module: "masterSettings",
       data: data,
       method: "PUT",
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
-            type: "success"
+            type: "success",
           });
 
           this.props.getIDTypes({
@@ -199,17 +199,17 @@ class IDType extends Component {
             method: "GET",
             redux: {
               type: "IDTYPE_GET_DATA",
-              mappingName: "idtypes"
-            }
+              mappingName: "idtypes",
+            },
           });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         swalMessage({
           title: error.response.data.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   }
 
@@ -229,19 +229,19 @@ class IDType extends Component {
             div={{ className: "col-2  form-group mandatory" }}
             label={{
               fieldName: "type_code",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "identity_document_code",
               value: this.state.identity_document_code,
               events: {
-                onChange: this.changeTexts.bind(this)
+                onChange: this.changeTexts.bind(this),
               },
               others: {
                 tabIndex: "1",
-                placeholder: this.state.identity_document_code_placeHolder
-              }
+                placeholder: this.state.identity_document_code_placeHolder,
+              },
             }}
           />
 
@@ -249,15 +249,15 @@ class IDType extends Component {
             div={{ className: "col-3  form-group mandatory" }}
             label={{
               fieldName: "type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "identity_document_name",
               value: this.state.identity_document_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
             }}
           />
 
@@ -265,15 +265,36 @@ class IDType extends Component {
             div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
             label={{
               fieldName: "arabic_type_desc",
-              isImp: true
+              isImp: true,
             }}
             textBox={{
               className: "txt-fld",
               name: "arabic_identity_document_name",
               value: this.state.arabic_identity_document_name,
               events: {
-                onChange: this.changeTexts.bind(this)
-              }
+                onChange: this.changeTexts.bind(this),
+              },
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{
+              className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+            }}
+            label={{
+              forceLabel: "Nationality",
+              isImp: true,
+            }}
+            selector={{
+              name: "nationality",
+              className: "select-fld",
+              // value: this.state.nationality,
+              dataSource: {
+                textField: "nationality",
+                valueField: "",
+                data: [],
+              },
+              // onChange: texthandle.bind(this, this),
             }}
           />
 
@@ -302,14 +323,14 @@ class IDType extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_code" }} />
                           ),
-                          disabled: true
+                          disabled: true,
                         },
                         {
                           fieldName: "identity_document_name",
                           label: (
                             <AlgaehLabel label={{ fieldName: "type_desc" }} />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -321,16 +342,16 @@ class IDType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage: "Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "arabic_identity_document_name",
@@ -339,7 +360,7 @@ class IDType extends Component {
                               label={{ fieldName: "arabic_type_desc" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -351,29 +372,63 @@ class IDType extends Component {
                                     onChange: this.onchangegridcol.bind(
                                       this,
                                       row
-                                    )
+                                    ),
                                   },
                                   others: {
                                     errormessage:
                                       "Arabic Name - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
+                          },
+                        },
+
+                        {
+                          fieldName: "",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Nationality" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{
+                                  className:
+                                    "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+                                }}
+                                label={{
+                                  forceLabel: "Nationality",
+                                  isImp: true,
+                                }}
+                                selector={{
+                                  name: "nationality",
+                                  className: "select-fld",
+                                  // value: this.state.nationality,
+                                  dataSource: {
+                                    textField: "nationality",
+                                    valueField: "",
+                                    data: [],
+                                  },
+                                  // onChange: texthandle.bind(this, this),
+                                }}
+                              />
+                            );
+                          },
                         },
                         {
                           fieldName: "created_by",
                           label: (
                             <AlgaehLabel label={{ fieldName: "created_by" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -385,12 +440,12 @@ class IDType extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             let display =
                               this.props.userdrtails === undefined
                                 ? []
                                 : this.props.userdrtails.filter(
-                                    f =>
+                                    (f) =>
                                       f.algaeh_d_app_user_id === row.created_by
                                   );
 
@@ -401,7 +456,7 @@ class IDType extends Component {
                                   : ""}
                               </span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "created_date",
@@ -409,28 +464,28 @@ class IDType extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Added Date" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <span>{this.dateFormater(row.created_date)}</span>
                             );
-                          }
+                          },
                         },
                         {
                           fieldName: "identity_status",
                           label: (
                             <AlgaehLabel label={{ fieldName: "status" }} />
                           ),
-                          displayTemplate: row => {
+                          displayTemplate: (row) => {
                             return row.identity_status === "A"
                               ? "Active"
                               : "Inactive";
                           },
-                          editorTemplate: row => {
+                          editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{}}
@@ -441,7 +496,7 @@ class IDType extends Component {
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.FORMAT_STATUS
+                                    data: GlobalVariables.FORMAT_STATUS,
                                   },
                                   onChange: this.onchangegridcol.bind(
                                     this,
@@ -449,28 +504,28 @@ class IDType extends Component {
                                   ),
                                   others: {
                                     errormessage: "Status - cannot be blank",
-                                    required: true
-                                  }
+                                    required: true,
+                                  },
                                 }}
                               />
                             );
-                          }
-                        }
+                          },
+                        },
                       ]}
                       keyId="identity_document_code"
                       dataSource={{
                         data:
                           this.props.idtypes === undefined
                             ? []
-                            : this.props.idtypes
+                            : this.props.idtypes,
                       }}
                       filter={true}
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: this.deleteIDType.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updateIDtypes.bind(this)
+                        onEdit: (row) => {},
+                        onDone: this.updateIDtypes.bind(this),
                       }}
                     />{" "}
                   </div>
@@ -487,14 +542,14 @@ class IDType extends Component {
 function mapStateToProps(state) {
   return {
     idtypes: state.idtypes,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getIDTypes: AlgaehActions
+      getIDTypes: AlgaehActions,
     },
     dispatch
   );

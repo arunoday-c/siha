@@ -14,7 +14,7 @@ const executePDF = function executePDFMethod(options) {
 
             options.mysql
                 .executeQuery({
-                    query: `select  H.*, D.*
+                    query: `select  H.*, D.hims_f_sales_invoice_detail_id,D.sales_invoice_header_id,D.dispatch_note_header_id
                     from  hims_f_sales_invoice_header H inner join  hims_f_sales_invoice_detail D
                     on H.hims_f_sales_invoice_header_id=D.sales_invoice_header_id
                     where H.invoice_number=?;
@@ -97,6 +97,7 @@ const executePDF = function executePDFMethod(options) {
                         });
                     });
 
+                    console.log("grn_details", grn_details)
                     resolve({
                         ...grn_details[0],
                         invoice_number: outputArray[0].invoice_number,

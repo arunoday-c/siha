@@ -302,6 +302,7 @@ const ClearData = ($this, e) => {
 };
 
 const SavePOEnrty = ($this, from) => {
+  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
@@ -313,7 +314,7 @@ const SavePOEnrty = ($this, from) => {
 
   if (from === "P") {
     $this.state.is_posted = "Y";
-    strMessage = "Send for authorizatoin successfully";
+    strMessage = "Send for authorization successfully";
   }
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
@@ -369,7 +370,11 @@ const SavePOEnrty = ($this, from) => {
     onSuccess: (response) => {
       if (response.data.success === true) {
         getCtrlCode($this, response.data.records.purchase_number);
-
+        if (from === "P") {
+          if ($this.context.socket.connected) {
+            $this.context.socket.emit("send_purchase_auth", sendJsonBody);
+          }
+        }
         swalMessage({
           type: "success",
           title: strMessage,
@@ -662,6 +667,8 @@ const generatePOReceiptNoPrice = (data) => {
 };
 
 const AuthorizePOEntry = ($this, authorize) => {
+  debugger;
+
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail
@@ -764,6 +771,24 @@ const AuthorizePOEntry = ($this, authorize) => {
             authorize1: authorize1,
             authorize2: authorize2,
           });
+          debugger;
+          if (authorize2 === "Y") {
+            if ($this.context.socket.connected) {
+              $this.context.socket.emit(
+                "purchase_auth_level_two",
+                sendJsonBody,
+                $this.state.created_by
+              );
+            }
+          } else if (authorize1 === "Y") {
+            if ($this.context.socket.connected) {
+              $this.context.socket.emit(
+                "purchase_auth_level_one",
+                sendJsonBody
+              );
+            }
+          }
+
           swalMessage({
             title: "Authorized successfully . .",
             type: "success",
