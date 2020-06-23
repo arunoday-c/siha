@@ -27,9 +27,38 @@ class IDType extends Component {
       identity_document_name: "",
       arabic_identity_document_name: "",
       currentRowID: "",
+      hims_d_nationality_id: null,
+      nationality: "",
+      countries: [],
     };
 
     this.baseState = this.state;
+  }
+  // componentDidMount() {
+  //
+  // }
+  getNationality() {
+    algaehApiCall({
+      uri: "/masters/get/nationality",
+      method: "GET",
+
+      onSuccess: (response) => {
+        debugger;
+        if (response.data.success) {
+          const countries = response.data.records;
+          this.setState({
+            // nationality: countries.hims_d_nationality_id,
+            countries: countries,
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   }
 
   initCall() {
@@ -58,7 +87,22 @@ class IDType extends Component {
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+  texthandle(e) {
+    debugger;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
 
+    this.setState({
+      [name]: value,
+    });
+  }
+  changeGridEditors(row, e) {
+    debugger;
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
   dateFormater(value) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
@@ -167,6 +211,7 @@ class IDType extends Component {
   }
 
   componentDidMount() {
+    this.getNationality();
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
         uri: "/identity/get",
@@ -187,6 +232,7 @@ class IDType extends Component {
       data: data,
       method: "PUT",
       onSuccess: (response) => {
+        debugger;
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
@@ -276,8 +322,33 @@ class IDType extends Component {
               },
             }}
           />
-
           <AlagehAutoComplete
+            div={{
+              className: "col-lg-2 col-md-2 col-sm-12 form-group",
+            }}
+            label={{
+              forceLabel: "Nationality",
+              // isImp: true,
+            }}
+            selector={{
+              name: "hims_d_nationality_id",
+              className: "select-fld",
+              value: this.state.hims_d_nationality_id,
+              dataSource: {
+                textField: "nationality",
+                valueField: "hims_d_nationality_id",
+                data: this.state.countries,
+              },
+              onChange: this.texthandle.bind(this),
+              onClear: () => {
+                this.setState({
+                  nationality: null,
+                });
+              },
+            }}
+          />
+
+          {/* <AlagehAutoComplete
             div={{
               className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
             }}
@@ -296,7 +367,7 @@ class IDType extends Component {
               },
               // onChange: texthandle.bind(this, this),
             }}
-          />
+          /> */}
 
           <div className="col" style={{ marginTop: 19 }}>
             <button
@@ -337,7 +408,8 @@ class IDType extends Component {
                                 textBox={{
                                   value: row.identity_document_name,
                                   className: "txt-fld",
-                                  name: "identity_document_name",
+                                  namchangeGridEditorse:
+                                    "identity_document_name",
                                   events: {
                                     onChange: this.onchangegridcol.bind(
                                       this,
@@ -386,33 +458,55 @@ class IDType extends Component {
                         },
 
                         {
-                          fieldName: "",
+                          fieldName: "hims_d_nationality_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Nationality" }}
                             />
                           ),
+                          displayTemplate: (row) => {
+                            return <span>{row.nationality_name}</span>;
+                          },
                           editorTemplate: (row) => {
                             return (
+                              // <AlagehAutoComplete
+                              //   div={{
+                              //     className:
+                              //       "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+                              //   }}
+                              //   label={{
+                              //     forceLabel: "Nationality",
+                              //     isImp: true,
+                              //   }}
+                              //   selector={{
+                              //     name: "nationality",
+                              //     className: "select-fld",
+                              //     changeGridEditors// value: this.state.nationality,
+                              //     dataSource: {
+                              //       textField: "nationality",
+                              //       valueField: "",
+                              //       data: [],
+                              //     },
+                              //     // onChange: texthandle.bind(this, this),
+                              //   }}
+                              // />
                               <AlagehAutoComplete
                                 div={{
-                                  className:
-                                    "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
-                                }}
-                                label={{
-                                  forceLabel: "Nationality",
-                                  isImp: true,
+                                  className: "col",
                                 }}
                                 selector={{
-                                  name: "nationality",
+                                  name: "hims_d_nationality_id",
                                   className: "select-fld",
-                                  // value: this.state.nationality,
+                                  value: row.hims_d_nationality_id,
                                   dataSource: {
                                     textField: "nationality",
-                                    valueField: "",
-                                    data: [],
+                                    valueField: "hims_d_nationality_id",
+                                    data: this.state.countries,
                                   },
-                                  // onChange: texthandle.bind(this, this),
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
                                 }}
                               />
                             );
