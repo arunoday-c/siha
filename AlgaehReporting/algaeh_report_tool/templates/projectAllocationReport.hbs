@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                     {{#hasElement result}}
-                    {{#each projectWise}}
+                    {{#each result}}
                     <tr>
                         <td colspan="5" class="tableSubHdg">Projects: {{project_name}}
                             <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
@@ -37,12 +37,13 @@
                                 <b>{{no_employees}}</b></span>
                         </td>
                     </tr>
-                    {{#each designationWise}}
+                    {{#each desig_wise_employees}}
                     <tr>
                         <td colspan="5" class="tableSubHdg0">Designation: {{designation}}
-                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span><span
+                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span >
+                            {{!-- <span
                                 class="textFloatRight">No
-                                Projects: <b>{{no_projects}}</b></span>
+                                Projects: <b>{{no_projects}}</b></span> --}}
                         </td>
                     </tr>
 
