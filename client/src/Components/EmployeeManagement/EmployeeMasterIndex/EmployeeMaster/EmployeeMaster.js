@@ -550,7 +550,10 @@ class EmployeeMaster extends Component {
                         type="button"
                         className="btn btn-primary"
                         disabled={
-                          this.props.employee_status === "I" ? true : false
+                          this.props.employee_status === "I" ||
+                          this.props.blockUpdate === true
+                            ? true
+                            : false
                         }
                       >
                         {this.state.personalDetails.hims_d_employee_id ===

@@ -3,39 +3,117 @@
 <body>
     <div class="print-body">
         <section>
-
             <table class="tableForLabel" cell-padding="0">
-
                 <tr>
-                    <td><label class="textEnLft">Order Number</label>:<span
-                            class="valueText">{{sales_order_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">Invoice Number</label>:<span
-                            class="valueText">{{invoice_number}}</span>
-                    </td>
+                    <td class="textEngLft" style="width:20%">Invoice No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{invoice_number}}</b></td>
+                    <td class="textArbRht" style="width:20%">رقم الفاتورة</td>
                 </tr>
                 <tr>
-
-                    <td><label class="textEnLft">Order Date</label>:<span class="valueText">{{sales_order_date}}</span>
-                    </td>
-                    <td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{invoice_date}}</span>
-                    </td>
-
+                    <td class="textEngLft" style="width:20%">Date</td>
+                    <td colspan="2" class="textEngCtr" style="width:50%"><b>{{invoice_date}}</b></td>
+                    <td class="textArbRht" style="width:20%">التاريخ</td>
                 </tr>
                 <tr>
-                    <td><label class="textEnLft">Purchased By</label>:<span
-                            class="valueText">{{location_description}}</span>
-                    </td>
-                    <td><label class="textEnLft">Customer Name</label>:<span class="valueText">{{customer_name}}</span>
-                    </td>
+                    <td class="textEngLft" style="width:20%">Customer</td>
+                    <td class="textEngLft" style="width:30%"><b>{{customer_name}}</b></td>
+                    <td class="textArbRht" style="width:30%"><b>{{arabic_customer_name}}</b></td>
+                    <td class="textArbRht" style="width:20%">العميل</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">Address</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{address}}</b></td>
+                    <td class="textArbRht" style="width:20%">العنوان</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">PO No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{customer_po_no}}</b></td>
+                    <td class="textArbRht" style="width:20%">:رقم الطلب</td>
+                </tr>
+                <tr>
+                    <td class="textEngLft" style="width:20%">VAT No.</td>
+                    <td colspan="2" class="textEngCtr" style="width:60%"><b>{{vat_number}}</b></td>
+                    <td class="textArbRht" style="width:20%">الرقم الضريبي</td>
                 </tr>
 
 
             </table>
-
-
         </section>
-        {{#each details}}<section class="groupTable">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Cost</th>
+                        <th>Total Amt.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+
+                        <td>{{item_code}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{dispatch_quantity}}</td>
+
+                        <td>{{unit_cost}}</td>
+                        {{!-- <td>{{extended_cost}}</td>
+                        <td>{{discount_percentage}}</td>
+                        <td>{{discount_amount}}</td>
+
+                        <td>{{net_extended_cost}}</td>
+                        <td>{{tax_amount}}</td> --}}
+                        <td>{{total_amount}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+        </section>
+        {{!-- {{#each details}}<section class="groupTable">
+            <section>
+                <table class="tableForData" style="margin:0;padding:0;">
+                    <thead>
+                        <tr>
+                            <th>Sl No.</th>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Cost</th>
+                            <th>Total Amt.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr>
+                            <td>{{inc @index}}</td>
+
+                            <td>{{batchno}}</td>
+                            <td>{{dispatch_quantity}}</td>
+
+                            <td>{{unit_cost}}</td>
+                            <td>{{extended_cost}}</td>
+                            <td>{{discount_percentage}}</td>
+                            <td>{{discount_amount}}</td>
+
+                            <td>{{net_extended_cost}}</td>
+                            <td>{{tax_amount}}</td>
+                            <td>{{total_amount}}</td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </section>
+        </section>
+
+
+        {{/each }} --}}
+
+        {{!-- {{#each details}}<section class="groupTable">
             <section>
 
                 <table class="tableForLabel" cell-padding="0" style="padding: 0;margin:0;">
@@ -110,9 +188,9 @@
         </section>
 
 
-        {{/each }}
+        {{/each }} --}}
         <table class="tableTotal">
-            <tr>
+            {{!-- <tr>
                 <td>Total Amt.</td>
                 <td>{{sub_total}}</td>
             </tr>
@@ -127,7 +205,7 @@
             <tr>
                 <td>Total Tax</td>
                 <td>{{total_tax}}</td>
-            </tr>
+            </tr> --}}
             <tr class="bold">
                 <td>Total Net Recivable</td>
                 <td>{{net_payable}}</td>
