@@ -44,11 +44,15 @@ const onEditHandler = ($this, row) => {
 };
 
 const compDownHandler = ($this, value) => {
-  if (value.value === "A") {
-    getFinanceHeaders($this, 1);
-  } else {
-    getFinanceHeaders($this, 5);
+  debugger
+  if ($this.FIN_Active === true) {
+    if (value.value === "A") {
+      getFinanceHeaders($this, 1);
+    } else {
+      getFinanceHeaders($this, 5);
+    }
   }
+
   $this.setState({
     [value.name]: value.value,
   });
@@ -410,7 +414,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => {},
+          onFailure: (err) => { },
         });
       } else {
         inputObj.hims_d_earning_deduction_id =
@@ -432,7 +436,7 @@ const addEarningsDeductions = ($this) => {
               });
             }
           },
-          onFailure: (err) => {},
+          onFailure: (err) => { },
         });
       }
     },

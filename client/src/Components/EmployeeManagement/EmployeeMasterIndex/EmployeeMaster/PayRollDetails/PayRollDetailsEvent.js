@@ -260,7 +260,7 @@ const AddDeductionComponent = ($this, e) => {
         });
         return;
       }
-
+      debugger;
       let formulaCal = $this.state.deduct_formula;
       if ($this.state.deduct_calculation_method === "FO") {
         var notExists = [];
@@ -604,6 +604,7 @@ const updateEarningComponent = ($this, row) => {
       amount: row.amount,
       allocate: row.allocate,
       record_status: "A",
+      short_desc: row.short_desc,
     };
     updateearnComp.push(Updateobj);
     earningComponents[row.rowIdx] = Updateobj;
@@ -613,6 +614,7 @@ const updateEarningComponent = ($this, row) => {
       earnings_id: row.earnings_id,
       amount: row.amount,
       allocate: row.allocate,
+      short_desc: row.short_desc,
     };
     for (let x = 0; x < insertearnComp.length; x++) {
       if (insertearnComp[x].earnings_id === row.earnings_id) {
@@ -1038,14 +1040,20 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       // });
       // debugger;
       if (dependentCompoennt === true) {
-        swalMessage({
-          title: "Component is dependent on formula con't delete",
-          type: "warning",
-        });
         if (typeof callBack === "function") {
+          swalMessage({
+            title: "Component is dependent on formula can not delete",
+            type: "warning",
+          });
+
           callBack(false);
+          return;
+        } else {
+          const checkAnyCharacter = formulaCal.match(/[a-zA-Z]+/g);
+          checkAnyCharacter.forEach((element) => {
+            formulaCal = formulaCal.replace(element, "0");
+          });
         }
-        return;
       }
 
       formulaCal = eval(formulaCal);
@@ -1082,8 +1090,6 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
       callBack(true);
     }
   }
-
-  debugger
 
   if (contribute_comp.length > 0) {
     for (let z = 0; z < contribute_comp.length; z++) {

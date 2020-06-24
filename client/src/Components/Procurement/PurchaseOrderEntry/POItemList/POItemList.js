@@ -28,6 +28,7 @@ import {
   GridAssignData,
   EditGrid,
   CancelGrid,
+  extendCostHandle
 } from "./POItemListEvents";
 import { GetAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -320,7 +321,29 @@ class POItemList extends Component {
                         }}
                       />
 
-                      <div className="col">
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Extended Cost",
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          value: this.state.extended_cost,
+                          className: "txt-fld",
+                          name: "extended_cost",
+                          events: {
+                            onChange: extendCostHandle.bind(
+                              this,
+                              this,
+                              context
+                            ),
+                          },
+                          others: {
+                            disabled: this.state.dataExitst,
+                          },
+                        }}
+                      />
+                      {/* <div className="col">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Extended Cost",
@@ -331,7 +354,7 @@ class POItemList extends Component {
                             ? this.state.extended_cost
                             : "-----------"}
                         </h6>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="row">
