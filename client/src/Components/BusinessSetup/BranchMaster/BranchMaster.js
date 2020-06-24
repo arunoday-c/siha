@@ -3,7 +3,6 @@ import "./BranchMaster.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehLabel,
 } from "../../Wrapper/algaehWrapper";
 
 import {
@@ -12,19 +11,11 @@ import {
   getCookie,
 } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import AlgaehSearch from "../../Wrapper/globalSearch";
-import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
 
-import {
-  Checkbox,
-  Upload,
-  message,
-  AlgaehSecurityElement,
-} from "algaeh-react-components";
-import { MainContext } from "algaeh-react-components/context";
+import { Checkbox, AlgaehSecurityElement } from "algaeh-react-components";
 // /branchMaster/getBranchMaster
 import Organization from "./Organisation";
 export default class BranchMaster extends Component {

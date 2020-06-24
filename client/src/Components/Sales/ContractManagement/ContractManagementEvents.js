@@ -4,6 +4,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
+import { newAlgaehApi } from "../../../hooks";
 
 const texthandle = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -14,18 +15,18 @@ const texthandle = ($this, ctrl, e) => {
     case "hims_f_terms_condition_id":
       $this.setState({
         [name]: value,
-        selected_terms_conditions: e.selected.terms_cond_description
+        selected_terms_conditions: e.selected.terms_cond_description,
       });
       break;
     case "project_id":
       $this.setState({
         [name]: value,
-        organizations: e.selected.branches
+        organizations: e.selected.branches,
       });
       break;
     default:
       $this.setState({
-        [name]: value
+        [name]: value,
       });
       break;
   }
@@ -38,7 +39,7 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "Start Date cannot be grater than End Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   } else if (e === "end_date") {
@@ -46,14 +47,14 @@ const datehandle = ($this, ctrl, e) => {
       intFailure = true;
       swalMessage({
         title: "End Date cannot be less than Start Date.",
-        type: "warning"
+        type: "warning",
       });
     }
   }
 
   if (intFailure === false) {
     $this.setState({
-      [e]: moment(ctrl)._d
+      [e]: moment(ctrl)._d,
     });
   }
 };
@@ -65,9 +66,14 @@ const ClearData = ($this, e) => {
     contract_code: null,
     contract_date: new Date(),
     customer_id: null,
+    project_id: null,
+    hospital_id: null,
     start_date: null,
     end_date: null,
     contract_services: [],
+    contract_files: [],
+    contract_docs: [],
+    organizations: [],
     quotation_ref_numb: null,
     saveEnable: true,
 
@@ -84,13 +90,13 @@ const ClearData = ($this, e) => {
     employee_name: null,
     incharge_employee_id: null,
     notification_days1: null,
-    notification_days2: null
+    notification_days2: null,
   };
 
   $this.setState(IOputs);
 };
 
-const SaveContract = $this => {
+const SaveContract = ($this) => {
   AlgaehValidation({
     querySelector: "data-validate='HeaderDiv'",
     alertTypeIcon: "warning",
@@ -99,7 +105,7 @@ const SaveContract = $this => {
         if ($this.state.incharge_employee_id === null) {
           swalMessage({
             type: "warning",
-            title: "Please select Incharge Employee"
+            title: "Please select Incharge Employee",
           });
           return;
         }
@@ -112,39 +118,89 @@ const SaveContract = $this => {
         module: "sales",
         method: "POST",
         data: $this.state,
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success) {
             $this.setState({
               contract_number: response.data.records.contract_number,
               hims_f_contract_management_id:
                 response.data.records.hims_f_contract_management_id,
               saveEnable: true,
-              dataExists: true
+              dataExists: true,
             });
+            saveDocument(
+              $this.state.contract_files,
+              response.data.records.contract_number,
+              response.data.records.hims_f_contract_management_id,
+              $this
+            );
             swalMessage({
               type: "success",
-              title: "Saved successfully ..."
+              title: "Saved successfully ...",
             });
             AlgaehLoader({ show: false });
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
               type: "error",
-              title: response.data.records.message
+              title: response.data.records.message,
             });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
-    }
+    },
   });
 };
+
+function saveDocument(files = [], contract_no, contract_id, $this) {
+  const formData = new FormData();
+  formData.append("contract_no", contract_no);
+  formData.append("contract_id", contract_id);
+  files.forEach((file, index) => {
+    formData.append(`file_${index}`, file, file.name);
+  });
+  newAlgaehApi({
+    uri: "/saveContractDoc",
+    data: formData,
+    extraHeaders: { "Content-Type": "multipart/form-data" },
+    method: "POST",
+    module: "documentManagement",
+  })
+    .then((value) => getDocuments(contract_no, $this))
+    .catch((e) => console.log(e));
+}
+
+function getDocuments(contract_no, $this) {
+  newAlgaehApi({
+    uri: "/getContractDoc",
+    module: "documentManagement",
+    method: "GET",
+    data: {
+      contract_no,
+    },
+  })
+    .then((res) => {
+      if (res.data.success) {
+        let { data } = res.data;
+        $this.setState({ contract_docs: data, contract_files: [] }, () => {
+          AlgaehLoader({ show: false });
+        });
+      }
+    })
+    .catch((e) => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: e.message,
+        type: "error",
+      });
+    });
+}
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
@@ -155,9 +211,9 @@ const getCtrlCode = ($this, docNumber, row) => {
     method: "GET",
     data: {
       contract_number: docNumber,
-      HRMNGMT_Active: $this.state.HRMNGMT_Active
+      HRMNGMT_Active: $this.state.HRMNGMT_Active,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -165,31 +221,33 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.terms_conditions !== null
             ? data.terms_conditions.split("<br/>")
             : [];
-
+        const [project] = $this.state.cost_projects.filter(
+          (item) => item.cost_center_id === data.project_id
+        );
+        getDocuments(docNumber, $this);
         data.saveEnable = true;
         data.dataExists = true;
-        $this.setState(data);
+        $this.setState({ ...data, organizations: project.branches });
       }
-      AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const generateContractReport = data => {
+const generateContractReport = (data) => {
   console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -201,19 +259,19 @@ const generateContractReport = data => {
         reportParams: [
           {
             name: "sales_order_number",
-            value: data.sales_order_number
-          }
+            value: data.sales_order_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
-      const reportName = `${data.contract_number}-Contract`
+      const reportName = `${data.contract_number}-Contract`;
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= ${reportName}`;
       window.open(origin);
       // window.document.title = "Sales Order";
-    }
+    },
   });
 };
 
@@ -222,11 +280,11 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Selected Date cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
@@ -240,7 +298,7 @@ const servicechangeText = ($this, e, ctrl) => {
     [name]: value,
     addItemButton: false,
     service_name: e.service_name,
-    service_price: e.standard_fee
+    service_price: e.standard_fee,
   });
 };
 
@@ -251,11 +309,11 @@ const deleteContarctServices = ($this, row) => {
 
   $this.setState({
     contract_services: contract_services,
-    saveEnable: contract_services.length > 0 ? false : true
+    saveEnable: contract_services.length > 0 ? false : true,
   });
 };
 
-const AddSerices = $this => {
+const AddSerices = ($this) => {
   if (
     $this.state.service_price === "" ||
     $this.state.service_price === null ||
@@ -263,7 +321,7 @@ const AddSerices = $this => {
   ) {
     swalMessage({
       title: "Enter Service Price.",
-      type: "warning"
+      type: "warning",
     });
     document.querySelector("[name='service_price']").focus();
     return;
@@ -272,7 +330,7 @@ const AddSerices = $this => {
   if ($this.state.service_frequency === null) {
     swalMessage({
       title: "Enter Service Frequency.",
-      type: "warning"
+      type: "warning",
     });
     document.querySelector("[name='service_frequency']").focus();
     return;
@@ -282,7 +340,7 @@ const AddSerices = $this => {
     service_name: $this.state.service_name,
     service_frequency: $this.state.service_frequency,
     service_price: $this.state.service_price,
-    comments: $this.state.comments
+    comments: $this.state.comments,
   };
   let contract_services = $this.state.contract_services;
 
@@ -295,18 +353,18 @@ const AddSerices = $this => {
     service_price: 0,
     saveEnable: false,
     addItemButton: true,
-    comments: ""
+    comments: "",
   });
 };
 
-const addToTermCondition = $this => {
+const addToTermCondition = ($this) => {
   if (
     $this.state.hims_f_terms_condition_id === null &&
     $this.state.selected_terms_conditions === ""
   ) {
     swalMessage({
       title: "Select or Enter T&C.",
-      type: "warning"
+      type: "warning",
     });
     return;
   }
@@ -316,7 +374,7 @@ const addToTermCondition = $this => {
   $this.setState({
     hims_f_terms_condition_id: null,
     selected_terms_conditions: "",
-    comment_list: comment_list
+    comment_list: comment_list,
   });
 };
 
@@ -326,14 +384,14 @@ const deleteComment = ($this, row) => {
   comment_list.splice(_index, 1);
 
   $this.setState({
-    comment_list: comment_list
+    comment_list: comment_list,
   });
 };
 
-const employeeSearch = $this => {
+const employeeSearch = ($this) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.Employee_details.employee
+      columns: spotlightSearch.Employee_details.employee,
     },
     searchName: "employee_branch_wise",
     uri: "/gloabelSearch/get",
@@ -341,26 +399,26 @@ const employeeSearch = $this => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       $this.setState({
         employee_name: row.full_name,
-        incharge_employee_id: row.hims_d_employee_id
+        incharge_employee_id: row.hims_d_employee_id,
       });
-    }
+    },
   });
 };
 
-const getCostCenters = $this => {
+const getCostCenters = ($this) => {
   algaehApiCall({
     uri: "/finance_masters/getCostCenters",
     method: "GET",
     module: "finance",
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({ cost_projects: response.data.result });
       }
-    }
+    },
   });
 };
 
@@ -378,5 +436,6 @@ export {
   addToTermCondition,
   deleteComment,
   employeeSearch,
-  getCostCenters
+  getCostCenters,
+  saveDocument,
 };
