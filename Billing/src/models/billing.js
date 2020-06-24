@@ -3380,20 +3380,35 @@ export default {
               });
             }
 
+            let strqry = "";
+
+            let sub_insurance_id;
+            if (inputParam.primary_sub_id > 0) {
+              sub_insurance_id = inputParam.primary_sub_id;
+            } else if (inputParam.sub_insurance_provider_id > 0) {
+              sub_insurance_id = inputParam.sub_insurance_provider_id;
+            }
+
+            if (inputParam.insured == "Y" && sub_insurance_id > 0) {
+              strqry = ` select insurance_sub_name,head_id,child_id from hims_d_insurance_sub
+               where hims_d_insurance_sub_id=${sub_insurance_id} limit 1;`;
+            }
+
             _mysql
               .executeQuery({
                 query:
                   "select finance_accounts_maping_id,account,head_id,child_id from finance_accounts_maping  where \
             account in ('OP_DEP','CIH_OP','OUTPUT_TAX','OP_REC','CARD_SETTL');\
-            SELECT hims_d_services_id,service_name,head_id,child_id,\
-            insurance_head_id,insurance_child_id FROM hims_d_services where hims_d_services_id in(?);\
-            select cost_center_type, cost_center_required from finance_options limit 1;",
+            SELECT hims_d_services_id,service_name,head_id,child_id FROM hims_d_services where hims_d_services_id in(?);\
+            select cost_center_type, cost_center_required from finance_options limit 1;" +
+                  strqry,
                 values: [servicesIds],
                 printQuery: true,
               })
               .then((Result) => {
                 const controls = Result[0];
                 const serviceData = Result[1];
+                const insurance_data = Result[3];
 
                 const OP_DEP = controls.find((f) => {
                   return f.account == "OP_DEP";
@@ -3514,21 +3529,21 @@ export default {
                       child_id: curService.child_id,
                       debit_amount: 0,
                       payment_type: "CR",
-                      credit_amount: bill.patient_resp,
+                      credit_amount: bill.net_amout,
                       hospital_id: req.userIdentity.hospital_id,
                     });
 
-                    if (parseFloat(bill.patient_tax) > 0) {
-                      EntriesArray.push({
-                        payment_date: new Date(),
-                        head_id: OUTPUT_TAX.head_id,
-                        child_id: OUTPUT_TAX.child_id,
-                        debit_amount: 0,
-                        payment_type: "CR",
-                        credit_amount: bill.patient_tax,
-                        hospital_id: req.userIdentity.hospital_id,
-                      });
-                    }
+                    // if (parseFloat(bill.patient_tax) > 0) {
+                    //   EntriesArray.push({
+                    //     payment_date: new Date(),
+                    //     head_id: OUTPUT_TAX.head_id,
+                    //     child_id: OUTPUT_TAX.child_id,
+                    //     debit_amount: 0,
+                    //     payment_type: "CR",
+                    //     credit_amount: bill.patient_tax,
+                    //     hospital_id: req.userIdentity.hospital_id,
+                    //   });
+                    // }
                   });
 
                   //ADJUSTING AMOUNT FROM PRVIOUS ADVANCE
@@ -3547,11 +3562,11 @@ export default {
                       hospital_id: req.userIdentity.hospital_id,
                     });
                   }
-                  //PROVING OP SERVICE ON CREDIT
+                  //PROVIDING OP SERVICE ON CREDIT
                   if (inputParam.credit_amount > 0) {
                     narration =
                       narration +
-                      ", Providng OP Service On Credit for Amount " +
+                      ", Provided OP Service On Credit of Amount " +
                       inputParam.credit_amount;
 
                     EntriesArray.push({
@@ -3592,6 +3607,37 @@ export default {
                       });
                     }
                   });
+
+                  //insurance company payable
+                  if (insurance_data) {
+                    narration =
+                      narration +
+                      `, insurance (${insurance_data[0]["insurance_sub_name"]}) receivable: ${inputParam.company_payble}`;
+
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: insurance_data[0].head_id,
+                      child_id: insurance_data[0].child_id,
+                      debit_amount: inputParam.company_payble,
+                      payment_type: "DR",
+                      credit_amount: 0,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
+
+                  //TAX part
+
+                  if (parseFloat(inputParam.total_tax) > 0) {
+                    EntriesArray.push({
+                      payment_date: new Date(),
+                      head_id: OUTPUT_TAX.head_id,
+                      child_id: OUTPUT_TAX.child_id,
+                      debit_amount: 0,
+                      payment_type: "CR",
+                      credit_amount: inputParam.total_tax,
+                      hospital_id: req.userIdentity.hospital_id,
+                    });
+                  }
                 }
 
                 let strQuery = "";

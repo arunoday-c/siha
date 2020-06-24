@@ -18,12 +18,28 @@ import {
   RequestPO,
 } from "./DispatchNoteItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import _ from "lodash";
-
+import _, { debounce } from "lodash";
+import { Input } from "algaeh-react-components";
 class DispatchNoteItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { searchText: "", filterList: [] };
+    this.itemRef = undefined;
+    this.searchTextRef = undefined;
+    this.handleSearch = debounce(() => {
+      const value = this.searchTextRef.state.value;
+      let filterd = [];
+      if (value !== "") {
+        const eArray = this.itemRef.children;
+        for (let i = 0; i < eArray.length; i++) {
+          eArray[i].setAttribute("style", "");
+        }
+        filterd = this.state.stock_detail.filter((f) =>
+          f.item_description.toLowerCase().includes(value.toLowerCase())
+        );
+      }
+      this.setState({ searchText: value, filterList: filterd });
+    }, 500);
   }
 
   UNSAFE_componentWillMount() {
@@ -51,7 +67,17 @@ class DispatchNoteItems extends Component {
     }
   }
 
-  ChangesOrent(context, item) {
+  ChangesOrent(context, item, e) {
+    const eArray = this.itemRef.children;
+    for (let i = 0; i < eArray.length; i++) {
+      eArray[i].setAttribute("style", "");
+    }
+    const element = parseInt(e.target.getAttribute("index"), 10);
+    this.itemRef.children[element].setAttribute(
+      "style",
+      "border:2px dashed #3f9484;"
+    );
+
     let dispatched_quantity = _.sumBy(item.batches, (s) =>
       parseFloat(s.select_quantity)
     );
@@ -82,6 +108,10 @@ class DispatchNoteItems extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.quantity;
+    const itemListArray =
+      this.state.searchText === ""
+        ? this.state.stock_detail
+        : this.state.filterList;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -95,8 +125,21 @@ class DispatchNoteItems extends Component {
                     </div>
                   </div>
                   <div className="portlet-body">
-                    <ul className="reqDispatchList">
-                      {this.state.stock_detail.map((item, index) => {
+                    <Input
+                      placeholder="Search"
+                      defaultValue={this.state.searchText}
+                      onChange={this.handleSearch.bind(this)}
+                      ref={(c) => {
+                        this.searchTextRef = c;
+                      }}
+                    />
+                    <ul
+                      className="reqDispatchList"
+                      ref={(c) => {
+                        this.itemRef = c;
+                      }}
+                    >
+                      {itemListArray.map((item, index) => {
                         return (
                           <li>
                             <div className="itemReq">
@@ -150,6 +193,7 @@ class DispatchNoteItems extends Component {
                                         ? "0.1"
                                         : "",
                                   }}
+                                  index={index}
                                   onClick={this.ChangesOrent.bind(
                                     this,
                                     context,
