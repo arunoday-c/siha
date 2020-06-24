@@ -498,6 +498,26 @@ class DispatchNoteItems extends Component {
                                   );
                                 },
                               },
+                              {
+                                fieldName: "ext_amount",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Ext. Cost",
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: (row) => {
+                                  if (
+                                    row.sale_price !== "" &&
+                                    row.dispatch_quantity !== ""
+                                  ) {
+                                    return (
+                                      row.sale_price * row.dispatch_quantity
+                                    );
+                                  }
+                                },
+                              },
                             ]}
                             keyId=""
                             dataSource={{

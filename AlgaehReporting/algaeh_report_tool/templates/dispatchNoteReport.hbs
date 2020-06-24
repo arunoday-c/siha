@@ -37,8 +37,8 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
-                        <th>Batch No.</th>
+                        <th width="40">Sl No.</th>
+                        <th width="250">Batch No.</th>
                         <th>Quantity</th>
                         <th>Price</th>
                         {{!-- <th>Discount %</th>
@@ -51,12 +51,24 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
-                        <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
-                        <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
-                        <td class="tableSubHdg"><small>Req. Qty:</small><br>{{ordered_quantity}}</td>
-                        <td class="tableSubHdg"><small>Deliverd Qty:</small><br>{{dispatched_quantity}}</td>
-                        <td class="tableSubHdg"><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</td>
+                        <td colspan="3" class="tableSubHdg">
+
+                            <span><small>Item Name:</small><br>{{item_description}}</span>
+
+                            {{!-- 
+                            <small> | <small>Purchase
+                                UOM:</small><br>{{uom_description}} | <small>Req. Qty:</small><br>{{ordered_quantity}} |
+                            <small>Deliverd Qty:</small><br>{{dispatched_quantity}} | <small>Out Standing
+                                Qty:</small><br>{{quantity_outstanding}} --}}
+
+                        </td>
+                        <td colspan="2" class="tableSubHdg inlineSpan numberFld"><span><small>Item
+                                    Code:</small><br>{{item_code}}</span>
+                            <span><small>Purchase UOM:</small><br>{{uom_description}}</span>
+                            <span><small>Req. Qty:</small><br>{{ordered_quantity}}</span>
+                            <span><small>Deliverd Qty:</small><br>{{dispatched_quantity}}</span>
+                            <span><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</span></td>
+
                     </tr>
                     {{#each batches}}
                     <tr>
@@ -73,7 +85,7 @@
                     {{/each }}
 
                     {{/each }}<tr class="footerTotalDown">
-                        <td colspan="9">Net Total</td>
+                        <td colspan="4">Net Total</td>
                         <td class="numberFld">{{net_payable}}</td>
                     </tr>
                 </tbody>
