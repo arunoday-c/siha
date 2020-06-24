@@ -41,16 +41,44 @@ const extendCostHandle = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  let discount_amount = (parseFloat($this.state.order_quantity) * parseFloat($this.state.unit_price)) - parseFloat(value)
-  let discount_percentage =
+  // sub_discount_amount = value === "" ? "" : parseFloat(value);
+  //     sub_discount_percentage =
+  //       value === ""
+  //         ? 0
+  //         : (sub_discount_amount / parseFloat($this.state.extended_price)) *
+  //         100;
+
+  //     sub_discount_percentage = sub_discount_percentage.toFixed(
+  //       $this.state.decimal_places
+  //     );
+
+  const discount_amount = parseFloat($this.state.extended_price) - parseFloat(value)
+  const discount_percentage =
     value === ""
       ? 0
-      : ((discount_amount / parseFloat(value)) *
+      : ((discount_amount / parseFloat($this.state.extended_price)) *
         100).toFixed($this.state.decimal_places);
+
+  const unit_cost = (
+    parseFloat(value) / parseFloat($this.state.order_quantity)
+  ).toFixed($this.state.decimal_places);
+
+  const tax_amount = (
+    (parseFloat(value) * parseFloat($this.state.tax_percentage)) /
+    100
+  ).toFixed($this.state.decimal_places);
+  const total_amount = (
+    parseFloat(tax_amount) + parseFloat(value)
+  ).toFixed($this.state.decimal_places);
+
   $this.setState({
     [name]: value,
     sub_discount_amount: discount_amount,
-    sub_discount_percentage: discount_percentage
+    sub_discount_percentage: discount_percentage,
+    net_extended_cost: value,
+    unit_cost: unit_cost,
+    tax_amount: tax_amount,
+    total_amount: total_amount
   });
 
   clearInterval(texthandlerInterval);
@@ -59,7 +87,11 @@ const extendCostHandle = ($this, context, e) => {
       context.updateState({
         [name]: value,
         sub_discount_amount: discount_amount,
-        sub_discount_percentage: discount_percentage
+        sub_discount_percentage: discount_percentage,
+        net_extended_cost: value,
+        unit_cost: unit_cost,
+        tax_amount: tax_amount,
+        total_amount: total_amount
       });
     }
     clearInterval(texthandlerInterval);
