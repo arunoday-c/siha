@@ -36,7 +36,7 @@ export const getContractDoc = (req, res) => {
 };
 
 export const deleteContractDoc = (req, res) => {
-  const { id } = req.query;
+  const { id } = req.body;
   contract.findByIdAndDelete(id, (err, docs) => {
     if (err) {
       res.status(400).json({ error: err.message });

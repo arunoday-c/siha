@@ -97,65 +97,74 @@ const ClearData = ($this, e) => {
 };
 
 const SaveContract = ($this) => {
-  AlgaehValidation({
-    querySelector: "data-validate='HeaderDiv'",
-    alertTypeIcon: "warning",
-    onSuccess: () => {
-      if ($this.HRMNGMT_Active) {
-        if ($this.state.incharge_employee_id === null) {
-          swalMessage({
-            type: "warning",
-            title: "Please select Incharge Employee",
-          });
-          return;
-        }
-      }
-
-      AlgaehLoader({ show: true });
-      $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
-      algaehApiCall({
-        uri: "/ContractManagement/addContractManagement",
-        module: "sales",
-        method: "POST",
-        data: $this.state,
-        onSuccess: (response) => {
-          if (response.data.success) {
-            $this.setState({
-              contract_number: response.data.records.contract_number,
-              hims_f_contract_management_id:
-                response.data.records.hims_f_contract_management_id,
-              saveEnable: true,
-              dataExists: true,
-            });
-            saveDocument(
-              $this.state.contract_files,
-              response.data.records.contract_number,
-              response.data.records.hims_f_contract_management_id,
-              $this
-            );
+  if ($this.state.dataExists) {
+    saveDocument(
+      $this.state.contract_files,
+      $this.state.contract_number,
+      $this.state.hims_f_contract_management_id,
+      $this
+    );
+  } else {
+    AlgaehValidation({
+      querySelector: "data-validate='HeaderDiv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        if ($this.HRMNGMT_Active) {
+          if ($this.state.incharge_employee_id === null) {
             swalMessage({
-              type: "success",
-              title: "Saved successfully ...",
+              type: "warning",
+              title: "Please select Incharge Employee",
             });
-            AlgaehLoader({ show: false });
-          } else {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              type: "error",
-              title: response.data.records.message,
-            });
+            return;
           }
-        },
-        onFailure: (error) => {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error",
-          });
-        },
-      });
-    },
-  });
+        }
+
+        AlgaehLoader({ show: true });
+        $this.state.terms_conditions = $this.state.comment_list.join("<br/>");
+        algaehApiCall({
+          uri: "/ContractManagement/addContractManagement",
+          module: "sales",
+          method: "POST",
+          data: $this.state,
+          onSuccess: (response) => {
+            if (response.data.success) {
+              $this.setState({
+                contract_number: response.data.records.contract_number,
+                hims_f_contract_management_id:
+                  response.data.records.hims_f_contract_management_id,
+                saveEnable: true,
+                dataExists: true,
+              });
+              saveDocument(
+                $this.state.contract_files,
+                response.data.records.contract_number,
+                response.data.records.hims_f_contract_management_id,
+                $this
+              );
+              swalMessage({
+                type: "success",
+                title: "Saved successfully ...",
+              });
+              AlgaehLoader({ show: false });
+            } else {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                type: "error",
+                title: response.data.records.message,
+              });
+            }
+          },
+          onFailure: (error) => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error",
+            });
+          },
+        });
+      },
+    });
+  }
 };
 
 function saveDocument(files = [], contract_no, contract_id, $this) {
@@ -188,9 +197,16 @@ function getDocuments(contract_no, $this) {
     .then((res) => {
       if (res.data.success) {
         let { data } = res.data;
-        $this.setState({ contract_docs: data, contract_files: [] }, () => {
-          AlgaehLoader({ show: false });
-        });
+        $this.setState(
+          {
+            contract_docs: data,
+            contract_files: [],
+            saveEnable: $this.state.dataExists,
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
       }
     })
     .catch((e) => {
