@@ -30,6 +30,7 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
+
     let dispatched_quantity = _.sumBy(item_details.batches, (s) => {
       return s.dispatch_quantity !== null ? parseFloat(s.dispatch_quantity) : 0;
     });
@@ -64,9 +65,14 @@ const onchangegridcol = ($this, context, row, e) => {
         dispatched_quantity;
     }
 
+    // item_details.extended_cost = (
+    //   parseFloat(item_details.unit_cost) * parseFloat(value)
+    // ).toFixed($this.state.decimal_place);
     item_details.extended_cost = (
-      parseFloat(item_details.unit_cost) * parseFloat(value)
+      parseFloat(row.sale_price) * parseFloat(value)
     ).toFixed($this.state.decimal_place);
+
+    item_details.batches[_index]["extended_cost"] = item_details.extended_cost;
 
     item_details.discount_amount = (
       (parseFloat(item_details.extended_cost) *
@@ -74,10 +80,16 @@ const onchangegridcol = ($this, context, row, e) => {
       100
     ).toFixed($this.state.decimal_place);
 
+    item_details.batches[_index]["discount_amount"] =
+      item_details.discount_amount;
+
     item_details.net_extended_cost = (
       parseFloat(item_details.extended_cost) -
       parseFloat(item_details.discount_amount)
     ).toFixed($this.state.decimal_place);
+
+    item_details.batches[_index]["net_extended_cost"] =
+      item_details.net_extended_cost;
 
     item_details.tax_amount = (
       (parseFloat(item_details.net_extended_cost) *
@@ -85,11 +97,13 @@ const onchangegridcol = ($this, context, row, e) => {
       100
     ).toFixed($this.state.decimal_place);
 
+    item_details.batches[_index]["tax_amount"] = item_details.tax_amount;
+
     item_details.total_amount = (
       parseFloat(item_details.net_extended_cost) +
       parseFloat(item_details.tax_amount)
     ).toFixed($this.state.decimal_place);
-
+    item_details.batches[_index]["total_amount"] = item_details.total_amount;
     $this.setState({
       item_details: item_details,
       dispatched_quantity: dispatched_quantity,
@@ -139,7 +153,6 @@ const getItemLocationStock = ($this, value) => {
 };
 
 const AddSelectedBatches = ($this, context) => {
-  debugger;
   if (
     parseFloat($this.state.item_details.dispatched_quantity) >
     parseFloat($this.state.item_details.quantity)
@@ -168,7 +181,15 @@ const AddSelectedBatches = ($this, context) => {
       _stock_detail[_index].inventory_stock_detail = batches.map(
         (item, index) => {
           item.sales_price = item.sale_price;
-          return { ...item, ...details };
+          return {
+            ...item,
+            ...details,
+            extended_cost: item.extended_cost,
+            discount_amount: item.discount_amount,
+            net_extended_cost: item.net_extended_cost,
+            tax_amount: item.tax_amount,
+            total_amount: item.total_amount,
+          };
         }
       );
 
@@ -186,7 +207,15 @@ const AddSelectedBatches = ($this, context) => {
       _inventory_stock_detail.push(
         ...batches.map((item, index) => {
           item.sales_price = item.sale_price;
-          return { ...item, ...details };
+          return {
+            ...item,
+            ...details,
+            extended_cost: item.extended_cost,
+            discount_amount: item.discount_amount,
+            net_extended_cost: item.net_extended_cost,
+            tax_amount: item.tax_amount,
+            total_amount: item.total_amount,
+          };
         })
       );
 
@@ -210,6 +239,7 @@ const AddSelectedBatches = ($this, context) => {
       const net_payable = _.sumBy(_inventory_stock_detail, (s) =>
         parseFloat(s.total_amount)
       );
+
       context.updateState({
         stock_detail: _stock_detail,
         inventory_stock_detail: _inventory_stock_detail,
@@ -228,7 +258,6 @@ const AddSelectedBatches = ($this, context) => {
 };
 
 const RequestPO = ($this, item) => {
-  debugger;
   algaehApiCall({
     uri: "/PurchaseOrderEntry/raiseRequestForPO",
     module: "procurement",
