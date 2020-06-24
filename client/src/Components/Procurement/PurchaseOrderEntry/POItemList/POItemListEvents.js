@@ -24,6 +24,48 @@ const texthandle = ($this, context, e) => {
   }, 500);
 };
 
+const extendCostHandle = ($this, context, e) => {
+  if ($this.state.order_quantity === 0 || $this.state.order_quantity === null || $this.state.order_quantity === undefined) {
+    swalMessage({
+      title: "Please Enter Quantity",
+      type: "warning",
+    });
+    return;
+  } else if ($this.state.unit_price === 0 || $this.state.unit_price === null || $this.state.unit_price === undefined) {
+    swalMessage({
+      title: "Please Enter Unit Price",
+      type: "warning",
+    });
+  }
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  let discount_amount = (parseFloat($this.state.order_quantity) * parseFloat($this.state.unit_price)) - parseFloat(value)
+  let discount_percentage =
+    value === ""
+      ? 0
+      : ((discount_amount / parseFloat(value)) *
+        100).toFixed($this.state.decimal_places);
+  $this.setState({
+    [name]: value,
+    sub_discount_amount: discount_amount,
+    sub_discount_percentage: discount_percentage
+  });
+
+  clearInterval(texthandlerInterval);
+  texthandlerInterval = setInterval(() => {
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value,
+        sub_discount_amount: discount_amount,
+        sub_discount_percentage: discount_percentage
+      });
+    }
+    clearInterval(texthandlerInterval);
+  }, 500);
+};
+
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
@@ -51,17 +93,17 @@ const discounthandle = ($this, context, ctrl, e) => {
         value === ""
           ? 0
           : (
-              (parseFloat($this.state.extended_price) *
-                sub_discount_percentage) /
-              100
-            ).toFixed($this.state.decimal_places);
+            (parseFloat($this.state.extended_price) *
+              sub_discount_percentage) /
+            100
+          ).toFixed($this.state.decimal_places);
     } else {
       sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
         value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
-            100;
+          100;
 
       sub_discount_percentage = sub_discount_percentage.toFixed(
         $this.state.decimal_places
@@ -138,15 +180,15 @@ const numberchangeTexts = ($this, context, e) => {
     if (parseFloat(value) > 0 && parseFloat($this.state.unit_price) > 0) {
       extended_price = (
         parseFloat(value) * parseFloat($this.state.unit_price)
-      ).toFixed($this.state.decimal_place);
+      ).toFixed($this.state.decimal_places);
     }
     let unit_cost = (parseFloat(extended_price) / parseFloat(value)).toFixed(
-      $this.state.decimal_place
+      $this.state.decimal_places
     );
     let tax_amount = (
       (parseFloat(extended_price) * parseFloat($this.state.tax_percentage)) /
       100
-    ).toFixed($this.state.decimal_place);
+    ).toFixed($this.state.decimal_places);
     let total_amount = parseFloat(tax_amount) + parseFloat(extended_price);
     $this.setState({
       [name]: value,
@@ -265,8 +307,8 @@ const itemchangeText = ($this, context, e) => {
               e.purchase_cost === null
                 ? 0
                 : parseFloat(e.purchase_cost).toFixed(
-                    $this.state.decimal_places
-                  ),
+                  $this.state.decimal_places
+                ),
 
             addItemButton: false,
             order_quantity: 0,
@@ -305,8 +347,8 @@ const itemchangeText = ($this, context, e) => {
               e.purchase_cost === null
                 ? 0
                 : parseFloat(e.purchase_cost).toFixed(
-                    $this.state.decimal_places
-                  ),
+                  $this.state.decimal_places
+                ),
 
             addItemButton: false,
             order_quantity: 0,
@@ -413,9 +455,9 @@ const AddItems = ($this, context) => {
           title: `Item already exists!`,
           text: `The item you try to add is already exists at row ${
             index + 1
-          }. Do you wish to update current Qty from ${
+            }. Do you wish to update current Qty from ${
             hasPharItemExists.total_quantity
-          } to ${toQty}.`,
+            } to ${toQty}.`,
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -464,9 +506,9 @@ const AddItems = ($this, context) => {
           title: `Item already exists!`,
           text: `The item you try to add is already exists at row ${
             index + 1
-          }. Do you wish to update current Qty from ${
+            }. Do you wish to update current Qty from ${
             hasInvItemExists.total_quantity
-          } to ${toQty}.`,
+            } to ${toQty}.`,
           type: "warning",
           showCancelButton: true,
           confirmButtonText: "Yes",
@@ -525,7 +567,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     saveEnable: stock_detail.length > 0 ? false : true,
     dataPosted:
       $this.state.hims_f_procurement_po_header_id !== null &&
-      stock_detail.length > 0
+        stock_detail.length > 0
         ? false
         : true,
     phar_item_category: null,
@@ -574,7 +616,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
       saveEnable: stock_detail.length > 0 ? false : true,
       dataPosted:
         $this.state.hims_f_procurement_po_header_id !== null &&
-        stock_detail.length > 0
+          stock_detail.length > 0
           ? false
           : true,
       completed: "N",
@@ -1089,4 +1131,5 @@ export {
   EditGrid,
   CancelGrid,
   gridNumHandler,
+  extendCostHandle
 };

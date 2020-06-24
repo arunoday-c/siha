@@ -831,7 +831,7 @@ export default {
           internal_error: true,
           message: "No receipt details",
         };
-        _mysql.rollBackTransaction(() => {});
+        _mysql.rollBackTransaction(() => { });
         next();
         return;
       } else if (
@@ -2369,7 +2369,7 @@ export default {
                     prices = allCompany_price.find((item) => {
                       return (
                         item.insurance_id ==
-                          input[i]["primary_insurance_provider_id"] &&
+                        input[i]["primary_insurance_provider_id"] &&
                         item.services_id == input[i]["hims_d_services_id"]
                       );
                     });
@@ -2561,8 +2561,8 @@ export default {
                     deductable_amount =
                       deductable_percentage !== null
                         ? (parseFloat(net_amout) *
-                            parseFloat(deductable_percentage)) /
-                          100
+                          parseFloat(deductable_percentage)) /
+                        100
                         : 0;
 
                     deductable_amount = utilities.decimalPoints(
@@ -2698,13 +2698,33 @@ export default {
                       approval_amt =
                         parseFloat(approval_amt) + parseFloat(company_payble);
                     }
-                    if (approval_amt > preapp_limit_amount) {
+                    if (preapp_limit_amount > 0 && approval_amt > preapp_limit_amount) {
                       preapp_limit_exceed = "Y";
                     }
                   }
 
                   //If primary and secondary exists
                 } else {
+                  // insurance_provider_ids
+                  // console.log("insurance_provider_ids", is_insurance.length)
+                  // if (FollowUp === true) {
+                  //   unit_cost =
+                  //     unit_cost != 0
+                  //       ? parseFloat(unit_cost)
+                  //       : parseFloat(records.followup_free_fee);
+                  // } else {
+                  //   if (is_insurance.length > 0) {
+                  //     unit_cost = parseFloat(policydtls.gross_amt);
+
+                  //   } else {
+                  //     unit_cost =
+                  //       from_pos == "Y"
+                  //         ? parseFloat(unit_cost)
+                  //         : unit_cost != 0
+                  //           ? parseFloat(unit_cost)
+                  //           : parseFloat(records.standard_fee);
+                  //   }
+                  // }
                   if (FollowUp === true) {
                     unit_cost =
                       unit_cost != 0
@@ -2715,8 +2735,8 @@ export default {
                       from_pos == "Y"
                         ? parseFloat(unit_cost)
                         : unit_cost != 0
-                        ? parseFloat(unit_cost)
-                        : parseFloat(records.standard_fee);
+                          ? parseFloat(unit_cost)
+                          : parseFloat(records.standard_fee);
                   }
 
                   // if (conversion_factor != 0) {
@@ -4197,16 +4217,23 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   });
                 }
               } else {
+
+
                 if (FollowUp === true) {
                   unit_cost =
                     unit_cost != 0 ? unit_cost : records.followup_free_fee;
                 } else {
-                  unit_cost =
-                    from_pos == "Y"
-                      ? unit_cost
-                      : unit_cost != 0
-                      ? unit_cost
-                      : records.standard_fee;
+                  if (insured == "Y") {
+                    unit_cost = policydtls.gross_amt;
+
+                  } else {
+                    unit_cost =
+                      from_pos == "Y"
+                        ? unit_cost
+                        : unit_cost != 0
+                          ? unit_cost
+                          : records.standard_fee;
+                  }
                 }
 
                 // if (conversion_factor != 0) {

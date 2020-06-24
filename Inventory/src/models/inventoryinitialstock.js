@@ -108,15 +108,14 @@ export default {
         .executeQuery({
           query:
             "INSERT INTO `hims_f_inventory_stock_header` (document_number,docdate,`year`,period,description,\
-              posted,created_date,created_by,updated_date,updated_by, hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+              created_date,created_by,updated_date,updated_by, hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.document_number,
             today,
             year,
             period,
             input.description,
-            input.posted,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),

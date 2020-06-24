@@ -18,36 +18,35 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
+                        {{!-- <th width="30">Sl No.</th>
+                        <th width="80">Employee Code</th> --}}
+                        {{!-- <th>Employee Name</th> --}}
                         <th>Designation</th>
-                        <th>Project Name</th>
+                        <th>Total</th>
 
                     </tr>
                 </thead>
                 <tbody>
                     {{#hasElement result}}
                     {{#each result}}
-                    <tr>
-                        <td colspan="5" class="tableSubHdg">Projects: {{project_name}}
-                            <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
-                                class="textFloatRight">No Hours:
-                                <b>{{no_hours}}</b></span><span class="textFloatRight">Total No Employees:
-                                <b>{{no_employees}}</b></span>
+                    <tr class="tableSubHdg0">
+                        <td class="txtFld">{{project_name}}</td>
+                        <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
                     {{#each desig_wise_employees}}
+
+
+
                     <tr>
-                        <td colspan="5" class="tableSubHdg0">Designation: {{designation}}
-                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span >
-                            {{!-- <span
-                                class="textFloatRight">No
-                                Projects: <b>{{no_projects}}</b></span> --}}
+                        <td class="txtFld">{{designation}}</td>
+                        <td class="">{{no_employees}}</span>
                         </td>
                     </tr>
 
-                    {{#each employees}}
+
+
+                    {{!-- {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
@@ -55,7 +54,7 @@
                         <td>{{designation}}</td>
                         <td>{{project_desc}}</td>
                     </tr>
-                    {{/each }}
+                    {{/each }} --}}
                     {{/each }}
                     {{/each }}
                     {{else}}

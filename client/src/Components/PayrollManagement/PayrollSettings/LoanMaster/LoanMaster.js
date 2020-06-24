@@ -29,9 +29,8 @@ class LoanMaster extends Component {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-      userToken.product_type === "FINANCE_ERP" ||
-      userToken.product_type === "HRMS_ERP" ||
-      userToken.product_type === "NO_FINANCE"
+        userToken.product_type === "FINANCE_ERP" ||
+        userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -446,10 +445,10 @@ class LoanMaster extends Component {
                             {row.loan_limit_type === "L"
                               ? "Loan Limit"
                               : row.loan_limit_type === "B"
-                              ? "Basic"
-                              : row.loan_limit_type === "G"
-                              ? "Gratuity"
-                              : "------"}
+                                ? "Basic"
+                                : row.loan_limit_type === "G"
+                                  ? "Gratuity"
+                                  : "------"}
                           </span>
                         );
                       },
@@ -506,8 +505,8 @@ class LoanMaster extends Component {
                             }}
                           />
                         ) : (
-                          row.loan_maximum_amount
-                        );
+                            row.loan_maximum_amount
+                          );
                       },
                     },
                     // {
@@ -544,7 +543,7 @@ class LoanMaster extends Component {
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    onEdit: () => {},
+                    onEdit: () => { },
                     onDelete: this.deleteLoanMaster.bind(this),
                     onDone: this.updateLoanMater.bind(this),
                   }}

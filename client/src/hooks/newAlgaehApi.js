@@ -22,19 +22,20 @@ export function createUrl(inputs) {
   }
   return url;
 }
-export async function generateHeaders() {
+export async function generateHeaders(extra) {
   const token = await getItem("token");
   const headers = {
     "x-api-key": token,
     "x-client-ip": getNewLocalIp(),
     "x-app-user-identity": getCookie("keyResources"),
     "x-branch": getCookie("HospitalId"),
+    ...extra,
   };
   return headers;
 }
 
 export default async function newAlgaehApi(
-  inputs = { uri: "", method: "", module: "", data: {} }
+  inputs = { uri: "", method: "", module: "", data: {}, extraHeaders: {} }
 ) {
   // const token = await getItem("token");
   // const headers = {
@@ -43,7 +44,7 @@ export default async function newAlgaehApi(
   //   "x-app-user-identity": getCookie("keyResources"),
   //   "x-branch": getCookie("HospitalId")
   // };
-  const headers = await generateHeaders();
+  const headers = await generateHeaders(inputs.extraHeaders);
   try {
     let response;
     let responseObj = {

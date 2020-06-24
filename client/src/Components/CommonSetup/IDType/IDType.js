@@ -15,6 +15,10 @@ import {
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import MaskedInput from "react-maskedinput";
+import { Input, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Label } from "semantic-ui-react";
 
 class IDType extends Component {
   constructor(props) {
@@ -27,9 +31,38 @@ class IDType extends Component {
       identity_document_name: "",
       arabic_identity_document_name: "",
       currentRowID: "",
+      hims_d_nationality_id: null,
+      nationality: "",
+      countries: [],
+      masked_identity: "",
     };
 
     this.baseState = this.state;
+  }
+  // componentDidMount() {
+  //
+  // }
+  getNationality() {
+    algaehApiCall({
+      uri: "/masters/get/nationality",
+      method: "GET",
+
+      onSuccess: (response) => {
+        if (response.data.success) {
+          const countries = response.data.records;
+          this.setState({
+            // nationality: countries.hims_d_nationality_id,
+            countries: countries,
+          });
+        }
+      },
+      onFailure: (error) => {
+        swalMessage({
+          title: error.message,
+          type: "error",
+        });
+      },
+    });
   }
 
   initCall() {
@@ -58,7 +91,20 @@ class IDType extends Component {
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+  texthandle(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
 
+    this.setState({
+      [name]: value,
+    });
+  }
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
   dateFormater(value) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
@@ -66,6 +112,9 @@ class IDType extends Component {
   resetState() {
     this.setState(this.baseState);
   }
+  _onChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
   addIDType(e) {
     e.preventDefault();
@@ -167,6 +216,7 @@ class IDType extends Component {
   }
 
   componentDidMount() {
+    this.getNationality();
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
         uri: "/identity/get",
@@ -220,7 +270,19 @@ class IDType extends Component {
     row.update();
     //this.resetState();
   }
-
+  ToolTipText() {
+    return (
+      <ul style={{ listStyle: "none" }}>
+        <li>1 - is For the numbers</li>
+        <li>a - is For the letters</li>
+        <li>A - is For the letters, forced to upper case when entered</li>
+        <li>* - is For the alphanumericals</li>
+        <li>
+          #- is For the alphanumericals, forced to upper case when entered
+        </li>
+      </ul>
+    );
+  }
   render() {
     return (
       <div className="id_type">
@@ -276,8 +338,64 @@ class IDType extends Component {
               },
             }}
           />
-
           <AlagehAutoComplete
+            div={{
+              className: "col-lg-2 col-md-2 col-sm-12 form-group",
+            }}
+            label={{
+              forceLabel: "Nationality",
+              // isImp: true,
+            }}
+            selector={{
+              name: "hims_d_nationality_id",
+              className: "select-fld",
+              value: this.state.hims_d_nationality_id,
+              dataSource: {
+                textField: "nationality",
+                valueField: "hims_d_nationality_id",
+                data: this.state.countries,
+              },
+              onChange: this.texthandle.bind(this),
+              onClear: () => {
+                this.setState({
+                  nationality: null,
+                });
+              },
+            }}
+          />
+          {/* <AlagehFormGroup
+           
+            label={{
+              fieldName: "Masked Identity",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "masked_identity",
+              value: this.state.masked_identity,
+              events: {
+                onChange: this.changeTexts.bind(this),
+              },
+            }}
+          /> */}
+          <div className="col-lg-2 col-md-2 col-sm-12 form-group">
+            MASKED IDENTITY
+            <Input
+              placeholder="MASKING IDENTITY"
+              // className="col-3  form-group"
+
+              name="masked_identity"
+              value={this.state.masked_identity}
+              onChange={this.changeTexts.bind(this)}
+              suffix={
+                <Tooltip title={this.ToolTipText}>
+                  <i className="fas fa-info-circle"></i>
+                </Tooltip>
+              }
+            />
+          </div>
+
+          {/* <AlagehAutoComplete
             div={{
               className: "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
             }}
@@ -296,7 +414,7 @@ class IDType extends Component {
               },
               // onChange: texthandle.bind(this, this),
             }}
-          />
+          /> */}
 
           <div className="col" style={{ marginTop: 19 }}>
             <button
@@ -337,7 +455,8 @@ class IDType extends Component {
                                 textBox={{
                                   value: row.identity_document_name,
                                   className: "txt-fld",
-                                  name: "identity_document_name",
+                                  namchangeGridEditorse:
+                                    "identity_document_name",
                                   events: {
                                     onChange: this.onchangegridcol.bind(
                                       this,
@@ -386,95 +505,155 @@ class IDType extends Component {
                         },
 
                         {
-                          fieldName: "",
+                          fieldName: "hims_d_nationality_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Nationality" }}
                             />
                           ),
+                          displayTemplate: (row) => {
+                            return <span>{row.nationality_name}</span>;
+                          },
                           editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
                                 div={{
-                                  className:
-                                    "col-lg-2 col-md-2 col-sm-12 form-group mandatory",
+                                  className: "col noLabel",
                                 }}
                                 label={{
-                                  forceLabel: "Nationality",
-                                  isImp: true,
+                                  forceLabel: "",
                                 }}
                                 selector={{
-                                  name: "nationality",
+                                  name: "hims_d_nationality_id",
                                   className: "select-fld",
-                                  // value: this.state.nationality,
+                                  value: row.hims_d_nationality_id,
                                   dataSource: {
                                     textField: "nationality",
-                                    valueField: "",
-                                    data: [],
+                                    valueField: "hims_d_nationality_id",
+                                    data: this.state.countries,
                                   },
-                                  // onChange: texthandle.bind(this, this),
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
                                 }}
                               />
                             );
                           },
                         },
+                        // {
+                        //   fieldName: "masked_identity",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "Masked Identity" }}
+                        //     />
+                        //   ),
+                        //   editorTemplate: (row) => {
+                        //     return (
+                        //       <AlagehFormGroup
+                        //         div={{}}
+                        //         textBox={{
+                        //           value: row.masked_identity,
+                        //           className: "txt-fld",
+                        //           name: "masked_identity",
+                        //           events: {
+                        //             onChange: this.onchangegridcol.bind(
+                        //               this,
+                        //               row
+                        //             ),
+                        //           },
+
+                        //           // others: {
+                        //           //   errormessage:
+                        //           //     "Arabic Name - cannot be blank",
+                        //           //   required: true,
+                        //           // },
+                        //         }}
+                        //       />
+                        //     );
+                        //   },
+                        // },
                         {
-                          fieldName: "created_by",
+                          fieldName: "masked_identity",
                           label: (
-                            <AlgaehLabel label={{ fieldName: "created_by" }} />
+                            <AlgaehLabel
+                              label={{ fieldName: "Masked Identity" }}
+                            />
                           ),
-                          displayTemplate: (row) => {
-                            let display =
-                              this.props.userdrtails === undefined
-                                ? []
-                                : this.props.userdrtails.filter(
-                                    (f) =>
-                                      f.algaeh_d_app_user_id === row.created_by
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].username
-                                  : ""}
-                              </span>
-                            );
-                          },
                           editorTemplate: (row) => {
-                            let display =
-                              this.props.userdrtails === undefined
-                                ? []
-                                : this.props.userdrtails.filter(
-                                    (f) =>
-                                      f.algaeh_d_app_user_id === row.created_by
-                                  );
-
                             return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? display[0].username
-                                  : ""}
-                              </span>
+                              <Input
+                                name="masked_identity"
+                                value={row.masked_identity}
+                                onChange={this.onchangegridcol.bind(this, row)}
+                                suffix={
+                                  <Tooltip title={this.ToolTipText}>
+                                    <i className="fas fa-info-circle"></i>
+                                  </Tooltip>
+                                }
+                              />
                             );
                           },
                         },
-                        {
-                          fieldName: "created_date",
 
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Added Date" }} />
-                          ),
-                          displayTemplate: (row) => {
-                            return (
-                              <span>{this.dateFormater(row.created_date)}</span>
-                            );
-                          },
-                          editorTemplate: (row) => {
-                            return (
-                              <span>{this.dateFormater(row.created_date)}</span>
-                            );
-                          },
-                        },
+                        // {
+                        //   fieldName: "created_by",
+                        //   label: (
+                        //     <AlgaehLabel label={{ fieldName: "created_by" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     let display =
+                        //       this.props.userdrtails === undefined
+                        //         ? []
+                        //         : this.props.userdrtails.filter(
+                        //             (f) =>
+                        //               f.algaeh_d_app_user_id === row.created_by
+                        //           );
+
+                        //     return (
+                        //       <span>
+                        //         {display !== null && display.length !== 0
+                        //           ? display[0].username
+                        //           : ""}
+                        //       </span>
+                        //     );
+                        //   },
+                        //   editorTemplate: (row) => {
+                        //     let display =
+                        //       this.props.userdrtails === undefined
+                        //         ? []
+                        //         : this.props.userdrtails.filter(
+                        //             (f) =>
+                        //               f.algaeh_d_app_user_id === row.created_by
+                        //           );
+
+                        //     return (
+                        //       <span>
+                        //         {display !== null && display.length !== 0
+                        //           ? display[0].username
+                        //           : ""}
+                        //       </span>
+                        //     );
+                        //   },
+                        // },
+                        // {
+                        //   fieldName: "created_date",
+
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Added Date" }} />
+                        //   ),
+                        //   displayTemplate: (row) => {
+                        //     return (
+                        //       <span>{this.dateFormater(row.created_date)}</span>
+                        //     );
+                        //   },
+                        //   editorTemplate: (row) => {
+                        //     return (
+                        //       <span>{this.dateFormater(row.created_date)}</span>
+                        //     );
+                        //   },
+                        // },
+
                         {
                           fieldName: "identity_status",
                           label: (
@@ -488,7 +667,12 @@ class IDType extends Component {
                           editorTemplate: (row) => {
                             return (
                               <AlagehAutoComplete
-                                div={{}}
+                                div={{
+                                  className: "col noLabel",
+                                }}
+                                label={{
+                                  forceLabel: "",
+                                }}
                                 selector={{
                                   name: "identity_status",
                                   className: "select-fld",

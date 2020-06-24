@@ -18,7 +18,7 @@ class CommonSetup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "",
+      pageDisplay: "VisaType",
       HIMS_Active: false,
     };
   }
@@ -45,7 +45,7 @@ class CommonSetup extends Component {
         ? true
         : false;
     this.setState({
-      pageDisplay: active ? "VisitType" : "VisaType",
+      // pageDisplay: active ? "VisitType" : "VisaType",
       HIMS_Active: active,
     });
 
@@ -65,10 +65,24 @@ class CommonSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              <li
+                algaehtabs={"VisaType"}
+                className={"nav-item  tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "visa_type",
+                    }}
+                  />
+                }
+              </li>
+
               {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"VisitType"}
-                  className={"nav-item tab-button active"}
+                  className={"nav-item tab-button"}
                   onClick={this.openTab.bind(this)}
                 >
                   {
@@ -80,19 +94,6 @@ class CommonSetup extends Component {
                   }
                 </li>
               ) : null}
-              <li
-                algaehtabs={"VisaType"}
-                className={"nav-item tab-button "}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "visa_type",
-                    }}
-                  />
-                }
-              </li>
 
               <li
                 algaehtabs={"IDType"}

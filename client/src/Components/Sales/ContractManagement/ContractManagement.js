@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import { Upload, message, Card, Button } from "antd";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
+import { newAlgaehApi } from "../../../hooks";
 import "./ContractManagement.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
@@ -34,10 +34,13 @@ import {
   getCtrlCode,
   employeeSearch,
   getCostCenters,
+  saveDocument,
 } from "./ContractManagementEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
 import { MainContext } from "algaeh-react-components/context";
+
+const { Dragger } = Upload;
 
 class ContractManagement extends Component {
   constructor(props) {
@@ -51,6 +54,8 @@ class ContractManagement extends Component {
       contract_code: null,
       contract_date: new Date(),
       customer_id: null,
+      contract_files: [],
+      contract_docs: [],
       start_date: null,
       end_date: null,
       contract_services: [],
@@ -78,7 +83,7 @@ class ContractManagement extends Component {
       comments: "",
       cost_projects: [],
       project_id: null,
-      hospital_id: null,
+
       organizations: [],
     };
     getCostCenters(this);
@@ -122,6 +127,36 @@ class ContractManagement extends Component {
       },
     });
   }
+
+  downloadDoc = (doc) => {
+    console.log(doc);
+    const link = document.createElement("a");
+    link.download = doc.filename;
+    link.href = `data:${doc.filetype};base64,${doc.document}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  deleteDoc = (doc) => {
+    console.log(doc);
+    newAlgaehApi({
+      uri: "/deleteContractDoc",
+      method: "DELETE",
+      module: "documentManagement",
+      data: { id: doc._id },
+    }).then((res) => {
+      if (res.data.success) {
+        this.setState((state) => {
+          const contract_docs = state.contract_docs.filter(
+            (item) => item._id !== doc._id
+          );
+          return { contract_docs };
+        });
+      }
+    });
+  };
+
   render() {
     const class_finder = this.state.dataExists === true ? " disableFinder" : "";
     return (
@@ -433,10 +468,7 @@ class ContractManagement extends Component {
         </div>
         <div className="row">
           <div className="col-9">
-            <div
-              className="portlet portlet-bordered "
-              style={{ marginBottom: 60 }}
-            >
+            <div className="portlet portlet-bordered ">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Contract Items</h3>
@@ -780,6 +812,86 @@ class ContractManagement extends Component {
             </div>
           </div>
         </div>
+        <div className="row">
+          <div className="col portlet" style={{ marginBottom: 80 }}>
+            <div className="caption" style={{ marginLeft: "3rem" }}>
+              <h3 className="caption-subject">Contract Files</h3>
+            </div>
+            <div className="row ">
+              {this.state.contract_docs.length ? (
+                this.state.contract_docs.map((doc) => (
+                  <div className="col" key={doc._id}>
+                    <Card
+                      style={{ width: 250, marginTop: 16 }}
+                      actions={[
+                        <Button
+                          key="setting"
+                          onClick={() => this.downloadDoc(doc)}
+                        >
+                          <i className="fa fa-download"></i>
+                        </Button>,
+                        <Button
+                          key="delete"
+                          onClick={() => this.deleteDoc(doc)}
+                        >
+                          <i className="fa fa-trash"></i>
+                        </Button>,
+                      ]}
+                    >
+                      {doc.filename}
+                    </Card>
+                  </div>
+                ))
+              ) : (
+                <div className="col-12" key={1}>
+                  <Card style={{ width: 250, marginTop: 16 }}>
+                    Nothing to show
+                  </Card>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="col ">
+            <div
+              className="portlet portlet-bordered"
+              style={{ marginBottom: 80 }}
+            >
+              <Dragger
+                accept=".doc,.docx,application/msword,.pdf"
+                name="contract_file"
+                onRemove={(file) => {
+                  this.setState((state) => {
+                    const index = state.fileList.indexOf(file);
+                    const newFileList = state.fileList.slice();
+                    newFileList.splice(index, 1);
+                    return {
+                      contract_files: newFileList,
+                      saveEnable: state.dataExists && !newFileList.length,
+                    };
+                  });
+                }}
+                beforeUpload={(file) => {
+                  this.setState((state) => ({
+                    contract_files: [...state.contract_files, file],
+                    saveEnable: false,
+                  }));
+                  return false;
+                }}
+                fileList={this.state.contract_files}
+              >
+                <p className="upload-drag-icon">
+                  <i className="fas fa-file-upload"></i>
+                </p>
+                <p className="ant-upload-text">
+                  {this.state.contract_file
+                    ? `Click or Drag a file to replace the current file`
+                    : `Click or Drag a file to this area to upload`}
+                </p>
+              </Dragger>
+            </div>
+          </div>
+        </div>
+
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">

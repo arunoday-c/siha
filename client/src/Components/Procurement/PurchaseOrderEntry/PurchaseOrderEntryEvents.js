@@ -667,8 +667,6 @@ const generatePOReceiptNoPrice = (data) => {
 };
 
 const AuthorizePOEntry = ($this, authorize) => {
-  debugger;
-
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail
@@ -771,7 +769,7 @@ const AuthorizePOEntry = ($this, authorize) => {
             authorize1: authorize1,
             authorize2: authorize2,
           });
-          debugger;
+
           if (authorize2 === "Y") {
             if ($this.context.socket.connected) {
               $this.context.socket.emit(
