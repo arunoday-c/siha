@@ -41,13 +41,13 @@ const getItemUom = ($this, purchase_cost) => {
     module: "inventory",
     method: "GET",
 
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
           let itemuomlist = Enumerable.from(response.data.records)
             .where(
-              w => w.hims_d_inventory_item_master_id === $this.state.item_id,
-              w => w.uom_id === $this.state.purchase_uom_id
+              (w) => w.hims_d_inventory_item_master_id === $this.state.item_id,
+              (w) => w.uom_id === $this.state.purchase_uom_id
             )
             .firstOrDefault();
 
@@ -56,17 +56,17 @@ const getItemUom = ($this, purchase_cost) => {
             parseFloat(itemuomlist.conversion_factor);
           $this.setState({
             conversion_factor: itemuomlist.conversion_factor,
-            unit_cost: unit_cost
+            unit_cost: unit_cost,
           });
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
   // $this.props.getItemMasterAndItemUom({
   //   uri: "/inventory/getItemMasterAndItemUom",
@@ -112,11 +112,11 @@ const itemchangeText = ($this, e, ctrl) => {
     sales_price: e.sales_price,
     purchase_uom_id: e.purchase_uom_id,
     stock_uom_desc: e.stock_uom_desc,
-    sales_uom_desc: e.sales_uom_desc
+    sales_uom_desc: e.sales_uom_desc,
   });
 };
 
-const AddItems = $this => {
+const AddItems = ($this) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
@@ -124,13 +124,13 @@ const AddItems = $this => {
       if ($this.state.quantity === 0) {
         swalMessage({
           title: "Quantity, cannot be zero.",
-          type: "warning"
+          type: "warning",
         });
         document.querySelector("[name='quantity']").focus();
       } else if ($this.state.unit_cost === 0) {
         swalMessage({
           title: "Unit Cost, cannot be zero.",
-          type: "warning"
+          type: "warning",
         });
         document.querySelector("[name='unit_cost']").focus();
       } else if (
@@ -139,7 +139,7 @@ const AddItems = $this => {
       ) {
         swalMessage({
           title: "Select Expiry Date.",
-          type: "warning"
+          type: "warning",
         });
         document.querySelector("[name='unit_cost']").focus();
       } else {
@@ -165,14 +165,14 @@ const AddItems = $this => {
           grn_number: $this.state.grn_number,
           noorecords: inventory_stock_detail.length + 1,
           required_batchno: $this.state.required_batchno,
-          operation: "+"
+          operation: "+",
         };
 
         inventory_stock_detail.push(itemObj);
         $this.setState({
           inventory_stock_detail: inventory_stock_detail,
 
-          location_id: null,
+          // location_id: null,
           item_category_id: null,
           item_group_id: null,
           item_id: null,
@@ -189,16 +189,16 @@ const AddItems = $this => {
           sales_uom: null,
           purchase_uom_id: null,
           conversion_factor: null,
-          item_description: ""
+          item_description: "",
         });
       }
-    }
+    },
   });
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -207,16 +207,16 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
 
-const dateFormater = value => {
+const dateFormater = (value) => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
   }
@@ -249,7 +249,7 @@ const getCtrlCode = ($this, docNumber) => {
       posted: "N",
       item_code: null,
       sales_price: 0,
-      grn_number: null
+      grn_number: null,
     },
     () => {
       algaehApiCall({
@@ -257,7 +257,7 @@ const getCtrlCode = ($this, docNumber) => {
         module: "inventory",
         method: "GET",
         data: { document_number: docNumber },
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             let data = response.data.records;
             data.saveEnable = true;
@@ -290,47 +290,47 @@ const getCtrlCode = ($this, docNumber) => {
             AlgaehLoader({ show: false });
           }
         },
-        onFailure: error => {
+        onFailure: (error) => {
           AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
-            type: "error"
+            type: "error",
           });
-        }
+        },
       });
     }
   );
 };
 
-const SaveInitialStock = $this => {
+const SaveInitialStock = ($this) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/inventoryinitialstock/addInventoryInitialStock",
     module: "inventory",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
-          type: "success"
+          type: "success",
         });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const deleteInitialStock = ($this, row) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
   let saveEnable = true;
-  let _index = inventory_stock_detail.indexOf(row)
+  let _index = inventory_stock_detail.indexOf(row);
   inventory_stock_detail.splice(_index, 1);
 
   if (inventory_stock_detail.length) {
@@ -338,10 +338,10 @@ const deleteInitialStock = ($this, row) => {
   }
   $this.setState({
     inventory_stock_detail: inventory_stock_detail,
-    saveEnable
+    saveEnable,
   });
 };
-const ClearData = $this => {
+const ClearData = ($this) => {
   $this.setState({
     item_description: "",
     description: "",
@@ -364,11 +364,11 @@ const ClearData = $this => {
     posted: "N",
     item_code: null,
     sales_price: 0,
-    grn_number: null
+    grn_number: null,
   });
 };
 
-const PostInitialStock = $this => {
+const PostInitialStock = ($this) => {
   AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
@@ -386,36 +386,35 @@ const PostInitialStock = $this => {
     module: "inventory",
     data: $this.state,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
-          postEnable: true
+          postEnable: true,
         });
         swalMessage({
           title: "Posted successfully . .",
-          type: "success"
+          type: "success",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
 const printBarcode = ($this, row, e) => {
-
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -423,19 +422,19 @@ const printBarcode = ($this, row, e) => {
         others: {
           width: "50mm",
           height: "20mm",
-          showHeaderFooter: false
+          showHeaderFooter: false,
         },
         reportName: "InventoryBarcode",
         reportParams: [
           {
             name: "hims_f_inventory_stock_detail_id",
-            value: row.hims_f_inventory_stock_detail_id
-          }
+            value: row.hims_f_inventory_stock_detail_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       // const url = URL.createObjectURL(res.data);
       // let myWindow = window.open(
       //   "{{ product.metafields.google.custom_label_0 }}",
@@ -449,7 +448,7 @@ const printBarcode = ($this, row, e) => {
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Item Barcode`;
       window.open(origin);
       // window.document.title = "Item Barcode";
-    }
+    },
   });
 
   // algaehApiCall({
@@ -511,7 +510,7 @@ const onChamgeGridQuantity = ($this, row, e) => {
   }
   inventory_stock_detail[_index] = row;
   $this.setState({
-    inventory_stock_detail: inventory_stock_detail
+    inventory_stock_detail: inventory_stock_detail,
   });
 };
 
@@ -523,7 +522,7 @@ const updateInitialStock = ($this, row) => {
 
   $this.setState({
     saveEnable: !$this.state.saveEnable,
-    inventory_stock_detail: inventory_stock_detail
+    inventory_stock_detail: inventory_stock_detail,
   });
 };
 
@@ -536,7 +535,7 @@ const EditGrid = ($this, cancelRow) => {
     saveEnable:
       $this.state.dataExitst === true ? true : !$this.state.saveEnable,
     postEnable: !$this.state.postEnable,
-    inventory_stock_detail: _inventory_stock_detail
+    inventory_stock_detail: _inventory_stock_detail,
   });
 };
 
@@ -558,5 +557,5 @@ export {
   salesPriceEvent,
   updateInitialStock,
   onChamgeGridQuantity,
-  EditGrid
+  EditGrid,
 };
