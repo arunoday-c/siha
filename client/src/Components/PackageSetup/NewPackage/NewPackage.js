@@ -284,7 +284,7 @@ class NewPackage extends PureComponent {
                           },
                           others: {
                             placeholder: "0.00",
-                            disabled: this.state.approvedPack
+                            // disabled: this.state.approvedPack
                           }
                         }}
                       />
@@ -469,9 +469,9 @@ class NewPackage extends PureComponent {
                                     cancellation_policy: null
                                   });
                                 },
-                                others: {
-                                  disabled: this.state.approvedPack
-                                }
+                                // others: {
+                                //   disabled: this.state.approvedPack
+                                // }
                               }}
                             />
                             <AlagehFormGroup
@@ -492,7 +492,7 @@ class NewPackage extends PureComponent {
                                 },
                                 others: {
                                   type: "number",
-                                  disabled: this.state.approvedPack
+                                  // disabled: this.state.approvedPack
                                 }
                               }}
                             />
@@ -521,7 +521,7 @@ class NewPackage extends PureComponent {
                                   });
                                 },
                                 others: {
-                                  disabled: this.state.approvedPack
+                                  // disabled: this.state.approvedPack
                                 }
                               }}
                             />
@@ -546,7 +546,7 @@ class NewPackage extends PureComponent {
                                   others: {
                                     min: 0,
                                     max: 100,
-                                    disabled: this.state.approvedPack
+                                    // disabled: this.state.approvedPack
                                   }
                                 }}
                               />
@@ -571,7 +571,7 @@ class NewPackage extends PureComponent {
                                     others: {
                                       min: 0,
                                       max: 100,
-                                      disabled: this.state.approvedPack
+                                      // disabled: this.state.approvedPack
                                     }
                                   }}
                                 />
@@ -598,7 +598,7 @@ class NewPackage extends PureComponent {
                                   });
                                 },
                                 others: {
-                                  disabled: this.state.approvedPack
+                                  // disabled: this.state.approvedPack
                                 }
                               }}
                             />
@@ -619,7 +619,7 @@ class NewPackage extends PureComponent {
                                   others: {
                                     min: 0,
                                     max: 100,
-                                    disabled: this.state.approvedPack
+                                    // disabled: this.state.approvedPack
                                   }
                                 }}
                               />
@@ -640,7 +640,7 @@ class NewPackage extends PureComponent {
                                     others: {
                                       min: 0,
                                       max: 100,
-                                      disabled: this.state.approvedPack
+                                      // disabled: this.state.approvedPack
                                     }
                                   }}
                                 />
@@ -676,7 +676,7 @@ class NewPackage extends PureComponent {
                           });
                         },
                         others: {
-                          disabled: this.state.approvedPack
+                          // disabled: this.state.approvedPack
                         }
                       }}
                     />
@@ -703,12 +703,12 @@ class NewPackage extends PureComponent {
                           });
                         },
                         others: {
-                          disabled: this.state.approvedPack
+                          // disabled: this.state.approvedPack
                         }
                       }}
                     />
 
-                    <AlagehFormGroup
+                    {/* <AlagehFormGroup
                       div={{ className: "col-2  mandatory" }}
                       label={{
                         forceLabel: "Quantity",
@@ -728,16 +728,16 @@ class NewPackage extends PureComponent {
                         },
                         others: {
                           step: "1",
-                          disabled: this.state.approvedPack
+                          // disabled: this.state.approvedPack
                         }
                       }}
-                    />
+                    /> */}
                     <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
                         onClick={this.AddToList.bind(this)}
-                        disabled={this.state.approvedPack}
+                      // disabled={this.state.approvedPack}
                       >
                         Add
                       </button>
@@ -828,49 +828,49 @@ class NewPackage extends PureComponent {
                                 );
                               }
                             },
-                            {
-                              fieldName: "qty",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Quantity" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return this.state.approvedPack === true ? (
-                                  row.qty
-                                ) : (
-                                    <AlagehFormGroup
-                                      div={{}}
-                                      textBox={{
-                                        number: {
-                                          allowNegative: false,
-                                          thousandSeparator: ","
-                                        },
-                                        dontAllowKeys: ["-", "e", "."],
-                                        value: row.qty,
-                                        className: "txt-fld",
-                                        name: "qty",
-                                        events: {
-                                          onChange: this.gridtexthandel.bind(
-                                            this,
-                                            row
-                                          )
-                                        },
-                                        others: {
-                                          disabled: this.state.approvedPack,
-                                          onBlur: this.makeZeroIngrid.bind(
-                                            this,
-                                            row
-                                          )
-                                        }
-                                      }}
-                                    />
-                                  );
-                              },
-                              others: {
-                                style: { textAlign: "center" }
-                              }
-                            },
+                            // {
+                            //   fieldName: "qty",
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Quantity" }}
+                            //     />
+                            //   ),
+                            //   displayTemplate: row => {
+                            //     return this.state.approvedPack === true ? (
+                            //       row.qty
+                            //     ) : (
+                            //         <AlagehFormGroup
+                            //           div={{}}
+                            //           textBox={{
+                            //             number: {
+                            //               allowNegative: false,
+                            //               thousandSeparator: ","
+                            //             },
+                            //             dontAllowKeys: ["-", "e", "."],
+                            //             value: row.qty,
+                            //             className: "txt-fld",
+                            //             name: "qty",
+                            //             events: {
+                            //               onChange: this.gridtexthandel.bind(
+                            //                 this,
+                            //                 row
+                            //               )
+                            //             },
+                            //             others: {
+                            //               disabled: this.state.approvedPack,
+                            //               onBlur: this.makeZeroIngrid.bind(
+                            //                 this,
+                            //                 row
+                            //               )
+                            //             }
+                            //           }}
+                            //         />
+                            //       );
+                            //   },
+                            //   others: {
+                            //     style: { textAlign: "center" }
+                            //   }
+                            // },
                             {
                               fieldName: "service_amount",
                               label: (
