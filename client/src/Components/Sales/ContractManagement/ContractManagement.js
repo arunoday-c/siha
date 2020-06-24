@@ -866,17 +866,17 @@ class ContractManagement extends Component {
                     newFileList.splice(index, 1);
                     return {
                       contract_files: newFileList,
+                      saveEnable: state.dataExists && !newFileList.length,
                     };
                   });
                 }}
                 beforeUpload={(file) => {
                   this.setState((state) => ({
                     contract_files: [...state.contract_files, file],
-                    saveEnable: !!state.contract_files.length,
+                    saveEnable: false,
                   }));
                   return false;
                 }}
-                disabled={this.state.dataExitst}
                 fileList={this.state.contract_files}
               >
                 <p className="upload-drag-icon">

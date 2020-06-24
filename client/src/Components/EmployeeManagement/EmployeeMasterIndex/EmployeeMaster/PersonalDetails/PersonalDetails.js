@@ -24,6 +24,7 @@ import { getCookie } from "../../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 import { AlgaehFormGroup, RawSecurityElement } from "algaeh-react-components";
+import MaskedInput from "react-maskedinput";
 // import Enumerable from "linq";
 
 class PersonalDetails extends Component {
@@ -36,6 +37,8 @@ class PersonalDetails extends Component {
       selectedLang: getCookie("Language"),
       HIMS_Active: false,
       FldEditable: true,
+      identity_no: "1111 1111 1111 1111",
+      identity_card: "",
     };
   }
 
@@ -435,8 +438,25 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
+                    <div className="col-lg-2 col-md-2 col-sm-12">
+                      ENTER ID NUMBER
+                      <MaskedInput
+                        placeholder={
+                          this.state.identity_no === null
+                            ? "AAA-AAA-AAA"
+                            : this.state.identity_no
+                        }
+                        mask={
+                          this.state.identity_no === null
+                            ? "AAA-AAA-AAA"
+                            : this.state.identity_no
+                        }
+                        name="identity_card"
+                        size="20"
+                      />
+                    </div>
 
-                    <AlagehFormGroup
+                    {/* <AlagehFormGroup
                       div={{ className: "col-lg-2 col-md-2 col-sm-12" }}
                       label={{
                         forceLabel: "Number",
@@ -452,7 +472,7 @@ class PersonalDetails extends Component {
                           placeholder: "Enter ID Number",
                         },
                       }}
-                    />
+                    /> */}
 
                     <AlagehFormGroup
                       div={{ className: "col-lg-3 col-sm-12  " }}
