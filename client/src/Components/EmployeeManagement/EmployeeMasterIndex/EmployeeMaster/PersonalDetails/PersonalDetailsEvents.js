@@ -4,6 +4,7 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let obj = {};
+
   if (name === "nationality") {
     const primaryId = $this.props.idtypes.find(
       (f) => f.hims_d_nationality_id === parseInt(value)
@@ -11,6 +12,9 @@ const texthandle = ($this, e) => {
     if (primaryId !== undefined) {
       obj["identity_type_id"] = primaryId.hims_d_identity_document_id;
     }
+  }
+  if (name === "identity_type_id") {
+    obj["identity_no"] = e.selected.masked_identity;
   }
 
   $this.setState({

@@ -15,6 +15,10 @@ import {
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import MaskedInput from "react-maskedinput";
+import { Input, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
+import { Label } from "semantic-ui-react";
 
 class IDType extends Component {
   constructor(props) {
@@ -30,6 +34,7 @@ class IDType extends Component {
       hims_d_nationality_id: null,
       nationality: "",
       countries: [],
+      masked_identity: "",
     };
 
     this.baseState = this.state;
@@ -43,7 +48,6 @@ class IDType extends Component {
       method: "GET",
 
       onSuccess: (response) => {
-        debugger;
         if (response.data.success) {
           const countries = response.data.records;
           this.setState({
@@ -88,7 +92,6 @@ class IDType extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
   texthandle(e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
@@ -97,7 +100,6 @@ class IDType extends Component {
     });
   }
   changeGridEditors(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -110,6 +112,9 @@ class IDType extends Component {
   resetState() {
     this.setState(this.baseState);
   }
+  _onChange = (e) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
   addIDType(e) {
     e.preventDefault();
@@ -232,7 +237,6 @@ class IDType extends Component {
       data: data,
       method: "PUT",
       onSuccess: (response) => {
-        debugger;
         if (response.data.success) {
           swalMessage({
             title: "Record updated successfully . .",
@@ -266,7 +270,19 @@ class IDType extends Component {
     row.update();
     //this.resetState();
   }
-
+  ToolTipText() {
+    return (
+      <ul style={{ listStyle: "none" }}>
+        <li>1 - is For the numbers</li>
+        <li>a - is For the letters</li>
+        <li>A - is For the letters, forced to upper case when entered</li>
+        <li>* - is For the alphanumericals</li>
+        <li>
+          #- is For the alphanumericals, forced to upper case when entered
+        </li>
+      </ul>
+    );
+  }
   render() {
     return (
       <div className="id_type">
@@ -347,6 +363,37 @@ class IDType extends Component {
               },
             }}
           />
+          {/* <AlagehFormGroup
+           
+            label={{
+              fieldName: "Masked Identity",
+              // isImp: true,
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "masked_identity",
+              value: this.state.masked_identity,
+              events: {
+                onChange: this.changeTexts.bind(this),
+              },
+            }}
+          /> */}
+          <div className="col-lg-2 col-md-2 col-sm-12 form-group">
+            MASKED IDENTITY
+            <Input
+              placeholder="MASKING IDENTITY"
+              // className="col-3  form-group"
+
+              name="masked_identity"
+              value={this.state.masked_identity}
+              onChange={this.changeTexts.bind(this)}
+              suffix={
+                <Tooltip title={this.ToolTipText}>
+                  <i className="fas fa-info-circle"></i>
+                </Tooltip>
+              }
+            />
+          </div>
 
           {/* <AlagehAutoComplete
             div={{
@@ -495,6 +542,61 @@ class IDType extends Component {
                           },
                         },
                         // {
+                        //   fieldName: "masked_identity",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "Masked Identity" }}
+                        //     />
+                        //   ),
+                        //   editorTemplate: (row) => {
+                        //     return (
+                        //       <AlagehFormGroup
+                        //         div={{}}
+                        //         textBox={{
+                        //           value: row.masked_identity,
+                        //           className: "txt-fld",
+                        //           name: "masked_identity",
+                        //           events: {
+                        //             onChange: this.onchangegridcol.bind(
+                        //               this,
+                        //               row
+                        //             ),
+                        //           },
+
+                        //           // others: {
+                        //           //   errormessage:
+                        //           //     "Arabic Name - cannot be blank",
+                        //           //   required: true,
+                        //           // },
+                        //         }}
+                        //       />
+                        //     );
+                        //   },
+                        // },
+                        {
+                          fieldName: "masked_identity",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "Masked Identity" }}
+                            />
+                          ),
+                          editorTemplate: (row) => {
+                            return (
+                              <Input
+                                name="masked_identity"
+                                value={row.masked_identity}
+                                onChange={this.onchangegridcol.bind(this, row)}
+                                suffix={
+                                  <Tooltip title={this.ToolTipText}>
+                                    <i className="fas fa-info-circle"></i>
+                                  </Tooltip>
+                                }
+                              />
+                            );
+                          },
+                        },
+
+                        // {
                         //   fieldName: "created_by",
                         //   label: (
                         //     <AlgaehLabel label={{ fieldName: "created_by" }} />
@@ -551,6 +653,7 @@ class IDType extends Component {
                         //     );
                         //   },
                         // },
+
                         {
                           fieldName: "identity_status",
                           label: (
