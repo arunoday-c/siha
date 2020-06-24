@@ -15,10 +15,7 @@ import {
 import GlobalVariables from "../../../utils/GlobalVariables";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import MaskedInput from "react-maskedinput";
 import { Input, Tooltip } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
-import { Label } from "semantic-ui-react";
 
 class IDType extends Component {
   constructor(props) {
