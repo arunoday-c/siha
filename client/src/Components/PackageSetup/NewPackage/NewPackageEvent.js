@@ -19,7 +19,8 @@ export default function NewPackageEvent() {
 
       $this.setState({
         [name]: value,
-        s_service_amount: e.selected.standard_fee
+        s_service_amount: e.selected.standard_fee,
+        qty: 1
       });
     },
     pakageamtHandaler: ($this, e) => {
