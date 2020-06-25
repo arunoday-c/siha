@@ -16,11 +16,25 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
+
+  if ((e.service_type_id === 5 || e.service_type_id === 11) && e.hims_d_investigation_test_id === null) {
+    $this.setState({
+      s_service: null,
+      service_name: "",
+    });
+    swalMessage({
+      title: "Service Defined But Test not Defined, Please contact Admin.",
+      type: "warning"
+    });
+
+    return;
+  }
   $this.setState({
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
     insurance_service_name: e.service_name,
     service_name: e.service_name,
+    test_id: e.hims_d_investigation_test_id
   });
 };
 
