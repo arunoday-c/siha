@@ -30,12 +30,16 @@ import {
   loadAccounts,
   getFinanceProviders,
 } from "./SubInsuranceHandaler";
+
+import { MainContext } from "algaeh-react-components/context";
+import { AlgaehTreeSearch } from "algaeh-react-components";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
 
 class SubInsurance extends PureComponent {
   constructor(props) {
     super(props);
+    this.isFinance = false;
     this.state = {
       insurance_sub_code: null,
       insurance_sub_name: null,
@@ -55,6 +59,22 @@ class SubInsurance extends PureComponent {
     this.getFinanceProviders = getFinanceProviders.bind(this);
   }
 
+  static contextType = MainContext;
+
+  componentDidMount() {
+    debugger;
+    this.isFinance =
+      this.context.userToken.product_type === "HIMS_ERP" ||
+      this.context.userToken.product_type === "FINANCE_ERP";
+    if (this.isFinance) {
+      this.loadAccounts();
+    }
+    if (this.state.insurance_provider_id !== null) {
+      getSubInsuranceDetails(this, this);
+      this.getFinanceProviders();
+    }
+  }
+
   loadAccounts() {
     loadAccounts({ finance_account_head_id: "1" }).then((result) => {
       if (result.length > 0) {
@@ -71,13 +91,6 @@ class SubInsurance extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {
-    // this.loadAccounts();
-    if (this.state.insurance_provider_id !== null) {
-      getSubInsuranceDetails(this, this);
-      this.getFinanceProviders();
-    }
-  }
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
@@ -482,7 +495,7 @@ class SubInsurance extends PureComponent {
                             ] = this.state.finance_providers.filter(
                               (item) =>
                                 item.finance_account_child_id ===
-                                row.finance_account_child_id &&
+                                  row.finance_account_child_id &&
                                 item.head_id === row.head_id
                             );
                             return current ? current.child_name : "";
@@ -508,10 +521,43 @@ class SubInsurance extends PureComponent {
                                 />
                               );
                             } else {
-                              return null;
+                              return (
+                                <AlgaehTreeSearch
+                                  div={{ className: "form-group" }}
+                                  tree={{
+                                    treeDefaultExpandAll: true,
+                                    onChange: (val) => {
+                                      const [head_id, child_id] = val.split(
+                                        "-"
+                                      );
+                                      row.child_id = child_id;
+                                      row.head_id = head_id;
+                                      row.update();
+                                    },
+                                    name: "finance_account_child_id",
+                                    data: this.state.accounts,
+                                    textField: "label",
+                                    valueField: (node) => {
+                                      if (node["leafnode"] === "Y") {
+                                        return (
+                                          node["head_id"] +
+                                          "-" +
+                                          node["finance_account_child_id"]
+                                        );
+                                      } else {
+                                        return node["finance_account_head_id"];
+                                      }
+                                    },
+                                    defaultValue: row.head_id
+                                      ? `${row.head_id}-${row.finance_account_child_id}`
+                                      : undefined,
+                                  }}
+                                />
+                              );
                             }
                           },
                           others: {
+                            show: this.isFinance,
                             maxWidth: 200,
                             style: {
                               textAlign: "center",
@@ -530,7 +576,7 @@ class SubInsurance extends PureComponent {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: (row) => { },
+                        onEdit: (row) => {},
                         onDone: updateSubInsurance.bind(this, this),
                       }}
                     />
