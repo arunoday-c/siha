@@ -13,6 +13,7 @@ const texthandle = ($this, e) => {
       obj["identity_type_id"] = primaryId.hims_d_identity_document_id;
     }
   }
+  debugger;
   if (name === "identity_type_id") {
     obj["identity_no"] = e.selected.masked_identity;
   }
