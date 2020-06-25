@@ -768,98 +768,28 @@ class ContractManagement extends Component {
                     <div className="row">
                       <div className="col-12">
                         <ul className="contractAttachmentList">
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>{" "}
-                          <li>
-                            <b> File Name </b>
-                            <span>
-                              <i className="fas fa-download"></i>
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </li>
-                        </ul>
-
-                        {this.state.contract_docs.length ? (
-                          this.state.contract_docs.map((doc) => (
-                            <div className="col" key={doc._id}>
-                              <Card
-                                style={{ width: 250, marginTop: 16 }}
-                                actions={[
-                                  <Button
-                                    key="setting"
+                          {this.state.contract_docs.length ? (
+                            this.state.contract_docs.map((doc) => (
+                              <li>
+                                <b> {doc.filename} </b>
+                                <span>
+                                  <i
+                                    className="fas fa-download"
                                     onClick={() => this.downloadDoc(doc)}
-                                  >
-                                    <i className="fa fa-download"></i>
-                                  </Button>,
-                                  <Button
-                                    key="delete"
+                                  ></i>
+                                  <i
+                                    className="fas fa-trash"
                                     onClick={() => this.deleteDoc(doc)}
-                                  >
-                                    <i className="fa fa-trash"></i>
-                                  </Button>,
-                                ]}
-                              ></Card>
+                                  ></i>
+                                </span>
+                              </li>
+                            ))
+                          ) : (
+                            <div className="col-12" key={1}>
+                              <p>No Attachments Available</p>
                             </div>
-                          ))
-                        ) : (
-                          <div className="col-12" key={1}>
-                            <p>No Attachments Available</p>
-                          </div>
-                        )}
+                          )}
+                        </ul>
                       </div>
                     </div>
                   </div>
