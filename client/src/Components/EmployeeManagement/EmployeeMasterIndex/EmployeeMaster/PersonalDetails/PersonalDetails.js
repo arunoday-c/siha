@@ -434,6 +434,7 @@ class PersonalDetails extends Component {
                         onClear: () => {
                           this.setState({
                             identity_type_id: null,
+                            identity_no: null,
                           });
                         },
                       }}
@@ -442,13 +443,15 @@ class PersonalDetails extends Component {
                       ENTER ID NUMBER
                       <MaskedInput
                         placeholder={
-                          this.state.identity_no === null
-                            ? "AAA-AAA-AAA"
-                            : this.state.identity_no
+                          this.state.identity_no === null ||
+                          this.state.identity_no === ""
+                            ? ""
+                            : "eg: " + this.state.identity_no
                         }
                         mask={
-                          this.state.identity_no === null
-                            ? "AAA-AAA-AAA"
+                          this.state.identity_no === null ||
+                          this.state.identity_no === ""
+                            ? "####################"
                             : this.state.identity_no
                         }
                         name="identity_card"

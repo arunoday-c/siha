@@ -10,6 +10,13 @@ let algaehSearchConfig = (searchName, req) => {
          where record_status='A' ",
       },
       {
+        searchName: "onlycreditpatients",
+        searchQuery: `select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name,  contact_number, employee_id, 
+        age, date_of_birth, gender, email, title_id
+        from hims_f_patient as P inner join hims_f_billing_header as H on P.hims_d_patient_id =H.patient_id
+        where H.credit_amount >0 and H.balance_credit >0 and H.cancelled='N' and H.hospital_id=${hospitalId}`,
+      },
+      {
         searchName: "patientappoinment",
         searchQuery:
           "select PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
@@ -695,7 +702,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "insservicemaster",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, IT.service_type\
+          "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, \
+            IT.service_type , TEST.hims_d_investigation_test_id\
             from hims_d_services as S inner join hims_d_service_type AS IT on S.service_type_id = IT.hims_d_service_type_id \
             left join hims_d_investigation_test TEST on TEST.services_id = S.hims_d_services_id\
             where hims_d_services_id not in\
@@ -704,9 +712,11 @@ let algaehSearchConfig = (searchName, req) => {
             I.service_type_id in (2,5,11)) and {mapper} \
             and S.service_type_id in (2,5,11) \
             union all\
-            SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \
-            T.service_type FROM hims_d_services_insurance as I \
-            inner join hims_d_service_type AS T on I.service_type_id = T.hims_d_service_type_id where  insurance_id=? and {mapper} and I.service_type_id in (2,5,11)",
+            SELECT service_name,service_type_id,I.services_id as hims_d_services_id, covered,pre_approval, \
+            T.service_type, TEST.hims_d_investigation_test_id FROM hims_d_services_insurance as I \
+            inner join hims_d_service_type AS T on I.service_type_id = T.hims_d_service_type_id \
+            left join hims_d_investigation_test TEST on TEST.services_id = I.services_id\
+            where  insurance_id=? and {mapper} and I.service_type_id in (2,5,11)",
         orderBy: "hims_d_services_id desc",
         inputSequence: ["insurance_id", "insurance_id"],
       },
@@ -973,7 +983,7 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
           inner join  hims_f_sales_invoice_header SO on IH.sales_invoice_header_id = SO.hims_f_sales_invoice_header_id  \
           inner join hims_d_project P on P.hims_d_project_id = IH.project_id \
-          where 1=1" ,
+          where 1=1",
         orderBy: "hims_f_sales_return_header_id desc",
       },
       {
@@ -981,7 +991,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS contract_number, contract_date, start_date, end_date, \
           contract_code, quotation_ref_numb, C.customer_name from  hims_f_contract_management CM \
-          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where 1=1 " ,
+          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where 1=1 ",
         orderBy: "hims_f_contract_management_id desc",
       },
       {

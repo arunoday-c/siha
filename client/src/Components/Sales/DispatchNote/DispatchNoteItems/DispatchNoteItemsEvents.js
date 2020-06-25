@@ -276,7 +276,7 @@ const RequestPO = ($this, item) => {
         });
       }
     },
-    onFailure: (error) => {
+    onCatch: (error) => {
       swalMessage({
         title: error.message,
         type: "error",

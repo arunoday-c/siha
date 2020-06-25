@@ -1,4 +1,5 @@
 import { notifiModel } from "./model";
+import moment from "moment";
 import { formatDate, formatTime } from "./utils";
 
 const apsock = (socket) => {
@@ -36,7 +37,9 @@ const apsock = (socket) => {
     });
   });
   socket.on("patient_checked", (patient) => {
-    const docMsg = `${patient.full_name} checked in for consultaion on ${patient.visit_date}`;
+    const docMsg = `${patient.full_name} checked in for consultaion on ${moment(
+      patient.visit_date
+    ).format("hh:mm A")}`;
     const docNoti = new notifiModel({
       user_id: patient.provider_id,
       message: docMsg,
