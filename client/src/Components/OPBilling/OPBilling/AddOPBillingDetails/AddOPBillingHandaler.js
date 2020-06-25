@@ -41,17 +41,38 @@ const serviceTypeHandeler = ($this, context, e) => {
 };
 
 const serviceHandeler = ($this, context, e) => {
+  debugger
+  if ((e.service_type_id === 5 || e.service_type_id === 11) && e.hims_d_investigation_test_id === null) {
+    $this.setState({
+      s_service: null,
+      service_name: "",
+    });
+    if (context !== null) {
+      context.updateState({
+        s_service: null,
+        service_name: "",
+      });
+    }
+    swalMessage({
+      title: "Service Defined But Test not Defined, Please contact Admin.",
+      type: "warning"
+    });
+
+    return;
+  }
   $this.setState({
     service_name: e.service_name,
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
+    test_id: e.hims_d_investigation_test_id,
     visittypeselect: false
   });
   if (context !== null) {
     context.updateState({
       service_name: e.service_name,
       s_service: e.hims_d_services_id,
-      s_service_type: e.service_type_id
+      s_service_type: e.service_type_id,
+      test_id: e.hims_d_investigation_test_id
     });
   }
 
