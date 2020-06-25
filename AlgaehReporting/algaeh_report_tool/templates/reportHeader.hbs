@@ -65,9 +65,9 @@
         color: #ccc;
     }
 </style>
- 
+
 <body>
-   
+
     <table class="reportHeaderCntr">
         {{!-- <tr>
             <th>
@@ -83,11 +83,11 @@
 
         <tr>
             <th rowspan="4" class="hospitalLogo">
-               <img src="{{logoUrl 'ORG' identity }}"  />
-             
-                </th>
+                <img src="{{logoUrl 'ORG' identity }}" />
+
+            </th>
             <th>
-                
+
                 <h4>{{{report_name_for_header}}}</h4>
             </th>
         </tr>
@@ -96,11 +96,11 @@
                 <p>{{hospital_address}}</p>
             </th>
         </tr>
-        <tr>
+        {{!-- <tr>
             <th>
                 <p>Report Generated Date: {{currentDateTime 'date'}}</p>
             </th>
-        </tr>
+        </tr> --}}
         <tr>
             <th>
                 <p class="showFilterValue">{{#each filter}}
@@ -111,5 +111,5 @@
 
 
     </table>
-   
+
 </body>

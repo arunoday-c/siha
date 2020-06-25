@@ -30,12 +30,16 @@ import {
   loadAccounts,
   getFinanceProviders,
 } from "./SubInsuranceHandaler";
+
+import { MainContext } from "algaeh-react-components/context";
+import { AlgaehTreeSearch } from "algaeh-react-components";
 import MyContext from "../../../utils/MyContext";
 import Options from "../../../Options.json";
 
 class SubInsurance extends PureComponent {
   constructor(props) {
     super(props);
+    this.isFinance = false;
     this.state = {
       insurance_sub_code: null,
       insurance_sub_name: null,
@@ -55,6 +59,22 @@ class SubInsurance extends PureComponent {
     this.getFinanceProviders = getFinanceProviders.bind(this);
   }
 
+  static contextType = MainContext;
+
+  componentDidMount() {
+    debugger;
+    this.isFinance =
+      this.context.userToken.product_type === "HIMS_ERP" ||
+      this.context.userToken.product_type === "FINANCE_ERP";
+    if (this.isFinance) {
+      this.loadAccounts();
+    }
+    if (this.state.insurance_provider_id !== null) {
+      getSubInsuranceDetails(this, this);
+      this.getFinanceProviders();
+    }
+  }
+
   loadAccounts() {
     loadAccounts({ finance_account_head_id: "1" }).then((result) => {
       if (result.length > 0) {
@@ -71,13 +91,6 @@ class SubInsurance extends PureComponent {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {
-    // this.loadAccounts();
-    if (this.state.insurance_provider_id !== null) {
-      getSubInsuranceDetails(this, this);
-      this.getFinanceProviders();
-    }
-  }
   handleClose = () => {
     this.setState({ snackeropen: false });
   };
@@ -100,198 +113,198 @@ class SubInsurance extends PureComponent {
               <div className="popRightDiv">
                 {/* Services Details */}
                 <div className="row">
-                  <div className="col-lg-12">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Insurar Name",
-                      }}
-                    />
-                    <h6>
-                      {this.state.insurance_provider_name
-                        ? this.state.insurance_provider_name
-                        : "Insurar Name"}
-                    </h6>
+                  <div className="col-12">
+                    <div className="row">
+                      <div className="col-2 form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Insurar Name",
+                          }}
+                        />
+                        <h6>
+                          {this.state.insurance_provider_name
+                            ? this.state.insurance_provider_name
+                            : "Insurar Name"}
+                        </h6>
+                      </div>
+
+                      <AlagehFormGroup
+                        div={{ className: "col-2 mandatory  form-group" }}
+                        label={{
+                          fieldName: "insurance_sub_code",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          value: this.state.insurance_sub_code,
+                          className: "txt-fld",
+                          name: "insurance_sub_code",
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-4 mandatory  form-group" }}
+                        label={{
+                          fieldName: "insurance_sub_name",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          value: this.state.insurance_sub_name,
+                          className: "txt-fld",
+                          name: "insurance_sub_name",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-4 mandatory  form-group" }}
+                        label={{
+                          fieldName: "arabic_provider_name",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          value: this.state.arabic_sub_name,
+                          className: "txt-fld arabicInput",
+                          name: "arabic_sub_name",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col mandatory  form-group" }}
+                        label={{
+                          fieldName: "effective_start_date",
+                          isImp: true,
+                        }}
+                        textBox={{
+                          className: "txt-fld hidden",
+                          name: "effective_start_date",
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this),
+                          onBlur: dateValidate.bind(this, this),
+                        }}
+                        value={
+                          this.state.effective_start_date !== null
+                            ? this.state.effective_start_date
+                            : null
+                        }
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col mandatory  form-group" }}
+                        label={{ fieldName: "effective_end_date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "effective_end_date",
+                        }}
+                        minDate={new Date()}
+                        maxDate={this.state.maxDate_end_date}
+                        events={{
+                          onChange: datehandle.bind(this, this),
+                          onBlur: dateValidate.bind(this, this),
+                        }}
+                        value={
+                          this.state.effective_end_date !== null
+                            ? this.state.effective_end_date
+                            : null
+                        }
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col   form-group" }}
+                        label={{
+                          fieldName: "transaction_number",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          value: this.state.transaction_number,
+                          className: "txt-fld",
+                          name: "transaction_number",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col  form-group" }}
+                        label={{
+                          fieldName: "card_format",
+                          isImp: false,
+                        }}
+                        textBox={{
+                          value: this.state.card_format,
+                          className: "txt-fld",
+                          name: "card_format",
+
+                          events: {
+                            onChange: texthandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
+                      {/* <AlagehFormGroup
+                        div={{ className: "col  form-group" }}
+                        textBox={{
+                          value: this.state.effective_start_date,
+                          className: "txt-fld d-none",
+                          name: "effective_start_date",
+
+                          events: {
+                            onChange: datehandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col   form-group" }}
+                        textBox={{
+                          value: this.state.effective_end_date,
+                          className: "txt-fld d-none",
+                          name: "effective_end_date",
+
+                          events: {
+                            onChange: datehandle.bind(this, this),
+                          },
+                          others: {
+                            "data-subdata": true,
+                          },
+                        }}
+                      /> */}
+
+                      <div className="col" style={{ marginTop: 19 }}>
+                        <button
+                          className="btn btn-primary"
+                          onClick={saveSubInsurance.bind(this, this, context)}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "insurance_sub_code",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      value: this.state.insurance_sub_code,
-                      className: "txt-fld",
-                      name: "insurance_sub_code",
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "insurance_sub_name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      value: this.state.insurance_sub_name,
-                      className: "txt-fld",
-                      name: "insurance_sub_name",
-
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "arabic_provider_name",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      value: this.state.arabic_sub_name,
-                      className: "txt-fld arabicInput",
-                      name: "arabic_sub_name",
-
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "transaction_number",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      value: this.state.transaction_number,
-                      className: "txt-fld",
-                      name: "transaction_number",
-
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "card_format",
-                      isImp: false,
-                    }}
-                    textBox={{
-                      value: this.state.card_format,
-                      className: "txt-fld",
-                      name: "card_format",
-
-                      events: {
-                        onChange: texthandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "effective_start_date",
-                      isImp: true,
-                    }}
-                    textBox={{
-                      className: "txt-fld hidden",
-                      name: "effective_start_date",
-                    }}
-                    maxDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this),
-                    }}
-                    value={
-                      this.state.effective_start_date !== null
-                        ? this.state.effective_start_date
-                        : null
-                    }
-                  />
-
-                  <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
-                    label={{ fieldName: "effective_end_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "effective_end_date",
-                    }}
-                    minDate={new Date()}
-                    maxDate={this.state.maxDate_end_date}
-                    events={{
-                      onChange: datehandle.bind(this, this),
-                      onBlur: dateValidate.bind(this, this),
-                    }}
-                    value={
-                      this.state.effective_end_date !== null
-                        ? this.state.effective_end_date
-                        : null
-                    }
-                  />
-
-                  <div className="col-lg-3">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: 19 }}
-                      onClick={saveSubInsurance.bind(this, this, context)}
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.effective_start_date,
-                      className: "txt-fld d-none",
-                      name: "effective_start_date",
-
-                      events: {
-                        onChange: datehandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
-                    textBox={{
-                      value: this.state.effective_end_date,
-                      className: "txt-fld d-none",
-                      name: "effective_end_date",
-
-                      events: {
-                        onChange: datehandle.bind(this, this),
-                      },
-                      others: {
-                        "data-subdata": true,
-                      },
-                    }}
-                  />
-                </div>
-
-                <div className="row">
                   <div className="col-12" id="subInsuranceGridCntr">
                     <AlgaehDataGrid
                       id="sub_insurance_grid"
@@ -482,7 +495,7 @@ class SubInsurance extends PureComponent {
                             ] = this.state.finance_providers.filter(
                               (item) =>
                                 item.finance_account_child_id ===
-                                row.finance_account_child_id &&
+                                  row.finance_account_child_id &&
                                 item.head_id === row.head_id
                             );
                             return current ? current.child_name : "";
@@ -508,10 +521,45 @@ class SubInsurance extends PureComponent {
                                 />
                               );
                             } else {
-                              return null;
+                              return (
+                                <AlgaehTreeSearch
+                                  div={{
+                                    className: "form-group customTreeSearch",
+                                  }}
+                                  tree={{
+                                    treeDefaultExpandAll: true,
+                                    onChange: (val) => {
+                                      const [head_id, child_id] = val.split(
+                                        "-"
+                                      );
+                                      row.child_id = child_id;
+                                      row.head_id = head_id;
+                                      row.update();
+                                    },
+                                    name: "finance_account_child_id",
+                                    data: this.state.accounts,
+                                    textField: "label",
+                                    valueField: (node) => {
+                                      if (node["leafnode"] === "Y") {
+                                        return (
+                                          node["head_id"] +
+                                          "-" +
+                                          node["finance_account_child_id"]
+                                        );
+                                      } else {
+                                        return node["finance_account_head_id"];
+                                      }
+                                    },
+                                    defaultValue: row.head_id
+                                      ? `${row.head_id}-${row.finance_account_child_id}`
+                                      : undefined,
+                                  }}
+                                />
+                              );
                             }
                           },
                           others: {
+                            show: this.isFinance,
                             maxWidth: 200,
                             style: {
                               textAlign: "center",
@@ -530,7 +578,7 @@ class SubInsurance extends PureComponent {
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteSubInsurance.bind(this, this),
-                        onEdit: (row) => { },
+                        onEdit: (row) => {},
                         onDone: updateSubInsurance.bind(this, this),
                       }}
                     />

@@ -35,6 +35,8 @@ const onchangegridcol = ($this, context, row, e) => {
       return s.dispatch_quantity !== null ? parseFloat(s.dispatch_quantity) : 0;
     });
 
+    row.sale_price = item_details.unit_cost
+
     const _index = item_details.batches.indexOf(row);
     item_details.batches[_index] = row;
 
@@ -68,8 +70,9 @@ const onchangegridcol = ($this, context, row, e) => {
     // item_details.extended_cost = (
     //   parseFloat(item_details.unit_cost) * parseFloat(value)
     // ).toFixed($this.state.decimal_place);
+
     item_details.extended_cost = (
-      parseFloat(row.sale_price) * parseFloat(value)
+      parseFloat(item_details.unit_cost) * parseFloat(value)
     ).toFixed($this.state.decimal_place);
 
     item_details.batches[_index]["extended_cost"] = item_details.extended_cost;

@@ -378,6 +378,7 @@ const getRequisitionDetails = (
 
     onSuccess: response => {
       if (response.data.success === true) {
+        debugger
         let data = response.data.records;
         AlgaehLoader({ show: true });
         let from_location_id = data.from_location_id;
