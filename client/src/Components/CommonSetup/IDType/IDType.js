@@ -28,7 +28,7 @@ class IDType extends Component {
       identity_document_name: "",
       arabic_identity_document_name: "",
       currentRowID: "",
-      hims_d_nationality_id: null,
+      nationality_id: null,
       nationality: "",
       countries: [],
       masked_identity: "",
@@ -48,7 +48,7 @@ class IDType extends Component {
         if (response.data.success) {
           const countries = response.data.records;
           this.setState({
-            // nationality: countries.hims_d_nationality_id,
+            // nationality: countries.nationality_id,
             countries: countries,
           });
         }
@@ -89,6 +89,7 @@ class IDType extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
   texthandle(e) {
+    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
@@ -97,6 +98,7 @@ class IDType extends Component {
     });
   }
   changeGridEditors(row, e) {
+    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -344,9 +346,9 @@ class IDType extends Component {
               // isImp: true,
             }}
             selector={{
-              name: "hims_d_nationality_id",
+              name: "nationality_id",
               className: "select-fld",
-              value: this.state.hims_d_nationality_id,
+              value: this.state.nationality_id,
               dataSource: {
                 textField: "nationality",
                 valueField: "hims_d_nationality_id",
@@ -502,7 +504,7 @@ class IDType extends Component {
                         },
 
                         {
-                          fieldName: "hims_d_nationality_id",
+                          fieldName: "nationality_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Nationality" }}
@@ -521,9 +523,9 @@ class IDType extends Component {
                                   forceLabel: "",
                                 }}
                                 selector={{
-                                  name: "hims_d_nationality_id",
+                                  name: "nationality_id",
                                   className: "select-fld",
-                                  value: row.hims_d_nationality_id,
+                                  value: row.nationality_id,
                                   dataSource: {
                                     textField: "nationality",
                                     valueField: "hims_d_nationality_id",
