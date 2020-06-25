@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Upload, message, Card, Button } from "antd";
+import { Upload, Modal } from "antd";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { newAlgaehApi } from "../../../hooks";
 import "./ContractManagement.scss";
@@ -41,7 +41,7 @@ import moment from "moment";
 import { MainContext } from "algaeh-react-components/context";
 
 const { Dragger } = Upload;
-
+const { confirm } = Modal;
 class ContractManagement extends Component {
   constructor(props) {
     super(props);
@@ -139,7 +139,24 @@ class ContractManagement extends Component {
   };
 
   deleteDoc = (doc) => {
-    console.log(doc);
+    const self = this;
+    confirm({
+      title: `Are you sure you want to delete this file?`,
+      content: `${doc.filename}`,
+      icon: <i className="fa fa-trash"></i>,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        self.onDelete(doc);
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  };
+
+  onDelete = (doc) => {
     newAlgaehApi({
       uri: "/deleteContractDoc",
       method: "DELETE",
