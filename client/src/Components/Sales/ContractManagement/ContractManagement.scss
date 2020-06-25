@@ -1,3 +1,4 @@
+@import "../../../styles/algaehCssVariables.scss";
 #contractMhmntGrid {
   .ReactTable {
     max-height: 40vh !important;
@@ -15,4 +16,41 @@
 
 .upload-drag-icon i {
   font-size: 3rem;
+}
+.contractAttachmentList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid lighten($color-black, 70%) !important;
+  max-height: 20vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid lighten($color-black, 70%) !important;
+    b {
+      display: inline-block;
+      width: 80%;
+      padding: 3px 5px;
+    }
+    span {
+      display: inline-block;
+      width: 20%;
+      text-align: right;
+      i {
+        padding: 10px;
+        border-left: 1px dashed lighten($color-black, 70%) !important;
+        &:hover {
+          background-color: $primary-color;
+          color: $color-white;
+          cursor: pointer;
+        }
+      }
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
 }

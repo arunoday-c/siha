@@ -717,6 +717,155 @@ class ContractManagement extends Component {
                 </div>
               </div>
             </div>
+
+            <div
+              className="portlet portlet-bordered margin-top-15"
+              style={{ marginBottom: 50 }}
+            >
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Contract Attachments</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-4">
+                    {" "}
+                    <Dragger
+                      accept=".doc,.docx,application/msword,.pdf"
+                      name="contract_file"
+                      onRemove={(file) => {
+                        this.setState((state) => {
+                          const index = state.fileList.indexOf(file);
+                          const newFileList = state.fileList.slice();
+                          newFileList.splice(index, 1);
+                          return {
+                            contract_files: newFileList,
+                            saveEnable: state.dataExists && !newFileList.length,
+                          };
+                        });
+                      }}
+                      beforeUpload={(file) => {
+                        this.setState((state) => ({
+                          contract_files: [...state.contract_files, file],
+                          saveEnable: false,
+                        }));
+                        return false;
+                      }}
+                      fileList={this.state.contract_files}
+                    >
+                      <p className="upload-drag-icon">
+                        <i className="fas fa-file-upload"></i>
+                      </p>
+                      <p className="ant-upload-text">
+                        {this.state.contract_file
+                          ? `Click or Drag a file to replace the current file`
+                          : `Click or Drag a file to this area to upload`}
+                      </p>
+                    </Dragger>
+                  </div>
+                  <div className="col-8">
+                    <div className="row">
+                      <div className="col-12">
+                        <ul className="contractAttachmentList">
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>{" "}
+                          <li>
+                            <b> File Name </b>
+                            <span>
+                              <i className="fas fa-download"></i>
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </li>
+                        </ul>
+
+                        {this.state.contract_docs.length ? (
+                          this.state.contract_docs.map((doc) => (
+                            <div className="col" key={doc._id}>
+                              <Card
+                                style={{ width: 250, marginTop: 16 }}
+                                actions={[
+                                  <Button
+                                    key="setting"
+                                    onClick={() => this.downloadDoc(doc)}
+                                  >
+                                    <i className="fa fa-download"></i>
+                                  </Button>,
+                                  <Button
+                                    key="delete"
+                                    onClick={() => this.deleteDoc(doc)}
+                                  >
+                                    <i className="fa fa-trash"></i>
+                                  </Button>,
+                                ]}
+                              ></Card>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="col-12" key={1}>
+                            <p>No Attachments Available</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="col-3">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -809,85 +958,6 @@ class ContractManagement extends Component {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col portlet" style={{ marginBottom: 80 }}>
-            <div className="caption" style={{ marginLeft: "3rem" }}>
-              <h3 className="caption-subject">Contract Files</h3>
-            </div>
-            <div className="row ">
-              {this.state.contract_docs.length ? (
-                this.state.contract_docs.map((doc) => (
-                  <div className="col" key={doc._id}>
-                    <Card
-                      style={{ width: 250, marginTop: 16 }}
-                      actions={[
-                        <Button
-                          key="setting"
-                          onClick={() => this.downloadDoc(doc)}
-                        >
-                          <i className="fa fa-download"></i>
-                        </Button>,
-                        <Button
-                          key="delete"
-                          onClick={() => this.deleteDoc(doc)}
-                        >
-                          <i className="fa fa-trash"></i>
-                        </Button>,
-                      ]}
-                    >
-                      {doc.filename}
-                    </Card>
-                  </div>
-                ))
-              ) : (
-                <div className="col-12" key={1}>
-                  <Card style={{ width: 250, marginTop: 16 }}>
-                    Nothing to show
-                  </Card>
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="col ">
-            <div
-              className="portlet portlet-bordered"
-              style={{ marginBottom: 80 }}
-            >
-              <Dragger
-                accept=".doc,.docx,application/msword,.pdf"
-                name="contract_file"
-                onRemove={(file) => {
-                  this.setState((state) => {
-                    const index = state.fileList.indexOf(file);
-                    const newFileList = state.fileList.slice();
-                    newFileList.splice(index, 1);
-                    return {
-                      contract_files: newFileList,
-                      saveEnable: state.dataExists && !newFileList.length,
-                    };
-                  });
-                }}
-                beforeUpload={(file) => {
-                  this.setState((state) => ({
-                    contract_files: [...state.contract_files, file],
-                    saveEnable: false,
-                  }));
-                  return false;
-                }}
-                fileList={this.state.contract_files}
-              >
-                <p className="upload-drag-icon">
-                  <i className="fas fa-file-upload"></i>
-                </p>
-                <p className="ant-upload-text">
-                  {this.state.contract_file
-                    ? `Click or Drag a file to replace the current file`
-                    : `Click or Drag a file to this area to upload`}
-                </p>
-              </Dragger>
             </div>
           </div>
         </div>
