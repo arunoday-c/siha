@@ -42,7 +42,7 @@ export default function AddDoctorModal(props) {
                         onChange={(e) => {
                           data["slot"] = e.target.value;
                         }}
-                        className="col"
+                        className="col black-input"
                       >
                         {GlobalVariables.SLOTS.map((item, index) => (
                           <option key={index} value={item.value}>
