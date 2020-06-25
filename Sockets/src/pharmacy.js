@@ -13,8 +13,9 @@ export default function pharmacy(io) {
           query: `select count(*) from hims_d_pharmacy_notification_expiry;`,
         });
         _mysql.releaseConnection();
-        if (result[0]["count(*)"]) {
-          const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.`;
+        console.log(result, typeof result[0]["count(*)"], "result");
+        if (result[0]["count(*)"] != 0) {
+          const msg = `You have ${result[0]["count(*)"]} items that are going to expiry soon.asd`;
           const create = await createNotification({
             message: msg,
             module: "phcy",
@@ -31,5 +32,9 @@ export default function pharmacy(io) {
     "Asia/Kolkata"
   );
   job.start();
-  console.log(job.running, job.nextDate().format(), "info");
+  console.log(
+    job.running,
+    job.nextDate().format("hh:mm a, dd/mm/yyyy"),
+    "info"
+  );
 }

@@ -99,9 +99,12 @@ class PhySchSetup extends Component {
   openAddDoctorModal = () => {
     const { doctors, scheduleDoctors } = this.state;
     let docIds = scheduleDoctors.map(({ provider_id }) => provider_id);
-    let availDoctors = doctors.filter(
-      (item) => !docIds.includes(item.provider_id)
-    );
+    let availDoctors = doctors
+      .filter((item) => !docIds.includes(item.provider_id))
+      .map((item) => {
+        item.isDocChecked = false;
+        return item;
+      });
     this.setState({
       openAddDoctor: true,
       availDoctors,
@@ -343,21 +346,11 @@ class PhySchSetup extends Component {
     });
   };
 
-  checkHandleAdd = (myRow, index) => {
-    console.log(myRow);
+  checkHandleAdd = (row, index) => {
+    const myRow = { ...row };
 
     const { availDoctors } = this.state;
-    let docsArray = this.state.schedule_detail;
-    myRow.schedule_status = this.state.schedule_status;
-    myRow.slot = this.state.sch_slot;
-    myRow.from_work_hr = this.state.from_work_hr;
-    myRow.to_work_hr = this.state.to_work_hr;
-    myRow.work_break1 = this.state.work_break1;
-    myRow.work_break2 = this.state.work_break2;
-    myRow.from_break_hr1 = this.state.from_break_hr1;
-    myRow.to_break_hr1 = this.state.to_break_hr1;
-    myRow.from_break_hr2 = this.state.from_break_hr2;
-    myRow.to_break_hr2 = this.state.to_break_hr2;
+    let docsArray = [...this.state.schedule_detail];
 
     const item = Enumerable.from(this.state.schedule_detail)
       .where((w) => w.provider_id === myRow.provider_id)
@@ -366,6 +359,17 @@ class PhySchSetup extends Component {
       docsArray.splice(docsArray.indexOf(item), 1);
       availDoctors[index].isDocChecked = false;
     } else {
+      myRow.schedule_status = this.state.schedule_status;
+      myRow.slot = this.state.sch_slot;
+      myRow.from_work_hr = this.state.from_work_hr;
+      myRow.to_work_hr = this.state.to_work_hr;
+      myRow.work_break1 = this.state.work_break1;
+      myRow.work_break2 = this.state.work_break2;
+      myRow.from_break_hr1 = this.state.from_break_hr1;
+      myRow.to_break_hr1 = this.state.to_break_hr1;
+      myRow.from_break_hr2 = this.state.from_break_hr2;
+      myRow.to_break_hr2 = this.state.to_break_hr2;
+      delete myRow.isDocChecked;
       docsArray.push(myRow);
       availDoctors[index].isDocChecked = true;
     }

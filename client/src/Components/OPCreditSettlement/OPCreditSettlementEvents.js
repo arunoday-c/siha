@@ -3,7 +3,7 @@ import SettlementIOputs from "../../Models/OPCreditSettlement";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
@@ -13,15 +13,15 @@ import Enumerable from "linq";
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: FrontDesk,
     },
-    searchName: "patients",
+    searchName: "onlycreditpatients",
     uri: "/gloabelSearch/get",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
 
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       let IOputs = extend(SettlementIOputs.inputParam());
       IOputs.patient_code = row.patient_code;
@@ -34,11 +34,11 @@ const PatientSearch = ($this, e) => {
         getCashiersAndShiftMAP($this);
         getPatientDetails($this);
       });
-    }
+    },
   });
 };
 
-const getPatientDetails = $this => {
+const getPatientDetails = ($this) => {
   // AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -46,7 +46,7 @@ const getPatientDetails = $this => {
     module: "billing",
     method: "GET",
     data: { patient_id: $this.state.patient_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
@@ -63,17 +63,17 @@ const getPatientDetails = $this => {
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message || error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const ClearData = $this => {
+const ClearData = ($this) => {
   let IOputs = extend(SettlementIOputs.inputParam());
   IOputs.Cashchecked = $this.state.default_pay_type === "CH" ? true : false;
   IOputs.Cardchecked = $this.state.default_pay_type === "CD" ? true : false;
@@ -83,7 +83,7 @@ const ClearData = $this => {
   });
 };
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
 
   // if ($this.state.card_amount > 0) {
@@ -138,7 +138,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount.",
     });
 
     return isError;
@@ -146,7 +146,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Shift is Mandatory."
+      title: "Shift is Mandatory.",
     });
 
     return isError;
@@ -157,7 +157,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Due to write off, Please Enter remarks."
+      title: "Due to write off, Please Enter remarks.",
     });
     document.querySelector("[name='remarks']").focus();
 
@@ -165,34 +165,34 @@ const Validations = $this => {
   }
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this) => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
     data: { for: "T" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
           $this.setState(
             {
-              shift_assinged: response.data.records
+              shift_assinged: response.data.records,
             },
             () => {
               $this.setState({
-                shift_id: response.data.records[0].shift_id
+                shift_id: response.data.records[0].shift_id,
               });
             }
           );
         }
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -204,7 +204,7 @@ const getCtrlCode = ($this, billcode) => {
     module: "billing",
     method: "GET",
     data: { credit_number: billcode },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -233,13 +233,13 @@ const getCtrlCode = ($this, billcode) => {
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -254,7 +254,7 @@ const GenerateReciept = ($this, callback) => {
     swalMessage({
       title: "Please select receipt type.",
 
-      type: "error"
+      type: "error",
     });
   } else {
     if ($this.state.cash_amount > 0 || $this.state.Cashchecked === true) {
@@ -265,7 +265,7 @@ const GenerateReciept = ($this, callback) => {
         pay_type: $this.state.pay_cash,
         amount: $this.state.cash_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
 
@@ -277,7 +277,7 @@ const GenerateReciept = ($this, callback) => {
         pay_type: $this.state.pay_card,
         amount: $this.state.card_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
     if ($this.state.cheque_amount > 0 || $this.state.Checkchecked === true) {
@@ -288,13 +288,13 @@ const GenerateReciept = ($this, callback) => {
         pay_type: $this.state.pay_cheque,
         amount: $this.state.cheque_amount,
         updated_date: null,
-        card_type: null
+        card_type: null,
       });
     }
 
     $this.setState(
       {
-        receiptdetails: obj
+        receiptdetails: obj,
       },
       () => {
         callback($this);
@@ -303,15 +303,15 @@ const GenerateReciept = ($this, callback) => {
   }
 };
 
-const SaveOPCreidt = $this => {
+const SaveOPCreidt = ($this) => {
   const err = Validations($this);
   if (!err) {
     if ($this.state.unbalanced_amount === 0) {
-      GenerateReciept($this, that => {
+      GenerateReciept($this, (that) => {
         let Inputobj = $this.state;
 
         let listOfinclude = Enumerable.from(Inputobj.criedtdetails)
-          .where(w => w.include === "Y")
+          .where((w) => w.include === "Y")
           .toArray();
 
         Inputobj.criedtdetails = listOfinclude;
@@ -322,7 +322,7 @@ const SaveOPCreidt = $this => {
           module: "billing",
           data: Inputobj,
           method: "POST",
-          onSuccess: response => {
+          onSuccess: (response) => {
             AlgaehLoader({ show: false });
             if (response.data.success) {
               $this.setState({
@@ -331,44 +331,44 @@ const SaveOPCreidt = $this => {
                 hims_f_credit_header_id:
                   response.data.records.hims_f_credit_header_id,
                 saveEnable: true,
-                Billexists: true
+                Billexists: true,
               });
               swalMessage({
                 title: "Done Successfully",
-                type: "success"
+                type: "success",
               });
             } else {
               swalMessage({
                 title: response.data.records.message,
-                type: "error"
+                type: "error",
               });
             }
           },
-          onFailure: error => {
+          onFailure: (error) => {
             AlgaehLoader({ show: false });
             swalMessage({
               title: error.message || error.response.data.message,
-              type: "error"
+              type: "error",
             });
-          }
+          },
         });
       });
     } else {
       swalMessage({
         title: "Please collect the amount.",
-        type: "error"
+        type: "error",
       });
     }
   }
 };
 
-const generateOPCreditReceipt = $this => {
+const generateOPCreditReceipt = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -377,17 +377,17 @@ const generateOPCreditReceipt = $this => {
         reportParams: [
           {
             name: "credit_number",
-            value: $this.credit_number
-          }
+            value: $this.credit_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
       window.open(origin);
-    }
+    },
   });
 };
 
@@ -398,5 +398,5 @@ export {
   PatientSearch,
   getCtrlCode,
   SaveOPCreidt,
-  generateOPCreditReceipt
+  generateOPCreditReceipt,
 };

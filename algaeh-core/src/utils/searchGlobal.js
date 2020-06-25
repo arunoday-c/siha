@@ -10,6 +10,13 @@ let algaehSearchConfig = (searchName, req) => {
          where record_status='A' ",
       },
       {
+        searchName: "onlycreditpatients",
+        searchQuery: `select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name,  contact_number, employee_id, 
+        age, date_of_birth, gender, email, title_id
+        from hims_f_patient as P inner join hims_f_billing_header as H on P.hims_d_patient_id =H.patient_id
+        where H.credit_amount >0 and H.balance_credit >0 and H.cancelled='N' and H.hospital_id=${hospitalId}`,
+      },
+      {
         searchName: "patientappoinment",
         searchQuery:
           "select PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
@@ -976,7 +983,7 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_customer C on IH.customer_id = C.hims_d_customer_id \
           inner join  hims_f_sales_invoice_header SO on IH.sales_invoice_header_id = SO.hims_f_sales_invoice_header_id  \
           inner join hims_d_project P on P.hims_d_project_id = IH.project_id \
-          where 1=1" ,
+          where 1=1",
         orderBy: "hims_f_sales_return_header_id desc",
       },
       {
@@ -984,7 +991,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS contract_number, contract_date, start_date, end_date, \
           contract_code, quotation_ref_numb, C.customer_name from  hims_f_contract_management CM \
-          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where 1=1 " ,
+          inner join hims_d_customer C on CM.customer_id = C.hims_d_customer_id where 1=1 ",
         orderBy: "hims_f_contract_management_id desc",
       },
       {

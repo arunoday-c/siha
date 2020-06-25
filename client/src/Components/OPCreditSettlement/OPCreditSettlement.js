@@ -127,7 +127,7 @@ class OPCreditSettlement extends Component {
               onChange: getCtrlCode.bind(this, this),
             },
             selectValue: "credit_number",
-            searchName: "opCreidt",
+            searchName: "onlycreditpatients",
             jsonFile: {
               fileName: "spotlightSearch",
               fieldName: "creidtbills.opCreidt",
