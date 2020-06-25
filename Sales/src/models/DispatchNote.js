@@ -110,95 +110,154 @@ export function getSalesOrderItem(req, res, next) {
           _mysql
             .executeQuery({
               query:
-                "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
-                                from hims_f_sales_order_items D \
-                            left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
-                            inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
-                            inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.uom_id \
-                            where D.sales_order_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
-                            and D.quantity_outstanding <> 0 order by  date(LOC.expirydt) ",
+                `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,         
+              (D.quantity - D.quantity_outstanding) as delivered_to_date,
+              D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, LOC.hims_m_inventory_item_location_id,
+              LOC.inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
+              ,LOC.expirydt as expiry_date,COALESCE( LOC.barcode,LOCAD.barcode) as barcode,
+              COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
+              COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
+              IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
+              PU.uom_description from hims_f_sales_order_items D
+              inner join hims_d_inventory_uom PU  on PU.hims_d_inventory_uom_id=D.uom_id
+              inner join hims_d_inventory_item_master IM  on IM.hims_d_inventory_item_master_id=D.item_id
+              left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id
+              and  date(LOC.expirydt) > date(CURDATE()) 
+              left join hims_m_inventory_item_location LOCAD  on D.item_id=LOCAD.item_id and
+              LOCAD.expirydt is null and IM.exp_date_required='N'
+              where D.sales_order_id=?
+              and D.quantity_outstanding<>0 group by hims_f_sales_order_items_id order by  date(LOC.expirydt)`,
+              // "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
+              //                 from hims_f_sales_order_items D \
+              //             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
+              //             inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
+              //             inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.uom_id \
+              //             where D.sales_order_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_required='N') \
+              //             and D.quantity_outstanding <> 0 order by  date(LOC.expirydt) ",
               values: [headerResult[0].hims_f_sales_order_id],
               printQuery: true,
             })
             .then((inventory_stock_detail) => {
               _mysql.releaseConnection();
-              // console.log("inventory_stock_detail", inventory_stock_detail)
-              var item_grp = _(inventory_stock_detail)
-                .groupBy("hims_d_inventory_item_master_id")
-                .map(
-                  (row, hims_d_inventory_item_master_id) =>
-                    hims_d_inventory_item_master_id
-                )
+              const grouppedData = _.chain(inventory_stock_detail)
+                .groupBy((g) => g.hims_d_inventory_item_master_id)
+                .map((detail, key) => {
+                  const {
+                    sales_order_items_id,
+                    item_category_id,
+                    item_group_id,
+                    item_id,
+                    uom_id,
+                    quantity_outstanding,
+                    item_description,
+                    uom_description,
+                    unit_cost,
+                    discount_percentage,
+                    tax_percentage,
+                    ordered_quantity,
+                    selected_quantity,
+                    delivered_to_date,
+                    removed
+                  } = detail[0];
+                  return {
+                    sales_order_items_id,
+                    item_category_id,
+                    item_group_id,
+                    item_id,
+                    uom_id,
+                    quantity_outstanding,
+                    unit_cost,
+                    item_description,
+                    uom_description,
+                    unit_cost,
+                    discount_percentage,
+                    tax_percentage,
+                    ordered_quantity,
+                    selected_quantity,
+                    delivered_to_date,
+                    removed,
+                    batches: detail.filter((f) => f.qtyhand > 0),
+                  };
+                })
                 .value();
 
-              let outputArray = [];
+              // console.log("inventory_stock_detail", inventory_stock_detail)
+              // var item_grp = _(inventory_stock_detail)
+              //   .groupBy("hims_d_inventory_item_master_id")
+              //   .map(
+              //     (row, hims_d_inventory_item_master_id) =>
+              //       hims_d_inventory_item_master_id
+              //   )
+              //   .value();
+
+              // let outputArray = [];
               // console.log("item_grp", item_grp)
 
-              for (let i = 0; i < item_grp.length; i++) {
-                let item = new LINQ(inventory_stock_detail)
-                  .Where(
-                    (w) => w.hims_d_inventory_item_master_id == item_grp[i]
-                  )
-                  .Select((s) => {
-                    return {
-                      sales_order_items_id: s.hims_f_sales_order_items_id,
-                      item_category_id: s.category_id,
-                      item_group_id: s.group_id,
-                      item_id: s.hims_d_inventory_item_master_id,
-                      uom_id: s.uom_id,
-                      quantity_outstanding: parseFloat(s.quantity_outstanding),
-                      item_description: s.item_description,
-                      uom_description: s.uom_description,
-                      unit_cost: s.unit_cost,
-                      discount_percentage: s.discount_percentage,
-                      tax_percentage: s.tax_percentage,
-                      ordered_quantity: s.quantity,
-                      selected_quantity: 0,
-                      delivered_to_date:
-                        parseFloat(s.quantity) -
-                        parseFloat(s.quantity_outstanding),
-                      removed: "N",
-                    };
-                  })
-                  .FirstOrDefault();
+              // for (let i = 0; i < item_grp.length; i++) {
+              //   let item = new LINQ(inventory_stock_detail)
+              //     .Where(
+              //       (w) => w.hims_d_inventory_item_master_id == item_grp[i]
+              //     )
+              //     .Select((s) => {
+              //       return {
+              //         sales_order_items_id: s.hims_f_sales_order_items_id,
+              //         item_category_id: s.category_id,
+              //         item_group_id: s.group_id,
+              //         item_id: s.hims_d_inventory_item_master_id,
+              //         uom_id: s.uom_id,
+              //         quantity_outstanding: parseFloat(s.quantity_outstanding),
+              //         item_description: s.item_description,
+              //         uom_description: s.uom_description,
+              //         unit_cost: s.unit_cost,
+              //         discount_percentage: s.discount_percentage,
+              //         tax_percentage: s.tax_percentage,
+              //         ordered_quantity: s.quantity,
+              //         selected_quantity: 0,
+              //         delivered_to_date:
+              //           parseFloat(s.quantity) -
+              //           parseFloat(s.quantity_outstanding),
+              //         removed: "N",
+              //       };
+              //     })
+              //     .FirstOrDefault();
 
-                let batches = new LINQ(inventory_stock_detail)
-                  .Where(
-                    (w) =>
-                      w.hims_d_inventory_item_master_id == item_grp[i] &&
-                      w.qtyhand > 0 &&
-                      w.inventory_location_id == inputParam.location_id
-                  )
-                  .Select((s) => {
-                    return {
-                      item_id: s.hims_d_inventory_item_master_id,
-                      batchno: s.batchno,
-                      expiry_date: s.expirydt,
-                      barcode: s.barcode,
-                      qtyhand: s.qtyhand,
-                      qtypo: s.qtypo,
-                      cost_uom: s.cost_uom,
-                      average_cost: s.avgcost,
-                      unit_cost: s.avgcost,
-                      last_purchase_cost: s.last_purchase_cost,
-                      item_type: s.item_type,
-                      grn_id: s.grn_id,
-                      grnno: s.grnno,
-                      sale_price: s.sale_price,
-                      mrp_price: s.mrp_price,
-                      sales_uom: s.sales_uom,
-                      vendor_batchno: s.vendor_batchno,
-                      dispatch_quantity: 0,
-                    };
-                  })
-                  .ToArray();
+              //   let batches = new LINQ(inventory_stock_detail)
+              //     .Where(
+              //       (w) =>
+              //         w.hims_d_inventory_item_master_id == item_grp[i] &&
+              //         w.qtyhand > 0 &&
+              //         w.inventory_location_id == inputParam.location_id
+              //     )
+              //     .Select((s) => {
+              //       return {
+              //         item_id: s.hims_d_inventory_item_master_id,
+              //         batchno: s.batchno,
+              //         expiry_date: s.expirydt,
+              //         barcode: s.barcode,
+              //         qtyhand: s.qtyhand,
+              //         qtypo: s.qtypo,
+              //         cost_uom: s.cost_uom,
+              //         average_cost: s.avgcost,
+              //         unit_cost: s.avgcost,
+              //         last_purchase_cost: s.last_purchase_cost,
+              //         item_type: s.item_type,
+              //         grn_id: s.grn_id,
+              //         grnno: s.grnno,
+              //         sale_price: s.sale_price,
+              //         mrp_price: s.mrp_price,
+              //         sales_uom: s.sales_uom,
+              //         vendor_batchno: s.vendor_batchno,
+              //         dispatch_quantity: 0,
+              //       };
+              //     })
+              //     .ToArray();
 
-                outputArray.push({ ...item, batches });
-              }
+              //   outputArray.push({ ...item, batches });
+              // }
 
               req.records = {
                 ...headerResult[0],
-                ...{ stock_detail: outputArray },
+                stock_detail: grouppedData
               };
 
               next();
