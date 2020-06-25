@@ -5,7 +5,7 @@ const { CronJob } = cron;
 
 export default function pharmacy(io) {
   var job = new CronJob(
-    "11 13 * * *",
+    "0 11 * * *",
     async function () {
       try {
         const _mysql = new algaehMysql();
