@@ -10,8 +10,8 @@
                 <tr>
                     <td><label class="textEnLft">Dispatch No.</label>:<span
                             class="valueText">{{dispatch_note_number}}</span></td>
-                    <td><label class="textEnLft">Dispatch From</label>:<span
-                            class="valueText">{{location_description}}</span></td>
+                    <td><label class="textEnLft">Dispatch To</label>:<span class="valueText">{{hospital_name}}</span>
+                    </td>
 
                 </tr>
                 <tr>
@@ -38,56 +38,60 @@
                 <thead>
                     <tr>
                         <th width="40">Sl No.</th>
-                        <th width="250">Batch No.</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
+                        <th width="100">Item Code</th>
+                        <th width="250">Item Name</th>
+                        <th width="80">Dispatch UOM</th>
+                        <th width="80">Ordered Qty</th>
+                        <th width="80">Dispatch Qty</th>
+                        <th width="100">Out Standing Qty</th>
+                        {{!-- <th>Price</th> --}}
                         {{!-- <th>Discount %</th>
                         <th>Discount Amt.</th>
                         <th>Net Ext. Cost</th> --}}
                         {{!-- <th>Tax Amt.</th> --}}
-                        <th>Total Amt.</th>
+                        {{!-- <th>Total Amt.</th> --}}
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each details}}
-                    <tr>
+                    {{!-- {{#each details}} --}}
+                    {{!-- <tr>
                         <td colspan="3" class="tableSubHdg">
 
                             <span><small>Item Name:</small><br>{{item_description}}</span>
 
-                            {{!-- 
+                            
                             <small> | <small>Purchase
                                 UOM:</small><br>{{uom_description}} | <small>Req. Qty:</small><br>{{ordered_quantity}} |
                             <small>Deliverd Qty:</small><br>{{dispatched_quantity}} | <small>Out Standing
-                                Qty:</small><br>{{quantity_outstanding}} --}}
+                                Qty:</small><br>{{quantity_outstanding}}
 
                         </td>
                         <td colspan="2" class="tableSubHdg inlineSpan numberFld"><span><small>Item
                                     Code:</small><br>{{item_code}}</span>
-                            <span><small>Purchase UOM:</small><br>{{uom_description}}</span>
+                            <span><small>Dispatch UOM:</small><br>{{uom_description}}</span>
                             <span><small>Req. Qty:</small><br>{{ordered_quantity}}</span>
                             <span><small>Deliverd Qty:</small><br>{{dispatched_quantity}}</span>
-                            <span><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</span></td>
+                            <span><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</span>
+                        </td>
 
-                    </tr>
-                    {{#each batches}}
+                    </tr> --}}
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{batchno}}</td>
-                        <td class="numberFld">{{dispatch_quantity}}</td>
-                        <td class="numberFld">{{sales_price}}</td>
-                        {{!-- <td class="numberFld">{{discount_percentage}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{net_extended_cost}}</td> --}}
-                        {{!-- <td class="numberFld">{{tax_amount}}</td> --}}
-                        <td class="numberFld">{{b_total_amount}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{uom_description}}</td>
+                        <td class="numberFld">{{ordered_quantity}}</td>
+                        <td class="numberFld">{{dispatched_quantity}}</td>
+                        <td class="numberFld">{{quantity_outstanding}}</td>
                     </tr>
                     {{/each }}
 
-                    {{/each }}<tr class="footerTotalDown">
+                    {{!-- {{/each }} --}}
+                    {{!-- <tr class="footerTotalDown">
                         <td colspan="4">Net Total</td>
                         <td class="numberFld">{{net_payable}}</td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
         </section>

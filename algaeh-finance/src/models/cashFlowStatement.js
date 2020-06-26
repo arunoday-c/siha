@@ -99,17 +99,17 @@ export default {
 
         const cash = result[6].map((m) => m.finance_account_head_id);
 
-        console.log("PL:", PL);
+        // console.log("PL:", PL);
 
-        console.log("AR:", AR);
+        // console.log("AR:", AR);
 
-        console.log("Current_Asset:", Current_Asset);
+        // console.log("Current_Asset:", Current_Asset);
 
-        console.log("Current_Liability:", Current_Liability);
+        // console.log("Current_Liability:", Current_Liability);
 
-        console.log("Fixed_Asset:", Fixed_Asset);
+        // console.log("Fixed_Asset:", Fixed_Asset);
 
-        console.log("Fixed_Liability:", Fixed_Liability);
+        // console.log("Fixed_Liability:", Fixed_Liability);
         let data = {
           _mysql,
           PL,
@@ -122,6 +122,7 @@ export default {
           decimal_places,
           from_date: input.from_date,
           to_date: input.to_date,
+          display_column_by: input.display_column_b,
         };
 
         if (PL) {
@@ -138,7 +139,9 @@ export default {
               break;
 
             case "M":
-              cashFlow_monthly(data)
+
+            case "Y":
+              cashFlow_monthly_yearly(data)
                 .then((result) => {
                   req.records = result;
                   next();
@@ -146,9 +149,6 @@ export default {
                 .catch((e) => {
                   console.log("e:", e);
                 });
-              break;
-
-            case "Y":
               break;
             default:
               _mysql.releaseConnection();
@@ -537,11 +537,9 @@ function cashFlow_TotalsOnly(options) {
 }
 
 //created by irfan:
-function cashFlow_monthly(options) {
+function cashFlow_monthly_yearly(options) {
   try {
     return new Promise((resolve, reject) => {
-      const months_Array = [];
-
       const {
         _mysql,
         PL,
@@ -554,77 +552,172 @@ function cashFlow_monthly(options) {
         decimal_places,
         from_date,
         to_date,
+        display_column_b,
       } = options;
 
       const columns = [];
+
       let dateStart = moment(from_date);
       let dateEnd = moment(to_date);
 
-      while (dateEnd > dateStart) {
-        months_Array.push({
-          month_name: dateStart.format("MMM, YYYY"),
-          startOfMonth: moment(dateStart).startOf("month").format("YYYY-MM-DD"),
-          endOfMonth: moment(dateStart).endOf("month").format("YYYY-MM-DD"),
-          month_id: dateStart.format("YYYYMM"),
-        });
-        dateStart.add(1, "month");
-      }
-
-      const months_len = months_Array.length;
-      if (months_len > 1) {
-        for (let i = 0; i < months_len; i++) {
-          if (i == 0) {
-            if (from_date == months_Array[i]["startOfMonth"]) {
-              columns.push({
-                colum_id: months_Array[i]["month_id"],
-                label: months_Array[i]["month_name"],
-                cutOff_date: months_Array[i]["endOfMonth"],
-              });
-            } else {
-              let f_str =
-                moment(from_date).format("DD") +
-                "-" +
-                moment(months_Array[i]["endOfMonth"]).format("DD");
-              columns.push({
-                colum_id: months_Array[i]["month_id"],
-                label: f_str + " " + months_Array[i]["month_name"],
-                cutOff_date: months_Array[i]["endOfMonth"],
-              });
-            }
-          } else if (i == months_len - 1) {
-            if (to_date == months_Array[i]["endOfMonth"]) {
-              columns.push({
-                colum_id: months_Array[i]["month_id"],
-                label: months_Array[i]["month_name"],
-                cutOff_date: months_Array[i]["endOfMonth"],
-              });
-            } else {
-              let t_str =
-                moment(months_Array[i]["startOfMonth"]).format("DD") +
-                "-" +
-                moment(to_date).format("DD");
-              columns.push({
-                colum_id: months_Array[i]["month_id"],
-                label: t_str + " " + months_Array[i]["month_name"],
-                cutOff_date: to_date,
-              });
-            }
-          } else {
-            columns.push({
-              colum_id: months_Array[i]["month_id"],
-              label: months_Array[i]["month_name"],
-              cutOff_date: months_Array[i]["endOfMonth"],
-            });
-          }
+      if (display_column_b == "M") {
+        const months_Array = [];
+        while (dateEnd > dateStart) {
+          months_Array.push({
+            month_name: dateStart.format("MMM, YYYY"),
+            startOfMonth: moment(dateStart)
+              .startOf("month")
+              .format("YYYY-MM-DD"),
+            endOfMonth: moment(dateStart).endOf("month").format("YYYY-MM-DD"),
+            month_id: dateStart.format("YYYYMM"),
+          });
+          dateStart.add(1, "month");
         }
-      } else if (months_len == 1) {
-        let _str =
-          moment(from_date).format("DD") + "-" + moment(to_date).format("DD");
-        columns.push({
-          colum_id: months_Array[0]["month_id"],
-          label: _str + " " + months_Array[0]["month_name"],
-          cutOff_date: to_date,
-        });
+
+        const months_len = months_Array.length;
+        if (months_len > 1) {
+          for (let i = 0; i < months_len; i++) {
+            if (i == 0) {
+              if (from_date == months_Array[i]["startOfMonth"]) {
+                columns.push({
+                  colum_id: months_Array[i]["month_id"],
+                  label: months_Array[i]["month_name"],
+                  cutOff_date: months_Array[i]["endOfMonth"],
+                });
+              } else {
+                let f_str =
+                  moment(from_date).format("DD") +
+                  "-" +
+                  moment(months_Array[i]["endOfMonth"]).format("DD");
+                columns.push({
+                  colum_id: months_Array[i]["month_id"],
+                  label: f_str + " " + months_Array[i]["month_name"],
+                  cutOff_date: months_Array[i]["endOfMonth"],
+                });
+              }
+            } else if (i == months_len - 1) {
+              if (to_date == months_Array[i]["endOfMonth"]) {
+                columns.push({
+                  colum_id: months_Array[i]["month_id"],
+                  label: months_Array[i]["month_name"],
+                  cutOff_date: months_Array[i]["endOfMonth"],
+                });
+              } else {
+                let t_str =
+                  moment(months_Array[i]["startOfMonth"]).format("DD") +
+                  "-" +
+                  moment(to_date).format("DD");
+                columns.push({
+                  colum_id: months_Array[i]["month_id"],
+                  label: t_str + " " + months_Array[i]["month_name"],
+                  cutOff_date: to_date,
+                });
+              }
+            } else {
+              columns.push({
+                colum_id: months_Array[i]["month_id"],
+                label: months_Array[i]["month_name"],
+                cutOff_date: months_Array[i]["endOfMonth"],
+              });
+            }
+          }
+        } else if (months_len == 1) {
+          let _str =
+            moment(from_date).format("DD") + "-" + moment(to_date).format("DD");
+          columns.push({
+            colum_id: months_Array[0]["month_id"],
+            label: _str + " " + months_Array[0]["month_name"],
+            cutOff_date: to_date,
+          });
+        }
+      } else {
+        const years_Array = [];
+
+        while (dateEnd >= dateStart) {
+          years_Array.push({
+            startOfYear: moment(dateStart).startOf("year").format("YYYY-MM-DD"),
+            endOfYear: moment(dateStart).endOf("year").format("YYYY-MM-DD"),
+            year_id: dateStart.format("YYYY"),
+          });
+          dateStart.add(1, "year");
+        }
+
+        const year_len = years_Array.length;
+        if (year_len > 1) {
+          for (let i = 0; i < year_len; i++) {
+            if (i == 0) {
+              if (from_date == years_Array[i]["startOfYear"]) {
+                columns.push({
+                  colum_id: years_Array[i]["year_id"],
+                  label: "Jan-Dec " + years_Array[i]["year_id"],
+                  cutOff_date: years_Array[i]["endOfYear"],
+                });
+              } else {
+                let f_str =
+                  moment(from_date).format("DD MMM") +
+                  "-" +
+                  moment(years_Array[i]["endOfYear"]).format("DD MMM, YYYY");
+
+                columns.push({
+                  colum_id: years_Array[i]["year_id"],
+                  label: f_str,
+                  cutOff_date: years_Array[i]["endOfYear"],
+                });
+              }
+            } else if (i == year_len - 1) {
+              if (to_date == years_Array[i]["endOfYear"]) {
+                columns.push({
+                  colum_id: years_Array[i]["year_id"],
+                  label: "Jan-Dec " + years_Array[i]["year_id"],
+                  cutOff_date: years_Array[i]["endOfYear"],
+                });
+              } else {
+                let t_str =
+                  moment(years_Array[i]["startOfYear"]).format("DD MMM") +
+                  "-" +
+                  moment(to_date).format("DD MMM, YYYY");
+
+                columns.push({
+                  colum_id: years_Array[i]["year_id"],
+                  label: t_str,
+                  cutOff_date: to_date,
+                });
+              }
+            } else {
+              columns.push({
+                colum_id: years_Array[i]["year_id"],
+                label: "Jan-Dec " + years_Array[i]["year_id"],
+                cutOff_date: years_Array[i]["endOfYear"],
+              });
+            }
+          }
+        } else if (year_len == 1) {
+          let _str = "";
+
+          if (
+            moment(from_date).format("YYYYMMDD") ==
+            moment(to_date).format("YYYYMMDD")
+          ) {
+            _str = moment(from_date).format("DD MMM, YYYY");
+          } else if (
+            moment(from_date).format("MM") == moment(to_date).format("MM")
+          ) {
+            _str =
+              moment(from_date).format("DD") +
+              "-" +
+              moment(to_date).format("DD MMM, YYYY");
+          } else {
+            _str =
+              moment(from_date).format("DD MMM") +
+              "-" +
+              moment(to_date).format("DD MMM, YYYY");
+          }
+          columns.push({
+            colum_id: years_Array[0]["year_id"],
+            label: _str,
+            cutOff_date: to_date,
+          });
+        }
       }
 
       let sql_qry = ` select  finance_account_child_id as child_id,child_name as name, 
@@ -1106,86 +1199,3 @@ function cashFlow_monthly(options) {
     console.log("e:", e);
   }
 }
-
-//created by irfan:
-function cashFlow_yearly(options) {
-  try {
-    return new Promise((resolve, reject) => {});
-  } catch (e) {
-    console.log("e:", e);
-  }
-}
-
-// let sql_qry = `select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date < date('${from_date}') where finance_account_child_id=${PL.finance_account_child_id}
-// group by C.finance_account_child_id;
-
-// select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum(credit_amount) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date<=date('${to_date}') where finance_account_child_id=${PL.finance_account_child_id}
-// group by C.finance_account_child_id;
-
-// select  ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as
-// closing_bal from finance_voucher_details where head_id in(${AR}) and auth_status='A'
-// and payment_date < date('${from_date}');
-
-// select  ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as
-// closing_bal from finance_voucher_details where head_id in(${AR}) and auth_status='A'
-// and payment_date <=date('${to_date}');
-
-// select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
-// where C.head_id in (${Current_Asset})
-// group by C.finance_account_child_id;
-
-// select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-// where C.head_id in (${Current_Asset})
-// group by C.finance_account_child_id;
-
-// select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
-// where C.head_id in (${Current_Liability})
-// group by C.finance_account_child_id;
-
-// select  finance_account_child_id as child_id,child_name,
-// ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as   closing_bal
-// from   finance_account_child C left join finance_voucher_details VD on C.finance_account_child_id=VD.child_id
-// and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-// where C.head_id in (${Current_Liability})
-// group by C.finance_account_child_id;
-
-// select finance_account_head_id, account_name,
-// ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from finance_account_head H left join finance_voucher_details VD on
-// VD.head_id=H.finance_account_head_id and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
-// where finance_account_head_id in(${Fixed_Asset}) group by H.finance_account_head_id ;
-
-// select finance_account_head_id, account_name,
-// ROUND((coalesce(sum( debit_amount ) ,0)- coalesce(sum(credit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from finance_account_head H left join finance_voucher_details VD on
-// VD.head_id=H.finance_account_head_id and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-// where finance_account_head_id in(${Fixed_Asset}) group by H.finance_account_head_id ;
-
-// select finance_account_head_id, account_name,
-// ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from finance_account_head H left join finance_voucher_details VD on
-// VD.head_id=H.finance_account_head_id and VD.auth_status='A' and  VD.payment_date < date('${from_date}')
-// where finance_account_head_id in(${Fixed_Liability}) group by H.finance_account_head_id ;
-
-// select finance_account_head_id, account_name,
-// ROUND((coalesce(sum( credit_amount  ) ,0)- coalesce(sum(debit_amount) ,0) ),${decimal_places}) as  closing_bal
-// from finance_account_head H left join finance_voucher_details VD on
-// VD.head_id=H.finance_account_head_id and VD.auth_status='A' and  VD.payment_date <= date('${to_date}')
-// where finance_account_head_id in(${Fixed_Liability}) group by H.finance_account_head_id ;
-
-// `;
