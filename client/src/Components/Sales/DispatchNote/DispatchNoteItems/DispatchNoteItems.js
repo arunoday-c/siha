@@ -153,7 +153,7 @@ class DispatchNoteItems extends Component {
                               </span>
 
                               <span>
-                                Seleted Qty:
+                                Selected Qty:
                                 <span>{item.dispatched_quantity}</span>
                               </span>
                               <span>
