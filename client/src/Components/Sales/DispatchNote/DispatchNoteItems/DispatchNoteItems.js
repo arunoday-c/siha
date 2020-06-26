@@ -552,12 +552,10 @@ class DispatchNoteItems extends Component {
                                   />
                                 ),
                                 displayTemplate: (row) => {
-                                  if (
-                                    row.sale_price !== "" &&
-                                    row.dispatch_quantity !== ""
-                                  ) {
+                                  if (row.sale_price && row.dispatch_quantity) {
                                     return (
-                                      row.sale_price * row.dispatch_quantity
+                                      parseFloat(row.sale_price) *
+                                      parseFloat(row.dispatch_quantity)
                                     );
                                   }
                                 },
