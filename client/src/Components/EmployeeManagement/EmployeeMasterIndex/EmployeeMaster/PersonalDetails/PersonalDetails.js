@@ -439,24 +439,27 @@ class PersonalDetails extends Component {
                         },
                       }}
                     />
-                    <div className="col-lg-2 col-md-2 col-sm-12">
-                      ENTER ID NUMBER
-                      <MaskedInput
-                        placeholder={
-                          this.state.identity_no === null ||
-                          this.state.identity_no === ""
-                            ? ""
-                            : "eg: " + this.state.identity_no
-                        }
-                        mask={
-                          this.state.identity_no === null ||
-                          this.state.identity_no === ""
-                            ? "####################"
-                            : this.state.identity_no
-                        }
-                        name="identity_card"
-                        size="20"
-                      />
+                    <div className="col-lg-2 col-md-2 col-sm-12 ">
+                      <label className="styleLabel"> ENTER ID NUMBER</label>
+                      <div className="ui input txt-fld">
+                        <MaskedInput
+                          className=""
+                          placeholder={
+                            this.state.identity_no === null ||
+                            this.state.identity_no === ""
+                              ? ""
+                              : "eg: " + this.state.identity_no
+                          }
+                          mask={
+                            this.state.identity_no === null ||
+                            this.state.identity_no === ""
+                              ? "####################"
+                              : this.state.identity_no
+                          }
+                          name="identity_card"
+                          size="20"
+                        />
+                      </div>
                     </div>
 
                     {/* <AlagehFormGroup

@@ -287,7 +287,7 @@ class IDType extends Component {
       <div className="id_type">
         <div className="row inner-top-search">
           <AlagehFormGroup
-            div={{ className: "col-2  form-group mandatory" }}
+            div={{ className: "col-1  form-group mandatory" }}
             label={{
               fieldName: "type_code",
               isImp: true,
@@ -307,7 +307,7 @@ class IDType extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-3  form-group mandatory" }}
+            div={{ className: "col form-group mandatory" }}
             label={{
               fieldName: "type_desc",
               isImp: true,
@@ -323,7 +323,7 @@ class IDType extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-3 form-group mandatory arabic-txt-fld" }}
+            div={{ className: "col form-group mandatory arabic-txt-fld" }}
             label={{
               fieldName: "arabic_type_desc",
               isImp: true,
@@ -378,20 +378,22 @@ class IDType extends Component {
             }}
           /> */}
           <div className="col-lg-2 col-md-2 col-sm-12 form-group">
-            MASKED IDENTITY
-            <Input
-              placeholder="MASKING IDENTITY"
-              // className="col-3  form-group"
+            <label className="styleLabel">MASKED IDENTITY</label>
+            <div className="ui input txt-fld">
+              <Input
+                placeholder="MASKING IDENTITY"
+                // className="col-3  form-group"
 
-              name="masked_identity"
-              value={this.state.masked_identity}
-              onChange={this.changeTexts.bind(this)}
-              suffix={
-                <Tooltip title={this.ToolTipText}>
-                  <i className="fas fa-info-circle"></i>
-                </Tooltip>
-              }
-            />
+                name="masked_identity"
+                value={this.state.masked_identity}
+                onChange={this.changeTexts.bind(this)}
+                suffix={
+                  <Tooltip title={this.ToolTipText}>
+                    <i className="fas fa-info-circle"></i>
+                  </Tooltip>
+                }
+              />
+            </div>
           </div>
 
           {/* <AlagehAutoComplete
@@ -415,7 +417,7 @@ class IDType extends Component {
             }}
           /> */}
 
-          <div className="col" style={{ marginTop: 19 }}>
+          <div className="col-1" style={{ marginTop: 19, textAlign: "right" }}>
             <button
               onClick={this.addIDType.bind(this)}
               className="btn btn-primary"
