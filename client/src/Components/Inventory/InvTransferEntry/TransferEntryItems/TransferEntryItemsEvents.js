@@ -486,11 +486,11 @@ const AddSelectedBatches = ($this, context) => {
       );
 
       let remove_item = _.filter(_inventory_stock_detail, f => {
-        return f.item_id === details.hims_d_inventory_item_master_id;
+        return f.item_id === details.item_id;
       });
 
       for (let i = 0; i < remove_item.length; i++) {
-        if (remove_item[i].item_id === details.hims_d_inventory_item_master_id) {
+        if (remove_item[i].item_id === details.item_id) {
           let remove_index = _inventory_stock_detail.indexOf(remove_item[i])
           _inventory_stock_detail.splice(remove_index, 1);
         }

@@ -55,7 +55,7 @@ const getCtrlCode = ($this, docNumber, row, from) => {
           for (let j = 0; j < data.inventory_stock_detail.length; j++) {
             data.inventory_stock_detail[j].quantity_transferred =
               data.inventory_stock_detail[j].quantity_transfer;
-            if (from === "Auth") {
+            if (from === "Auth" && data.ack_done === "N") {
               data.inventory_stock_detail[j].ack_quantity =
                 data.inventory_stock_detail[j].quantity_transfer;
             }
@@ -70,6 +70,7 @@ const getCtrlCode = ($this, docNumber, row, from) => {
             data.postEnable = false;
           }
 
+          debugger
           if (data.ack_done === "Y") {
             data.ackTran = true;
           } else {
@@ -378,7 +379,6 @@ const getRequisitionDetails = (
 
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger
         let data = response.data.records;
         AlgaehLoader({ show: true });
         let from_location_id = data.from_location_id;
