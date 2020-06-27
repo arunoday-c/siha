@@ -42,14 +42,14 @@ class PurchaseReturnEntry extends Component {
     RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then((result) => {
       if (result === "show") {
         getData(this, "INV")
-        this.setState({ po_return_from: "INV" })
+        this.setState({ po_return_from: "INV", ReqData: false })
       }
     });
 
     RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then((result) => {
       if (result === "show") {
         getData(this, "PHR")
-        this.setState({ po_return_from: "PHR" })
+        this.setState({ po_return_from: "PHR", ReqData: false })
       }
     });
   }
