@@ -10,3 +10,12 @@
     max-height: 61vh !important;
   }
 }
+.projectComponentModal {
+  .algaeh-modal {
+    max-width: 40vw;
+
+    #ProjectComponentGrid_Cntr {
+      margin-bottom: 25px;
+    }
+  }
+}
