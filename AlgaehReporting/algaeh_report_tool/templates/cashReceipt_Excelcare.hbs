@@ -1,0 +1,114 @@
+{{{importStyle 'css/algaehReportStyles.css'}}}
+
+<body>
+    <div class="print-body ">
+        <section class="cashReciptExcelcare"
+            style="background: url({{imageSource 'images/opBillBgExcelcare.png'}}) no-repeat top center;background-size: contain;padding-top:112px;">
+
+            <table class="tableNoBorder2" style="text-align: left;">
+                <td style="width: 17.5%; height:98px;">
+                    <span style="display: block; margin-top:22px">{{header.invoice_date}}</span>
+                    <span style="display: block; margin-top:36px">{{header.patient_code}}</span>
+                </td>
+                <td style="width: 47%; line-height:31px">
+                    <span style="display: block;">{{header.insurance_provider_name}} Insurance Company Here</span>
+                    <span style="display: block;">{{header.network_type}} Sub Insurance Company Here</span>
+                    <span style="display: block;">{{header.patient_full_name}}</span></td>
+                <td style="width: 19%;"><span style="display: block; margin-top:22px">Insurance Class Here</span>
+                    <span style="display: block; margin-top:36px">Insurance Card No. Here</span></td>
+                <td><span style="display: block; margin-top:22px">{{header.invoice_number}}</span>
+                    <span style="display: block; margin-top:36px">Invoice Type Here</span></td>
+            </table>
+
+
+            <table class="tableNoBorder2" cell-padding="0" style="margin-top: 35px;">
+                {{!-- <thead>
+                    <tr>
+                        <th>Service Desc.<p>وصف الخدمة</p>
+                        </th>
+                        <th>Gross Amount<p>المبلغ الإجمالي</p>
+                        </th>
+                        <th>Discount<p>خصم</p>
+                        </th>
+                        <th>Net Amt. <p>المبلغ الصافي</p>
+                        </th>
+                        <th>Vat Amt. <p>قيمة الضريبة</p>
+                        </th>
+                        <th>Amount<p>صافي / مبلغ المطالبة</th>
+                    </tr>
+                </thead> --}}
+                <tbody>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                    <tr>
+
+                        <td style="width: 8%">13457667</td>
+                        <td style="width: 5%">1</td>
+                        <td style="width: 41.5%">Specialist Fee</td>
+                        <td style="width: 20%">Consultation by Dr. Aboobacker Sidhiqe</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                        <td>999.99</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="margin-top:200px"></div>
+        </section>
+
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

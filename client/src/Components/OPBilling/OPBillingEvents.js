@@ -4,7 +4,7 @@ import BillingIOputs from "../../Models/Billing";
 import {
   algaehApiCall,
   swalMessage,
-  getCookie
+  getCookie,
 } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import Enumerable from "linq";
@@ -18,17 +18,17 @@ const ClearData = ($this, e) => {
     redux: {
       type: "Package_GET_DATA",
       mappingName: "PatientPackageList",
-      data: []
-    }
+      data: [],
+    },
   });
   algaehApiCall({
     uri: "/userPreferences/get",
     data: {
       screenName: _screenName,
-      identifier: "Counter"
+      identifier: "Counter",
     },
     method: "GET",
-    onSuccess: response => {
+    onSuccess: (response) => {
       counter_id = response.data.records.selectedValue;
 
       let IOputs = extend(
@@ -44,11 +44,11 @@ const ClearData = ($this, e) => {
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });
-    }
+    },
   });
 };
 
-const Validations = $this => {
+const Validations = ($this) => {
   let isError = false;
 
   // else if ($this.state.bank_card_id === null) {
@@ -61,7 +61,7 @@ const Validations = $this => {
 
   //   document.querySelector("[name='bank_card_id']").focus();
   //   return isError;
-  // } 
+  // }
 
   if ($this.state.Cardchecked === true) {
     if (
@@ -72,7 +72,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Card Number cannot be blank."
+        title: "Card Number cannot be blank.",
       });
 
       document.querySelector("[name='card_check_number']").focus();
@@ -82,7 +82,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Enter Card Amount."
+        title: "Enter Card Amount.",
       });
 
       document.querySelector("[name='card_amount']").focus();
@@ -97,7 +97,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Check Number cannot be blank."
+        title: "Check Number cannot be blank.",
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -107,7 +107,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Enter Check Amount."
+        title: "Enter Check Amount.",
       });
 
       document.querySelector("[name='cheque_amount']").focus();
@@ -118,7 +118,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount.",
     });
 
     return isError;
@@ -126,7 +126,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Shift is Mandatory."
+      title: "Shift is Mandatory.",
     });
 
     return isError;
@@ -135,7 +135,7 @@ const Validations = $this => {
     swalMessage({
       type: "warning",
       title:
-        "Advance not sufficient for this package , please collect the advance."
+        "Advance not sufficient for this package , please collect the advance.",
     });
 
     return isError;
@@ -151,65 +151,67 @@ const Validations = $this => {
   // }
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this) => {
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
     data: { for: "T" },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.records.length > 0) {
         $this.setState(
           {
-            shift_assinged: response.data.records
+            shift_assinged: response.data.records,
           },
           () => {
             $this.setState({
-              shift_id: response.data.records[0].shift_id
+              shift_id: response.data.records[0].shift_id,
             });
           }
         );
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const generateReceipt = $this => {
+const generateReceipt = ($this) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
       report: {
         reportName: "cashReceipt",
+        pageSize: "A4",
+        pageOrentation: "portrait",
         reportParams: [
           {
             name: "hims_f_billing_header_id",
-            value: $this.state.hims_f_billing_header_id
-          }
+            value: $this.state.hims_f_billing_header_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}`;
       window.open(origin);
-    }
+    },
   });
 };
 
-const selectVisit = $this => {
+const selectVisit = ($this) => {
   //   let $this = this;
 
   if ($this.state.insured === "Y") {
@@ -219,12 +221,12 @@ const selectVisit = $this => {
       method: "GET",
       data: {
         patient_id: $this.state.hims_d_patient_id,
-        patient_visit_id: $this.state.visit_id
+        patient_visit_id: $this.state.visit_id,
       },
       redux: {
         type: "EXIT_INSURANCE_GET_DATA",
-        mappingName: "existinsurance"
-      }
+        mappingName: "existinsurance",
+      },
     });
   }
 
@@ -232,9 +234,9 @@ const selectVisit = $this => {
     uri: "/orderAndPreApproval/load_orders_for_bill",
     method: "GET",
     data: {
-      visit_id: $this.state.visit_id
+      visit_id: $this.state.visit_id,
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         AlgaehLoader({ show: false });
 
@@ -242,7 +244,7 @@ const selectVisit = $this => {
 
         if (data.length > 0) {
           let pre_approval_Required = Enumerable.from(data)
-            .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
+            .where((w) => w.pre_approval === "Y" && w.apprv_status === "NR")
             .toArray();
           for (let i = 0; i < data.length; i++) {
             data[i].ordered_date = data[i].created_date;
@@ -257,14 +259,14 @@ const selectVisit = $this => {
             if (pre_approval_Required.length > 0) {
               swalMessage({
                 title: "Some of the service is Pre-Approval required.",
-                type: "warning"
+                type: "warning",
               });
             }
 
             $this.setState(
               {
                 billdetails: data,
-                addNewService: false
+                addNewService: false,
               },
               () => {
                 algaehApiCall({
@@ -272,7 +274,7 @@ const selectVisit = $this => {
                   module: "billing",
                   method: "POST",
                   data: { billdetails: data },
-                  onSuccess: response => {
+                  onSuccess: (response) => {
                     if (response.data.success) {
                       response.data.records.patient_payable_h =
                         response.data.records.patient_payable ||
@@ -289,18 +291,18 @@ const selectVisit = $this => {
                         response.data.records.cash_amount = 0;
                       }
                       $this.setState({
-                        ...response.data.records
+                        ...response.data.records,
                       });
                     }
                     AlgaehLoader({ show: false });
                   },
-                  onFailure: error => {
+                  onFailure: (error) => {
                     AlgaehLoader({ show: false });
                     swalMessage({
                       title: error.message,
-                      type: "error"
+                      type: "error",
                     });
-                  }
+                  },
                 });
               }
             );
@@ -308,7 +310,7 @@ const selectVisit = $this => {
             swalMessage({
               title:
                 "All service is Pre-Approval required, Please wait for Approval.",
-              type: "warning"
+              type: "warning",
             });
           }
         } else {
@@ -348,37 +350,37 @@ const selectVisit = $this => {
             total_amount: null,
             total_tax: null,
             unbalanced_amount: null,
-            billDetails: true
+            billDetails: true,
           });
         }
       } else {
         $this.setState({
-          addNewService: false
+          addNewService: false,
         });
 
         AlgaehLoader({ show: false });
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const ShowOrderPackage = $this => {
+const ShowOrderPackage = ($this) => {
   $this.setState({
-    isPackOpen: !$this.state.isPackOpen
+    isPackOpen: !$this.state.isPackOpen,
   });
 };
 
-const ClosePackage = $this => {
+const ClosePackage = ($this) => {
   $this.setState(
     {
-      isPackOpen: !$this.state.isPackOpen
+      isPackOpen: !$this.state.isPackOpen,
     },
     () => {
       getPatientDetails($this);
@@ -386,7 +388,7 @@ const ClosePackage = $this => {
   );
 };
 
-const getPatientDetails = $this => {
+const getPatientDetails = ($this) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -395,9 +397,9 @@ const getPatientDetails = $this => {
     method: "GET",
     data: {
       patient_code: $this.state.patient_code,
-      expiry_visit: "N"
+      expiry_visit: "N",
     },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         let data = response.data.records;
 
@@ -413,7 +415,7 @@ const getPatientDetails = $this => {
 
         let x = Enumerable.from($this.props.patienttype)
           .where(
-            w =>
+            (w) =>
               w.hims_d_patient_type_id === data.patientRegistration.patient_type
           )
           .toArray();
@@ -466,7 +468,7 @@ const getPatientDetails = $this => {
         data.patientRegistration.addNewService = false;
 
         if (data.bill_criedt.length > 0) {
-          data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+          data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, (s) =>
             parseFloat(s.balance_credit)
           );
         } else {
@@ -478,19 +480,19 @@ const getPatientDetails = $this => {
             method: "GET",
             data: {
               patient_id: $this.state.patient_id,
-              closed: "N"
+              closed: "N",
             },
             redux: {
               type: "ORDER_SERVICES_GET_DATA",
-              mappingName: "PatientPackageList"
+              mappingName: "PatientPackageList",
             },
-            afterSuccess: data => {
+            afterSuccess: (data) => {
               if (data.length !== 0 || data.length === undefined) {
                 $this.setState({
-                  pack_balance_amount: data[0].balance_amount
+                  pack_balance_amount: data[0].balance_amount,
                 });
               }
-            }
+            },
           });
           selectVisit($this);
         });
@@ -499,37 +501,37 @@ const getPatientDetails = $this => {
       }
       // AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
-const ShowPackageUtilize = $this => {
+const ShowPackageUtilize = ($this) => {
   $this.props.getOrderList({
     uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
     method: "GET",
     data: {
-      visit_id: $this.state.visit_id
+      visit_id: $this.state.visit_id,
     },
     redux: {
       type: "ORDER_SERVICES_GET_DATA",
-      mappingName: "orderedList"
-    }
+      mappingName: "orderedList",
+    },
   });
   $this.setState({
     isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList
+    package_detail: $this.props.PatientPackageList,
   });
 };
-const ClosePackageUtilize = $this => {
+const ClosePackageUtilize = ($this) => {
   $this.setState(
     {
-      isPackUtOpen: !$this.state.isPackUtOpen
+      isPackUtOpen: !$this.state.isPackUtOpen,
     },
     () => {
       getPatientDetails($this);
@@ -539,27 +541,27 @@ const ClosePackageUtilize = $this => {
         data: { closed: "N", patient_id: $this.state.patient_id },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",
-          mappingName: "PatientPackageList"
+          mappingName: "PatientPackageList",
         },
-        afterSuccess: data => {
+        afterSuccess: (data) => {
           if (data.length !== 0 || data.length === undefined) {
             $this.setState({
-              pack_balance_amount: data[0].balance_amount
+              pack_balance_amount: data[0].balance_amount,
             });
           }
-        }
+        },
       });
 
       $this.props.getOrderList({
         uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
         method: "GET",
         data: {
-          visit_id: $this.state.visit_id
+          visit_id: $this.state.visit_id,
         },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",
-          mappingName: "orderedList"
-        }
+          mappingName: "orderedList",
+        },
       });
     }
   );
@@ -575,5 +577,5 @@ export {
   ClosePackage,
   getPatientDetails,
   ShowPackageUtilize,
-  ClosePackageUtilize
+  ClosePackageUtilize,
 };

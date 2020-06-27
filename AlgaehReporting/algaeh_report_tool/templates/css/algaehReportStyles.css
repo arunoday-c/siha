@@ -31,7 +31,8 @@ body {
 .print-body .tableForLabel,
 .tableTotal,
 .tableForLabelSignature,
-.tableNoBorder {
+.tableNoBorder,
+.tableNoBorder2 {
   width: 100%;
   border-collapse: collapse;
 }
@@ -626,4 +627,15 @@ body {
 }
 .footerInfoSection p {
   line-height: 8px;
+}
+
+.cashReciptExcelcare {
+  background: url("../images/opBillBgExcelcare.svg") no-repeat top center;
+  background-size: cover;
+}
+.tableNoBorder2 td {
+  text-align: center;
+  padding: 3px;
+  margin: 0;
+  font-size: 9px;
 }
