@@ -472,7 +472,7 @@ const AddSelectedBatches = ($this, context) => {
           parseFloat(f.quantity_transfer) !== 0 && f.quantity_transfer !== null
         );
       });
-
+      debugger;
       const _index = _stock_detail.indexOf($this.state.item_details);
       _stock_detail[_index] = $this.state.item_details;
       delete details.batches;
@@ -483,21 +483,34 @@ const AddSelectedBatches = ($this, context) => {
           return { ...item, ...details };
         }
       );
-      batches.forEach((branch) => {
+      batches.forEach((batch) => {
         let updateStock = _inventory_stock_detail.find(
-          (f) => f.batchno === branch.batchno && f.item_id === branch.item_id
+          (f) => f.batchno === batch.batchno && f.item_id === batch.item_id
         );
-        branch.sales_price = branch.sale_price;
+        // batch.uom_requested_id = batch.item_uom;
+        // batch.uom_requested_name = batch.uom_description;
+        // batch.sales_price = batch.sale_price;
+
+        // batch.quantity_requested = batch.quantity_required;
+
         if (updateStock !== undefined) {
           const invIndex = _inventory_stock_detail.indexOf(updateStock);
           const totalqty =
-            updateStock.quantity_transfer + branch.quantity_transfer;
-          if (totalqty > branch.qtyhand) {
-            updateStock.quantity_transfer = branch.qtyhand;
+            updateStock.quantity_transfer + batch.quantity_transfer;
+          if (totalqty > batch.qtyhand) {
+            updateStock.quantity_transfer = batch.qtyhand;
           }
           _inventory_stock_detail[invIndex] = updateStock;
         } else {
-          _inventory_stock_detail.push(branch);
+          _inventory_stock_detail.push({
+            ...batch,
+            ...details,
+            // uom_transferred_id: batch.item_uom,
+            sales_price: batch.sale_price,
+            // uom_requested_id: batch.item_uom,
+            uom_requested_name: batch.uom_description,
+            // quantity_requested: batch.quantity_required,
+          });
         }
       });
 

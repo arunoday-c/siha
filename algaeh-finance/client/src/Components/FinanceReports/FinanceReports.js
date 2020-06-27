@@ -92,43 +92,6 @@ export default function FinanceReports() {
     }
   }, [period]);
 
-  // useEffect(() => {
-  //   if (selected && finOptions && dates) {
-  //     switch (selected) {
-  //       case "TB":
-  //         loadReport({ url: "getTrialBalance", reportName: "TB", dates });
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   }
-  // }, [selected, finOptions, dates]);
-
-  // function loadReport(report) {
-  //   const { url, reportName, dates: inputDates } = report;
-  //   getBalanceSheet({
-  //     url: url,
-  //     inputParam: {
-  //       hospital_id: finOptions.default_branch_id,
-  //       cost_center_id: finOptions.default_cost_center_id,
-  //       from_date: inputDates[0],
-  //       to_date: inputDates[1]
-  //     }
-  //   })
-  //     .then(result => {
-  //       setData(result);
-  //       setLoading(false);
-  //     })
-  //     .catch(error => {
-  //       setData([]);
-  //       AlgaehMessagePop({
-  //         title: "error",
-  //         display: error.message
-  //       });
-  //       setLoading(false);
-  //     });
-  // }
-
   function onExportExcel(reportType) {
     downloadExcel({
       selected,
