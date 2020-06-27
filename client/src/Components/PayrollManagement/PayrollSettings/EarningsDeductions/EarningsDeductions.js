@@ -85,8 +85,8 @@ class EarningsDeductions extends Component {
 
     this.FIN_Active =
       userToken.product_type === "HIMS_ERP" ||
-        userToken.product_type === "FINANCE_ERP" ||
-        userToken.product_type === "HRMS_ERP"
+      userToken.product_type === "FINANCE_ERP" ||
+      userToken.product_type === "HRMS_ERP"
         ? true
         : false;
 
@@ -264,15 +264,15 @@ class EarningsDeductions extends Component {
               <div className="col-12 ComponentsFormula">
                 {earn_component.length !== 0
                   ? earn_component.map((menu, index) => {
-                    return (
-                      <input
-                        type="button"
-                        className="col-3"
-                        value={menu.short_desc}
-                        onClick={onChangeCalculatorInput.bind(this, this)}
-                      />
-                    );
-                  })
+                      return (
+                        <input
+                          type="button"
+                          className="col-3"
+                          value={menu.short_desc}
+                          onClick={onChangeCalculatorInput.bind(this, this)}
+                        />
+                      );
+                    })
                   : null}
 
                 {/* <input
@@ -426,7 +426,7 @@ class EarningsDeductions extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col-4" }}
                     label={{
-                      forceLabel: "Component Frequency",
+                      forceLabel: "Component Freq.",
                       isImp: true,
                     }}
                     selector={{
@@ -459,7 +459,7 @@ class EarningsDeductions extends Component {
                       onChange: dropDownHandler.bind(this, this),
                     }}
                   />
-                  <div className="col-8">
+                  <div className="col-7">
                     <label>Allow Round off</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
@@ -517,7 +517,7 @@ class EarningsDeductions extends Component {
                       />
                     </div>
                   </div>
-                  <div className="col-4">
+                  <div className="col-5">
                     <label>Calculation Method</label>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -543,6 +543,7 @@ class EarningsDeductions extends Component {
                     </div>
 
                     <AlagehFormGroup
+                      // div={{ className: "noLabel" }}
                       label={{
                         forceLabel: "Formula",
                         isImp: this.state.calculation_method === "FO",
@@ -577,6 +578,7 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
                     <AlagehFormGroup
+                      div={{ className: "noLabel" }}
                       label={{
                         forceLabel: "Min. Limit Amount",
                         isImp: this.state.min_limit_applicable,
@@ -611,6 +613,7 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
                     <AlagehFormGroup
+                      div={{ className: "noLabel" }}
                       label={{
                         forceLabel: "Max. Limit Amount",
                         isImp: this.state.limit_applicable,
@@ -646,6 +649,7 @@ class EarningsDeductions extends Component {
                     </div>
 
                     <AlagehFormGroup
+                      div={{ className: "noLabel" }}
                       label={{
                         forceLabel: "Limit Days",
                         isImp: this.state.process_limit_required,
@@ -680,7 +684,7 @@ class EarningsDeductions extends Component {
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "" }}
+                      div={{ className: "noLabel" }}
                       label={{
                         forceLabel: "Nationality",
                         isImp: this.state.specific_nationality,
@@ -731,6 +735,28 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
                   </div>
+
+                  <div className="col-4 d-none">
+                    <label>Component For</label>
+                    <AlagehAutoComplete
+                      div={{ className: "noLabel" }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                        value: "",
+                        dataSource: {
+                          textField: "",
+                          valueField: "",
+                          data: [],
+                        },
+                        // onChange: dropDownHandler.bind(this, this),
+                        // others: {
+                        //   disabled: !this.state.specific_nationality,
+                        // },
+                      }}
+                    />
+                  </div>
+
                   <div className="col-4">
                     <label>Misc. Component</label>
                     <div className="customCheckbox">
@@ -747,7 +773,7 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
-                    <label>Leave Salary Component</label>
+                    <label>Leave Salary Comp.</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
@@ -1094,12 +1120,12 @@ class EarningsDeductions extends Component {
                               {row.component_category === "A"
                                 ? "Advance"
                                 : row.component_category === "E"
-                                  ? "Earnings"
-                                  : row.component_category === "D"
-                                    ? "Deduction"
-                                    : row.component_category === "C"
-                                      ? "Employer Contribution"
-                                      : "------"}
+                                ? "Earnings"
+                                : row.component_category === "D"
+                                ? "Deduction"
+                                : row.component_category === "C"
+                                ? "Employer Contribution"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1144,8 +1170,8 @@ class EarningsDeductions extends Component {
                               {row.calculation_method === "FO"
                                 ? "Formula"
                                 : row.calculation_method === "FI"
-                                  ? "Fixed"
-                                  : "------"}
+                                ? "Fixed"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1190,12 +1216,12 @@ class EarningsDeductions extends Component {
                               {row.component_frequency === "M"
                                 ? "Monthly"
                                 : row.component_frequency === "Y"
-                                  ? "Yearly"
-                                  : row.component_frequency === "Q"
-                                    ? "Quarterly"
-                                    : row.component_frequency === "H"
-                                      ? "Hourly"
-                                      : "------"}
+                                ? "Yearly"
+                                : row.component_frequency === "Q"
+                                ? "Quarterly"
+                                : row.component_frequency === "H"
+                                ? "Hourly"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1240,8 +1266,8 @@ class EarningsDeductions extends Component {
                               {row.calculation_type === "F"
                                 ? "Fixed"
                                 : row.calculation_type === "V"
-                                  ? "Variable"
-                                  : "------"}
+                                ? "Variable"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1286,26 +1312,26 @@ class EarningsDeductions extends Component {
                               {row.component_type === "N"
                                 ? "None"
                                 : row.component_type === "B"
-                                  ? "Bonus"
-                                  : row.component_type === "EEP"
-                                    ? "Employee PF"
-                                    : row.component_type === "ERP"
-                                      ? "Employer PF"
-                                      : row.component_type === "LS"
-                                        ? "Leave Salary"
-                                        : row.component_type === "LE"
-                                          ? "Leave Encashment"
-                                          : row.component_type === "EOS"
-                                            ? "End of Service"
-                                            : row.component_type === "FS"
-                                              ? "Final Settlement"
-                                              : row.component_type === "LOP"
-                                                ? "LOP Deduction"
-                                                : row.component_type === "NP"
-                                                  ? "Notice Period"
-                                                  : row.component_type === "AR"
-                                                    ? "Airfare"
-                                                    : "------"}
+                                ? "Bonus"
+                                : row.component_type === "EEP"
+                                ? "Employee PF"
+                                : row.component_type === "ERP"
+                                ? "Employer PF"
+                                : row.component_type === "LS"
+                                ? "Leave Salary"
+                                : row.component_type === "LE"
+                                ? "Leave Encashment"
+                                : row.component_type === "EOS"
+                                ? "End of Service"
+                                : row.component_type === "FS"
+                                ? "Final Settlement"
+                                : row.component_type === "LOP"
+                                ? "LOP Deduction"
+                                : row.component_type === "NP"
+                                ? "Notice Period"
+                                : row.component_type === "AR"
+                                ? "Airfare"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1705,10 +1731,10 @@ class EarningsDeductions extends Component {
                               {row.round_off_type === "FL"
                                 ? "Floor"
                                 : row.round_off_type === "CL"
-                                  ? "Ceiling"
-                                  : row.round_off_type === "RD"
-                                    ? "Round"
-                                    : "------"}
+                                ? "Ceiling"
+                                : row.round_off_type === "RD"
+                                ? "Round"
+                                : "------"}
                             </span>
                           );
                         },
@@ -1825,10 +1851,10 @@ class EarningsDeductions extends Component {
                             this.props.nationalities === undefined
                               ? []
                               : this.props.nationalities.filter(
-                                (f) =>
-                                  f.hims_d_nationality_id ===
-                                  row.nationality_id
-                              );
+                                  (f) =>
+                                    f.hims_d_nationality_id ===
+                                    row.nationality_id
+                                );
 
                           return (
                             <span>
@@ -1941,11 +1967,11 @@ class EarningsDeductions extends Component {
                     filter={true}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
-                  // events={{
-                  //   onEdit: this.onEditHandler.bind(this),
-                  //   onDelete: this.deleteEarningsDeductions.bind(this),
-                  //   onDone: this.updateEarningsDeductions.bind(this)
-                  // }}
+                    // events={{
+                    //   onEdit: this.onEditHandler.bind(this),
+                    //   onDelete: this.deleteEarningsDeductions.bind(this),
+                    //   onDone: this.updateEarningsDeductions.bind(this)
+                    // }}
                   />
                 </div>
               </div>
