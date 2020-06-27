@@ -125,6 +125,20 @@ class RequisitionItems extends Component {
                           value={this.state.item_description}
                           searchName={"InventryForMaterialRequsition"}
                           onClick={itemchangeText.bind(this, this, context)}
+                          onClear={() => {
+                            this.setState({
+                              item_description: "",
+                              // item_description: e.item_description,
+                              item_code: null,
+                              item_category_id: null,
+                              item_uom: null,
+                              item_id: null,
+                              item_group_id: null,
+                              quantity: null,
+                              // barcode: null,
+                              addItemButton: false,
+                            });
+                          }}
                           others={{
                             disabled: this.state.ItemDisable,
                           }}

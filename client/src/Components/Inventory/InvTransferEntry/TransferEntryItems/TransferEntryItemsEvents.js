@@ -206,8 +206,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-          (f) => f.hims_d_inventory_item_master_id === row.item_id
-        );
+        (f) => f.hims_d_inventory_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -302,7 +302,7 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
-    row["git_qty"] = value;
+    // row["git_qty"] = value;
     let quantity_transferred = _.sumBy(item_details.batches, (s) => {
       return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
     });

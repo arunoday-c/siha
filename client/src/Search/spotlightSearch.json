@@ -260,11 +260,11 @@
         "label": "Requisition Date"
       },
       {
-        "fieldName": "from_location",
+        "fieldName": "from_location_description",
         "label": "From Location"
       },
       {
-        "fieldName": "to_location",
+        "fieldName": "to_location_description",
         "label": "To Location"
       }
     ]

@@ -10,6 +10,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import POReturnEntry from "../../../Models/POReturnEntry";
+import { RawSecurityComponent } from "algaeh-react-components";
 
 let texthandlerInterval = null;
 
@@ -194,9 +195,25 @@ const ReceiptSearch = ($this, e) => {
 
 const ClearData = ($this, e) => {
   let IOputs = POReturnEntry.inputParam();
-
   IOputs.dataExitst = false;
   $this.setState(IOputs);
+
+  RawSecurityComponent({ componentCode: "PUR_RTN_INVENTORY" }).then((result) => {
+    if (result === "show") {
+      getData($this, "INV");
+      $this.setState({ po_return_from: "INV", ReqData: false });
+    }
+  }
+  );
+
+  RawSecurityComponent({ componentCode: "PUR_RTN_PHARMACY" }).then((result) => {
+    if (result === "show") {
+      getData($this, "PHR");
+      $this.setState({ po_return_from: "PHR", ReqData: false });
+    }
+  });
+
+
 };
 
 const SavePOReutrnEnrty = $this => {

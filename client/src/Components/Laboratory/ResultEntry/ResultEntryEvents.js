@@ -8,7 +8,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -18,7 +18,7 @@ export function generateLabResultReport(data) {
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -28,27 +28,27 @@ export function generateLabResultReport(data) {
           { name: "hims_d_patient_id", value: data.patient_id },
           {
             name: "visit_id",
-            value: data.visit_id
+            value: data.visit_id,
           },
           {
             name: "hims_f_lab_order_id",
-            value: data.hims_f_lab_order_id
-          }
+            value: data.hims_f_lab_order_id,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename= Hematology Test Report`;
       window.open(origin);
-    }
+    },
   });
 }
 
 const UpdateLabOrder = ($this, value, status) => {
   value[0].comments = $this.state.comment_list.join("<br/>");
-  const critical_exit = _.filter(value, f => {
+  const critical_exit = _.filter(value, (f) => {
     return f.critical_status === "Y";
   });
   if (critical_exit.length > 0) {
@@ -60,18 +60,19 @@ const UpdateLabOrder = ($this, value, status) => {
     module: "laboratory",
     data: value,
     method: "PUT",
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         if (status === "N") {
           swalMessage({
             type: "success",
-            title: "Re-Run Started, Investigation is in Progress . ."
+            title: "Re-Run Started, Investigation is in Progress . .",
           });
         } else {
           swalMessage({
             type: "success",
-            title: "Done successfully . ."
+            title: "Done successfully . .",
           });
+          console.timeEnd("valid");
         }
 
         // for (let k = 0; k < value.length; k++) {
@@ -94,7 +95,7 @@ const UpdateLabOrder = ($this, value, status) => {
               response.data.records.confirmed_by || $this.state.confirmed_by,
             validated_by:
               response.data.records.validated_by || $this.state.validated_by,
-            run_type: status === "N" ? last.runtype : $this.state.run_type
+            run_type: status === "N" ? last.runtype : $this.state.run_type,
           },
           () => {
             AlgaehLoader({ show: false });
@@ -102,23 +103,24 @@ const UpdateLabOrder = ($this, value, status) => {
         );
       }
     },
-    onFailure: error => {
+    onFailure: (error) => {
       swalMessage({
         type: "error",
-        title: error.response.data.message || error.message
+        title: error.response.data.message || error.message,
       });
-    }
+    },
   });
 };
 
-const onvalidate = $this => {
+const onvalidate = ($this) => {
+  console.time("valid");
   let test_analytes = $this.state.test_analytes;
 
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].confirm === "N") {
       swalMessage({
         type: "warning",
-        title: "Please confirm result for all the Analytes"
+        title: "Please confirm result for all the Analytes",
       });
 
       return;
@@ -137,8 +139,8 @@ const onvalidate = $this => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       test_analytes.push({ runtype: $this.state.run_type });
       UpdateLabOrder($this, test_analytes, "V");
@@ -146,31 +148,38 @@ const onvalidate = $this => {
   });
 };
 
-const getAnalytes = $this => {
+const getAnalytes = ($this) => {
+  AlgaehLoader({ show: true });
+  console.time("lab");
   algaehApiCall({
     uri: "/laboratory/getTestAnalytes",
     module: "laboratory",
     method: "GET",
     data: { order_id: $this.state.hims_f_lab_order_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
+      // console.timeEnd("lab");
       if (response.data.success) {
-        let data = response.data.records;
-        for (let i = 0; i < data.length; i++) {
-          data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
-          if (data[i].status === "E" || data[i].status === "N") {
-            data[i].validate = "N";
-            data[i].confirm = "N";
-          } else if (data[i].status === "C") {
-            data[i].validate = "N";
-            data[i].confirm = "Y";
-          } else if (data[i].status === "V") {
-            data[i].validate = "Y";
-            data[i].confirm = "Y";
-          }
-        }
-        $this.setState({ test_analytes: data });
+        // let data = response.data.records;
+        // for (let i = 0; i < data.length; i++) {
+        //   debugger;
+        //   data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
+        //   if (data[i].status === "E" || data[i].status === "N") {
+        //     data[i].validate = "N";
+        //     data[i].confirm = "N";
+        //   } else if (data[i].status === "C") {
+        //     data[i].validate = "N";
+        //     data[i].confirm = "Y";
+        //   } else if (data[i].status === "V") {
+        //     data[i].validate = "Y";
+        //     data[i].confirm = "Y";
+        //   }
+        // }
+        $this.setState({ test_analytes: response.data.records }, () => {
+          AlgaehLoader({ show: false });
+          console.timeEnd("lab");
+        });
       }
-    }
+    },
   });
 
   algaehApiCall({
@@ -178,16 +187,16 @@ const getAnalytes = $this => {
     module: "laboratory",
     method: "GET",
     data: { hims_f_lab_order_id: $this.state.hims_f_lab_order_id },
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success) {
         $this.setState({
           comment_list:
             response.data.records.comments !== null
               ? response.data.records.comments.split("<br/>")
-              : []
+              : [],
         });
       }
-    }
+    },
   });
 };
 
@@ -198,7 +207,7 @@ const confirmedgridcol = ($this, row, e) => {
   if (row.result === null && value === "Y") {
     swalMessage({
       type: "warning",
-      title: "Please enter the result"
+      title: "Please enter the result",
     });
   } else {
     if (row.validate === "Y" && value === "N") {
@@ -227,7 +236,7 @@ const onchangegridcol = ($this, row, e) => {
     if (row.confirm === "N" && value === "Y") {
       swalMessage({
         type: "warning",
-        title: "Without confirming cannot validate, please confirm"
+        title: "Without confirming cannot validate, please confirm",
       });
     } else {
       row[name] = value;
@@ -253,7 +262,7 @@ const onchangegridcol = ($this, row, e) => {
   }
 };
 
-const resultEntryUpdate = $this => {
+const resultEntryUpdate = ($this) => {
   let test_analytes = $this.state.test_analytes;
   let enterResult = true;
   let enterRemarks = true;
@@ -287,25 +296,25 @@ const resultEntryUpdate = $this => {
     if (enterResult === false) {
       swalMessage({
         type: "warning",
-        title: "Please enter result for all the Analytes."
+        title: "Please enter result for all the Analytes.",
       });
     } else if (enterRemarks === false) {
       swalMessage({
         type: "warning",
-        title: "Please enter Remarks for Amended.."
+        title: "Please enter Remarks for Amended..",
       });
     }
   }
 };
 
-const onconfirm = $this => {
+const onconfirm = ($this) => {
   let test_analytes = $this.state.test_analytes;
 
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
       swalMessage({
         type: "warning",
-        title: "Please enter result for all the Analytes."
+        title: "Please enter result for all the Analytes.",
       });
       return;
     } else {
@@ -323,8 +332,8 @@ const onconfirm = $this => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       test_analytes.push({ runtype: $this.state.run_type });
       UpdateLabOrder($this, test_analytes, "CF");
@@ -332,7 +341,7 @@ const onconfirm = $this => {
   });
 };
 
-const onReRun = $this => {
+const onReRun = ($this) => {
   swal({
     title: "Are you sure want to Re-Run?",
     type: "warning",
@@ -340,8 +349,8 @@ const onReRun = $this => {
     confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
+    cancelButtonText: "No",
+  }).then((willProceed) => {
     if (willProceed.value) {
       const { test_analytes, run_type } = $this.state;
       let currentAnalytes = [...test_analytes];
@@ -373,19 +382,20 @@ const onchangegridresult = ($this, row, e) => {
   let { test_analytes } = $this.state;
   // let critical_status = "N";
   row[name] = value;
+
   for (let l = 0; l < test_analytes.length; l++) {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
       row["critical_type"] = checkRange(row);
-      if (row["critical_type"] === "L" || row["critical_type"] === "H") {
+      if (row["critical_type"] !== "N") {
         row["critical_status"] = "Y";
       }
       test_analytes[l] = row;
     }
   }
   $this.setState({
-    test_analytes: test_analytes
+    test_analytes,
   });
 };
 
@@ -455,7 +465,7 @@ const onchangeAmend = ($this, row, e) => {
 
   $this.setState(
     {
-      test_analytes
+      test_analytes,
     },
     () => {
       if (value === "Y") {
@@ -466,8 +476,8 @@ const onchangeAmend = ($this, row, e) => {
           confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
-          cancelButtonText: "No"
-        }).then(willProceed => {
+          cancelButtonText: "No",
+        }).then((willProceed) => {
           if (willProceed.value) {
             row[name] = value;
             row["confirm"] = "N";
@@ -488,11 +498,11 @@ const onchangeAmend = ($this, row, e) => {
   );
 };
 
-const addComments = $this => {
+const addComments = ($this) => {
   if ($this.state.selcted_comments === "") {
     swalMessage({
       type: "warning",
-      title: "Comment cannot be blank."
+      title: "Comment cannot be blank.",
     });
     return;
   }
@@ -502,7 +512,7 @@ const addComments = $this => {
   $this.setState({
     comment_list: comment_list,
     selcted_comments: "",
-    test_comments_id: null
+    test_comments_id: null,
   });
 };
 
@@ -512,7 +522,7 @@ const deleteComment = ($this, row) => {
   comment_list.splice(_index, 1);
 
   $this.setState({
-    comment_list: comment_list
+    comment_list: comment_list,
   });
 };
 
@@ -528,5 +538,5 @@ export {
   onchangegridresult,
   onchangeAmend,
   addComments,
-  deleteComment
+  deleteComment,
 };

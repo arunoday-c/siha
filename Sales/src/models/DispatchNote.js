@@ -126,7 +126,7 @@ export function getSalesOrderItem(req, res, next) {
               left join hims_m_inventory_item_location LOCAD  on D.item_id=LOCAD.item_id and
               LOCAD.expirydt is null and IM.exp_date_required='N'
               where D.sales_order_id=?
-              and D.quantity_outstanding<>0 group by hims_f_sales_order_items_id order by  date(LOC.expirydt)`,
+              and D.quantity_outstanding<>0 order by  date(LOC.expirydt)`,
               // "select D.*, IM.hims_d_inventory_item_master_id, D.quantity as ordered_quantity ,LOC.*,IM.*, PU.uom_description \
               //                 from hims_f_sales_order_items D \
               //             left join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \

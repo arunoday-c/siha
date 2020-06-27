@@ -404,7 +404,7 @@ const getRequisitionDetails = (
           data.stock_detail[i].transfer_to_date =
             data.stock_detail[i].quantity_authorized -
             data.stock_detail[i].quantity_outstanding;
-          data.stock_detail[i].quantity_outstanding = 0;
+          // data.stock_detail[i].quantity_outstanding = 0;
 
           data.stock_detail[i].quantity_requested =
             data.stock_detail[i].quantity_required;
