@@ -206,8 +206,8 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-          (f) => f.hims_d_inventory_item_master_id === row.item_id
-        );
+        (f) => f.hims_d_inventory_item_master_id === row.item_id
+      );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -302,7 +302,7 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
-    row["git_qty"] = value;
+    // row["git_qty"] = value;
     let quantity_transferred = _.sumBy(item_details.batches, (s) => {
       return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
     });
@@ -472,7 +472,7 @@ const AddSelectedBatches = ($this, context) => {
           parseFloat(f.quantity_transfer) !== 0 && f.quantity_transfer !== null
         );
       });
-
+      debugger;
       const _index = _stock_detail.indexOf($this.state.item_details);
       _stock_detail[_index] = $this.state.item_details;
       delete details.batches;
@@ -483,21 +483,34 @@ const AddSelectedBatches = ($this, context) => {
           return { ...item, ...details };
         }
       );
-      batches.forEach((branch) => {
+      batches.forEach((batch) => {
         let updateStock = _inventory_stock_detail.find(
-          (f) => f.batchno === branch.batchno && f.item_id === branch.item_id
+          (f) => f.batchno === batch.batchno && f.item_id === batch.item_id
         );
-        branch.sales_price = branch.sale_price;
+        // batch.uom_requested_id = batch.item_uom;
+        // batch.uom_requested_name = batch.uom_description;
+        // batch.sales_price = batch.sale_price;
+
+        // batch.quantity_requested = batch.quantity_required;
+
         if (updateStock !== undefined) {
           const invIndex = _inventory_stock_detail.indexOf(updateStock);
           const totalqty =
-            updateStock.quantity_transfer + branch.quantity_transfer;
-          if (totalqty > branch.qtyhand) {
-            updateStock.quantity_transfer = branch.qtyhand;
+            updateStock.quantity_transfer + batch.quantity_transfer;
+          if (totalqty > batch.qtyhand) {
+            updateStock.quantity_transfer = batch.qtyhand;
           }
           _inventory_stock_detail[invIndex] = updateStock;
         } else {
-          _inventory_stock_detail.push(branch);
+          _inventory_stock_detail.push({
+            ...batch,
+            ...details,
+            // uom_transferred_id: batch.item_uom,
+            sales_price: batch.sale_price,
+            // uom_requested_id: batch.item_uom,
+            uom_requested_name: batch.uom_description,
+            // quantity_requested: batch.quantity_required,
+          });
         }
       });
 

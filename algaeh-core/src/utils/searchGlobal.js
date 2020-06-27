@@ -186,8 +186,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvREQEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date,\
-          FPL.location_description  as 'FPL.location_description', \
-          TPL.location_description as 'TPL.location_description' from hims_f_inventory_material_header RH,\
+          FPL.location_description  as 'from_location_description', \
+          TPL.location_description as 'to_location_description' from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
           RH.to_location_id = TPL.hims_d_inventory_location_id and  RH.hospital_id=" +

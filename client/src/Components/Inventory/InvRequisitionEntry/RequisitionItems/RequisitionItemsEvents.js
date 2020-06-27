@@ -35,7 +35,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  debugger;
   // let name = e.name || e.target.name;
   let name = e.item_description;
 
@@ -66,7 +65,6 @@ const itemchangeText = ($this, context, e) => {
         mappingName: "inventoryitemdetaillist",
       },
       afterSuccess: (data) => {
-        debugger;
         if (data.length > 0) {
           getItemLocationStock($this, context, {
             location_id: $this.state.from_location_id,
@@ -150,7 +148,7 @@ const itemchangeText = ($this, context, e) => {
     AlgaehLoader({ show: true });
     // let value = e.value || e.target.value;
     let value = e.hims_d_inventory_item_master_id;
-    debugger;
+
     $this.props.getSelectedItemDetais({
       uri: "/inventory/getItemMasterAndItemUom",
       module: "inventory",
@@ -312,6 +310,7 @@ const AddItems = ($this, context) => {
       item_uom: null,
       from_qtyhand: 0,
       to_qtyhand: 0,
+      item_description: "",
     });
 
     if (context !== undefined) {
@@ -328,6 +327,7 @@ const AddItems = ($this, context) => {
         item_uom: null,
         from_qtyhand: 0,
         to_qtyhand: 0,
+        item_description: "",
       });
     }
   }

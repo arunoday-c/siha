@@ -71,8 +71,9 @@ export default {
       requistion_from: null,
       barcode: null,
       transaction_qty: null,
-      requisition_auth_level: null
+      requisition_auth_level: null,
+      item_description: "",
     };
     return output;
-  }
+  },
 };
