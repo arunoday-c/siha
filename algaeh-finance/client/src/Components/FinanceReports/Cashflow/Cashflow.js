@@ -3,15 +3,14 @@ import moment from "moment";
 import { getItem, tokenDecode } from "algaeh-react-components/storage";
 import jwtDecode from "jwt-decode";
 import { newAlgaehApi } from "../../../hooks";
-import {
-  AlgaehMessagePop,
-  AlgaehAutoComplete,
-  Button,
-} from "algaeh-react-components";
+import { AlgaehMessagePop, AlgaehAutoComplete } from "algaeh-react-components";
 import Details from "./detailreport";
 export function Cashflow({ dates, layout }) {
   const [organisation, setOrganisation] = useState({});
   const [displayColumn, setDisplayColumn] = useState("T");
+  const from_date = dates.length > 0 ? dates[0] : undefined;
+  const to_date =
+    dates.length > 0 ? moment(dates[1]).format("YYYY-MM-DD") : undefined;
   useEffect(() => {
     newAlgaehApi({
       uri: "/organization/getMainOrganization",
@@ -37,6 +36,9 @@ export function Cashflow({ dates, layout }) {
   }, []);
 
   const { organization_name, address1, address2, full_name } = organisation;
+  function onChangeDisplayHandler(name, value) {
+    setDisplayColumn(value);
+  }
   return (
     <div className="row">
       <div className="col-12">
@@ -58,9 +60,9 @@ export function Cashflow({ dates, layout }) {
               valueField: "value",
               textField: "name",
             },
+            onChange: onChangeDisplayHandler,
           }}
         />
-        <Button type="primary">Generate Report</Button>
       </div>
       <div className="col-12">
         <div className="financeReportHeader">
@@ -76,7 +78,11 @@ export function Cashflow({ dates, layout }) {
         </div>
       </div>
       <div className="col-12">
-        <Details />
+        <Details
+          from_date={from_date}
+          to_date={to_date}
+          display_column_by={displayColumn}
+        />
       </div>
     </div>
   );
