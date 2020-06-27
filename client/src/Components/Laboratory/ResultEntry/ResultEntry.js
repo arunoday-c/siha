@@ -10,7 +10,7 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -28,8 +28,9 @@ import {
   onchangeAmend,
   generateLabResultReport,
   addComments,
-  deleteComment
+  deleteComment,
 } from "./ResultEntryEvents";
+import { ResultInput } from "./ResultInput";
 import AlgaehReport from "../../Wrapper/printReports";
 
 class ResultEntry extends Component {
@@ -42,7 +43,7 @@ class ResultEntry extends Component {
       comments_data: [],
       test_comments_id: null,
       comment_list: [],
-      selcted_comments: ""
+      selcted_comments: "",
     };
   }
 
@@ -56,8 +57,8 @@ class ResultEntry extends Component {
         method: "GET",
         redux: {
           type: "LAB_EMP_GET_DATA",
-          mappingName: "labiologyusers"
-        }
+          mappingName: "labiologyusers",
+        },
       });
     }
     if (
@@ -70,8 +71,8 @@ class ResultEntry extends Component {
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
-          mappingName: "providers"
-        }
+          mappingName: "providers",
+        },
       });
     }
 
@@ -85,8 +86,8 @@ class ResultEntry extends Component {
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
-          mappingName: "labanalytes"
-        }
+          mappingName: "labanalytes",
+        },
       });
     }
   }
@@ -95,7 +96,7 @@ class ResultEntry extends Component {
     if (newProps.selectedPatient !== undefined && newProps.open === true) {
       // newProps.selectedPatient.open = false;
       this.setState({ ...newProps.selectedPatient }, () => {
-        getAnalytes(this, this);
+        getAnalytes(this);
       });
     }
   }
@@ -106,7 +107,7 @@ class ResultEntry extends Component {
 
     this.setState({
       [name]: value,
-      selcted_comments: e.selected.commet
+      selcted_comments: e.selected.commet,
     });
   }
 
@@ -115,7 +116,7 @@ class ResultEntry extends Component {
     let value = e.value || e.target.value;
 
     this.setState({
-      [name]: value
+      [name]: value,
     });
   }
 
@@ -124,7 +125,7 @@ class ResultEntry extends Component {
 
     AlgaehReport({
       report: {
-        fileName: "haematologyReport"
+        fileName: "haematologyReport",
       },
       data: {
         investigation_name: this.state.service_name,
@@ -137,24 +138,24 @@ class ResultEntry extends Component {
         receipt_date: this.state.ordered_date,
         doctor_name: refBy,
         test_name: this.state.service_name,
-        specimen: this.state.specimen
-      }
+        specimen: this.state.specimen,
+      },
     });
   }
 
   isCritical = () => {
     const { test_analytes } = this.state;
-    let status = test_analytes.some(el => el.critical_type !== "N");
+    let status = test_analytes.some((el) => el.critical_type !== "N");
     return status;
   };
 
-  onClose = e => {
+  onClose = (e) => {
     this.setState(
       {
         test_analytes: [],
         comments_data: [],
         test_comments_id: null,
-        comment_list: []
+        comment_list: [],
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -167,13 +168,14 @@ class ResultEntry extends Component {
       return moment(value).format(Options.dateFormat);
     }
   }
+
   render() {
     let display =
       this.props.providers === undefined
         ? []
         : this.props.providers.filter(
-          f => f.hims_d_employee_id === this.state.provider_id
-        );
+            (f) => f.hims_d_employee_id === this.state.provider_id
+          );
     let isCritical = this.isCritical();
     // let color_display =
     //   this.state.critical_status === "N"
@@ -184,7 +186,7 @@ class ResultEntry extends Component {
         <AlgaehModalPopUp
           class="labResultModalPopup"
           events={{
-            onClose: this.onClose.bind(this)
+            onClose: this.onClose.bind(this),
           }}
           title="Result Entry"
           openPopup={this.props.open}
@@ -197,7 +199,7 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Patient Name Name"
+                          forceLabel: "Patient Name Name",
                         }}
                       />
 
@@ -208,7 +210,7 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Test Name"
+                          forceLabel: "Test Name",
                         }}
                       />
 
@@ -222,7 +224,7 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Ordered By"
+                          forceLabel: "Ordered By",
                         }}
                       />
 
@@ -235,7 +237,7 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Ordered By"
+                          forceLabel: "Ordered By",
                         }}
                       />
 
@@ -248,7 +250,7 @@ class ResultEntry extends Component {
                     <div className="col">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Critical Result"
+                          forceLabel: "Critical Result",
                         }}
                       />
 
@@ -256,7 +258,7 @@ class ResultEntry extends Component {
                         <small
                           className={`badge ${
                             isCritical ? "badge-danger" : "badge-primary"
-                            }`}
+                          }`}
                         >
                           {" "}
                           {isCritical ? "Yes" : "No"}
@@ -267,7 +269,7 @@ class ResultEntry extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Entered By"
+                        forceLabel: "Entered By",
                       }}
                       selector={{
                         name: "entered_by",
@@ -276,19 +278,19 @@ class ResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers
+                          data: this.props.labiologyusers,
                         },
                         onChange: null,
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Confirmed By"
+                        forceLabel: "Confirmed By",
                       }}
                       selector={{
                         name: "confirmed_by",
@@ -297,18 +299,18 @@ class ResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers
+                          data: this.props.labiologyusers,
                         },
                         onChange: null,
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col" }}
                       label={{
-                        forceLabel: "Validtaed By"
+                        forceLabel: "Validtaed By",
                       }}
                       selector={{
                         name: "validated_by",
@@ -317,12 +319,12 @@ class ResultEntry extends Component {
                         dataSource: {
                           textField: "username",
                           valueField: "algaeh_d_app_user_id",
-                          data: this.props.labiologyusers
+                          data: this.props.labiologyusers,
                         },
                         onChange: null,
                         others: {
-                          disabled: true
-                        }
+                          disabled: true,
+                        },
                       }}
                     />
                   </div>
@@ -341,7 +343,7 @@ class ResultEntry extends Component {
                                 label={{ forceLabel: "Analyte Status" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.status === "E" ? (
                                 <span className="badge badge-secondary">
                                   Result Entered
@@ -355,31 +357,31 @@ class ResultEntry extends Component {
                                   Validated
                                 </span>
                               ) : (
-                                      <span className="badge badge-light">
-                                        Result Not Entered
+                                <span className="badge badge-light">
+                                  Result Not Entered
                                 </span>
-                                    );
+                              );
                             },
                             others: {
                               maxWidth: 150,
                               resizable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "analyte_id",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Analyte" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               let display =
                                 this.props.labanalytes === undefined
                                   ? []
                                   : this.props.labanalytes.filter(
-                                    f =>
-                                      f.hims_d_lab_analytes_id ===
-                                      row.analyte_id
-                                  );
+                                      (f) =>
+                                        f.hims_d_lab_analytes_id ===
+                                        row.analyte_id
+                                    );
 
                               return (
                                 <span>
@@ -392,8 +394,8 @@ class ResultEntry extends Component {
                             others: {
                               minWidth: 250,
                               resizable: false,
-                              style: { textAlign: "left" }
-                            }
+                              style: { textAlign: "left" },
+                            },
                           },
                           {
                             fieldName: "analyte_type",
@@ -402,29 +404,29 @@ class ResultEntry extends Component {
                                 label={{ forceLabel: "Analyte Type" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return row.analyte_type === "QU"
                                 ? "Quality"
                                 : row.analyte_type === "QN"
-                                  ? "Quantity"
-                                  : "Text";
+                                ? "Quantity"
+                                : "Text";
                             },
                             others: {
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "result",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Result"
+                                  forceLabel: "Result",
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.validate === "N" ? (
@@ -441,60 +443,44 @@ class ResultEntry extends Component {
                                             data: [
                                               {
                                                 name: "Positive",
-                                                value: "Positive"
+                                                value: "Positive",
                                               },
                                               {
                                                 name: "Negative",
-                                                value: "Negative"
+                                                value: "Negative",
                                               },
                                               {
                                                 name: "Not Seen",
-                                                value: "Not Seen"
-                                              }
-                                            ]
+                                                value: "Not Seen",
+                                              },
+                                            ],
                                           },
                                           onChange: onchangegridresult.bind(
                                             this,
                                             this,
                                             row
-                                          )
+                                          ),
                                         }}
                                       />
                                     ) : (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            value: row.result,
-                                            className: "txt-fld",
-                                            name: "result",
-                                            number:
-                                              row.analyte_type === "QN"
-                                                ? true
-                                                : undefined,
-                                            events: {
-                                              onChange: onchangegridresult.bind(
-                                                this,
-                                                this,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              placeholder: "Enter Result"
-                                            }
-                                          }}
-                                        />
-                                      )
+                                      <ResultInput
+                                        row={row}
+                                        onChange={(e) =>
+                                          onchangegridresult(this, row, e)
+                                        }
+                                      />
+                                    )
                                   ) : (
-                                      row.result
-                                    )}
+                                    row.result
+                                  )}
                                 </span>
                               );
                             },
                             others: {
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
 
                           {
@@ -502,10 +488,12 @@ class ResultEntry extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Units" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
-                                  {row.result_unit !== "NULL" ? row.result_unit : "--"}
+                                  {row.result_unit !== "NULL"
+                                    ? row.result_unit
+                                    : "--"}
                                 </span>
                               );
                             },
@@ -513,19 +501,19 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "run1",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Run 1"
+                                  forceLabel: "Run 1",
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.run1 !== "null" ? row.run1 : "----"}
@@ -536,8 +524,8 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
 
                           {
@@ -545,7 +533,7 @@ class ResultEntry extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Run 2" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.run2 !== "null" ? row.run2 : "----"}
@@ -556,15 +544,15 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "run3",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Run 3" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.run3 !== "null" ? row.run3 : "----"}
@@ -575,8 +563,8 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "critical_type",
@@ -585,22 +573,22 @@ class ResultEntry extends Component {
                                 label={{ forceLabel: "Critical Type" }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return !row.critical_type ? null : row.critical_type ===
                                 "N" ? (
-                                  <span className="badge badge-success">
-                                    Normal
+                                <span className="badge badge-success">
+                                  Normal
                                 </span>
-                                ) : row.critical_type === "L" ? (
-                                  <span className="badge badge-warning">Low</span>
-                                ) : (
-                                    row.critical_type === "H" && (
-                                      <span className="badge badge-warning">
-                                        High
+                              ) : row.critical_type === "L" ? (
+                                <span className="badge badge-warning">Low</span>
+                              ) : (
+                                row.critical_type === "H" && (
+                                  <span className="badge badge-warning">
+                                    High
                                   </span>
-                                    )
-                                  );
-                            }
+                                )
+                              );
+                            },
                           },
                           {
                             fieldName: "normal_low",
@@ -612,8 +600,8 @@ class ResultEntry extends Component {
                             others: {
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "normal_high",
@@ -625,20 +613,19 @@ class ResultEntry extends Component {
                             others: {
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "confirm",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Confirm" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehAutoComplete
-                                      div={{}}
                                       selector={{
                                         name: "confirm",
                                         className: "select-fld",
@@ -646,20 +633,20 @@ class ResultEntry extends Component {
                                         dataSource: {
                                           textField: "name",
                                           valueField: "value",
-                                          data: FORMAT_YESNO
+                                          data: FORMAT_YESNO,
                                         },
                                         onChange: confirmedgridcol.bind(
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       }}
                                     />
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -667,20 +654,19 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "validate",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Validate" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehAutoComplete
-                                      div={{}}
                                       selector={{
                                         name: "validate",
                                         className: "select-fld",
@@ -688,20 +674,20 @@ class ResultEntry extends Component {
                                         dataSource: {
                                           textField: "name",
                                           valueField: "value",
-                                          data: FORMAT_YESNO
+                                          data: FORMAT_YESNO,
                                         },
                                         onChange: onchangegridcol.bind(
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       }}
                                     />
                                   ) : row.confirm === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -709,8 +695,8 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           //TODO
                           {
@@ -718,12 +704,11 @@ class ResultEntry extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Amend" }} />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.amended === "N" ? (
                                     <AlagehAutoComplete
-                                      div={{}}
                                       selector={{
                                         name: "amended",
                                         className: "select-fld",
@@ -731,20 +716,20 @@ class ResultEntry extends Component {
                                         dataSource: {
                                           textField: "name",
                                           valueField: "value",
-                                          data: FORMAT_YESNO
+                                          data: FORMAT_YESNO,
                                         },
                                         onChange: onchangeAmend.bind(
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
                                       }}
                                     />
                                   ) : row.amended === "N" ? (
                                     "No"
                                   ) : (
-                                        "Yes"
-                                      )}
+                                    "Yes"
+                                  )}
                                 </span>
                               );
                             },
@@ -752,24 +737,23 @@ class ResultEntry extends Component {
                               maxWidth: 70,
                               resizable: false,
                               filterable: false,
-                              style: { textAlign: "center" }
-                            }
+                              style: { textAlign: "center" },
+                            },
                           },
                           {
                             fieldName: "remarks",
                             label: (
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Remarks"
+                                  forceLabel: "Remarks",
                                 }}
                               />
                             ),
-                            displayTemplate: row => {
+                            displayTemplate: (row) => {
                               return (
                                 <span>
                                   {row.validate === "N" ? (
                                     <AlagehFormGroup
-                                      div={{}}
                                       textBox={{
                                         value: row.remarks,
                                         className: "txt-fld",
@@ -779,29 +763,29 @@ class ResultEntry extends Component {
                                             this,
                                             this,
                                             row
-                                          )
-                                        }
+                                          ),
+                                        },
                                       }}
                                     />
                                   ) : row.remarks !== "null" ? (
                                     row.remarks
                                   ) : (
-                                        ""
-                                      )}
+                                    ""
+                                  )}
                                 </span>
                               );
                             },
                             others: {
                               filterable: false,
                               minWidth: 250,
-                              resizable: false
-                            }
-                          }
+                              resizable: false,
+                            },
+                          },
                         ]}
                         keyId="patient_code"
                         filter={true}
                         dataSource={{
-                          data: this.state.test_analytes
+                          data: this.state.test_analytes,
                         }}
                         paging={{ page: 0, rowsPerPage: 30 }}
                       />
@@ -811,7 +795,7 @@ class ResultEntry extends Component {
                         <AlagehAutoComplete
                           div={{ className: "col-12  form-group" }}
                           label={{
-                            forceLabel: "Select Comment"
+                            forceLabel: "Select Comment",
                           }}
                           selector={{
                             name: "test_comments_id",
@@ -821,21 +805,21 @@ class ResultEntry extends Component {
                               textField: "commnet_name",
                               valueField:
                                 "hims_d_investigation_test_comments_id",
-                              data: this.state.comments_data
+                              data: this.state.comments_data,
                             },
                             onChange: this.selectCommentEvent.bind(this),
                             onClear: () => {
                               this.setState({
                                 test_comments_id: null,
-                                selcted_comments: ""
+                                selcted_comments: "",
                               });
-                            }
+                            },
                           }}
                         />
                         <div className="col-12">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Enter Comment"
+                              forceLabel: "Enter Comment",
                             }}
                           />
 
@@ -863,22 +847,22 @@ class ResultEntry extends Component {
                           <ol>
                             {this.state.comment_list.length > 0
                               ? this.state.comment_list.map((row, index) => {
-                                return (
-                                  <React.Fragment key={index}>
-                                    <li key={index}>
-                                      <span>{row}</span>
-                                      <i
-                                        className="fas fa-times"
-                                        onClick={deleteComment.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      ></i>
-                                    </li>
-                                  </React.Fragment>
-                                );
-                              })
+                                  return (
+                                    <React.Fragment key={index}>
+                                      <li key={index}>
+                                        <span>{row}</span>
+                                        <i
+                                          className="fas fa-times"
+                                          onClick={deleteComment.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        ></i>
+                                      </li>
+                                    </React.Fragment>
+                                  );
+                                })
                               : null}
                           </ol>
                         </div>
@@ -944,8 +928,8 @@ class ResultEntry extends Component {
                   this.state.status === "C"
                     ? true
                     : this.state.status === "V"
-                      ? true
-                      : false
+                    ? true
+                    : false
                 }
               >
                 Confirm All
@@ -961,7 +945,7 @@ class ResultEntry extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                onClick={e => {
+                onClick={(e) => {
                   this.onClose(e);
                 }}
               >
@@ -980,7 +964,7 @@ function mapStateToProps(state) {
     labiologyusers: state.labiologyusers,
     providers: state.providers,
     testanalytes: state.testanalytes,
-    labanalytes: state.labanalytes
+    labanalytes: state.labanalytes,
   };
 }
 
@@ -990,7 +974,7 @@ function mapDispatchToProps(dispatch) {
       getUserDetails: AlgaehActions,
       getProviderDetails: AlgaehActions,
       getTestAnalytes: AlgaehActions,
-      getLabAnalytes: AlgaehActions
+      getLabAnalytes: AlgaehActions,
     },
     dispatch
   );
