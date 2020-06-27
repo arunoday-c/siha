@@ -91,7 +91,7 @@ class EmployeeGroups extends Component {
             <div className="col-lg-12">
               <div className="row margin-top-15">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{ forceLabel: "Select Component" }}
                   selector={{
                     name: "",
@@ -104,6 +104,41 @@ class EmployeeGroups extends Component {
                     },
                   }}
                 />
+                <AlagehAutoComplete
+                  div={{ className: "col-3 mandatory" }}
+                  label={{ forceLabel: "Select Interval" }}
+                  selector={{
+                    name: "",
+                    className: "select-fld",
+                    value: "",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: [],
+                    },
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{
+                    className: "col-2 mandatory",
+                  }}
+                  label={{
+                    forceLabel: "Amount",
+                    isImp: true,
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "",
+                    value: "",
+                    // events: {
+                    //   onChange: this.changeTexts.bind(this),
+                    // },
+                    // others: {
+                    //   placeholder: "أدخل الاسم العربي",
+                    // },
+                  }}
+                />
+
                 <div className="col-2">
                   <button
                     type="button"
