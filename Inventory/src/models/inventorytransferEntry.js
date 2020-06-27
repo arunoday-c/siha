@@ -664,9 +664,10 @@ export default {
                 query: `select D.hims_f_inventory_material_detail_id,D.inventory_header_id,
                 D.completed,D.item_category_id,D.item_group_id,D.item_id,
                 D.quantity_required,D.quantity_authorized,D.item_uom,D.quantity_recieved,
-                D.quantity_outstanding,LOC.hims_m_inventory_item_location_id,
-                LOC.inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
-                ,LOC.expirydt as expiry_date,COALESCE( LOC.barcode,LOCAD.barcode) as barcode,
+                D.quantity_outstanding,COALESCE(LOC.hims_m_inventory_item_location_id, LOCAD.hims_m_inventory_item_location_id) as hims_m_inventory_item_location_id,
+                COALESCE(LOC.inventory_location_id, LOCAD.inventory_location_id) as inventory_location_id, 
+                COALESCE(LOC.batchno,LOCAD.batchno) as batchno
+                ,COALESCE(LOC.expirydt, LOCAD.expirydt) as expiry_date,COALESCE( LOC.barcode,LOCAD.barcode) as barcode,
                 COALESCE(LOC.qtyhand, LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, 
                 COALESCE(LOC.avgcost, LOCAD.avgcost) as unit_cost, COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
                 COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
@@ -690,7 +691,7 @@ export default {
                 printQuery: true,
               })
               .then((inventory_stock_detail) => {
-                console.log("inventory_stock_detail", inventory_stock_detail)
+                // console.log("inventory_stock_detail", inputParam.from_location_id)
                 _mysql.releaseConnection();
                 const grouppedData = _.chain(inventory_stock_detail)
                   .groupBy((g) => g.hims_d_inventory_item_master_id)
@@ -726,7 +727,7 @@ export default {
                       item_description,
                       uom_description,
                       unit_cost,
-                      batches: detail.filter((f) => f.qtyhand > 0),
+                      batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id === inputParam.from_location_id),
                     };
                   })
                   .value();

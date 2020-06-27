@@ -112,10 +112,12 @@ export function getSalesOrderItem(req, res, next) {
               query:
                 `select D.*, D.hims_f_sales_order_items_id as sales_order_items_id,         
               (D.quantity - D.quantity_outstanding) as delivered_to_date,
-              D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, LOC.hims_m_inventory_item_location_id,
-              LOC.inventory_location_id, COALESCE(LOC.batchno,LOCAD.batchno) as batchno
-              ,LOC.expirydt as expiry_date,COALESCE( LOC.barcode,LOCAD.barcode) as barcode,
-              COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
+              D.quantity as ordered_quantity, 0 as selected_quantity, 'N' as removed, 
+              COALESCE(LOC.hims_m_inventory_item_location_id, LOCAD.hims_m_inventory_item_location_id) as hims_m_inventory_item_location_id ,
+              COALESCE(LOC.inventory_location_id, LOCAD.inventory_location_id), COALESCE(LOC.batchno,LOCAD.batchno) as batchno
+              ,COALESCE(LOC.expirydt, LOCAD.expirydt) as expiry_date,COALESCE(LOC.barcode,LOCAD.barcode) as barcode,
+              COALESCE(LOC.qtyhand,LOCAD.qtyhand) as qtyhand,COALESCE(LOC.cost_uom, LOCAD.cost_uom) as cost_uom, 
+              COALESCE(LOC.avgcost, LOCAD.avgcost) as avgcost,COALESCE(LOC.item_type, LOCAD.item_type) as item_type,
               COALESCE(LOC.sale_price, LOCAD.sale_price) as sale_price,COALESCE(LOC.sales_uom, LOCAD.sales_uom) as sales_uom,
               IM.hims_d_inventory_item_master_id, IM.item_description,IM.category_id as item_category_id, IM.group_id as item_group_id,
               PU.uom_description from hims_f_sales_order_items D
@@ -176,7 +178,7 @@ export function getSalesOrderItem(req, res, next) {
                     selected_quantity,
                     delivered_to_date,
                     removed,
-                    batches: detail.filter((f) => f.qtyhand > 0),
+                    batches: detail.filter((f) => f.qtyhand > 0 && f.inventory_location_id === inputParam.location_id),
                   };
                 })
                 .value();
