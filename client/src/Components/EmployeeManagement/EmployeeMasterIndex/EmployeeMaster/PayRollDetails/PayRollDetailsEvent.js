@@ -151,37 +151,37 @@ const AddEarnComponent = ($this, e) => {
       }
 
       let formulaCal = $this.state.earn_formula;
-      if ($this.state.earn_calculation_method === "FO") {
-        const expression = new RegExp("Gross Salary", "g");
-        formulaCal = formulaCal.replace(expression, "GrossSalary");
+      // if ($this.state.earn_calculation_method === "FO") {
+      //   const expression = new RegExp("Gross Salary", "g");
+      //   formulaCal = formulaCal.replace(expression, "GrossSalary");
 
-        let earn_comp = extend([], earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
+      //   let earn_comp = extend([], earningComponents);
+      //   earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
 
-        var notExists = [];
-        const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x
-          .map(function (item) {
-            const rtn = earn_comp.find(
-              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
-            );
-            if (rtn === undefined) {
-              return item;
-            } else {
-              return null;
-            }
-          })
-          .filter((f) => f !== null);
+      //   var notExists = [];
+      //   const x = formulaCal.match(/[a-zA-Z]+/g);
+      //   notExists = x
+      //     .map(function (item) {
+      //       const rtn = earn_comp.find(
+      //         (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+      //       );
+      //       if (rtn === undefined) {
+      //         return item;
+      //       } else {
+      //         return null;
+      //       }
+      //     })
+      //     .filter((f) => f !== null);
 
-        if (notExists.length > 0) {
-          swalMessage({
-            title:
-              "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning",
-          });
-          return;
-        }
-      }
+      //   if (notExists.length > 0) {
+      //     swalMessage({
+      //       title:
+      //         "Selected Component is Fomula based component missing some component related to formula .",
+      //       type: "warning",
+      //     });
+      //     return;
+      //   }
+      // }
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -261,38 +261,38 @@ const AddDeductionComponent = ($this, e) => {
         return;
       }
       debugger;
-      let formulaCal = $this.state.deduct_formula;
-      if ($this.state.deduct_calculation_method === "FO") {
-        var notExists = [];
+      // let formulaCal = $this.state.deduct_formula;
+      // if ($this.state.deduct_calculation_method === "FO") {
+      //   var notExists = [];
 
-        const expression = new RegExp("Gross Salary", "g");
-        formulaCal = formulaCal.replace(expression, "GrossSalary");
+      //   const expression = new RegExp("Gross Salary", "g");
+      //   formulaCal = formulaCal.replace(expression, "GrossSalary");
 
-        let earn_comp = extend([], $this.state.earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
-        const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x
-          .map(function (item) {
-            const rtn = earn_comp.find(
-              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
-            );
-            if (rtn === undefined) {
-              return item;
-            } else {
-              return null;
-            }
-          })
-          .filter((f) => f !== null);
+      //   let earn_comp = extend([], $this.state.earningComponents);
+      //   earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
+      //   const x = formulaCal.match(/[a-zA-Z]+/g);
+      //   notExists = x
+      //     .map(function (item) {
+      //       const rtn = earn_comp.find(
+      //         (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+      //       );
+      //       if (rtn === undefined) {
+      //         return item;
+      //       } else {
+      //         return null;
+      //       }
+      //     })
+      //     .filter((f) => f !== null);
 
-        if (notExists.length > 0) {
-          swalMessage({
-            title:
-              "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning",
-          });
-          return;
-        }
-      }
+      //   if (notExists.length > 0) {
+      //     swalMessage({
+      //       title:
+      //         "Selected Component is Fomula based component missing some component related to formula .",
+      //       type: "warning",
+      //     });
+      //     return;
+      //   }
+      // }
 
       let deductioncomponents = $this.state.deductioncomponents;
       let insertDeductionComp = $this.state.insertDeductionComp;
@@ -385,38 +385,38 @@ const AddContributionComponent = ($this, e) => {
         return;
       }
 
-      let formulaCal = $this.state.contribut_formula;
-      if ($this.state.contribut_calculation_method === "FO") {
-        const expression = new RegExp("Gross Salary", "g");
-        formulaCal = formulaCal.replace(expression, "GrossSalary");
+      // let formulaCal = $this.state.contribut_formula;
+      // if ($this.state.contribut_calculation_method === "FO") {
+      //   const expression = new RegExp("Gross Salary", "g");
+      //   formulaCal = formulaCal.replace(expression, "GrossSalary");
 
-        let earn_comp = extend([], $this.state.earningComponents);
-        earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
+      //   let earn_comp = extend([], $this.state.earningComponents);
+      //   earn_comp = earn_comp.concat([{ short_desc: "GrossSalary" }]);
 
-        var notExists = [];
-        const x = formulaCal.match(/[a-zA-Z]+/g);
-        notExists = x
-          .map(function (item) {
-            const rtn = earn_comp.find(
-              (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
-            );
-            if (rtn === undefined) {
-              return item;
-            } else {
-              return null;
-            }
-          })
-          .filter((f) => f !== null);
+      //   var notExists = [];
+      //   const x = formulaCal.match(/[a-zA-Z]+/g);
+      //   notExists = x
+      //     .map(function (item) {
+      //       const rtn = earn_comp.find(
+      //         (f) => String(f.short_desc).toLowerCase() === item.toLowerCase()
+      //       );
+      //       if (rtn === undefined) {
+      //         return item;
+      //       } else {
+      //         return null;
+      //       }
+      //     })
+      //     .filter((f) => f !== null);
 
-        if (notExists.length > 0) {
-          swalMessage({
-            title:
-              "Selected Component is Fomula based component missing some component related to formula .",
-            type: "warning",
-          });
-          return;
-        }
-      }
+      //   if (notExists.length > 0) {
+      //     swalMessage({
+      //       title:
+      //         "Selected Component is Fomula based component missing some component related to formula .",
+      //       type: "warning",
+      //     });
+      //     return;
+      //   }
+      // }
 
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
@@ -1100,14 +1100,40 @@ const CalculateBasedonFormula = ($this, from, callBack) => {
 
       earningComponents.map((menu) => {
         if (formulaCal.indexOf(menu.short_desc) > -1) {
-          const expression = new RegExp(menu.short_desc, "g");
+
+          let con_short_desc = menu.short_desc;
+          const expression = new RegExp(con_short_desc, "g");
           formulaCal = formulaCal.replace(expression, menu.amount);
+
+          // const expression = new RegExp(menu.short_desc, "g");
+          // formulaCal = formulaCal.replace(expression, menu.amount);
         }
       });
+
+
       const expression = new RegExp("Gross Salary", "g");
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
       const perexpression = new RegExp("%", "g");
       formulaCal = formulaCal.replace(perexpression, "/100");
+
+      const dependentCompoennt = /([a-zA-Z])/.test(formulaCal);
+      if (dependentCompoennt === true) {
+        if (typeof callBack === "function") {
+          swalMessage({
+            title: "Component is dependent on formula can not delete",
+            type: "warning",
+          });
+
+          callBack(false);
+          return;
+        } else {
+          const checkAnyCharacter = formulaCal.match(/[a-zA-Z]+/g);
+          checkAnyCharacter.forEach((element) => {
+            formulaCal = formulaCal.replace(element, "0");
+          });
+        }
+      }
+
       formulaCal = eval(formulaCal);
 
       if (

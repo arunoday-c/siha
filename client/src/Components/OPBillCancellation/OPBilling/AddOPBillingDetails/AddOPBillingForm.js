@@ -355,6 +355,10 @@ class AddOPBillingForm extends Component {
   deleteSingleBill(context, row, e) {
     e.persist();
     let details = this.state.billdetails;
+    const [current] = this.props.opserviceslist.filter(
+      (f) => f.hims_d_services_id === row.services_id
+    );
+
     if (details.length === 1) {
       swalMessage({
         title: "Min. 1 Service requiried in bill.",
@@ -365,7 +369,7 @@ class AddOPBillingForm extends Component {
     e.target.classList.remove("fa-trash-alt");
     e.target.classList.add("fa-spinner");
     swal({
-      title: `Do you want to exclude '${row.service_desc}' of amount ${row.net_amout} from cancelation?`,
+      title: `Do you want to exclude '${current.service_name}' of amount ${row.net_amout} from cancelation?`,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",

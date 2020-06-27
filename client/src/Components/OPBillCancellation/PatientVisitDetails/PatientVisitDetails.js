@@ -64,7 +64,7 @@ class PatientVisitDetails extends Component {
 
   render() {
     let provider_name = null;
-    debugger;
+
     if (this.state.doctor_id !== null) {
       provider_name = Enumerable.from(this.props.opcacelproviders)
         .where((w) => w.hims_d_employee_id === this.state.doctor_id)

@@ -12,20 +12,25 @@ const executePDF = function executePDFMethod(options) {
       });
 
       console.log("INPUT:", input);
-      if (input.department) {
-        str += ` and EM.department= '${input.group_id}'`;
-      }
-      if (input.department) {
+      // if (input.department_id) {
+      //   str += ` and EM.department_id= '${input.department_id}'`;
+      // }
+      if (input.sub_department_id) {
         str += ` and EM.sub_department_id= '${input.sub_department_id}'`;
       }
-      if (input.department) {
-        str += ` and EM.hims_d_employee_id= '${input.hims_d_employee_id}'`;
+      // if (input.designation_id) {
+      //   str += ` and EM.designation_id= '${input.designation_id}'`;
+      // }
+      if (input.hims_d_employee_id) {
+        str += ` and EM.employee_id= '${input.hims_d_employee_id}'`;
       }
-
+      if (input.group_id) {
+        str += ` and EM.employee_group_id= '${input.group_id}'`;
+      }
       options.mysql
         .executeQuery({
-          query: `select EM.employee_code, EM.full_name,SL.salary_number,SL.year,MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, LA.loan_application_number, LM.loan_description, SLL.loan_due_amount,LA.pending_loan, LA.pending_tenure from hims_f_salary as SL inner join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id left join hims_f_loan_application as LA on SLL.loan_application_id=hims_f_loan_application_id inner join hims_d_employee as EM on SL.employee_id = EM.hims_d_employee_id 
- inner join hims_d_loan as LM on LA.loan_id=LM.hims_d_loan_id where LA.loan_closed ='N' and SLL.loan_due_amount <>0 and SL.hospital_id=? and SL.year=? and SL.month=? ${str}`,
+          query: `select EM.employee_code, EM.full_name,SL.salary_number,SL.year,MONTHNAME(CONCAT('2011-',SL.month,'-01')) as deducting_month, LA.loan_application_number, LM.loan_description, SLL.loan_due_amount,LA.pending_loan, LA.pending_tenure, LA.approved_amount from hims_f_salary as SL inner join hims_f_salary_loans as SLL on SL.hims_f_salary_id = salary_header_id left join hims_f_loan_application as LA on SLL.loan_application_id=hims_f_loan_application_id inner join hims_d_employee as EM on SL.employee_id = EM.hims_d_employee_id 
+ inner join hims_d_loan as LM on LA.loan_id=LM.hims_d_loan_id where LA.loan_closed ='N' and SLL.loan_due_amount <>0 and SL.hospital_id=? and SL.year=? and SL.month=? ${str};`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true,
         })

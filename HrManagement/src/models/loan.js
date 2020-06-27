@@ -350,33 +350,34 @@ export default {
       .then((options) => {
         if (options.length > 0) {
           let auth_level = "";
+          if (input.loan_authorized == "PEN") {
+            if (options[0]["authorization_plan"] == "A") {
+              if (input.auth_level == "1") {
+                auth_level =
+                  " and authorized1='P'  and AUS.loan_level1=" +
+                  req.userIdentity.employee_id;
+              } else if (input.auth_level == "2") {
+                auth_level =
+                  " and authorized1='A' and authorized2='P'  and AUS.loan_level2=" +
+                  req.userIdentity.employee_id;
+              }
+            } else {
+              switch (input.auth_level) {
+                case "1":
+                  if (req.userIdentity.loan_authorize_privilege > 1) {
+                    auth_level = " and authorized1='P'  ";
+                  } else {
+                    // auth_level =
+                    //   " and authorized1='P' AND E.reporting_to_id=" +
+                    //   req.userIdentity.employee_id;
 
-          if (options[0]["authorization_plan"] == "A") {
-            if (input.auth_level == "1") {
-              auth_level =
-                " and authorized1='P'  and AUS.loan_level1=" +
-                req.userIdentity.employee_id;
-            } else if (input.auth_level == "2") {
-              auth_level =
-                " and authorized1='A' and authorized2='P'  and AUS.loan_level2=" +
-                req.userIdentity.employee_id;
-            }
-          } else {
-            switch (input.auth_level) {
-              case "1":
-                if (req.userIdentity.loan_authorize_privilege > 1) {
-                  auth_level = " and authorized1='P'  ";
-                } else {
-                  // auth_level =
-                  //   " and authorized1='P' AND E.reporting_to_id=" +
-                  //   req.userIdentity.employee_id;
-
-                  auth_level = " and authorized1='P'  ";
-                }
-                break;
-              case "2":
-                auth_level = " and authorized1='A' and authorized2='P' ";
-                break;
+                    auth_level = " and authorized1='P'  ";
+                  }
+                  break;
+                case "2":
+                  auth_level = " and authorized1='A' and authorized2='P' ";
+                  break;
+              }
             }
           }
 
@@ -489,12 +490,13 @@ export default {
                   query:
                     "UPDATE hims_f_loan_application SET " +
                     authFields +
-                    ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
+                    ",approved_amount=?,pending_loan=?,start_year=?,start_month=?,installment_amount=?,\
                   loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?;",
                   values: [
                     input.authorized,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
+                    input.approved_amount,
                     input.approved_amount,
                     input.start_year,
                     input.start_month,
@@ -562,12 +564,13 @@ export default {
                   query:
                     "UPDATE hims_f_loan_application SET " +
                     authFields +
-                    ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
+                    ",approved_amount=?,pending_loan=?,start_year=?,start_month=?,installment_amount=?,\
                   loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
                   values: [
                     input.authorized,
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
+                    input.approved_amount,
                     input.approved_amount,
                     input.start_year,
                     input.start_month,

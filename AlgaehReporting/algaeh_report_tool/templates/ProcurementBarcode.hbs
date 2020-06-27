@@ -1,11 +1,61 @@
 {{{importStyle 'css/algaehReportStyles.css'}}}
+<style>
+  .barcodeLineBulk {
+    position: relative;
+    margin: 0 0 0 -15px;
+    padding: 0;
+    text-align: center;
+    height: 59px;
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
+  }
 
-{{#each header}}
-<div class="barcodeLine">
-  <small class="small-top-left">{{item_description}}</small>
-  <img src={{barcode "code128" print_barcode false }} />
-  <small class="small-left"><b>{{sales_price}}</b></small>
-  <small class="small-right">{{print_barcode}}</small>
-  {{!-- <hr/>  --}}
-</div>
-{{/each }}
+  .small-top-left {
+    display: block;
+    font-size: 7px;
+    margin-top: 7px;
+  }
+
+  .barcodeLineBulk hr {
+    height: 0;
+    background-color: white;
+    width: 0;
+    border-color: white;
+  }
+
+  .barcodeLineBulk img {
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .barcodeLineBulk p {
+    margin: 0;
+    padding: 0;
+  }
+
+  .barcodeLineBulk .small-left {
+    font-size: 8px;
+    float: left;
+  }
+
+  .barcodeLineBulk .small-right {
+    font-size: 8px;
+    float: right;
+  }
+</style>
+
+<body style="width: 100%;">
+  {{#each header}}<div class="print-body" style="page-break-before: always; page-break-after: always;margin: 0;">
+
+    <div class="barcodeLineBulk">
+
+      <small class="small-top-left">{{item_description}}</small>
+      <img src={{barcode "code128" print_barcode false }} />
+      <small class="small-left"><b>{{sales_price}}</b></small>
+      <small class="small-right">{{print_barcode}}</small>
+      {{!-- <hr/>  --}}
+    </div>
+  </div>{{/each }}
+</body>

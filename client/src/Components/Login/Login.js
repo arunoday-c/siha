@@ -401,9 +401,10 @@ function Login(props) {
           popUpMessage(error);
           return;
         }
-
-        const { message } = error.response.data;
-        swalMessage({ type: "error", title: message });
+        swalMessage({
+          type: "error",
+          title: error?.response?.data?.message || error.message,
+        });
       });
   }
   function onHitEnter(e) {

@@ -6,6 +6,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehDateHandler,
+  AlgaehModalPopUp,
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import ProjectMasterEvents from "./ProjectMasterEvents";
@@ -24,6 +25,7 @@ class EmployeeGroups extends Component {
       project_desc_arabic: "",
       start_date: "",
       end_date: "",
+      showProjectComponent: false,
     };
 
     ProjectMasterEvents().getProjectsFunction(this);
@@ -62,10 +64,107 @@ class EmployeeGroups extends Component {
   deleteEmployeeGroups(data) {
     ProjectMasterEvents().deleteEmployeeGroups(this, data);
   }
+  addProjectComponent(data, e) {
+    // this.getAllSubDepartments(data.hims_d_department_id);
+    this.setState({
+      showProjectComponent: true,
+      // depNametoAdd: data.department_name,
+      // hims_d_department_id: data.hims_d_department_id,
+    });
+  }
+  onClose() {
+    this.setState({ showProjectComponent: false });
+  }
 
   render() {
     return (
       <div className="projectMasterScreen">
+        <AlgaehModalPopUp
+          class="projectComponentModal"
+          events={{
+            onClose: this.onClose.bind(this),
+          }}
+          title="Add Project Component"
+          openPopup={this.state.showProjectComponent}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12">
+              <div className="row margin-top-15">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Select Component" }}
+                  selector={{
+                    name: "",
+                    className: "select-fld",
+                    value: "",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: [],
+                    },
+                  }}
+                />
+                <div className="col-2">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    style={{ marginTop: 19 }}
+                  >
+                    <label className="style_Label ">Add</label>
+                  </button>
+                </div>
+              </div>
+
+              <div className="row margin-top-15">
+                <div className="col-12" id="ProjectComponentGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="projectMasterGrid"
+                    data-validate="projectMasterGrid"
+                    columns={[
+                      {
+                        fieldName: "add_component",
+
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Components" }} />
+                        ),
+
+                        others: {
+                          style: {
+                            textAlign: "center",
+                          },
+                        },
+                      },
+                    ]}
+                    keyId=""
+                    dataSource={{}}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 20 }}
+                    filter={true}
+                    events={{}}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4"> &nbsp;</div>
+                  <div className="col-lg-8">
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={() => {
+                        this.setState({ showProjectComponent: false });
+                      }}
+                    >
+                      <label className="style_Label ">Cancel</label>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
         <div className="row inner-top-search" data-validate="project">
           <AlagehFormGroup
             div={{ className: "col mandatory" }}
@@ -184,6 +283,41 @@ class EmployeeGroups extends Component {
                       id="projectMasterGrid"
                       data-validate="projectMasterGrid"
                       columns={[
+                        // {
+                        //   fieldName: "add_component",
+
+                        //   label: (
+                        //     <AlgaehLabel label={{ forceLabel: "Components" }} />
+                        //   ),
+
+                        //   displayTemplate: (row) => {
+                        //     return (
+                        //       <i
+                        //         className="fas fa-plus"
+                        //         onClick={this.addProjectComponent.bind(
+                        //           this,
+                        //           row
+                        //         )}
+                        //       />
+                        //     );
+                        //   },
+                        //   editorTemplate: (row) => {
+                        //     return (
+                        //       <i
+                        //         className="fas fa-plus"
+                        //         onClick={this.addProjectComponent.bind(
+                        //           this,
+                        //           row
+                        //         )}
+                        //       />
+                        //     );
+                        //   },
+                        //   others: {
+                        //     style: {
+                        //       textAlign: "center",
+                        //     },
+                        //   },
+                        // },
                         {
                           fieldName: "project_code",
                           label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
