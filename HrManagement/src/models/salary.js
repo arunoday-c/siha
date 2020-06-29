@@ -69,7 +69,7 @@ export default {
             from hims_f_attendance_monthly as A \
             inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
             A.hospital_id = E.hospital_id and E.suspend_salary ='N' \
-            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`\
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and S.salary_type='NS'\
             and S.employee_id = A.employee_id \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
             and  AL.year=? and AL.month=? and AL.cancelled='N' \
@@ -106,7 +106,7 @@ export default {
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
-            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`\
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` and S.salary_type='NS' \
             and S.employee_id = A.employee_id   where A.`year`=? and A.`month`=? and A.hospital_id=?" +
               _stringData +
               " and  (S.salary_processed is null or  S.salary_processed='N');";
