@@ -5159,6 +5159,7 @@ export default {
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
+                      console.log("result----", result);
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -5177,7 +5178,7 @@ export default {
                       } else {
                         req.records = {
                           message:
-                            "Salary Already Processed or No Employes Found",
+                            "Salary Already Processed or No Employees Found",
                           invalid_input: true,
                         };
                         next();
@@ -5248,10 +5249,11 @@ export default {
                         from_date,
                         to_date,
                       ],
-                      printQuery: false,
+                      printQuery: true,
                     })
                     .then((result) => {
                       _mysql.releaseConnection();
+                      console.log("Here result----", result);
                       if (result[0].length > 0) {
                         const allEmployees = result[0];
                         const allLeaves = result[1];
@@ -5272,7 +5274,7 @@ export default {
                       } else {
                         req.records = {
                           message:
-                            "Salary Already Processed or No Employes Found",
+                            "Salary Already Processed or No Employee Found",
                           invalid_input: true,
                         };
                         next();
