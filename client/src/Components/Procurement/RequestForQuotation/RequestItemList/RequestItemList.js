@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch.js";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import MyContext from "../../../../utils/MyContext";
@@ -17,7 +19,7 @@ import {
   itemchangeText,
   numberchangeTexts,
   AddItems,
-  deleteQuotationDetail
+  deleteQuotationDetail,
 } from "./RequestItemListEvents";
 
 class RequestItemList extends Component {
@@ -32,7 +34,6 @@ class RequestItemList extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    debugger
     this.setState(nextProps.RequestQuotation);
   }
 
@@ -40,13 +41,13 @@ class RequestItemList extends Component {
     return (
       <React.Fragment>
         <MyContext.Consumer>
-          {context => (
+          {(context) => (
             <div className="hims-purchase-order-entry">
               <div className="row">
                 <div className="col-lg-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <AlagehAutoComplete
+                      {/* <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{ forceLabel: "Item Name" }}
                         selector={{
@@ -65,12 +66,67 @@ class RequestItemList extends Component {
                               this.state.quotation_for === "PHR"
                                 ? "hims_d_item_master_id"
                                 : "hims_d_inventory_item_master_id",
-                            data: this.props.poitemlist
+                            data: this.props.poitemlist,
                           },
                           others: {
-                            disabled: this.state.dataExitst
+                            disabled: this.state.dataExitst,
                           },
-                          onChange: itemchangeText.bind(this, this, context)
+                          onChange: itemchangeText.bind(this, this, context),
+                        }}
+                      /> */}
+                      <AlgaehAutoSearch
+                        div={{ className: "col-3 form-group mandatory" }}
+                        label={{ forceLabel: "Item Name" }}
+                        title="Search Items"
+                        id="item_id_search"
+                        template={(result) => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-12">
+                                  <h4 className="title">
+                                    {result.item_description}
+                                  </h4>
+                                  <small>{result.uom_description}</small>
+                                </div>
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name={
+                          this.state.quotation_for === "PHR"
+                            ? "phar_item_id"
+                            : "inv_item_id"
+                        }
+                        columns={
+                          this.state.quotation_for === "PHR"
+                            ? spotlightSearch.Items.Pharmacyitemmaster
+                            : spotlightSearch.Items.Invitemmaster
+                        }
+                        displayField="item_description"
+                        value={this.state.item_description}
+                        searchName={
+                          this.state.quotation_for === "PHR"
+                            ? "PurchaseOrderForPharmacy"
+                            : "PurchaseOrderForInventry"
+                        }
+                        onClick={itemchangeText.bind(this, this, context)}
+                        onClear={() => {
+                          this.setState({
+                            item_description: "",
+                            // item_description: e.item_description,
+                            item_code: null,
+                            item_category_id: null,
+                            item_uom: null,
+                            item_id: null,
+                            item_group_id: null,
+                            quantity: null,
+                            // barcode: null,
+                            addItemButton: false,
+                          });
+                        }}
+                        others={{
+                          disabled: this.state.dataExists,
                         }}
                       />
                       <AlagehAutoComplete
@@ -92,11 +148,11 @@ class RequestItemList extends Component {
                               this.state.quotation_for === "PHR"
                                 ? "hims_d_item_category_id"
                                 : "hims_d_inventory_tem_category_id",
-                            data: this.props.poitemcategory
+                            data: this.props.poitemcategory,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                       <AlagehAutoComplete
@@ -118,12 +174,12 @@ class RequestItemList extends Component {
                               this.state.quotation_for === "PHR"
                                 ? "hims_d_item_group_id"
                                 : "hims_d_inventory_item_group_id",
-                            data: this.props.poitemgroup
+                            data: this.props.poitemgroup,
                           },
                           others: {
-                            disabled: true
+                            disabled: true,
                           },
-                          onChange: null
+                          onChange: null,
                         }}
                       />
                       <AlagehAutoComplete
@@ -145,23 +201,23 @@ class RequestItemList extends Component {
                               this.state.quotation_for === "PHR"
                                 ? "hims_d_pharmacy_uom_id"
                                 : "hims_d_inventory_uom_id",
-                            data: this.props.poitemuom
+                            data: this.props.poitemuom,
                           },
                           others: {
-                            disabled: true
-                          }
+                            disabled: true,
+                          },
                         }}
                       />
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Quantity",
-                          isImp: true
+                          isImp: true,
                         }}
                         textBox={{
                           number: {
                             allowNegative: false,
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
                           },
                           className: "txt-fld",
                           name: "quantity",
@@ -172,11 +228,11 @@ class RequestItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           },
                           others: {
-                            disabled: this.state.dataExitst
-                          }
+                            disabled: this.state.dataExitst,
+                          },
                         }}
                       />
                     </div>
@@ -184,15 +240,15 @@ class RequestItemList extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Notes"
+                          forceLabel: "Notes",
                         }}
                         textBox={{
                           className: "txt-fld",
                           name: "itm_notes",
                           value: this.state.itm_notes,
                           events: {
-                            onChange: texthandle.bind(this, this, context)
-                          }
+                            onChange: texthandle.bind(this, this, context),
+                          },
                         }}
                       />
                     </div>
@@ -221,44 +277,48 @@ class RequestItemList extends Component {
                                 this.state.quotation_for === "PHR"
                                   ? "phar_item_id"
                                   : "inv_item_id",
+
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Item Name" }}
                                 />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        f =>
-                                          f.hims_d_item_master_id ===
-                                          row.phar_item_id
-                                      ))
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            (f) =>
+                                              f.hims_d_item_master_id ===
+                                              row.phar_item_id
+                                          ))
                                   : (display =
-                                    this.props.poitemlist === undefined
-                                      ? []
-                                      : this.props.poitemlist.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_master_id ===
-                                          row.inv_item_id
-                                      ));
+                                      this.props.poitemlist === undefined
+                                        ? []
+                                        : this.props.poitemlist.filter(
+                                            (f) =>
+                                              f.hims_d_inventory_item_master_id ===
+                                              row.inv_item_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].item_description
                                       : ""}
+                                    {/* {display} */}
                                   </span>
+                                  // item_description
                                 );
+                                // return row.item_description;
                               },
                               others: {
-                                minWidth: 200
-                              }
+                                minWidth: 200,
+                              },
                             },
 
                             {
@@ -272,39 +332,39 @@ class RequestItemList extends Component {
                                 />
                               ),
 
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemcategory === undefined
-                                      ? []
-                                      : this.props.poitemcategory.filter(
-                                        f =>
-                                          f.hims_d_item_category_id ===
-                                          row.phar_item_category
-                                      ))
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            (f) =>
+                                              f.hims_d_item_category_id ===
+                                              row.phar_item_category
+                                          ))
                                   : (display =
-                                    this.props.poitemcategory === undefined
-                                      ? []
-                                      : this.props.poitemcategory.filter(
-                                        f =>
-                                          f.hims_d_inventory_tem_category_id ===
-                                          row.inv_item_category_id
-                                      ));
+                                      this.props.poitemcategory === undefined
+                                        ? []
+                                        : this.props.poitemcategory.filter(
+                                            (f) =>
+                                              f.hims_d_inventory_tem_category_id ===
+                                              row.inv_item_category_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].category_desc
                                       : ""}
                                   </span>
                                 );
                               },
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
                             {
                               fieldName:
@@ -317,39 +377,39 @@ class RequestItemList extends Component {
                                 />
                               ),
 
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemgroup === undefined
-                                      ? []
-                                      : this.props.poitemgroup.filter(
-                                        f =>
-                                          f.hims_d_item_group_id ===
-                                          row.phar_item_group
-                                      ))
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            (f) =>
+                                              f.hims_d_item_group_id ===
+                                              row.phar_item_group
+                                          ))
                                   : (display =
-                                    this.props.poitemgroup === undefined
-                                      ? []
-                                      : this.props.poitemgroup.filter(
-                                        f =>
-                                          f.hims_d_inventory_item_group_id ===
-                                          row.inv_item_group_id
-                                      ));
+                                      this.props.poitemgroup === undefined
+                                        ? []
+                                        : this.props.poitemgroup.filter(
+                                            (f) =>
+                                              f.hims_d_inventory_item_group_id ===
+                                              row.inv_item_group_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].group_description
                                       : ""}
                                   </span>
                                 );
                               },
                               others: {
-                                minWidth: 150
-                              }
+                                minWidth: 150,
+                              },
                             },
                             {
                               fieldName:
@@ -359,39 +419,39 @@ class RequestItemList extends Component {
                               label: (
                                 <AlgaehLabel label={{ forceLabel: "UOM" }} />
                               ),
-                              displayTemplate: row => {
+                              displayTemplate: (row) => {
                                 let display;
 
                                 this.state.quotation_for === "PHR"
                                   ? (display =
-                                    this.props.poitemuom === undefined
-                                      ? []
-                                      : this.props.poitemuom.filter(
-                                        f =>
-                                          f.hims_d_pharmacy_uom_id ===
-                                          row.pharmacy_uom_id
-                                      ))
+                                      this.props.poitemuom === undefined
+                                        ? []
+                                        : this.props.poitemuom.filter(
+                                            (f) =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.pharmacy_uom_id
+                                          ))
                                   : (display =
-                                    this.props.poitemuom === undefined
-                                      ? []
-                                      : this.props.poitemuom.filter(
-                                        f =>
-                                          f.hims_d_inventory_uom_id ===
-                                          row.inventory_uom_id
-                                      ));
+                                      this.props.poitemuom === undefined
+                                        ? []
+                                        : this.props.poitemuom.filter(
+                                            (f) =>
+                                              f.hims_d_inventory_uom_id ===
+                                              row.inventory_uom_id
+                                          ));
 
                                 return (
                                   <span>
                                     {display !== undefined &&
-                                      display.length !== 0
+                                    display.length !== 0
                                       ? display[0].uom_description
                                       : ""}
                                   </span>
                                 );
                               },
                               others: {
-                                minWidth: 100
-                              }
+                                minWidth: 100,
+                              },
                             },
                             {
                               fieldName: "quantity",
@@ -400,31 +460,27 @@ class RequestItemList extends Component {
                                   label={{ forceLabel: "Quantity" }}
                                 />
                               ),
-                              displayTemplate: row => {
-                                return (
-                                  <span> {row.quantity} </span>
-                                );
-                              }
+                              displayTemplate: (row) => {
+                                return <span> {row.quantity} </span>;
+                              },
                             },
                             {
                               fieldName: "itm_notes",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Notes" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "Notes" }} />
                               ),
                               others: {
-                                minWidth: 200
-                              }
+                                minWidth: 200,
+                              },
                             },
                           ]}
                           keyId="hims_f_procurement_req_quotation_detail_id"
                           dataSource={{
-                            data: this.state.quotation_detail
+                            data: this.state.quotation_detail,
                           }}
                           isEditable={!this.state.saveEnable}
                           actions={{
-                            allowEdit: false
+                            allowEdit: false,
                           }}
                           byForceEvents={true}
                           // forceRender={true}
@@ -434,7 +490,7 @@ class RequestItemList extends Component {
                               this,
                               this,
                               context
-                            )
+                            ),
                           }}
                         />
                       </div>
@@ -455,7 +511,7 @@ function mapStateToProps(state) {
     poitemlist: state.poitemlist,
     poitemcategory: state.poitemcategory,
     poitemgroup: state.poitemgroup,
-    poitemuom: state.poitemuom
+    poitemuom: state.poitemuom,
   };
 }
 
@@ -465,7 +521,7 @@ function mapDispatchToProps(dispatch) {
       getItems: AlgaehActions,
       getItemCategory: AlgaehActions,
       getItemGroup: AlgaehActions,
-      getItemUOM: AlgaehActions
+      getItemUOM: AlgaehActions,
     },
     dispatch
   );
