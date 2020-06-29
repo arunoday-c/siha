@@ -7,12 +7,22 @@ export default {
   //created by irfan:
   getBalanceSheet: (req, res, next) => {
     const decimal_places = req.userIdentity.decimal_places;
-    getAccountHeadsForReport(decimal_places, 1)
-      .then(asset => {
-        getAccountHeadsForReport(decimal_places, 2)
-          .then(liabilities => {
-            getAccountHeadsForReport(decimal_places, 3)
-              .then(equity => {
+    let str;
+    if (req.query.to_date) {
+      str = ` and VD.payment_date <=date('${moment(
+        req.query.to_date,
+        "YYYY-MM-DD"
+      ).format("YYYY-MM-DD")}')`;
+    } else {
+      str = ` and VD.payment_date <=date('${moment().format("YYYY-MM-DD")}')`;
+    }
+
+    getAccountHeadsForReport(decimal_places, 1, str)
+      .then((asset) => {
+        getAccountHeadsForReport(decimal_places, 2, str)
+          .then((liabilities) => {
+            getAccountHeadsForReport(decimal_places, 3, str)
+              .then((equity) => {
                 // const balance = parseFloat(
                 //   parseFloat(asset.subtitle) - parseFloat(liabilities.subtitle)
                 // ).toFixed(decimal_places);
@@ -29,19 +39,19 @@ export default {
                 ).toFixed(decimal_places);
                 req.records = {
                   asset: asset,
-                  liabilities: liabilities
+                  liabilities: liabilities,
                 };
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -55,9 +65,9 @@ export default {
       _mysql
         .executeQuery({
           query:
-            "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
+            "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
           if (result[0]["cost_center_required"] == "Y") {
             switch (result[0]["cost_center_type"]) {
@@ -81,9 +91,9 @@ export default {
                 strQuery = ` and VD.hospital_id=${req.query.cost_center_id}`;
             }
             getAccountHeadsForReport(decimal_places, 4, strQuery)
-              .then(income => {
+              .then((income) => {
                 getAccountHeadsForReport(decimal_places, 5, strQuery)
-                  .then(expense => {
+                  .then((expense) => {
                     const balance = parseFloat(
                       parseFloat(income.subtitle) - parseFloat(expense.subtitle)
                     ).toFixed(decimal_places);
@@ -91,22 +101,22 @@ export default {
                     req.records = {
                       profit: balance,
                       income: income,
-                      expense: expense
+                      expense: expense,
                     };
                     next();
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     next(e);
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           } else {
             getAccountHeadsForReport(decimal_places, 4)
-              .then(income => {
+              .then((income) => {
                 getAccountHeadsForReport(decimal_places, 5)
-                  .then(expense => {
+                  .then((expense) => {
                     const balance = parseFloat(
                       parseFloat(income.subtitle) - parseFloat(expense.subtitle)
                     ).toFixed(decimal_places);
@@ -114,28 +124,28 @@ export default {
                     req.records = {
                       profit: balance,
                       income: income,
-                      expense: expense
+                      expense: expense,
                     };
                     next();
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     next(e);
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           next(e);
         });
     } else {
       getAccountHeadsForReport(decimal_places, 4)
-        .then(income => {
+        .then((income) => {
           getAccountHeadsForReport(decimal_places, 5)
-            .then(expense => {
+            .then((expense) => {
               const balance = parseFloat(
                 parseFloat(income.subtitle) - parseFloat(expense.subtitle)
               ).toFixed(decimal_places);
@@ -143,15 +153,15 @@ export default {
               req.records = {
                 profit: balance,
                 income: income,
-                expense: expense
+                expense: expense,
               };
               next();
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     }
@@ -168,9 +178,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
+          "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         _mysql.releaseConnection();
         if (result[0]["cost_center_required"] == "Y") {
           switch (result[0]["cost_center_type"]) {
@@ -199,7 +209,7 @@ export default {
             whrStr,
             costCenterQuery
           )
-            .then(income => {
+            .then((income) => {
               getAccountHeadsForProfitAndLoss(
                 decimal_places,
                 5,
@@ -207,10 +217,10 @@ export default {
                 whrStr,
                 costCenterQuery
               )
-                .then(expense => {
+                .then((expense) => {
                   const totals = {};
 
-                  income.cost_centers.forEach(item => {
+                  income.cost_centers.forEach((item) => {
                     const cost_center_id = item.cost_center_id.toString();
                     const income_amount = income.outputArray[cost_center_id];
                     const expense_amount = expense.outputArray[cost_center_id];
@@ -225,22 +235,22 @@ export default {
                     cost_centers: income.cost_centers,
                     income: income.outputArray,
                     expense: expense.outputArray,
-                    totals: totals
+                    totals: totals,
                   };
                   next();
                 })
-                .catch(e => {
+                .catch((e) => {
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         } else {
           getAccountHeadsForReport(decimal_places, 4)
-            .then(income => {
+            .then((income) => {
               getAccountHeadsForReport(decimal_places, 5)
-                .then(expense => {
+                .then((expense) => {
                   const balance = parseFloat(
                     parseFloat(income.subtitle) - parseFloat(expense.subtitle)
                   ).toFixed(decimal_places);
@@ -248,20 +258,20 @@ export default {
                   req.records = {
                     profit: balance,
                     income: income,
-                    expense: expense
+                    expense: expense,
                   };
                   next();
                 })
-                .catch(e => {
+                .catch((e) => {
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         }
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -272,20 +282,20 @@ export default {
     let option = { tialBalance: "Y" };
 
     getAccountHeadsForReport(decimal_places, 1, option)
-      .then(asset => {
+      .then((asset) => {
         getAccountHeadsForReport(decimal_places, 2, option)
-          .then(liability => {
+          .then((liability) => {
             getAccountHeadsForReport(decimal_places, 3, option)
-              .then(capital => {
+              .then((capital) => {
                 // const newCapital = capital.children[0].children.find(f => {
                 //   return f.finance_account_child_id == 52;
                 // });
 
                 const newCapital = capital;
                 getAccountHeadsForReport(decimal_places, 4, option)
-                  .then(income => {
+                  .then((income) => {
                     getAccountHeadsForReport(decimal_places, 5, option)
-                      .then(expense => {
+                      .then((expense) => {
                         const total_debit_amount = parseFloat(
                           parseFloat(asset.tr_debit_amount) +
                             parseFloat(newCapital.tr_debit_amount) +
@@ -311,27 +321,27 @@ export default {
                           income: income,
                           expense: expense,
                           total_debit_amount: total_debit_amount,
-                          total_credit_amount: total_credit_amount
+                          total_credit_amount: total_credit_amount,
                         };
                         next();
                       })
-                      .catch(e => {
+                      .catch((e) => {
                         next(e);
                       });
                   })
-                  .catch(e => {
+                  .catch((e) => {
                     next(e);
                   });
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         next(e);
       });
   },
@@ -341,24 +351,24 @@ export default {
 
     let option = {
       from_date: moment(req.query.from_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
-      to_date: moment(req.query.to_date, "YYYY-MM-DD").format("YYYY-MM-DD")
+      to_date: moment(req.query.to_date, "YYYY-MM-DD").format("YYYY-MM-DD"),
     };
 
     if (option.old == "Y") {
       getAccountHeadsForTrialBalance(decimal_places, 1, option)
-        .then(asset => {
+        .then((asset) => {
           getAccountHeadsForTrialBalance(decimal_places, 2, option)
-            .then(liability => {
+            .then((liability) => {
               getAccountHeadsForTrialBalance(decimal_places, 3, option)
-                .then(capital => {
+                .then((capital) => {
                   // const newCapital = capital.children[0].children.find(f => {
                   //   return f.finance_account_child_id == 52;
                   // });
                   // const newCapital = capital;
                   getAccountHeadsForTrialBalance(decimal_places, 4, option)
-                    .then(income => {
+                    .then((income) => {
                       getAccountHeadsForTrialBalance(decimal_places, 5, option)
-                        .then(expense => {
+                        .then((expense) => {
                           const total_debit_amount = parseFloat(
                             parseFloat(asset.total_debit_amount) +
                               parseFloat(capital.total_debit_amount) +
@@ -381,27 +391,27 @@ export default {
                             income: income.roots[0],
                             expense: expense.roots[0],
                             total_debit_amount: total_debit_amount,
-                            total_credit_amount: total_credit_amount
+                            total_credit_amount: total_credit_amount,
                           };
                           next();
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           next(e);
                         });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       next(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     } else {
@@ -409,15 +419,15 @@ export default {
       option["_mysql"] = _mysql;
 
       getTrialBalanceFunc(decimal_places, 1, option)
-        .then(asset => {
+        .then((asset) => {
           getTrialBalanceFunc(decimal_places, 2, option)
-            .then(liability => {
+            .then((liability) => {
               getTrialBalanceFunc(decimal_places, 3, option)
-                .then(capital => {
+                .then((capital) => {
                   getTrialBalanceFunc(decimal_places, 4, option)
-                    .then(income => {
+                    .then((income) => {
                       getTrialBalanceFunc(decimal_places, 5, option)
-                        .then(expense => {
+                        .then((expense) => {
                           _mysql.releaseConnection();
                           // const total_debit_amount = parseFloat(
                           //   parseFloat(asset.total_debit_amount) +
@@ -441,27 +451,27 @@ export default {
                             income: income,
                             expense: expense,
                             total_debit_amount: 0,
-                            total_credit_amount: 0
+                            total_credit_amount: 0,
                           };
                           next();
                         })
-                        .catch(e => {
+                        .catch((e) => {
                           next(e);
                         });
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       next(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           next(e);
         });
     }
@@ -484,12 +494,12 @@ export default {
             on H.parent_acc_id = cte.finance_account_head_id  \
             )select * from cte;",
 
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         const head_ids = [];
 
-        result.forEach(item => {
+        result.forEach((item) => {
           head_ids.push(item.finance_account_head_id);
         });
 
@@ -527,9 +537,9 @@ export default {
             head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and D.payment_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
             group by child_id  with rollup;`,
 
-            printQuery: true
+            printQuery: true,
           })
-          .then(Result => {
+          .then((Result) => {
             const ledgers = Result[0];
             let todays_total = parseFloat(0).toFixed(decimal_places);
             let thirty_days_total = parseFloat(0).toFixed(decimal_places);
@@ -555,7 +565,7 @@ export default {
               above_ninety_days_total = Result[5].pop().debit_amount;
             }
 
-            ledgers.forEach(ledger => {
+            ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
               let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
@@ -565,33 +575,33 @@ export default {
               );
 
               const todays = Result[1].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (todays) {
                 todays_amount = todays.debit_amount;
               }
               const thirty_days = Result[2].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (thirty_days) {
                 thirty_days_amount = thirty_days.debit_amount;
               }
               const sixty_days = Result[3].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (sixty_days) {
                 sixty_days_amount = sixty_days.debit_amount;
               }
               const ninety_days = Result[4].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (ninety_days) {
                 ninety_days_amount = ninety_days.debit_amount;
               }
               const above_ninety_days = Result[5].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (above_ninety_days) {
@@ -614,7 +624,7 @@ export default {
                   sixty_days_amount: sixty_days_amount,
                   ninety_days_amount: ninety_days_amount,
                   above_ninety_days_amount: above_ninety_days_amount,
-                  balance: balance
+                  balance: balance,
                 });
               }
             });
@@ -634,16 +644,16 @@ export default {
               sixty_days_total: sixty_days_total,
               ninety_days_total: ninety_days_total,
               above_ninety_days_total: above_ninety_days_total,
-              grand_total: grand_total
+              grand_total: grand_total,
             };
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -666,12 +676,12 @@ export default {
                   on H.parent_acc_id = cte.finance_account_head_id  \
                   )select * from cte;",
 
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         const head_ids = [];
 
-        result.forEach(item => {
+        result.forEach((item) => {
           head_ids.push(item.finance_account_head_id);
         });
 
@@ -695,9 +705,9 @@ export default {
                   head_id in(${head_ids}) and payment_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
                   group by child_id  with rollup;`,
 
-            printQuery: false
+            printQuery: false,
           })
-          .then(Result => {
+          .then((Result) => {
             const ledgers = Result[0];
             let todays_total = parseFloat(0).toFixed(decimal_places);
             let thirty_days_total = parseFloat(0).toFixed(decimal_places);
@@ -723,7 +733,7 @@ export default {
               above_ninety_days_total = Result[5].pop().credit_amount;
             }
 
-            ledgers.forEach(ledger => {
+            ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
               let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
@@ -733,33 +743,33 @@ export default {
               );
 
               const todays = Result[1].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (todays) {
                 todays_amount = todays.credit_amount;
               }
               const thirty_days = Result[2].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (thirty_days) {
                 thirty_days_amount = thirty_days.credit_amount;
               }
               const sixty_days = Result[3].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (sixty_days) {
                 sixty_days_amount = sixty_days.credit_amount;
               }
               const ninety_days = Result[4].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (ninety_days) {
                 ninety_days_amount = ninety_days.credit_amount;
               }
               const above_ninety_days = Result[5].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (above_ninety_days) {
@@ -782,7 +792,7 @@ export default {
                   sixty_days_amount: sixty_days_amount,
                   ninety_days_amount: ninety_days_amount,
                   above_ninety_days_amount: above_ninety_days_amount,
-                  balance: balance
+                  balance: balance,
                 });
               }
             });
@@ -802,16 +812,16 @@ export default {
               sixty_days_total: sixty_days_total,
               ninety_days_total: ninety_days_total,
               above_ninety_days_total: above_ninety_days_total,
-              grand_total: grand_total
+              grand_total: grand_total,
             };
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -833,12 +843,12 @@ export default {
             on H.parent_acc_id = cte.finance_account_head_id  \
             )select * from cte;",
 
-        printQuery: false
+        printQuery: false,
       })
-      .then(result => {
+      .then((result) => {
         const head_ids = [];
 
-        result.forEach(item => {
+        result.forEach((item) => {
           head_ids.push(item.finance_account_head_id);
         });
 
@@ -876,9 +886,9 @@ export default {
             head_id in(${head_ids}) and settlement_status='P' and D.auth_status='A' and D.payment_date < DATE_SUB(CURDATE(),INTERVAL 93 DAY)
             group by child_id  with rollup;`,
 
-            printQuery: true
+            printQuery: true,
           })
-          .then(Result => {
+          .then((Result) => {
             const ledgers = Result[0];
             let todays_total = parseFloat(0).toFixed(decimal_places);
             let thirty_days_total = parseFloat(0).toFixed(decimal_places);
@@ -904,7 +914,7 @@ export default {
               above_ninety_days_total = Result[5].pop().credit_amount;
             }
 
-            ledgers.forEach(ledger => {
+            ledgers.forEach((ledger) => {
               let todays_amount = parseFloat(0).toFixed(decimal_places);
               let thirty_days_amount = parseFloat(0).toFixed(decimal_places);
               let sixty_days_amount = parseFloat(0).toFixed(decimal_places);
@@ -914,33 +924,33 @@ export default {
               );
 
               const todays = Result[1].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (todays) {
                 todays_amount = todays.credit_amount;
               }
               const thirty_days = Result[2].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (thirty_days) {
                 thirty_days_amount = thirty_days.credit_amount;
               }
               const sixty_days = Result[3].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (sixty_days) {
                 sixty_days_amount = sixty_days.credit_amount;
               }
               const ninety_days = Result[4].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
               if (ninety_days) {
                 ninety_days_amount = ninety_days.credit_amount;
               }
               const above_ninety_days = Result[5].find(
-                f => f.child_id == ledger.finance_account_child_id
+                (f) => f.child_id == ledger.finance_account_child_id
               );
 
               if (above_ninety_days) {
@@ -963,7 +973,7 @@ export default {
                   sixty_days_amount: sixty_days_amount,
                   ninety_days_amount: ninety_days_amount,
                   above_ninety_days_amount: above_ninety_days_amount,
-                  balance: balance
+                  balance: balance,
                 });
               }
             });
@@ -983,16 +993,16 @@ export default {
               sixty_days_total: sixty_days_total,
               ninety_days_total: ninety_days_total,
               above_ninety_days_total: above_ninety_days_total,
-              grand_total: grand_total
+              grand_total: grand_total,
             };
             next();
           })
-          .catch(e => {
+          .catch((e) => {
             _mysql.releaseConnection();
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
@@ -1017,7 +1027,7 @@ export default {
       { month_name: "SEP", month_no: "9" },
       { month_name: "OCT", month_no: "10" },
       { month_name: "NOV", month_no: "11" },
-      { month_name: "DEC", month_no: "12" }
+      { month_name: "DEC", month_no: "12" },
     ];
     // const months = {
     //   1: JAN,
@@ -1036,9 +1046,9 @@ export default {
     _mysql
       .executeQuery({
         query:
-          "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; "
+          "SELECT cost_center_type,cost_center_required  FROM finance_options limit 1; ",
       })
-      .then(result => {
+      .then((result) => {
         if (result[0]["cost_center_required"] == "Y") {
           if (input.hospital_id > 0) {
             whrStr += " and VD.hospital_id= " + input.hospital_id;
@@ -1067,7 +1077,7 @@ export default {
           whrStr,
           months
         )
-          .then(income => {
+          .then((income) => {
             getLedgersForProfitAndLossMonthWise(
               _mysql,
               decimal_places,
@@ -1075,12 +1085,12 @@ export default {
               whrStr,
               months
             )
-              .then(expense => {
+              .then((expense) => {
                 _mysql.releaseConnection();
                 const totals = {};
 
                 let profit = 0;
-                months.forEach(item => {
+                months.forEach((item) => {
                   const month_no = item.month_no;
                   const income_amount = income[month_no];
                   const expense_amount = expense[month_no];
@@ -1101,23 +1111,23 @@ export default {
                   months: months,
                   income: income,
                   expense: expense,
-                  totals: totals
+                  totals: totals,
                 };
                 next();
               })
-              .catch(e => {
+              .catch((e) => {
                 next(e);
               });
           })
-          .catch(e => {
+          .catch((e) => {
             next(e);
           });
       })
-      .catch(e => {
+      .catch((e) => {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
 };
 
 //created by irfan: TRIAL BALANCE
@@ -1175,11 +1185,11 @@ function getAccountHeadsForTrialBalance(
             finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id,
-            finance_account_head_id
+            finance_account_head_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           const child_data = result[1];
@@ -1190,7 +1200,7 @@ function getAccountHeadsForTrialBalance(
             decimal_places,
             result[1]
           )
-            .then(head_data => {
+            .then((head_data) => {
               const outputArray = createHierarchyForTB(
                 result[0],
                 child_data,
@@ -1201,19 +1211,19 @@ function getAccountHeadsForTrialBalance(
               );
               resolve(outputArray);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log("m4:", e);
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
         });
     } else {
       reject({
         invalid_input: true,
-        message: "Please provide Valid Input"
+        message: "Please provide Valid Input",
       });
     }
   });
@@ -1272,17 +1282,17 @@ function getAccountHeadsForReport(
             finance_account_head_id,
             finance_account_head_id,
             finance_account_head_id,
-            finance_account_head_id
+            finance_account_head_id,
           ],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           _mysql.releaseConnection();
 
           const child_data = result[1];
 
           calcAmount(result[3], result[2], decimal_places)
-            .then(head_data => {
+            .then((head_data) => {
               const outputArray = createHierarchy(
                 result[0],
                 child_data,
@@ -1294,19 +1304,19 @@ function getAccountHeadsForReport(
 
               resolve(outputArray[0]);
             })
-            .catch(e => {
+            .catch((e) => {
               console.log("m4:", e);
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
         });
     } else {
       reject({
         invalid_input: true,
-        message: "Please provide Valid Input"
+        message: "Please provide Valid Input",
       });
     }
   });
@@ -1319,10 +1329,10 @@ function calcAmount(account_heads, levels, decimal_places) {
       const max_account_level = parseInt(levels[0]["account_level"]);
 
       let levels_group = _.chain(account_heads)
-        .groupBy(g => g.account_level)
+        .groupBy((g) => g.account_level)
         .value();
 
-      levels_group[max_account_level].map(m => {
+      levels_group[max_account_level].map((m) => {
         m["total_debit_amount"] = m["debit_amount"];
         m["total_credit_amount"] = m["credit_amount"];
 
@@ -1337,20 +1347,20 @@ function calcAmount(account_heads, levels, decimal_places) {
 
       for (let i = max_account_level - 1; i >= 0; i--) {
         // for (let k = 0; k < levels_group[i].length; k++) {
-        levels_group[i].map(item => {
-          let immediate_childs = levels_group[i + 1].filter(child => {
+        levels_group[i].map((item) => {
+          let immediate_childs = levels_group[i + 1].filter((child) => {
             if (item.finance_account_head_id == child.parent_acc_id) {
               return item;
             }
           });
 
           const total_debit_amount = _.chain(immediate_childs)
-            .sumBy(s => parseFloat(s.total_debit_amount))
+            .sumBy((s) => parseFloat(s.total_debit_amount))
             .value()
             .toFixed(decimal_places);
 
           const total_credit_amount = _.chain(immediate_childs)
-            .sumBy(s => parseFloat(s.total_credit_amount))
+            .sumBy((s) => parseFloat(s.total_credit_amount))
             .value()
             .toFixed(decimal_places);
 
@@ -1409,14 +1419,14 @@ function calcAmountForTrialBalance(
 
       for (let i = 0; i < account_heads.length; i++) {
         const total_debit_side = _.chain(child_data)
-          .filter(f => f.head_id == account_heads[i].finance_account_head_id)
-          .sumBy(s => parseFloat(s.debit_side))
+          .filter((f) => f.head_id == account_heads[i].finance_account_head_id)
+          .sumBy((s) => parseFloat(s.debit_side))
           .value()
           .toFixed(decimal_places);
 
         const total_credit_side = _.chain(child_data)
-          .filter(f => f.head_id == account_heads[i].finance_account_head_id)
-          .sumBy(s => parseFloat(s.credit_side))
+          .filter((f) => f.head_id == account_heads[i].finance_account_head_id)
+          .sumBy((s) => parseFloat(s.credit_side))
           .value()
           .toFixed(decimal_places);
 
@@ -1425,27 +1435,27 @@ function calcAmountForTrialBalance(
       }
 
       let levels_group = _.chain(account_heads)
-        .groupBy(g => g.account_level)
+        .groupBy((g) => g.account_level)
         .value();
 
       let tempArray = [];
       for (let i = max_account_level - 1; i >= 0; i--) {
         // for (let k = 0; k < levels_group[i].length; k++) {
 
-        levels_group[i].map(item => {
-          let immediate_childs = levels_group[i + 1].filter(child => {
+        levels_group[i].map((item) => {
+          let immediate_childs = levels_group[i + 1].filter((child) => {
             if (item.finance_account_head_id == child.parent_acc_id) {
               return child;
             }
           });
 
           const total_credit_side = _.chain(immediate_childs)
-            .sumBy(s => parseFloat(s.total_credit_side))
+            .sumBy((s) => parseFloat(s.total_credit_side))
             .value()
             .toFixed(decimal_places);
 
           const total_debit_side = _.chain(immediate_childs)
-            .sumBy(s => parseFloat(s.total_debit_side))
+            .sumBy((s) => parseFloat(s.total_debit_side))
             .value()
             .toFixed(decimal_places);
 
@@ -1515,7 +1525,7 @@ function createHierarchy(
           (children[item.finance_account_head_id] = []);
 
         //ST---calulating Amount
-        const BALANCE = child_data.find(f => {
+        const BALANCE = child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -1550,17 +1560,17 @@ function createHierarchy(
           arabic_name: item.arabic_child_name,
           disabled: false,
           leafnode: "Y",
-          created_status: item["child_created_from"]
+          created_status: item["child_created_from"],
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
         if (!data) {
           //ST---calulating Amount
-          const BALANCE = head_data.find(f => {
+          const BALANCE = head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -1585,12 +1595,12 @@ function createHierarchy(
             label: item.account_name,
             disabled: true,
             arabic_name: item.arabic_account_name,
-            leafnode: "N"
+            leafnode: "N",
           });
         }
       } else {
         //ST---calulating Amount
-        const BALANCE = head_data.find(f => {
+        const BALANCE = head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
@@ -1615,7 +1625,7 @@ function createHierarchy(
           label: item.account_name,
           arabic_name: item.arabic_account_name,
           disabled: true,
-          leafnode: "N"
+          leafnode: "N",
         });
       }
     }
@@ -1624,7 +1634,7 @@ function createHierarchy(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -1680,7 +1690,7 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
           (children[item.finance_account_head_id] = []);
 
         //ST---calulating Amount
-        const BALANCE = child_data.find(f => {
+        const BALANCE = child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -1726,18 +1736,18 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
           tr_credit_amount: tr_credit_amount,
 
           leafnode: "Y",
-          created_status: item["child_created_from"]
+          created_status: item["child_created_from"],
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
         //HEAD ACCOUNT IN SIDE CHILD
         if (!data) {
           //ST---calulating Amount
-          const BALANCE = head_data.find(f => {
+          const BALANCE = head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -1777,14 +1787,14 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
             label: item.account_name,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            leafnode: "N"
+            leafnode: "N",
           });
         }
       }
       //HEAD ACCOUNT
       else {
         //ST---calulating Amount
-        const BALANCE = head_data.find(f => {
+        const BALANCE = head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
@@ -1824,7 +1834,7 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
           label: item.account_name,
           tr_debit_amount: tr_debit_amount,
           tr_credit_amount: tr_credit_amount,
-          leafnode: "N"
+          leafnode: "N",
         });
       }
     }
@@ -1833,7 +1843,7 @@ function createHierarchyForTB_BAKUP_JAN_16_2020(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -1890,7 +1900,7 @@ function createHierarchyForTB(
           (children[item.finance_account_head_id] = []);
 
         //ST---calulating Amount
-        const BALANCE = child_data.find(f => {
+        const BALANCE = child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -1930,18 +1940,18 @@ function createHierarchyForTB(
           tr_credit_amount: tr_credit_amount,
 
           leafnode: "Y",
-          created_status: item["child_created_from"]
+          created_status: item["child_created_from"],
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
         //HEAD ACCOUNT IN SIDE CHILD
         if (!data) {
           //ST---calulating Amount
-          const BALANCE = head_data.find(f => {
+          const BALANCE = head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -1967,7 +1977,7 @@ function createHierarchyForTB(
             label: item.account_name,
             tr_debit_amount: tr_debit_amount,
             tr_credit_amount: tr_credit_amount,
-            leafnode: "N"
+            leafnode: "N",
           });
         }
       }
@@ -1975,7 +1985,7 @@ function createHierarchyForTB(
       //HEAD ACCOUNT
       else {
         //ST---calulating Amount
-        const BALANCE = head_data.find(f => {
+        const BALANCE = head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
@@ -2001,13 +2011,13 @@ function createHierarchyForTB(
           label: item.account_name,
           tr_debit_amount: tr_debit_amount,
           tr_credit_amount: tr_credit_amount,
-          leafnode: "N"
+          leafnode: "N",
         });
       }
     }
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -2061,9 +2071,9 @@ function getAccountHeadsForProfitAndLoss(
           where root_id=?;  ${costCenterQuery} `,
 
           values: [finance_account_head_id, finance_account_head_id],
-          printQuery: true
+          printQuery: true,
         })
-        .then(result => {
+        .then((result) => {
           let headQuery = "";
           let childQuery = "";
 
@@ -2091,9 +2101,9 @@ function getAccountHeadsForProfitAndLoss(
           _mysql
             .executeQuery({
               query: `${headQuery} ${childQuery} `,
-              printQuery: true
+              printQuery: true,
             })
-            .then(results => {
+            .then((results) => {
               _mysql.releaseConnection();
 
               let child_iterator = len;
@@ -2127,19 +2137,19 @@ function getAccountHeadsForProfitAndLoss(
               resolve({ outputArray: outputArray[0], cost_centers: result[2] });
               // utilities.logger().log("headObj:", headObj);
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               reject(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
         });
     } else {
       reject({
         invalid_input: true,
-        message: "Please provide Valid Input"
+        message: "Please provide Valid Input",
       });
     }
   });
@@ -2151,10 +2161,10 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
     const max_account_level = parseInt(levels[0]["account_level"]);
 
     let levels_group = _.chain(account_heads)
-      .groupBy(g => g.account_level)
+      .groupBy((g) => g.account_level)
       .value();
 
-    levels_group[max_account_level].map(m => {
+    levels_group[max_account_level].map((m) => {
       m["total_debit_amount"] = m["debit_amount"];
       m["total_credit_amount"] = m["credit_amount"];
 
@@ -2169,20 +2179,20 @@ function calcAmountForProfitAndLoss(account_heads, levels, decimal_places) {
 
     for (let i = max_account_level - 1; i >= 0; i--) {
       // for (let k = 0; k < levels_group[i].length; k++) {
-      levels_group[i].map(item => {
-        let immediate_childs = levels_group[i + 1].filter(child => {
+      levels_group[i].map((item) => {
+        let immediate_childs = levels_group[i + 1].filter((child) => {
           if (item.finance_account_head_id == child.parent_acc_id) {
             return item;
           }
         });
 
         const total_debit_amount = _.chain(immediate_childs)
-          .sumBy(s => parseFloat(s.total_debit_amount))
+          .sumBy((s) => parseFloat(s.total_debit_amount))
           .value()
           .toFixed(decimal_places);
 
         const total_credit_amount = _.chain(immediate_childs)
-          .sumBy(s => parseFloat(s.total_credit_amount))
+          .sumBy((s) => parseFloat(s.total_credit_amount))
           .value()
           .toFixed(decimal_places);
 
@@ -2257,7 +2267,7 @@ function buildHierarchyForProfitAndLoss(
 
         for (let child in child_data) {
           //ST---calulating Amount
-          const BALANCE = child_data[child].find(f => {
+          const BALANCE = child_data[child].find((f) => {
             return (
               item.finance_account_head_id == f.head_id &&
               item.finance_account_child_id == f.child_id
@@ -2291,11 +2301,11 @@ function buildHierarchyForProfitAndLoss(
           label: item.child_name,
           head_id: item["head_id"],
 
-          leafnode: "Y"
+          leafnode: "Y",
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
@@ -2303,7 +2313,7 @@ function buildHierarchyForProfitAndLoss(
           let subtitleObj = {};
           //ST---calulating Amount
           for (let head in head_data) {
-            const BALANCE = head_data[head].find(f => {
+            const BALANCE = head_data[head].find((f) => {
               return item.finance_account_head_id == f.finance_account_head_id;
             });
 
@@ -2330,14 +2340,14 @@ function buildHierarchyForProfitAndLoss(
 
             label: item.account_name,
 
-            leafnode: "N"
+            leafnode: "N",
           });
         }
       } else {
         let subtitleObj = {};
         //ST---calulating Amount
         for (let head in head_data) {
-          const BALANCE = head_data[head].find(f => {
+          const BALANCE = head_data[head].find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -2364,7 +2374,7 @@ function buildHierarchyForProfitAndLoss(
 
           label: item.account_name,
 
-          leafnode: "N"
+          leafnode: "N",
         });
       }
     }
@@ -2373,7 +2383,7 @@ function buildHierarchyForProfitAndLoss(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
@@ -2426,9 +2436,9 @@ function getLedgersForProfitAndLossMonthWise(
           where root_id=?; `,
 
           values: [finance_account_head_id, finance_account_head_id],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           let headQuery = "";
           let childQuery = "";
 
@@ -2456,9 +2466,9 @@ function getLedgersForProfitAndLossMonthWise(
           _mysql
             .executeQuery({
               query: `${headQuery} ${childQuery} `,
-              printQuery: false
+              printQuery: false,
             })
-            .then(results => {
+            .then((results) => {
               _mysql.releaseConnection();
               let child_iterator = len;
 
@@ -2492,19 +2502,19 @@ function getLedgersForProfitAndLossMonthWise(
               resolve(outputArray[0]);
               // utilities.logger().log("headObj:", headObj);
             })
-            .catch(e => {
+            .catch((e) => {
               _mysql.releaseConnection();
               reject(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
         });
     } else {
       reject({
         invalid_input: true,
-        message: "Please provide Valid Input"
+        message: "Please provide Valid Input",
       });
     }
   });
@@ -2601,11 +2611,11 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
             finance_account_head_id,
             options.to_date,
             finance_account_head_id,
-            finance_account_head_id
+            finance_account_head_id,
           ],
-          printQuery: false
+          printQuery: false,
         })
-        .then(result => {
+        .then((result) => {
           const ledger_names = result[0];
 
           const op_child_data = result[1];
@@ -2619,11 +2629,11 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
           const levels = result[7];
 
           calcAmount(ob_heads, levels, decimal_places)
-            .then(op_head_data => {
+            .then((op_head_data) => {
               calcAmount(transaction_heads, levels, decimal_places)
-                .then(transaction_head_data => {
+                .then((transaction_head_data) => {
                   calcAmount(cb_heads, levels, decimal_places)
-                    .then(cb_head_data => {
+                    .then((cb_head_data) => {
                       const outputArray = createHierarchyTransactionTB(
                         ledger_names,
                         op_head_data,
@@ -2638,29 +2648,29 @@ function getTrialBalanceFunc(decimal_places, finance_account_head_id, options) {
                       );
                       resolve(outputArray[0]);
                     })
-                    .catch(e => {
+                    .catch((e) => {
                       console.log("m2:", e);
                       next(e);
                     });
                 })
-                .catch(e => {
+                .catch((e) => {
                   console.log("m3:", e);
                   next(e);
                 });
             })
-            .catch(e => {
+            .catch((e) => {
               console.log("m4:", e);
               next(e);
             });
         })
-        .catch(e => {
+        .catch((e) => {
           _mysql.releaseConnection();
           reject(e);
         });
     } else {
       reject({
         invalid_input: true,
-        message: "Please provide Valid Input"
+        message: "Please provide Valid Input",
       });
     }
   });
@@ -2704,7 +2714,7 @@ function createHierarchyTransactionTB(
         //ST---calulating Amount
 
         //ST calculating opening balance of from date-----
-        const OP_BALANCE = op_child_data.find(f => {
+        const OP_BALANCE = op_child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -2759,7 +2769,7 @@ function createHierarchyTransactionTB(
 
         //ST calculating closing balance on  to date-----
 
-        const CB_BALANCE = cb_child_data.find(f => {
+        const CB_BALANCE = cb_child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -2813,7 +2823,7 @@ function createHierarchyTransactionTB(
         //END calculating closing balance on  to date-----
 
         //ST calculating transaction amount between  from_date  and to_date-----
-        const TR_BALANCE = transaction_child_data.find(f => {
+        const TR_BALANCE = transaction_child_data.find((f) => {
           return (
             item.finance_account_head_id == f.head_id &&
             item.finance_account_child_id == f.child_id
@@ -2839,18 +2849,18 @@ function createHierarchyTransactionTB(
           label: item.child_name,
           head_id: item["head_id"],
           arabic_name: item.arabic_child_name,
-          leafnode: "Y"
+          leafnode: "Y",
         });
 
         //if children array doesnt contain this non-leaf node then push
-        const data = target.find(val => {
+        const data = target.find((val) => {
           return val.finance_account_head_id == item.finance_account_head_id;
         });
 
         if (!data) {
           //ST calculating opening balance of from date-----
 
-          const OP_BALANCE = op_head_data.find(f => {
+          const OP_BALANCE = op_head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
 
@@ -2906,7 +2916,7 @@ function createHierarchyTransactionTB(
 
           //ST calculating closing balance on  to date-----
 
-          const CB_BALANCE = cb_head_data.find(f => {
+          const CB_BALANCE = cb_head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
           let cb_amount = default_total;
@@ -2960,7 +2970,7 @@ function createHierarchyTransactionTB(
           //END calculating closing balance on  to date-----
 
           //ST calculating transaction amount between  from_date  and to_date-----
-          const TR_BALANCE = transaction_head_data.find(f => {
+          const TR_BALANCE = transaction_head_data.find((f) => {
             return item.finance_account_head_id == f.finance_account_head_id;
           });
           let tr_debit_amount = default_total;
@@ -2982,13 +2992,13 @@ function createHierarchyTransactionTB(
             label: item.account_name,
             arabic_name: item.arabic_account_name,
 
-            leafnode: "N"
+            leafnode: "N",
           });
         }
       } else {
         //ST calculating opening balance of from date-----
 
-        const OP_BALANCE = op_head_data.find(f => {
+        const OP_BALANCE = op_head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
 
@@ -3040,7 +3050,7 @@ function createHierarchyTransactionTB(
 
         //ST calculating closing balance on  to date-----
 
-        const CB_BALANCE = cb_head_data.find(f => {
+        const CB_BALANCE = cb_head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
         let cb_amount = default_total;
@@ -3090,7 +3100,7 @@ function createHierarchyTransactionTB(
         //END calculating closing balance on  to date-----
 
         //ST calculating transaction amount between  from_date  and to_date-----
-        const TR_BALANCE = transaction_head_data.find(f => {
+        const TR_BALANCE = transaction_head_data.find((f) => {
           return item.finance_account_head_id == f.finance_account_head_id;
         });
         let tr_debit_amount = default_total;
@@ -3112,7 +3122,7 @@ function createHierarchyTransactionTB(
           label: item.account_name,
           arabic_name: item.arabic_account_name,
 
-          leafnode: "N"
+          leafnode: "N",
         });
       }
     }
@@ -3121,7 +3131,7 @@ function createHierarchyTransactionTB(
     // utilities.logger().log("children:", children);
 
     // function to recursively build the tree
-    let findChildren = function(parent) {
+    let findChildren = function (parent) {
       if (children[parent.finance_account_head_id]) {
         const tempchilds = children[parent.finance_account_head_id];
 
