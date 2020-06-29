@@ -7,10 +7,18 @@
     max-width: 250px;
   }
 }
-
-.modalCustomFooter {
-  text-align: right;
-  margin-top: 20px;
+.costCenterModal {
+  width: 40vw !important;
+  .btn-primary {
+    margin-top: 16px;
+  }
+  .modalCustomFooter {
+    text-align: right;
+    margin-top: 20px;
+    margin-bottom: -10px;
+    border-top: 1px solid #e8e8e8;
+    padding-top: 10px;
+  }
 }
 .costCenterScreen {
   .topBarCostCenter {
