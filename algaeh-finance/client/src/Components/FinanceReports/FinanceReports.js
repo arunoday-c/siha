@@ -121,10 +121,11 @@ export default function FinanceReports() {
             <div className="col reportPreviewSecLeft">
               <div
                 className="row inner-top-search"
-                style={{ padding: "15px 0" }}
+                style={{ padding: "15px 0", marginBottom: 0 }}
               >
                 <div className="col-12">
                   <h3>Report Name Here</h3>
+                  <hr></hr>
                 </div>
                 <AlgaehAutoComplete
                   div={{ className: "col-4" }}
@@ -187,6 +188,7 @@ export default function FinanceReports() {
                   spinning={loading}
                   tip="Please wait report data is fetching.."
                   delay={500}
+                  className="abc"
                 >
                   {selected === "TB" ? (
                     <i
