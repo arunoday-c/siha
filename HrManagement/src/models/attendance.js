@@ -5508,7 +5508,7 @@ export default {
                              case when   '${options["ramzan_eligible_category"]}'='ALL'  and G.ramzan_timing='Y' then 'Y' when E.religion_id=1 and G.ramzan_timing='Y' then 'Y'
                             else 'N' end as ramzan_enployee
                             from hims_d_employee E  ${deptStr} left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                            S.year=? and S.month=?
+                            S.year=? and S.month=? and S.salary_type='NS'
                             left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
                             where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 
                             E.date_of_joining <= date(?) and
@@ -5629,7 +5629,7 @@ export default {
                           from hims_d_employee E  ${deptStr} 
                           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
                           left join hims_f_salary S on E.hims_d_employee_id =S.employee_id and  
-                          S.year=? and S.month=? left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                          S.year=? and S.month=? and S.salary_type='NS' left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                           and  PR.attendance_date between date(?) and date(?) 
                           left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                           where E.hospital_id=? and E.record_status='A' and E.employee_status<>'I' and 

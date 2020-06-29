@@ -10,7 +10,7 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   $this.setState({
-    [name]: value
+    [name]: value,
   });
 };
 
@@ -21,14 +21,14 @@ const poforhandle = ($this, e) => {
   getData($this, value);
   $this.setState({
     [name]: value,
-    ReqData: false
+    ReqData: false,
   });
 };
 
 const RequisitionSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: spotlightSearch.RequisitionEntry.ReqEntry
+      columns: spotlightSearch.RequisitionEntry1.ReqEntry,
     },
     searchName:
       $this.state.quotation_for === "PHR" ? "PhrPOEntry" : "InvPOEntry",
@@ -37,7 +37,7 @@ const RequisitionSearch = ($this, e) => {
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
-    onRowSelect: row => {
+    onRowSelect: (row) => {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri:
@@ -46,10 +46,10 @@ const RequisitionSearch = ($this, e) => {
             : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
         module: "procurement",
         data: {
-          material_requisition_number: row.material_requisition_number
+          material_requisition_number: row.material_requisition_number,
         },
         method: "GET",
-        onSuccess: response => {
+        onSuccess: (response) => {
           if (response.data.success === true) {
             let data = response.data.records;
             if (data !== null && data !== undefined) {
@@ -95,9 +95,9 @@ const RequisitionSearch = ($this, e) => {
             }
           }
           AlgaehLoader({ show: false });
-        }
+        },
       });
-    }
+    },
   });
 };
 
@@ -109,70 +109,70 @@ const ClearData = ($this, e) => {
   clearItemDetails($this);
 };
 
-const clearItemDetails = $this => {
+const clearItemDetails = ($this) => {
   $this.props.getItems({
     redux: {
       type: "ITEM_GET_DATA",
       mappingName: "poitemlist",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemCategory({
     redux: {
       type: "ITEM_CATEGORY_GET_DATA",
       mappingName: "poitemcategory",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemGroup({
     redux: {
       type: "ITEM_GROUP_GET_DATA",
       mappingName: "poitemgroup",
-      data: []
-    }
+      data: [],
+    },
   });
 
   $this.props.getItemUOM({
     redux: {
       type: "ITEM_UOM_GET_DATA",
       mappingName: "poitemuom",
-      data: []
-    }
+      data: [],
+    },
   });
 };
-const SaveQuotationEnrty = $this => {
+const SaveQuotationEnrty = ($this) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/RequestForQuotation/addRequestForQuotation",
     module: "procurement",
     data: $this.state,
-    onSuccess: response => {
+    onSuccess: (response) => {
       if (response.data.success === true) {
         $this.setState({
           quotation_number: response.data.records.quotation_number,
           hims_f_procurement_req_quotation_header_id:
             response.data.records.hims_f_procurement_req_quotation_header_id,
           saveEnable: true,
-          dataExitst: true
+          dataExitst: true,
         });
 
         swalMessage({
           type: "success",
-          title: "Saved successfully . ."
+          title: "Saved successfully . .",
         });
       }
       AlgaehLoader({ show: false });
     },
-    onFailure: error => {
+    onFailure: (error) => {
       AlgaehLoader({ show: false });
       swalMessage({
         title: error.message,
-        type: "error"
+        type: "error",
       });
-    }
+    },
   });
 };
 
@@ -187,7 +187,7 @@ const getCtrlCode = ($this, docNumber) => {
       module: "procurement",
       method: "GET",
       data: { quotation_number: docNumber },
-      onSuccess: response => {
+      onSuccess: (response) => {
         if (response.data.success) {
           let data = response.data.records;
           getData($this, data.quotation_for);
@@ -201,13 +201,13 @@ const getCtrlCode = ($this, docNumber) => {
           AlgaehLoader({ show: false });
         }
       },
-      onFailure: error => {
+      onFailure: (error) => {
         AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
-          type: "error"
+          type: "error",
         });
-      }
+      },
     });
   });
 };
@@ -221,8 +221,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getItemCategory({
@@ -231,8 +231,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
-      }
+        mappingName: "poitemcategory",
+      },
     });
 
     $this.props.getItemGroup({
@@ -241,8 +241,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -251,8 +251,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   } else if (quotation_for === "INV") {
     $this.props.getItems({
@@ -262,8 +262,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
-        mappingName: "poitemlist"
-      }
+        mappingName: "poitemlist",
+      },
     });
 
     $this.props.getItemCategory({
@@ -272,9 +272,9 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
-        mappingName: "poitemcategory"
+        mappingName: "poitemcategory",
       },
-      afterSuccess: data => { }
+      afterSuccess: (data) => {},
     });
 
     $this.props.getItemGroup({
@@ -283,8 +283,8 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
-        mappingName: "poitemgroup"
-      }
+        mappingName: "poitemgroup",
+      },
     });
 
     $this.props.getItemUOM({
@@ -293,21 +293,19 @@ const getData = ($this, quotation_for) => {
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
-        mappingName: "poitemuom"
-      }
+        mappingName: "poitemuom",
+      },
     });
   }
 };
 
-const generateRequestQuotation = data => {
-  // console.log("data:", data);
-
+const generateRequestQuotation = (data) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
     module: "reports",
     headers: {
-      Accept: "blob"
+      Accept: "blob",
     },
     others: { responseType: "blob" },
     data: {
@@ -319,24 +317,24 @@ const generateRequestQuotation = data => {
         reportParams: [
           {
             name: "quotation_number",
-            value: data.quotation_number
-          }
+            value: data.quotation_number,
+          },
         ],
-        outputFileType: "PDF"
-      }
+        outputFileType: "PDF",
+      },
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       const urlBlob = URL.createObjectURL(res.data);
       const origin = `${window.location.origin}/reportviewer/web/viewer.html?file=${urlBlob}&filename=Quotation Request`;
       window.open(origin);
       // window.document.title = "Quotation Request";
-    }
+    },
   });
 };
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: moment(ctrl)._d,
   });
 };
 
@@ -345,24 +343,23 @@ const dateValidate = ($this, value, event) => {
   if (inRange) {
     swalMessage({
       title: "Expected Arrival cannot be past Date.",
-      type: "warning"
+      type: "warning",
     });
     event.target.focus();
     $this.setState({
-      [event.target.name]: null
+      [event.target.name]: null,
     });
   }
 };
 
 const setDataFromRequest = ($this, e) => {
-
   getData($this, "INV");
 
   let IOputs = {};
-  IOputs.quotation_detail = $this.props.quotation_detail
-  IOputs.saveEnable = false
-  IOputs.ClearDisable = true
-  IOputs.quotation_for = "INV"
+  IOputs.quotation_detail = $this.props.quotation_detail;
+  IOputs.saveEnable = false;
+  IOputs.ClearDisable = true;
+  IOputs.quotation_for = "INV";
   $this.setState({ ...$this.state, ...IOputs });
 };
 
@@ -377,5 +374,5 @@ export {
   datehandle,
   clearItemDetails,
   dateValidate,
-  setDataFromRequest
+  setDataFromRequest,
 };
