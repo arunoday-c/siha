@@ -1,5 +1,5 @@
 import Accounts from "./Components/FinanceAccounts";
-import Transactions from "./Components/Transactions";
+// import Transactions from "./Components/Transactions";
 import JournalVoucher from "./Components/JournalVoucher";
 import FinanceReports from "./Components/FinanceReports";
 import Mapping from "./Components/Mapping";
@@ -14,9 +14,10 @@ import SupplierListFinance from "./Components/SupplierListFinance";
 import SupplierPayment from "./Components/SupplierListFinance/SupplierPayment";
 import "react-sortable-tree/style.css";
 import "./algaehTableComponentStyle.scss";
+import "./styles/index.scss";
 const Pages = {
   Accounts,
-  Transactions,
+  // Transactions,
   JournalVoucher,
   FinanceReports,
   Mapping,
@@ -28,7 +29,7 @@ const Pages = {
   CustomerListFinance,
   CustomerPayment,
   SupplierListFinance,
-  SupplierPayment
+  SupplierPayment,
 };
 
 window.FinanceComponent = Pages;

@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   AlgaehButton,
   AlgaehMessagePop,
-  AlgaehTreeSearch
+  AlgaehTreeSearch,
+  AlgaehLabel,
 } from "algaeh-react-components";
 import {
   getHeaders,
   updateFinanceAccountsMaping,
-  getFinanceAccountsMaping
+  getFinanceAccountsMaping,
 } from "./mapping.event";
 export default function Mapping(props) {
   const [accountHeads, setAccountHeads] = useState([]);
@@ -17,27 +18,27 @@ export default function Mapping(props) {
       getHeaders({ finance_account_head_id: 1 }),
       getHeaders({ finance_account_head_id: 2 }),
       getHeaders({ finance_account_head_id: 5 }),
-      getFinanceAccountsMaping()
+      getFinanceAccountsMaping(),
     ])
-      .then(results => {
+      .then((results) => {
         setAccountHeads({
           1: results[0][0].children,
           2: results[1][0].children,
-          5: results[2][0].children
+          5: results[2][0].children,
         });
         setMappings(results[3]);
       })
-      .catch(error => {
+      .catch((error) => {
         AlgaehMessagePop({
           type: "error",
-          display: error.message || error.response.data.message
+          display: error.message || error.response.data.message,
         });
       });
   }, []);
 
   function update(value, account_name) {
-    setMappings(state => {
-      const reqIndex = state.findIndex(item => item.account === account_name);
+    setMappings((state) => {
+      const reqIndex = state.findIndex((item) => item.account === account_name);
       if (value) {
         const [head_id, child_id] = value.split("-");
         state[reqIndex].head_id = head_id;
@@ -56,13 +57,13 @@ export default function Mapping(props) {
       .then(() => {
         AlgaehMessagePop({
           type: "success",
-          display: "Updated successfully"
+          display: "Updated successfully",
         });
       })
-      .catch(error => {
+      .catch((error) => {
         AlgaehMessagePop({
           type: "error",
-          display: JSON.stringify(error)
+          display: JSON.stringify(error),
         });
       });
   }
@@ -79,22 +80,22 @@ export default function Mapping(props) {
             </div>
             <div className="portlet-body">
               <div className="row">
-                {mappings.map(item => (
+                {mappings.map((item) => (
                   <AlgaehTreeSearch
                     key={item.account}
                     div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: item.description,
                       isImp: false,
-                      align: "ltr"
+                      align: "ltr",
                     }}
                     tree={{
                       treeDefaultExpandAll: true,
-                      onChange: val => update(val, item.account),
+                      onChange: (val) => update(val, item.account),
                       name: item.account,
                       data: accountHeads[item.root_id] || accountHeads[1],
                       textField: "label",
-                      valueField: node => {
+                      valueField: (node) => {
                         if (node["leafnode"] === "Y") {
                           return (
                             node["head_id"] +
@@ -105,20 +106,36 @@ export default function Mapping(props) {
                           return node["finance_account_head_id"];
                         }
                       },
-                      defaultValue: `${item.head_id}-${item.child_id}`
+                      defaultValue: `${item.head_id}-${item.child_id}`,
                     }}
                   />
                 ))}
-                <div className="col-3">
+                {/* <div className="col-3">
                   <AlgaehButton
                     onClick={updateMapping}
                     className="btn btn-primary"
                   >
                     MAP/UPDATE
                   </AlgaehButton>
-                </div>
+                </div> */}
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="hptl-phase1-footer">
+        <div className="row">
+          <div className="col-lg-12">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={updateMapping}
+            >
+              <AlgaehLabel label={{ forceLabel: "Save Mapping" }} />
+            </button>
+            {/* <button type="button" className="btn btn-default">
+              <AlgaehLabel label={{ forceLabel: "Export as Excel" }} />
+            </button> */}
           </div>
         </div>
       </div>
