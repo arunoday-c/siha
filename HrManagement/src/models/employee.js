@@ -1438,7 +1438,7 @@ export default {
               next();
             } else {
               req.records = {
-                message: "No Employes Found",
+                message: "No Employee Found",
                 invalid_input: true,
               };
               next();
@@ -1536,7 +1536,7 @@ export default {
               next();
             } else {
               req.records = {
-                message: "No Employes Found",
+                message: "No Employee Found",
                 invalid_input: true,
               };
               next();
