@@ -466,7 +466,6 @@ const getCtrlCode = ($this, docNumber) => {
         let data = response.data.records;
 
         data.grid_edit = true;
-        debugger
         if (
           $this.props.sales_order_number !== undefined &&
           $this.props.sales_order_number.length !== 0
@@ -476,10 +475,10 @@ const getCtrlCode = ($this, docNumber) => {
           data.ClearDisable = true;
           data.cancelDisable = data.cancelled === "Y" ? true : false;
 
-          for (let i = 0; i < data.order_detail.length; i++) {
-            data.order_detail[i].quantity_outstanding =
-              data.order_detail[i].quantity;
-          }
+          // for (let i = 0; i < data.order_detail.length; i++) {
+          //   data.order_detail[i].quantity_outstanding =
+          //     data.order_detail[i].quantity;
+          // }
           if (data.authorize1 === "N" || data.authorize2 === "N") {
             data.grid_edit = false;
           }
@@ -495,10 +494,10 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.addedItem = true;
         data.selectedData = true;
-        let project_details = $this.state.cost_projects.find(
-          f => f.cost_center_id === data.project_id
-        );
-        data.organizations = project_details.branches;
+        // let project_details = $this.state.cost_projects.find(
+        //   f => f.cost_center_id === data.project_id
+        // );
+        data.organizations = $this.props.hospitaldetails;
 
         $this.setState(data);
       }
