@@ -1,6 +1,7 @@
 import moment from "moment";
 
 const texthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let obj = {};
@@ -11,11 +12,12 @@ const texthandle = ($this, e) => {
     );
     if (primaryId !== undefined) {
       obj["identity_type_id"] = primaryId.hims_d_identity_document_id;
+      obj["masked_identity"] = primaryId.masked_identity;
     }
   }
 
   if (name === "identity_type_id") {
-    obj["identity_no"] = e.selected.masked_identity;
+    obj["masked_identity"] = e.selected.masked_identity;
   }
 
   $this.setState({

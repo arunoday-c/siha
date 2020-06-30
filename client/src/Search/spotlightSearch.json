@@ -260,11 +260,11 @@
         "label": "Requisition Date"
       },
       {
-        "fieldName": "from_location_description",
+        "fieldName": "from_location",
         "label": "From Location"
       },
       {
-        "fieldName": "to_location_description",
+        "fieldName": "to_location",
         "label": "To Location"
       }
     ]
@@ -504,6 +504,10 @@
         "label": "DN Done For"
       },
       {
+        "fieldName": "purchase_number",
+        "label": "PO Number"
+      },
+      {
         "fieldName": "loc_description",
         "label": "Location Name",
         "required": "N"
@@ -528,6 +532,10 @@
       {
         "fieldName": "grn_for",
         "label": "GRN Done For"
+      },
+      {
+        "fieldName": "purchase_number",
+        "label": "PO Number"
       },
       {
         "fieldName": "loc_description",
