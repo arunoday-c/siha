@@ -13,7 +13,7 @@ import moment from "moment";
 import mongoose from "mongoose";
 import { authenticate, postAuthenticate, disconnect } from "./socketAuth";
 import { notifiModel } from "./model";
-import { deleteNotification } from "./utils";
+import { deleteNotification, acknowledgement, seen } from "./utils";
 import appsock from "./appointmentSocket";
 import labsock from "./labSocket";
 import selfServiceSocket from "./selfServiceSocket";
@@ -115,6 +115,17 @@ db.once("open", function () {
             socket.emit("today", docs);
           }
         });
+      notifiModel.countDocuments(
+        {
+          user_id: socket.client.user,
+          isSeen: false,
+        },
+        (err, count) => {
+          if (!err) {
+            socket.emit("count", count);
+          }
+        }
+      );
     });
 
     socket.on("delete", (id) => {
@@ -125,6 +136,14 @@ db.once("open", function () {
         .catch((err) => {
           socket.emit("error", err.message);
         });
+    });
+
+    socket.on("acknowledge", (doc) => {
+      acknowledgement(doc);
+    });
+
+    socket.on("seen", (doc) => {
+      seen(socket);
     });
 
     appsock(socket);

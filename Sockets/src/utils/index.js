@@ -41,3 +41,24 @@ export function deleteNotification({ id }) {
     });
   });
 }
+
+export function acknowledgement(doc) {
+  console.log(doc, "ack");
+  const { _id } = doc;
+  if (_id) {
+    notifiModel
+      .findByIdAndUpdate(_id, {
+        $set: { isSeen: true },
+      })
+      .then((doc) => console.log(doc, "after doc"))
+      .catch((e) => console.log(e.message));
+  }
+}
+export function seen(socket) {
+  notifiModel
+    .updateMany(
+      { user_id: socket.client.user, isSeen: false },
+      { isSeen: true }
+    )
+    .then((docs) => console.log(docs, "changed"));
+}

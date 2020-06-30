@@ -562,7 +562,7 @@ function cashFlow_monthly_yearly(options) {
 
       if (display_column_by == "M") {
         const months_Array = [];
-        while (dateEnd > dateStart) {
+        while (dateEnd >= dateStart) {
           months_Array.push({
             month_name: dateStart.format("MMM, YYYY"),
             startOfMonth: moment(dateStart)
@@ -575,6 +575,7 @@ function cashFlow_monthly_yearly(options) {
         }
 
         const months_len = months_Array.length;
+
         if (months_len > 1) {
           for (let i = 0; i < months_len; i++) {
             if (i == 0) {

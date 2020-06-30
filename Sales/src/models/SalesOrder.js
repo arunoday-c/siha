@@ -4,11 +4,8 @@ import mysql from "mysql";
 export function getSalesOrder(req, res, next) {
     const _mysql = new algaehMysql();
     try {
-        console.log("getSalesOrder: ", req.query.HRMNGMT_Active)
-
         let strQuery = ""
         if (req.query.HRMNGMT_Active === "true") {
-            console.log("getSalesOrder: HR")
             strQuery = "SELECT SO.*, C.customer_name, E.full_name as employee_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \
@@ -16,7 +13,6 @@ export function getSalesOrder(req, res, next) {
                         inner join  hims_d_employee E on  SO.sales_person_id = E.hims_d_employee_id \
                         where SO.sales_order_number =? "
         } else {
-            console.log("getSalesOrder: No HR")
             strQuery = "SELECT SO.*, C.customer_name, SQ.sales_quotation_number, CM.contract_number from hims_f_sales_order SO \
                         left join  hims_f_sales_quotation SQ on  SO.sales_quotation_id = SQ.hims_f_sales_quotation_id \
                         left join  hims_f_contract_management CM on  SO.contract_id = CM.hims_f_contract_management_id \

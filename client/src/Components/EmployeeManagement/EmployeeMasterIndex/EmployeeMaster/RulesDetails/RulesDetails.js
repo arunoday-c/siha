@@ -194,7 +194,7 @@ class RulesDetails extends PureComponent {
                 /> */}
               </div>
             </div>
-            <div className="col-7">
+            <div className="col-7 d-none">
               <div className="row">
                 <div className="col-12">
                   {" "}
