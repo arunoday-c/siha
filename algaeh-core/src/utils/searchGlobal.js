@@ -252,8 +252,7 @@ let algaehSearchConfig = (searchName, req) => {
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
           left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
           left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
-          where PO.hospital_id=" +
-          hospitalId,
+          where 1=1",
         orderBy: "hims_f_procurement_po_header_id desc",
       },
       {
@@ -304,13 +303,13 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS DN.*, date(DN.dn_date) as dn_date, CASE DN.dn_from WHEN 'INV' then \
           'Inventory' else 'Pharmacy' end as dn_from , CASE DN.dn_from WHEN 'INV' then IL.location_description \
-          else PL.location_description end as loc_description,V.vendor_name \
+          else PL.location_description end as loc_description, V.vendor_name, PH.purchase_number \
           from hims_f_procurement_dn_header DN \
+          inner join hims_f_procurement_po_header PH on PH.hims_f_procurement_po_header_id = DN.purchase_order_id \
           inner join hims_d_vendor V on DN.vendor_id = V.hims_d_vendor_id \
           left join hims_d_pharmacy_location PL on DN.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
           left join hims_d_inventory_location IL on DN.inventory_location_id = IL.hims_d_inventory_location_id \
-          where DN.hospital_id=" +
-          hospitalId,
+          where 1=1 ",
         orderBy: "hims_f_procurement_dn_header_id desc",
       },
       {
@@ -326,12 +325,12 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS GH.*, date(GH.grn_date) as grn_date, CASE GH.grn_for WHEN 'INV' then \
           'Inventory' else 'Pharmacy' end as grn_for , CASE GH.grn_for WHEN 'INV' then IL.location_description \
           else PL.location_description end as loc_description,V.vendor_name, CASE GH.grn_for WHEN 'INV' then IL.location_type \
-          else PL.location_type end as location_type from hims_f_procurement_grn_header GH \
+          else PL.location_type end as location_type, PH.purchase_number from hims_f_procurement_grn_header GH \
+          inner join hims_f_procurement_po_header PH on PH.hims_f_procurement_po_header_id = GH.po_id \
           inner join hims_d_vendor V on GH.vendor_id = V.hims_d_vendor_id \
           left join hims_d_pharmacy_location PL on GH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
           left join hims_d_inventory_location IL on GH.inventory_location_id = IL.hims_d_inventory_location_id \
-          where GH.hospital_id=" +
-          hospitalId,
+          where 1=1",
         orderBy: "hims_f_procurement_grn_header_id desc",
       },
       {

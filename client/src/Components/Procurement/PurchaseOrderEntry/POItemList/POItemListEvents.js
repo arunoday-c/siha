@@ -365,6 +365,7 @@ const itemchangeText = ($this, context, e) => {
               : parseFloat(e.purchase_cost).toFixed($this.state.decimal_places),
 
           addItemButton: false,
+          tax_percentage: e.vat_percent
         });
 
         if (context !== undefined) {
@@ -388,6 +389,7 @@ const itemchangeText = ($this, context, e) => {
             sub_discount_percentage: 0,
             sub_discount_amount: 0,
             extended_cost: 0,
+            tax_percentage: e.vat_percent
           });
         }
       }
