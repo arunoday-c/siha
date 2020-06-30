@@ -23,6 +23,7 @@ import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import { MainContext } from "algaeh-react-components/context";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import { AlgaehFormGroup, RawSecurityElement } from "algaeh-react-components";
 import MaskedInput from "react-maskedinput";
 // import Enumerable from "linq";
@@ -65,6 +66,7 @@ class PersonalDetails extends Component {
   }
   static contextType = MainContext;
   componentDidMount() {
+    AlgaehLoader({ show: true });
     const userToken = this.context.userToken;
     const HIMS_Active =
       userToken.product_type === "HIMS_ERP" ||
@@ -140,6 +142,10 @@ class PersonalDetails extends Component {
         },
       });
     }
+
+    setTimeout(() => {
+      AlgaehLoader({ show: false });
+    }, 2000);
 
     RawSecurityElement({ elementCode: "FLD_EDT_PER" }).then((result) => {
       if (result === "hide") {
