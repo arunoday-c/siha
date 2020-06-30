@@ -73,7 +73,9 @@ function NavBars(props) {
   function onPasswordChange() {
     setShowPasswordChange(true);
   }
-
+  function onPreferenceClick() {
+    history.push("/preferences");
+  }
   function onLogoutClick() {
     algaehApiCall({
       uri: "/apiAuth/logout",
@@ -183,7 +185,11 @@ function NavBars(props) {
             <div className="dropdown-divider" />
             <button className="dropdown-item" onClick={onPasswordChange}>
               <i className="fas fa-key" /> Change Password
-            </button>{" "}
+            </button>
+            <div className="dropdown-divider" />
+            <button className="dropdown-item" onClick={onPreferenceClick}>
+              <i className="fas fa-cubes" /> User Preference
+            </button>
             <div className="dropdown-divider" />
             <button className="dropdown-item">
               <i className="fas fa-question-circle" /> Help

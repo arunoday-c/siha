@@ -523,6 +523,9 @@ const QuotationCompare = React.lazy(() =>
 const DefaultLandingPage = React.lazy(() =>
   retry(() => import("./Components/Dashboard/defaultlandingPage"))
 );
+const UserPreferences = React.lazy(() =>
+  retry(() => import("./Components/common/userPreference"))
+);
 function LoadComponent({ path, noSecurityCheck, children }) {
   return (
     <Layout path={path} noSecurityCheck={noSecurityCheck}>
@@ -1304,6 +1307,11 @@ const appRoutes = [
     path: "/ConcurrentTest",
     isExactPath: true,
     component: <ConcurrentTest />,
+  },
+  {
+    path: "/preferences",
+    isExactPath: true,
+    component: <UserPreferences />,
   },
   {
     path: "*",
